@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
 import 'package:example/plugin/AI/continue_to_write.dart';
 import 'package:example/plugin/AI/auto_completion.dart';
 import 'package:example/plugin/AI/gpt3.dart';
@@ -43,31 +42,7 @@ class SimpleEditor extends StatelessWidget {
             editorState: editorState,
             themeData: themeData,
             autoFocus: editorState.document.isEmpty,
-            customBuilders: {
-              // Divider
-              kDividerType: DividerWidgetBuilder(),
-              // Math Equation
-              kMathEquationType: MathEquationNodeWidgetBuidler(),
-              // Code Block
-              kCodeBlockType: CodeBlockNodeWidgetBuilder(),
-            },
-            shortcutEvents: [
-              // Divider
-              insertDividerEvent,
-              // Code Block
-              enterInCodeBlock,
-              ignoreKeysInCodeBlock,
-              pasteInCodeBlock,
-            ],
             selectionMenuItems: [
-              // Divider
-              dividerMenuItem,
-              // Math Equation
-              mathEquationMenuItem,
-              // Code Block
-              codeBlockMenuItem,
-              // Emoji
-              emojiMenuItem,
               // Open AI
               if (apiKey.isNotEmpty) ...[
                 autoCompletionMenuItem,
