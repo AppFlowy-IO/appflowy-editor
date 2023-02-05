@@ -82,8 +82,8 @@ MaterialApp(
 To get a sense of how the AppFlowy Editor works, run our example:
 
 ```shell
-git clone https://github.com/AppFlowy-IO/AppFlowy.git
-cd frontend/app_flowy/packages/appflowy_editor/example
+git clone https://github.com/AppFlowy-IO/appflowy-editor.git
+flutter pub get
 flutter run
 ```
 
