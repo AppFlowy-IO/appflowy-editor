@@ -118,4 +118,8 @@ Contributions are what make the open source community such an amazing place to l
 Please look at [CONTRIBUTING.md](https://appflowy.gitbook.io/docs/essential-documentation/contribute-to-appflowy/contributing-to-appflowy) for details.
 
 ## License
-Distributed under the AGPLv3 License. See [LICENSE](https://github.com/AppFlowy-IO/AppFlowy-Docs/blob/main/LICENSE) for more information.
+All code contributed to the AppFlowy Editor project is dual-licensed, and released under both of the following licenses:
+1. The GNU Affero General Public License Version 3
+2. The Mozilla Public License, Version 2.0 (the “MPL”) 
+
+See [LICENSE](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/LICENSE) for more information.
