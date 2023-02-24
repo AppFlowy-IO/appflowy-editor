@@ -58,6 +58,7 @@ class AppFlowyInput extends StatefulWidget {
 }
 
 class _AppFlowyInputState extends State<AppFlowyInput>
+    with TextInputClient
     implements AppFlowyInputService, DeltaTextInputClient {
   TextInputConnection? _textInputConnection;
   TextRange? _composingTextRange;
