@@ -30,7 +30,7 @@ At this point, nothing magic will happen after typing `_xxx_`.
 
 To implement our shortcut event we will create a `ShortcutEvent` instance to handle an underscore input.
 
-We need to define `key` and `command` in a ShortCutEvent object to customize hotkeys. We recommend using the description of your event as a key. For example, if the underscore `_` is defined to make text italic, the key can be 'Underscore to italic'. 
+We need to define `key` and `command` in a ShortCutEvent object to customize hotkeys. We recommend using the description of your event as a key. For example, if the underscore `_` is defined to make text italic, the key can be 'Underscore to italic'.
 
 > The command, made up of a single keyword such as `underscore` or a combination of keywords using the `+` sign in between to concatenate, is a condition that triggers a user-defined function. To see which keywords are available to define a command, please refer to [key_mapping.dart](../lib/src/service/shortcut_event/key_mapping.dart).
 > If more than one commands trigger the same handler, then we use ',' to split them. For example, using CTRL and A or CMD and A to 'select all', we describe it as `cmd+a,ctrl+a`(case-insensitive).
@@ -67,10 +67,10 @@ ShortcutEventHandler _underscoreToItalicHandler = (editorState, event) {
   }
 ```
 
-Now, we deal with handling the underscore. 
+Now, we deal with handling the underscore.
 
-Look for the position of the previous underscore and 
-1. if one is _not_ found, return without doing anything. 
+Look for the position of the previous underscore and
+1. if one is _not_ found, return without doing anything.
 2. if one is found, the text enclosed within the two underscores will be formatted to display in italics.
 
 ```dart
@@ -136,7 +136,7 @@ Widget build(BuildContext context) {
 
 ![After](./images/customize_a_shortcut_event_after.gif)
 
-Check out the [complete code](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/app_flowy/packages/appflowy_editor/lib/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart) file of this example.
+Check out the [complete code](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart) file of this example.
 
 
 ## Customizing a Component
@@ -162,7 +162,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-Next, we will choose a unique string for your custom node's type. 
+Next, we will choose a unique string for your custom node's type.
 
 We'll use `network_image` in this case. And we add `network_image_src` to the `attributes` to describe the link of the image.
 
@@ -176,7 +176,7 @@ We'll use `network_image` in this case. And we add `network_image_src` to the `a
 ```
 
 Then, we create a class that inherits [NodeWidgetBuilder](../lib/src/service/render_plugin_service.dart). As shown in the autoprompt, we need to implement two functions:
-1. one returns a widget 
+1. one returns a widget
 2. the other verifies the correctness of the [Node](../lib/src/core/document/node.dart).
 
 
@@ -273,7 +273,7 @@ class NetworkImageNodeWidgetBuilder extends NodeWidgetBuilder {
 ```
 
 ... and register `NetworkImageNodeWidgetBuilder` in the `AppFlowyEditor`.
- 
+
 ```dart
 final editorState = EditorState(
   document: StateTree.empty()
@@ -302,7 +302,7 @@ return AppFlowyEditor(
 
 ![Whew!](./images/customize_a_component.gif)
 
-Check out the [complete code](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/app_flowy/packages/appflowy_editor/example/lib/plugin/network_image_node_widget.dart) file of this example.
+Check out the [complete code](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/plugin/network_image_node_widget.dart) file of this example.
 
 ## Customizing a Theme (New Feature in 0.0.7)
 

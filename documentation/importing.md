@@ -33,4 +33,4 @@ final editorState = EditorState(
 );
 ```
 
-For more details, please refer to the function `_importFile` through this [link](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/app_flowy/packages/appflowy_editor/example/lib/home_page.dart).
+For more details, please refer to the function `_importFile` through this [link](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/home_page.dart).
