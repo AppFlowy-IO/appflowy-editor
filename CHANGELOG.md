@@ -1,8 +1,10 @@
 ## 0.1.1
-* Support Flutter 3.7.5
+* Relicense Appflowy Editor by @hyj1024.
+* Improve the toolbar user-experience by @LucasXu0.
+* Improve the test code coverage by @GouravShDev.
 
 ## 0.1.0
-* Support Flutter 3.7.5
+* Support Flutter 3.7.5.
 
 ## 0.0.9
 * Support customize the text color and text background color.
