@@ -12,8 +12,9 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
   nodes = selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
   selection = selection.isBackward ? selection : selection.reversed;
   final textNodes = nodes.whereType<TextNode>().toList();
-  final List<Node> nonTextNodes =
-      nodes.where((node) => node is! TextNode).toList(growable: false);
+  final List<Node> nonTextNodes = nodes
+      .where((node) => node is! TextNode && node.selectable != null)
+      .toList(growable: false);
 
   final transaction = editorState.transaction;
   List<int>? cancelNumberListPath;
@@ -253,8 +254,8 @@ void _deleteTextNodes(
   final last = textNodes.last;
   var content = textNodes.last.toPlainText();
   content = content.substring(selection.end.offset, content.length);
-  // Merge the fist and the last text node content,
-  //  and delete the all nodes expect for the first.
+  // Merge the first and the last text node content,
+  //  and delete all the nodes except for the first.
   transaction
     ..deleteNodes(textNodes.sublist(1))
     ..mergeText(
