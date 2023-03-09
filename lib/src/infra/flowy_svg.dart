@@ -34,7 +34,8 @@ class FlowySvg extends StatelessWidget {
     if (name != null) {
       return SvgPicture.asset(
         'assets/images/$name.svg',
-        color: color,
+        colorFilter:
+            color != null ? ColorFilter.mode(color!, BlendMode.color) : null,
         fit: BoxFit.fill,
         height: height,
         width: width,
