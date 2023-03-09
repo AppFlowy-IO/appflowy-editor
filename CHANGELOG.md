@@ -1,3 +1,9 @@
+## 0.1.1
+* Support Flutter 3.7.5
+
+## 0.1.0
+* Support Flutter 3.7.5
+
 ## 0.0.9
 * Support customize the text color and text background color.
 * Fix some bugs.

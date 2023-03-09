@@ -1,0 +1,40 @@
+name: AppFlowyEditor test
+
+on:
+  pull_request:
+    branches:
+      - "main"
+      - "release/*"
+
+env:
+  FLUTTER_VERSION: "3.7.5"
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Run tests
+        run: |
+          flutter pub get
+          flutter analyze .
+          dart format --set-exit-if-changed .
+          flutter test --coverage
+
+      - uses: codecov/codecov-action@v3
+        with:
+          env_vars: ${{ matrix.os }}
+          fail_ci_if_error: true
+          verbose: true

@@ -1,10 +1,6 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:example/plugin/AI/continue_to_write.dart';
-import 'package:example/plugin/AI/auto_completion.dart';
-import 'package:example/plugin/AI/gpt3.dart';
-import 'package:example/plugin/AI/smart_edit.dart';
 import 'package:flutter/material.dart';
 
 class SimpleEditor extends StatelessWidget {
@@ -42,16 +38,6 @@ class SimpleEditor extends StatelessWidget {
             editorState: editorState,
             themeData: themeData,
             autoFocus: editorState.document.isEmpty,
-            selectionMenuItems: [
-              // Open AI
-              if (apiKey.isNotEmpty) ...[
-                autoCompletionMenuItem,
-                continueToWriteMenuItem,
-              ]
-            ],
-            toolbarItems: [
-              smartEditItem,
-            ],
           );
         } else {
           return const Center(

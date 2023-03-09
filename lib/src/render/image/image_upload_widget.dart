@@ -35,7 +35,7 @@ void showImageUploadMenu(
     );
   });
 
-  Overlay.of(context)?.insert(_imageUploadMenu!);
+  Overlay.of(context).insert(_imageUploadMenu!);
 
   editorState.service.selectionService.currentSelection
       .addListener(_dismissImageUploadMenu);
