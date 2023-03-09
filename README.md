@@ -21,8 +21,8 @@ and the Flutter guide for
 </p>
 
 <p align="center">
-    <a href="https://codecov.io/gh/AppFlowy-IO/AppFlowy" >
-        <img src="https://codecov.io/gh/AppFlowy-IO/AppFlowy/branch/main/graph/badge.svg?token=YTFKUF70B6"/>
+    <a href="https://codecov.io/github/AppFlowy-IO/appflowy-editor" >
+        <img src="https://codecov.io/github/AppFlowy-IO/appflowy-editor/branch/main/graph/badge.svg?token=BXTGUXTWRU"/>
     </a>
 </p>
 
