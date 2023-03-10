@@ -1,5 +1,5 @@
 ## 0.1.1
-* Relicense Appflowy Editor by @hyj1024.
+* Relicense Appflowy Editor by @hyj1204.
 * Improve the toolbar user-experience by @LucasXu0.
 * Improve the test code coverage by @GouravShDev.
 
