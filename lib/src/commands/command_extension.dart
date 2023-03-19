@@ -25,6 +25,7 @@ extension CommandExtension on EditorState {
     } else if (path != null) {
       return document.nodeAtPath(path)!;
     }
+
     throw Exception('path and node cannot be null at the same time');
   }
 
@@ -37,19 +38,25 @@ extension CommandExtension on EditorState {
     } else if (path != null) {
       return document.nodeAtPath(path)! as TextNode;
     }
+
     throw Exception('path and node cannot be null at the same time');
   }
 
   Selection getSelection(
     Selection? selection,
   ) {
-    final currentSelection = service.selectionService.currentSelection.value;
     if (selection != null) {
       return selection;
-    } else if (currentSelection != null) {
+    }
+
+    final currentSelection = service.selectionService.currentSelection.value;
+    if (currentSelection != null) {
       return currentSelection;
     }
-    throw Exception('path and textNode cannot be null at the same time');
+
+    throw Exception(
+      'selection and selectionService.currentSelection cannot be null at the same time',
+    );
   }
 
   String getTextInSelection(
@@ -57,6 +64,7 @@ extension CommandExtension on EditorState {
     Selection selection,
   ) {
     List<String> res = [];
+
     if (selection.isSingle) {
       final plainText = textNodes.first.toPlainText();
       res.add(plainText.substring(selection.startIndex, selection.endIndex));
@@ -77,6 +85,7 @@ extension CommandExtension on EditorState {
         }
       }
     }
+
     return res.join('\n');
   }
 }

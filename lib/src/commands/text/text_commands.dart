@@ -29,7 +29,6 @@ extension TextCommands on EditorState {
   }
 
   Future<void> formatText(
-    EditorState editorState,
     Selection? selection,
     Attributes attributes, {
     Path? path,
@@ -43,7 +42,6 @@ extension TextCommands on EditorState {
   }
 
   Future<void> formatTextWithBuiltInAttribute(
-    EditorState editorState,
     String key,
     Attributes attributes, {
     Selection? selection,
@@ -71,13 +69,11 @@ extension TextCommands on EditorState {
   }
 
   Future<void> formatTextToCheckbox(
-    EditorState editorState,
     bool check, {
     Path? path,
     TextNode? textNode,
   }) async {
     return formatTextWithBuiltInAttribute(
-      editorState,
       BuiltInAttributeKey.checkbox,
       {BuiltInAttributeKey.checkbox: check},
       path: path,
@@ -86,13 +82,11 @@ extension TextCommands on EditorState {
   }
 
   Future<void> formatLinkInText(
-    EditorState editorState,
     String? link, {
     Path? path,
     TextNode? textNode,
   }) async {
     return formatTextWithBuiltInAttribute(
-      editorState,
       BuiltInAttributeKey.href,
       {BuiltInAttributeKey.href: link},
       path: path,
