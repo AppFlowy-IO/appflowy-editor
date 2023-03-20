@@ -235,8 +235,7 @@ class UpdateTextOperation extends Operation {
 
 // TODO(Lucas.Xu): refactor this part
 Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
-  if ((preInsertPath.length > b.length) ||
-      (preInsertPath.isEmpty || b.isEmpty)) {
+  if (preInsertPath.length > b.length || preInsertPath.isEmpty || b.isEmpty) {
     return b;
   }
 
