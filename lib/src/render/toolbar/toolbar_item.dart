@@ -401,7 +401,6 @@ void showLinkMenu(
           },
           onSubmitted: (text) async {
             await editorState.formatLinkInText(
-              editorState,
               text,
               textNode: textNode,
             );

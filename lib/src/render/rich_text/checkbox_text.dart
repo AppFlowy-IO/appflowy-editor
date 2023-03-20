@@ -85,7 +85,6 @@ class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
             behavior: HitTestBehavior.opaque,
             onTap: () async {
               await widget.editorState.formatTextToCheckbox(
-                widget.editorState,
                 !check,
                 textNode: widget.textNode,
               );
