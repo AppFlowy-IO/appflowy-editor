@@ -27,6 +27,7 @@ class EditorWidgetTester {
   Future<EditorWidgetTester> startTesting({
     Locale locale = const Locale('en'),
     bool shrinkWrap = false,
+    bool autoFocus = false,
   }) async {
     final app = MaterialApp(
       localizationsDelegates: const [
@@ -41,6 +42,7 @@ class EditorWidgetTester {
         body: AppFlowyEditor(
           editorState: _editorState,
           shrinkWrap: shrinkWrap,
+          autoFocus: autoFocus,
         ),
       ),
     );

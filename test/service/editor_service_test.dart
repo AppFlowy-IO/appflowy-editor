@@ -18,5 +18,25 @@ void main() {
 
       expect(find.byType(AppFlowyScroll), findsNothing);
     });
+
+    testWidgets('without autoFocus', (tester) async {
+      final editor = tester.editor..insertTextNode('Hello');
+      await editor.startTesting(shrinkWrap: true, autoFocus: false);
+
+      final selectedNodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
+
+      expect(selectedNodes.isEmpty, true);
+    });
+
+    testWidgets('with autoFocus', (tester) async {
+      final editor = tester.editor..insertTextNode('Hello');
+      await editor.startTesting(shrinkWrap: true, autoFocus: true);
+
+      final selectedNodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
+
+      expect(selectedNodes.isEmpty, false);
+    });
   });
 }
