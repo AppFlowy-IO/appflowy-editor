@@ -337,8 +337,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     // try to select the word.
     final selection = currentSelection.value;
     if (selection == null ||
-        (selection.isCollapsed == true &&
-            currentSelectedNodes.first is TextNode)) {
+        (selection.isCollapsed && currentSelectedNodes.first is TextNode)) {
       _onDoubleTapDown(details);
     }
 

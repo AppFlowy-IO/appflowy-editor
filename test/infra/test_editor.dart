@@ -26,6 +26,7 @@ class EditorWidgetTester {
 
   Future<EditorWidgetTester> startTesting({
     Locale locale = const Locale('en'),
+    bool shrinkWrap = false,
   }) async {
     final app = MaterialApp(
       localizationsDelegates: const [
@@ -39,6 +40,7 @@ class EditorWidgetTester {
       home: Scaffold(
         body: AppFlowyEditor(
           editorState: _editorState,
+          shrinkWrap: shrinkWrap,
         ),
       ),
     );
