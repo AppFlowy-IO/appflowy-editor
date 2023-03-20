@@ -238,9 +238,7 @@ void main() async {
         node.allSatisfyInSelection(
           code,
           BuiltInAttributeKey.code,
-          (value) {
-            return value == true;
-          },
+          (value) => value == true,
         ),
         true,
       );

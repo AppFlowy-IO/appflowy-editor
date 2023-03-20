@@ -34,6 +34,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
+    this.shrinkWrap = false,
     ThemeData? themeData,
   }) : super(key: key) {
     this.themeData = themeData ??
@@ -55,16 +56,20 @@ class AppFlowyEditor extends StatefulWidget {
 
   final List<ToolbarItem> toolbarItems;
 
-  late final ThemeData themeData;
-
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
   final bool autoFocus;
+
   final Selection? focusedSelection;
 
   final Positioned Function(BuildContext context, List<ActionMenuItem> items)?
       customActionMenuBuilder;
+
+  /// If false the Editor is inside an [AppFlowyScroll]
+  final bool shrinkWrap;
+
+  late final ThemeData themeData;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -116,6 +121,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   @override
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
+
     return Overlay(
       initialEntries: [
         OverlayEntry(
@@ -125,11 +131,21 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     );
   }
 
+  Widget _buildScroll({required Widget child}) {
+    if (widget.shrinkWrap) {
+      return child;
+    }
+
+    return AppFlowyScroll(
+      key: editorState.service.scrollServiceKey,
+      child: child,
+    );
+  }
+
   Widget _buildServices(BuildContext context) {
     return Theme(
       data: widget.themeData,
-      child: AppFlowyScroll(
-        key: editorState.service.scrollServiceKey,
+      child: _buildScroll(
         child: Container(
           color: editorStyle.backgroundColor,
           padding: editorStyle.padding!,
