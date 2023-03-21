@@ -130,9 +130,7 @@ class _LinkMenuState extends State<LinkMenu> {
             width: 24,
             height: 24,
           ),
-          onPressed: () {
-            _textEditingController.clear();
-          },
+          onPressed: _textEditingController.clear,
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)),

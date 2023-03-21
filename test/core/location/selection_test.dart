@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -72,6 +74,27 @@ void main() async {
           'offset': 3
         }
       });
+    });
+
+    testWidgets('Selection.fromJson', (tester) async {
+      final selectionJson = jsonDecode("""{
+        "start": {
+          "path": [0],
+          "offset": 0
+        },
+        "end": {
+          "path": [2],
+          "offset": 25
+        }
+      }""");
+
+      final position = Selection.fromJson(selectionJson);
+
+      expect(position.start.path.first, 0);
+      expect(position.start.offset, 0);
+
+      expect(position.end.path.first, 2);
+      expect(position.end.offset, 25);
     });
   });
 }
