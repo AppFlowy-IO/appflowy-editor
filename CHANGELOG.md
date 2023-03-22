@@ -1,8 +1,11 @@
+## 0.1.3
+* chore: update the dependencies to the latest release by @LucasXu0 ([#25](https://github.com/AppFlowy-IO/appflowy-editor/pull/25)).
+
 ## 0.1.2
-* fix: #7 bug on node iterator with nested nodes by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/11
-* fix: #8 SVG display error in the latest version by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/12
-* fix: #9 Using the mouse to highlight text very easy to miss the first letter by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/13
-* chore: fix some known issues by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/14
+* fix: bug on node iterator with nested nodes by @LucasXu0 ([#11](https://github.com/AppFlowy-IO/appflowy-editor/pull/11)).
+* fix: SVG display error in the latest version by @LucasXu0 ([#12](https://github.com/AppFlowy-IO/appflowy-editor/pull/12)).
+* fix: Using the mouse to highlight text very easy to miss the first letter by @LucasXu0 ([#13](https://github.com/AppFlowy-IO/appflowy-editor/pull/13)).
+* chore: fix some known issues by @LucasXu0 in ([#14](https://github.com/AppFlowy-IO/appflowy-editor/pull/14)).
 
 ## 0.1.1
 * Relicense Appflowy Editor by @hyj1204.

@@ -164,7 +164,7 @@ class EditorWidgetTester {
       ),
     )
       ..disableSealTimer = true
-      ..disbaleRules = true;
+      ..disableRules = true;
   }
 
   bool runAction(int actionIndex, Node node) {
