@@ -1,3 +1,6 @@
+## 0.1.4
+* chore: export editor style ([#27](https://github.com/AppFlowy-IO/appflowy-editor/pull/25)).
+
 ## 0.1.3
 * chore: update the dependencies to the latest release by @LucasXu0 ([#25](https://github.com/AppFlowy-IO/appflowy-editor/pull/25)).
 
