@@ -40,7 +40,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.themeData = themeData ??
         ThemeData.light().copyWith(extensions: [
           ...lightEditorStyleExtension,
-          ...lightPlguinStyleExtension,
+          ...lightPluginStyleExtension,
         ]);
   }
 

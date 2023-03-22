@@ -35,7 +35,7 @@ void main() {
         selection.normalized,
       );
 
-      expect(text, 'me\nto\nAppfl');
+      expect(text, ['me', 'to', 'Appfl']);
     });
 
     testWidgets('getTextInSelection where selection.isSingle', (tester) async {
@@ -69,7 +69,7 @@ void main() {
         selection.normalized,
       );
 
-      expect(text, 'Wel');
+      expect(text, ['Wel']);
     });
 
     testWidgets('getNode throws if node and path are null', (tester) async {
