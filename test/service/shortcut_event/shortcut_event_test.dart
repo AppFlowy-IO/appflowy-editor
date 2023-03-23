@@ -120,7 +120,7 @@ void main() async {
           event.updateCommand(
             windowsCommand: 'ctrl+arrow right',
             linuxCommand: 'ctrl+arrow right',
-            macOSCommand: 'ctrl+arrow rightt',
+            macOSCommand: 'ctrl+arrow right',
           );
         }
       }
