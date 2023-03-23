@@ -3,6 +3,23 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 
+class PressedKeysManager {
+  final List<RawKeyEvent> _pressedKeys = [];
+
+  void addKey(RawKeyEvent event) => _pressedKeys.add(event);
+
+  void removeKey(RawKeyEvent event) =>
+      _pressedKeys.removeWhere((e) => e.character == event.character);
+
+  bool get isShiftPressed => _pressedKeys.any((key) => key.isShiftPressed);
+
+  bool get isAltPressed => _pressedKeys.any((key) => key.isAltPressed);
+
+  bool get isControlPressed => _pressedKeys.any(
+        (key) => key.isControlPressed || key.isMetaPressed,
+      );
+}
+
 /// [AppFlowyKeyboardService] is responsible for processing shortcut keys,
 ///   like command, shift, control keys.
 ///
@@ -19,6 +36,9 @@ import 'package:flutter/material.dart';
 /// ```
 ///
 abstract class AppFlowyKeyboardService {
+  /// Tracks which keys are currently pressed
+  PressedKeysManager get pressedKeysManager;
+
   /// Processes shortcut key input.
   KeyEventResult onKey(RawKeyEvent event);
 
@@ -66,6 +86,9 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
   bool isFocus = true;
   bool showCursor = false;
+
+  @override
+  final PressedKeysManager pressedKeysManager = PressedKeysManager();
 
   @override
   List<ShortcutEvent> get shortcutEvents => widget.shortcutEvents;
@@ -124,8 +147,11 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
     Log.keyboard.debug('on keyboard event $event');
 
     if (event is! RawKeyDownEvent) {
+      pressedKeysManager.removeKey(event);
       return KeyEventResult.ignored;
     }
+
+    pressedKeysManager.addKey(event);
 
     // TODO: use cache to optimize the searching time.
     for (final shortcutEvent in widget.shortcutEvents) {

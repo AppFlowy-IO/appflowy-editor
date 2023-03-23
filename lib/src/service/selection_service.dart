@@ -298,19 +298,42 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
         _interceptors.every((element) => element.canTap?.call(details) ?? true);
     if (!canTap) return;
 
+    final isShiftPressed =
+        editorState.service.keyboardService?.pressedKeysManager.isShiftPressed;
+
+    if (isShiftPressed == true && _panStartOffset != null) {
+      final endOffset = details.globalPosition;
+
+      final first = getNodeInOffset(_panStartOffset!)?.selectable;
+      final last = getNodeInOffset(endOffset)?.selectable;
+
+      if (first != null && last != null) {
+        final start =
+            first.getSelectionInRange(_panStartOffset!, endOffset).start;
+        final end = last.getSelectionInRange(_panStartOffset!, endOffset).end;
+        final selection = Selection(start: start, end: end);
+
+        _updateSelection(selection);
+        return;
+      }
+    }
+
     // clear old state.
-    _panStartOffset = null;
+    _panStartOffset = details.globalPosition.translate(-3.0, 0);
 
     final position = getPositionInOffset(details.globalPosition);
     if (position == null) {
       return;
     }
+
     final selection = Selection.collapsed(position);
-    updateSelection(selection);
-
-    _enableInteraction();
-
+    _updateSelection(selection);
     _showDebugLayerIfNeeded(offset: details.globalPosition);
+  }
+
+  void _updateSelection(Selection? selection) {
+    updateSelection(selection);
+    _enableInteraction();
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
