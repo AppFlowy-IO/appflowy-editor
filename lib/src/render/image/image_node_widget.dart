@@ -12,6 +12,7 @@ class ImageNodeWidget extends StatefulWidget {
     required this.src,
     this.width,
     required this.alignment,
+    required this.editable,
     required this.onResize,
   }) : super(key: key);
 
@@ -19,14 +20,14 @@ class ImageNodeWidget extends StatefulWidget {
   final String src;
   final double? width;
   final Alignment alignment;
+  final bool editable;
   final void Function(double width) onResize;
 
   @override
-  State<ImageNodeWidget> createState() => _ImageNodeWidgetState();
+  State<ImageNodeWidget> createState() => ImageNodeWidgetState();
 }
 
-class _ImageNodeWidgetState extends State<ImageNodeWidget>
-    with SelectableMixin {
+class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   final _imageKey = GlobalKey();
@@ -34,7 +35,9 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
   double? _imageWidth;
   double _initial = 0;
   double _distance = 0;
-  bool _onFocus = false;
+
+  @visibleForTesting
+  bool onFocus = false;
 
   ImageStream? _imageStream;
   late ImageStreamListener _imageStreamListener;
@@ -124,10 +127,10 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
       alignment: widget.alignment,
       child: MouseRegion(
         onEnter: (event) => setState(() {
-          _onFocus = true;
+          onFocus = true;
         }),
         onExit: (event) => setState(() {
-          _onFocus = false;
+          onFocus = false;
         }),
         child: _buildResizableImage(context),
       ),
@@ -142,45 +145,49 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null ||
             loadingProgress.cumulativeBytesLoaded ==
-                loadingProgress.expectedTotalBytes) return child;
+                loadingProgress.expectedTotalBytes) {
+          return child;
+        }
+
         return _buildLoading(context);
       },
-      errorBuilder: (context, error, stackTrace) {
-        // _imageWidth ??= defaultMaxTextNodeWidth;
-        return _buildError(context);
-      },
+      errorBuilder: (context, error, stackTrace) => _buildError(context),
     );
+
     if (_imageWidth == null) {
       _imageStream = networkImage.image.resolve(const ImageConfiguration())
         ..addListener(_imageStreamListener);
     }
+
     return Stack(
       children: [
         networkImage,
-        _buildEdgeGesture(
-          context,
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: 5,
-          onUpdate: (distance) {
-            setState(() {
-              _distance = distance;
-            });
-          },
-        ),
-        _buildEdgeGesture(
-          context,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: 5,
-          onUpdate: (distance) {
-            setState(() {
-              _distance = -distance;
-            });
-          },
-        ),
+        if (widget.editable) ...[
+          _buildEdgeGesture(
+            context,
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: 5,
+            onUpdate: (distance) {
+              setState(() {
+                _distance = distance;
+              });
+            },
+          ),
+          _buildEdgeGesture(
+            context,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: 5,
+            onUpdate: (distance) {
+              setState(() {
+                _distance = -distance;
+              });
+            },
+          ),
+        ],
       ],
     );
   }
@@ -251,7 +258,7 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
         },
         child: MouseRegion(
           cursor: SystemMouseCursors.resizeLeftRight,
-          child: _onFocus
+          child: onFocus
               ? Center(
                   child: Container(
                     height: 40,

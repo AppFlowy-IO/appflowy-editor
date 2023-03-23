@@ -154,7 +154,7 @@ class AppFlowyRenderPlugin extends AppFlowyRenderPluginService {
 
   Widget _buildWithActions(
       NodeWidgetBuilder builder, NodeWidgetContext context) {
-    if (builder is ActionProvider) {
+    if (builder is ActionProvider && context.editorState.editable) {
       return ChangeNotifierProvider(
         create: (_) => ActionMenuState(context.node.path),
         child: ActionMenuOverlay(

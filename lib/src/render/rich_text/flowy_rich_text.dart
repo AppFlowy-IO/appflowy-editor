@@ -312,7 +312,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
         tapCount += 1;
         timer?.cancel();
 
-        if (tapCount == 2) {
+        if (tapCount == 2 || !widget.editorState.editable) {
           tapCount = 0;
           safeLaunchUrl(href);
           return;
