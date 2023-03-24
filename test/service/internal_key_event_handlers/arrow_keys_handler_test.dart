@@ -50,6 +50,63 @@ void main() async {
   });
 
   testWidgets(
+      'Presses alt + arrow left/right key, move the cursor one word left/right',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    await editor.updateSelection(
+      Selection.single(path: [0], startOffset: 0),
+    );
+
+    await editor.pressLogicKey(
+      LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 7,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      LogicalKeyboardKey.arrowRight,
+    );
+
+    await editor.pressLogicKey(
+      LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 10,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 8,
+      ),
+    );
+  });
+
+  testWidgets(
       'Presses arrow left/right key since selection is not collapsed and backward',
       (tester) async {
     await _testPressArrowKeyInNotCollapsedSelection(tester, true);

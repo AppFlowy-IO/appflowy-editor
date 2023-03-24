@@ -61,16 +61,17 @@ void main() async {
       for (final event in builtInShortcutEvents) {
         if (event.key == 'Move cursor begin') {
           event.updateCommand(
-            windowsCommand: 'alt+arrow left',
-            linuxCommand: 'alt+arrow left',
-            macOSCommand: 'alt+arrow left',
+            windowsCommand: 'ctrl+arrow left',
+            linuxCommand: 'ctrl+arrow left',
+            macOSCommand: 'ctrl+arrow left',
           );
         }
       }
+
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.arrowLeft,
-          isAltPressed: true,
+          isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
@@ -117,15 +118,16 @@ void main() async {
       for (final event in builtInShortcutEvents) {
         if (event.key == 'Move cursor end') {
           event.updateCommand(
-            windowsCommand: 'alt+arrow right',
-            linuxCommand: 'alt+arrow right',
-            macOSCommand: 'alt+arrow right',
+            windowsCommand: 'ctrl+arrow right',
+            linuxCommand: 'ctrl+arrow right',
+            macOSCommand: 'ctrl+arrow right',
           );
         }
       }
+
       await editor.pressLogicKey(
         LogicalKeyboardKey.arrowRight,
-        isAltPressed: true,
+        isControlPressed: true,
       );
       expect(
         editor.documentSelection,

@@ -55,6 +55,20 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: cursorLeftWordSelect,
   ),
   ShortcutEvent(
+    key: 'Move cursor left one word',
+    command: 'alt+arrow left',
+    windowsCommand: 'alt+arrow left',
+    linuxCommand: 'alt+arrow left',
+    handler: cursorLeftWordMove,
+  ),
+  ShortcutEvent(
+    key: 'Move cursor right one word',
+    command: 'alt+arrow right',
+    windowsCommand: 'alt+arrow right',
+    linuxCommand: 'alt+arrow right',
+    handler: cursorRightWordMove,
+  ),
+  ShortcutEvent(
     key: 'Cursor right word select',
     command: 'shift+alt+arrow right',
     windowsCommand: 'shift+alt+arrow right',
