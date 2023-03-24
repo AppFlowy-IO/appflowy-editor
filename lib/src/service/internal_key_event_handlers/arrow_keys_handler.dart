@@ -305,6 +305,62 @@ ShortcutEventHandler cursorLeftWordSelect = (editorState, event) {
   return KeyEventResult.handled;
 };
 
+ShortcutEventHandler cursorLeftWordMove = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection =
+      editorState.service.selectionService.currentSelection.value?.normalized;
+
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (selection.isCollapsed) {
+    final leftPosition = selection.start
+        .goLeft(editorState, selectionRange: _SelectionRange.word);
+    if (leftPosition != null) {
+      editorState.service.selectionService.updateSelection(
+        Selection.collapsed(leftPosition),
+      );
+
+      return KeyEventResult.handled;
+    }
+
+    editorState.service.selectionService.updateSelection(
+      Selection.collapsed(selection.start),
+    );
+  }
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler cursorRightWordMove = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection =
+      editorState.service.selectionService.currentSelection.value?.normalized;
+
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (selection.isCollapsed) {
+    final rightPosition = selection.start
+        .goRight(editorState, selectionRange: _SelectionRange.word);
+    if (rightPosition != null) {
+      editorState.service.selectionService.updateSelection(
+        Selection.collapsed(rightPosition),
+      );
+
+      return KeyEventResult.handled;
+    }
+
+    editorState.service.selectionService.updateSelection(
+      Selection.collapsed(selection.end),
+    );
+  }
+
+  return KeyEventResult.handled;
+};
+
 ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
   final nodes = editorState.service.selectionService.currentSelectedNodes;
   final selection = editorState.service.selectionService.currentSelection.value;
@@ -363,6 +419,7 @@ extension on Position {
     if (node == null) {
       return null;
     }
+
     if (offset == 0) {
       final previousEnd = node.previous?.selectable?.end();
       if (previousEnd != null) {
@@ -370,6 +427,7 @@ extension on Position {
       }
       return null;
     }
+
     switch (selectionRange) {
       case _SelectionRange.character:
         if (node is TextNode) {
