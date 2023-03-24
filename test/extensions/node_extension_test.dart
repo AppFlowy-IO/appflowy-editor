@@ -45,6 +45,48 @@ void main() {
       expect(result, false);
     });
 
+    test('inSelection w/ Reverse selection', () {
+      final linkedList = LinkedList<Node>()
+        ..addAll([
+          Node(
+            type: 'type',
+            attributes: {},
+          ),
+        ]);
+
+      final node = Node(
+        type: 'type',
+        children: linkedList,
+        attributes: {},
+      );
+
+      final reverseSelection = Selection(
+        start: Position(path: [1]),
+        end: Position(path: [0]),
+      );
+
+      final result = node.inSelection(reverseSelection);
+      expect(result, false);
+    });
+
+    testWidgets('isSelected', (tester) async {
+      final editor = tester.editor
+        ..insertTextNode('Hello')
+        ..insertTextNode('World');
+      await editor.startTesting();
+
+      final selection = Selection(
+        start: Position(path: [0]),
+        end: Position(path: [0], offset: 1),
+      );
+
+      await editor.updateSelection(selection);
+
+      final node = editor.editorState.getTextNode(path: [0]);
+
+      expect(node.isSelected(editor.editorState), true);
+    });
+
     testWidgets('insert a new checkbox after an exsiting checkbox',
         (tester) async {
       const text = 'Welcome to Appflowy 😁';

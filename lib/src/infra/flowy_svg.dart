@@ -3,14 +3,14 @@ import 'package:flutter_svg/svg.dart';
 
 class FlowySvg extends StatelessWidget {
   const FlowySvg({
-    Key? key,
+    super.key,
     this.name,
     this.width,
     this.height,
     this.color,
     this.number,
     this.padding,
-  }) : super(key: key);
+  });
 
   final String? name;
   final double? width;

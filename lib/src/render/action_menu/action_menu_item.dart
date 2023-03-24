@@ -46,14 +46,12 @@ class ActionMenuItem {
     Widget Function(Widget item)? itemWrapper,
   }) {
     return ActionMenuItem(
-      iconBuilder: ({size, color}) {
-        return FlowySvg(
-          name: name,
-          color: color,
-          width: size,
-          height: size,
-        );
-      },
+      iconBuilder: ({color, size}) => FlowySvg(
+        name: name,
+        color: color,
+        width: size,
+        height: size,
+      ),
       onPressed: onPressed,
       selected: selected,
       itemWrapper: itemWrapper,
@@ -62,13 +60,11 @@ class ActionMenuItem {
 
   factory ActionMenuItem.separator() {
     return ActionMenuItem(
-      iconBuilder: ({size, color}) {
-        return FlowySvg(
-          name: 'image_toolbar/divider',
-          color: color,
-          height: size,
-        );
-      },
+      iconBuilder: ({color, size}) => FlowySvg(
+        name: 'image_toolbar/divider',
+        color: color,
+        height: size,
+      ),
       onPressed: null,
     );
   }
