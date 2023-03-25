@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:rich_clipboard/rich_clipboard.dart';
 
 class AppFlowyClipboardData {
@@ -19,7 +20,7 @@ class AppFlowyClipboard {
     // https://github.com/BringingFire/rich_clipboard/issues/13
     // Wrapping a `<html><body>` tag for html in Windows,
     //  otherwise it will raise an exception
-    if (Platform.isWindows && html != null) {
+    if (!kIsWeb && Platform.isWindows && html != null) {
       if (!html.startsWith('<html><body>')) {
         html = '<html><body>$html</body></html>';
       }
@@ -40,7 +41,7 @@ class AppFlowyClipboard {
 
     // https://github.com/BringingFire/rich_clipboard/issues/13
     // Remove all the fragment symbol in Windows.
-    if (Platform.isWindows && html != null) {
+    if (!kIsWeb && Platform.isWindows && html != null) {
       html = html
           .replaceAll('<!--StartFragment-->', '')
           .replaceAll('<!--EndFragment-->', '');
