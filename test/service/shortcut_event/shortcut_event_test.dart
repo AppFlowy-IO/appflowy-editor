@@ -21,6 +21,7 @@ void main() async {
           return KeyEventResult.handled;
         },
       );
+
       shortcutEvent.updateCommand(command: 'cmd+shift+alt+ctrl+b');
       expect(shortcutEvent.keybindings.length, 1);
       expect(shortcutEvent.keybindings.first.isMetaPressed, true);
@@ -35,10 +36,13 @@ void main() async {
       final editor = tester.editor
         ..insertTextNode(text)
         ..insertTextNode(text);
+
       await editor.startTesting();
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: text.length),
       );
+
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.arrowLeft,
@@ -50,10 +54,12 @@ void main() async {
           isMetaPressed: true,
         );
       }
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: 0),
       );
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: text.length),
       );
@@ -67,6 +73,7 @@ void main() async {
           );
         }
       }
+
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.arrowLeft,
@@ -78,6 +85,7 @@ void main() async {
           isMetaPressed: true,
         );
       }
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: 0),
@@ -91,10 +99,13 @@ void main() async {
       final editor = tester.editor
         ..insertTextNode(text)
         ..insertTextNode(text);
+
       await editor.startTesting();
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: 0),
       );
+
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.arrowRight,
@@ -106,10 +117,12 @@ void main() async {
           isMetaPressed: true,
         );
       }
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: text.length),
       );
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: 0),
       );
@@ -123,10 +136,12 @@ void main() async {
           );
         }
       }
+
       await editor.pressLogicKey(
         LogicalKeyboardKey.arrowRight,
         isAltPressed: true,
       );
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: text.length),
@@ -139,10 +154,13 @@ void main() async {
       final editor = tester.editor
         ..insertTextNode(text)
         ..insertTextNode(text);
+
       await editor.startTesting();
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: text.length),
       );
+
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.home,
@@ -153,6 +171,7 @@ void main() async {
         editor.documentSelection,
         Selection.single(path: [1], startOffset: 0),
       );
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: text.length),
       );
@@ -166,11 +185,13 @@ void main() async {
           );
         }
       }
+
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.home,
         );
       }
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: 0),
@@ -182,10 +203,13 @@ void main() async {
       final editor = tester.editor
         ..insertTextNode(text)
         ..insertTextNode(text);
+
       await editor.startTesting();
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: text.length),
       );
+
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.end,
@@ -196,6 +220,7 @@ void main() async {
         editor.documentSelection,
         Selection.single(path: [1], startOffset: text.length),
       );
+
       await editor.updateSelection(
         Selection.single(path: [1], startOffset: 0),
       );
@@ -209,15 +234,54 @@ void main() async {
           );
         }
       }
+
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
           LogicalKeyboardKey.end,
         );
       }
+
       expect(
         editor.documentSelection,
         Selection.single(path: [1], startOffset: text.length),
       );
+    });
+
+    testWidgets('delete sentence to beginning', (tester) async {
+      const text = "Hello World!";
+      final editor = tester.editor
+        ..insertTextNode(text)
+        ..insertTextNode(text);
+
+      await editor.startTesting();
+
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [1])),
+      );
+
+      expect(editor.documentLength, 2);
+
+      if (Platform.isMacOS) {
+        await editor.pressLogicKey(
+          LogicalKeyboardKey.backspace,
+          isMetaPressed: true,
+        );
+      } else {
+        await editor.pressLogicKey(
+          LogicalKeyboardKey.backspace,
+          isControlPressed: true,
+          isAltPressed: true,
+        );
+      }
+
+      await tester.pumpAndSettle();
+
+      expect(
+        editor.documentSelection,
+        Selection.collapsed(Position(path: [1], offset: 0)),
+      );
+
+      expect(editor.documentLength, 1);
     });
   });
 }

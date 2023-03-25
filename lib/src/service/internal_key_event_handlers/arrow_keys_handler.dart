@@ -191,6 +191,7 @@ ShortcutEventHandler cursorBeginSelect = (editorState, event) {
   if (position != null) {
     end = position;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(start: start, end: end),
   );
@@ -345,6 +346,45 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
       textNode, startOfWord.offset, selection.end.offset - startOfWord.offset);
 
   editorState.apply(transaction);
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection = editorState.service.selectionService.currentSelection.value;
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (nodes.length == 1 && nodes.first is TextNode) {
+    final textNode = nodes.first as TextNode;
+    if (textNode.toPlainText().isEmpty) {
+      return KeyEventResult.ignored;
+    }
+  }
+
+  final deleteTransaction = editorState.transaction;
+  deleteTransaction.deleteNodes(
+    editorState.service.selectionService.getNodesInSelection(selection),
+  );
+  editorState.apply(deleteTransaction, withUpdateCursor: false);
+
+  final cursorPosition =
+      selection.start.copyWith(offset: 0).goLeft(editorState);
+  if (cursorPosition != null) {
+    final next = cursorPosition.path.next;
+    final transaction = editorState.transaction
+      ..insertNode(
+        next,
+        TextNode.empty(),
+      )
+      ..afterSelection = Selection.collapsed(
+        Position(path: next, offset: 0),
+      );
+
+    editorState.apply(transaction);
+  }
 
   return KeyEventResult.handled;
 };

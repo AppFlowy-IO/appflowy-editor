@@ -484,7 +484,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -505,7 +505,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -527,7 +527,7 @@ void main() async {
       } else {
         await editor.pressLogicKey(
           LogicalKeyboardKey.backspace,
-          isMetaPressed: true,
+          isAltPressed: true,
         );
       }
     }
@@ -556,7 +556,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -581,7 +581,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
