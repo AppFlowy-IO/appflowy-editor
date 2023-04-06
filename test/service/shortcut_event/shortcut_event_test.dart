@@ -263,12 +263,12 @@ void main() async {
 
       if (Platform.isMacOS) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.backspace,
+          key: LogicalKeyboardKey.backspace,
           isMetaPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.backspace,
+          key: LogicalKeyboardKey.backspace,
           isControlPressed: true,
           isAltPressed: true,
         );
