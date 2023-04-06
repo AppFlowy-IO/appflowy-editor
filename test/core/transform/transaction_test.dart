@@ -223,7 +223,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      transaction.deleteNode(editor.nodeAtPath([0])!);
+      transaction.deleteNode(editor.nodeAtPath([1])!);
       editor.editorState.apply(transaction);
       await tester.pumpAndSettle();
 
