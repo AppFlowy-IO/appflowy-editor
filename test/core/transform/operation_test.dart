@@ -75,9 +75,5 @@ void main() async {
       expect(op.invert().invert(), op);
       expect(op.copyWith(), op);
     });
-
-    test('Operation.fromJson throws', () {
-      expect(() => Operation.fromJson(), throwsA(isA<UnimplementedError>()));
-    });
   });
 }

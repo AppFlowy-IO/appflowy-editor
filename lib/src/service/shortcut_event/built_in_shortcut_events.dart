@@ -55,20 +55,6 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: cursorLeftWordSelect,
   ),
   ShortcutEvent(
-    key: 'Move cursor left one word',
-    command: 'alt+arrow left',
-    windowsCommand: 'alt+arrow left',
-    linuxCommand: 'alt+arrow left',
-    handler: cursorLeftWordMove,
-  ),
-  ShortcutEvent(
-    key: 'Move cursor right one word',
-    command: 'alt+arrow right',
-    windowsCommand: 'alt+arrow right',
-    linuxCommand: 'alt+arrow right',
-    handler: cursorRightWordMove,
-  ),
-  ShortcutEvent(
     key: 'Cursor right word select',
     command: 'shift+alt+arrow right',
     windowsCommand: 'shift+alt+arrow right',
@@ -261,7 +247,7 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'selection menu',
-    command: 'slash,shift+slash',
+    character: '/',
     handler: slashShortcutHandler,
   ),
   ShortcutEvent(
@@ -303,7 +289,7 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'Double tilde to strikethrough',
-    command: 'tilde,shift+tilde',
+    character: '~',
     handler: doubleTildeToStrikethrough,
   ),
   ShortcutEvent(
@@ -318,19 +304,34 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'Underscore to italic',
-    command: 'shift+underscore',
+    character: '_',
     handler: underscoreToItalicHandler,
   ),
   ShortcutEvent(
     key: 'Double asterisk to bold',
-    command: 'shift+digit 8',
-    handler: doubleAsteriskToBoldHanlder,
+    character: '*',
+    handler: doubleAsteriskToBoldHandler,
   ),
   ShortcutEvent(
     key: 'Double underscore to bold',
-    command: 'shift+underscore',
-    handler: doubleUnderscoreToBoldHanlder,
+    character: '_',
+    handler: doubleUnderscoreToBoldHandler,
   ),
+  ShortcutEvent(
+    key: 'Move cursor left one word',
+    command: 'alt+arrow left',
+    windowsCommand: 'alt+arrow left',
+    linuxCommand: 'alt+arrow left',
+    handler: cursorLeftWordMove,
+  ),
+  ShortcutEvent(
+    key: 'Move cursor right one word',
+    command: 'alt+arrow right',
+    windowsCommand: 'alt+arrow right',
+    linuxCommand: 'alt+arrow right',
+    handler: cursorRightWordMove,
+  ),
+
   // https://github.com/flutter/flutter/issues/104944
   // Workaround: Using space editing on the web platform often results in errors,
   //  so adding a shortcut event to handle the space input instead of using the

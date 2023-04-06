@@ -41,12 +41,12 @@ void main() async {
       );
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowLeft,
+          key: LogicalKeyboardKey.arrowLeft,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowLeft,
+          key: LogicalKeyboardKey.arrowLeft,
           isMetaPressed: true,
         );
       }
@@ -61,21 +61,20 @@ void main() async {
       for (final event in builtInShortcutEvents) {
         if (event.key == 'Move cursor begin') {
           event.updateCommand(
-            windowsCommand: 'ctrl+arrow left',
-            linuxCommand: 'ctrl+arrow left',
-            macOSCommand: 'ctrl+arrow left',
+            windowsCommand: 'alt+arrow left',
+            linuxCommand: 'alt+arrow left',
+            macOSCommand: 'alt+arrow left',
           );
         }
       }
-
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowLeft,
-          isControlPressed: true,
+          key: LogicalKeyboardKey.arrowLeft,
+          isAltPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowLeft,
+          key: LogicalKeyboardKey.arrowLeft,
           isMetaPressed: true,
         );
       }
@@ -98,12 +97,12 @@ void main() async {
       );
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowRight,
+          key: LogicalKeyboardKey.arrowRight,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.arrowRight,
+          key: LogicalKeyboardKey.arrowRight,
           isMetaPressed: true,
         );
       }
@@ -118,16 +117,15 @@ void main() async {
       for (final event in builtInShortcutEvents) {
         if (event.key == 'Move cursor end') {
           event.updateCommand(
-            windowsCommand: 'ctrl+arrow right',
-            linuxCommand: 'ctrl+arrow right',
-            macOSCommand: 'ctrl+arrow right',
+            windowsCommand: 'alt+arrow right',
+            linuxCommand: 'alt+arrow right',
+            macOSCommand: 'alt+arrow right',
           );
         }
       }
-
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
-        isControlPressed: true,
+        key: LogicalKeyboardKey.arrowRight,
+        isAltPressed: true,
       );
       expect(
         editor.documentSelection,
@@ -147,7 +145,7 @@ void main() async {
       );
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.home,
+          key: LogicalKeyboardKey.home,
         );
       }
 
@@ -170,7 +168,7 @@ void main() async {
       }
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.home,
+          key: LogicalKeyboardKey.home,
         );
       }
       expect(
@@ -190,7 +188,7 @@ void main() async {
       );
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.end,
+          key: LogicalKeyboardKey.end,
         );
       }
 
@@ -213,7 +211,7 @@ void main() async {
       }
       if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.end,
+          key: LogicalKeyboardKey.end,
         );
       }
       expect(
