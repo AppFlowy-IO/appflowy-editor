@@ -28,6 +28,7 @@ class EditorWidgetTester {
     Locale locale = const Locale('en'),
     bool shrinkWrap = false,
     bool autoFocus = false,
+    bool editable = true,
   }) async {
     final app = MaterialApp(
       localizationsDelegates: const [
@@ -43,6 +44,7 @@ class EditorWidgetTester {
           editorState: _editorState,
           shrinkWrap: shrinkWrap,
           autoFocus: autoFocus,
+          editable: editable,
         ),
       ),
     );
