@@ -60,13 +60,13 @@ Future<void> _testRedoWithoutUndo(WidgetTester tester) async {
 
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
       isShiftPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
       isShiftPressed: true,
     );
@@ -101,12 +101,12 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
 
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyB,
+      key: LogicalKeyboardKey.keyB,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyB,
+      key: LogicalKeyboardKey.keyB,
       isControlPressed: true,
     );
   }
@@ -118,12 +118,12 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   //undo should remove bold style and make it normal.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
     );
   }
@@ -135,13 +135,13 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   //redo should make text bold.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
       isShiftPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
       isShiftPressed: true,
     );
@@ -178,12 +178,12 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
 
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyI,
+      key: LogicalKeyboardKey.keyI,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyI,
+      key: LogicalKeyboardKey.keyI,
       isControlPressed: true,
     );
   }
@@ -195,12 +195,12 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   //undo should remove italic style and make it normal.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
     );
   }
@@ -212,13 +212,13 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   //redo should make text italic again.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
       isShiftPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
       isShiftPressed: true,
     );
@@ -255,12 +255,12 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
 
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyU,
+      key: LogicalKeyboardKey.keyU,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyU,
+      key: LogicalKeyboardKey.keyU,
       isControlPressed: true,
     );
   }
@@ -272,12 +272,12 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   //undo should remove bold style and make it normal.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
     );
   }
@@ -289,13 +289,13 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   //redo should make text bold.
   if (Platform.isMacOS) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isMetaPressed: true,
       isShiftPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.keyZ,
+      key: LogicalKeyboardKey.keyZ,
       isControlPressed: true,
       isShiftPressed: true,
     );
