@@ -317,6 +317,21 @@ List<ShortcutEvent> builtInShortcutEvents = [
     character: '_',
     handler: doubleUnderscoreToBoldHandler,
   ),
+  ShortcutEvent(
+    key: 'Move cursor left one word',
+    command: 'alt+arrow left',
+    windowsCommand: 'alt+arrow left',
+    linuxCommand: 'alt+arrow left',
+    handler: cursorLeftWordMove,
+  ),
+  ShortcutEvent(
+    key: 'Move cursor right one word',
+    command: 'alt+arrow right',
+    windowsCommand: 'alt+arrow right',
+    linuxCommand: 'alt+arrow right',
+    handler: cursorRightWordMove,
+  ),
+
   // https://github.com/flutter/flutter/issues/104944
   // Workaround: Using space editing on the web platform often results in errors,
   //  so adding a shortcut event to handle the space input instead of using the
