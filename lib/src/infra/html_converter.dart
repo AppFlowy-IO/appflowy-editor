@@ -21,6 +21,7 @@ class HTMLTag {
   static const image = "img";
   static const anchor = "a";
   static const italic = "i";
+  static const em = "em";
   static const bold = "b";
   static const underline = "u";
   static const del = "del";
@@ -29,6 +30,7 @@ class HTMLTag {
   static const code = "code";
   static const blockQuote = "blockquote";
   static const div = "div";
+  static const divider = "hr";
 
   static bool isTopLevel(String tag) {
     return tag == h1 ||
@@ -69,6 +71,7 @@ class HTMLToNodesConverter {
             child.localName == HTMLTag.strong ||
             child.localName == HTMLTag.underline ||
             child.localName == HTMLTag.italic ||
+            child.localName == HTMLTag.em ||
             child.localName == HTMLTag.del) {
           _handleRichTextElement(delta, child);
         } else if (child.localName == HTMLTag.bold) {
@@ -130,6 +133,8 @@ class HTMLToNodesConverter {
       return [_handleParagraph(element, attributes)];
     } else if (element.localName == HTMLTag.image) {
       return [_handleImage(element)];
+    } else if (element.localName == HTMLTag.divider) {
+      return [_handleDivider()];
     } else {
       final delta = Delta();
       delta.insert(element.text);
@@ -137,6 +142,7 @@ class HTMLToNodesConverter {
         return [TextNode(delta: delta)];
       }
     }
+
     return [];
   }
 
@@ -147,6 +153,8 @@ class HTMLToNodesConverter {
     _inParagraph = false;
     return node;
   }
+
+  Node _handleDivider() => Node(type: 'divider');
 
   Map<String, String> _cssStringToMap(String? cssString) {
     final result = <String, String>{};
@@ -235,7 +243,7 @@ class HTMLToNodesConverter {
     } else if (element.localName == HTMLTag.underline) {
       delta.insert(element.text,
           attributes: {BuiltInAttributeKey.underline: true});
-    } else if (element.localName == HTMLTag.italic) {
+    } else if ([HTMLTag.italic, HTMLTag.em].contains(element.localName)) {
       delta
           .insert(element.text, attributes: {BuiltInAttributeKey.italic: true});
     } else if (element.localName == HTMLTag.del) {
@@ -301,7 +309,9 @@ class HTMLToNodesConverter {
     final result = <Node>[];
     for (var child in element.children) {
       result.addAll(_handleListElement(
-          child, {"subtype": BuiltInAttributeKey.bulletedList}));
+        child,
+        {"subtype": BuiltInAttributeKey.bulletedList},
+      ));
     }
     return result;
   }

@@ -27,9 +27,34 @@ void main() async {
           BuiltInAttributeKey.heading: BuiltInAttributeKey.h3,
         },
       );
+      final h4 = TextNode(
+        delta: Delta(operations: [TextInsert(text)]),
+        attributes: {
+          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
+          BuiltInAttributeKey.heading: BuiltInAttributeKey.h4,
+        },
+      );
+      final h5 = TextNode(
+        delta: Delta(operations: [TextInsert(text)]),
+        attributes: {
+          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
+          BuiltInAttributeKey.heading: BuiltInAttributeKey.h5,
+        },
+      );
+      final h6 = TextNode(
+        delta: Delta(operations: [TextInsert(text)]),
+        attributes: {
+          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
+          BuiltInAttributeKey.heading: BuiltInAttributeKey.h6,
+        },
+      );
+
       expect(const TextNodeParser().transform(h1), '# $text');
       expect(const TextNodeParser().transform(h2), '## $text');
       expect(const TextNodeParser().transform(h3), '### $text');
+      expect(const TextNodeParser().transform(h4), '#### $text');
+      expect(const TextNodeParser().transform(h5), '##### $text');
+      expect(const TextNodeParser().transform(h6), '###### $text');
     });
 
     test('bulleted list style', () {
@@ -90,6 +115,20 @@ void main() async {
         },
       );
       expect(const TextNodeParser().transform(node), '```\n$text\n```');
+    });
+
+    test('fallback', () {
+      final node = TextNode(
+        delta: Delta(operations: [TextInsert(text)]),
+        attributes: {
+          BuiltInAttributeKey.bold: true,
+        },
+      );
+      expect(const TextNodeParser().transform(node), text);
+    });
+
+    test('TextNodeParser.id', () {
+      expect(const TextNodeParser().id, 'text');
     });
   });
 }

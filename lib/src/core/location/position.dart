@@ -12,6 +12,7 @@ class Position {
   factory Position.fromJson(Map<String, dynamic> json) {
     final path = Path.from(json['path'] as List);
     final offset = json['offset'];
+
     return Position(
       path: path,
       offset: offset ?? 0,

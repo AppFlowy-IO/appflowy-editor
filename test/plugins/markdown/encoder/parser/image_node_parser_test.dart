@@ -10,8 +10,14 @@ void main() async {
           'image_src': 'https://appflowy.io',
         },
       );
+
       final result = const ImageNodeParser().transform(node);
       expect(result, '![](https://appflowy.io)');
+    });
+
+    test('ImageNodeParser id getter', () {
+      const imageNodeParser = ImageNodeParser();
+      expect(imageNodeParser.id, 'image');
     });
   });
 }
