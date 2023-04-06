@@ -1,4 +1,6 @@
+import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/service/editor_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -25,6 +27,64 @@ void main() async {
 
         expect(editor.documentLength, 3);
         expect(find.byType(Image), findsOneWidget);
+      });
+    });
+
+    testWidgets('cannot see action menu when not editable', (tester) async {
+      mockNetworkImagesFor(() async {
+        const text = 'Welcome to Appflowy 😁';
+        const src =
+            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        final editor = tester.editor
+          ..insertTextNode(text)
+          ..insertImageNode(src)
+          ..insertTextNode(text);
+
+        await editor.startTesting(editable: false);
+        await tester.pumpAndSettle();
+
+        expect(editor.documentLength, 3);
+        expect(find.byType(Image), findsOneWidget);
+
+        final gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: Offset.zero);
+
+        addTearDown(gesture.removePointer);
+
+        await gesture.moveTo(tester.getCenter(find.byType(Image)));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(FlowySvg), findsNothing);
+      });
+    });
+
+    testWidgets('can see action menu when editable', (tester) async {
+      mockNetworkImagesFor(() async {
+        const text = 'Welcome to Appflowy 😁';
+        const src =
+            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        final editor = tester.editor
+          ..insertTextNode(text)
+          ..insertImageNode(src)
+          ..insertTextNode(text);
+
+        await editor.startTesting();
+        await tester.pumpAndSettle();
+
+        expect(editor.documentLength, 3);
+        expect(find.byType(Image), findsOneWidget);
+
+        final gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: Offset.zero);
+
+        addTearDown(gesture.removePointer);
+
+        await gesture.moveTo(tester.getCenter(find.byType(Image)));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(FlowySvg), findsWidgets);
       });
     });
 

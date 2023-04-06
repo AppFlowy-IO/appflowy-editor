@@ -71,5 +71,36 @@ void main() async {
       expect(linkMenu, findsOneWidget);
       expect(find.text(link, findRichText: true), findsNWidgets(2));
     });
+
+    testWidgets('test tap linked text when editor not editable',
+        (tester) async {
+      const link = 'appflowy.io';
+
+      // This is a link [appflowy.io](appflowy.io)
+      final editor = tester.editor
+        ..insertTextNode(
+          null,
+          delta: Delta()
+            ..insert(
+              link,
+              attributes: {
+                BuiltInAttributeKey.href: link,
+              },
+            ),
+        );
+      await editor.startTesting(editable: false);
+      await tester.pumpAndSettle();
+
+      final finder = find.text(link, findRichText: true);
+      expect(finder, findsOneWidget);
+
+      await tester.tap(finder);
+      await tester.pumpAndSettle();
+
+      final linkMenu = find.byType(LinkMenu);
+      expect(linkMenu, findsNothing);
+
+      expect(find.text(link, findRichText: true), findsOneWidget);
+    });
   });
 }

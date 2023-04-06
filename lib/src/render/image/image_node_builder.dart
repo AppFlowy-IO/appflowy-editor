@@ -22,6 +22,7 @@ class ImageNodeBuilder extends NodeWidgetBuilder<Node>
       node: context.node,
       src: src,
       width: width,
+      editable: context.editorState.editable,
       alignment: _textToAlignment(align),
       onResize: (width) {
         final transaction = context.editorState.transaction
