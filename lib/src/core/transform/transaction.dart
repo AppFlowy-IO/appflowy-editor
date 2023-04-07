@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:appflowy_editor/src/extensions/node_extensions.dart';
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:appflowy_editor/src/core/document/document.dart';
 import 'package:appflowy_editor/src/core/document/node.dart';
@@ -68,7 +69,7 @@ class Transaction {
   /// Deletes the [Node] in the document.
   void deleteNode(Node node) {
     deleteNodesAtPath(node.path);
-    if(beforeSelection != null){
+    if(beforeSelection != null && !node.inSelection(beforeSelection!)) {
       afterSelection = beforeSelection;
     }
   }
