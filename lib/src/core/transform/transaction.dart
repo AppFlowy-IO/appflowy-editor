@@ -69,7 +69,7 @@ class Transaction {
   /// Deletes the [Node] in the document.
   void deleteNode(Node node) {
     deleteNodesAtPath(node.path);
-    if(beforeSelection != null && !node.inSelection(beforeSelection!)) {
+    if (beforeSelection != null && !node.inSelection(beforeSelection!)) {
       afterSelection = beforeSelection;
     }
   }
