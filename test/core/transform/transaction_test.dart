@@ -203,7 +203,7 @@ void main() async {
       expect(textNodes[4].toPlainText(), 'ABC5 AppFlowy!');
     });
 
-    testWidgets('test selection preserves on node deletion in documents',
+    testWidgets('test selection propagates if non-selected node is deleted',
         (tester) async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -219,6 +219,7 @@ void main() async {
       await editor.updateSelection(Selection.single(
         path: [0],
         startOffset: 0,
+        endOffset: 20,
       ));
       await tester.pumpAndSettle();
 
@@ -229,7 +230,37 @@ void main() async {
 
       expect(editor.documentLength, 1);
       expect(editor.editorState.cursorSelection,
-          Selection.single(path: [0], startOffset: 0));
+          Selection.single(path: [0], startOffset: 0,endOffset: 20));
+    });
+
+    testWidgets('test selection does not propagate if selected node is deleted',
+        (tester) async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+
+      final editor = tester.editor
+        ..insertTextNode('Welcome to AppFlowy!')
+        ..insertTextNode('Testing selection on this');
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      expect(editor.documentLength, 2);
+
+      await editor.updateSelection(Selection.single(
+        path: [0],
+        startOffset: 0,
+        endOffset: 20,
+      ));
+      await tester.pumpAndSettle();
+
+      final transaction = editor.editorState.transaction;
+      transaction.deleteNode(editor.nodeAtPath([0])!);
+      editor.editorState.apply(transaction);
+      await tester.pumpAndSettle();
+
+      expect(editor.documentLength, 1);
+      expect(editor.editorState.cursorSelection,
+          null);
     });
   });
 }
