@@ -53,7 +53,9 @@ class _ColorPickerState extends State<ColorPicker> {
       TextEditingController();
   final TextEditingController _backgroundColorOpacityController =
       TextEditingController();
-  initState() {
+  
+  @override
+  void initState() {
     super.initState();
     _fontColorHexController.text =
         _extractColorHex(widget.selectedFontColorHex) ?? 'FFFFFF';
