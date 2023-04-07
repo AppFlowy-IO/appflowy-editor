@@ -95,8 +95,11 @@ class _ColorPickerState extends State<ColorPicker> {
               _buildHeader('font color'),
               // padding
               const SizedBox(height: 6),
-              _buildCustomColorItem(_ColorType.font, _fontColorHexController,
-                  _fontColorOpacityController),
+              _buildCustomColorItem(
+                  _ColorType.font, 
+                  _fontColorHexController,
+                  _fontColorOpacityController,
+              ),
               _buildColorItems(
                 _ColorType.font,
                 widget.fontColorOptions,
@@ -110,7 +113,8 @@ class _ColorPickerState extends State<ColorPicker> {
               _buildCustomColorItem(
                   _ColorType.background,
                   _backgroundColorHexController,
-                  _backgroundColorOpacityController),
+                  _backgroundColorOpacityController,
+              ),
               _buildColorItems(
                 _ColorType.background,
                 widget.backgroundColorOptions,
@@ -197,7 +201,8 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget _buildCustomColorItem(
       _ColorType type,
       TextEditingController colorController,
-      TextEditingController opacityController) {
+      TextEditingController opacityController,
+  ) {
     return ExpansionTile(
       tilePadding: const EdgeInsets.only(left: 0),
       title: SizedBox(
