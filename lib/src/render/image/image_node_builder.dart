@@ -12,6 +12,7 @@ class ImageNodeBuilder extends NodeWidgetBuilder<Node>
   @override
   Widget build(NodeWidgetContext<Node> context) {
     final src = context.node.attributes['image_src'];
+    final type = context.node.attributes['type'];
     final align = context.node.attributes['align'];
     double? width;
     if (context.node.attributes.containsKey('width')) {
@@ -21,6 +22,7 @@ class ImageNodeBuilder extends NodeWidgetBuilder<Node>
       key: context.node.key,
       node: context.node,
       src: src,
+      type: type,
       width: width,
       editable: context.editorState.editable,
       alignment: _textToAlignment(align),

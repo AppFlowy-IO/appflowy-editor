@@ -28,6 +28,7 @@ dependencies:
   markdown: ^7.0.1
   flutter_localizations:
     sdk: flutter
+  file_picker: ^5.0.0
 
 dev_dependencies:
   flutter_test:

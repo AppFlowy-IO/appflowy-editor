@@ -4,9 +4,13 @@ import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
 import 'package:appflowy_editor/src/render/style/editor_style.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 
 OverlayEntry? _imageUploadMenu;
 EditorState? _editorState;
+String? localFile;
+String? imageName;
 void showImageUploadMenu(
   EditorState editorState,
   SelectionMenuService menuService,
@@ -24,11 +28,11 @@ void showImageUploadMenu(
           editorState: editorState,
           onSubmitted: (text) {
             // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
+            editorState.insertImageNode(text, 'file');
           },
           onUpload: (text) {
             // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
+            editorState.insertImageNode(text, 'network');
           },
         ),
       ),
@@ -66,9 +70,14 @@ class ImageUploadMenu extends StatefulWidget {
   State<ImageUploadMenu> createState() => _ImageUploadMenuState();
 }
 
-class _ImageUploadMenuState extends State<ImageUploadMenu> {
+class _ImageUploadMenuState extends State<ImageUploadMenu>
+    with TickerProviderStateMixin {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
+  String? _fileName;
+  String? src;
+  String? srcName;
+  List<PlatformFile>? _paths;
 
   EditorStyle? get style => widget.editorState?.editorStyle;
 
@@ -84,8 +93,47 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
     super.dispose();
   }
 
+  void _pickFiles() async {
+    _resetState();
+    try {
+      _paths = (await FilePicker.platform.pickFiles(
+              type: FileType.image,
+              onFileLoading: (FilePickerStatus status) =>
+                  _logException(status.toString()),
+              allowedExtensions: ['jpg', 'png', 'gif'],
+              allowMultiple: true))
+          ?.files;
+    } on PlatformException catch (e) {
+      _logException('Unsupported Operation  ${e.toString()}');
+    } catch (e) {
+      _logException(e.toString());
+    }
+    if (!mounted) return;
+    setState(() {
+      _fileName = _paths != null ? _paths!.map((e) => e.name).toString() : null;
+
+      src = _paths != null ? _paths!.map((e) => e.path).toString() : null;
+      imageName = _fileName != null ? _fileName! : null;
+      widget.onSubmitted(src!);
+    });
+  }
+
+  void _resetState() {
+    if (!mounted) return;
+    setState(() {
+      _fileName = null;
+      _paths = null;
+    });
+  }
+
+  void _logException(String msg) {
+    debugPrint(msg);
+  }
+
   @override
   Widget build(BuildContext context) {
+    TabController tabController =
+        TabController(initialIndex: 1, length: 2, vsync: this);
     return Container(
       width: 300,
       padding: const EdgeInsets.all(24.0),
@@ -103,19 +151,45 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context),
-          const SizedBox(height: 16.0),
-          _buildInput(),
+          TabBar(
+            controller: tabController,
+            tabs: [
+              _buildHeader(context, 'Upload Image'),
+              _buildHeader(context, 'URL Image'),
+            ],
+          ),
+          SizedBox(
+            height: 200.0,
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 15.0),
+                    _buildFileInput(context),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildURLInput(),
+                    const SizedBox(height: 15.0),
+                    _buildUploadButton(context),
+                  ],
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 18.0),
-          _buildUploadButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, String title) {
     return Text(
-      'URL Image',
+      title,
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 14.0,
@@ -125,7 +199,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
     );
   }
 
-  Widget _buildInput() {
+  Widget _buildURLInput() {
     return TextField(
       focusNode: _focusNode,
       style: const TextStyle(fontSize: 14.0),
@@ -151,6 +225,25 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
           borderSide: BorderSide(color: Color(0xFFBDBDBD)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFileInput(BuildContext context) {
+    return SizedBox(
+      width: 170,
+      height: 48,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0)))),
+        onPressed: _pickFiles,
+        child: const Text(
+          'Pick from computer',
+          style: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
       ),
     );
@@ -182,7 +275,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
 }
 
 extension on EditorState {
-  void insertImageNode(String src) {
+  void insertImageNode(String src, String type) {
     final selection = service.selectionService.currentSelection.value;
     if (selection == null) {
       return;
@@ -191,6 +284,8 @@ extension on EditorState {
       type: 'image',
       attributes: {
         'image_src': src,
+        'type': type,
+        'name': imageName,
         'align': 'center',
       },
     );

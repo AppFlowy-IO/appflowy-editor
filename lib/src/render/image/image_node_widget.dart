@@ -4,12 +4,14 @@ import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class ImageNodeWidget extends StatefulWidget {
   const ImageNodeWidget({
     Key? key,
     required this.node,
     required this.src,
+    required this.type,
     this.width,
     required this.alignment,
     required this.editable,
@@ -19,6 +21,7 @@ class ImageNodeWidget extends StatefulWidget {
   final Node node;
   final String src;
   final double? width;
+  final String type;
   final Alignment alignment;
   final bool editable;
   final void Function(double width) onResize;
@@ -70,7 +73,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     return Container(
       key: _imageKey,
       padding: const EdgeInsets.only(top: 8, bottom: 8),
-      child: _buildNetworkImage(context),
+      child: _buildImage(context),
     );
   }
 
@@ -122,7 +125,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     return renderBox.localToGlobal(offset);
   }
 
-  Widget _buildNetworkImage(BuildContext context) {
+  Widget _buildImage(BuildContext context) {
     return Align(
       alignment: widget.alignment,
       child: MouseRegion(
@@ -138,6 +141,15 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   }
 
   Widget _buildResizableImage(BuildContext context) {
+    final fileImage = Image.file(
+      //TODO:  Do not render the widget if null
+      File(widget.src),
+      width: _imageWidth == null ? null : _imageWidth! - _distance,
+      gaplessPlayback: true,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildError(context);
+      },
+    );
     final networkImage = Image.network(
       widget.src,
       width: _imageWidth == null ? null : _imageWidth! - _distance,
@@ -161,7 +173,8 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
 
     return Stack(
       children: [
-        networkImage,
+        if (widget.type.toString() == 'file') ...[fileImage],
+        if (widget.type.toString() == 'network') ...[networkImage],
         if (widget.editable) ...[
           _buildEdgeGesture(
             context,
