@@ -11,13 +11,13 @@ void main(){
   group('color_picker.dart widget test', () { 
     testWidgets('test expansion tile widget in color picker', (tester) async {
       final key = GlobalKey();
-      final widget = ColorPicker(
+      final widget =  ColorPicker(
         key: key,
         selectedFontColorHex: '0xFFFFFFFF',
         selectedBackgroundColorHex: '0xFFFFFFFF',
         pickerBackgroundColor: Colors.white,
-        fontColorOptions: [],
-        backgroundColorOptions: [],
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
         pickerItemHoverColor: Colors.white,
         pickerItemTextColor: Colors.white,
         onSubmittedbackgroundColorHex: (color) {},
@@ -55,8 +55,8 @@ void main(){
         selectedFontColorHex: '0xFAFFFF08',
         selectedBackgroundColorHex: '0xFBFFFF08',
         pickerBackgroundColor: Colors.white,
-        fontColorOptions: [],
-        backgroundColorOptions: [],
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
         pickerItemHoverColor: Colors.white,
         pickerItemTextColor: Colors.white,
         onSubmittedbackgroundColorHex: (color) {},
@@ -88,8 +88,8 @@ void main(){
         selectedFontColorHex: null,
         selectedBackgroundColorHex: '0xFBFFFF08',
         pickerBackgroundColor: Colors.white,
-        fontColorOptions: [],
-        backgroundColorOptions: [],
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
         pickerItemHoverColor: Colors.white,
         pickerItemTextColor: Colors.white,
         onSubmittedbackgroundColorHex: (color) {},
@@ -121,8 +121,8 @@ void main(){
         selectedFontColorHex: '0xFAFFFF08',
         selectedBackgroundColorHex: '0xFBFFFF08',
         pickerBackgroundColor: Colors.white,
-        fontColorOptions: [],
-        backgroundColorOptions: [],
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
         pickerItemHoverColor: Colors.white,
         pickerItemTextColor: Colors.white,
         onSubmittedbackgroundColorHex: (color) {},
@@ -152,8 +152,8 @@ void main(){
         selectedFontColorHex: '0xFAFFFF08',
         selectedBackgroundColorHex: null,
         pickerBackgroundColor: Colors.white,
-        fontColorOptions: [],
-        backgroundColorOptions: [],
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
         pickerItemHoverColor: Colors.white,
         pickerItemTextColor: Colors.white,
         onSubmittedbackgroundColorHex: (color) {},
@@ -178,5 +178,166 @@ void main(){
       expect((tester.widget(backgroundColorTextField) as TextField).controller!.text, 'FFFFFF');
       expect((tester.widget(backgroundOpacityTextField) as TextField).controller!.text, '0');
     });
+
+    testWidgets('test submitting font color and opacity',(tester) async{
+      String fontColorHex = '0xFAFFFF08';
+      final widget = ColorPicker(
+        selectedFontColorHex: fontColorHex,
+        selectedBackgroundColorHex: '0xFBFFFF08',
+        pickerBackgroundColor: Colors.white,
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
+        pickerItemHoverColor: Colors.white,
+        pickerItemTextColor: Colors.white,
+        onSubmittedbackgroundColorHex: (color) {},
+        onSubmittedFontColorHex: (color) {
+          fontColorHex = color;
+        },
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: widget,
+          ),
+        ),
+      );
+
+      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+
+      await tester.tap(fontColorExpansionTile);
+      await tester.pumpAndSettle();
+
+      final fontColorTextField = find.byType(TextField).at(0);
+      final fontOpacityTexField = find.byType(TextField).at(1);
+
+      await tester.enterText(fontColorTextField, '000000');
+      await tester.enterText(fontOpacityTexField, '100');
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      fontColorHex = fontColorHex.toLowerCase();
+      expect(fontColorHex, '0xff000000');
+    }); 
+
+    testWidgets('test submitting wrong font color and opacity',(tester) async{
+      String fontColorHex = '0xFAFFFF08';
+      final widget = ColorPicker(
+        selectedFontColorHex: fontColorHex,
+        selectedBackgroundColorHex: '0xFBFFFF08',
+        pickerBackgroundColor: Colors.white,
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
+        pickerItemHoverColor: Colors.white,
+        pickerItemTextColor: Colors.white,
+        onSubmittedbackgroundColorHex: (color) {},
+        onSubmittedFontColorHex: (color) {
+          fontColorHex = color;
+        },
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: widget,
+          ),
+        ),
+      );
+
+      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+
+      await tester.tap(fontColorExpansionTile);
+      await tester.pumpAndSettle();
+
+      final fontColorTextField = find.byType(TextField).at(0);
+      final fontOpacityTexField = find.byType(TextField).at(1);
+
+      await tester.enterText(fontColorTextField, '00tg00');
+      await tester.enterText(fontOpacityTexField, '999');
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      fontColorHex = fontColorHex.toLowerCase();
+      expect(fontColorHex, '0xffffffff');
+    }); 
+    
+    testWidgets('test submitting  background color and opacity',(tester) async{
+      String backgroundColorHex = '0xFAFFFFAD';
+      final widget = ColorPicker(
+        selectedFontColorHex: '0xFAFFFF08',
+        selectedBackgroundColorHex: backgroundColorHex,
+        pickerBackgroundColor: Colors.white,
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
+        pickerItemHoverColor: Colors.white,
+        pickerItemTextColor: Colors.white,
+        onSubmittedbackgroundColorHex: (color) {
+          backgroundColorHex = color;
+        },
+        onSubmittedFontColorHex: (color) {},
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: widget,
+          ),
+        ),
+      );
+
+      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+
+      await tester.tap(backgroundColorExpansionTile);
+      await tester.pumpAndSettle();
+
+      final backgroundColorTextField = find.byType(TextField).at(0);
+      final backgroundOpacityTexField = find.byType(TextField).at(1);
+
+      await tester.enterText(backgroundColorTextField, '000000');
+      await tester.enterText(backgroundOpacityTexField, '100');
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      backgroundColorHex = backgroundColorHex.toLowerCase();
+      expect(backgroundColorHex, '0xff000000');
+    }); 
+
+    testWidgets('test submitting wrong background color and opacity',(tester) async{
+      String backgroundColorHex = '0xFAFFFF08';
+      final widget = ColorPicker(
+        selectedFontColorHex: '0xFAFFFF08',
+        selectedBackgroundColorHex: backgroundColorHex,
+        pickerBackgroundColor: Colors.white,
+        fontColorOptions: const [],
+        backgroundColorOptions: const [],
+        pickerItemHoverColor: Colors.white,
+        pickerItemTextColor: Colors.white,
+        onSubmittedbackgroundColorHex: (color) {
+          backgroundColorHex = color;
+        },
+        onSubmittedFontColorHex: (color) {},
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: widget,
+          ),
+        ),
+      );
+
+      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+
+      await tester.tap(backgroundColorExpansionTile);
+      await tester.pumpAndSettle();
+
+      final backgroundColorTextField = find.byType(TextField).at(0);
+      final backgroundOpacityTexField = find.byType(TextField).at(1);
+
+      await tester.enterText(backgroundColorTextField, '00tg00');
+      await tester.enterText(backgroundOpacityTexField, '999');
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      backgroundColorHex = backgroundColorHex.toLowerCase();
+      expect(backgroundColorHex, '0xffffffff');
+    }); 
+
   });
 }
