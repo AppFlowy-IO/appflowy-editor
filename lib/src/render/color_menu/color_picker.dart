@@ -310,6 +310,6 @@ class _ColorPickerState extends State<ColorPicker> {
 
   String? _extractColorHex(String? colorHex) {
     if (colorHex == null) return null;
-    return '${colorHex.substring(4)}';
+    return colorHex.substring(4);
   }
 }
