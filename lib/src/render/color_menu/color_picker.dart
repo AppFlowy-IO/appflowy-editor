@@ -283,7 +283,10 @@ class _ColorPickerState extends State<ColorPicker> {
 
   String _fixColorHex(String colorHex) {
     if (colorHex.length > 6) {
-      return colorHex.substring(0, 6);
+      colorHex =  colorHex.substring(0, 6);
+    }
+    if(int.tryParse(colorHex, radix: 16) == null) {
+      colorHex = 'FFFFFF';
     }
     return colorHex;
   }
