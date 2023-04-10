@@ -8,6 +8,7 @@ import 'package:appflowy_editor/src/render/link_menu/link_menu.dart';
 import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
 import 'package:appflowy_editor/src/extensions/editor_state_extensions.dart';
 import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -129,7 +130,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.bold',
     type: 2,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.bold}\n${Platform.isMacOS ? "⌘ + B" : "CTRL + B"}",
+        "${AppFlowyEditorLocalizations.current.bold}${_shortcutTooltips("⌘ + B", "CTRL + B", "CTRL + B")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/bold',
       color: isHighlight ? Colors.lightBlue : null,
@@ -146,7 +147,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.italic',
     type: 2,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.italic}\n${Platform.isMacOS ? "⌘ + I" : "CTRL + I"}",
+        "${AppFlowyEditorLocalizations.current.italic}${_shortcutTooltips("⌘ + I", "CTRL + I", "CTRL + I")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/italic',
       color: isHighlight ? Colors.lightBlue : null,
@@ -163,7 +164,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.underline',
     type: 2,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.underline}\n${Platform.isMacOS ? "⌘ + U" : "CTRL + U"}",
+        "${AppFlowyEditorLocalizations.current.underline}${_shortcutTooltips("⌘ + U", "CTRL + U", "CTRL + U")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/underline',
       color: isHighlight ? Colors.lightBlue : null,
@@ -180,7 +181,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.strikethrough',
     type: 2,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.strikethrough}\n${Platform.isMacOS ? "⌘ + SHIFT + S" : "CTRL + SHIFT + S"}",
+        "${AppFlowyEditorLocalizations.current.strikethrough}${_shortcutTooltips("⌘ + SHIFT + S", "CTRL + SHIFT + S", "CTRL + SHIFT + S")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/strikethrough',
       color: isHighlight ? Colors.lightBlue : null,
@@ -197,7 +198,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.code',
     type: 2,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.embedCode}\n${Platform.isMacOS ? "⌘ + E" : "CTRL + E"}",
+        "${AppFlowyEditorLocalizations.current.embedCode}${_shortcutTooltips("⌘ + E", "CTRL + E", "CTRL + E")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/code',
       color: isHighlight ? Colors.lightBlue : null,
@@ -248,7 +249,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.link',
     type: 4,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.link}\n${Platform.isMacOS ? "⌘ + K" : "CTRL + K"}",
+        "${AppFlowyEditorLocalizations.current.link}${_shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/link',
       color: isHighlight ? Colors.lightBlue : null,
@@ -265,7 +266,7 @@ List<ToolbarItem> defaultToolbarItems = [
     id: 'appflowy.toolbar.highlight',
     type: 4,
     tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.highlight}\n${Platform.isMacOS ? "⌘ + SHIFT + H" : "CTRL + SHIFT + H"}",
+        "${AppFlowyEditorLocalizations.current.highlight}${_shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/highlight',
       color: isHighlight ? Colors.lightBlue : null,
@@ -315,6 +316,22 @@ List<ToolbarItem> defaultToolbarItems = [
     ),
   ),
 ];
+
+String _shortcutTooltips(
+  String? macOSString,
+  String? windowsString,
+  String? linuxString,
+) {
+  if (kIsWeb) return '';
+  if (Platform.isMacOS && macOSString != null) {
+    return '\n$macOSString';
+  } else if (Platform.isWindows && windowsString != null) {
+    return '\n$windowsString';
+  } else if (Platform.isLinux && linuxString != null) {
+    return '\n$linuxString';
+  }
+  return '';
+}
 
 ToolbarItemValidator _onlyShowInSingleTextSelection = (editorState) {
   final result = _showInBuiltInTextSelection(editorState);
