@@ -216,11 +216,13 @@ void main() async {
 
       expect(editor.documentLength, 2);
 
-      await editor.updateSelection(Selection.single(
-        path: [0],
-        startOffset: 0,
-        endOffset: 20,
-      ));
+      await editor.updateSelection(
+        Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: 20,
+        ),
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -229,8 +231,14 @@ void main() async {
       await tester.pumpAndSettle();
 
       expect(editor.documentLength, 1);
-      expect(editor.editorState.cursorSelection,
-          Selection.single(path: [0], startOffset: 0,endOffset: 20));
+      expect(
+        editor.editorState.cursorSelection,
+        Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: 20,
+        ),
+      );
     });
 
     testWidgets('test selection does not propagate if selected node is deleted',
@@ -259,8 +267,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       expect(editor.documentLength, 1);
-      expect(editor.editorState.cursorSelection,
-          null);
+      expect(editor.editorState.cursorSelection, null);
     });
   });
 }
