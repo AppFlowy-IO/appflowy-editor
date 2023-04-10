@@ -224,10 +224,12 @@ ShortcutEventHandler cursorUp = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final upPosition = _goUp(editorState);
   editorState.updateCursorSelection(
     upPosition == null ? null : Selection.collapsed(upPosition),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -238,10 +240,12 @@ ShortcutEventHandler cursorDown = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final downPosition = _goDown(editorState);
   editorState.updateCursorSelection(
     downPosition == null ? null : Selection.collapsed(downPosition),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -252,18 +256,15 @@ ShortcutEventHandler cursorLeft = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
-    final leftPosition = selection.start.goLeft(editorState);
-    if (leftPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(leftPosition),
-      );
-    }
-  } else {
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.start),
-    );
-  }
+
+  Position newPosition = selection.isCollapsed
+      ? selection.start.goLeft(editorState) ?? selection.start
+      : selection.start;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
   return KeyEventResult.handled;
 };
 
@@ -274,18 +275,15 @@ ShortcutEventHandler cursorRight = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
-    final rightPosition = selection.start.goRight(editorState);
-    if (rightPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(rightPosition),
-      );
-    }
-  } else {
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.end),
-    );
-  }
+
+  final newPosition = selection.isCollapsed
+      ? selection.start.goRight(editorState) ?? selection.end
+      : selection.end;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
   return KeyEventResult.handled;
 };
 
@@ -295,14 +293,17 @@ ShortcutEventHandler cursorLeftWordSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final end =
       selection.end.goLeft(editorState, selectionRange: _SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(end: end),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -315,21 +316,13 @@ ShortcutEventHandler cursorLeftWordMove = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  if (selection.isCollapsed) {
-    final leftPosition = selection.start
-        .goLeft(editorState, selectionRange: _SelectionRange.word);
-    if (leftPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(leftPosition),
-      );
+  final newPosition = selection.start
+          .goLeft(editorState, selectionRange: _SelectionRange.word) ??
+      selection.start;
 
-      return KeyEventResult.handled;
-    }
-
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.start),
-    );
-  }
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
 
   return KeyEventResult.handled;
 };
@@ -343,21 +336,13 @@ ShortcutEventHandler cursorRightWordMove = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  if (selection.isCollapsed) {
-    final rightPosition = selection.start
-        .goRight(editorState, selectionRange: _SelectionRange.word);
-    if (rightPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(rightPosition),
-      );
+  final newPosition = selection.start
+          .goRight(editorState, selectionRange: _SelectionRange.word) ??
+      selection.end;
 
-      return KeyEventResult.handled;
-    }
-
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.end),
-    );
-  }
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
 
   return KeyEventResult.handled;
 };
@@ -368,14 +353,17 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final end =
       selection.end.goRight(editorState, selectionRange: _SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(end: end),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -420,26 +408,11 @@ ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
     }
   }
 
-  final deleteTransaction = editorState.transaction;
-  deleteTransaction.deleteNodes(
-    editorState.service.selectionService.getNodesInSelection(selection),
-  );
-  editorState.apply(deleteTransaction, withUpdateCursor: false);
-
-  final cursorPosition =
-      selection.start.copyWith(offset: 0).goLeft(editorState);
-  if (cursorPosition != null) {
-    final next = cursorPosition.path.next;
-    final transaction = editorState.transaction
-      ..insertNode(
-        next,
-        TextNode.empty(),
-      )
-      ..afterSelection = Selection.collapsed(
-        Position(path: next, offset: 0),
-      );
-
-    editorState.apply(transaction);
+  if (selection.isCollapsed) {
+    final deleteTransaction = editorState.transaction;
+    deleteTransaction.deleteText(
+        nodes.first as TextNode, 0, selection.end.offset);
+    editorState.apply(deleteTransaction, withUpdateCursor: true);
   }
 
   return KeyEventResult.handled;
@@ -504,14 +477,12 @@ extension on Position {
     if (node == null) {
       return null;
     }
+
     final end = node.selectable?.end();
     if (end != null && offset >= end.offset) {
-      final nextStart = node.next?.selectable?.start();
-      if (nextStart != null) {
-        return nextStart;
-      }
-      return null;
+      return node.next?.selectable?.start();
     }
+
     switch (selectionRange) {
       case _SelectionRange.character:
         if (node is TextNode) {

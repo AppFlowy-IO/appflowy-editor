@@ -256,7 +256,7 @@ void main() async {
       await editor.startTesting();
 
       await editor.updateSelection(
-        Selection.collapsed(Position(path: [1])),
+        Selection.collapsed(Position(path: [1], offset: 10)),
       );
 
       expect(editor.documentLength, 2);
@@ -281,7 +281,9 @@ void main() async {
         Selection.collapsed(Position(path: [1], offset: 0)),
       );
 
-      expect(editor.documentLength, 1);
+      expect(editor.documentLength, 2);
+
+      expect((editor.document.nodeAtPath([1]) as TextNode).delta.length, 2);
     });
   });
 }

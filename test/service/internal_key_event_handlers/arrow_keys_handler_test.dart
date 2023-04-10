@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../infra/test_editor.dart';
@@ -49,10 +50,9 @@ void main() async {
     });
   });
 
-  testWidgets(
-      'Presses alt + arrow left/right key, move the cursor one word left/right',
+  testWidgets('Presses alt + arrow right key, move the cursor one word right',
       (tester) async {
-    const text = 'Welcome to Appflowy 😁';
+    const text = 'Welcome to Appflowy';
     final editor = tester.editor
       ..insertTextNode(text)
       ..insertTextNode(text);
@@ -93,6 +93,71 @@ void main() async {
     );
 
     await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move right word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+  });
+
+  testWidgets('Presses alt + arrow left key, move the cursor one left right',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    await editor.updateSelection(
+      Selection.single(path: [0], startOffset: 19),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 11,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
       key: LogicalKeyboardKey.arrowLeft,
       isAltPressed: true,
     );
@@ -102,6 +167,41 @@ void main() async {
       Selection.single(
         path: [0],
         startOffset: 8,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move left word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
       ),
     );
   });
