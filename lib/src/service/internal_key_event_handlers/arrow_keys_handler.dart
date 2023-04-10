@@ -39,7 +39,7 @@ ShortcutEventHandler cursorUpSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _goUp(editorState);
+  final end = _moveVertical(editorState);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -55,7 +55,7 @@ ShortcutEventHandler cursorDownSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _goDown(editorState);
+  final end = _moveVertical(editorState, upwards: false);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -225,7 +225,7 @@ ShortcutEventHandler cursorUp = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final upPosition = _goUp(editorState);
+  final upPosition = _moveVertical(editorState);
   editorState.updateCursorSelection(
     upPosition == null ? null : Selection.collapsed(upPosition),
   );
@@ -241,7 +241,7 @@ ShortcutEventHandler cursorDown = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final downPosition = _goDown(editorState);
+  final downPosition = _moveVertical(editorState, upwards: false);
   editorState.updateCursorSelection(
     downPosition == null ? null : Selection.collapsed(downPosition),
   );
@@ -448,9 +448,9 @@ extension on Position {
             path: path,
             offset: node.delta.prevRunePosition(offset),
           );
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
       case _SelectionRange.word:
         if (node is TextNode) {
           final result = node.selectable?.getWordBoundaryInPosition(
@@ -462,11 +462,10 @@ extension on Position {
           if (result != null) {
             return result.start;
           }
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
     }
-    return null;
   }
 
   Position? goRight(
@@ -490,61 +489,48 @@ extension on Position {
             path: path,
             offset: node.delta.nextRunePosition(offset),
           );
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
       case _SelectionRange.word:
         if (node is TextNode) {
           final result = node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
             return result.end;
           }
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
     }
-    return null;
   }
 }
 
-Position? _goUp(EditorState editorState) {
+Position? _moveVertical(
+  EditorState editorState, {
+  bool upwards = true,
+}) {
   final selection = editorState.service.selectionService.currentSelection.value;
   final rects = editorState.service.selectionService.selectionRects;
   if (rects.isEmpty || selection == null) {
     return null;
   }
-  Offset offset;
-  if (selection.isBackward) {
-    final rect = rects.reduce(
-      (current, next) => current.bottom >= next.bottom ? current : next,
-    );
-    offset = rect.topRight.translate(0, -rect.height);
-  } else {
-    final rect = rects.reduce(
-      (current, next) => current.top <= next.top ? current : next,
-    );
-    offset = rect.topLeft.translate(0, -rect.height);
-  }
-  return editorState.service.selectionService.getPositionInOffset(offset);
-}
 
-Position? _goDown(EditorState editorState) {
-  final selection = editorState.service.selectionService.currentSelection.value;
-  final rects = editorState.service.selectionService.selectionRects;
-  if (rects.isEmpty || selection == null) {
-    return null;
-  }
   Offset offset;
   if (selection.isBackward) {
     final rect = rects.reduce(
       (current, next) => current.bottom >= next.bottom ? current : next,
     );
-    offset = rect.bottomRight.translate(0, rect.height);
+    offset = upwards
+        ? rect.topRight.translate(0, -rect.height)
+        : rect.bottomRight.translate(0, rect.height);
   } else {
     final rect = rects.reduce(
       (current, next) => current.top <= next.top ? current : next,
     );
-    offset = rect.bottomLeft.translate(0, rect.height);
+    offset = upwards
+        ? rect.topLeft.translate(0, -rect.height)
+        : rect.bottomLeft.translate(0, rect.height);
   }
+
   return editorState.service.selectionService.getPositionInOffset(offset);
 }

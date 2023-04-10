@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../infra/test_editor.dart';
@@ -48,6 +47,69 @@ void main() async {
         }
       }
     });
+  });
+
+  testWidgets('Cursor up/down', (tester) async {
+    final editor = tester.editor
+      ..insertTextNode("Welcome")
+      ..insertTextNode("Welcome to AppFlowy");
+    await editor.startTesting();
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 19));
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [0], startOffset: 7),
+    );
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [1], startOffset: 7),
+    );
+  });
+
+  testWidgets('Cursor top/bottom select', (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    Future<void> select(bool isTop) async {
+      await editor.pressLogicKey(
+        key: isTop ? LogicalKeyboardKey.arrowUp : LogicalKeyboardKey.arrowDown,
+        isMetaPressed: Platform.isMacOS,
+        isControlPressed: !Platform.isMacOS,
+        isShiftPressed: true,
+      );
+    }
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 7));
+
+    await select(true);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [0]),
+      ),
+    );
+
+    await select(false);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [2], offset: 19),
+      ),
+    );
   });
 
   testWidgets('Presses alt + arrow right key, move the cursor one word right',
