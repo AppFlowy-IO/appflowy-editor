@@ -129,9 +129,7 @@ class Transaction {
   void add(Operation op, {bool transform = true}) {
     final Operation? last = operations.isEmpty ? null : operations.last;
     if (last != null) {
-      if (op is UpdateTextOperation &&
-          last is UpdateTextOperation &&
-          op.path.equals(last.path)) {
+      if (op is UpdateTextOperation && last is UpdateTextOperation && op.path.equals(last.path)) {
         final newOp = UpdateTextOperation(
           op.path,
           last.delta.compose(op.delta),
@@ -206,8 +204,7 @@ extension TextTransaction on Transaction {
   }) {
     var newAttributes = attributes;
     if (index != 0 && attributes == null) {
-      newAttributes =
-          textNode.delta.slice(max(index - 1, 0), index).first.attributes;
+      newAttributes = textNode.delta.slice(max(index - 1, 0), index).first.attributes;
       if (newAttributes != null) {
         newAttributes = {...newAttributes}; // make a copy
       }
@@ -269,8 +266,7 @@ extension TextTransaction on Transaction {
   }) {
     var newAttributes = attributes;
     if (index != 0 && attributes == null) {
-      newAttributes =
-          textNode.delta.slice(max(index - 1, 0), index).first.attributes;
+      newAttributes = textNode.delta.slice(max(index - 1, 0), index).first.attributes;
       if (newAttributes == null) {
         final slicedDelta = textNode.delta.slice(index, index + length);
         if (slicedDelta.isNotEmpty) {
