@@ -63,10 +63,17 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'Cursor word delete',
-    command: 'meta+backspace',
+    command: 'alt+backspace',
     windowsCommand: 'ctrl+backspace',
     linuxCommand: 'ctrl+backspace',
     handler: cursorLeftWordDelete,
+  ),
+  ShortcutEvent(
+    key: 'Cursor sentence delete',
+    command: 'meta+backspace',
+    windowsCommand: 'ctrl+alt+backspace',
+    linuxCommand: 'ctrl+alt+backspace',
+    handler: cursorLeftSentenceDelete,
   ),
   ShortcutEvent(
     key: 'Cursor left select',
