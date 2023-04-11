@@ -49,10 +49,72 @@ void main() async {
     });
   });
 
-  testWidgets(
-      'Presses alt + arrow left/right key, move the cursor one word left/right',
+  testWidgets('Cursor up/down', (tester) async {
+    final editor = tester.editor
+      ..insertTextNode("Welcome")
+      ..insertTextNode("Welcome to AppFlowy");
+    await editor.startTesting();
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 19));
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [0], startOffset: 7),
+    );
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [1], startOffset: 7),
+    );
+  });
+
+  testWidgets('Cursor top/bottom select', (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    Future<void> select(bool isTop) async {
+      await editor.pressLogicKey(
+        key: isTop ? LogicalKeyboardKey.arrowUp : LogicalKeyboardKey.arrowDown,
+        isMetaPressed: Platform.isMacOS,
+        isControlPressed: !Platform.isMacOS,
+        isShiftPressed: true,
+      );
+    }
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 7));
+
+    await select(true);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [0]),
+      ),
+    );
+
+    await select(false);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [2], offset: 19),
+      ),
+    );
+  });
+
+  testWidgets('Presses alt + arrow right key, move the cursor one word right',
       (tester) async {
-    const text = 'Welcome to Appflowy 😁';
+    const text = 'Welcome to Appflowy';
     final editor = tester.editor
       ..insertTextNode(text)
       ..insertTextNode(text);
@@ -93,6 +155,71 @@ void main() async {
     );
 
     await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move right word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+  });
+
+  testWidgets('Presses alt + arrow left key, move the cursor one word left',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    await editor.updateSelection(
+      Selection.single(path: [0], startOffset: 19),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 11,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
       key: LogicalKeyboardKey.arrowLeft,
       isAltPressed: true,
     );
@@ -102,6 +229,41 @@ void main() async {
       Selection.single(
         path: [0],
         startOffset: 8,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move left word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
       ),
     );
   });
@@ -541,7 +703,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         key: LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -562,7 +724,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         key: LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -584,7 +746,7 @@ void main() async {
       } else {
         await editor.pressLogicKey(
           key: LogicalKeyboardKey.backspace,
-          isMetaPressed: true,
+          isAltPressed: true,
         );
       }
     }
@@ -613,7 +775,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         key: LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 
@@ -638,7 +800,7 @@ void main() async {
     } else {
       await editor.pressLogicKey(
         key: LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        isAltPressed: true,
       );
     }
 

@@ -59,6 +59,7 @@ void main() async {
       (tester) async {
     await _deleteTextByBackspace(tester, true);
   });
+
   testWidgets(
       'Presses backspace key in non-empty document and selection is forward',
       (tester) async {
@@ -85,6 +86,7 @@ void main() async {
       (tester) async {
     await _deleteTextByDelete(tester, true);
   });
+
   testWidgets(
       'Presses delete key in non-empty document and selection is forward',
       (tester) async {
@@ -135,14 +137,17 @@ void main() async {
       (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.checkbox);
   });
+
   testWidgets('Presses backspace key in styled text (bulletedList)',
       (tester) async {
     await _deleteStyledTextByBackspace(
         tester, BuiltInAttributeKey.bulletedList);
   });
+
   testWidgets('Presses backspace key in styled text (heading)', (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.heading);
   });
+
   testWidgets('Presses backspace key in styled text (quote)', (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.quote);
   });
@@ -161,13 +166,16 @@ void main() async {
   testWidgets('Presses delete key in styled text (checkbox)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.checkbox);
   });
+
   testWidgets('Presses delete key in styled text (bulletedList)',
       (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.bulletedList);
   });
+
   testWidgets('Presses delete key in styled text (heading)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.heading);
   });
+
   testWidgets('Presses delete key in styled text (quote)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.quote);
   });
@@ -251,7 +259,7 @@ void main() async {
     await editor.insertText(textNode, '#', 0);
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
     expect(
-      (editor.nodeAtPath([0]) as TextNode).attributes.heading,
+      textNode.attributes.heading,
       BuiltInAttributeKey.h1,
     );
 
@@ -264,7 +272,7 @@ void main() async {
     await editor.insertText(textNode, '#', 0);
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
     expect(
-      (editor.nodeAtPath([0]) as TextNode).attributes.heading,
+      textNode.attributes.heading,
       BuiltInAttributeKey.h1,
     );
   });
@@ -298,16 +306,19 @@ void main() async {
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 0, 0])?.subtype, null);
+
     await editor.updateSelection(
       Selection.single(path: [0, 0, 0], startOffset: 0),
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 1]) != null, true);
+
     await editor.updateSelection(
       Selection.single(path: [0, 1], startOffset: 0),
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([1]) != null, true);
+
     await editor.updateSelection(
       Selection.single(path: [1], startOffset: 0),
     );
@@ -361,14 +372,17 @@ void main() async {
       editor.nodeAtPath([0, 1])!.subtype != BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 1, 0])!.subtype,
       BuiltInAttributeKey.bulletedList,
     );
+
     expect(
       editor.nodeAtPath([0, 1, 1])!.subtype,
       BuiltInAttributeKey.bulletedList,
     );
+
     expect(find.byType(FlowyRichText), findsNWidgets(5));
 
     // Before
@@ -387,14 +401,17 @@ void main() async {
       editor.nodeAtPath([0, 0])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       (editor.nodeAtPath([0, 0]) as TextNode).toPlainText() == text * 2,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 1])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 2])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
