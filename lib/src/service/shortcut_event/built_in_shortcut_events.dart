@@ -290,6 +290,11 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: tabHandler,
   ),
   ShortcutEvent(
+    key: 'Outdent List',
+    command: 'shift+tab',
+    handler: outdentTabHandler,
+  ),
+  ShortcutEvent(
     key: 'Backquote to code',
     command: 'backquote',
     handler: backquoteToCodeHandler,
