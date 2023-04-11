@@ -16,13 +16,17 @@ class ToolbarWidget extends StatefulWidget {
     required this.layerLink,
     required this.offset,
     required this.items,
+    required this.toolbarColor,
+    required this.toolbarElevation,
     this.alignment = Alignment.topLeft,
   }) : super(key: key);
 
   final EditorState editorState;
   final LayerLink layerLink;
   final Offset offset;
+  final Color toolbarColor;
   final List<ToolbarItem> items;
+  final double toolbarElevation;
   final Alignment alignment;
 
   @override
@@ -56,7 +60,8 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
   Widget _buildToolbar(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
-      color: const Color(0xFF333333),
+      color: widget.toolbarColor,
+      elevation: widget.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: SizedBox(

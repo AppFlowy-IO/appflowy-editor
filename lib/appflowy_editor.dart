@@ -49,3 +49,7 @@ export 'src/extensions/node_extensions.dart';
 export 'src/render/action_menu/action_menu.dart';
 export 'src/render/action_menu/action_menu_item.dart';
 export 'src/core/document/node_iterator.dart';
+export 'src/infra/flowy_svg.dart';
+export 'src/extensions/editor_state_extensions.dart';
+export 'src/extensions/text_node_extensions.dart';
+export 'src/service/default_text_operations/format_rich_text_style.dart';

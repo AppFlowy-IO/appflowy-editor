@@ -21,14 +21,19 @@ abstract class AppFlowyToolbarService {
 }
 
 class FlowyToolbar extends StatefulWidget {
-  const FlowyToolbar({
-    Key? key,
-    required this.editorState,
-    required this.child,
-  }) : super(key: key);
-
+  const FlowyToolbar(
+      {Key? key,
+      required this.editorState,
+      required this.child,
+      required this.toolbarElevation,
+      required this.showDefaultToolbar,
+      required this.toolbarColor})
+      : super(key: key);
+  final bool showDefaultToolbar;
   final EditorState editorState;
   final Widget child;
+  final double toolbarElevation;
+  final Color toolbarColor;
 
   @override
   State<FlowyToolbar> createState() => _FlowyToolbarState();
@@ -44,7 +49,9 @@ class _FlowyToolbarState extends State<FlowyToolbar>
   void initState() {
     super.initState();
 
-    toolbarItems = [...defaultToolbarItems, ...widget.editorState.toolbarItems]
+    toolbarItems = widget.showDefaultToolbar
+        ? [...defaultToolbarItems, ...widget.editorState.toolbarItems]
+        : [...widget.editorState.toolbarItems]
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 
@@ -62,6 +69,8 @@ class _FlowyToolbarState extends State<FlowyToolbar>
     _toolbarOverlay = OverlayEntry(
       builder: (context) => ToolbarWidget(
         key: _toolbarWidgetKey,
+        toolbarColor: widget.toolbarColor,
+        toolbarElevation: widget.toolbarElevation,
         editorState: widget.editorState,
         layerLink: layerLink,
         offset: offset,
