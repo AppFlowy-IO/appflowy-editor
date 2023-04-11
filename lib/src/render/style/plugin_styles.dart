@@ -7,6 +7,7 @@ Iterable<ThemeExtension<dynamic>> get lightPluginStyleExtension => [
       CheckboxPluginStyle.light,
       NumberListPluginStyle.light,
       QuotedTextPluginStyle.light,
+      BulletedListPluginStyle.light,
     ];
 
 Iterable<ThemeExtension<dynamic>> get darkPluginStyleExtension => [
