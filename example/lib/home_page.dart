@@ -59,12 +59,11 @@ class _HomePageState extends State<HomePage> {
     _jsonString = rootBundle.loadString('assets/example.json');
     _widgetBuilder = (context) => SimpleEditor(
           jsonString: _jsonString,
-          themeData: _customizeEditorTheme(context),
+          themeData: _themeData,
           onEditorStateChange: (editorState) {
             _editorState = editorState;
           },
         );
-      
   }
 
   @override
@@ -342,9 +341,9 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
   }
 
   ThemeData _customizeEditorTheme(BuildContext context) {
-    final dark = EditorStyle.light;
+    final dark = EditorStyle.dark;
     final editorStyle = dark.copyWith(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 150),
       cursorColor: Colors.blue.shade600,
       selectionColor: Colors.yellow.shade600.withOpacity(0.5),
       textStyle: GoogleFonts.poppins().copyWith(

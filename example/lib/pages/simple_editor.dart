@@ -37,41 +37,6 @@ class SimpleEditor extends StatelessWidget {
           return AppFlowyEditor(
             editorState: editorState,
             themeData: themeData,
-            toolbarColor: Colors.white,
-            toolbarElevation: 5,
-            showDefaultToolbar: false,
-            toolbarItems: [
-              ToolbarItem(
-                  id: 'appflowy.toolbar.highlight',
-                  type: 4,
-                  tooltipsMessage: "",
-                  iconBuilder: (isHighlight) => FlowySvg(
-                        name: 'toolbar/highlight',
-                        color: isHighlight ? Colors.lightBlue : Colors.grey,
-                      ),
-                  validator: (editorState) {
-                    final nodes = editorState
-                        .service.selectionService.currentSelectedNodes
-                        .whereType<TextNode>()
-                        .where(
-                          (textNode) =>
-                              BuiltInAttributeKey.globalStyleKeys
-                                  .contains(textNode.subtype) ||
-                              textNode.subtype == null,
-                        );
-                    return nodes.isNotEmpty;
-                  },
-                  handler: (editorState, context) =>
-                      formatHeading(editorState, BuiltInAttributeKey.h1),
-                  highlightCallback: (editorState) => _allSatisfy(
-                        editorState,
-                        BuiltInAttributeKey.backgroundColor,
-                        (value) {
-                          return value != null &&
-                              value != '0x00000000'; // transparent color;
-                        },
-                      ))
-            ],
             autoFocus: editorState.document.isEmpty,
           );
         } else {
@@ -81,20 +46,5 @@ class SimpleEditor extends StatelessWidget {
         }
       },
     );
-  }
-
-  bool _allSatisfy(
-    EditorState editorState,
-    String styleKey,
-    bool Function(dynamic value) test,
-  ) {
-    final selection =
-        editorState.service.selectionService.currentSelection.value;
-    return selection != null &&
-        editorState.selectedTextNodes.allSatisfyInSelection(
-          selection,
-          styleKey,
-          test,
-        );
   }
 }
