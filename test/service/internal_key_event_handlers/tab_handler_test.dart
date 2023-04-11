@@ -277,13 +277,9 @@ void main() async {
   });
 
   group('outdent_handler.dart', () {
+  
     testWidgets(
       "press shift tab in plain text",
-      (tester) async {},
-    );
-
-    testWidgets(
-      "press shift tab on first unindented list element",
       (tester) async {
         const text = 'Welcome to Appflowy 😁';
         final editor = tester.editor
@@ -327,7 +323,7 @@ void main() async {
       },
     );
 
-    testWidgets("press shift tab on first unindented list element",
+    testWidgets("press shift tab where previous element is not list element",
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
