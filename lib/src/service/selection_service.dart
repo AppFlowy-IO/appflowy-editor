@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/document/node_iterator.dart';
 import 'package:appflowy_editor/src/core/document/path.dart';
@@ -18,6 +15,7 @@ import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:flutter/material.dart';
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
@@ -499,7 +497,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
       }
     }
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    Overlay.of(context).insertAll(_selectionAreas);
 
     // show toolbar
     _showToolbarWithDelay(toolbarOffset, layerLink, alignment!);
@@ -536,7 +534,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
       _cursorAreas.add(cursorArea);
       selectionRects.add(_transformRectToGlobal(selectable, cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
+      Overlay.of(context).insertAll(_cursorAreas);
 
       _forceShowCursor();
     }
@@ -567,7 +565,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     );
 
     _contextMenuAreas.add(contextMenu);
-    Overlay.of(context)?.insert(contextMenu);
+    Overlay.of(context).insert(contextMenu);
   }
 
   void _scrollUpOrDownIfNeeded() {

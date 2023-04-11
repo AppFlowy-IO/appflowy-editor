@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
@@ -11,7 +10,7 @@ import 'package:appflowy_editor/src/service/default_text_operations/format_rich_
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/material.dart';
 
 typedef ToolbarItemEventHandler = void Function(
     EditorState editorState, BuildContext context);
@@ -458,7 +457,7 @@ void showLinkMenu(
       ),
     );
   });
-  Overlay.of(context)?.insert(_linkMenuOverlay!);
+  Overlay.of(context).insert(_linkMenuOverlay!);
 
   editorState.service.scrollService?.disable();
   editorState.service.keyboardService?.disable();
@@ -598,7 +597,7 @@ void showColorMenu(
       ),
     );
   });
-  Overlay.of(context)?.insert(_colorMenuOverlay!);
+  Overlay.of(context).insert(_colorMenuOverlay!);
 
   editorState.service.scrollService?.disable();
   editorState.service.keyboardService?.disable();

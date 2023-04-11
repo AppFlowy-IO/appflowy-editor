@@ -1,5 +1,4 @@
-import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_widget.dart';
@@ -69,7 +68,7 @@ class _FlowyToolbarState extends State<FlowyToolbar>
         alignment: alignment,
       ),
     );
-    Overlay.of(context)?.insert(_toolbarOverlay!);
+    Overlay.of(context).insert(_toolbarOverlay!);
   }
 
   @override
