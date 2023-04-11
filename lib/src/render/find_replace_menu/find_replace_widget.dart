@@ -1,12 +1,16 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/find_replace_menu/search_service.dart';
 import 'package:flutter/material.dart';
 
 class FindMenuWidget extends StatefulWidget {
   const FindMenuWidget({
     super.key,
     required this.dismiss,
+    required this.editorState,
   });
 
   final VoidCallback dismiss;
+  final EditorState editorState;
 
   @override
   State<FindMenuWidget> createState() => _FindMenuWidgetState();
@@ -14,6 +18,15 @@ class FindMenuWidget extends StatefulWidget {
 
 class _FindMenuWidgetState extends State<FindMenuWidget> {
   final controller = TextEditingController();
+  late SearchService searchService;
+
+  @override
+  void initState() {
+    super.initState();
+    searchService = SearchService(
+      editorState: widget.editorState,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +40,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
             child: TextField(
               autofocus: true,
               controller: controller,
-              maxLines: 1,
+              onSubmitted: (_) =>
+                  searchService.findAndHighlight(controller.text),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter text to search',
@@ -36,14 +50,15 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
           ),
         ),
         IconButton(
-          onPressed: () {
-            debugPrint('search button clicked');
-          },
+          onPressed: () => searchService.findAndHighlight(controller.text),
           icon: const Icon(Icons.search),
         ),
         IconButton(
-          onPressed: widget.dismiss,
-          icon: const Icon(Icons.cancel_outlined),
+          onPressed: () {
+            widget.dismiss();
+            searchService.unHighlight(controller.text);
+          },
+          icon: const Icon(Icons.close),
         ),
       ],
     );
