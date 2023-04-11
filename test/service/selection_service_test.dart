@@ -31,7 +31,6 @@ void main() async {
         Selection.single(path: [1], startOffset: 0),
       );
 
-      await tester.pumpAndSettle(const Duration(seconds: 1));
       // tap at the ending
       await tester.tapAt(rect.centerRight);
       expect(
@@ -134,5 +133,8 @@ void main() async {
 
       // TODO: the copy and paste test is not working during test env.
     });
+
+    // TODO(zoli)
+    //testWidgets('single tap with horizontal nodes', (tester) async {});
   });
 }

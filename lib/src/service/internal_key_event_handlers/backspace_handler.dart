@@ -45,6 +45,9 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
           );
       } else {
         // 2. non-style
+        if (textNode.parent?.id.contains('table') ?? false) {
+          return KeyEventResult.handled;
+        }
         // find previous text node.
         return _backDeleteToPreviousTextNode(
           editorState,
@@ -77,9 +80,64 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
       editorState.apply(transaction);
       return KeyEventResult.handled;
     }
+
     final startPosition = selection.start;
     final nodeAtStart = editorState.document.nodeAtPath(startPosition.path)!;
-    _deleteTextNodes(transaction, textNodes, selection);
+
+    bool isNodeInTable(node) => node.parent?.id.contains('table') ?? false;
+    final hasInTableTextNode = textNodes.any(isNodeInTable);
+    if (hasInTableTextNode) {
+      dynamic lastNodeNotInTableIdx;
+      for (var i = 0; i < textNodes.length; i++) {
+        if (isNodeInTable(textNodes[i])) {
+          if (lastNodeNotInTableIdx == null) {
+            if (nonTextNodes
+                .any((n) => n.path.first == textNodes[i].path.first)) {
+              continue;
+            }
+
+            var idx = i == 0 ? selection.start.offset : 0;
+            var len = i == textNodes.length - 1
+                ? selection.end.offset
+                : textNodes[i].delta.length;
+
+            transaction.deleteText(textNodes[i], idx, len);
+            continue;
+          }
+
+          var startPos = lastNodeNotInTableIdx == 0
+              ? selection.start
+              : Position(
+                  path: textNodes[lastNodeNotInTableIdx].path, offset: 0);
+          var endPost = Position(
+              path: textNodes[i - 1].path,
+              offset: textNodes[i - 1].delta.length);
+
+          _deleteTextNodes(
+              transaction,
+              textNodes.sublist(lastNodeNotInTableIdx, i),
+              Selection(start: startPos, end: endPost));
+          lastNodeNotInTableIdx = null;
+          continue;
+        }
+
+        lastNodeNotInTableIdx ??= i;
+        if (i == textNodes.length - 1) {
+          var startPos = lastNodeNotInTableIdx == 0
+              ? selection.start
+              : Position(
+                  path: textNodes[lastNodeNotInTableIdx].path, offset: 0);
+
+          _deleteTextNodes(
+              transaction,
+              textNodes.sublist(lastNodeNotInTableIdx),
+              Selection(start: startPos, end: selection.end));
+        }
+      }
+    } else {
+      _deleteTextNodes(transaction, textNodes, selection);
+    }
+
     editorState.apply(transaction);
 
     if (nodeAtStart is TextNode &&
@@ -265,10 +323,8 @@ void _deleteTextNodes(
 ) {
   final first = textNodes.first;
   final last = textNodes.last;
-  var content = textNodes.last.toPlainText();
-  content = content.substring(selection.end.offset, content.length);
   // Merge the first and the last text node content,
-  //  and delete all the nodes except for the first.
+  // and delete all the nodes except for the first.
   transaction
     ..deleteNodes(textNodes.sublist(1))
     ..mergeText(

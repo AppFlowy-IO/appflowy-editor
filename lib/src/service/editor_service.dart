@@ -8,6 +8,8 @@ import 'package:appflowy_editor/src/render/rich_text/heading_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/number_list_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
+import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
+import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
@@ -34,6 +36,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
+    this.contextMenuItems = const [],
     this.shrinkWrap = false,
     ThemeData? themeData,
   }) : super(key: key) {
@@ -57,6 +60,8 @@ class AppFlowyEditor extends StatefulWidget {
   final List<SelectionMenuItem> selectionMenuItems;
 
   final List<ToolbarItem> toolbarItems;
+
+  final List<List<ContextMenuItem>> contextMenuItems;
 
   final bool editable;
 
@@ -157,6 +162,10 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
             selectionColor: editorStyle.selectionColor!,
             editorState: editorState,
             editable: widget.editable,
+            contextMenuItems: [
+              ...builtInContextMenuItems,
+              ...widget.contextMenuItems
+            ],
             child: AppFlowyInput(
               key: editorState.service.inputServiceKey,
               editorState: editorState,

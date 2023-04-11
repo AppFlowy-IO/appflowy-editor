@@ -5,10 +5,12 @@ class ContextMenuItem {
   ContextMenuItem({
     required this.name,
     required this.onPressed,
+    this.isApplicable,
   });
 
   final String name;
   final void Function(EditorState editorState) onPressed;
+  final bool Function(EditorState editorState)? isApplicable;
 }
 
 class ContextMenu extends StatelessWidget {
@@ -30,6 +32,15 @@ class ContextMenu extends StatelessWidget {
     final children = <Widget>[];
     for (var i = 0; i < items.length; i++) {
       for (var j = 0; j < items[i].length; j++) {
+        if (items[i][j].isApplicable != null &&
+            !items[i][j].isApplicable!(editorState)) {
+          continue;
+        }
+
+        if (j == 0 && i != 0) {
+          children.add(const Divider());
+        }
+
         var onHover = false;
         children.add(
           StatefulBuilder(
@@ -69,9 +80,6 @@ class ContextMenu extends StatelessWidget {
             },
           ),
         );
-      }
-      if (i != items.length - 1) {
-        children.add(const Divider());
       }
     }
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/infra/log.dart';
-import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
@@ -97,6 +96,7 @@ class AppFlowySelection extends StatefulWidget {
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     this.editable = true,
+    this.contextMenuItems = const [],
     required this.editorState,
     required this.child,
   }) : super(key: key);
@@ -106,6 +106,7 @@ class AppFlowySelection extends StatefulWidget {
   final Color cursorColor;
   final Color selectionColor;
   final bool editable;
+  final List<List<ContextMenuItem>> contextMenuItems;
 
   @override
   State<AppFlowySelection> createState() => _AppFlowySelectionState();
@@ -561,7 +562,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
       builder: (context) => ContextMenu(
         position: offset,
         editorState: editorState,
-        items: builtInContextMenuItems,
+        items: widget.contextMenuItems,
         onPressed: () => _clearContextMenu(),
       ),
     );
@@ -608,21 +609,22 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (rect.bottom <= offset.dy) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
+
+    var min = _findCloseNode(
+        sortedNodes, start, end, (rect) => rect.bottom <= offset.dy);
+
+    final filteredNodes = List.of(sortedNodes)
+      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    min = 0;
+    if (filteredNodes.length > 1) {
+      min = _findCloseNode(sortedNodes, 0, filteredNodes.length - 1,
+          (rect) => rect.right <= offset.dx);
     }
-    min = min.clamp(start, end);
-    final node = sortedNodes[min];
+
+    final node = filteredNodes[min];
     if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false);
+      final children = node.children.toList(growable: false)
+        ..sort((a, b) => a.rect.bottom.compareTo(b.rect.bottom));
       return _getNodeInOffset(
         children,
         offset,
@@ -631,6 +633,22 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
       );
     }
     return node;
+  }
+
+  int _findCloseNode(List<Node> sortedNodes, int start, int end,
+      bool Function(Rect rect) compare) {
+    var min = start;
+    var max = end;
+    while (min <= max) {
+      final mid = min + ((max - min) >> 1);
+      final rect = sortedNodes[mid].rect;
+      if (compare(rect)) {
+        min = mid + 1;
+      } else {
+        max = mid - 1;
+      }
+    }
+    return min.clamp(start, end);
   }
 
   void _enableInteraction() {
