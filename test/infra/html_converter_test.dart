@@ -10,6 +10,14 @@ void main() {
       expect(nodes.isNotEmpty, true);
     });
   });
+  group('HTMLConverterDocument tests', () {
+    test('HTMLToNodesConverter', () {
+      final converter = HTMLToNodesConverter(rawHTML);
+      final document = converter.toDocument();
+
+      expect(document.root.children.isNotEmpty, true);
+    });
+  });
 }
 
 const rawHTML = """<h1>AppFlowyEditor</h1>
