@@ -10,6 +10,8 @@ import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as html;
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 
+import '../core/document/document.dart';
+
 class HTMLTag {
   static const h1 = "h1";
   static const h2 = "h2";
@@ -59,7 +61,15 @@ class HTMLToNodesConverter {
     final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
     return _handleContainer(childNodes);
   }
-
+ Document toDocument() {
+    final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
+    return Document.fromJson({
+      "document": {
+        "type": "editor",
+        "children": _handleContainer(childNodes).map((e) => e.toJson()).toList()
+      }
+    });
+  }
   List<Node> _handleContainer(List<html.Node> childNodes) {
     final delta = Delta();
     final result = <Node>[];
