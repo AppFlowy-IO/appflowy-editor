@@ -261,18 +261,12 @@ void main() async {
 
       expect(editor.documentLength, 2);
 
-      if (Platform.isMacOS) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.backspace,
-          isMetaPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.backspace,
-          isControlPressed: true,
-          isAltPressed: true,
-        );
-      }
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.backspace,
+        isMetaPressed: Platform.isMacOS,
+        isControlPressed: !Platform.isMacOS,
+        isAltPressed: !Platform.isMacOS,
+      );
 
       await tester.pumpAndSettle();
 

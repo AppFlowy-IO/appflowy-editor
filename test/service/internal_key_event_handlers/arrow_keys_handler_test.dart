@@ -190,7 +190,7 @@ void main() async {
     );
   });
 
-  testWidgets('Presses alt + arrow left key, move the cursor one left right',
+  testWidgets('Presses alt + arrow left key, move the cursor one word left',
       (tester) async {
     const text = 'Welcome to Appflowy';
     final editor = tester.editor
