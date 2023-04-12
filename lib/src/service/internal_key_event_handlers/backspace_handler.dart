@@ -165,7 +165,10 @@ KeyEventResult _backDeleteToPreviousTextNode(
 
   if (prevIsNumberList) {
     makeFollowingNodesIncremental(
-        editorState, previousTextNode!.path, transaction.afterSelection!);
+      editorState,
+      previousTextNode!.path,
+      transaction.afterSelection!,
+    );
   }
 
   return KeyEventResult.handled;
@@ -222,15 +225,22 @@ ShortcutEventHandler deleteEventHandler = (editorState, event) {
     if (nodeAtStart is TextNode &&
         nodeAtStart.subtype == BuiltInAttributeKey.numberList) {
       makeFollowingNodesIncremental(
-          editorState, startPosition.path, transaction.afterSelection!);
+        editorState,
+        startPosition.path,
+        transaction.afterSelection!,
+      );
     }
   }
 
   return KeyEventResult.handled;
 };
 
-KeyEventResult _mergeNextLineIntoThisLine(EditorState editorState,
-    TextNode textNode, Transaction transaction, Selection selection) {
+KeyEventResult _mergeNextLineIntoThisLine(
+  EditorState editorState,
+  TextNode textNode,
+  Transaction transaction,
+  Selection selection,
+) {
   final nextNode = textNode.next;
   if (nextNode == null) {
     return KeyEventResult.ignored;
@@ -249,7 +259,10 @@ KeyEventResult _mergeNextLineIntoThisLine(EditorState editorState,
 }
 
 void _deleteTextNodes(
-    Transaction transaction, List<TextNode> textNodes, Selection selection) {
+  Transaction transaction,
+  List<TextNode> textNodes,
+  Selection selection,
+) {
   final first = textNodes.first;
   final last = textNodes.last;
   var content = textNodes.last.toPlainText();

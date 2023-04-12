@@ -600,7 +600,11 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   }
 
   Node? _getNodeInOffset(
-      List<Node> sortedNodes, Offset offset, int start, int end) {
+    List<Node> sortedNodes,
+    Offset offset,
+    int start,
+    int end,
+  ) {
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }

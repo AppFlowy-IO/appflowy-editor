@@ -815,7 +815,9 @@ void main() async {
 }
 
 Future<void> _testPressArrowKeyInNotCollapsedSelection(
-    WidgetTester tester, bool isBackward) async {
+  WidgetTester tester,
+  bool isBackward,
+) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor
     ..insertTextNode(text)

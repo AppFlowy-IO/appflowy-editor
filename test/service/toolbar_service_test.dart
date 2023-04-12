@@ -63,11 +63,13 @@ void main() async {
         ..insertTextNode(text)
         ..insertTextNode(
           null,
-          delta: Delta(operations: [
-            TextInsert(text),
-            TextInsert(text, attributes: attributes),
-            TextInsert(text),
-          ]),
+          delta: Delta(
+            operations: [
+              TextInsert(text),
+              TextInsert(text, attributes: attributes),
+              TextInsert(text),
+            ],
+          ),
         );
       await editor.startTesting();
       await editor.updateSelection(
@@ -124,10 +126,13 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final editor = tester.editor
-        ..insertTextNode(text, attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h1,
-        })
+        ..insertTextNode(
+          text,
+          attributes: {
+            BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
+            BuiltInAttributeKey.heading: BuiltInAttributeKey.h1,
+          },
+        )
         ..insertTextNode(
           text,
           attributes: {BuiltInAttributeKey.subtype: BuiltInAttributeKey.quote},
@@ -178,11 +183,16 @@ void main() async {
             BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
             BuiltInAttributeKey.heading: BuiltInAttributeKey.h1,
           },
-          delta: Delta(operations: [
-            TextInsert(text, attributes: {
-              BuiltInAttributeKey.bold: true,
-            })
-          ]),
+          delta: Delta(
+            operations: [
+              TextInsert(
+                text,
+                attributes: {
+                  BuiltInAttributeKey.bold: true,
+                },
+              )
+            ],
+          ),
         )
         ..insertTextNode(null)
         ..insertTextNode(text);

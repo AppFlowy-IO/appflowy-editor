@@ -247,7 +247,9 @@ class Delta extends Iterable<TextOperation> {
   @override
   int get length {
     return _operations.fold(
-        0, (previousValue, element) => previousValue + element.length);
+      0,
+      (previousValue, element) => previousValue + element.length,
+    );
   }
 
   /// Returns a Delta that is equivalent to applying the operations of own Delta, followed by another Delta.

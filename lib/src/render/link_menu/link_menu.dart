@@ -52,7 +52,7 @@ class _LinkMenuState extends State<LinkMenu> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 350,
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: style?.selectionMenuBackgroundColor ?? Colors.white,
           boxShadow: [

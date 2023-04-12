@@ -83,35 +83,39 @@ class SelectionMenu implements SelectionMenuService {
       _alignment = Alignment.topLeft;
     }
     _topLeft = offset;
-    _offset = Offset(offset.dx,
-        showBelow ? offset.dy : MediaQuery.of(context).size.height - offset.dy);
+    _offset = Offset(
+      offset.dx,
+      showBelow ? offset.dy : MediaQuery.of(context).size.height - offset.dy,
+    );
 
-    _selectionMenuEntry = OverlayEntry(builder: (context) {
-      return Positioned(
-        top: showBelow ? _offset.dy : null,
-        bottom: showBelow ? null : _offset.dy,
-        left: offset.dx,
-        right: 0,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SelectionMenuWidget(
-            items: [
-              ..._defaultSelectionMenuItems,
-              ...editorState.selectionMenuItems,
-            ],
-            maxItemInRow: 5,
-            editorState: editorState,
-            menuService: this,
-            onExit: () {
-              dismiss();
-            },
-            onSelectionUpdate: () {
-              _selectionUpdateByInner = true;
-            },
+    _selectionMenuEntry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          top: showBelow ? _offset.dy : null,
+          bottom: showBelow ? null : _offset.dy,
+          left: offset.dx,
+          right: 0,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SelectionMenuWidget(
+              items: [
+                ..._defaultSelectionMenuItems,
+                ...editorState.selectionMenuItems,
+              ],
+              maxItemInRow: 5,
+              editorState: editorState,
+              menuService: this,
+              onExit: () {
+                dismiss();
+              },
+              onSelectionUpdate: () {
+                _selectionUpdateByInner = true;
+              },
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     Overlay.of(context).insert(_selectionMenuEntry!);
 
@@ -241,7 +245,10 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
 ];
 
 Widget _selectionMenuIcon(
-    String name, EditorState editorState, bool onSelected) {
+  String name,
+  EditorState editorState,
+  bool onSelected,
+) {
   return FlowySvg(
     name: 'selection_menu/$name',
     color: onSelected

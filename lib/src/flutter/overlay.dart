@@ -300,16 +300,20 @@ class Overlay extends StatefulWidget {
         final List<DiagnosticsNode> information = <DiagnosticsNode>[
           ErrorSummary('No Overlay widget found.'),
           ErrorDescription(
-              '${debugRequiredFor.runtimeType} widgets require an Overlay widget ancestor for correct operation.'),
+            '${debugRequiredFor.runtimeType} widgets require an Overlay widget ancestor for correct operation.',
+          ),
           ErrorHint(
-              'The most common way to add an Overlay to an application is to include a MaterialApp or Navigator widget in the runApp() call.'),
+            'The most common way to add an Overlay to an application is to include a MaterialApp or Navigator widget in the runApp() call.',
+          ),
           DiagnosticsProperty<Widget>(
-              'The specific widget that failed to find an overlay was',
-              debugRequiredFor,
-              style: DiagnosticsTreeStyle.errorProperty),
+            'The specific widget that failed to find an overlay was',
+            debugRequiredFor,
+            style: DiagnosticsTreeStyle.errorProperty,
+          ),
           if (context.widget != debugRequiredFor)
             context.describeElement(
-                'The context from which that widget was searching for an overlay was'),
+              'The context from which that widget was searching for an overlay was',
+            ),
         ];
 
         throw FlutterError.fromParts(information);
@@ -352,10 +356,14 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
   /// It is an error to specify both `above` and `below`.
   void insert(OverlayEntry entry, {OverlayEntry? below, OverlayEntry? above}) {
     assert(_debugVerifyInsertPosition(above, below));
-    assert(!_entries.contains(entry),
-        'The specified entry is already present in the Overlay.');
-    assert(entry._overlay == null,
-        'The specified entry is already present in another Overlay.');
+    assert(
+      !_entries.contains(entry),
+      'The specified entry is already present in the Overlay.',
+    );
+    assert(
+      entry._overlay == null,
+      'The specified entry is already present in another Overlay.',
+    );
     entry._overlay = this;
     setState(() {
       _entries.insert(_insertionIndex(below, above), entry);
@@ -369,8 +377,11 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
   /// Otherwise, the entries are inserted on top.
   ///
   /// It is an error to specify both `above` and `below`.
-  void insertAll(Iterable<OverlayEntry> entries,
-      {OverlayEntry? below, OverlayEntry? above}) {
+  void insertAll(
+    Iterable<OverlayEntry> entries, {
+    OverlayEntry? below,
+    OverlayEntry? above,
+  }) {
     assert(_debugVerifyInsertPosition(above, below));
     assert(
       entries.every((OverlayEntry entry) => !_entries.contains(entry)),
@@ -390,8 +401,11 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
     });
   }
 
-  bool _debugVerifyInsertPosition(OverlayEntry? above, OverlayEntry? below,
-      {Iterable<OverlayEntry>? newEntries}) {
+  bool _debugVerifyInsertPosition(
+    OverlayEntry? above,
+    OverlayEntry? below, {
+    Iterable<OverlayEntry>? newEntries,
+  }) {
     assert(
       above == null || below == null,
       'Only one of `above` and `below` may be specified.',
@@ -430,21 +444,29 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
   /// below.
   ///
   /// It is an error to specify both `above` and `below`.
-  void rearrange(Iterable<OverlayEntry> newEntries,
-      {OverlayEntry? below, OverlayEntry? above}) {
+  void rearrange(
+    Iterable<OverlayEntry> newEntries, {
+    OverlayEntry? below,
+    OverlayEntry? above,
+  }) {
     final List<OverlayEntry> newEntriesList = newEntries is List<OverlayEntry>
         ? newEntries
         : newEntries.toList(growable: false);
     assert(
-        _debugVerifyInsertPosition(above, below, newEntries: newEntriesList));
+      _debugVerifyInsertPosition(above, below, newEntries: newEntriesList),
+    );
     assert(
-      newEntriesList.every((OverlayEntry entry) =>
-          entry._overlay == null || entry._overlay == this),
+      newEntriesList.every(
+        (OverlayEntry entry) =>
+            entry._overlay == null || entry._overlay == this,
+      ),
       'One or more of the specified entries are already present in another Overlay.',
     );
     assert(
-      newEntriesList.every((OverlayEntry entry) =>
-          _entries.indexOf(entry) == _entries.lastIndexOf(entry)),
+      newEntriesList.every(
+        (OverlayEntry entry) =>
+            _entries.indexOf(entry) == _entries.lastIndexOf(entry),
+      ),
       'One or more of the specified entries are specified multiple times.',
     );
     if (newEntriesList.isEmpty) return;
@@ -509,17 +531,21 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
       final OverlayEntry entry = _entries[i];
       if (onstage) {
         onstageCount += 1;
-        children.add(_OverlayEntryWidget(
-          key: entry._key,
-          entry: entry,
-        ));
+        children.add(
+          _OverlayEntryWidget(
+            key: entry._key,
+            entry: entry,
+          ),
+        );
         if (entry.opaque) onstage = false;
       } else if (entry.maintainState) {
-        children.add(_OverlayEntryWidget(
-          key: entry._key,
-          entry: entry,
-          tickerEnabled: false,
-        ));
+        children.add(
+          _OverlayEntryWidget(
+            key: entry._key,
+            entry: entry,
+            tickerEnabled: false,
+          ),
+        );
       }
     }
     return _Theatre(
@@ -684,26 +710,34 @@ class _RenderTheatre extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    return RenderStack.getIntrinsicDimension(_firstOnstageChild,
-        (RenderBox child) => child.getMinIntrinsicWidth(height));
+    return RenderStack.getIntrinsicDimension(
+      _firstOnstageChild,
+      (RenderBox child) => child.getMinIntrinsicWidth(height),
+    );
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    return RenderStack.getIntrinsicDimension(_firstOnstageChild,
-        (RenderBox child) => child.getMaxIntrinsicWidth(height));
+    return RenderStack.getIntrinsicDimension(
+      _firstOnstageChild,
+      (RenderBox child) => child.getMaxIntrinsicWidth(height),
+    );
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    return RenderStack.getIntrinsicDimension(_firstOnstageChild,
-        (RenderBox child) => child.getMinIntrinsicHeight(width));
+    return RenderStack.getIntrinsicDimension(
+      _firstOnstageChild,
+      (RenderBox child) => child.getMinIntrinsicHeight(width),
+    );
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    return RenderStack.getIntrinsicDimension(_firstOnstageChild,
-        (RenderBox child) => child.getMaxIntrinsicHeight(width));
+    return RenderStack.getIntrinsicDimension(
+      _firstOnstageChild,
+      (RenderBox child) => child.getMaxIntrinsicHeight(width),
+    );
   }
 
   @override
@@ -764,7 +798,11 @@ class _RenderTheatre extends RenderBox
             _resolvedAlignment!.alongOffset(size - child.size as Offset);
       } else {
         _hasVisualOverflow = RenderStack.layoutPositionedChild(
-                child, childParentData, size, _resolvedAlignment!) ||
+              child,
+              childParentData,
+              size,
+              _resolvedAlignment!,
+            ) ||
             _hasVisualOverflow;
       }
 

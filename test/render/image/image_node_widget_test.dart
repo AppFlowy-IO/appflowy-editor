@@ -53,8 +53,10 @@ void main() async {
         final imageRect = tester.getRect(imageFinder);
 
         expect(imageRect.width, 100);
-        expect((imageNodeRect.left - imageRect.left).abs(),
-            (imageNodeRect.right - imageRect.right).abs());
+        expect(
+          (imageNodeRect.left - imageRect.left).abs(),
+          (imageNodeRect.right - imageRect.right).abs(),
+        );
       });
     });
 

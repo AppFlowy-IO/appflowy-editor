@@ -17,19 +17,21 @@ class ShortcutEvent {
   }) {
     // character and command cannot be null at the same time
     assert(
-        !(character == null &&
-            command == null &&
-            windowsCommand == null &&
-            macOSCommand == null &&
-            linuxCommand == null),
-        'character and command cannot be null at the same time');
+      !(character == null &&
+          command == null &&
+          windowsCommand == null &&
+          macOSCommand == null &&
+          linuxCommand == null),
+      'character and command cannot be null at the same time',
+    );
     assert(
-        !(character != null &&
-            (command != null &&
-                windowsCommand != null &&
-                macOSCommand != null &&
-                linuxCommand != null)),
-        'character and command cannot be set at the same time');
+      !(character != null &&
+          (command != null &&
+              windowsCommand != null &&
+              macOSCommand != null &&
+              linuxCommand != null)),
+      'character and command cannot be set at the same time',
+    );
 
     updateCommand(
       command: command,

@@ -29,8 +29,10 @@ void main() async {
           key: LogicalKeyboardKey.enter,
         );
         expect(editor.documentLength, i + 1);
-        expect(editor.documentSelection,
-            Selection.single(path: [i], startOffset: 0));
+        expect(
+          editor.documentSelection,
+          Selection.single(path: [i], startOffset: 0),
+        );
       }
     });
 
@@ -68,8 +70,10 @@ void main() async {
       );
       lines += 1;
       expect(editor.documentLength, lines);
-      expect(editor.documentSelection,
-          Selection.single(path: [lines - 1], startOffset: 0));
+      expect(
+        editor.documentSelection,
+        Selection.single(path: [lines - 1], startOffset: 0),
+      );
       var lastNode = editor.nodeAtPath([lines - 1]);
       expect(lastNode != null, true);
       expect(lastNode is TextNode, true);
@@ -77,7 +81,9 @@ void main() async {
       expect(lastNode.delta.toPlainText(), text);
       expect((lastNode.previous as TextNode).delta.toPlainText(), '');
       expect(
-          (lastNode.previous!.previous as TextNode).delta.toPlainText(), text);
+        (lastNode.previous!.previous as TextNode).delta.toPlainText(),
+        text,
+      );
     });
 
     // Before
@@ -179,7 +185,9 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
       key: LogicalKeyboardKey.enter,
     );
     expect(
-        editor.documentSelection, Selection.single(path: [5], startOffset: 0));
+      editor.documentSelection,
+      Selection.single(path: [5], startOffset: 0),
+    );
     expect(editor.nodeAtPath([5])?.subtype, null);
   } else {
     expect(editor.nodeAtPath([4])?.subtype, style);
@@ -188,13 +196,17 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
       key: LogicalKeyboardKey.enter,
     );
     expect(
-        editor.documentSelection, Selection.single(path: [4], startOffset: 0));
+      editor.documentSelection,
+      Selection.single(path: [4], startOffset: 0),
+    );
     expect(editor.nodeAtPath([4])?.subtype, null);
   }
 }
 
 Future<void> _testMultipleSelection(
-    WidgetTester tester, bool isBackwardSelection) async {
+  WidgetTester tester,
+  bool isBackwardSelection,
+) async {
   // Before
   //
   // Welcome to Appflowy 😁
@@ -218,10 +230,12 @@ Future<void> _testMultipleSelection(
   await editor.startTesting();
   final start = Position(path: [0], offset: 7);
   final end = Position(path: [3], offset: 8);
-  await editor.updateSelection(Selection(
-    start: isBackwardSelection ? start : end,
-    end: isBackwardSelection ? end : start,
-  ));
+  await editor.updateSelection(
+    Selection(
+      start: isBackwardSelection ? start : end,
+      end: isBackwardSelection ? end : start,
+    ),
+  );
   await editor.pressLogicKey(
     key: LogicalKeyboardKey.enter,
   );

@@ -80,7 +80,8 @@ extension DeltaAttributesExtensions on Attributes {
     if (containsKey(BuiltInAttributeKey.backgroundColor) &&
         this[BuiltInAttributeKey.backgroundColor] is String) {
       return Color(
-          int.tryParse(this[BuiltInAttributeKey.backgroundColor]) ?? whiteInt);
+        int.tryParse(this[BuiltInAttributeKey.backgroundColor]) ?? whiteInt,
+      );
     }
     return null;
   }

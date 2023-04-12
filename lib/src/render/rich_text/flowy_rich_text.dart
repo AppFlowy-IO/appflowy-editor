@@ -79,7 +79,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 
   @override
   Position end() => Position(
-      path: widget.textNode.path, offset: widget.textNode.toPlainText().length);
+        path: widget.textNode.path,
+        offset: widget.textNode.toPlainText().length,
+      );
 
   @override
   Rect? getCursorRectInPosition(Position position) {
@@ -92,7 +94,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       cursorHeight =
           _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
       cursorOffset = _placeholderRenderParagraph?.getOffsetForCaret(
-              textPosition, Rect.zero) ??
+            textPosition,
+            Rect.zero,
+          ) ??
           Offset.zero;
     }
     if (widget.cursorHeight != null && cursorHeight != null) {
@@ -139,8 +143,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 
   @override
   List<Rect> getRectsInSelection(Selection selection) {
-    assert(selection.isSingle &&
-        selection.start.path.equals(widget.textNode.path));
+    assert(
+      selection.isSingle && selection.start.path.equals(widget.textNode.path),
+    );
 
     final textSelection = TextSelection(
       baseOffset: selection.start.offset,
@@ -196,7 +201,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     return RichText(
       key: _placeholderTextKey,
       textHeightBehavior: const TextHeightBehavior(
-          applyHeightToFirstAscent: false, applyHeightToLastDescent: false),
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+      ),
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
@@ -303,7 +310,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   }
 
   GestureRecognizer _buildTapHrefGestureRecognizer(
-      String href, Selection selection) {
+    String href,
+    Selection selection,
+  ) {
     Timer? timer;
     var tapCount = 0;
     final tapGestureRecognizer = TapGestureRecognizer()

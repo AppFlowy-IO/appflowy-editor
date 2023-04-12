@@ -14,7 +14,9 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 typedef ToolbarItemEventHandler = void Function(
-    EditorState editorState, BuildContext context);
+  EditorState editorState,
+  BuildContext context,
+);
 typedef ToolbarItemValidator = bool Function(EditorState editorState);
 typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 
@@ -413,51 +415,53 @@ void showLinkMenu(
     );
   }
 
-  _linkMenuOverlay = OverlayEntry(builder: (context) {
-    return Positioned(
-      top: matchRect.bottom + 5.0,
-      left: matchRect.left,
-      child: Material(
-        child: LinkMenu(
-          linkText: linkText,
-          editorState: editorState,
-          onOpenLink: () async {
-            await safeLaunchUrl(linkText);
-          },
-          onSubmitted: (text) async {
-            await editorState.formatLinkInText(
-              text,
-              textNode: textNode,
-            );
-
-            _dismissLinkMenu();
-          },
-          onCopyLink: () {
-            AppFlowyClipboard.setData(text: linkText);
-            _dismissLinkMenu();
-          },
-          onRemoveLink: () {
-            final transaction = editorState.transaction
-              ..formatText(
-                textNode,
-                index,
-                length,
-                {BuiltInAttributeKey.href: null},
+  _linkMenuOverlay = OverlayEntry(
+    builder: (context) {
+      return Positioned(
+        top: matchRect.bottom + 5.0,
+        left: matchRect.left,
+        child: Material(
+          child: LinkMenu(
+            linkText: linkText,
+            editorState: editorState,
+            onOpenLink: () async {
+              await safeLaunchUrl(linkText);
+            },
+            onSubmitted: (text) async {
+              await editorState.formatLinkInText(
+                text,
+                textNode: textNode,
               );
-            editorState.apply(transaction);
-            _dismissLinkMenu();
-          },
-          onFocusChange: (value) {
-            if (value && customSelection != null) {
-              _changeSelectionInner = true;
-              editorState.service.selectionService
-                  .updateSelection(customSelection);
-            }
-          },
+
+              _dismissLinkMenu();
+            },
+            onCopyLink: () {
+              AppFlowyClipboard.setData(text: linkText);
+              _dismissLinkMenu();
+            },
+            onRemoveLink: () {
+              final transaction = editorState.transaction
+                ..formatText(
+                  textNode,
+                  index,
+                  length,
+                  {BuiltInAttributeKey.href: null},
+                );
+              editorState.apply(transaction);
+              _dismissLinkMenu();
+            },
+            onFocusChange: (value) {
+              if (value && customSelection != null) {
+                _changeSelectionInner = true;
+                editorState.service.selectionService
+                    .updateSelection(customSelection);
+              }
+            },
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
   Overlay.of(context)?.insert(_linkMenuOverlay!);
 
   editorState.service.scrollService?.disable();
@@ -564,40 +568,44 @@ void showColorMenu(
   }
 
   final style = editorState.editorStyle;
-  _colorMenuOverlay = OverlayEntry(builder: (context) {
-    return Positioned(
-      top: matchRect.bottom + 5.0,
-      left: matchRect.left + 10,
-      child: Material(
-        color: Colors.transparent,
-        child: ColorPicker(
-          pickerBackgroundColor:
-              style.selectionMenuBackgroundColor ?? Colors.white,
-          pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
-              Colors.blue.withOpacity(0.3),
-          pickerItemTextColor: style.selectionMenuItemTextColor ?? Colors.black,
-          selectedFontColorHex: fontColorHex,
-          selectedBackgroundColorHex: backgroundColorHex,
-          fontColorOptions: _generateFontColorOptions(editorState),
-          backgroundColorOptions: _generateBackgroundColorOptions(editorState),
-          onSubmittedbackgroundColorHex: (color) {
-            formatHighlightColor(
-              editorState,
-              color,
-            );
-            _dismissColorMenu();
-          },
-          onSubmittedFontColorHex: (color) {
-            formatFontColor(
-              editorState,
-              color,
-            );
-            _dismissColorMenu();
-          },
+  _colorMenuOverlay = OverlayEntry(
+    builder: (context) {
+      return Positioned(
+        top: matchRect.bottom + 5.0,
+        left: matchRect.left + 10,
+        child: Material(
+          color: Colors.transparent,
+          child: ColorPicker(
+            pickerBackgroundColor:
+                style.selectionMenuBackgroundColor ?? Colors.white,
+            pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
+                Colors.blue.withOpacity(0.3),
+            pickerItemTextColor:
+                style.selectionMenuItemTextColor ?? Colors.black,
+            selectedFontColorHex: fontColorHex,
+            selectedBackgroundColorHex: backgroundColorHex,
+            fontColorOptions: _generateFontColorOptions(editorState),
+            backgroundColorOptions:
+                _generateBackgroundColorOptions(editorState),
+            onSubmittedbackgroundColorHex: (color) {
+              formatHighlightColor(
+                editorState,
+                color,
+              );
+              _dismissColorMenu();
+            },
+            onSubmittedFontColorHex: (color) {
+              formatFontColor(
+                editorState,
+                color,
+              );
+              _dismissColorMenu();
+            },
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
   Overlay.of(context)?.insert(_colorMenuOverlay!);
 
   editorState.service.scrollService?.disable();

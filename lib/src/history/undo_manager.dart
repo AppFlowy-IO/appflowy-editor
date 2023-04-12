@@ -22,17 +22,17 @@ class HistoryItem extends LinkedListEntry<HistoryItem> {
   /// to the item.
   ///
   /// The caller should create a new [HistoryItem].
-  seal() {
+  void seal() {
     _sealed = true;
   }
 
   bool get sealed => _sealed;
 
-  add(Operation op) {
+  void add(Operation op) {
     operations.add(op);
   }
 
-  addAll(Iterable<Operation> iterable) {
+  void addAll(Iterable<Operation> iterable) {
     operations.addAll(iterable);
   }
 
@@ -56,7 +56,7 @@ class FixedSizeStack {
 
   FixedSizeStack(this.maxSize);
 
-  push(HistoryItem stackItem) {
+  void push(HistoryItem stackItem) {
     if (_list.length >= maxSize) {
       _list.remove(_list.first);
     }
@@ -74,7 +74,7 @@ class FixedSizeStack {
     return last;
   }
 
-  clear() {
+  void clear() {
     _list.clear();
   }
 
@@ -110,7 +110,7 @@ class UndoManager {
     return last;
   }
 
-  undo() {
+  void undo() {
     Log.editor.debug('undo');
     final s = state;
     if (s == null) {
@@ -130,7 +130,7 @@ class UndoManager {
     );
   }
 
-  redo() {
+  void redo() {
     Log.editor.debug('redo');
     final s = state;
     if (s == null) {

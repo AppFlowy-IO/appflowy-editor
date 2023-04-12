@@ -200,7 +200,11 @@ class _AppFlowyInputState extends State<AppFlowyInput>
       final length = delta.replacedRange.end - delta.replacedRange.start;
       final transaction = _editorState.transaction;
       transaction.replaceText(
-          textNode, delta.replacedRange.start, length, delta.replacementText);
+        textNode,
+        delta.replacedRange.start,
+        length,
+        delta.replacementText,
+      );
       _editorState.apply(transaction);
     } else {
       // TODO: implement
@@ -282,7 +286,9 @@ class _AppFlowyInputState extends State<AppFlowyInput>
     // FIXME: upward and selection update.
     if (textNodes.isNotEmpty && selection != null) {
       final text = textNodes.fold<String>(
-          '', (sum, textNode) => '$sum${textNode.toPlainText()}\n');
+        '',
+        (sum, textNode) => '$sum${textNode.toPlainText()}\n',
+      );
       attach(
         TextEditingValue(
           text: text,
@@ -327,7 +333,9 @@ class _AppFlowyInputState extends State<AppFlowyInput>
 
   @override
   void didChangeInputControl(
-      TextInputControl? oldControl, TextInputControl? newControl) {
+    TextInputControl? oldControl,
+    TextInputControl? newControl,
+  ) {
     // TODO: implement didChangeInputControl
   }
 

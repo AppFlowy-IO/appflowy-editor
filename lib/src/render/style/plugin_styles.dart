@@ -19,11 +19,17 @@ Iterable<ThemeExtension<dynamic>> get darkPluginStyleExtension => [
     ];
 
 typedef TextStyleCustomizer = TextStyle Function(
-    EditorState editorState, TextNode textNode);
+  EditorState editorState,
+  TextNode textNode,
+);
 typedef PaddingCustomizer = EdgeInsets Function(
-    EditorState editorState, TextNode textNode);
+  EditorState editorState,
+  TextNode textNode,
+);
 typedef IconCustomizer = Widget Function(
-    EditorState editorState, TextNode textNode);
+  EditorState editorState,
+  TextNode textNode,
+);
 
 class HeadingPluginStyle extends ThemeExtension<HeadingPluginStyle> {
   const HeadingPluginStyle({
@@ -47,7 +53,9 @@ class HeadingPluginStyle extends ThemeExtension<HeadingPluginStyle> {
 
   @override
   ThemeExtension<HeadingPluginStyle> lerp(
-      ThemeExtension<HeadingPluginStyle>? other, double t) {
+    ThemeExtension<HeadingPluginStyle>? other,
+    double t,
+  ) {
     if (other is! HeadingPluginStyle) {
       return this;
     }
@@ -105,7 +113,9 @@ class CheckboxPluginStyle extends ThemeExtension<CheckboxPluginStyle> {
 
   @override
   ThemeExtension<CheckboxPluginStyle> lerp(
-      ThemeExtension<CheckboxPluginStyle>? other, double t) {
+    ThemeExtension<CheckboxPluginStyle>? other,
+    double t,
+  ) {
     if (other is! CheckboxPluginStyle) {
       return this;
     }
@@ -167,7 +177,9 @@ class BulletedListPluginStyle extends ThemeExtension<BulletedListPluginStyle> {
 
   @override
   ThemeExtension<BulletedListPluginStyle> lerp(
-      ThemeExtension<BulletedListPluginStyle>? other, double t) {
+    ThemeExtension<BulletedListPluginStyle>? other,
+    double t,
+  ) {
     if (other is! BulletedListPluginStyle) {
       return this;
     }
@@ -194,17 +206,19 @@ class BulletedListPluginStyle extends ThemeExtension<BulletedListPluginStyle> {
     },
   );
 
-  static final dark = light.copyWith(icon: (_, __) {
-    const iconSize = Size.square(20.0);
-    const iconPadding = EdgeInsets.only(right: 5.0);
-    return FlowySvg(
-      width: iconSize.width,
-      height: iconSize.height,
-      padding: iconPadding,
-      color: Colors.white,
-      name: 'point',
-    );
-  });
+  static final dark = light.copyWith(
+    icon: (_, __) {
+      const iconSize = Size.square(20.0);
+      const iconPadding = EdgeInsets.only(right: 5.0);
+      return FlowySvg(
+        width: iconSize.width,
+        height: iconSize.height,
+        padding: iconPadding,
+        color: Colors.white,
+        name: 'point',
+      );
+    },
+  );
 }
 
 class NumberListPluginStyle extends ThemeExtension<NumberListPluginStyle> {
@@ -264,19 +278,21 @@ class NumberListPluginStyle extends ThemeExtension<NumberListPluginStyle> {
     },
   );
 
-  static final dark = light.copyWith(icon: (editorState, textNode) {
-    const iconPadding = EdgeInsets.only(left: 5.0, right: 5.0);
-    return Container(
-      padding: iconPadding,
-      child: Text(
-        '${textNode.attributes.number.toString()}.',
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
+  static final dark = light.copyWith(
+    icon: (editorState, textNode) {
+      const iconPadding = EdgeInsets.only(left: 5.0, right: 5.0);
+      return Container(
+        padding: iconPadding,
+        child: Text(
+          '${textNode.attributes.number.toString()}.',
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
 }
 
 class QuotedTextPluginStyle extends ThemeExtension<QuotedTextPluginStyle> {
@@ -305,7 +321,9 @@ class QuotedTextPluginStyle extends ThemeExtension<QuotedTextPluginStyle> {
 
   @override
   ThemeExtension<QuotedTextPluginStyle> lerp(
-      ThemeExtension<QuotedTextPluginStyle>? other, double t) {
+    ThemeExtension<QuotedTextPluginStyle>? other,
+    double t,
+  ) {
     if (other is! QuotedTextPluginStyle) {
       return this;
     }

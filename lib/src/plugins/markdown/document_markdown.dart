@@ -22,13 +22,17 @@ Document markdownToDocument(
 /// Converts a [Document] to markdown.
 ///
 /// [customParsers] is a list of custom parsers that will be used to parse the markdown.
-String documentToMarkdown(Document document,
-    {List<NodeParser> customParsers = const []}) {
-  return AppFlowyEditorMarkdownCodec(encodeParsers: [
-    ...customParsers,
-    const TextNodeParser(),
-    const ImageNodeParser(),
-  ]).encode(document);
+String documentToMarkdown(
+  Document document, {
+  List<NodeParser> customParsers = const [],
+}) {
+  return AppFlowyEditorMarkdownCodec(
+    encodeParsers: [
+      ...customParsers,
+      const TextNodeParser(),
+      const ImageNodeParser(),
+    ],
+  ).encode(document);
 }
 
 class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
