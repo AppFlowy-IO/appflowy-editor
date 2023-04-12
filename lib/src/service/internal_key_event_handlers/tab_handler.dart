@@ -14,8 +14,8 @@ ShortcutEventHandler tabHandler = (editorState, event) {
   final textNode = textNodes.first;
   final previous = textNode.previous;
 
-  if (textNode.subtype != BuiltInAttributeKey.bulletedList &&
-      textNode.subtype != BuiltInAttributeKey.checkbox) {
+  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
+      .contains(textNode.subtype)) {
     final transaction = editorState.transaction
       ..insertText(textNode, selection.end.offset, ' ' * 4);
     editorState.apply(transaction);
@@ -23,8 +23,8 @@ ShortcutEventHandler tabHandler = (editorState, event) {
   }
 
   if (previous == null ||
-      (previous.subtype != BuiltInAttributeKey.bulletedList &&
-          previous.subtype != BuiltInAttributeKey.checkbox)) {
+      ![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
+          .contains(textNode.subtype)) {
     return KeyEventResult.ignored;
   }
 

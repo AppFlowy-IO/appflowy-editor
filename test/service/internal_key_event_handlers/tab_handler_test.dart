@@ -16,8 +16,7 @@ void main() async {
         ..insertTextNode(text);
       await editor.startTesting();
 
-      var selection = Selection.single(path: [0], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -25,8 +24,7 @@ void main() async {
         Selection.single(path: [0], startOffset: 4),
       );
 
-      selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -59,8 +57,7 @@ void main() async {
       await editor.startTesting();
       var document = editor.document;
 
-      var selection = Selection.single(path: [0], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       // nothing happens
@@ -79,8 +76,7 @@ void main() async {
       //  * Welcome to Appflowy 😁
       //  * Welcome to Appflowy 😁
 
-      selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
 
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
@@ -96,8 +92,7 @@ void main() async {
         BuiltInAttributeKey.bulletedList,
       );
 
-      selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -125,8 +120,9 @@ void main() async {
       //  * Welcome to Appflowy 😁
       //    * Welcome to Appflowy 😁
       document = editor.document;
-      selection = Selection.single(path: [0, 0], startOffset: 0);
-      await editor.updateSelection(selection);
+
+      await editor
+          .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -135,8 +131,8 @@ void main() async {
       );
       expect(editor.document.toJson(), document.toJson());
 
-      selection = Selection.single(path: [0, 1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor
+          .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -183,10 +179,9 @@ void main() async {
           },
         );
       await editor.startTesting();
-      var document = editor.document;
+      Document document = editor.document;
 
-      var selection = Selection.single(path: [0], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       // nothing happens
@@ -205,8 +200,7 @@ void main() async {
       //  [] Welcome to Appflowy 😁
       //  [] Welcome to Appflowy 😁
 
-      selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
 
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
@@ -219,8 +213,7 @@ void main() async {
       expect(editor.nodeAtPath([2]), null);
       expect(editor.nodeAtPath([0, 0])!.subtype, BuiltInAttributeKey.checkbox);
 
-      selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -242,8 +235,9 @@ void main() async {
       //  [] Welcome to Appflowy 😁
       //   [] Welcome to Appflowy 😁
       document = editor.document;
-      selection = Selection.single(path: [0, 0], startOffset: 0);
-      await editor.updateSelection(selection);
+
+      await editor
+          .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
@@ -252,8 +246,8 @@ void main() async {
       );
       expect(editor.document.toJson(), document.toJson());
 
-      selection = Selection.single(path: [0, 1], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor
+          .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
       await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
       expect(
