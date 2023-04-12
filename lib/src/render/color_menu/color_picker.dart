@@ -11,35 +11,34 @@ class ColorOption {
   final String name;
 }
 
-enum _ColorType {
-  font,
-  background,
+class ColorOptionList {
+  const ColorOptionList({
+    this.selectedColorHex,
+    required this.header,
+    required this.colorOptions,
+    required this.onSubmittedAction,
+  });
+
+  final String header;
+  final List<ColorOption> colorOptions;
+  final void Function(String color) onSubmittedAction;
+  final String? selectedColorHex;
 }
 
 class ColorPicker extends StatefulWidget {
   const ColorPicker({
     super.key,
-    this.selectedFontColorHex,
-    this.selectedBackgroundColorHex,
     required this.pickerBackgroundColor,
-    required this.fontColorOptions,
-    required this.backgroundColorOptions,
     required this.pickerItemHoverColor,
     required this.pickerItemTextColor,
-    required this.onSubmittedbackgroundColorHex,
-    required this.onSubmittedFontColorHex,
+    required this.colorOptionLists,
   });
 
-  final String? selectedFontColorHex;
-  final String? selectedBackgroundColorHex;
   final Color pickerBackgroundColor;
   final Color pickerItemHoverColor;
   final Color pickerItemTextColor;
-  final void Function(String color) onSubmittedbackgroundColorHex;
-  final void Function(String color) onSubmittedFontColorHex;
 
-  final List<ColorOption> fontColorOptions;
-  final List<ColorOption> backgroundColorOptions;
+  final List<ColorOptionList> colorOptionLists;
 
   @override
   State<ColorPicker> createState() => _ColorPickerState();
@@ -67,32 +66,29 @@ class _ColorPickerState extends State<ColorPicker> {
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // font color
-              _buildHeader('font color'),
-              // padding
-              const SizedBox(height: 6),
-              _buildColorItems(
-                _ColorType.font,
-                widget.fontColorOptions,
-                widget.selectedFontColorHex,
-              ),
-              // background color
-              const SizedBox(height: 6),
-              _buildHeader('background color'),
-              const SizedBox(height: 6),
-              _buildColorItems(
-                _ColorType.background,
-                widget.backgroundColorOptions,
-                widget.selectedBackgroundColorHex,
-              ),
-            ],
-          ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: _buildColorOptionLists(widget.colorOptionLists)),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildColorOptionLists(List<ColorOptionList> colorOptionLists) {
+    List<Widget> colorOptionMenu = [];
+    for (var i = 0; i < colorOptionLists.length; i++) {
+      if (i != 0) {
+        colorOptionMenu.add(const SizedBox(height: 6));
+      }
+
+      colorOptionMenu.addAll([
+        _buildHeader(colorOptionLists[i].header),
+        const SizedBox(height: 6),
+        _buildColorItems(colorOptionLists[i]),
+      ]);
+    }
+
+    return colorOptionMenu;
   }
 
   Widget _buildHeader(String text) {
@@ -105,21 +101,19 @@ class _ColorPickerState extends State<ColorPicker> {
     );
   }
 
-  Widget _buildColorItems(
-    _ColorType type,
-    List<ColorOption> options,
-    String? selectedColor,
-  ) {
+  Widget _buildColorItems(ColorOptionList colorOptionList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
-      children: options
-          .map((e) => _buildColorItem(type, e, e.colorHex == selectedColor))
+      children: colorOptionList.colorOptions
+          .map((e) => _buildColorItem(colorOptionList.onSubmittedAction, e,
+              e.colorHex == colorOptionList.selectedColorHex))
           .toList(),
     );
   }
 
-  Widget _buildColorItem(_ColorType type, ColorOption option, bool isChecked) {
+  Widget _buildColorItem(
+      void Function(String color) onTap, ColorOption option, bool isChecked) {
     return SizedBox(
       height: 36,
       child: InkWell(
@@ -128,11 +122,7 @@ class _ColorPickerState extends State<ColorPicker> {
         ),
         hoverColor: widget.pickerItemHoverColor,
         onTap: () {
-          if (type == _ColorType.font) {
-            widget.onSubmittedFontColorHex(option.colorHex);
-          } else if (type == _ColorType.background) {
-            widget.onSubmittedbackgroundColorHex(option.colorHex);
-          }
+          onTap(option.colorHex);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

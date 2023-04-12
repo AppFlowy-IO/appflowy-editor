@@ -9,7 +9,6 @@ import 'package:appflowy_editor/src/render/rich_text/number_list_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 

@@ -310,7 +310,7 @@ List<ToolbarItem> defaultToolbarItems = [
           (value) =>
               value != null &&
               value !=
-                  _generateBackgroundColorOptions(editorState).first.colorHex,
+                  generateBackgroundColorOptions(editorState).first.colorHex,
         ),
     handler: (editorState, context) => showColorMenu(
       context,
@@ -582,25 +582,32 @@ void showColorMenu(
                 Colors.blue.withOpacity(0.3),
             pickerItemTextColor:
                 style.selectionMenuItemTextColor ?? Colors.black,
-            selectedFontColorHex: fontColorHex,
-            selectedBackgroundColorHex: backgroundColorHex,
-            fontColorOptions: _generateFontColorOptions(editorState),
-            backgroundColorOptions:
-                _generateBackgroundColorOptions(editorState),
-            onSubmittedbackgroundColorHex: (color) {
-              formatHighlightColor(
-                editorState,
-                color,
-              );
-              _dismissColorMenu();
-            },
-            onSubmittedFontColorHex: (color) {
-              formatFontColor(
-                editorState,
-                color,
-              );
-              _dismissColorMenu();
-            },
+            colorOptionLists: [
+              ColorOptionList(
+                header: 'font color',
+                selectedColorHex: fontColorHex,
+                colorOptions: _generateFontColorOptions(editorState),
+                onSubmittedAction: (color) {
+                  formatFontColor(
+                    editorState,
+                    color,
+                  );
+                  _dismissColorMenu();
+                },
+              ),
+              ColorOptionList(
+                header: 'background color',
+                selectedColorHex: backgroundColorHex,
+                colorOptions: generateBackgroundColorOptions(editorState),
+                onSubmittedAction: (color) {
+                  formatHighlightColor(
+                    editorState,
+                    color,
+                  );
+                  _dismissColorMenu();
+                },
+              ),
+            ],
           ),
         ),
       );
@@ -657,7 +664,7 @@ List<ColorOption> _generateFontColorOptions(EditorState editorState) {
   ];
 }
 
-List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
+List<ColorOption> generateBackgroundColorOptions(EditorState editorState) {
   final defaultBackgroundColorHex =
       editorState.editorStyle.highlightColorHex ?? '0x6000BCF0';
   return [
