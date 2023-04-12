@@ -1,3 +1,7 @@
+## 0.1.6
+* fix: documentation typo issue by @Mukund-Tandon in ([#36](https://github.com/AppFlowy-IO/appflowy-editor/pull/36))
+* fix: avoid using Platform code in Web by @LucasXu0 in ([#48](https://github.com/AppFlowy-IO/appflowy-editor/pull/48))
+
 ## 0.1.5
 * test: improve test coverage by @Xazin in ([#23](https://github.com/AppFlowy-IO/appflowy-editor/pull/23))
 * feat: alt + arrow key to move cursor one word by @Xazin in ([#28](https://github.com/AppFlowy-IO/appflowy-editor/pull/28))

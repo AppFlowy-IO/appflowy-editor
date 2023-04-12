@@ -106,7 +106,10 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   Widget _buildColorItems(
-      _ColorType type, List<ColorOption> options, String? selectedColor) {
+    _ColorType type,
+    List<ColorOption> options,
+    String? selectedColor,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,

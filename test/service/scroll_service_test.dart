@@ -22,8 +22,11 @@ void main() async {
       final listFinder = find.byType(Scrollable);
       final itemFinder = find.text('mark', findRichText: true);
 
-      await tester.scrollUntilVisible(itemFinder, 500.0,
-          scrollable: listFinder);
+      await tester.scrollUntilVisible(
+        itemFinder,
+        500.0,
+        scrollable: listFinder,
+      );
 
       expect(itemFinder, findsOneWidget);
     });

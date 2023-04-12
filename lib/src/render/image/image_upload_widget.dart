@@ -19,8 +19,8 @@ void showImageUploadMenu(
   menuService.dismiss();
 
   _imageUploadMenu?.remove();
-  _imageUploadMenu = OverlayEntry(builder: (context) {
-    return Positioned(
+  _imageUploadMenu = OverlayEntry(
+    builder: (context) => Positioned(
       top: menuService.topLeft.dy,
       left: menuService.topLeft.dx,
       child: Material(
@@ -34,8 +34,8 @@ void showImageUploadMenu(
           },
         ),
       ),
-    );
-  });
+    ),
+  );
 
   Overlay.of(context).insert(_imageUploadMenu!);
 
@@ -68,8 +68,7 @@ class ImageUploadMenu extends StatefulWidget {
   State<ImageUploadMenu> createState() => _ImageUploadMenuState();
 }
 
-class _ImageUploadMenuState extends State<ImageUploadMenu>
-    with TickerProviderStateMixin {
+class _ImageUploadMenuState extends State<ImageUploadMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   String? _fileName;
@@ -167,7 +166,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 15.0),
+                    const SizedBox(height: 16.0),
                     _buildFileInput(context),
                   ],
                 ),
@@ -175,7 +174,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildURLInput(),
-                    const SizedBox(height: 15.0),
+                    const SizedBox(height: 18.0),
                     _buildUploadButton(context),
                   ],
                 ),
@@ -183,6 +182,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
             ),
           ),
           const SizedBox(height: 18.0),
+          _buildUploadButton(context),
         ],
       ),
     );
@@ -219,9 +219,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
             width: 24,
             height: 24,
           ),
-          onPressed: () {
-            _textEditingController.clear();
-          },
+          onPressed: _textEditingController.clear,
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -263,9 +261,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
             ),
           ),
         ),
-        onPressed: () {
-          widget.onUpload(_textEditingController.text);
-        },
+        onPressed: () => widget.onUpload(_textEditingController.text),
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),

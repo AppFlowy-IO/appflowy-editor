@@ -17,19 +17,21 @@ class ShortcutEvent {
   }) {
     // character and command cannot be null at the same time
     assert(
-        !(character == null &&
-            command == null &&
-            windowsCommand == null &&
-            macOSCommand == null &&
-            linuxCommand == null),
-        'character and command cannot be null at the same time');
+      !(character == null &&
+          command == null &&
+          windowsCommand == null &&
+          macOSCommand == null &&
+          linuxCommand == null),
+      'character and command cannot be null at the same time',
+    );
     assert(
-        !(character != null &&
-            (command != null &&
-                windowsCommand != null &&
-                macOSCommand != null &&
-                linuxCommand != null)),
-        'character and command cannot be set at the same time');
+      !(character != null &&
+          (command != null &&
+              windowsCommand != null &&
+              macOSCommand != null &&
+              linuxCommand != null)),
+      'character and command cannot be set at the same time',
+    );
 
     updateCommand(
       command: command,
@@ -75,10 +77,19 @@ class ShortcutEvent {
     String? macOSCommand,
     String? linuxCommand,
   }) {
+    if (command == null &&
+        windowsCommand == null &&
+        macOSCommand == null &&
+        linuxCommand == null) {
+      return;
+    }
     var matched = false;
-    if (kIsWeb && command != null && command.isNotEmpty) {
-      this.command = command;
-      matched = true;
+    if (kIsWeb) {
+      // We shouldn't continue to run the below `else if` code in Web platform, it will throw an `_operatingSystem` exception.
+      if (command != null && command.isNotEmpty) {
+        this.command = command;
+        matched = true;
+      }
     } else if (Platform.isWindows &&
         windowsCommand != null &&
         windowsCommand.isNotEmpty) {

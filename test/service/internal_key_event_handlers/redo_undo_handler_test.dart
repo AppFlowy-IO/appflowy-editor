@@ -85,7 +85,8 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
 
   final textNode = editor.nodeAtPath([0]) as TextNode;
   var allBold = textNode.allSatisfyBoldInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
 
   expect(textNode.toPlainText(), text);
   expect(allBold, false);
@@ -112,7 +113,8 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   }
 
   allBold = textNode.allSatisfyBoldInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allBold, true);
 
   //undo should remove bold style and make it normal.
@@ -129,7 +131,8 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   }
 
   allBold = textNode.allSatisfyBoldInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allBold, false);
 
   //redo should make text bold.
@@ -148,7 +151,8 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   }
 
   allBold = textNode.allSatisfyBoldInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allBold, true);
 }
 
@@ -162,7 +166,8 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
 
   final textNode = editor.nodeAtPath([0]) as TextNode;
   var allItalics = textNode.allSatisfyItalicInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
 
   expect(textNode.toPlainText(), text);
   expect(allItalics, false);
@@ -189,7 +194,8 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   }
 
   allItalics = textNode.allSatisfyItalicInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allItalics, true);
 
   //undo should remove italic style and make it normal.
@@ -206,7 +212,8 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   }
 
   allItalics = textNode.allSatisfyItalicInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allItalics, false);
 
   //redo should make text italic again.
@@ -225,7 +232,8 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   }
 
   allItalics = textNode.allSatisfyItalicInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allItalics, true);
 }
 
@@ -239,7 +247,8 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
 
   final textNode = editor.nodeAtPath([0]) as TextNode;
   var allUnderline = textNode.allSatisfyUnderlineInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
 
   expect(textNode.toPlainText(), text);
   expect(allUnderline, false);
@@ -266,7 +275,8 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   }
 
   allUnderline = textNode.allSatisfyUnderlineInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allUnderline, true);
 
   //undo should remove bold style and make it normal.
@@ -283,7 +293,8 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   }
 
   allUnderline = textNode.allSatisfyUnderlineInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allUnderline, false);
 
   //redo should make text bold.
@@ -302,12 +313,15 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   }
 
   allUnderline = textNode.allSatisfyUnderlineInSelection(
-      Selection.single(path: [0], startOffset: 1, endOffset: text.length));
+    Selection.single(path: [0], startOffset: 1, endOffset: text.length),
+  );
   expect(allUnderline, true);
 }
 
 Future<void> _testBackspaceUndoRedo(
-    WidgetTester tester, bool isDownwardSelection) async {
+  WidgetTester tester,
+  bool isDownwardSelection,
+) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor
     ..insertTextNode(text)
