@@ -141,40 +141,50 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   }
 
   Widget _buildResizableImage(BuildContext context) {
-    final fileImage = Image.file(
-      //TODO:  Do not render the widget if null
-      File(widget.src),
-      width: _imageWidth == null ? null : _imageWidth! - _distance,
-      gaplessPlayback: true,
-      errorBuilder: (context, error, stackTrace) {
-        return _buildError(context);
-      },
-    );
-    final networkImage = Image.network(
-      widget.src,
-      width: _imageWidth == null ? null : _imageWidth! - _distance,
-      gaplessPlayback: true,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null ||
-            loadingProgress.cumulativeBytesLoaded ==
-                loadingProgress.expectedTotalBytes) {
-          return child;
+    Image? image;
+
+    switch (widget.type) {
+      case 'file':
+        final imageFile = File(widget.src);
+        if (!imageFile.existsSync()) {
+          return const SizedBox.shrink();
         }
+        image = Image.file(
+          imageFile,
+          width: _imageWidth == null ? null : _imageWidth! - _distance,
+          gaplessPlayback: true,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildError(context);
+          },
+        );
+        break;
 
-        return _buildLoading(context);
-      },
-      errorBuilder: (context, error, stackTrace) => _buildError(context),
-    );
+      case 'network':
+        image = Image.network(
+          widget.src,
+          width: _imageWidth == null ? null : _imageWidth! - _distance,
+          gaplessPlayback: true,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null ||
+                loadingProgress.cumulativeBytesLoaded ==
+                    loadingProgress.expectedTotalBytes) {
+              return child;
+            }
 
+            return _buildLoading(context);
+          },
+          errorBuilder: (context, error, stackTrace) => _buildError(context),
+        );
+        break;
+    }
     if (_imageWidth == null) {
-      _imageStream = networkImage.image.resolve(const ImageConfiguration())
+      _imageStream = image!.image.resolve(const ImageConfiguration())
         ..addListener(_imageStreamListener);
     }
 
     return Stack(
       children: [
-        if (widget.type.toString() == 'file') ...[fileImage],
-        if (widget.type.toString() == 'network') ...[networkImage],
+        image!,
         if (widget.editable) ...[
           _buildEdgeGesture(
             context,

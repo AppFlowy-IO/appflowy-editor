@@ -9,8 +9,8 @@ import 'package:flutter/services.dart';
 
 OverlayEntry? _imageUploadMenu;
 EditorState? _editorState;
-String? localFile;
 String? imageName;
+
 void showImageUploadMenu(
   EditorState editorState,
   SelectionMenuService menuService,
@@ -27,11 +27,9 @@ void showImageUploadMenu(
         child: ImageUploadMenu(
           editorState: editorState,
           onSubmitted: (text) {
-            // _dismissImageUploadMenu();
             editorState.insertImageNode(text, 'file');
           },
           onUpload: (text) {
-            // _dismissImageUploadMenu();
             editorState.insertImageNode(text, 'network');
           },
         ),
@@ -97,11 +95,12 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
     _resetState();
     try {
       _paths = (await FilePicker.platform.pickFiles(
-              type: FileType.image,
-              onFileLoading: (FilePickerStatus status) =>
-                  _logException(status.toString()),
-              allowedExtensions: ['jpg', 'png', 'gif'],
-              allowMultiple: true))
+        type: FileType.image,
+        onFileLoading: (FilePickerStatus status) =>
+            _logException(status.toString()),
+        allowedExtensions: ['jpg', 'png', 'gif'],
+        allowMultiple: true,
+      ))
           ?.files;
     } on PlatformException catch (e) {
       _logException('Unsupported Operation  ${e.toString()}');
@@ -109,13 +108,15 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
       _logException(e.toString());
     }
     if (!mounted) return;
-    setState(() {
-      _fileName = _paths != null ? _paths!.map((e) => e.name).toString() : null;
 
-      src = _paths != null ? _paths!.map((e) => e.path).toString() : null;
-      imageName = _fileName != null ? _fileName! : null;
-      widget.onSubmitted(src!);
-    });
+    if (_paths != null) {
+      final lastPath = _paths!.last;
+      imageName = lastPath.name;
+
+      if (lastPath.path != null) {
+        widget.onSubmitted(lastPath.path.toString());
+      }
+    }
   }
 
   void _resetState() {
