@@ -211,11 +211,17 @@ void main() async {
           Selection.single(path: [0, 0], startOffset: 0),
         );
         expect(
-            editor.nodeAtPath([0])!.subtype, BuiltInAttributeKey.bulletedList);
-        expect(editor.nodeAtPath([0, 0])!.subtype,
-            BuiltInAttributeKey.bulletedList);
+          editor.nodeAtPath([0])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
         expect(
-            editor.nodeAtPath([1])!.subtype, BuiltInAttributeKey.bulletedList);
+          editor.nodeAtPath([0, 0])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
+        expect(
+          editor.nodeAtPath([1])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
         expect(editor.nodeAtPath([2]), null);
 
         await editor
@@ -236,11 +242,17 @@ void main() async {
         // * Welcome to Appflowy 😁
 
         expect(
-            editor.nodeAtPath([0])!.subtype, BuiltInAttributeKey.bulletedList);
+          editor.nodeAtPath([0])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
         expect(
-            editor.nodeAtPath([1])!.subtype, BuiltInAttributeKey.bulletedList);
+          editor.nodeAtPath([1])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
         expect(
-            editor.nodeAtPath([2])!.subtype, BuiltInAttributeKey.bulletedList);
+          editor.nodeAtPath([2])!.subtype,
+          BuiltInAttributeKey.bulletedList,
+        );
         expect(editor.nodeAtPath([0, 0]), null);
       },
     );

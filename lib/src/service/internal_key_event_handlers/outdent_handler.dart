@@ -37,7 +37,8 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
 
     final previousPath = oldPath.sublist(0, oldPath.length - 1);
     editorState.updateCursorSelection(
-        Selection.single(path: previousPath, startOffset: 0));
+      Selection.single(path: previousPath, startOffset: 0),
+    );
 
     final prevSelection =
         editorState.service.selectionService.currentSelection.value;
