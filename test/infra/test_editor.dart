@@ -30,25 +30,26 @@ class EditorWidgetTester {
     bool autoFocus = false,
     bool editable = true,
   }) async {
-    final app = MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        AppFlowyEditorLocalizations.delegate,
-      ],
-      supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
-      locale: locale,
-      home: Scaffold(
-        body: AppFlowyEditor(
-          editorState: _editorState,
-          shrinkWrap: shrinkWrap,
-          autoFocus: autoFocus,
-          editable: editable,
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          AppFlowyEditorLocalizations.delegate,
+        ],
+        supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
+        locale: locale,
+        home: Scaffold(
+          body: AppFlowyEditor(
+            editorState: _editorState,
+            shrinkWrap: shrinkWrap,
+            autoFocus: autoFocus,
+            editable: editable,
+          ),
         ),
       ),
     );
-    await tester.pumpWidget(app);
     await tester.pump();
     return this;
   }

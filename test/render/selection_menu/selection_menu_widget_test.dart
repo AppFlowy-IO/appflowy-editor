@@ -218,13 +218,19 @@ Future<EditorWidgetTester> _prepare(WidgetTester tester) async {
 }
 
 Future<void> _testDefaultSelectionMenuItems(
-    int index, EditorWidgetTester editor) async {
+  int index,
+  EditorWidgetTester editor,
+) async {
   expect(editor.documentLength, 4);
   expect(editor.documentSelection, Selection.single(path: [2], startOffset: 0));
-  expect((editor.nodeAtPath([0]) as TextNode).toPlainText(),
-      'Welcome to Appflowy 😁');
-  expect((editor.nodeAtPath([1]) as TextNode).toPlainText(),
-      'Welcome to Appflowy 😁');
+  expect(
+    (editor.nodeAtPath([0]) as TextNode).toPlainText(),
+    'Welcome to Appflowy 😁',
+  );
+  expect(
+    (editor.nodeAtPath([1]) as TextNode).toPlainText(),
+    'Welcome to Appflowy 😁',
+  );
   final node = editor.nodeAtPath([2]);
   final item = defaultSelectionMenuItems[index];
   if (item.name == 'Text') {
@@ -252,8 +258,10 @@ Future<void> _testDefaultSelectionMenuItems(
 
 SelectionMenuItemWidget getSelectedMenuItem(WidgetTester tester) {
   return tester
-      .state(find.byWidgetPredicate(
-        (widget) => widget is SelectionMenuItemWidget && widget.isSelected,
-      ))
+      .state(
+        find.byWidgetPredicate(
+          (widget) => widget is SelectionMenuItemWidget && widget.isSelected,
+        ),
+      )
       .widget as SelectionMenuItemWidget;
 }

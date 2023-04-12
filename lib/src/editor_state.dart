@@ -213,13 +213,11 @@ class EditorState {
       return;
     }
 
-    final tr = transaction;
-
     // Rules
-    _insureLastNodeEditable(tr);
+    _insureLastNodeEditable(transaction);
 
-    if (tr.operations.isNotEmpty) {
-      apply(tr, ruleCount: ruleCount + 1, withUpdateCursor: false);
+    if (transaction.operations.isNotEmpty) {
+      apply(transaction, ruleCount: ruleCount + 1, withUpdateCursor: false);
     }
   }
 
