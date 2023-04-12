@@ -24,20 +24,26 @@ class _TableActionButtonState extends State<TableActionButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: widget.padding,
-        width: widget.width,
-        height: widget.height,
-        child: MouseRegion(
-            onEnter: (_) => setState(() => _visible = true),
-            onExit: (_) => setState(() => _visible = false),
-            child: Center(
-              child: Visibility(
-                visible: _visible,
-                child: ActionMenuWidget(items: [
-                  ActionMenuItem.icon(
-                      iconData: Icons.add, onPressed: () => widget.onPressed()),
-                ]),
-              ),
-            )));
+      padding: widget.padding,
+      width: widget.width,
+      height: widget.height,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _visible = true),
+        onExit: (_) => setState(() => _visible = false),
+        child: Center(
+          child: Visibility(
+            visible: _visible,
+            child: ActionMenuWidget(
+              items: [
+                ActionMenuItem.icon(
+                  iconData: Icons.add,
+                  onPressed: () => widget.onPressed(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

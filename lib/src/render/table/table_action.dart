@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/table/util.dart';
 
-addCol(Node tableNode, Transaction transaction) {
+void addCol(Node tableNode, Transaction transaction) {
   List<Node> cellNodes = [];
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
@@ -25,7 +25,7 @@ addCol(Node tableNode, Transaction transaction) {
   transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
 }
 
-addRow(Node tableNode, Transaction transaction) {
+void addRow(Node tableNode, Transaction transaction) {
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
   for (var i = 0; i < colsLen; i++) {
@@ -37,13 +37,15 @@ addRow(Node tableNode, Transaction transaction) {
     );
     node.insert(TextNode.empty());
 
-    transaction.insertNode(getCellNode(tableNode, i, rowsLen - 1)!.path.next,
-        newCellNode(tableNode, node));
+    transaction.insertNode(
+      getCellNode(tableNode, i, rowsLen - 1)!.path.next,
+      newCellNode(tableNode, node),
+    );
   }
   transaction.updateNode(tableNode, {'rowsLen': rowsLen + 1});
 }
 
-removeCol(Node tableNode, int col, Transaction transaction) {
+void removeCol(Node tableNode, int col, Transaction transaction) {
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
   List<Node> nodes = [];
@@ -63,7 +65,7 @@ removeCol(Node tableNode, int col, Transaction transaction) {
   transaction.updateNode(tableNode, {'colsLen': colsLen - 1});
 }
 
-removeRow(Node tableNode, int row, Transaction transaction) {
+void removeRow(Node tableNode, int row, Transaction transaction) {
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
   List<Node> nodes = [];
@@ -83,18 +85,24 @@ removeRow(Node tableNode, int row, Transaction transaction) {
   transaction.updateNode(tableNode, {'rowsLen': rowsLen - 1});
 }
 
-duplicateCol(Node tableNode, int col, Transaction transaction) {
+void duplicateCol(Node tableNode, int col, Transaction transaction) {
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
   List<Node> nodes = [];
   for (var i = 0; i < rowsLen; i++) {
     final node = getCellNode(tableNode, col, i)!;
-    nodes.add(node.copyWith(attributes: {
-      'position': {'col': col + 1, 'row': i}
-    }));
+    nodes.add(
+      node.copyWith(
+        attributes: {
+          'position': {'col': col + 1, 'row': i}
+        },
+      ),
+    );
   }
   transaction.insertNodes(
-      getCellNode(tableNode, col, rowsLen - 1)!.path.next, nodes);
+    getCellNode(tableNode, col, rowsLen - 1)!.path.next,
+    nodes,
+  );
 
   for (var i = col + 1; i < colsLen; i++) {
     for (var j = 0; j < rowsLen; j++) {
@@ -107,16 +115,18 @@ duplicateCol(Node tableNode, int col, Transaction transaction) {
   transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
 }
 
-duplicateRow(Node tableNode, int row, Transaction transaction) {
+void duplicateRow(Node tableNode, int row, Transaction transaction) {
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
   for (var i = 0; i < colsLen; i++) {
     final node = getCellNode(tableNode, i, row)!;
     transaction.insertNode(
       node.path.next,
-      node.copyWith(attributes: {
-        'position': {'row': row + 1, 'col': i}
-      }),
+      node.copyWith(
+        attributes: {
+          'position': {'row': row + 1, 'col': i}
+        },
+      ),
     );
   }
 
@@ -131,7 +141,12 @@ duplicateRow(Node tableNode, int row, Transaction transaction) {
   transaction.updateNode(tableNode, {'rowsLen': rowsLen + 1});
 }
 
-setColBgColor(Node tableNode, int col, Transaction transaction, String? color) {
+void setColBgColor(
+  Node tableNode,
+  int col,
+  Transaction transaction,
+  String? color,
+) {
   final rowslen = tableNode.attributes['rowsLen'];
   for (var i = 0; i < rowslen; i++) {
     final node = getCellNode(tableNode, col, i)!;
@@ -142,7 +157,12 @@ setColBgColor(Node tableNode, int col, Transaction transaction, String? color) {
   }
 }
 
-setRowBgColor(Node tableNode, int row, Transaction transaction, String? color) {
+void setRowBgColor(
+  Node tableNode,
+  int row,
+  Transaction transaction,
+  String? color,
+) {
   final colsLen = tableNode.attributes['colsLen'];
   for (var i = 0; i < colsLen; i++) {
     final node = getCellNode(tableNode, i, row)!;
@@ -153,7 +173,7 @@ setRowBgColor(Node tableNode, int row, Transaction transaction, String? color) {
   }
 }
 
-newCellNode(Node tableNode, n) {
+dynamic newCellNode(Node tableNode, n) {
   final row = n.attributes['position']['row'] as int;
   final col = n.attributes['position']['col'] as int;
   final int rowsLen = tableNode.attributes['rowsLen'];
@@ -161,11 +181,12 @@ newCellNode(Node tableNode, n) {
 
   if (!n.attributes.containsKey('height')) {
     double nodeHeight = double.tryParse(
-        tableNode.attributes['config']['rowDefaultHeight'].toString())!;
+      tableNode.attributes['config']['rowDefaultHeight'].toString(),
+    )!;
     if (row < rowsLen) {
-      nodeHeight = double.tryParse(getCellNode(tableNode, 0, row)!
-              .attributes['height']
-              .toString()) ??
+      nodeHeight = double.tryParse(
+            getCellNode(tableNode, 0, row)!.attributes['height'].toString(),
+          ) ??
           nodeHeight;
     }
     n.updateAttributes({'height': nodeHeight});
@@ -173,10 +194,12 @@ newCellNode(Node tableNode, n) {
 
   if (!n.attributes.containsKey('width')) {
     double nodeWidth = double.tryParse(
-        tableNode.attributes['config']['colDefaultWidth'].toString())!;
+      tableNode.attributes['config']['colDefaultWidth'].toString(),
+    )!;
     if (col < colsLen) {
       nodeWidth = double.tryParse(
-              getCellNode(tableNode, col, 0)!.attributes['width'].toString()) ??
+            getCellNode(tableNode, col, 0)!.attributes['width'].toString(),
+          ) ??
           nodeWidth;
     }
     n.updateAttributes({'width': nodeWidth});

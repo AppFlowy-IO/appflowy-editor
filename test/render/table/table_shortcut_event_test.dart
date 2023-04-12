@@ -18,18 +18,23 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      }, shortcutEvents: [
-        enterInTableCell
-      ]);
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+        shortcutEvents: [enterInTableCell],
+      );
       await tester.pumpAndSettle();
 
       var cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
-          Selection.single(path: cell00.childAtIndex(0)!.path, startOffset: 0));
+        Selection.single(
+          path: cell00.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
 
       var selection = editor.documentSelection!;
@@ -47,18 +52,23 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      }, shortcutEvents: [
-        enterInTableCell
-      ]);
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+        shortcutEvents: [enterInTableCell],
+      );
       await tester.pumpAndSettle();
 
       var cell11 = getCellNode(tableNode.node, 1, 1)!;
 
       await editor.updateSelection(
-          Selection.single(path: cell11.childAtIndex(0)!.path, startOffset: 0));
+        Selection.single(
+          path: cell11.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
 
       var selection = editor.documentSelection!;
@@ -76,18 +86,23 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      }, shortcutEvents: [
-        enterInTableCell
-      ]);
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+        shortcutEvents: [enterInTableCell],
+      );
       await tester.pumpAndSettle();
 
       var cell10 = getCellNode(tableNode.node, 1, 0)!;
 
       await editor.updateSelection(
-          Selection.single(path: cell10.childAtIndex(0)!.path, startOffset: 0));
+        Selection.single(
+          path: cell10.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
 
       var selection = editor.documentSelection!;
@@ -111,19 +126,24 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      }, shortcutEvents: [
-        upInTableCell
-      ]);
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+        shortcutEvents: [upInTableCell],
+      );
       await tester.pumpAndSettle();
 
       var cell01 = getCellNode(tableNode.node, 0, 1)!;
       var cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
-          Selection.single(path: cell01.childAtIndex(0)!.path, startOffset: 1));
+        Selection.single(
+          path: cell01.childAtIndex(0)!.path,
+          startOffset: 1,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
 
       var selection = editor.documentSelection!;
@@ -133,7 +153,11 @@ void main() async {
       expect(selection.start.offset, 1);
 
       await editor.updateSelection(
-          Selection.single(path: cell01.childAtIndex(0)!.path, startOffset: 3));
+        Selection.single(
+          path: cell01.childAtIndex(0)!.path,
+          startOffset: 3,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
 
       selection = editor.documentSelection!;
@@ -151,19 +175,24 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      }, shortcutEvents: [
-        downInTableCell
-      ]);
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+        shortcutEvents: [downInTableCell],
+      );
       await tester.pumpAndSettle();
 
       var cell01 = getCellNode(tableNode.node, 0, 1)!;
       var cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
-          Selection.single(path: cell00.childAtIndex(0)!.path, startOffset: 1));
+        Selection.single(
+          path: cell00.childAtIndex(0)!.path,
+          startOffset: 1,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
 
       var selection = editor.documentSelection!;
@@ -173,7 +202,11 @@ void main() async {
       expect(selection.start.offset, 1);
 
       await editor.updateSelection(
-          Selection.single(path: cell00.childAtIndex(0)!.path, startOffset: 3));
+        Selection.single(
+          path: cell00.childAtIndex(0)!.path,
+          startOffset: 3,
+        ),
+      );
       await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
 
       selection = editor.documentSelection!;

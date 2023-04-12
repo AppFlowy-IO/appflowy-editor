@@ -611,14 +611,22 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     }
 
     var min = _findCloseNode(
-        sortedNodes, start, end, (rect) => rect.bottom <= offset.dy);
+      sortedNodes,
+      start,
+      end,
+      (rect) => rect.bottom <= offset.dy,
+    );
 
     final filteredNodes = List.of(sortedNodes)
       ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
     min = 0;
     if (filteredNodes.length > 1) {
-      min = _findCloseNode(sortedNodes, 0, filteredNodes.length - 1,
-          (rect) => rect.right <= offset.dx);
+      min = _findCloseNode(
+        sortedNodes,
+        0,
+        filteredNodes.length - 1,
+        (rect) => rect.right <= offset.dx,
+      );
     }
 
     final node = filteredNodes[min];
@@ -635,8 +643,12 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     return node;
   }
 
-  int _findCloseNode(List<Node> sortedNodes, int start, int end,
-      bool Function(Rect rect) compare) {
+  int _findCloseNode(
+    List<Node> sortedNodes,
+    int start,
+    int end,
+    bool Function(Rect rect) compare,
+  ) {
     var min = start;
     var max = end;
     while (min <= max) {

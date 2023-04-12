@@ -39,7 +39,10 @@ final tableContextMenuItems = [
         var node = _getTableCellNode(editorState);
         final transaction = editorState.transaction;
         removeCol(
-            node.parent!, node.attributes['position']['col'], transaction);
+          node.parent!,
+          node.attributes['position']['col'],
+          transaction,
+        );
         editorState.apply(transaction);
       },
     ),
@@ -56,7 +59,10 @@ final tableContextMenuItems = [
         var node = _getTableCellNode(editorState);
         final transaction = editorState.transaction;
         removeRow(
-            node.parent!, node.attributes['position']['row'], transaction);
+          node.parent!,
+          node.attributes['position']['row'],
+          transaction,
+        );
         editorState.apply(transaction);
       },
     ),
@@ -67,7 +73,10 @@ final tableContextMenuItems = [
         var node = _getTableCellNode(editorState);
         final transaction = editorState.transaction;
         duplicateCol(
-            node.parent!, node.attributes['position']['col'], transaction);
+          node.parent!,
+          node.attributes['position']['col'],
+          transaction,
+        );
         editorState.apply(transaction);
       },
     ),
@@ -78,7 +87,10 @@ final tableContextMenuItems = [
         var node = _getTableCellNode(editorState);
         final transaction = editorState.transaction;
         duplicateRow(
-            node.parent!, node.attributes['position']['row'], transaction);
+          node.parent!,
+          node.attributes['position']['row'],
+          transaction,
+        );
         editorState.apply(transaction);
       },
     ),
@@ -87,8 +99,12 @@ final tableContextMenuItems = [
       isApplicable: _isSelectionInTable,
       onPressed: (editorState) {
         var node = _getTableCellNode(editorState);
-        _showColorMenu(node, editorState, node.attributes['position']['col'],
-            setColBgColor);
+        _showColorMenu(
+          node,
+          editorState,
+          node.attributes['position']['col'],
+          setColBgColor,
+        );
       },
     ),
     ContextMenuItem(
@@ -96,8 +112,12 @@ final tableContextMenuItems = [
       isApplicable: _isSelectionInTable,
       onPressed: (editorState) {
         var node = _getTableCellNode(editorState);
-        _showColorMenu(node, editorState, node.attributes['position']['row'],
-            setRowBgColor);
+        _showColorMenu(
+          node,
+          editorState,
+          node.attributes['position']['row'],
+          setRowBgColor,
+        );
       },
     ),
   ],
@@ -134,37 +154,41 @@ void _showColorMenu(
   _editorState = editorState;
 
   final style = editorState.editorStyle;
-  _colorMenuOverlay = OverlayEntry(builder: (context) {
-    return Positioned(
-      top: matchRect.bottom - 15,
-      left: matchRect.left + 15,
-      child: Material(
-        color: Colors.transparent,
-        child: ColorPicker(
-          pickerBackgroundColor:
-              style.selectionMenuBackgroundColor ?? Colors.white,
-          pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
-              Colors.blue.withOpacity(0.3),
-          pickerItemTextColor: style.selectionMenuItemTextColor ?? Colors.black,
-          colorOptionLists: [
-            ColorOptionList(
-              header: 'background color',
-              selectedColorHex: node.attributes['backgroundColor'],
-              colorOptions: generateBackgroundColorOptions(editorState),
-              onSubmittedAction: (color) {
-                final transaction = editorState.transaction;
-                var c =
-                    color == node.attributes['backgroundColor'] ? null : color;
-                action(node.parent!, rowcol, transaction, c);
-                editorState.apply(transaction);
-                _dismissColorMenu();
-              },
-            ),
-          ],
+  _colorMenuOverlay = OverlayEntry(
+    builder: (context) {
+      return Positioned(
+        top: matchRect.bottom - 15,
+        left: matchRect.left + 15,
+        child: Material(
+          color: Colors.transparent,
+          child: ColorPicker(
+            pickerBackgroundColor:
+                style.selectionMenuBackgroundColor ?? Colors.white,
+            pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
+                Colors.blue.withOpacity(0.3),
+            pickerItemTextColor:
+                style.selectionMenuItemTextColor ?? Colors.black,
+            colorOptionLists: [
+              ColorOptionList(
+                header: 'background color',
+                selectedColorHex: node.attributes['backgroundColor'],
+                colorOptions: generateBackgroundColorOptions(editorState),
+                onSubmittedAction: (color) {
+                  final transaction = editorState.transaction;
+                  var c = color == node.attributes['backgroundColor']
+                      ? null
+                      : color;
+                  action(node.parent!, rowcol, transaction, c);
+                  editorState.apply(transaction);
+                  _dismissColorMenu();
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
   Overlay.of(node.key.currentContext!).insert(_colorMenuOverlay!);
 
   editorState.service.scrollService?.disable();

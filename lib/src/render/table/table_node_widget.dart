@@ -96,8 +96,10 @@ class _TableNodeWidgetState extends State<TableNodeWidget>
   @override
   List<Rect> getRectsInSelection(Selection selection) => [
         Offset.zero &
-            Size(widget.tableNode.tableWidth + 10,
-                widget.tableNode.colsHeight + 10)
+            Size(
+              widget.tableNode.tableWidth + 10,
+              widget.tableNode.colsHeight + 10,
+            )
       ];
 
   @override

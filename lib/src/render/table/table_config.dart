@@ -8,7 +8,7 @@ class TableConfig {
   });
 
   static TableConfig fromJson(Map<String, dynamic> json) {
-    func(String key, double defaultVal) => json.containsKey(key)
+    double func(String key, double defaultVal) => json.containsKey(key)
         ? double.tryParse(json[key].toString())!
         : defaultVal;
 
@@ -31,7 +31,7 @@ class TableConfig {
 
   final double tableBorderWidth = 2.0;
 
-  clone() => TableConfig(
+  TableConfig clone() => TableConfig(
         colDefaultWidth: colDefaultWidth,
         rowDefaultHeight: rowDefaultHeight,
         colMinimumWidth: colMinimumWidth,

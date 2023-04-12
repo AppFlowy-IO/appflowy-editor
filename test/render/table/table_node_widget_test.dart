@@ -15,10 +15,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       expect(editor.documentLength, 1);
@@ -35,10 +37,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(table.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       expect(editor.documentLength, 1);
@@ -57,10 +61,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(table.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(TableNodeWidget), findsOneWidget);

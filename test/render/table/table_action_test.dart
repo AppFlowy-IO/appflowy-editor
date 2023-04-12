@@ -20,10 +20,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -53,10 +55,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -86,10 +90,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -100,8 +106,10 @@ void main() async {
 
       expect(tableNode.colsLen, 3);
       for (var i = 0; i < tableNode.rowsLen; i++) {
-        expect(getCellNode(tableNode.node, 0, i)!.children.first.toJson(),
-            getCellNode(tableNode.node, 1, i)!.children.first.toJson());
+        expect(
+          getCellNode(tableNode.node, 0, i)!.children.first.toJson(),
+          getCellNode(tableNode.node, 1, i)!.children.first.toJson(),
+        );
       }
     });
 
@@ -112,10 +120,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -126,8 +136,10 @@ void main() async {
 
       expect(tableNode.rowsLen, 3);
       for (var i = 0; i < tableNode.colsLen; i++) {
-        expect(getCellNode(tableNode.node, i, 0)!.children.first.toJson(),
-            getCellNode(tableNode.node, i, 1)!.children.first.toJson());
+        expect(
+          getCellNode(tableNode.node, i, 0)!.children.first.toJson(),
+          getCellNode(tableNode.node, i, 1)!.children.first.toJson(),
+        );
       }
     });
   });

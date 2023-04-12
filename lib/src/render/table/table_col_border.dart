@@ -32,7 +32,7 @@ class _TableColBorderState extends State<TableColBorder> {
     return buildFixedBorder(context);
   }
 
-  buildResizableBorder(BuildContext context) {
+  MouseRegion buildResizableBorder(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.resizeLeftRight,
       onEnter: (_) => setState(() => _borderHovering = true),
@@ -66,7 +66,7 @@ class _TableColBorderState extends State<TableColBorder> {
     );
   }
 
-  buildFixedBorder(BuildContext context) {
+  Container buildFixedBorder(BuildContext context) {
     return Container(
       width: widget.tableNode.config.tableBorderWidth,
       height: context.select((Node n) => n.attributes['colsHeight']),

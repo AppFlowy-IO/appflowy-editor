@@ -32,26 +32,28 @@ class EditorWidgetTester {
     customBuilders = const {},
     List<ShortcutEvent> shortcutEvents = const [],
   }) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        AppFlowyEditorLocalizations.delegate,
-      ],
-      supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
-      locale: locale,
-      home: Scaffold(
-        body: AppFlowyEditor(
-          editorState: _editorState,
-          shrinkWrap: shrinkWrap,
-          autoFocus: autoFocus,
-          editable: editable,
-          customBuilders: customBuilders,
-          shortcutEvents: shortcutEvents,
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          AppFlowyEditorLocalizations.delegate,
+        ],
+        supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
+        locale: locale,
+        home: Scaffold(
+          body: AppFlowyEditor(
+            editorState: _editorState,
+            shrinkWrap: shrinkWrap,
+            autoFocus: autoFocus,
+            editable: editable,
+            customBuilders: customBuilders,
+            shortcutEvents: shortcutEvents,
+          ),
         ),
       ),
-    ));
+    );
     await tester.pump();
     return this;
   }

@@ -108,15 +108,19 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
           var startPos = lastNodeNotInTableIdx == 0
               ? selection.start
               : Position(
-                  path: textNodes[lastNodeNotInTableIdx].path, offset: 0);
+                  path: textNodes[lastNodeNotInTableIdx].path,
+                  offset: 0,
+                );
           var endPost = Position(
-              path: textNodes[i - 1].path,
-              offset: textNodes[i - 1].delta.length);
+            path: textNodes[i - 1].path,
+            offset: textNodes[i - 1].delta.length,
+          );
 
           _deleteTextNodes(
-              transaction,
-              textNodes.sublist(lastNodeNotInTableIdx, i),
-              Selection(start: startPos, end: endPost));
+            transaction,
+            textNodes.sublist(lastNodeNotInTableIdx, i),
+            Selection(start: startPos, end: endPost),
+          );
           lastNodeNotInTableIdx = null;
           continue;
         }
@@ -126,12 +130,15 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
           var startPos = lastNodeNotInTableIdx == 0
               ? selection.start
               : Position(
-                  path: textNodes[lastNodeNotInTableIdx].path, offset: 0);
+                  path: textNodes[lastNodeNotInTableIdx].path,
+                  offset: 0,
+                );
 
           _deleteTextNodes(
-              transaction,
-              textNodes.sublist(lastNodeNotInTableIdx),
-              Selection(start: startPos, end: selection.end));
+            transaction,
+            textNodes.sublist(lastNodeNotInTableIdx),
+            Selection(start: startPos, end: selection.end),
+          );
         }
       }
     } else {

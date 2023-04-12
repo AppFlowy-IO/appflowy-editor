@@ -48,8 +48,12 @@ ShortcutEventHandler _enterInTableCellHandler = (editorState, event) {
             Selection.single(path: cell.parent!.path.next, startOffset: 0);
         editorState.apply(transaction);
       } else if (_nodeHasTextChild(nextNode)) {
-        editorState.service.selectionService.updateSelection(Selection.single(
-            path: nextNode.childAtIndex(0)!.path, startOffset: 0));
+        editorState.service.selectionService.updateSelection(
+          Selection.single(
+            path: nextNode.childAtIndex(0)!.path,
+            startOffset: 0,
+          ),
+        );
       }
     }
     return KeyEventResult.handled;
@@ -66,8 +70,12 @@ ShortcutEventHandler _leftInTableCellHandler = (editorState, event) {
 
     if (_nodeHasTextChild(nextNode)) {
       final target = nextNode!.childAtIndex(0)! as TextNode;
-      editorState.service.selectionService.updateSelection(Selection.single(
-          path: target.path, startOffset: target.delta.length));
+      editorState.service.selectionService.updateSelection(
+        Selection.single(
+          path: target.path,
+          startOffset: target.delta.length,
+        ),
+      );
     }
 
     return KeyEventResult.handled;
@@ -83,8 +91,12 @@ ShortcutEventHandler _rightInTableCellHandler = (editorState, event) {
     final nextNode = _getNextNode(inTableNodes, 1, 0);
 
     if (_nodeHasTextChild(nextNode)) {
-      editorState.service.selectionService.updateSelection(Selection.single(
-          path: nextNode!.childAtIndex(0)!.path, startOffset: 0));
+      editorState.service.selectionService.updateSelection(
+        Selection.single(
+          path: nextNode!.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
     }
 
     return KeyEventResult.handled;
@@ -104,7 +116,8 @@ ShortcutEventHandler _upInTableCellHandler = (editorState, event) {
           ? selection.start.offset
           : target.delta.length;
       editorState.service.selectionService.updateSelection(
-          Selection.single(path: target.path, startOffset: off));
+        Selection.single(path: target.path, startOffset: off),
+      );
     }
 
     return KeyEventResult.handled;
@@ -124,7 +137,8 @@ ShortcutEventHandler _downInTableCellHandler = (editorState, event) {
           ? selection.start.offset
           : target.delta.length;
       editorState.service.selectionService.updateSelection(
-          Selection.single(path: target.path, startOffset: off));
+        Selection.single(path: target.path, startOffset: off),
+      );
     }
 
     return KeyEventResult.handled;
@@ -140,7 +154,9 @@ Iterable<TextNode> _inTableNodes(EditorState editorState) {
 }
 
 bool _hasSelectionAndTableCell(
-        Iterable<TextNode> nodes, Selection? selection) =>
+  Iterable<TextNode> nodes,
+  Selection? selection,
+) =>
     nodes.length == 1 &&
     selection != null &&
     selection.isCollapsed &&

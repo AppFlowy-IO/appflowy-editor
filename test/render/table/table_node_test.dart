@@ -205,8 +205,10 @@ void main() {
       expect(tableNode.config.colMinimumWidth, config.colMinimumWidth);
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
       expect(tableNode.config.rowDefaultHeight, config.rowDefaultHeight);
-      expect(tableNode.node.attributes['config']['colMinimumWidth'],
-          config.colMinimumWidth);
+      expect(
+        tableNode.node.attributes['config']['colMinimumWidth'],
+        config.colMinimumWidth,
+      );
 
       expect(tableNode.getColWidth(0), config.colDefaultWidth);
       expect(tableNode.getColWidth(1), config.colDefaultWidth);
@@ -248,11 +250,17 @@ void main() {
 
     test('default constructor (from list of list of strings)', () {
       const config = TableConfig(
-          colMinimumWidth: 10, colDefaultWidth: 20, rowDefaultHeight: 30);
-      final tableNode = TableNode.fromList([
-        ['1', '2'],
-        ['3', '4']
-      ], config: config);
+        colMinimumWidth: 10,
+        colDefaultWidth: 20,
+        rowDefaultHeight: 30,
+      );
+      final tableNode = TableNode.fromList(
+        [
+          ['1', '2'],
+          ['3', '4']
+        ],
+        config: config,
+      );
 
       expect(tableNode.config.colMinimumWidth, config.colMinimumWidth);
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
@@ -293,9 +301,10 @@ void main() {
       ]);
 
       expect(
-          tableNode.colsHeight,
-          tableNode.config.rowDefaultHeight * 2 +
-              tableNode.config.tableBorderWidth * 3);
+        tableNode.colsHeight,
+        tableNode.config.rowDefaultHeight * 2 +
+            tableNode.config.tableBorderWidth * 3,
+      );
     });
   });
 }

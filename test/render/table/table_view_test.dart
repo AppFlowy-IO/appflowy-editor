@@ -21,10 +21,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       var row0beforeHeight = tableNode.getRowHeight(0);
@@ -33,9 +35,16 @@ void main() async {
 
       var cell10 = getCellNode(tableNode.node, 1, 0)!;
       await editor.updateSelection(
-          Selection.single(path: cell10.childAtIndex(0)!.path, startOffset: 0));
+        Selection.single(
+          path: cell10.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
       await editor.insertText(
-          cell10.childAtIndex(0)! as TextNode, 'aaaaaaaaa', 0);
+        cell10.childAtIndex(0)! as TextNode,
+        'aaaaaaaaa',
+        0,
+      );
       tableNode.updateRowHeight(0);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
@@ -51,10 +60,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       var row0beforeHeight = tableNode.getRowHeight(0);
@@ -63,9 +74,16 @@ void main() async {
 
       var cell10 = getCellNode(tableNode.node, 1, 0)!;
       await editor.updateSelection(
-          Selection.single(path: cell10.childAtIndex(0)!.path, startOffset: 0));
+        Selection.single(
+          path: cell10.childAtIndex(0)!.path,
+          startOffset: 0,
+        ),
+      );
       await editor.insertText(
-          cell10.childAtIndex(0)! as TextNode, 'aaaaaaaaa', 0);
+        cell10.childAtIndex(0)! as TextNode,
+        'aaaaaaaaa',
+        0,
+      );
       tableNode.updateRowHeight(0);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
@@ -84,10 +102,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -118,10 +138,12 @@ void main() async {
       ]);
       final editor = tester.editor..insert(tableNode.node);
 
-      await editor.startTesting(customBuilders: {
-        kTableType: TableNodeWidgetBuilder(),
-        kTableCellType: TableCellNodeWidgetBuilder()
-      });
+      await editor.startTesting(
+        customBuilders: {
+          kTableType: TableNodeWidgetBuilder(),
+          kTableCellType: TableCellNodeWidgetBuilder()
+        },
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;

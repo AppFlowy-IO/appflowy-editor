@@ -66,9 +66,10 @@ class _ColorPickerState extends State<ColorPicker> {
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: _buildColorOptionLists(widget.colorOptionLists)),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: _buildColorOptionLists(widget.colorOptionLists),
+          ),
         ),
       ),
     );
@@ -106,14 +107,22 @@ class _ColorPickerState extends State<ColorPicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: colorOptionList.colorOptions
-          .map((e) => _buildColorItem(colorOptionList.onSubmittedAction, e,
-              e.colorHex == colorOptionList.selectedColorHex))
+          .map(
+            (e) => _buildColorItem(
+              colorOptionList.onSubmittedAction,
+              e,
+              e.colorHex == colorOptionList.selectedColorHex,
+            ),
+          )
           .toList(),
     );
   }
 
   Widget _buildColorItem(
-      void Function(String color) onTap, ColorOption option, bool isChecked) {
+    void Function(String color) onTap,
+    ColorOption option,
+    bool isChecked,
+  ) {
     return SizedBox(
       height: 36,
       child: InkWell(

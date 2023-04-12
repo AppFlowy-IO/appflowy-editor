@@ -26,16 +26,22 @@ class TableNode {
     final int rowsCount = node.attributes['rowsLen'];
     assert(node.children.length == colsCount * rowsCount);
     assert(node.children.every((n) => n.attributes.containsKey('position')));
-    assert(node.children.every((n) =>
-        n.attributes['position'].containsKey('row') &&
-        n.attributes['position'].containsKey('col')));
+    assert(
+      node.children.every(
+        (n) =>
+            n.attributes['position'].containsKey('row') &&
+            n.attributes['position'].containsKey('col'),
+      ),
+    );
 
     for (var i = 0; i < colsCount; i++) {
       _cells.add([]);
       for (var j = 0; j < rowsCount; j++) {
-        final cell = node.children.where((n) =>
-            n.attributes['position']['col'] == i &&
-            n.attributes['position']['row'] == j);
+        final cell = node.children.where(
+          (n) =>
+              n.attributes['position']['col'] == i &&
+              n.attributes['position']['row'] == j,
+        );
         assert(cell.length == 1);
         _cells[i].add(newCellNode(node, cell.first));
       }
@@ -53,11 +59,14 @@ class TableNode {
 
     config = config ?? const TableConfig();
 
-    Node node = Node(type: kTableType, attributes: {
-      'colsLen': cols.length,
-      'rowsLen': cols[0].length,
-      'config': config.toJson()
-    });
+    Node node = Node(
+      type: kTableType,
+      attributes: {
+        'colsLen': cols.length,
+        'rowsLen': cols[0].length,
+        'config': config.toJson()
+      },
+    );
     for (var i = 0; i < cols.length; i++) {
       for (var j = 0; j < cols[0].length; j++) {
         final n = Node(
@@ -66,9 +75,11 @@ class TableNode {
             'position': {'col': i, 'row': j}
           },
         );
-        n.insert(TextNode(
-          delta: Delta()..insert(cols[i][j]),
-        ));
+        n.insert(
+          TextNode(
+            delta: Delta()..insert(cols[i][j]),
+          ),
+        );
 
         node.insert(n);
       }
@@ -90,8 +101,10 @@ class TableNode {
       _config.rowDefaultHeight;
 
   double get colsHeight =>
-      List.generate(rowsLen, (idx) => idx).fold<double>(0,
-          (prev, cur) => prev + getRowHeight(cur) + _config.tableBorderWidth) +
+      List.generate(rowsLen, (idx) => idx).fold<double>(
+        0,
+        (prev, cur) => prev + getRowHeight(cur) + _config.tableBorderWidth,
+      ) +
       _config.tableBorderWidth;
 
   double getColWidth(int col) =>
@@ -99,11 +112,13 @@ class TableNode {
       _config.colDefaultWidth;
 
   double get tableWidth =>
-      List.generate(colsLen, (idx) => idx).fold<double>(0,
-          (prev, cur) => prev + getColWidth(cur) + _config.tableBorderWidth) +
+      List.generate(colsLen, (idx) => idx).fold<double>(
+        0,
+        (prev, cur) => prev + getColWidth(cur) + _config.tableBorderWidth,
+      ) +
       _config.tableBorderWidth;
 
-  setColWidth(int col, double w) {
+  void setColWidth(int col, double w) {
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
@@ -116,7 +131,7 @@ class TableNode {
     }
   }
 
-  updateRowHeight(int row) {
+  void updateRowHeight(int row) {
     double maxHeight = _cells
         .map<double>((c) => c[row].children.first.rect.height)
         .reduce(max);

@@ -26,17 +26,20 @@ class _TableColState extends State<TableCol> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (widget.colIdx == 0) {
-      children.add(TableColBorder(
-        resizable: false,
-        tableNode: widget.tableNode,
-        colIdx: widget.colIdx,
-      ));
+      children.add(
+        TableColBorder(
+          resizable: false,
+          tableNode: widget.tableNode,
+          colIdx: widget.colIdx,
+        ),
+      );
     }
 
     children.addAll([
       SizedBox(
         width: context.select(
-            (Node n) => getCellNode(n, widget.colIdx, 0)?.attributes['width']),
+          (Node n) => getCellNode(n, widget.colIdx, 0)?.attributes['width'],
+        ),
         child: Column(children: _buildCells(context)),
       ),
       TableColBorder(
@@ -82,8 +85,10 @@ class _TableColState extends State<TableCol> {
     ];
   }
 
-  updateRowHeightCallback(int row) => WidgetsBinding.instance
-      .addPostFrameCallback((_) => row < widget.tableNode.rowsLen
-          ? widget.tableNode.updateRowHeight(row)
-          : null);
+  void updateRowHeightCallback(int row) =>
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => row < widget.tableNode.rowsLen
+            ? widget.tableNode.updateRowHeight(row)
+            : null,
+      );
 }
