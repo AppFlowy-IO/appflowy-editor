@@ -150,12 +150,8 @@ class HTMLToNodesConverter {
     } else {
       final delta = Delta();
       delta.insert(element.text);
-      if (delta.isNotEmpty) {
-        return [TextNode(delta: delta)];
-      }
+      return [TextNode(delta: delta)];
     }
-
-    return [];
   }
 
   Node _handleParagraph(html.Element element,
@@ -252,12 +248,14 @@ class HTMLToNodesConverter {
     } else if (element.localName == HTMLTag.strong ||
         element.localName == HTMLTag.bold) {
       delta.insert(element.text, attributes: {BuiltInAttributeKey.bold: true});
+    } else if ([HTMLTag.em, HTMLTag.italic].contains(element.localName)) {
+      delta.insert(
+        element.text,
+        attributes: {BuiltInAttributeKey.italic: true},
+      );
     } else if (element.localName == HTMLTag.underline) {
       delta.insert(element.text,
           attributes: {BuiltInAttributeKey.underline: true});
-    } else if ([HTMLTag.italic, HTMLTag.em].contains(element.localName)) {
-      delta
-          .insert(element.text, attributes: {BuiltInAttributeKey.italic: true});
     } else if (element.localName == HTMLTag.del) {
       delta.insert(element.text,
           attributes: {BuiltInAttributeKey.strikethrough: true});
