@@ -26,10 +26,12 @@ void main() {
       late BuildContext context;
 
       await tester.pumpWidget(
-        Builder(builder: (ctx) {
-          context = ctx;
-          return const SizedBox.shrink();
-        }),
+        Builder(
+          builder: (ctx) {
+            context = ctx;
+            return const SizedBox.shrink();
+          },
+        ),
       );
 
       expect(EditorStyle.of(context), null);
@@ -43,10 +45,12 @@ void main() {
           theme: ThemeData.light().copyWith(
             extensions: [...lightEditorStyleExtension],
           ),
-          home: Builder(builder: (ctx) {
-            context = ctx;
-            return const SizedBox.shrink();
-          }),
+          home: Builder(
+            builder: (ctx) {
+              context = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       );
 

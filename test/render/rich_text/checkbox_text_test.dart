@@ -27,14 +27,19 @@ void main() async {
             BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
             BuiltInAttributeKey.checkbox: false,
           },
-          delta: Delta(operations: [
-            TextInsert(text, attributes: {
-              BuiltInAttributeKey.bold: true,
-              BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.underline: true,
-              BuiltInAttributeKey.strikethrough: true,
-            }),
-          ]),
+          delta: Delta(
+            operations: [
+              TextInsert(
+                text,
+                attributes: {
+                  BuiltInAttributeKey.bold: true,
+                  BuiltInAttributeKey.italic: true,
+                  BuiltInAttributeKey.underline: true,
+                  BuiltInAttributeKey.strikethrough: true,
+                },
+              ),
+            ],
+          ),
         );
       await editor.startTesting();
       await editor.updateSelection(

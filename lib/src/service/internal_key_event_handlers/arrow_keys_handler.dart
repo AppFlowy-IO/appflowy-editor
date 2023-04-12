@@ -387,7 +387,10 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
 
   final transaction = editorState.transaction;
   transaction.deleteText(
-      textNode, startOfWord.offset, selection.end.offset - startOfWord.offset);
+    textNode,
+    startOfWord.offset,
+    selection.end.offset - startOfWord.offset,
+  );
 
   editorState.apply(transaction);
 
@@ -411,7 +414,10 @@ ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
   if (selection.isCollapsed) {
     final deleteTransaction = editorState.transaction;
     deleteTransaction.deleteText(
-        nodes.first as TextNode, 0, selection.end.offset);
+      nodes.first as TextNode,
+      0,
+      selection.end.offset,
+    );
     editorState.apply(deleteTransaction, withUpdateCursor: true);
   }
 

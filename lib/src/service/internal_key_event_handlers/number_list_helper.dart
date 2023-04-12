@@ -4,8 +4,11 @@ import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 
 void makeFollowingNodesIncremental(
-    EditorState editorState, List<int> insertPath, Selection afterSelection,
-    {int? beginNum}) {
+  EditorState editorState,
+  List<int> insertPath,
+  Selection afterSelection, {
+  int? beginNum,
+}) {
   final insertNode = editorState.document.nodeAtPath(insertPath);
   if (insertNode == null) {
     return;
