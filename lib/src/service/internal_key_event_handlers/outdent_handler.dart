@@ -12,8 +12,8 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
   final textNode = textNodes.first;
   var previous = textNode.previous;
 
-  if (textNode.subtype != BuiltInAttributeKey.bulletedList &&
-      textNode.subtype != BuiltInAttributeKey.checkbox) {
+  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
+      .contains(textNode.subtype)) {
     return KeyEventResult.handled;
   }
 
@@ -21,7 +21,9 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
   //for example [0], then that means, it is not indented
   //thus we ignore this event.
   final oldPath = textNode.path;
-  if (oldPath.length == 1) return KeyEventResult.handled;
+  if (oldPath.length == 1) {
+    return KeyEventResult.handled;
+  }
 
   //we need to check if the previous node is a list type or not,
   //but the previous getter gives the previous node in the LinkedList
@@ -29,32 +31,31 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
   //the previous getter will return null, but in this case: we should
   //assign previous's path to be = [1]
   if (previous == null) {
-    if (oldPath.last == 0) {
-      final previousPath = oldPath.sublist(0, oldPath.length - 1);
-      editorState.updateCursorSelection(
-          Selection.single(path: previousPath, startOffset: 0));
-
-      final prevSelection =
-          editorState.service.selectionService.currentSelection.value;
-
-      final prevNodes = editorState
-          .service.selectionService.currentSelectedNodes
-          .whereType<TextNode>();
-
-      if (prevNodes.length != 1 ||
-          prevSelection == null ||
-          !prevSelection.isSingle) {
-        return KeyEventResult.ignored;
-      }
-
-      previous = prevNodes.first;
-    } else {
+    if (oldPath.last != 0) {
       return KeyEventResult.ignored;
     }
+
+    final previousPath = oldPath.sublist(0, oldPath.length - 1);
+    editorState.updateCursorSelection(
+        Selection.single(path: previousPath, startOffset: 0));
+
+    final prevSelection =
+        editorState.service.selectionService.currentSelection.value;
+
+    final prevNodes = editorState.service.selectionService.currentSelectedNodes
+        .whereType<TextNode>();
+
+    if (prevNodes.length != 1 ||
+        prevSelection == null ||
+        !prevSelection.isSingle) {
+      return KeyEventResult.ignored;
+    }
+
+    previous = prevNodes.first;
   }
 
-  if (previous.subtype != BuiltInAttributeKey.bulletedList &&
-      previous.subtype != BuiltInAttributeKey.checkbox) {
+  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
+      .contains(previous.subtype)) {
     return KeyEventResult.ignored;
   }
 
