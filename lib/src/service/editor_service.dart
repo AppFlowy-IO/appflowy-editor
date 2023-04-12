@@ -34,9 +34,9 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-    this.toolbarColor=const Color(0xFF333333),
-    this.showDefaultToolbar=true,
-    this.toolbarElevation=0.0,
+    this.toolbarColor = const Color(0xFF333333),
+    this.showDefaultToolbar = true,
+    this.toolbarElevation = 0.0,
     this.shrinkWrap = false,
     ThemeData? themeData,
   }) : super(key: key) {
@@ -54,7 +54,7 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Keyboard event handlers.
   final List<ShortcutEvent> shortcutEvents;
-final bool showDefaultToolbar;
+  final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
   final List<ToolbarItem> toolbarItems;

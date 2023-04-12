@@ -61,7 +61,8 @@ class HTMLToNodesConverter {
     final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
     return _handleContainer(childNodes);
   }
- Document toDocument() {
+
+  Document toDocument() {
     final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
     return Document.fromJson({
       "document": {
@@ -70,6 +71,7 @@ class HTMLToNodesConverter {
       }
     });
   }
+
   List<Node> _handleContainer(List<html.Node> childNodes) {
     final delta = Delta();
     final result = <Node>[];
