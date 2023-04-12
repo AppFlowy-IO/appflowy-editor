@@ -413,6 +413,12 @@ class NodesToHTMLConverter {
         } else {
           _addTextNode(textNode);
         }
+      } else if (node.type == "image") {
+        final textNode = node;
+        final anchor = html.Element.tag(HTMLTag.image);
+        anchor.attributes["src"] = textNode.attributes["image_src"];
+
+        _result.add(anchor);
       }
       // TODO: handle image and other blocks
     }
