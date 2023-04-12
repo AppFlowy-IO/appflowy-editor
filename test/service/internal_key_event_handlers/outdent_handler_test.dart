@@ -9,50 +9,31 @@ void main() async {
   });
 
   group('outdent_handler.dart', () {
-    testWidgets(
-      "press shift tab in plain text",
-      (tester) async {
-        const text = 'Welcome to Appflowy 😁';
-        final editor = tester.editor
-          ..insertTextNode(text)
-          ..insertTextNode(text)
-          ..insertTextNode(text);
+    testWidgets("press shift tab in plain text", (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor
+        ..insertTextNode(text)
+        ..insertTextNode(text)
+        ..insertTextNode(text);
 
-        await editor.startTesting();
+      await editor.startTesting();
 
-        var document = editor.document;
+      final snapshotDocument = editor.document;
 
-        var selection = Selection.single(path: [0], startOffset: 0);
-        await editor.updateSelection(selection);
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.tab,
-          isShiftPressed: true,
-        );
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.tab,
+        isShiftPressed: true,
+      );
 
-        // nothing happens
-        expect(
-          editor.documentSelection,
-          Selection.single(path: [0], startOffset: 0),
-        );
-        expect(editor.document.toJson(), document.toJson());
-
-        selection = Selection.single(path: [1], startOffset: 0);
-        await editor.updateSelection(selection);
-
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.tab,
-          isShiftPressed: true,
-        );
-
-        // nothing happens
-        expect(
-          editor.documentSelection,
-          Selection.single(path: [1], startOffset: 0),
-        );
-        expect(editor.document.toJson(), document.toJson());
-      },
-    );
+      // nothing happens
+      expect(
+        editor.documentSelection,
+        Selection.single(path: [0], startOffset: 0),
+      );
+      expect(editor.document.toJson(), snapshotDocument.toJson());
+    });
 
     testWidgets("press shift tab where previous element is not list element",
         (tester) async {
@@ -74,7 +55,7 @@ void main() async {
 
       await editor.startTesting();
 
-      var document = editor.document;
+      final snapshotDocument = editor.document;
 
       var selection = Selection.single(path: [1], startOffset: 0);
       await editor.updateSelection(selection);
@@ -89,7 +70,7 @@ void main() async {
         editor.documentSelection,
         Selection.single(path: [1], startOffset: 0),
       );
-      expect(editor.document.toJson(), document.toJson());
+      expect(editor.document.toJson(), snapshotDocument.toJson());
     });
 
     testWidgets(
@@ -120,12 +101,11 @@ void main() async {
           );
         await editor.startTesting();
 
-        var selection = Selection.single(path: [1], startOffset: 0);
+        final selection = Selection.single(path: [1], startOffset: 0);
         await editor.updateSelection(selection);
 
         await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
 
-        selection = Selection.single(path: [1], startOffset: 0);
         await editor.updateSelection(selection);
 
         await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
@@ -158,8 +138,8 @@ void main() async {
           BuiltInAttributeKey.checkbox,
         );
 
-        selection = Selection.single(path: [0, 1], startOffset: 0);
-        await editor.updateSelection(selection);
+        await editor
+            .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
 
         await editor.pressLogicKey(
           key: LogicalKeyboardKey.tab,
@@ -238,8 +218,8 @@ void main() async {
             editor.nodeAtPath([1])!.subtype, BuiltInAttributeKey.bulletedList);
         expect(editor.nodeAtPath([2]), null);
 
-        selection = Selection.single(path: [0, 0], startOffset: 0);
-        await editor.updateSelection(selection);
+        await editor
+            .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
 
         await editor.pressLogicKey(
           key: LogicalKeyboardKey.tab,
