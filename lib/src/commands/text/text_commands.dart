@@ -52,7 +52,8 @@ extension TextCommands on EditorState {
     if (BuiltInAttributeKey.globalStyleKeys.contains(key)) {
       final attr = n.attributes
         ..removeWhere(
-            (key, _) => BuiltInAttributeKey.globalStyleKeys.contains(key))
+          (key, _) => BuiltInAttributeKey.globalStyleKeys.contains(key),
+        )
         ..addAll(attributes)
         ..addAll({
           BuiltInAttributeKey.subtype: key,

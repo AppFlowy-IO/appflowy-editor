@@ -119,7 +119,11 @@ class SelectionMenuItem {
         transaction
           ..insertNode(path, node)
           ..afterSelection = updateSelection?.call(
-                  editorState, path, bReplace, bInsertBefore) ??
+                editorState,
+                path,
+                bReplace,
+                bInsertBefore,
+              ) ??
               selection;
 
         if (bReplace) {
@@ -216,7 +220,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     return Focus(
       focusNode: _focusNode,
       onKey: _onKey,
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: widget.editorState.editorStyle.selectionMenuBackgroundColor,
           boxShadow: [
@@ -248,24 +252,30 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     List<Widget> itemWidgets = [];
     for (var i = 0; i < items.length; i++) {
       if (i != 0 && i % (widget.maxItemInRow) == 0) {
-        columns.add(Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: itemWidgets,
-        ));
+        columns.add(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: itemWidgets,
+          ),
+        );
         itemWidgets = [];
       }
-      itemWidgets.add(SelectionMenuItemWidget(
-        item: items[i],
-        isSelected: selectedIndex == i,
-        editorState: widget.editorState,
-        menuService: widget.menuService,
-      ));
+      itemWidgets.add(
+        SelectionMenuItemWidget(
+          item: items[i],
+          isSelected: selectedIndex == i,
+          editorState: widget.editorState,
+          menuService: widget.menuService,
+        ),
+      );
     }
     if (itemWidgets.isNotEmpty) {
-      columns.add(Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: itemWidgets,
-      ));
+      columns.add(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: itemWidgets,
+        ),
+      );
       itemWidgets = [];
     }
     return Row(

@@ -57,7 +57,10 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
     if (startNode is TextNode &&
         startNode.subtype == BuiltInAttributeKey.numberList) {
       makeFollowingNodesIncremental(
-          editorState, selection.start.path, afterSelection);
+        editorState,
+        selection.start.path,
+        afterSelection,
+      );
     }
 
     return KeyEventResult.handled;
@@ -89,8 +92,11 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
       if (nextNode is TextNode &&
           nextNode.subtype == BuiltInAttributeKey.numberList) {
         makeFollowingNodesIncremental(
-            editorState, textNode.path, afterSelection,
-            beginNum: 0);
+          editorState,
+          textNode.path,
+          afterSelection,
+          beginNum: 0,
+        );
       }
     } else {
       final subtype = textNode.subtype;
@@ -114,8 +120,12 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
           ..afterSelection = afterSelection;
         editorState.apply(transaction);
 
-        makeFollowingNodesIncremental(editorState, insertPath, afterSelection,
-            beginNum: prevNumber);
+        makeFollowingNodesIncremental(
+          editorState,
+          insertPath,
+          afterSelection,
+          beginNum: prevNumber,
+        );
       } else {
         bool needCopyAttributes = ![
           BuiltInAttributeKey.heading,
@@ -200,7 +210,9 @@ Attributes _attributesFromPreviousLine(TextNode textNode) {
 }
 
 Attributes _nextNumberAttributesFromPreviousLine(
-    Attributes copy, TextNode textNode) {
+  Attributes copy,
+  TextNode textNode,
+) {
   final prevNum = textNode.attributes[BuiltInAttributeKey.number] as int?;
   copy[BuiltInAttributeKey.number] = prevNum == null ? 1 : prevNum + 1;
   return copy;

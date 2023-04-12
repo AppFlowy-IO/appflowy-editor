@@ -53,7 +53,7 @@ class CursorWidgetState extends State<CursorWidget> {
   }
 
   /// force the cursor widget to show for a while
-  show() {
+  void show() {
     setState(() {
       showCursor = true;
     });
