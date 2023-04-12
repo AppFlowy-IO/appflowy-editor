@@ -5,8 +5,13 @@ import 'package:appflowy_editor/src/service/default_text_operations/format_rich_
 import 'package:flutter/material.dart';
 
 bool _isCodeStyle(TextNode textNode, int index) {
-  return textNode.allSatisfyCodeInSelection(Selection.single(
-      path: textNode.path, startOffset: index, endOffset: index + 1));
+  return textNode.allSatisfyCodeInSelection(
+    Selection.single(
+      path: textNode.path,
+      startOffset: index,
+      endOffset: index + 1,
+    ),
+  );
 }
 
 // enter escape mode when start two backquote
@@ -221,14 +226,15 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
     final transaction = editorState.transaction
       ..deleteText(textNode, firstExclamation, text.length)
       ..insertNode(
-          textNode.path,
-          Node.fromJson({
-            'type': 'image',
-            'attributes': {
-              'image_src': imgUrl,
-              'align': 'center',
-            }
-          }));
+        textNode.path,
+        Node.fromJson({
+          'type': 'image',
+          'attributes': {
+            'image_src': imgUrl,
+            'align': 'center',
+          }
+        }),
+      );
     editorState.apply(transaction);
   } else if (lnkRegEx.firstMatch(text) != null) {
     // Extract the text and the URL of the link
@@ -250,8 +256,11 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
           BuiltInAttributeKey.href: linkUrl,
         },
       )
-      ..deleteText(textNode, firstClosingBracket - 1,
-          selection.end.offset - firstClosingBracket)
+      ..deleteText(
+        textNode,
+        firstClosingBracket - 1,
+        selection.end.offset - firstClosingBracket,
+      )
       ..afterSelection = Selection.collapsed(
         Position(
           path: textNode.path,
@@ -359,7 +368,8 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(
-        Position(path: textNode.path, offset: selection.end.offset - 3));
+      Position(path: textNode.path, offset: selection.end.offset - 3),
+    );
 
   editorState.apply(transaction);
 
@@ -417,7 +427,8 @@ ShortcutEventHandler doubleUnderscoreToBoldHandler = (editorState, event) {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(
-        Position(path: textNode.path, offset: selection.end.offset - 3));
+      Position(path: textNode.path, offset: selection.end.offset - 3),
+    );
 
   editorState.apply(transaction);
 

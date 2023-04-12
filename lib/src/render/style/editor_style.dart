@@ -118,7 +118,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
 
   @override
   ThemeExtension<EditorStyle> lerp(
-      ThemeExtension<EditorStyle>? other, double t) {
+    ThemeExtension<EditorStyle>? other,
+    double t,
+  ) {
     if (other == null || other is! EditorStyle) {
       return this;
     }
@@ -129,21 +131,35 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       textPadding: EdgeInsets.lerp(textPadding, other.textPadding, t),
       selectionColor: Color.lerp(selectionColor, other.selectionColor, t),
       selectionMenuBackgroundColor: Color.lerp(
-          selectionMenuBackgroundColor, other.selectionMenuBackgroundColor, t),
+        selectionMenuBackgroundColor,
+        other.selectionMenuBackgroundColor,
+        t,
+      ),
       selectionMenuItemTextColor: Color.lerp(
-          selectionMenuItemTextColor, other.selectionMenuItemTextColor, t),
+        selectionMenuItemTextColor,
+        other.selectionMenuItemTextColor,
+        t,
+      ),
       selectionMenuItemIconColor: Color.lerp(
-          selectionMenuItemIconColor, other.selectionMenuItemIconColor, t),
+        selectionMenuItemIconColor,
+        other.selectionMenuItemIconColor,
+        t,
+      ),
       selectionMenuItemSelectedTextColor: Color.lerp(
-          selectionMenuItemSelectedTextColor,
-          other.selectionMenuItemSelectedTextColor,
-          t),
+        selectionMenuItemSelectedTextColor,
+        other.selectionMenuItemSelectedTextColor,
+        t,
+      ),
       selectionMenuItemSelectedIconColor: Color.lerp(
-          selectionMenuItemSelectedIconColor,
-          other.selectionMenuItemSelectedIconColor,
-          t),
-      selectionMenuItemSelectedColor: Color.lerp(selectionMenuItemSelectedColor,
-          other.selectionMenuItemSelectedColor, t),
+        selectionMenuItemSelectedIconColor,
+        other.selectionMenuItemSelectedIconColor,
+        t,
+      ),
+      selectionMenuItemSelectedColor: Color.lerp(
+        selectionMenuItemSelectedColor,
+        other.selectionMenuItemSelectedColor,
+        t,
+      ),
       textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
       placeholderTextStyle:
           TextStyle.lerp(placeholderTextStyle, other.placeholderTextStyle, t),

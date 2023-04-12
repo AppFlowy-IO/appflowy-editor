@@ -66,8 +66,12 @@ ShortcutEventHandler whiteSpaceHandler = (editorState, event) {
   return KeyEventResult.ignored;
 };
 
-KeyEventResult _toNumberList(EditorState editorState, TextNode textNode,
-    String matchText, String numText) {
+KeyEventResult _toNumberList(
+  EditorState editorState,
+  TextNode textNode,
+  String matchText,
+  String numText,
+) {
   if (textNode.subtype == BuiltInAttributeKey.bulletedList) {
     return KeyEventResult.ignored;
   }
@@ -94,10 +98,12 @@ KeyEventResult _toNumberList(EditorState editorState, TextNode textNode,
     }
   }
 
-  final afterSelection = Selection.collapsed(Position(
-    path: textNode.path,
-    offset: 0,
-  ));
+  final afterSelection = Selection.collapsed(
+    Position(
+      path: textNode.path,
+      offset: 0,
+    ),
+  );
 
   final insertPath = textNode.path;
   final transaction = editorState.transaction
@@ -168,7 +174,10 @@ KeyEventResult _toCheckboxList(EditorState editorState, TextNode textNode) {
 }
 
 KeyEventResult _toHeadingStyle(
-    EditorState editorState, TextNode textNode, Selection selection) {
+  EditorState editorState,
+  TextNode textNode,
+  Selection selection,
+) {
   final x = _countOfSign(
     textNode.toPlainText(),
     selection,
