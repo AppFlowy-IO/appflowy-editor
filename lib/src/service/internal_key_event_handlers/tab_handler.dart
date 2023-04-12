@@ -14,17 +14,14 @@ ShortcutEventHandler tabHandler = (editorState, event) {
   final textNode = textNodes.first;
   final previous = textNode.previous;
 
-  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
-      .contains(textNode.subtype)) {
+  if (textNode.isNotBulletOrCheckbox) {
     final transaction = editorState.transaction
       ..insertText(textNode, selection.end.offset, ' ' * 4);
     editorState.apply(transaction);
     return KeyEventResult.handled;
   }
 
-  if (previous == null ||
-      ![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
-          .contains(textNode.subtype)) {
+  if (previous == null || textNode.isNotBulletOrCheckbox) {
     return KeyEventResult.ignored;
   }
 

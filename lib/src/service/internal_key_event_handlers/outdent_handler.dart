@@ -12,8 +12,7 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
   final textNode = textNodes.first;
   var previous = textNode.previous;
 
-  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
-      .contains(textNode.subtype)) {
+  if (textNode.isNotBulletOrCheckbox) {
     return KeyEventResult.handled;
   }
 
@@ -55,13 +54,11 @@ ShortcutEventHandler outdentTabHandler = (editorState, event) {
     previous = prevNodes.first;
   }
 
-  if (![BuiltInAttributeKey.bulletedList, BuiltInAttributeKey.checkbox]
-      .contains(previous.subtype)) {
+  if (textNode.isNotBulletOrCheckbox) {
     return KeyEventResult.ignored;
   }
 
-  final path = oldPath.sublist(0, oldPath.length - 1);
-  path[path.length - 1] += 1;
+  final path = oldPath.sublist(0, oldPath.length - 1)..last += 1;
 
   final afterSelection = Selection(
     start: selection.start.copyWith(path: path),
