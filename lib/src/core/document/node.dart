@@ -275,11 +275,6 @@ class TextNode extends Node {
   }
 
   String toPlainText() => _delta.toPlainText();
-
-  bool get isNotBulletOrCheckbox => ![
-        BuiltInAttributeKey.bulletedList,
-        BuiltInAttributeKey.checkbox
-      ].contains(subtype);
 }
 
 extension NodeEquality on Iterable<Node> {

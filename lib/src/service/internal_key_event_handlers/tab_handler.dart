@@ -38,3 +38,10 @@ ShortcutEventHandler tabHandler = (editorState, event) {
 
   return KeyEventResult.handled;
 };
+
+extension on TextNode {
+  bool get isNotBulletOrCheckbox => ![
+        BuiltInAttributeKey.bulletedList,
+        BuiltInAttributeKey.checkbox
+      ].contains(subtype);
+}
