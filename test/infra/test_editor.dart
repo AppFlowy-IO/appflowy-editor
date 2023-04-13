@@ -101,12 +101,18 @@ class EditorWidgetTester {
     }
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(_editorState.service.selectionService.currentSelection.value,
-        selection);
+    expect(
+      _editorState.service.selectionService.currentSelection.value,
+      selection,
+    );
   }
 
-  Future<void> insertText(TextNode textNode, String text, int offset,
-      {Selection? selection}) async {
+  Future<void> insertText(
+    TextNode textNode,
+    String text,
+    int offset, {
+    Selection? selection,
+  }) async {
     await apply([
       TextEditingDeltaInsertion(
         oldText: textNode.toPlainText(),
@@ -115,7 +121,8 @@ class EditorWidgetTester {
         selection: selection != null
             ? TextSelection(
                 baseOffset: selection.start.offset,
-                extentOffset: selection.end.offset)
+                extentOffset: selection.end.offset,
+              )
             : TextSelection.collapsed(offset: offset),
         composing: TextRange.empty,
       )

@@ -254,11 +254,13 @@ void main() async {
 
       expect(editor.documentLength, 2);
 
-      await editor.updateSelection(Selection.single(
-        path: [0],
-        startOffset: 0,
-        endOffset: 20,
-      ));
+      await editor.updateSelection(
+        Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: 20,
+        ),
+      );
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
