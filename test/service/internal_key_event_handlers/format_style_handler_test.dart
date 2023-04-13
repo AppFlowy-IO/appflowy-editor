@@ -108,14 +108,15 @@ Future<void> _testUpdateTextStyleByCommandX(
   }
   var textNode = editor.nodeAtPath([1]) as TextNode;
   expect(
-      textNode.allSatisfyInSelection(
-        selection,
-        matchStyle,
-        (value) {
-          return value == matchValue;
-        },
-      ),
-      true);
+    textNode.allSatisfyInSelection(
+      selection,
+      matchStyle,
+      (value) {
+        return value == matchValue;
+      },
+    ),
+    true,
+  );
 
   selection =
       Selection.single(path: [1], startOffset: 0, endOffset: text.length);
@@ -135,14 +136,15 @@ Future<void> _testUpdateTextStyleByCommandX(
   }
   textNode = editor.nodeAtPath([1]) as TextNode;
   expect(
-      textNode.allSatisfyInSelection(
-        selection,
-        matchStyle,
-        (value) {
-          return value == matchValue;
-        },
-      ),
-      true);
+    textNode.allSatisfyInSelection(
+      selection,
+      matchStyle,
+      (value) {
+        return value == matchValue;
+      },
+    ),
+    true,
+  );
 
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
@@ -159,8 +161,10 @@ Future<void> _testUpdateTextStyleByCommandX(
     );
   }
   textNode = editor.nodeAtPath([1]) as TextNode;
-  expect(textNode.allNotSatisfyInSelection(matchStyle, matchValue, selection),
-      true);
+  expect(
+    textNode.allNotSatisfyInSelection(matchStyle, matchValue, selection),
+    true,
+  );
 
   selection = Selection(
     start: Position(path: [0], offset: 0),
@@ -224,7 +228,10 @@ Future<void> _testUpdateTextStyleByCommandX(
         matchStyle,
         matchValue,
         Selection.single(
-            path: node.path, startOffset: 0, endOffset: text.length),
+          path: node.path,
+          startOffset: 0,
+          endOffset: text.length,
+        ),
       ),
       true,
     );
@@ -251,10 +258,14 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   // trigger the link menu
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isControlPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isControlPressed: true,
+    );
   } else {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isMetaPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isMetaPressed: true,
+    );
   }
   expect(find.byType(LinkMenu), findsOneWidget);
 
@@ -266,24 +277,31 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   final node = editor.nodeAtPath([1]) as TextNode;
   expect(
-      node.allSatisfyInSelection(
-        selection,
-        BuiltInAttributeKey.href,
-        (value) => value == link,
-      ),
-      true);
+    node.allSatisfyInSelection(
+      selection,
+      BuiltInAttributeKey.href,
+      (value) => value == link,
+    ),
+    true,
+  );
 
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isControlPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isControlPressed: true,
+    );
   } else {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isMetaPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isMetaPressed: true,
+    );
   }
   expect(find.byType(LinkMenu), findsOneWidget);
   expect(
-      find.text(link, findRichText: true, skipOffstage: false), findsOneWidget);
+    find.text(link, findRichText: true, skipOffstage: false),
+    findsOneWidget,
+  );
 
   // Copy link
   final copyLink = find.text('Copy link');
@@ -295,10 +313,14 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   // Remove link
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isControlPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isControlPressed: true,
+    );
   } else {
     await editor.pressLogicKey(
-        key: LogicalKeyboardKey.keyK, isMetaPressed: true);
+      key: LogicalKeyboardKey.keyK,
+      isMetaPressed: true,
+    );
   }
   final removeLink = find.text('Remove link');
   expect(removeLink, findsOneWidget);
@@ -307,10 +329,11 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(find.byType(LinkMenu), findsNothing);
 
   expect(
-      node.allSatisfyInSelection(
-        selection,
-        BuiltInAttributeKey.href,
-        (value) => value == link,
-      ),
-      false);
+    node.allSatisfyInSelection(
+      selection,
+      BuiltInAttributeKey.href,
+      (value) => value == link,
+    ),
+    false,
+  );
 }

@@ -243,11 +243,13 @@ class Delta extends Iterable<TextOperation> {
   /// Delete operations have a Number `delete` key defined representing the number of characters to delete.
   void delete(int length) => add(TextDelete(length: length));
 
-  /// The length of the string fo the [Delta].
+  /// The length of the string of the [Delta].
   @override
   int get length {
     return _operations.fold(
-        0, (previousValue, element) => previousValue + element.length);
+      0,
+      (previousValue, element) => previousValue + element.length,
+    );
   }
 
   /// Returns a Delta that is equivalent to applying the operations of own Delta, followed by another Delta.

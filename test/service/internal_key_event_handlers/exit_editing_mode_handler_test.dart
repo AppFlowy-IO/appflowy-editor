@@ -42,7 +42,9 @@ void main() async {
 }
 
 Future<void> _testSelection(
-    EditorWidgetTester editor, Selection selection) async {
+  EditorWidgetTester editor,
+  Selection selection,
+) async {
   await editor.updateSelection(selection);
   expect(editor.documentSelection, selection);
   await editor.pressLogicKey(key: LogicalKeyboardKey.escape);

@@ -15,25 +15,19 @@ void showImageUploadMenu(
   menuService.dismiss();
 
   _imageUploadMenu?.remove();
-  _imageUploadMenu = OverlayEntry(builder: (context) {
-    return Positioned(
+  _imageUploadMenu = OverlayEntry(
+    builder: (context) => Positioned(
       top: menuService.topLeft.dy,
       left: menuService.topLeft.dx,
       child: Material(
         child: ImageUploadMenu(
           editorState: editorState,
-          onSubmitted: (text) {
-            // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
-          },
-          onUpload: (text) {
-            // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
-          },
+          onSubmitted: editorState.insertImageNode,
+          onUpload: editorState.insertImageNode,
         ),
       ),
-    );
-  });
+    ),
+  );
 
   Overlay.of(context).insert(_imageUploadMenu!);
 
@@ -144,9 +138,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
             width: 24,
             height: 24,
           ),
-          onPressed: () {
-            _textEditingController.clear();
-          },
+          onPressed: _textEditingController.clear,
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -169,9 +161,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
             ),
           ),
         ),
-        onPressed: () {
-          widget.onUpload(_textEditingController.text);
-        },
+        onPressed: () => widget.onUpload(_textEditingController.text),
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
@@ -181,7 +171,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 }
 
-extension on EditorState {
+extension InsertImage on EditorState {
   void insertImageNode(String src) {
     final selection = service.selectionService.currentSelection.value;
     if (selection == null) {

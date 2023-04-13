@@ -33,8 +33,10 @@ void main() async {
           key: LogicalKeyboardKey.backspace,
         );
         expect(editor.documentLength, 1);
-        expect(editor.documentSelection,
-            Selection.single(path: [0], startOffset: 0));
+        expect(
+          editor.documentSelection,
+          Selection.single(path: [0], startOffset: 0),
+        );
       }
     });
   });
@@ -59,6 +61,7 @@ void main() async {
       (tester) async {
     await _deleteTextByBackspace(tester, true);
   });
+
   testWidgets(
       'Presses backspace key in non-empty document and selection is forward',
       (tester) async {
@@ -85,6 +88,7 @@ void main() async {
       (tester) async {
     await _deleteTextByDelete(tester, true);
   });
+
   testWidgets(
       'Presses delete key in non-empty document and selection is forward',
       (tester) async {
@@ -115,8 +119,10 @@ void main() async {
     await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
 
     expect(editor.documentLength, 1);
-    expect(editor.documentSelection,
-        Selection.single(path: [0], startOffset: text.length));
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [0], startOffset: text.length),
+    );
     expect((editor.nodeAtPath([0]) as TextNode).toPlainText(), text * 2);
   });
 
@@ -135,14 +141,19 @@ void main() async {
       (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.checkbox);
   });
+
   testWidgets('Presses backspace key in styled text (bulletedList)',
       (tester) async {
     await _deleteStyledTextByBackspace(
-        tester, BuiltInAttributeKey.bulletedList);
+      tester,
+      BuiltInAttributeKey.bulletedList,
+    );
   });
+
   testWidgets('Presses backspace key in styled text (heading)', (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.heading);
   });
+
   testWidgets('Presses backspace key in styled text (quote)', (tester) async {
     await _deleteStyledTextByBackspace(tester, BuiltInAttributeKey.quote);
   });
@@ -161,13 +172,16 @@ void main() async {
   testWidgets('Presses delete key in styled text (checkbox)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.checkbox);
   });
+
   testWidgets('Presses delete key in styled text (bulletedList)',
       (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.bulletedList);
   });
+
   testWidgets('Presses delete key in styled text (heading)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.heading);
   });
+
   testWidgets('Presses delete key in styled text (quote)', (tester) async {
     await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.quote);
   });
@@ -251,7 +265,7 @@ void main() async {
     await editor.insertText(textNode, '#', 0);
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
     expect(
-      (editor.nodeAtPath([0]) as TextNode).attributes.heading,
+      textNode.attributes.heading,
       BuiltInAttributeKey.h1,
     );
 
@@ -264,7 +278,7 @@ void main() async {
     await editor.insertText(textNode, '#', 0);
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
     expect(
-      (editor.nodeAtPath([0]) as TextNode).attributes.heading,
+      textNode.attributes.heading,
       BuiltInAttributeKey.h1,
     );
   });
@@ -298,16 +312,19 @@ void main() async {
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 0, 0])?.subtype, null);
+
     await editor.updateSelection(
       Selection.single(path: [0, 0, 0], startOffset: 0),
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 1]) != null, true);
+
     await editor.updateSelection(
       Selection.single(path: [0, 1], startOffset: 0),
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([1]) != null, true);
+
     await editor.updateSelection(
       Selection.single(path: [1], startOffset: 0),
     );
@@ -361,14 +378,17 @@ void main() async {
       editor.nodeAtPath([0, 1])!.subtype != BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 1, 0])!.subtype,
       BuiltInAttributeKey.bulletedList,
     );
+
     expect(
       editor.nodeAtPath([0, 1, 1])!.subtype,
       BuiltInAttributeKey.bulletedList,
     );
+
     expect(find.byType(FlowyRichText), findsNWidgets(5));
 
     // Before
@@ -387,14 +407,17 @@ void main() async {
       editor.nodeAtPath([0, 0])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       (editor.nodeAtPath([0, 0]) as TextNode).toPlainText() == text * 2,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 1])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
     );
+
     expect(
       editor.nodeAtPath([0, 2])!.subtype == BuiltInAttributeKey.bulletedList,
       true,
@@ -461,7 +484,9 @@ Future<void> _deleteLastImage(WidgetTester tester, bool isBackward) async {
 }
 
 Future<void> _deleteStyledTextByBackspace(
-    WidgetTester tester, String style) async {
+  WidgetTester tester,
+  String style,
+) async {
   const text = 'Welcome to Appflowy 😁';
   Attributes attributes = {
     BuiltInAttributeKey.subtype: style,
@@ -491,8 +516,10 @@ Future<void> _deleteStyledTextByBackspace(
     key: LogicalKeyboardKey.backspace,
   );
   expect(editor.documentLength, 2);
-  expect(editor.documentSelection,
-      Selection.single(path: [1], startOffset: text.length));
+  expect(
+    editor.documentSelection,
+    Selection.single(path: [1], startOffset: text.length),
+  );
   expect(editor.nodeAtPath([1])?.subtype, style);
   expect((editor.nodeAtPath([1]) as TextNode).toPlainText(), text * 2);
 
@@ -508,7 +535,9 @@ Future<void> _deleteStyledTextByBackspace(
 }
 
 Future<void> _deleteStyledTextByDelete(
-    WidgetTester tester, String style) async {
+  WidgetTester tester,
+  String style,
+) async {
   const text = 'Welcome to Appflowy 😁';
   Attributes attributes = {
     BuiltInAttributeKey.subtype: style,
@@ -534,10 +563,14 @@ Future<void> _deleteStyledTextByDelete(
       key: LogicalKeyboardKey.delete,
     );
     expect(
-        editor.documentSelection, Selection.single(path: [1], startOffset: 0));
+      editor.documentSelection,
+      Selection.single(path: [1], startOffset: 0),
+    );
     expect(editor.nodeAtPath([1])?.subtype, style);
-    expect((editor.nodeAtPath([1]) as TextNode).toPlainText(),
-        text.safeSubString(i));
+    expect(
+      (editor.nodeAtPath([1]) as TextNode).toPlainText(),
+      text.safeSubString(i),
+    );
   }
 
   await editor.pressLogicKey(
@@ -550,7 +583,9 @@ Future<void> _deleteStyledTextByDelete(
 }
 
 Future<void> _deleteTextByBackspace(
-    WidgetTester tester, bool isBackwardSelection) async {
+  WidgetTester tester,
+  bool isBackwardSelection,
+) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor
     ..insertTextNode(text)
@@ -566,8 +601,10 @@ Future<void> _deleteTextByBackspace(
 
   expect(editor.documentLength, 3);
   expect(editor.documentSelection, Selection.single(path: [1], startOffset: 9));
-  expect((editor.nodeAtPath([1]) as TextNode).toPlainText(),
-      'Welcome t Appflowy 😁');
+  expect(
+    (editor.nodeAtPath([1]) as TextNode).toPlainText(),
+    'Welcome t Appflowy 😁',
+  );
 
   // delete 'to '
   await editor.updateSelection(
@@ -576,27 +613,38 @@ Future<void> _deleteTextByBackspace(
   await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
   expect(editor.documentLength, 3);
   expect(editor.documentSelection, Selection.single(path: [2], startOffset: 8));
-  expect((editor.nodeAtPath([2]) as TextNode).toPlainText(),
-      'Welcome Appflowy 😁');
+  expect(
+    (editor.nodeAtPath([2]) as TextNode).toPlainText(),
+    'Welcome Appflowy 😁',
+  );
 
   // delete 'Appflowy 😁
   // Welcome t Appflowy 😁
   // Welcome '
   final start = Position(path: [0], offset: 11);
   final end = Position(path: [2], offset: 8);
-  await editor.updateSelection(Selection(
+  await editor.updateSelection(
+    Selection(
       start: isBackwardSelection ? start : end,
-      end: isBackwardSelection ? end : start));
+      end: isBackwardSelection ? end : start,
+    ),
+  );
   await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
   expect(editor.documentLength, 1);
   expect(
-      editor.documentSelection, Selection.single(path: [0], startOffset: 11));
-  expect((editor.nodeAtPath([0]) as TextNode).toPlainText(),
-      'Welcome to Appflowy 😁');
+    editor.documentSelection,
+    Selection.single(path: [0], startOffset: 11),
+  );
+  expect(
+    (editor.nodeAtPath([0]) as TextNode).toPlainText(),
+    'Welcome to Appflowy 😁',
+  );
 }
 
 Future<void> _deleteTextByDelete(
-    WidgetTester tester, bool isBackwardSelection) async {
+  WidgetTester tester,
+  bool isBackwardSelection,
+) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor
     ..insertTextNode(text)
@@ -612,8 +660,10 @@ Future<void> _deleteTextByDelete(
 
   expect(editor.documentLength, 3);
   expect(editor.documentSelection, Selection.single(path: [1], startOffset: 9));
-  expect((editor.nodeAtPath([1]) as TextNode).toPlainText(),
-      'Welcome t Appflowy 😁');
+  expect(
+    (editor.nodeAtPath([1]) as TextNode).toPlainText(),
+    'Welcome t Appflowy 😁',
+  );
 
   // delete 'to '
   await editor.updateSelection(
@@ -622,21 +672,30 @@ Future<void> _deleteTextByDelete(
   await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
   expect(editor.documentLength, 3);
   expect(editor.documentSelection, Selection.single(path: [2], startOffset: 8));
-  expect((editor.nodeAtPath([2]) as TextNode).toPlainText(),
-      'Welcome Appflowy 😁');
+  expect(
+    (editor.nodeAtPath([2]) as TextNode).toPlainText(),
+    'Welcome Appflowy 😁',
+  );
 
   // delete 'Appflowy 😁
   // Welcome t Appflowy 😁
   // Welcome '
   final start = Position(path: [0], offset: 11);
   final end = Position(path: [2], offset: 8);
-  await editor.updateSelection(Selection(
+  await editor.updateSelection(
+    Selection(
       start: isBackwardSelection ? start : end,
-      end: isBackwardSelection ? end : start));
+      end: isBackwardSelection ? end : start,
+    ),
+  );
   await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
   expect(editor.documentLength, 1);
   expect(
-      editor.documentSelection, Selection.single(path: [0], startOffset: 11));
-  expect((editor.nodeAtPath([0]) as TextNode).toPlainText(),
-      'Welcome to Appflowy 😁');
+    editor.documentSelection,
+    Selection.single(path: [0], startOffset: 11),
+  );
+  expect(
+    (editor.nodeAtPath([0]) as TextNode).toPlainText(),
+    'Welcome to Appflowy 😁',
+  );
 }

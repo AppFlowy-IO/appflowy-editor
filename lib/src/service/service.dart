@@ -10,8 +10,10 @@ class FlowyService {
   // selection service
   final selectionServiceKey = GlobalKey(debugLabel: 'flowy_selection_service');
   AppFlowySelectionService get selectionService {
-    assert(selectionServiceKey.currentState != null &&
-        selectionServiceKey.currentState is AppFlowySelectionService);
+    assert(
+      selectionServiceKey.currentState != null &&
+          selectionServiceKey.currentState is AppFlowySelectionService,
+    );
     return selectionServiceKey.currentState! as AppFlowySelectionService;
   }
 

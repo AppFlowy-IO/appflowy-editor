@@ -53,8 +53,10 @@ void main() async {
       final document = Document(root: Node(type: 'root'));
       document.insert([0], [textNode]);
       document.updateText([0], Delta()..insert('AppFlowy'));
-      expect((document.nodeAtPath([0]) as TextNode).toPlainText(),
-          'AppFlowyEditor');
+      expect(
+        (document.nodeAtPath([0]) as TextNode).toPlainText(),
+        'AppFlowyEditor',
+      );
     });
 
     test('serialize', () {

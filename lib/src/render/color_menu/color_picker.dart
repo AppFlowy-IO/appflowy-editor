@@ -138,7 +138,10 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   Widget _buildColorItems(
-      _ColorType type, List<ColorOption> options, String? selectedColor) {
+    _ColorType type,
+    List<ColorOption> options,
+    String? selectedColor,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -216,9 +219,15 @@ class _ColorPickerState extends State<ColorPicker> {
               dimension: 12,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(int.tryParse(_combineColorHexAndOpacity(
-                          colorController.text, opacityController.text)) ??
-                      0xFFFFFFFF),
+                  color: Color(
+                    int.tryParse(
+                          _combineColorHexAndOpacity(
+                            colorController.text,
+                            opacityController.text,
+                          ),
+                        ) ??
+                        0xFFFFFFFF,
+                  ),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -244,7 +253,10 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   Widget _customColorDetailsTextField(
-      String labeText, TextEditingController controller, _ColorType? type) {
+    String labeText,
+    TextEditingController controller,
+    _ColorType? type,
+  ) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
@@ -292,7 +304,7 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   String _fixOpacity(String opacity) {
-    RegExp regex = RegExp(r'[a-zA-Z]');
+    RegExp regex = RegExp('[a-zA-Z]');
     if (regex.hasMatch(opacity) ||
         int.parse(opacity) > 100 ||
         int.parse(opacity) < 0) {

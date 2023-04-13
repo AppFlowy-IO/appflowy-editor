@@ -58,16 +58,25 @@ class Transaction {
   /// The [attributes] will be merged into the existing attributes.
   void updateNode(Node node, Attributes attributes) {
     final inverted = invertAttributes(node.attributes, attributes);
-    add(UpdateOperation(
-      node.path,
-      {...attributes},
-      inverted,
-    ));
+    add(
+      UpdateOperation(
+        node.path,
+        {...attributes},
+        inverted,
+      ),
+    );
   }
 
   /// Deletes the [Node] in the document.
   void deleteNode(Node node) {
     deleteNodesAtPath(node.path);
+    if (beforeSelection != null) {
+      final nodePath = node.path;
+      final selectionPath = beforeSelection!.start.path;
+      if (!(nodePath.equals(selectionPath))) {
+        afterSelection = beforeSelection;
+      }
+    }
   }
 
   /// Deletes the [Node]s in the document.
@@ -163,10 +172,12 @@ extension TextTransaction on Transaction {
         ..delete(firstLength - firstOffset)
         ..addAll(second.delta.slice(secondOffset, secondLength)),
     );
-    afterSelection = Selection.collapsed(Position(
-      path: first.path,
-      offset: firstOffset,
-    ));
+    afterSelection = Selection.collapsed(
+      Position(
+        path: first.path,
+        offset: firstOffset,
+      ),
+    );
   }
 
   void splitText(TextNode textNode, int offset) {
@@ -181,10 +192,12 @@ extension TextTransaction on Transaction {
         delta: second,
       ),
     );
-    afterSelection = Selection.collapsed(Position(
-      path: path,
-      offset: 0,
-    ));
+    afterSelection = Selection.collapsed(
+      Position(
+        path: path,
+        offset: 0,
+      ),
+    );
   }
 
   /// Inserts the text content at a specified index.

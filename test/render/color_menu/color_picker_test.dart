@@ -80,10 +80,14 @@ void main() {
       final fontColorTextField = find.byType(TextField).at(0);
       final fontOpacityTexField = find.byType(TextField).at(1);
 
-      expect((tester.widget(fontColorTextField) as TextField).controller!.text,
-          'FFFF08');
-      expect((tester.widget(fontOpacityTexField) as TextField).controller!.text,
-          '98');
+      expect(
+        (tester.widget(fontColorTextField) as TextField).controller!.text,
+        'FFFF08',
+      );
+      expect(
+        (tester.widget(fontOpacityTexField) as TextField).controller!.text,
+        '98',
+      );
     });
     testWidgets(
         'test if custom font color selector text field are initialised correctly when selectedFontColorhex is null',
@@ -116,10 +120,14 @@ void main() {
       final fontColorTextField = find.byType(TextField).at(0);
       final fontOpacityTexField = find.byType(TextField).at(1);
 
-      expect((tester.widget(fontColorTextField) as TextField).controller!.text,
-          'FFFFFF');
-      expect((tester.widget(fontOpacityTexField) as TextField).controller!.text,
-          '100');
+      expect(
+        (tester.widget(fontColorTextField) as TextField).controller!.text,
+        'FFFFFF',
+      );
+      expect(
+        (tester.widget(fontOpacityTexField) as TextField).controller!.text,
+        '100',
+      );
     });
     testWidgets(
         'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is provided',
@@ -152,15 +160,15 @@ void main() {
       final backgroundColorTextField = find.byType(TextField).at(0);
       final backgroundOpacityTextField = find.byType(TextField).at(1);
       expect(
-          (tester.widget(backgroundColorTextField) as TextField)
-              .controller!
-              .text,
-          'FFFF08');
+        (tester.widget(backgroundColorTextField) as TextField).controller!.text,
+        'FFFF08',
+      );
       expect(
-          (tester.widget(backgroundOpacityTextField) as TextField)
-              .controller!
-              .text,
-          '98');
+        (tester.widget(backgroundOpacityTextField) as TextField)
+            .controller!
+            .text,
+        '98',
+      );
     });
     testWidgets(
         'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is null',
@@ -193,15 +201,15 @@ void main() {
       final backgroundColorTextField = find.byType(TextField).at(0);
       final backgroundOpacityTextField = find.byType(TextField).at(1);
       expect(
-          (tester.widget(backgroundColorTextField) as TextField)
-              .controller!
-              .text,
-          'FFFFFF');
+        (tester.widget(backgroundColorTextField) as TextField).controller!.text,
+        'FFFFFF',
+      );
       expect(
-          (tester.widget(backgroundOpacityTextField) as TextField)
-              .controller!
-              .text,
-          '0');
+        (tester.widget(backgroundOpacityTextField) as TextField)
+            .controller!
+            .text,
+        '0',
+      );
     });
 
     testWidgets('test submitting font color and opacity', (tester) async {
