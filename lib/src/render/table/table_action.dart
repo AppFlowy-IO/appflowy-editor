@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/table/util.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 
 void addCol(Node tableNode, Transaction transaction) {
   List<Node> cellNodes = [];

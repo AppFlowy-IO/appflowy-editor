@@ -1,126 +1,125 @@
+import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
 import 'package:appflowy_editor/src/render/table/table_action.dart';
-import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 
 // TODO(zoli): better to have sub context menu
 final tableContextMenuItems = [
-  [
-    ContextMenuItem(
-      name: 'Add Column',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var tableNode = _getTableCellNode(editorState).parent!;
-        final transaction = editorState.transaction;
-        addCol(tableNode, transaction);
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Add Row',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var tableNode = _getTableCellNode(editorState).parent!;
-        final transaction = editorState.transaction;
-        addRow(tableNode, transaction);
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Remove Column',
-      isApplicable: (EditorState editorState) {
-        if (!_isSelectionInTable(editorState)) {
-          return false;
-        }
-        var tableNode = _getTableCellNode(editorState).parent!;
-        return tableNode.attributes['colsLen'] > 1;
-      },
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        final transaction = editorState.transaction;
-        removeCol(
-          node.parent!,
-          node.attributes['colPosition'],
-          transaction,
-        );
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Remove Row',
-      isApplicable: (EditorState editorState) {
-        if (!_isSelectionInTable(editorState)) {
-          return false;
-        }
-        var tableNode = _getTableCellNode(editorState).parent!;
-        return tableNode.attributes['rowsLen'] > 1;
-      },
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        final transaction = editorState.transaction;
-        removeRow(
-          node.parent!,
-          node.attributes['rowPosition'],
-          transaction,
-        );
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Duplicate Column',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        final transaction = editorState.transaction;
-        duplicateCol(
-          node.parent!,
-          node.attributes['colPosition'],
-          transaction,
-        );
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Duplicate Row',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        final transaction = editorState.transaction;
-        duplicateRow(
-          node.parent!,
-          node.attributes['rowPosition'],
-          transaction,
-        );
-        editorState.apply(transaction);
-      },
-    ),
-    ContextMenuItem(
-      name: 'Column Background Color',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        _showColorMenu(
-          node,
-          editorState,
-          node.attributes['colPosition'],
-          setColBgColor,
-        );
-      },
-    ),
-    ContextMenuItem(
-      name: 'Row Background Color',
-      isApplicable: _isSelectionInTable,
-      onPressed: (editorState) {
-        var node = _getTableCellNode(editorState);
-        _showColorMenu(
-          node,
-          editorState,
-          node.attributes['rowPosition'],
-          setRowBgColor,
-        );
-      },
-    ),
-  ],
+  ContextMenuItem(
+    name: 'Add Column',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var tableNode = _getTableCellNode(editorState).parent!;
+      final transaction = editorState.transaction;
+      addCol(tableNode, transaction);
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Add Row',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var tableNode = _getTableCellNode(editorState).parent!;
+      final transaction = editorState.transaction;
+      addRow(tableNode, transaction);
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Remove Column',
+    isApplicable: (EditorState editorState) {
+      if (!_isSelectionInTable(editorState)) {
+        return false;
+      }
+      var tableNode = _getTableCellNode(editorState).parent!;
+      return tableNode.attributes['colsLen'] > 1;
+    },
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      final transaction = editorState.transaction;
+      removeCol(
+        node.parent!,
+        node.attributes['colPosition'],
+        transaction,
+      );
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Remove Row',
+    isApplicable: (EditorState editorState) {
+      if (!_isSelectionInTable(editorState)) {
+        return false;
+      }
+      var tableNode = _getTableCellNode(editorState).parent!;
+      return tableNode.attributes['rowsLen'] > 1;
+    },
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      final transaction = editorState.transaction;
+      removeRow(
+        node.parent!,
+        node.attributes['rowPosition'],
+        transaction,
+      );
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Duplicate Column',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      final transaction = editorState.transaction;
+      duplicateCol(
+        node.parent!,
+        node.attributes['colPosition'],
+        transaction,
+      );
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Duplicate Row',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      final transaction = editorState.transaction;
+      duplicateRow(
+        node.parent!,
+        node.attributes['rowPosition'],
+        transaction,
+      );
+      editorState.apply(transaction);
+    },
+  ),
+  ContextMenuItem(
+    name: 'Column Background Color',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      _showColorMenu(
+        node,
+        editorState,
+        node.attributes['colPosition'],
+        setColBgColor,
+      );
+    },
+  ),
+  ContextMenuItem(
+    name: 'Row Background Color',
+    isApplicable: _isSelectionInTable,
+    onPressed: (editorState) {
+      var node = _getTableCellNode(editorState);
+      _showColorMenu(
+        node,
+        editorState,
+        node.attributes['rowPosition'],
+        setRowBgColor,
+      );
+    },
+  ),
 ];
 
 bool _isSelectionInTable(EditorState editorState) {

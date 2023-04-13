@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/table/table_action.dart';
 import 'package:appflowy_editor/src/render/table/table_config.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 
 class TableNode {
   final TableConfig _config;

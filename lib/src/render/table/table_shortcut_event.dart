@@ -1,6 +1,7 @@
-import 'package:appflowy_editor/src/render/table/util.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/render/table/util.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 
 ShortcutEvent enterInTableCell = ShortcutEvent(
   key: 'Don\'t add new line in table cell',

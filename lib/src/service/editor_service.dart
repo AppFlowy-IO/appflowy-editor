@@ -8,6 +8,9 @@ import 'package:appflowy_editor/src/render/rich_text/heading_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/number_list_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
+import 'package:appflowy_editor/src/render/table/table_node_widget.dart';
+import 'package:appflowy_editor/src/render/table/table_cell_node_widget.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -21,6 +24,8 @@ NodeWidgetBuilders defaultBuilders = {
   'text/number-list': NumberListTextNodeWidgetBuilder(),
   'text/quote': QuotedTextNodeWidgetBuilder(),
   'image': ImageNodeBuilder(),
+  kTableType: TableNodeWidgetBuilder(),
+  kTableCellType: TableCellNodeWidgetBuilder(),
 };
 
 class AppFlowyEditor extends StatefulWidget {

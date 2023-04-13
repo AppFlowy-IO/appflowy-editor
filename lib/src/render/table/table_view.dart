@@ -1,6 +1,6 @@
-import 'package:appflowy_editor/src/render/table/table_action.dart';
 import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/table/table_action.dart';
 import 'package:appflowy_editor/src/render/table/table_node.dart';
 import 'package:appflowy_editor/src/render/table/table_action_button.dart';
 import 'package:appflowy_editor/src/render/table/table_col.dart';

@@ -1,4 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/table/table_node_widget.dart';
+import 'package:appflowy_editor/src/render/table/table_cell_node_widget.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 import 'package:appflowy_editor/src/render/table/table_node.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../infra/test_editor.dart';

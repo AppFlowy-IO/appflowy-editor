@@ -6,6 +6,7 @@ import '../../infra/flowy_svg.dart';
 import '../../l10n/l10n.dart';
 import '../../service/default_text_operations/format_rich_text_style.dart';
 import '../image/image_upload_widget.dart';
+import '../table/table_node_widget.dart';
 import 'selection_menu_widget.dart';
 
 abstract class SelectionMenuService {
@@ -242,6 +243,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
       insertQuoteAfterSelection(editorState);
     },
   ),
+  tableMenuItem,
 ];
 
 Widget _selectionMenuIcon(

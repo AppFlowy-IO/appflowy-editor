@@ -50,9 +50,3 @@ export 'src/render/action_menu/action_menu.dart';
 export 'src/render/action_menu/action_menu_item.dart';
 export 'src/core/document/node_iterator.dart';
 export 'src/service/context_menu/context_menu.dart';
-// Table
-export 'src/render/table/table_const.dart';
-export 'src/render/table/table_node_widget.dart';
-export 'src/render/table/table_cell_node_widget.dart';
-export 'src/render/table/table_shortcut_event.dart';
-export 'src/render/table/table_context_menu_item.dart';
