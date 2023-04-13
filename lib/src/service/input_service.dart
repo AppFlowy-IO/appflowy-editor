@@ -112,6 +112,7 @@ class _AppFlowyInputState extends State<AppFlowyInput>
           enableDeltaModel: true,
           inputType: TextInputType.multiline,
           textCapitalization: TextCapitalization.sentences,
+          inputAction: TextInputAction.newline,
         ),
       );
     }
