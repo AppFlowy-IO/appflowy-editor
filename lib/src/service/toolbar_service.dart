@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_widget.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 
 abstract class AppFlowyToolbarService {
   /// Show the toolbar widget beside the offset.
