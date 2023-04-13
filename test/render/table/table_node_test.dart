@@ -11,17 +11,16 @@ void main() {
         'attributes': {
           'colsLen': 2,
           'rowsLen': 2,
-          'config': {
-            'colDefaultWidth': 60,
-            'rowDefaultHeight': 50,
-            'colMinimumWidth': 30,
-          },
+          'colDefaultWidth': 60,
+          'rowDefaultHeight': 50,
+          'colMinimumWidth': 30,
         },
         'children': [
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 0, 'row': 0},
+              'colPosition': 0,
+              'rowPosition': 0,
               'width': 35,
             },
             'children': [
@@ -37,7 +36,8 @@ void main() {
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 0, 'row': 1},
+              'colPosition': 0,
+              'rowPosition': 1,
             },
             'children': [
               {
@@ -54,7 +54,8 @@ void main() {
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 1, 'row': 0},
+              'colPosition': 1,
+              'rowPosition': 0,
             },
             'children': [
               {
@@ -71,7 +72,8 @@ void main() {
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 1, 'row': 1},
+              'colPosition': 1,
+              'rowPosition': 1,
             },
             'children': [
               {
@@ -135,17 +137,16 @@ void main() {
         'attributes': {
           'colsLen': 2,
           'rowsLen': 2,
-          'config': {
-            'colDefaultWidth': 60,
-            'rowDefaultHeight': 50,
-            'colMinimumWidth': 30,
-          },
+          'colDefaultWidth': 60,
+          'rowDefaultHeight': 50,
+          'colMinimumWidth': 30,
         },
         'children': [
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 0, 'row': 0},
+              'colPosition': 0,
+              'rowPosition': 0,
               'width': 35,
             },
             'children': [
@@ -161,7 +162,8 @@ void main() {
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 1, 'row': 0},
+              'colPosition': 1,
+              'rowPosition': 0,
             },
             'children': [
               {
@@ -178,7 +180,8 @@ void main() {
           {
             'type': kTableCellType,
             'attributes': {
-              'position': {'col': 1, 'row': 1},
+              'colPosition': 1,
+              'rowPosition': 1,
             },
             'children': [
               {
@@ -206,7 +209,7 @@ void main() {
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
       expect(tableNode.config.rowDefaultHeight, config.rowDefaultHeight);
       expect(
-        tableNode.node.attributes['config']['colMinimumWidth'],
+        tableNode.node.attributes['colMinimumWidth'],
         config.colMinimumWidth,
       );
 

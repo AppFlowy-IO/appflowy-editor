@@ -40,7 +40,7 @@ final tableContextMenuItems = [
         final transaction = editorState.transaction;
         removeCol(
           node.parent!,
-          node.attributes['position']['col'],
+          node.attributes['colPosition'],
           transaction,
         );
         editorState.apply(transaction);
@@ -60,7 +60,7 @@ final tableContextMenuItems = [
         final transaction = editorState.transaction;
         removeRow(
           node.parent!,
-          node.attributes['position']['row'],
+          node.attributes['rowPosition'],
           transaction,
         );
         editorState.apply(transaction);
@@ -74,7 +74,7 @@ final tableContextMenuItems = [
         final transaction = editorState.transaction;
         duplicateCol(
           node.parent!,
-          node.attributes['position']['col'],
+          node.attributes['colPosition'],
           transaction,
         );
         editorState.apply(transaction);
@@ -88,7 +88,7 @@ final tableContextMenuItems = [
         final transaction = editorState.transaction;
         duplicateRow(
           node.parent!,
-          node.attributes['position']['row'],
+          node.attributes['rowPosition'],
           transaction,
         );
         editorState.apply(transaction);
@@ -102,7 +102,7 @@ final tableContextMenuItems = [
         _showColorMenu(
           node,
           editorState,
-          node.attributes['position']['col'],
+          node.attributes['colPosition'],
           setColBgColor,
         );
       },
@@ -115,7 +115,7 @@ final tableContextMenuItems = [
         _showColorMenu(
           node,
           editorState,
-          node.attributes['position']['row'],
+          node.attributes['rowPosition'],
           setRowBgColor,
         );
       },

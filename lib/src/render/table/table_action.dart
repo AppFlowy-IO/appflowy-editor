@@ -11,7 +11,8 @@ void addCol(Node tableNode, Transaction transaction) {
     final node = Node(
       type: kTableCellType,
       attributes: {
-        'position': {'col': colsLen, 'row': i}
+        'colPosition': colsLen,
+        'rowPosition': i,
       },
     );
     node.insert(TextNode.empty());
@@ -32,7 +33,8 @@ void addRow(Node tableNode, Transaction transaction) {
     final node = Node(
       type: kTableCellType,
       attributes: {
-        'position': {'col': i, 'row': rowsLen}
+        'colPosition': i,
+        'rowPosition': rowsLen,
       },
     );
     node.insert(TextNode.empty());
@@ -57,7 +59,8 @@ void removeCol(Node tableNode, int col, Transaction transaction) {
   for (var i = col + 1; i < colsLen; i++) {
     for (var j = 0; j < rowsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        'position': {'col': i - 1, 'row': j}
+        'colPosition': i - 1,
+        'rowPosition': j,
       });
     }
   }
@@ -77,7 +80,8 @@ void removeRow(Node tableNode, int row, Transaction transaction) {
   for (var i = row + 1; i < rowsLen; i++) {
     for (var j = 0; j < colsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, j, i)!, {
-        'position': {'col': j, 'row': i - 1}
+        'colPosition': j,
+        'rowPosition': i - 1,
       });
     }
   }
@@ -94,7 +98,8 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
     nodes.add(
       node.copyWith(
         attributes: {
-          'position': {'col': col + 1, 'row': i}
+          'colPosition': col + 1,
+          'rowPosition': i,
         },
       ),
     );
@@ -107,7 +112,8 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
   for (var i = col + 1; i < colsLen; i++) {
     for (var j = 0; j < rowsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        'position': {'col': i + 1, 'row': j}
+        'colPosition': i + 1,
+        'rowPosition': j,
       });
     }
   }
@@ -124,7 +130,8 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
       node.path.next,
       node.copyWith(
         attributes: {
-          'position': {'row': row + 1, 'col': i}
+          'rowPosition': row + 1,
+          'colPosition': i,
         },
       ),
     );
@@ -133,7 +140,8 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
   for (var i = row + 1; i < rowsLen; i++) {
     for (var j = 0; j < colsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, j, i)!, {
-        'position': {'col': j, 'row': i + 1}
+        'colPosition': j,
+        'rowPosition': i + 1,
       });
     }
   }
@@ -174,14 +182,14 @@ void setRowBgColor(
 }
 
 dynamic newCellNode(Node tableNode, n) {
-  final row = n.attributes['position']['row'] as int;
-  final col = n.attributes['position']['col'] as int;
+  final row = n.attributes['rowPosition'] as int;
+  final col = n.attributes['colPosition'] as int;
   final int rowsLen = tableNode.attributes['rowsLen'];
   final int colsLen = tableNode.attributes['colsLen'];
 
   if (!n.attributes.containsKey('height')) {
     double nodeHeight = double.tryParse(
-      tableNode.attributes['config']['rowDefaultHeight'].toString(),
+      tableNode.attributes['rowDefaultHeight'].toString(),
     )!;
     if (row < rowsLen) {
       nodeHeight = double.tryParse(
@@ -194,7 +202,7 @@ dynamic newCellNode(Node tableNode, n) {
 
   if (!n.attributes.containsKey('width')) {
     double nodeWidth = double.tryParse(
-      tableNode.attributes['config']['colDefaultWidth'].toString(),
+      tableNode.attributes['colDefaultWidth'].toString(),
     )!;
     if (col < colsLen) {
       nodeWidth = double.tryParse(

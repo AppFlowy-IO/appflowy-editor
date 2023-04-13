@@ -15,9 +15,8 @@ class TableCellNodeWidgetBuilder extends NodeWidgetBuilder<Node> {
   @override
   NodeValidator<Node> get nodeValidator => (node) =>
       node.attributes.isNotEmpty &&
-      node.attributes.containsKey('position') &&
-      node.attributes['position'].containsKey('row') &&
-      node.attributes['position'].containsKey('col');
+      node.attributes.containsKey('rowPosition') &&
+      node.attributes.containsKey('colPosition');
 }
 
 class TableCellNodeWidget extends StatefulWidget {

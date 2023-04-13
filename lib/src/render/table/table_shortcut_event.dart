@@ -164,8 +164,8 @@ bool _hasSelectionAndTableCell(
 
 Node? _getNextNode(Iterable<TextNode> nodes, int colDiff, rowDiff) {
   final cell = nodes.first.parent!;
-  final col = cell.attributes['position']['col'];
-  final row = cell.attributes['position']['row'];
+  final col = cell.attributes['colPosition'];
+  final row = cell.attributes['rowPosition'];
   return cell.parent != null
       ? getCellNode(cell.parent!, col + colDiff, row + rowDiff)
       : null;

@@ -11,26 +11,32 @@ class TableNode {
 
   TableNode({
     required this.node,
-  }) : _config = TableConfig.fromJson(node.attributes['config']) {
+  }) : _config = TableConfig.fromJson(node.attributes) {
     assert(node.type == kTableType);
     assert(node.attributes.containsKey('colsLen'));
     assert(node.attributes['colsLen'] is int);
     assert(node.attributes.containsKey('rowsLen'));
     assert(node.attributes['rowsLen'] is int);
 
-    assert(node.attributes['config']['rowDefaultHeight'] != null);
-    assert(node.attributes['config']['colMinimumWidth'] != null);
-    assert(node.attributes['config']['colDefaultWidth'] != null);
+    assert(node.attributes['rowDefaultHeight'] != null);
+    assert(node.attributes['colMinimumWidth'] != null);
+    assert(node.attributes['colDefaultWidth'] != null);
 
     final int colsCount = node.attributes['colsLen'];
     final int rowsCount = node.attributes['rowsLen'];
     assert(node.children.length == colsCount * rowsCount);
-    assert(node.children.every((n) => n.attributes.containsKey('position')));
     assert(
       node.children.every(
         (n) =>
-            n.attributes['position'].containsKey('row') &&
-            n.attributes['position'].containsKey('col'),
+            n.attributes.containsKey('rowPosition') &&
+            n.attributes.containsKey('colPosition'),
+      ),
+    );
+    assert(
+      node.children.every(
+        (n) =>
+            n.attributes.containsKey('rowPosition') &&
+            n.attributes.containsKey('colPosition'),
       ),
     );
 
@@ -39,8 +45,8 @@ class TableNode {
       for (var j = 0; j < rowsCount; j++) {
         final cell = node.children.where(
           (n) =>
-              n.attributes['position']['col'] == i &&
-              n.attributes['position']['row'] == j,
+              n.attributes['colPosition'] == i &&
+              n.attributes['rowPosition'] == j,
         );
         assert(cell.length == 1);
         _cells[i].add(newCellNode(node, cell.first));
@@ -61,19 +67,18 @@ class TableNode {
 
     Node node = Node(
       type: kTableType,
-      attributes: {
-        'colsLen': cols.length,
-        'rowsLen': cols[0].length,
-        'config': config.toJson()
-      },
+      attributes: {}
+        ..addAll({
+          'colsLen': cols.length,
+          'rowsLen': cols[0].length,
+        })
+        ..addAll(config.toJson()),
     );
     for (var i = 0; i < cols.length; i++) {
       for (var j = 0; j < cols[0].length; j++) {
         final n = Node(
           type: kTableCellType,
-          attributes: {
-            'position': {'col': i, 'row': j}
-          },
+          attributes: {'colPosition': i, 'rowPosition': j},
         );
         n.insert(
           TextNode(
