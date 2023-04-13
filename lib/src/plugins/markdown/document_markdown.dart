@@ -7,6 +7,7 @@ import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_d
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/image_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/node_parser.dart';
+import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/text_node_parser.dart';
 
 /// Converts a markdown to [Document].
@@ -31,6 +32,7 @@ String documentToMarkdown(
       ...customParsers,
       const TextNodeParser(),
       const ImageNodeParser(),
+      const TableNodeParser(),
     ],
   ).encode(document);
 }

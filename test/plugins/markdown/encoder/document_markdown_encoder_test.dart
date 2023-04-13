@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -56,6 +57,86 @@ void main() async {
         "type": "text",
         "attributes": { "checkbox": false, "subtype": "checkbox" },
         "delta": [{ "insert": "more to come!" }]
+      },
+      {
+        "type": "table",
+        "attributes": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 60,
+          "rowDefaultHeight": 50,
+          "colMinimumWidth": 30
+        },
+        "children": [
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 35
+            },
+            "children": [
+              {
+                "type": "text",
+                "attributes": {"subtype": "heading", "heading": "h2"},
+                "delta": [
+                  {"insert": "a"}
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 0,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {
+                    "insert": "b",
+                    "attributes": {"bold": true}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 1,
+              "rowPosition": 0
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {
+                    "insert": "c",
+                    "attributes": {"italic": true}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 1,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {"insert": "d"}
+                ]
+              }
+            ]
+          }
+        ]
       },
       { "type": "text", "delta": [] },
       {
@@ -118,6 +199,7 @@ void main() async {
         parsers: [
           const TextNodeParser(),
           const ImageNodeParser(),
+          const TableNodeParser(),
         ],
       ).convert(document);
       expect(result, '''
@@ -127,6 +209,9 @@ AppFlowy Editor is a **highly customizable** _rich-text editor_ for <u>Flutter</
 - [x] Customizable
 - [x] Test-covered
 - [ ] more to come!
+|## a|_c_|
+|-|-|
+|**b**|d|
 
 > Here is an example you can give a try
 

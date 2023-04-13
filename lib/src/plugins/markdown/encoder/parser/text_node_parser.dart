@@ -16,13 +16,10 @@ class TextNodeParser extends NodeParser {
     final markdown = DeltaMarkdownEncoder().convert(textNode.delta);
     final attributes = textNode.attributes;
     var result = markdown;
-    var suffix = '\n';
+    var suffix = node.next == null ? '' : '\n';
     if (attributes.isNotEmpty &&
         attributes.containsKey(BuiltInAttributeKey.subtype)) {
       final subtype = attributes[BuiltInAttributeKey.subtype];
-      if (node.next == null) {
-        suffix = '';
-      }
       if (subtype == 'heading') {
         final heading = attributes[BuiltInAttributeKey.heading];
         if (heading == 'h1') {
@@ -53,10 +50,6 @@ class TextNodeParser extends NodeParser {
         } else {
           result = '- [ ] $markdown';
         }
-      }
-    } else {
-      if (node.next == null) {
-        suffix = '';
       }
     }
     return '$result$suffix';
