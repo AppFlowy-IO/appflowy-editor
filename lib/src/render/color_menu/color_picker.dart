@@ -53,7 +53,7 @@ class _ColorPickerState extends State<ColorPicker> {
       TextEditingController();
   final TextEditingController _backgroundColorOpacityController =
       TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
@@ -96,9 +96,9 @@ class _ColorPickerState extends State<ColorPicker> {
               // padding
               const SizedBox(height: 6),
               _buildCustomColorItem(
-                  _ColorType.font, 
-                  _fontColorHexController,
-                  _fontColorOpacityController,
+                _ColorType.font,
+                _fontColorHexController,
+                _fontColorOpacityController,
               ),
               _buildColorItems(
                 _ColorType.font,
@@ -111,9 +111,9 @@ class _ColorPickerState extends State<ColorPicker> {
               _buildHeader('background color'),
               const SizedBox(height: 6),
               _buildCustomColorItem(
-                  _ColorType.background,
-                  _backgroundColorHexController,
-                  _backgroundColorOpacityController,
+                _ColorType.background,
+                _backgroundColorHexController,
+                _backgroundColorOpacityController,
               ),
               _buildColorItems(
                 _ColorType.background,
@@ -199,9 +199,9 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   Widget _buildCustomColorItem(
-      _ColorType type,
-      TextEditingController colorController,
-      TextEditingController opacityController,
+    _ColorType type,
+    TextEditingController colorController,
+    TextEditingController opacityController,
   ) {
     return ExpansionTile(
       tilePadding: const EdgeInsets.only(left: 0),
@@ -283,9 +283,9 @@ class _ColorPickerState extends State<ColorPicker> {
 
   String _fixColorHex(String colorHex) {
     if (colorHex.length > 6) {
-      colorHex =  colorHex.substring(0, 6);
+      colorHex = colorHex.substring(0, 6);
     }
-    if(int.tryParse(colorHex, radix: 16) == null) {
+    if (int.tryParse(colorHex, radix: 16) == null) {
       colorHex = 'FFFFFF';
     }
     return colorHex;
