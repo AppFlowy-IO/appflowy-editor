@@ -34,9 +34,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-
     this.showDefaultToolbar = true,
-   
     this.shrinkWrap = false,
     ThemeData? themeData,
   }) : super(key: key) {
@@ -61,7 +59,6 @@ class AppFlowyEditor extends StatefulWidget {
 
   final List<ToolbarItem> toolbarItems;
 
- 
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -175,8 +172,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
                 editorState: editorState,
                 child: FlowyToolbar(
                   showDefaultToolbar: widget.showDefaultToolbar,
-         
-                 
                   key: editorState.service.toolbarServiceKey,
                   editorState: editorState,
                   child:
