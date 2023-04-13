@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
       drawer: _buildDrawer(context),
-      body: _buildBody(context),
+      body: SafeArea(child: _buildBody(context)),
       floatingActionButton: _buildFloatingActionButton(context),
     );
   }
