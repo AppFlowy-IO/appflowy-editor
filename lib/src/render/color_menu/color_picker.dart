@@ -108,10 +108,10 @@ class _ColorPickerState extends State<ColorPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: colorOptionList.colorOptions
           .map(
-            (e) => _buildColorItem(
+            (colorOption) => _buildColorItem(
               colorOptionList.onSubmittedAction,
-              e,
-              e.colorHex == colorOptionList.selectedColorHex,
+              colorOption,
+              colorOption.colorHex == colorOptionList.selectedColorHex,
             ),
           )
           .toList(),
@@ -130,9 +130,7 @@ class _ColorPickerState extends State<ColorPicker> {
           borderRadius: BorderRadius.circular(6),
         ),
         hoverColor: widget.pickerItemHoverColor,
-        onTap: () {
-          onTap(option.colorHex);
-        },
+        onTap: () => onTap(option.colorHex),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

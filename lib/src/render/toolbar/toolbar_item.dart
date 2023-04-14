@@ -498,10 +498,8 @@ void _dismissColorMenu() {
   // workaround: SelectionService has been released after hot reload.
   final isSelectionDisposed =
       _editorState?.service.selectionServiceKey.currentState == null;
-  if (isSelectionDisposed) {
-    return;
-  }
-  if (_editorState?.service.selectionService.currentSelection.value == null) {
+  if (isSelectionDisposed ||
+      _editorState?.service.selectionService.currentSelection.value == null) {
     return;
   }
   if (_changeSelectionInner) {

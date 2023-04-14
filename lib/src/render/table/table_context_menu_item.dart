@@ -172,12 +172,13 @@ void _showColorMenu(
                 header: 'background color',
                 selectedColorHex: node.attributes['backgroundColor'],
                 colorOptions: generateBackgroundColorOptions(editorState),
-                onSubmittedAction: (color) {
+                onSubmittedAction: (selectedColor) {
                   final transaction = editorState.transaction;
-                  var c = color == node.attributes['backgroundColor']
-                      ? null
-                      : color;
-                  action(node.parent!, rowcol, transaction, c);
+                  final String? color =
+                      selectedColor == node.attributes['backgroundColor']
+                          ? null
+                          : selectedColor;
+                  action(node.parent!, rowcol, transaction, color);
                   editorState.apply(transaction);
                   _dismissColorMenu();
                 },
@@ -200,10 +201,8 @@ void _dismissColorMenu() {
   // workaround: SelectionService has been released after hot reload.
   final isSelectionDisposed =
       _editorState?.service.selectionServiceKey.currentState == null;
-  if (isSelectionDisposed) {
-    return;
-  }
-  if (_editorState?.service.selectionService.currentSelection.value == null) {
+  if (isSelectionDisposed ||
+      _editorState?.service.selectionService.currentSelection.value == null) {
     return;
   }
   _colorMenuOverlay?.remove();

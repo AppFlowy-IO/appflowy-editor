@@ -41,10 +41,10 @@ class _TableColBorderState extends State<TableColBorder> {
         onHorizontalDragStart: (_) => setState(() => _borderDragging = true),
         onHorizontalDragEnd: (_) => setState(() => _borderDragging = false),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
-          RenderBox box =
+          final RenderBox box =
               _borderKey.currentContext?.findRenderObject() as RenderBox;
-          Offset pos = box.localToGlobal(Offset.zero);
-          double colsHeight = widget.tableNode.colsHeight;
+          final Offset pos = box.localToGlobal(Offset.zero);
+          final double colsHeight = widget.tableNode.colsHeight;
           final int direction = details.delta.dx > 0 ? 1 : -1;
           if ((details.globalPosition.dx - pos.dx - (direction * 90)).abs() >
                   110 ||
@@ -53,8 +53,9 @@ class _TableColBorderState extends State<TableColBorder> {
             return;
           }
 
-          final w = widget.tableNode.getColWidth(widget.colIdx);
-          widget.tableNode.setColWidth(widget.colIdx, w + details.delta.dx);
+          final colWidth = widget.tableNode.getColWidth(widget.colIdx);
+          widget.tableNode
+              .setColWidth(widget.colIdx, colWidth + details.delta.dx);
         },
         child: Container(
           key: _borderKey,

@@ -53,8 +53,8 @@ class _TableColState extends State<TableCol> {
   }
 
   List<Widget> _buildCells(BuildContext context) {
-    var rowsLen = widget.tableNode.rowsLen;
-    var cells = [];
+    final rowsLen = widget.tableNode.rowsLen;
+    final List<Widget> cells = [];
     final Widget cellBorder = Container(
       height: widget.tableNode.config.tableBorderWidth,
       color: Colors.grey,

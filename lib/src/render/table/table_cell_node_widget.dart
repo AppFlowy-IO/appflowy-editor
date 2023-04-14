@@ -44,10 +44,9 @@ class _TableCellNodeWidgetState extends State<TableCellNodeWidget> {
         if (n.attributes['backgroundColor'] == null) {
           return null;
         }
-        var colorInt = int.tryParse(n.attributes['backgroundColor']);
+        final colorInt = int.tryParse(n.attributes['backgroundColor']);
         return colorInt != null ? Color(colorInt) : null;
       }),
-      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -58,6 +58,87 @@
       },
       { "type": "text", "delta": [] },
       {
+        "type": "table",
+        "attributes": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 60,
+          "rowDefaultHeight": 50,
+          "colMinimumWidth": 30
+        },
+        "children": [
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 135.0
+            },
+            "children": [
+              {
+                "type": "text",
+                "attributes": {"subtype": "heading", "heading": "h2"},
+                "delta": [
+                  {"insert": "Cell 1"}
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 0,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {
+                    "insert": "Cell 2",
+                    "attributes": {"bold": true}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 1,
+              "rowPosition": 0
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {
+                    "insert": "Cell 3",
+                    "attributes": {"italic": true}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "attributes": {
+              "colPosition": 1,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "text",
+                "delta": [
+                  {"insert": "Cell 4"}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "text", "delta": [] },
+      {
         "type": "text",
         "delta": [
           { "insert": "You can also use " },

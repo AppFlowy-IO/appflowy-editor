@@ -57,14 +57,7 @@ void removeCol(Node tableNode, int col, Transaction transaction) {
   }
   transaction.deleteNodes(nodes);
 
-  for (var i = col + 1; i < colsLen; i++) {
-    for (var j = 0; j < rowsLen; j++) {
-      transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        'colPosition': i - 1,
-        'rowPosition': j,
-      });
-    }
-  }
+  _updateCellPositions(tableNode, transaction, col + 1, 0, -1, 0);
 
   transaction.updateNode(tableNode, {'colsLen': colsLen - 1});
 }
@@ -78,14 +71,7 @@ void removeRow(Node tableNode, int row, Transaction transaction) {
   }
   transaction.deleteNodes(nodes);
 
-  for (var i = row + 1; i < rowsLen; i++) {
-    for (var j = 0; j < colsLen; j++) {
-      transaction.updateNode(getCellNode(tableNode, j, i)!, {
-        'colPosition': j,
-        'rowPosition': i - 1,
-      });
-    }
-  }
+  _updateCellPositions(tableNode, transaction, 0, row + 1, 0, -1);
 
   transaction.updateNode(tableNode, {'rowsLen': rowsLen - 1});
 }
@@ -110,14 +96,7 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
     nodes,
   );
 
-  for (var i = col + 1; i < colsLen; i++) {
-    for (var j = 0; j < rowsLen; j++) {
-      transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        'colPosition': i + 1,
-        'rowPosition': j,
-      });
-    }
-  }
+  _updateCellPositions(tableNode, transaction, col + 1, 0, 1, 0);
 
   transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
 }
@@ -138,14 +117,7 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
     );
   }
 
-  for (var i = row + 1; i < rowsLen; i++) {
-    for (var j = 0; j < colsLen; j++) {
-      transaction.updateNode(getCellNode(tableNode, j, i)!, {
-        'colPosition': j,
-        'rowPosition': i + 1,
-      });
-    }
-  }
+  _updateCellPositions(tableNode, transaction, 0, row + 1, 0, 1);
 
   transaction.updateNode(tableNode, {'rowsLen': rowsLen + 1});
 }
@@ -215,4 +187,25 @@ dynamic newCellNode(Node tableNode, n) {
   }
 
   return n;
+}
+
+void _updateCellPositions(
+  Node tableNode,
+  Transaction transaction,
+  int fromCol,
+  int fromRow,
+  int addToCol,
+  int addToRow,
+) {
+  final int rowsLen = tableNode.attributes['rowsLen'],
+      colsLen = tableNode.attributes['colsLen'];
+
+  for (var i = fromCol; i < colsLen; i++) {
+    for (var j = fromRow; j < rowsLen; j++) {
+      transaction.updateNode(getCellNode(tableNode, i, j)!, {
+        'colPosition': i + addToCol,
+        'rowPosition': j + addToRow,
+      });
+    }
+  }
 }
