@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
-import 'package:appflowy_editor/src/infra/html_converter.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/number_list_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +12,17 @@ int _textLengthOfNode(Node node) {
 }
 
 Selection _computeSelectionAfterPasteMultipleNodes(
-    EditorState editorState, List<Node> nodes) {
+  EditorState editorState,
+  List<Node> nodes,
+) {
   final currentSelection = editorState.cursorSelection!;
   final currentCursor = currentSelection.start;
   final currentPath = [...currentCursor.path];
   currentPath[currentPath.length - 1] += nodes.length;
   int lenOfLastNode = _textLengthOfNode(nodes.last);
   return Selection.collapsed(
-      Position(path: currentPath, offset: lenOfLastNode));
+    Position(path: currentPath, offset: lenOfLastNode),
+  );
 }
 
 void _handleCopy(EditorState editorState) async {
@@ -33,10 +35,10 @@ void _handleCopy(EditorState editorState) async {
     if (nodeAtPath.type == "text") {
       final textNode = nodeAtPath as TextNode;
       final htmlString = NodesToHTMLConverter(
-              nodes: [textNode],
-              startOffset: selection.start.offset,
-              endOffset: selection.end.offset)
-          .toHTMLString();
+        nodes: [textNode],
+        startOffset: selection.start.offset,
+        endOffset: selection.end.offset,
+      ).toHTMLString();
       final textString = textNode.toPlainText().substring(
             selection.startIndex,
             selection.endIndex,
@@ -112,10 +114,16 @@ void _pasteHTML(EditorState editorState, String html) {
       final textNodeAtPath = nodeAtPath as TextNode;
       final firstTextNode = firstNode as TextNode;
       tb.updateText(
-          textNodeAtPath, (Delta()..retain(startOffset)) + firstTextNode.delta);
+        textNodeAtPath,
+        (Delta()..retain(startOffset)) + firstTextNode.delta,
+      );
       tb.updateNode(textNodeAtPath, firstTextNode.attributes);
-      tb.afterSelection = (Selection.collapsed(Position(
-          path: path, offset: startOffset + firstTextNode.delta.length)));
+      tb.afterSelection = (Selection.collapsed(
+        Position(
+          path: path,
+          offset: startOffset + firstTextNode.delta.length,
+        ),
+      ));
       editorState.apply(tb);
       return;
     }
@@ -125,7 +133,11 @@ void _pasteHTML(EditorState editorState, String html) {
 }
 
 void _pasteMultipleLinesInText(
-    EditorState editorState, List<int> path, int offset, List<Node> nodes) {
+  EditorState editorState,
+  List<int> path,
+  int offset,
+  List<Node> nodes,
+) {
   final tb = editorState.transaction;
 
   final firstNode = nodes[0];
@@ -143,11 +155,12 @@ void _pasteMultipleLinesInText(
     final remain = textNodeAtPath.delta.slice(offset);
 
     tb.updateText(
-        textNodeAtPath,
-        (Delta()
-              ..retain(offset)
-              ..delete(remain.length)) +
-            firstTextNode.delta);
+      textNodeAtPath,
+      (Delta()
+            ..retain(offset)
+            ..delete(remain.length)) +
+          firstTextNode.delta,
+    );
     tb.updateNode(textNodeAtPath, firstTextNode.attributes);
 
     final tailNodes = nodes.sublist(1);
@@ -173,8 +186,12 @@ void _pasteMultipleLinesInText(
     editorState.apply(tb);
 
     if (startNumber != null) {
-      makeFollowingNodesIncremental(editorState, originalPath, afterSelection,
-          beginNum: startNumber);
+      makeFollowingNodesIncremental(
+        editorState,
+        originalPath,
+        afterSelection,
+        beginNum: startNumber,
+      );
     }
     return;
   }
@@ -215,24 +232,29 @@ void _pastRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
 }
 
 void _pasteSingleLine(
-    EditorState editorState, Selection selection, String line) {
+  EditorState editorState,
+  Selection selection,
+  String line,
+) {
   final node = editorState.document.nodeAtPath(selection.end.path)! as TextNode;
   final beginOffset = selection.end.offset;
   final transaction = editorState.transaction
     ..updateText(
-        node,
-        Delta()
-          ..retain(beginOffset)
-          ..addAll(_lineContentToDelta(line)))
+      node,
+      Delta()
+        ..retain(beginOffset)
+        ..addAll(_lineContentToDelta(line)),
+    )
     ..afterSelection = (Selection.collapsed(
-        Position(path: selection.end.path, offset: beginOffset + line.length)));
+      Position(path: selection.end.path, offset: beginOffset + line.length),
+    ));
   editorState.apply(transaction);
 }
 
 /// parse url from the line text
 /// reference: https://stackoverflow.com/questions/59444837/flutter-dart-regex-to-extract-urls-from-a-string
 Delta _lineContentToDelta(String lineContent) {
-  final exp = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+  final exp = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\#\w/\-?=%.]+');
   final Iterable<RegExpMatch> matches = exp.allMatches(lineContent);
 
   final delta = Delta();
@@ -321,10 +343,11 @@ void _deleteSelectedContent(EditorState editorState) {
     final tb = editorState.transaction;
     final len = selection.end.offset - selection.start.offset;
     tb.updateText(
-        textItem,
-        Delta()
-          ..retain(selection.start.offset)
-          ..delete(len));
+      textItem,
+      Delta()
+        ..retain(selection.start.offset)
+        ..delete(len),
+    );
     tb.afterSelection = Selection.collapsed(selection.start);
     editorState.apply(tb);
     return;

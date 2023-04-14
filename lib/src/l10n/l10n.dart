@@ -612,6 +612,7 @@ class AppLocalizationDelegate
       Locale.fromSubtags(languageCode: 'bn', countryCode: 'BN'),
       Locale.fromSubtags(languageCode: 'ca'),
       Locale.fromSubtags(languageCode: 'cs', countryCode: 'CZ'),
+      Locale.fromSubtags(languageCode: 'da'),
       Locale.fromSubtags(languageCode: 'de', countryCode: 'DE'),
       Locale.fromSubtags(languageCode: 'es', countryCode: 'VE'),
       Locale.fromSubtags(languageCode: 'fr', countryCode: 'CA'),

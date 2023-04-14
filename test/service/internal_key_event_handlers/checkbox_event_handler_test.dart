@@ -5,6 +5,7 @@ import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_eve
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/test_editor.dart';
 
 void main() async {
@@ -47,12 +48,12 @@ void main() async {
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isMetaPressed: true,
         );
       }
@@ -65,12 +66,12 @@ void main() async {
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isMetaPressed: true,
         );
       }
@@ -145,12 +146,12 @@ void main() async {
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isMetaPressed: true,
         );
       }
@@ -223,12 +224,12 @@ void main() async {
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.enter,
+          key: LogicalKeyboardKey.enter,
           isMetaPressed: true,
         );
       }

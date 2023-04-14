@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
 
 void insertHeadingAfterSelection(EditorState editorState, String heading) {
   insertTextNodeAfterSelection(editorState, {
@@ -35,7 +34,9 @@ void insertNumberedListAfterSelection(EditorState editorState) {
 }
 
 bool insertTextNodeAfterSelection(
-    EditorState editorState, Attributes attributes) {
+  EditorState editorState,
+  Attributes attributes,
+) {
   final selection = editorState.service.selectionService.currentSelection.value;
   final nodes = editorState.service.selectionService.currentSelectedNodes;
   if (selection == null || nodes.isEmpty) {
@@ -153,7 +154,9 @@ bool formatUnderline(EditorState editorState) {
 
 bool formatStrikethrough(EditorState editorState) {
   return formatRichTextPartialStyle(
-      editorState, BuiltInAttributeKey.strikethrough);
+    editorState,
+    BuiltInAttributeKey.strikethrough,
+  );
 }
 
 bool formatEmbedCode(EditorState editorState) {
@@ -189,8 +192,11 @@ bool formatFontColor(EditorState editorState, String colorHex) {
   );
 }
 
-bool formatRichTextPartialStyle(EditorState editorState, String styleKey,
-    {Object? customValue}) {
+bool formatRichTextPartialStyle(
+  EditorState editorState,
+  String styleKey, {
+  Object? customValue,
+}) {
   Attributes attributes = {
     styleKey: customValue ??
         !_allSatisfyInSelection(

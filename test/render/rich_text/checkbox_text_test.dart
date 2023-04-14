@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/test_editor.dart';
 
 void main() async {
@@ -27,14 +27,19 @@ void main() async {
             BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
             BuiltInAttributeKey.checkbox: false,
           },
-          delta: Delta(operations: [
-            TextInsert(text, attributes: {
-              BuiltInAttributeKey.bold: true,
-              BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.underline: true,
-              BuiltInAttributeKey.strikethrough: true,
-            }),
-          ]),
+          delta: Delta(
+            operations: [
+              TextInsert(
+                text,
+                attributes: {
+                  BuiltInAttributeKey.bold: true,
+                  BuiltInAttributeKey.italic: true,
+                  BuiltInAttributeKey.underline: true,
+                  BuiltInAttributeKey.strikethrough: true,
+                },
+              ),
+            ],
+          ),
         );
       await editor.startTesting();
       await editor.updateSelection(
@@ -71,7 +76,7 @@ void main() async {
 
     // https://github.com/AppFlowy-IO/AppFlowy/issues/1763
     // // [Bug] Mouse unable to click a certain area #1763
-    testWidgets('insert a new checkbox after an exsiting checkbox',
+    testWidgets('insert a new checkbox after an existing checkbox',
         (tester) async {
       // Before
       //
@@ -100,16 +105,16 @@ void main() async {
         Selection.single(path: [0], startOffset: text.length),
       );
 
-      await editor.pressLogicKey(LogicalKeyboardKey.enter);
-      await editor.pressLogicKey(LogicalKeyboardKey.enter);
-      await editor.pressLogicKey(LogicalKeyboardKey.enter);
+      await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
+      await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
+      await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
 
       expect(
         editor.documentSelection,
         Selection.single(path: [2], startOffset: 0),
       );
 
-      await editor.pressLogicKey(LogicalKeyboardKey.slash);
+      await editor.pressLogicKey(key: LogicalKeyboardKey.slash);
       await tester.pumpAndSettle(const Duration(milliseconds: 1000));
 
       expect(

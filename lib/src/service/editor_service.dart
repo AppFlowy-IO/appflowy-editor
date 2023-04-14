@@ -34,14 +34,17 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
+    this.showDefaultToolbar = true,
     this.shrinkWrap = false,
     ThemeData? themeData,
   }) : super(key: key) {
     this.themeData = themeData ??
-        ThemeData.light().copyWith(extensions: [
-          ...lightEditorStyleExtension,
-          ...lightPluginStyleExtension,
-        ]);
+        ThemeData.light().copyWith(
+          extensions: [
+            ...lightEditorStyleExtension,
+            ...lightPluginStyleExtension,
+          ],
+        );
   }
 
   final EditorState editorState;
@@ -51,7 +54,7 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Keyboard event handlers.
   final List<ShortcutEvent> shortcutEvents;
-
+  final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
   final List<ToolbarItem> toolbarItems;
@@ -168,6 +171,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
                 ],
                 editorState: editorState,
                 child: FlowyToolbar(
+                  showDefaultToolbar: widget.showDefaultToolbar,
                   key: editorState.service.toolbarServiceKey,
                   editorState: editorState,
                   child:

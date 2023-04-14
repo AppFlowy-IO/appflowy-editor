@@ -27,18 +27,28 @@ void main() {
   group('transform operation', () {
     test('insert + insert', () {
       final t = transformOperation(
-          InsertOperation([0, 1],
-              [Node(type: "node", attributes: {}, children: LinkedList())]),
-          InsertOperation([0, 1],
-              [Node(type: "node", attributes: {}, children: LinkedList())]));
+        InsertOperation(
+          [0, 1],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+        InsertOperation(
+          [0, 1],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+      );
       expect(t.path, [0, 2]);
     });
     test('delete + delete', () {
       final t = transformOperation(
-          DeleteOperation([0, 1],
-              [Node(type: "node", attributes: {}, children: LinkedList())]),
-          DeleteOperation([0, 2],
-              [Node(type: "node", attributes: {}, children: LinkedList())]));
+        DeleteOperation(
+          [0, 1],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+        DeleteOperation(
+          [0, 2],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+      );
       expect(t.path, [0, 1]);
     });
   });

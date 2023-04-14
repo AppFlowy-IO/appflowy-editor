@@ -2,3 +2,13 @@ include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+linter:
+  rules:
+    - always_declare_return_types
+    - require_trailing_commas
+    - unnecessary_raw_strings
+    - use_decorated_box
+
+analyzer:
+  exclude:
+    - lib/src/l10n/**

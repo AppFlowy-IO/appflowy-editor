@@ -39,7 +39,7 @@ ShortcutEventHandler cursorUpSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _goUp(editorState);
+  final end = _moveVertical(editorState);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -55,7 +55,7 @@ ShortcutEventHandler cursorDownSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _goDown(editorState);
+  final end = _moveVertical(editorState, upwards: false);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -191,6 +191,7 @@ ShortcutEventHandler cursorBeginSelect = (editorState, event) {
   if (position != null) {
     end = position;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(start: start, end: end),
   );
@@ -223,10 +224,12 @@ ShortcutEventHandler cursorUp = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final upPosition = _goUp(editorState);
+
+  final upPosition = _moveVertical(editorState);
   editorState.updateCursorSelection(
     upPosition == null ? null : Selection.collapsed(upPosition),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -237,10 +240,12 @@ ShortcutEventHandler cursorDown = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final downPosition = _goDown(editorState);
+
+  final downPosition = _moveVertical(editorState, upwards: false);
   editorState.updateCursorSelection(
     downPosition == null ? null : Selection.collapsed(downPosition),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -251,18 +256,15 @@ ShortcutEventHandler cursorLeft = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
-    final leftPosition = selection.start.goLeft(editorState);
-    if (leftPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(leftPosition),
-      );
-    }
-  } else {
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.start),
-    );
-  }
+
+  Position newPosition = selection.isCollapsed
+      ? selection.start.goLeft(editorState) ?? selection.start
+      : selection.start;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
   return KeyEventResult.handled;
 };
 
@@ -273,18 +275,15 @@ ShortcutEventHandler cursorRight = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
-    final rightPosition = selection.start.goRight(editorState);
-    if (rightPosition != null) {
-      editorState.service.selectionService.updateSelection(
-        Selection.collapsed(rightPosition),
-      );
-    }
-  } else {
-    editorState.service.selectionService.updateSelection(
-      Selection.collapsed(selection.end),
-    );
-  }
+
+  final newPosition = selection.isCollapsed
+      ? selection.start.goRight(editorState) ?? selection.end
+      : selection.end;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
   return KeyEventResult.handled;
 };
 
@@ -294,14 +293,57 @@ ShortcutEventHandler cursorLeftWordSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final end =
       selection.end.goLeft(editorState, selectionRange: _SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(end: end),
   );
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler cursorLeftWordMove = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection =
+      editorState.service.selectionService.currentSelection.value?.normalized;
+
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  final newPosition = selection.start
+          .goLeft(editorState, selectionRange: _SelectionRange.word) ??
+      selection.start;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler cursorRightWordMove = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection =
+      editorState.service.selectionService.currentSelection.value?.normalized;
+
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  final newPosition = selection.start
+          .goRight(editorState, selectionRange: _SelectionRange.word) ??
+      selection.end;
+
+  editorState.service.selectionService.updateSelection(
+    Selection.collapsed(newPosition),
+  );
+
   return KeyEventResult.handled;
 };
 
@@ -311,14 +353,17 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final end =
       selection.end.goRight(editorState, selectionRange: _SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
+
   editorState.service.selectionService.updateSelection(
     selection.copyWith(end: end),
   );
+
   return KeyEventResult.handled;
 };
 
@@ -342,9 +387,39 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
 
   final transaction = editorState.transaction;
   transaction.deleteText(
-      textNode, startOfWord.offset, selection.end.offset - startOfWord.offset);
+    textNode,
+    startOfWord.offset,
+    selection.end.offset - startOfWord.offset,
+  );
 
   editorState.apply(transaction);
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
+  final nodes = editorState.service.selectionService.currentSelectedNodes;
+  final selection = editorState.service.selectionService.currentSelection.value;
+  if (nodes.isEmpty || selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (nodes.length == 1 && nodes.first is TextNode) {
+    final textNode = nodes.first as TextNode;
+    if (textNode.toPlainText().isEmpty) {
+      return KeyEventResult.ignored;
+    }
+  }
+
+  if (selection.isCollapsed) {
+    final deleteTransaction = editorState.transaction;
+    deleteTransaction.deleteText(
+      nodes.first as TextNode,
+      0,
+      selection.end.offset,
+    );
+    editorState.apply(deleteTransaction, withUpdateCursor: true);
+  }
 
   return KeyEventResult.handled;
 };
@@ -363,6 +438,7 @@ extension on Position {
     if (node == null) {
       return null;
     }
+
     if (offset == 0) {
       final previousEnd = node.previous?.selectable?.end();
       if (previousEnd != null) {
@@ -370,6 +446,7 @@ extension on Position {
       }
       return null;
     }
+
     switch (selectionRange) {
       case _SelectionRange.character:
         if (node is TextNode) {
@@ -377,9 +454,9 @@ extension on Position {
             path: path,
             offset: node.delta.prevRunePosition(offset),
           );
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
       case _SelectionRange.word:
         if (node is TextNode) {
           final result = node.selectable?.getWordBoundaryInPosition(
@@ -391,11 +468,10 @@ extension on Position {
           if (result != null) {
             return result.start;
           }
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
     }
-    return null;
   }
 
   Position? goRight(
@@ -406,14 +482,12 @@ extension on Position {
     if (node == null) {
       return null;
     }
+
     final end = node.selectable?.end();
     if (end != null && offset >= end.offset) {
-      final nextStart = node.next?.selectable?.start();
-      if (nextStart != null) {
-        return nextStart;
-      }
-      return null;
+      return node.next?.selectable?.start();
     }
+
     switch (selectionRange) {
       case _SelectionRange.character:
         if (node is TextNode) {
@@ -421,61 +495,48 @@ extension on Position {
             path: path,
             offset: node.delta.nextRunePosition(offset),
           );
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
       case _SelectionRange.word:
         if (node is TextNode) {
           final result = node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
             return result.end;
           }
-        } else {
-          return Position(path: path, offset: offset);
         }
+
+        return Position(path: path, offset: offset);
     }
-    return null;
   }
 }
 
-Position? _goUp(EditorState editorState) {
+Position? _moveVertical(
+  EditorState editorState, {
+  bool upwards = true,
+}) {
   final selection = editorState.service.selectionService.currentSelection.value;
   final rects = editorState.service.selectionService.selectionRects;
   if (rects.isEmpty || selection == null) {
     return null;
   }
-  Offset offset;
-  if (selection.isBackward) {
-    final rect = rects.reduce(
-      (current, next) => current.bottom >= next.bottom ? current : next,
-    );
-    offset = rect.topRight.translate(0, -rect.height);
-  } else {
-    final rect = rects.reduce(
-      (current, next) => current.top <= next.top ? current : next,
-    );
-    offset = rect.topLeft.translate(0, -rect.height);
-  }
-  return editorState.service.selectionService.getPositionInOffset(offset);
-}
 
-Position? _goDown(EditorState editorState) {
-  final selection = editorState.service.selectionService.currentSelection.value;
-  final rects = editorState.service.selectionService.selectionRects;
-  if (rects.isEmpty || selection == null) {
-    return null;
-  }
   Offset offset;
   if (selection.isBackward) {
     final rect = rects.reduce(
       (current, next) => current.bottom >= next.bottom ? current : next,
     );
-    offset = rect.bottomRight.translate(0, rect.height);
+    offset = upwards
+        ? rect.topRight.translate(0, -rect.height)
+        : rect.bottomRight.translate(0, rect.height);
   } else {
     final rect = rects.reduce(
       (current, next) => current.top <= next.top ? current : next,
     );
-    offset = rect.bottomLeft.translate(0, rect.height);
+    offset = upwards
+        ? rect.topLeft.translate(0, -rect.height)
+        : rect.bottomLeft.translate(0, rect.height);
   }
+
   return editorState.service.selectionService.getPositionInOffset(offset);
 }

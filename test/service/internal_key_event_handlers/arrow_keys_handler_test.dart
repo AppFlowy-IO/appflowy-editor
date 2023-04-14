@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/test_editor.dart';
 
 void main() async {
@@ -25,7 +26,7 @@ void main() async {
 
       final textNode = editor.nodeAtPath([0]) as TextNode;
       for (var i = 0; i < text.length; i++) {
-        await editor.pressLogicKey(LogicalKeyboardKey.arrowRight);
+        await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
 
         if (i == text.length - 1) {
           // Wrap to next node if the cursor is at the end of the current node.
@@ -47,6 +48,225 @@ void main() async {
         }
       }
     });
+  });
+
+  testWidgets('Cursor up/down', (tester) async {
+    final editor = tester.editor
+      ..insertTextNode("Welcome")
+      ..insertTextNode("Welcome to AppFlowy");
+    await editor.startTesting();
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 19));
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [0], startOffset: 7),
+    );
+
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
+
+    expect(
+      editor.documentSelection,
+      Selection.single(path: [1], startOffset: 7),
+    );
+  });
+
+  testWidgets('Cursor top/bottom select', (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    Future<void> select(bool isTop) async {
+      await editor.pressLogicKey(
+        key: isTop ? LogicalKeyboardKey.arrowUp : LogicalKeyboardKey.arrowDown,
+        isMetaPressed: Platform.isMacOS,
+        isControlPressed: !Platform.isMacOS,
+        isShiftPressed: true,
+      );
+    }
+
+    await editor.updateSelection(Selection.single(path: [1], startOffset: 7));
+
+    await select(true);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [0]),
+      ),
+    );
+
+    await select(false);
+
+    expect(
+      editor.documentSelection,
+      Selection(
+        start: Position(path: [1], offset: 7),
+        end: Position(path: [2], offset: 19),
+      ),
+    );
+  });
+
+  testWidgets('Presses alt + arrow right key, move the cursor one word right',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    await editor.updateSelection(
+      Selection.single(path: [0], startOffset: 0),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 7,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 10,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move right word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 19,
+      ),
+    );
+  });
+
+  testWidgets('Presses alt + arrow left key, move the cursor one word left',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor
+      ..insertTextNode(text)
+      ..insertTextNode(text);
+    await editor.startTesting();
+
+    await editor.updateSelection(
+      Selection.single(path: [0], startOffset: 19),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 11,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 8,
+      ),
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+    );
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
+      ),
+    );
+
+    /// If the node does not exist, goRight will return
+    /// null, allowing us to test the edgecase of
+    /// move left word
+    editor.document.delete([0]);
+
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isAltPressed: true,
+    );
+
+    expect(
+      editor.documentSelection,
+      Selection.single(
+        path: [0],
+        startOffset: 0,
+      ),
+    );
   });
 
   testWidgets(
@@ -73,7 +293,7 @@ void main() async {
     await editor.updateSelection(selection);
     for (var i = offset - 1; i >= 0; i--) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
       );
       expect(
@@ -85,7 +305,7 @@ void main() async {
     }
     for (var i = text.length; i >= 0; i--) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
       );
       expect(
@@ -97,7 +317,7 @@ void main() async {
     }
     for (var i = 1; i <= text.length; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
       );
       expect(
@@ -109,7 +329,7 @@ void main() async {
     }
     for (var i = 0; i < text.length; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
       );
       expect(
@@ -139,7 +359,7 @@ void main() async {
     await editor.updateSelection(selection);
     for (var i = end + 1; i <= text.length; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
       );
       expect(
@@ -151,7 +371,7 @@ void main() async {
     }
     for (var i = text.length - 1; i >= 0; i--) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
       );
       expect(
@@ -181,7 +401,7 @@ void main() async {
     await editor.updateSelection(selection);
     for (var i = end - 1; i >= 0; i--) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
       );
       expect(
@@ -193,7 +413,7 @@ void main() async {
     }
     for (var i = 1; i <= text.length; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
       );
       expect(
@@ -238,7 +458,7 @@ void main() async {
     await editor.updateSelection(selection);
     for (int i = 0; i < 3; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowUp,
+        key: LogicalKeyboardKey.arrowUp,
         isShiftPressed: true,
       );
     }
@@ -250,7 +470,7 @@ void main() async {
     );
     for (int i = 0; i < 7; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowDown,
+        key: LogicalKeyboardKey.arrowDown,
         isShiftPressed: true,
       );
     }
@@ -262,7 +482,7 @@ void main() async {
     );
     for (int i = 0; i < 3; i++) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowUp,
+        key: LogicalKeyboardKey.arrowUp,
         isShiftPressed: true,
       );
     }
@@ -284,18 +504,18 @@ void main() async {
     final selection = Selection.single(path: [0], startOffset: 8);
     await editor.updateSelection(selection);
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowDown,
+      key: LogicalKeyboardKey.arrowDown,
       isShiftPressed: true,
     );
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowRight,
+        key: LogicalKeyboardKey.arrowRight,
         isShiftPressed: true,
         isMetaPressed: true,
       );
@@ -318,18 +538,18 @@ void main() async {
     final selection = Selection.single(path: [1], startOffset: 8);
     await editor.updateSelection(selection);
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowUp,
+      key: LogicalKeyboardKey.arrowUp,
       isShiftPressed: true,
     );
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.arrowLeft,
+        key: LogicalKeyboardKey.arrowLeft,
         isShiftPressed: true,
         isMetaPressed: true,
       );
@@ -352,7 +572,7 @@ void main() async {
     final selection = Selection.single(path: [1], startOffset: 10);
     await editor.updateSelection(selection);
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -364,7 +584,7 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -376,7 +596,7 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -388,7 +608,7 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -412,7 +632,7 @@ void main() async {
     final selection = Selection.single(path: [0], startOffset: 10);
     await editor.updateSelection(selection);
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -424,7 +644,7 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -436,12 +656,12 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
       isAltPressed: true,
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -453,7 +673,7 @@ void main() async {
       ),
     );
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
       isAltPressed: true,
     );
@@ -478,13 +698,13 @@ void main() async {
 
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
+        key: LogicalKeyboardKey.backspace,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        key: LogicalKeyboardKey.backspace,
+        isAltPressed: true,
       );
     }
 
@@ -499,13 +719,13 @@ void main() async {
 
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
+        key: LogicalKeyboardKey.backspace,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        key: LogicalKeyboardKey.backspace,
+        isAltPressed: true,
       );
     }
 
@@ -521,13 +741,13 @@ void main() async {
     for (var i = 0; i < words.length; i++) {
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.backspace,
+          key: LogicalKeyboardKey.backspace,
           isControlPressed: true,
         );
       } else {
         await editor.pressLogicKey(
-          LogicalKeyboardKey.backspace,
-          isMetaPressed: true,
+          key: LogicalKeyboardKey.backspace,
+          isAltPressed: true,
         );
       }
     }
@@ -550,13 +770,13 @@ void main() async {
 
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
+        key: LogicalKeyboardKey.backspace,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        key: LogicalKeyboardKey.backspace,
+        isAltPressed: true,
       );
     }
 
@@ -575,13 +795,13 @@ void main() async {
 
     if (Platform.isWindows || Platform.isLinux) {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
+        key: LogicalKeyboardKey.backspace,
         isControlPressed: true,
       );
     } else {
       await editor.pressLogicKey(
-        LogicalKeyboardKey.backspace,
-        isMetaPressed: true,
+        key: LogicalKeyboardKey.backspace,
+        isAltPressed: true,
       );
     }
 
@@ -596,7 +816,9 @@ void main() async {
 }
 
 Future<void> _testPressArrowKeyInNotCollapsedSelection(
-    WidgetTester tester, bool isBackward) async {
+  WidgetTester tester,
+  bool isBackward,
+) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor
     ..insertTextNode(text)
@@ -610,11 +832,11 @@ Future<void> _testPressArrowKeyInNotCollapsedSelection(
     end: isBackward ? end : start,
   );
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(LogicalKeyboardKey.arrowLeft);
+  await editor.pressLogicKey(key: LogicalKeyboardKey.arrowLeft);
   expect(editor.documentSelection?.start, start);
 
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(LogicalKeyboardKey.arrowRight);
+  await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
   expect(editor.documentSelection?.end, end);
 }
 
@@ -652,12 +874,12 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isControlPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowLeft,
+      key: LogicalKeyboardKey.arrowLeft,
       isMetaPressed: true,
     );
   }
@@ -669,12 +891,12 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
 
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isControlPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowRight,
+      key: LogicalKeyboardKey.arrowRight,
       isMetaPressed: true,
     );
   }
@@ -686,12 +908,12 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
 
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowUp,
+      key: LogicalKeyboardKey.arrowUp,
       isControlPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowUp,
+      key: LogicalKeyboardKey.arrowUp,
       isMetaPressed: true,
     );
   }
@@ -703,12 +925,12 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
 
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowDown,
+      key: LogicalKeyboardKey.arrowDown,
       isControlPressed: true,
     );
   } else {
     await editor.pressLogicKey(
-      LogicalKeyboardKey.arrowDown,
+      key: LogicalKeyboardKey.arrowDown,
       isMetaPressed: true,
     );
   }

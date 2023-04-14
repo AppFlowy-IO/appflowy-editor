@@ -10,6 +10,8 @@ import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as html;
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 
+import '../core/document/document.dart';
+
 class HTMLTag {
   static const h1 = "h1";
   static const h2 = "h2";
@@ -21,6 +23,7 @@ class HTMLTag {
   static const image = "img";
   static const anchor = "a";
   static const italic = "i";
+  static const em = "em";
   static const bold = "b";
   static const underline = "u";
   static const del = "del";
@@ -29,6 +32,7 @@ class HTMLTag {
   static const code = "code";
   static const blockQuote = "blockquote";
   static const div = "div";
+  static const divider = "hr";
 
   static bool isTopLevel(String tag) {
     return tag == h1 ||
@@ -58,6 +62,16 @@ class HTMLToNodesConverter {
     return _handleContainer(childNodes);
   }
 
+  Document toDocument() {
+    final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
+    return Document.fromJson({
+      "document": {
+        "type": "editor",
+        "children": _handleContainer(childNodes).map((e) => e.toJson()).toList()
+      }
+    });
+  }
+
   List<Node> _handleContainer(List<html.Node> childNodes) {
     final delta = Delta();
     final result = <Node>[];
@@ -69,6 +83,7 @@ class HTMLToNodesConverter {
             child.localName == HTMLTag.strong ||
             child.localName == HTMLTag.underline ||
             child.localName == HTMLTag.italic ||
+            child.localName == HTMLTag.em ||
             child.localName == HTMLTag.del) {
           _handleRichTextElement(delta, child);
         } else if (child.localName == HTMLTag.bold) {
@@ -100,7 +115,8 @@ class HTMLToNodesConverter {
     for (final child in element.nodes.toList()) {
       if (child is html.Element) {
         result.addAll(
-            _handleElement(child, {"subtype": BuiltInAttributeKey.quote}));
+          _handleElement(child, {"subtype": BuiltInAttributeKey.quote}),
+        );
       }
     }
 
@@ -112,8 +128,10 @@ class HTMLToNodesConverter {
     return _handleContainer(childNodes);
   }
 
-  List<Node> _handleElement(html.Element element,
-      [Map<String, dynamic>? attributes]) {
+  List<Node> _handleElement(
+    html.Element element, [
+    Map<String, dynamic>? attributes,
+  ]) {
     if (element.localName == HTMLTag.h1) {
       return [_handleHeadingElement(element, HTMLTag.h1)];
     } else if (element.localName == HTMLTag.h2) {
@@ -130,23 +148,26 @@ class HTMLToNodesConverter {
       return [_handleParagraph(element, attributes)];
     } else if (element.localName == HTMLTag.image) {
       return [_handleImage(element)];
+    } else if (element.localName == HTMLTag.divider) {
+      return [_handleDivider()];
     } else {
       final delta = Delta();
       delta.insert(element.text);
-      if (delta.isNotEmpty) {
-        return [TextNode(delta: delta)];
-      }
+      return [TextNode(delta: delta)];
     }
-    return [];
   }
 
-  Node _handleParagraph(html.Element element,
-      [Map<String, dynamic>? attributes]) {
+  Node _handleParagraph(
+    html.Element element, [
+    Map<String, dynamic>? attributes,
+  ]) {
     _inParagraph = true;
     final node = _handleRichText(element, attributes);
     _inParagraph = false;
     return node;
   }
+
+  Node _handleDivider() => Node(type: 'divider');
 
   Map<String, String> _cssStringToMap(String? cssString) {
     final result = <String, String>{};
@@ -167,7 +188,8 @@ class HTMLToNodesConverter {
   }
 
   Attributes? _getDeltaAttributesFromHtmlAttributes(
-      LinkedHashMap<Object, String> htmlAttributes) {
+    LinkedHashMap<Object, String> htmlAttributes,
+  ) {
     final attrs = <String, dynamic>{};
     final styleString = htmlAttributes["style"];
     final cssMap = _cssStringToMap(styleString);
@@ -205,7 +227,7 @@ class HTMLToNodesConverter {
     return attrs.isEmpty ? null : attrs;
   }
 
-  _assignTextDecorations(Attributes attrs, String decorationStr) {
+  void _assignTextDecorations(Attributes attrs, String decorationStr) {
     final decorations = decorationStr.split(" ");
     for (final d in decorations) {
       if (d == "line-through") {
@@ -216,7 +238,7 @@ class HTMLToNodesConverter {
     }
   }
 
-  _handleRichTextElement(Delta delta, html.Element element) {
+  void _handleRichTextElement(Delta delta, html.Element element) {
     if (element.localName == HTMLTag.span) {
       delta.insert(
         element.text,
@@ -232,15 +254,24 @@ class HTMLToNodesConverter {
     } else if (element.localName == HTMLTag.strong ||
         element.localName == HTMLTag.bold) {
       delta.insert(element.text, attributes: {BuiltInAttributeKey.bold: true});
+    } else if ([HTMLTag.em, HTMLTag.italic].contains(element.localName)) {
+      delta.insert(
+        element.text,
+        attributes: {BuiltInAttributeKey.italic: true},
+      );
     } else if (element.localName == HTMLTag.underline) {
-      delta.insert(element.text,
-          attributes: {BuiltInAttributeKey.underline: true});
-    } else if (element.localName == HTMLTag.italic) {
+      delta.insert(
+        element.text,
+        attributes: {BuiltInAttributeKey.underline: true},
+      );
+    } else if ([HTMLTag.italic, HTMLTag.em].contains(element.localName)) {
       delta
           .insert(element.text, attributes: {BuiltInAttributeKey.italic: true});
     } else if (element.localName == HTMLTag.del) {
-      delta.insert(element.text,
-          attributes: {BuiltInAttributeKey.strikethrough: true});
+      delta.insert(
+        element.text,
+        attributes: {BuiltInAttributeKey.strikethrough: true},
+      );
     } else if (element.localName == HTMLTag.code) {
       delta.insert(element.text, attributes: {BuiltInAttributeKey.code: true});
     } else {
@@ -252,8 +283,10 @@ class HTMLToNodesConverter {
   /// be regarded as a checkbox block.
   ///
   /// A container contains a <img /> will be regarded as a image block
-  Node _handleRichText(html.Element element,
-      [Map<String, dynamic>? attributes]) {
+  Node _handleRichText(
+    html.Element element, [
+    Map<String, dynamic>? attributes,
+  ]) {
     final image = element.querySelector(HTMLTag.image);
     if (image != null) {
       final imageNode = _handleImage(image);
@@ -278,21 +311,34 @@ class HTMLToNodesConverter {
       }
     }
 
-    final textNode = TextNode(delta: delta, attributes: {
-      if (attributes != null) ...attributes,
-      if (isCheckbox) ...{
-        BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-        BuiltInAttributeKey.checkbox: checked,
-      }
-    });
+    final textNode = TextNode(
+      delta: delta,
+      attributes: {
+        if (attributes != null) ...attributes,
+        if (isCheckbox) ...{
+          BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
+          BuiltInAttributeKey.checkbox: checked,
+        }
+      },
+    );
     return textNode;
   }
 
   Node _handleImage(html.Element element) {
     final src = element.attributes["src"];
+    final alignment = element.attributes["align"] ?? "center";
+    final width = element.attributes["width"] != null
+        ? double.parse(element.attributes["width"].toString())
+        : 200;
+    final height = element.attributes["height"] != null
+        ? double.parse(element.attributes["height"].toString())
+        : 100;
     final attributes = <String, dynamic>{};
     if (src != null) {
       attributes["image_src"] = src;
+      attributes["align"] = alignment;
+      attributes["width"] = width;
+      attributes["height"] = height;
     }
     return Node(type: "image", attributes: attributes, children: LinkedList());
   }
@@ -300,8 +346,12 @@ class HTMLToNodesConverter {
   List<Node> _handleUnorderedList(html.Element element) {
     final result = <Node>[];
     for (var child in element.children) {
-      result.addAll(_handleListElement(
-          child, {"subtype": BuiltInAttributeKey.bulletedList}));
+      result.addAll(
+        _handleListElement(
+          child,
+          {"subtype": BuiltInAttributeKey.bulletedList},
+        ),
+      );
     }
     return result;
   }
@@ -310,8 +360,12 @@ class HTMLToNodesConverter {
     final result = <Node>[];
     for (var i = 0; i < element.children.length; i++) {
       final child = element.children[i];
-      result.addAll(_handleListElement(
-          child, {"subtype": BuiltInAttributeKey.numberList, "number": i + 1}));
+      result.addAll(
+        _handleListElement(
+          child,
+          {"subtype": BuiltInAttributeKey.numberList, "number": i + 1},
+        ),
+      );
     }
     return result;
   }
@@ -323,12 +377,15 @@ class HTMLToNodesConverter {
     final delta = Delta();
     delta.insert(element.text);
     return TextNode(
-        attributes: {"subtype": "heading", "heading": headingStyle},
-        delta: delta);
+      attributes: {"subtype": "heading", "heading": headingStyle},
+      delta: delta,
+    );
   }
 
-  List<Node> _handleListElement(html.Element element,
-      [Map<String, dynamic>? attributes]) {
+  List<Node> _handleListElement(
+    html.Element element, [
+    Map<String, dynamic>? attributes,
+  ]) {
     final result = <Node>[];
     final childNodes = element.nodes.toList();
     for (final child in childNodes) {
@@ -359,15 +416,19 @@ class NodesToHTMLConverter {
   /// This container is used to save the list elements temporarily.
   html.Element? _stashListContainer;
 
-  NodesToHTMLConverter(
-      {required this.nodes, this.startOffset, this.endOffset}) {
+  NodesToHTMLConverter({
+    required this.nodes,
+    this.startOffset,
+    this.endOffset,
+  }) {
     if (nodes.isEmpty) {
       return;
     } else if (nodes.length == 1) {
       final first = nodes.first;
       if (first is TextNode) {
         nodes[0] = first.copyWith(
-            delta: first.delta.slice(startOffset ?? 0, endOffset));
+          delta: first.delta.slice(startOffset ?? 0, endOffset),
+        );
       }
     } else {
       final first = nodes.first;
@@ -393,6 +454,21 @@ class NodesToHTMLConverter {
         } else {
           _addTextNode(textNode);
         }
+      } else if (node.type == "image") {
+        final textNode = node;
+        final anchor = html.Element.tag(HTMLTag.image);
+        anchor.attributes["src"] = textNode.attributes["image_src"];
+        anchor.attributes["align"] = textNode.attributes["align"];
+
+        anchor.attributes["width"] = textNode.attributes["width"] != null
+            ? textNode.attributes["width"].toString()
+            : "200";
+
+        anchor.attributes["height"] = textNode.attributes["height"] != null
+            ? textNode.attributes["height"].toString()
+            : "100";
+
+        _result.add(anchor);
       }
       // TODO: handle image and other blocks
     }
@@ -403,16 +479,17 @@ class NodesToHTMLConverter {
     return _result;
   }
 
-  _addTextNode(TextNode textNode, {int? end}) {
+  void _addTextNode(TextNode textNode, {int? end}) {
     _addElement(textNode, _textNodeToHtml(textNode, end: end));
   }
 
-  _addElement(TextNode textNode, html.Element element) {
+  void _addElement(TextNode textNode, html.Element element) {
     if (element.localName == HTMLTag.list) {
       final isNumbered =
           textNode.attributes["subtype"] == BuiltInAttributeKey.numberList;
       _stashListContainer ??= html.Element.tag(
-          isNumbered ? HTMLTag.orderedList : HTMLTag.unorderedList);
+        isNumbered ? HTMLTag.orderedList : HTMLTag.unorderedList,
+      );
       _stashListContainer?.append(element);
     } else {
       if (_stashListContainer != null) {
@@ -426,18 +503,22 @@ class NodesToHTMLConverter {
   String toHTMLString() {
     final elements = toHTMLNodes();
     final copyString = elements.fold<String>(
-        "", ((previousValue, element) => previousValue + stringify(element)));
+      "",
+      ((previousValue, element) => previousValue + stringify(element)),
+    );
     return copyString;
   }
 
   html.Element _textNodeToHtml(TextNode textNode, {int? end}) {
     String? subType = textNode.attributes["subtype"];
     String? heading = textNode.attributes["heading"];
-    return _deltaToHtml(textNode.delta,
-        subType: subType,
-        heading: heading,
-        end: end,
-        checked: textNode.attributes["checkbox"] == true);
+    return _deltaToHtml(
+      textNode.delta,
+      subType: subType,
+      heading: heading,
+      end: end,
+      checked: textNode.attributes["checkbox"] == true,
+    );
   }
 
   String _textDecorationsFromAttributes(Attributes attributes) {
@@ -507,8 +588,13 @@ class NodesToHTMLConverter {
   /// ```html
   /// <span style="...">Text</span>
   /// ```
-  html.Element _deltaToHtml(Delta delta,
-      {String? subType, String? heading, int? end, bool? checked}) {
+  html.Element _deltaToHtml(
+    Delta delta, {
+    String? subType,
+    String? heading,
+    int? end,
+    bool? checked,
+  }) {
     if (end != null) {
       delta = delta.slice(0, end);
     }

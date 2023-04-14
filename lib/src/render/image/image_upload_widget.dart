@@ -1,5 +1,5 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/extensions/image_node_extension.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
 import 'package:appflowy_editor/src/render/style/editor_style.dart';
@@ -15,25 +15,19 @@ void showImageUploadMenu(
   menuService.dismiss();
 
   _imageUploadMenu?.remove();
-  _imageUploadMenu = OverlayEntry(builder: (context) {
-    return Positioned(
+  _imageUploadMenu = OverlayEntry(
+    builder: (context) => Positioned(
       top: menuService.topLeft.dy,
       left: menuService.topLeft.dx,
       child: Material(
         child: ImageUploadMenu(
           editorState: editorState,
-          onSubmitted: (text) {
-            // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
-          },
-          onUpload: (text) {
-            // _dismissImageUploadMenu();
-            editorState.insertImageNode(text);
-          },
+          onSubmitted: editorState.insertImageNode,
+          onUpload: editorState.insertImageNode,
         ),
       ),
-    );
-  });
+    ),
+  );
 
   Overlay.of(context).insert(_imageUploadMenu!);
 
@@ -144,9 +138,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
             width: 24,
             height: 24,
           ),
-          onPressed: () {
-            _textEditingController.clear();
-          },
+          onPressed: _textEditingController.clear,
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -169,36 +161,12 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
             ),
           ),
         ),
-        onPressed: () {
-          widget.onUpload(_textEditingController.text);
-        },
+        onPressed: () => widget.onUpload(_textEditingController.text),
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
       ),
     );
-  }
-}
-
-extension on EditorState {
-  void insertImageNode(String src) {
-    final selection = service.selectionService.currentSelection.value;
-    if (selection == null) {
-      return;
-    }
-    final imageNode = Node(
-      type: 'image',
-      attributes: {
-        'image_src': src,
-        'align': 'center',
-      },
-    );
-    final transaction = this.transaction;
-    transaction.insertNode(
-      selection.start.path,
-      imageNode,
-    );
-    apply(transaction);
   }
 }

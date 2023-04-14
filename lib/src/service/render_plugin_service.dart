@@ -121,30 +121,34 @@ class AppFlowyRenderPlugin extends AppFlowyRenderPluginService {
   }
 
   Widget _autoUpdateNodeWidget(
-      NodeWidgetBuilder builder, NodeWidgetContext context) {
+    NodeWidgetBuilder builder,
+    NodeWidgetContext context,
+  ) {
     Widget notifier;
     if (context.node is TextNode) {
       notifier = ChangeNotifierProvider.value(
-          value: context.node as TextNode,
-          builder: (_, child) {
-            return Consumer<TextNode>(
-              builder: ((_, value, child) {
-                Log.ui.debug('TextNode is rebuilding...');
-                return _buildWithActions(builder, context);
-              }),
-            );
-          });
+        value: context.node as TextNode,
+        builder: (_, child) {
+          return Consumer<TextNode>(
+            builder: ((_, value, child) {
+              Log.ui.debug('TextNode is rebuilding...');
+              return _buildWithActions(builder, context);
+            }),
+          );
+        },
+      );
     } else {
       notifier = ChangeNotifierProvider.value(
-          value: context.node,
-          builder: (_, child) {
-            return Consumer<Node>(
-              builder: ((_, value, child) {
-                Log.ui.debug('Node is rebuilding...');
-                return _buildWithActions(builder, context);
-              }),
-            );
-          });
+        value: context.node,
+        builder: (_, child) {
+          return Consumer<Node>(
+            builder: ((_, value, child) {
+              Log.ui.debug('Node is rebuilding...');
+              return _buildWithActions(builder, context);
+            }),
+          );
+        },
+      );
     }
     return CompositedTransformTarget(
       link: context.node.layerLink,
@@ -153,8 +157,10 @@ class AppFlowyRenderPlugin extends AppFlowyRenderPluginService {
   }
 
   Widget _buildWithActions(
-      NodeWidgetBuilder builder, NodeWidgetContext context) {
-    if (builder is ActionProvider) {
+    NodeWidgetBuilder builder,
+    NodeWidgetContext context,
+  ) {
+    if (builder is ActionProvider && context.editorState.editable) {
       return ChangeNotifierProvider(
         create: (_) => ActionMenuState(context.node.path),
         child: ActionMenuOverlay(

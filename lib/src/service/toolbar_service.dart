@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_widget.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 
 abstract class AppFlowyToolbarService {
   /// Show the toolbar widget beside the offset.
@@ -25,8 +24,9 @@ class FlowyToolbar extends StatefulWidget {
     Key? key,
     required this.editorState,
     required this.child,
+    required this.showDefaultToolbar,
   }) : super(key: key);
-
+  final bool showDefaultToolbar;
   final EditorState editorState;
   final Widget child;
 
@@ -44,7 +44,9 @@ class _FlowyToolbarState extends State<FlowyToolbar>
   void initState() {
     super.initState();
 
-    toolbarItems = [...defaultToolbarItems, ...widget.editorState.toolbarItems]
+    toolbarItems = widget.showDefaultToolbar
+        ? [...defaultToolbarItems, ...widget.editorState.toolbarItems]
+        : [...widget.editorState.toolbarItems]
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 

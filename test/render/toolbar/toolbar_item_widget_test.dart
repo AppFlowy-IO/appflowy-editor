@@ -31,6 +31,7 @@ void main() async {
       );
       final widget = ToolbarItemWidget(
         key: key,
+        toolbarIconSize: 28,
         item: item,
         isHighlight: true,
         onPressed: (() {

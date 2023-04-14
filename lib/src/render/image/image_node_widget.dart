@@ -12,29 +12,35 @@ class ImageNodeWidget extends StatefulWidget {
     required this.src,
     this.width,
     required this.alignment,
+    required this.editable,
+    this.height,
     required this.onResize,
   }) : super(key: key);
 
   final Node node;
   final String src;
   final double? width;
+  final double? height;
   final Alignment alignment;
+  final bool editable;
   final void Function(double width) onResize;
 
   @override
-  State<ImageNodeWidget> createState() => _ImageNodeWidgetState();
+  State<ImageNodeWidget> createState() => ImageNodeWidgetState();
 }
 
-class _ImageNodeWidgetState extends State<ImageNodeWidget>
-    with SelectableMixin {
+class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   final _imageKey = GlobalKey();
 
   double? _imageWidth;
+  double? _imageHeight;
   double _initial = 0;
   double _distance = 0;
-  bool _onFocus = false;
+
+  @visibleForTesting
+  bool onFocus = false;
 
   ImageStream? _imageStream;
   late ImageStreamListener _imageStreamListener;
@@ -44,6 +50,7 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
     super.initState();
 
     _imageWidth = widget.width;
+    _imageHeight = widget.height;
     _imageStreamListener = ImageStreamListener(
       (image, _) {
         _imageWidth = _imageKey.currentContext
@@ -124,10 +131,10 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
       alignment: widget.alignment,
       child: MouseRegion(
         onEnter: (event) => setState(() {
-          _onFocus = true;
+          onFocus = true;
         }),
         onExit: (event) => setState(() {
-          _onFocus = false;
+          onFocus = false;
         }),
         child: _buildResizableImage(context),
       ),
@@ -138,49 +145,54 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
     final networkImage = Image.network(
       widget.src,
       width: _imageWidth == null ? null : _imageWidth! - _distance,
+      height: _imageHeight,
       gaplessPlayback: true,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null ||
             loadingProgress.cumulativeBytesLoaded ==
-                loadingProgress.expectedTotalBytes) return child;
+                loadingProgress.expectedTotalBytes) {
+          return child;
+        }
+
         return _buildLoading(context);
       },
-      errorBuilder: (context, error, stackTrace) {
-        // _imageWidth ??= defaultMaxTextNodeWidth;
-        return _buildError(context);
-      },
+      errorBuilder: (context, error, stackTrace) => _buildError(context),
     );
+
     if (_imageWidth == null) {
       _imageStream = networkImage.image.resolve(const ImageConfiguration())
         ..addListener(_imageStreamListener);
     }
+
     return Stack(
       children: [
         networkImage,
-        _buildEdgeGesture(
-          context,
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: 5,
-          onUpdate: (distance) {
-            setState(() {
-              _distance = distance;
-            });
-          },
-        ),
-        _buildEdgeGesture(
-          context,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: 5,
-          onUpdate: (distance) {
-            setState(() {
-              _distance = -distance;
-            });
-          },
-        ),
+        if (widget.editable) ...[
+          _buildEdgeGesture(
+            context,
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: 5,
+            onUpdate: (distance) {
+              setState(() {
+                _distance = distance;
+              });
+            },
+          ),
+          _buildEdgeGesture(
+            context,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: 5,
+            onUpdate: (distance) {
+              setState(() {
+                _distance = -distance;
+              });
+            },
+          ),
+        ],
       ],
     );
   }
@@ -206,7 +218,7 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
 
   Widget _buildError(BuildContext context) {
     return Container(
-      height: 100,
+      height: _imageHeight ?? 100,
       width: _imageWidth,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
@@ -251,7 +263,7 @@ class _ImageNodeWidgetState extends State<ImageNodeWidget>
         },
         child: MouseRegion(
           cursor: SystemMouseCursors.resizeLeftRight,
-          child: _onFocus
+          child: onFocus
               ? Center(
                   child: Container(
                     height: 40,

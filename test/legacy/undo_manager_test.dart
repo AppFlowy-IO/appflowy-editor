@@ -52,6 +52,17 @@ void main() async {
     assert(transaction.operations[2] is UpdateOperation);
     assert(isInsertAndPathEqual(transaction.operations[3], [0], '0'));
   });
+
+  test("HistoryItem sealed", () {
+    final historyItem = HistoryItem();
+
+    historyItem.add(
+      DeleteOperation([0], [TextNode(delta: Delta()..insert('0'))]),
+    );
+
+    historyItem.seal();
+    expect(historyItem.sealed, true);
+  });
 }
 
 bool isInsertAndPathEqual(Operation operation, Path path, [String? content]) {

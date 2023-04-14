@@ -1,12 +1,15 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 
 import 'package:flutter/material.dart';
 
 bool _isCodeStyle(TextNode textNode, int index) {
-  return textNode.allSatisfyCodeInSelection(Selection.single(
-      path: textNode.path, startOffset: index, endOffset: index + 1));
+  return textNode.allSatisfyCodeInSelection(
+    Selection.single(
+      path: textNode.path,
+      startOffset: index,
+      endOffset: index + 1,
+    ),
+  );
 }
 
 // enter escape mode when start two backquote
@@ -221,14 +224,15 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
     final transaction = editorState.transaction
       ..deleteText(textNode, firstExclamation, text.length)
       ..insertNode(
-          textNode.path,
-          Node.fromJson({
-            'type': 'image',
-            'attributes': {
-              'image_src': imgUrl,
-              'align': 'center',
-            }
-          }));
+        textNode.path,
+        Node.fromJson({
+          'type': 'image',
+          'attributes': {
+            'image_src': imgUrl,
+            'align': 'center',
+          }
+        }),
+      );
     editorState.apply(transaction);
   } else if (lnkRegEx.firstMatch(text) != null) {
     // Extract the text and the URL of the link
@@ -250,8 +254,11 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
           BuiltInAttributeKey.href: linkUrl,
         },
       )
-      ..deleteText(textNode, firstClosingBracket - 1,
-          selection.end.offset - firstClosingBracket)
+      ..deleteText(
+        textNode,
+        firstClosingBracket - 1,
+        selection.end.offset - firstClosingBracket,
+      )
       ..afterSelection = Selection.collapsed(
         Position(
           path: textNode.path,
@@ -310,7 +317,7 @@ ShortcutEventHandler underscoreToItalicHandler = (editorState, event) {
   return KeyEventResult.handled;
 };
 
-ShortcutEventHandler doubleAsteriskToBoldHanlder = (editorState, event) {
+ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
   final selectionService = editorState.service.selectionService;
   final selection = selectionService.currentSelection.value;
   final textNodes = selectionService.currentSelectedNodes.whereType<TextNode>();
@@ -359,7 +366,8 @@ ShortcutEventHandler doubleAsteriskToBoldHanlder = (editorState, event) {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(
-        Position(path: textNode.path, offset: selection.end.offset - 3));
+      Position(path: textNode.path, offset: selection.end.offset - 3),
+    );
 
   editorState.apply(transaction);
 
@@ -367,7 +375,7 @@ ShortcutEventHandler doubleAsteriskToBoldHanlder = (editorState, event) {
 };
 
 //Implement in the same way as doubleAsteriskToBoldHanlder
-ShortcutEventHandler doubleUnderscoreToBoldHanlder = (editorState, event) {
+ShortcutEventHandler doubleUnderscoreToBoldHandler = (editorState, event) {
   final selectionService = editorState.service.selectionService;
   final selection = selectionService.currentSelection.value;
   final textNodes = selectionService.currentSelectedNodes.whereType<TextNode>();
@@ -417,7 +425,8 @@ ShortcutEventHandler doubleUnderscoreToBoldHanlder = (editorState, event) {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(
-        Position(path: textNode.path, offset: selection.end.offset - 3));
+      Position(path: textNode.path, offset: selection.end.offset - 3),
+    );
 
   editorState.apply(transaction);
 

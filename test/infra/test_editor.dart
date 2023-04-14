@@ -28,25 +28,28 @@ class EditorWidgetTester {
     Locale locale = const Locale('en'),
     bool shrinkWrap = false,
     bool autoFocus = false,
+    bool editable = true,
   }) async {
-    final app = MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        AppFlowyEditorLocalizations.delegate,
-      ],
-      supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
-      locale: locale,
-      home: Scaffold(
-        body: AppFlowyEditor(
-          editorState: _editorState,
-          shrinkWrap: shrinkWrap,
-          autoFocus: autoFocus,
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          AppFlowyEditorLocalizations.delegate,
+        ],
+        supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
+        locale: locale,
+        home: Scaffold(
+          body: AppFlowyEditor(
+            editorState: _editorState,
+            shrinkWrap: shrinkWrap,
+            autoFocus: autoFocus,
+            editable: editable,
+          ),
         ),
       ),
     );
-    await tester.pumpWidget(app);
     await tester.pump();
     return this;
   }
@@ -98,12 +101,18 @@ class EditorWidgetTester {
     }
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(_editorState.service.selectionService.currentSelection.value,
-        selection);
+    expect(
+      _editorState.service.selectionService.currentSelection.value,
+      selection,
+    );
   }
 
-  Future<void> insertText(TextNode textNode, String text, int offset,
-      {Selection? selection}) async {
+  Future<void> insertText(
+    TextNode textNode,
+    String text,
+    int offset, {
+    Selection? selection,
+  }) async {
     await apply([
       TextEditingDeltaInsertion(
         oldText: textNode.toPlainText(),
@@ -112,7 +121,8 @@ class EditorWidgetTester {
         selection: selection != null
             ? TextSelection(
                 baseOffset: selection.start.offset,
-                extentOffset: selection.end.offset)
+                extentOffset: selection.end.offset,
+              )
             : TextSelection.collapsed(offset: offset),
         composing: TextRange.empty,
       )
@@ -124,8 +134,9 @@ class EditorWidgetTester {
     await tester.pumpAndSettle();
   }
 
-  Future<void> pressLogicKey(
-    LogicalKeyboardKey key, {
+  Future<void> pressLogicKey({
+    String? character,
+    LogicalKeyboardKey? key,
     bool isControlPressed = false,
     bool isShiftPressed = false,
     bool isAltPressed = false,
@@ -134,11 +145,13 @@ class EditorWidgetTester {
     if (!isControlPressed &&
         !isShiftPressed &&
         !isAltPressed &&
-        !isMetaPressed) {
+        !isMetaPressed &&
+        key != null) {
       await tester.sendKeyDownEvent(key);
     } else {
       final testRawKeyEventData = TestRawKeyEventData(
-        logicalKey: key,
+        logicalKey: key ?? LogicalKeyboardKey.nonConvert,
+        character: character,
         isControlPressed: isControlPressed,
         isShiftPressed: isShiftPressed,
         isAltPressed: isAltPressed,

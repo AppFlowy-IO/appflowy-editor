@@ -1,18 +1,17 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
 import 'package:appflowy_editor/src/render/link_menu/link_menu.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
-import 'package:appflowy_editor/src/extensions/editor_state_extensions.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 typedef ToolbarItemEventHandler = void Function(
-    EditorState editorState, BuildContext context);
+  EditorState editorState,
+  BuildContext context,
+);
 typedef ToolbarItemValidator = bool Function(EditorState editorState);
 typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 
@@ -127,7 +126,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.bold',
     type: 2,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.bold,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.bold}${_shortcutTooltips("⌘ + B", "CTRL + B", "CTRL + B")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/bold',
       color: isHighlight ? Colors.lightBlue : null,
@@ -143,7 +143,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.italic',
     type: 2,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.italic,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.italic}${_shortcutTooltips("⌘ + I", "CTRL + I", "CTRL + I")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/italic',
       color: isHighlight ? Colors.lightBlue : null,
@@ -159,7 +160,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.underline',
     type: 2,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.underline,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.underline}${_shortcutTooltips("⌘ + U", "CTRL + U", "CTRL + U")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/underline',
       color: isHighlight ? Colors.lightBlue : null,
@@ -175,7 +177,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.strikethrough',
     type: 2,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.strikethrough,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.strikethrough}${_shortcutTooltips("⌘ + SHIFT + S", "CTRL + SHIFT + S", "CTRL + SHIFT + S")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/strikethrough',
       color: isHighlight ? Colors.lightBlue : null,
@@ -191,7 +194,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.code',
     type: 2,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.embedCode,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.embedCode}${_shortcutTooltips("⌘ + E", "CTRL + E", "CTRL + E")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/code',
       color: isHighlight ? Colors.lightBlue : null,
@@ -241,7 +245,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.link',
     type: 4,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.link,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.link}${_shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/link',
       color: isHighlight ? Colors.lightBlue : null,
@@ -257,7 +262,8 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.highlight',
     type: 4,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.highlight,
+    tooltipsMessage:
+        "${AppFlowyEditorLocalizations.current.highlight}${_shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}",
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/highlight',
       color: isHighlight ? Colors.lightBlue : null,
@@ -307,6 +313,22 @@ List<ToolbarItem> defaultToolbarItems = [
     ),
   ),
 ];
+
+String _shortcutTooltips(
+  String? macOSString,
+  String? windowsString,
+  String? linuxString,
+) {
+  if (kIsWeb) return '';
+  if (Platform.isMacOS && macOSString != null) {
+    return '\n$macOSString';
+  } else if (Platform.isWindows && windowsString != null) {
+    return '\n$windowsString';
+  } else if (Platform.isLinux && linuxString != null) {
+    return '\n$linuxString';
+  }
+  return '';
+}
 
 ToolbarItemValidator _onlyShowInSingleTextSelection = (editorState) {
   final result = _showInBuiltInTextSelection(editorState);
@@ -388,52 +410,53 @@ void showLinkMenu(
     );
   }
 
-  _linkMenuOverlay = OverlayEntry(builder: (context) {
-    return Positioned(
-      top: matchRect.bottom + 5.0,
-      left: matchRect.left,
-      child: Material(
-        borderRadius: BorderRadius.circular(6.0),
-        child: LinkMenu(
-          linkText: linkText,
-          editorState: editorState,
-          onOpenLink: () async {
-            await safeLaunchUrl(linkText);
-          },
-          onSubmitted: (text) async {
-            await editorState.formatLinkInText(
-              text,
-              textNode: textNode,
-            );
-
-            _dismissLinkMenu();
-          },
-          onCopyLink: () {
-            AppFlowyClipboard.setData(text: linkText);
-            _dismissLinkMenu();
-          },
-          onRemoveLink: () {
-            final transaction = editorState.transaction
-              ..formatText(
-                textNode,
-                index,
-                length,
-                {BuiltInAttributeKey.href: null},
+  _linkMenuOverlay = OverlayEntry(
+    builder: (context) {
+      return Positioned(
+        top: matchRect.bottom + 5.0,
+        left: matchRect.left,
+        child: Material(
+          child: LinkMenu(
+            linkText: linkText,
+            editorState: editorState,
+            onOpenLink: () async {
+              await safeLaunchUrl(linkText);
+            },
+            onSubmitted: (text) async {
+              await editorState.formatLinkInText(
+                text,
+                textNode: textNode,
               );
-            editorState.apply(transaction);
-            _dismissLinkMenu();
-          },
-          onFocusChange: (value) {
-            if (value && customSelection != null) {
-              _changeSelectionInner = true;
-              editorState.service.selectionService
-                  .updateSelection(customSelection);
-            }
-          },
+
+              _dismissLinkMenu();
+            },
+            onCopyLink: () {
+              AppFlowyClipboard.setData(text: linkText);
+              _dismissLinkMenu();
+            },
+            onRemoveLink: () {
+              final transaction = editorState.transaction
+                ..formatText(
+                  textNode,
+                  index,
+                  length,
+                  {BuiltInAttributeKey.href: null},
+                );
+              editorState.apply(transaction);
+              _dismissLinkMenu();
+            },
+            onFocusChange: (value) {
+              if (value && customSelection != null) {
+                _changeSelectionInner = true;
+                editorState.service.selectionService
+                    .updateSelection(customSelection);
+              }
+            },
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
   Overlay.of(context)?.insert(_linkMenuOverlay!);
 
   editorState.service.scrollService?.disable();
@@ -540,40 +563,44 @@ void showColorMenu(
   }
 
   final style = editorState.editorStyle;
-  _colorMenuOverlay = OverlayEntry(builder: (context) {
-    return Positioned(
-      top: matchRect.bottom + 5.0,
-      left: matchRect.left + 10,
-      child: Material(
-        color: Colors.transparent,
-        child: ColorPicker(
-          pickerBackgroundColor:
-              style.selectionMenuBackgroundColor ?? Colors.white,
-          pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
-              Colors.blue.withOpacity(0.3),
-          pickerItemTextColor: style.selectionMenuItemTextColor ?? Colors.black,
-          selectedFontColorHex: fontColorHex,
-          selectedBackgroundColorHex: backgroundColorHex,
-          fontColorOptions: _generateFontColorOptions(editorState),
-          backgroundColorOptions: _generateBackgroundColorOptions(editorState),
-          onSubmittedbackgroundColorHex: (color) {
-            formatHighlightColor(
-              editorState,
-              color,
-            );
-            _dismissColorMenu();
-          },
-          onSubmittedFontColorHex: (color) {
-            formatFontColor(
-              editorState,
-              color,
-            );
-            _dismissColorMenu();
-          },
+  _colorMenuOverlay = OverlayEntry(
+    builder: (context) {
+      return Positioned(
+        top: matchRect.bottom + 5.0,
+        left: matchRect.left + 10,
+        child: Material(
+          color: Colors.transparent,
+          child: ColorPicker(
+            pickerBackgroundColor:
+                style.selectionMenuBackgroundColor ?? Colors.white,
+            pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
+                Colors.blue.withOpacity(0.3),
+            pickerItemTextColor:
+                style.selectionMenuItemTextColor ?? Colors.black,
+            selectedFontColorHex: fontColorHex,
+            selectedBackgroundColorHex: backgroundColorHex,
+            fontColorOptions: _generateFontColorOptions(editorState),
+            backgroundColorOptions:
+                _generateBackgroundColorOptions(editorState),
+            onSubmittedbackgroundColorHex: (color) {
+              formatHighlightColor(
+                editorState,
+                color,
+              );
+              _dismissColorMenu();
+            },
+            onSubmittedFontColorHex: (color) {
+              formatFontColor(
+                editorState,
+                color,
+              );
+              _dismissColorMenu();
+            },
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
   Overlay.of(context)?.insert(_colorMenuOverlay!);
 
   editorState.service.scrollService?.disable();

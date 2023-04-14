@@ -1,8 +1,9 @@
+import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/service/editor_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-
 import '../../infra/test_editor.dart';
 
 void main() async {
@@ -25,6 +26,64 @@ void main() async {
 
         expect(editor.documentLength, 3);
         expect(find.byType(Image), findsOneWidget);
+      });
+    });
+
+    testWidgets('cannot see action menu when not editable', (tester) async {
+      mockNetworkImagesFor(() async {
+        const text = 'Welcome to Appflowy 😁';
+        const src =
+            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        final editor = tester.editor
+          ..insertTextNode(text)
+          ..insertImageNode(src)
+          ..insertTextNode(text);
+
+        await editor.startTesting(editable: false);
+        await tester.pumpAndSettle();
+
+        expect(editor.documentLength, 3);
+        expect(find.byType(Image), findsOneWidget);
+
+        final gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: Offset.zero);
+
+        addTearDown(gesture.removePointer);
+
+        await gesture.moveTo(tester.getCenter(find.byType(Image)));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(FlowySvg), findsNothing);
+      });
+    });
+
+    testWidgets('can see action menu when editable', (tester) async {
+      mockNetworkImagesFor(() async {
+        const text = 'Welcome to Appflowy 😁';
+        const src =
+            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        final editor = tester.editor
+          ..insertTextNode(text)
+          ..insertImageNode(src)
+          ..insertTextNode(text);
+
+        await editor.startTesting();
+        await tester.pumpAndSettle();
+
+        expect(editor.documentLength, 3);
+        expect(find.byType(Image), findsOneWidget);
+
+        final gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: Offset.zero);
+
+        addTearDown(gesture.removePointer);
+
+        await gesture.moveTo(tester.getCenter(find.byType(Image)));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(FlowySvg), findsWidgets);
       });
     });
 
@@ -51,13 +110,19 @@ void main() async {
 
         final leftImageRect = tester.getRect(imageFinder.at(0));
         expect(
-            leftImageRect.left, editor.editorState.editorStyle.padding!.left);
+          leftImageRect.left,
+          editor.editorState.editorStyle.padding!.left,
+        );
         final rightImageRect = tester.getRect(imageFinder.at(2));
-        expect(rightImageRect.right,
-            editorRect.right - editor.editorState.editorStyle.padding!.right);
+        expect(
+          rightImageRect.right,
+          editorRect.right - editor.editorState.editorStyle.padding!.right,
+        );
         final centerImageRect = tester.getRect(imageFinder.at(1));
-        expect(centerImageRect.left,
-            (leftImageRect.left + rightImageRect.left) / 2.0);
+        expect(
+          centerImageRect.left,
+          (leftImageRect.left + rightImageRect.left) / 2.0,
+        );
         expect(leftImageRect.size, centerImageRect.size);
         expect(rightImageRect.size, centerImageRect.size);
 

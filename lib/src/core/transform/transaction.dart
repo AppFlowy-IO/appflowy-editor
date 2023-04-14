@@ -58,16 +58,25 @@ class Transaction {
   /// The [attributes] will be merged into the existing attributes.
   void updateNode(Node node, Attributes attributes) {
     final inverted = invertAttributes(node.attributes, attributes);
-    add(UpdateOperation(
-      node.path,
-      {...attributes},
-      inverted,
-    ));
+    add(
+      UpdateOperation(
+        node.path,
+        {...attributes},
+        inverted,
+      ),
+    );
   }
 
   /// Deletes the [Node] in the document.
   void deleteNode(Node node) {
     deleteNodesAtPath(node.path);
+    if (beforeSelection != null) {
+      final nodePath = node.path;
+      final selectionPath = beforeSelection!.start.path;
+      if (!(nodePath.equals(selectionPath))) {
+        afterSelection = beforeSelection;
+      }
+    }
   }
 
   /// Deletes the [Node]s in the document.
@@ -163,10 +172,12 @@ extension TextTransaction on Transaction {
         ..delete(firstLength - firstOffset)
         ..addAll(second.delta.slice(secondOffset, secondLength)),
     );
-    afterSelection = Selection.collapsed(Position(
-      path: first.path,
-      offset: firstOffset,
-    ));
+    afterSelection = Selection.collapsed(
+      Position(
+        path: first.path,
+        offset: firstOffset,
+      ),
+    );
   }
 
   void splitText(TextNode textNode, int offset) {
@@ -181,10 +192,12 @@ extension TextTransaction on Transaction {
         delta: second,
       ),
     );
-    afterSelection = Selection.collapsed(Position(
-      path: path,
-      offset: 0,
-    ));
+    afterSelection = Selection.collapsed(
+      Position(
+        path: path,
+        offset: 0,
+      ),
+    );
   }
 
   /// Inserts the text content at a specified index.
@@ -363,6 +376,19 @@ extension TextTransaction on Transaction {
           );
         } else {
           deleteNode(textNode);
+          if (i == textNodes.length - 1) {
+            final delta = Delta()
+              ..insert(texts[0])
+              ..addAll(
+                textNodes.last.delta.slice(selection.end.offset),
+              );
+            replaceText(
+              textNode,
+              selection.start.offset,
+              texts[0].length,
+              delta.toPlainText(),
+            );
+          }
         }
       }
       afterSelection = null;
@@ -371,6 +397,8 @@ extension TextTransaction on Transaction {
 
     if (textNodes.length < texts.length) {
       final length = texts.length;
+      var path = textNodes.first.path;
+
       for (var i = 0; i < texts.length; i++) {
         final text = texts[i];
         if (i == 0) {
@@ -380,13 +408,15 @@ extension TextTransaction on Transaction {
             textNodes.first.toPlainText().length,
             text,
           );
-        } else if (i == length - 1) {
+          path = path.next;
+        } else if (i == length - 1 && textNodes.length >= 2) {
           replaceText(
             textNodes.last,
             0,
             selection.endIndex,
             text,
           );
+          path = path.next;
         } else {
           if (i < textNodes.length - 1) {
             replaceText(
@@ -395,14 +425,28 @@ extension TextTransaction on Transaction {
               textNodes[i].toPlainText().length,
               text,
             );
+            path = path.next;
           } else {
-            var path = textNodes.first.path;
-            var j = i - textNodes.length + length - 1;
-            while (j > 0) {
-              path = path.next;
-              j--;
+            if (i == texts.length - 1) {
+              final delta = Delta()
+                ..insert(text)
+                ..addAll(
+                  textNodes.last.delta.slice(selection.end.offset),
+                );
+              insertNode(
+                path,
+                TextNode(
+                  delta: delta,
+                ),
+              );
+            } else {
+              insertNode(
+                path,
+                TextNode(
+                  delta: Delta()..insert(text),
+                ),
+              );
             }
-            insertNode(path, TextNode(delta: Delta()..insert(text)));
           }
         }
       }
