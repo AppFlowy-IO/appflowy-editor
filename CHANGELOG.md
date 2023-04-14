@@ -1,16 +1,24 @@
+# 0.1.7
+* feat: delete "sentence" shortcut by @Xazin in ([#32](https://github.com/AppFlowy-IO/appflowy-editor/pull/32))
+* feat: allow developer to change toolbar color as well as option to show default toolbar items and html to document converter added by @alihassan143 in ([#58](https://github.com/AppFlowy-IO/appflowy-editor/pull/58))
+* fix: add custom color selector for text by @Xazin in ([#74](https://github.com/AppFlowy-IO/appflowy-editor/pull/74))
+* fix: delete node does not propagate non null selection by @squidrye in ([#45](https://github.com/AppFlowy-IO/appflowy-editor/pull/45))
+* fix: lessen horizontal editor padding for mobile by @Xazin in ([#70](https://github.com/AppFlowy-IO/appflowy-editor/pull/70))
+* test: improve coverage by @Xazin in ([#61](https://github.com/AppFlowy-IO/appflowy-editor/pull/61))
+
 ## 0.1.6
 * fix: documentation typo issue by @Mukund-Tandon in ([#36](https://github.com/AppFlowy-IO/appflowy-editor/pull/36))
 * fix: avoid using Platform code in Web by @LucasXu0 in ([#48](https://github.com/AppFlowy-IO/appflowy-editor/pull/48))
 
 ## 0.1.5
-* test: improve test coverage by @Xazin in ([#23](https://github.com/AppFlowy-IO/appflowy-editor/pull/23))
-* feat: alt + arrow key to move cursor one word by @Xazin in ([#28](https://github.com/AppFlowy-IO/appflowy-editor/pull/28))
 * feat: add em and divider support to html converter by @Xazin in ([#27](https://github.com/AppFlowy-IO/appflowy-editor/pull/22))
-* chore: Sync the latest code from AppFlowy by @LucasXu0 in ([#41](https://github.com/AppFlowy-IO/appflowy-editor/pull/41))
-* test: redo undo with text formatting by @MayurSMahajan in ([#38](https://github.com/AppFlowy-IO/appflowy-editor/pull/38))
-* chore: add danish translations by @Xazin in ([#34](https://github.com/AppFlowy-IO/appflowy-editor/pull/34))
+* feat: alt + arrow key to move cursor one word by @Xazin in ([#28](https://github.com/AppFlowy-IO/appflowy-editor/pull/28))
 * fix: cannot edit image or see link menu if editorState is uneditable by @Xazin in ([#30](https://github.com/AppFlowy-IO/appflowy-editor/pull/30))
 * fix: Copy Paste on Web by @Akshay-akkay in ([#33](https://github.com/AppFlowy-IO/appflowy-editor/pull/33))
+* chore: add danish translations by @Xazin in ([#34](https://github.com/AppFlowy-IO/appflowy-editor/pull/34))
+* chore: Sync the latest code from AppFlowy by @LucasXu0 in ([#41](https://github.com/AppFlowy-IO/appflowy-editor/pull/41))
+* test: improve test coverage by @Xazin in ([#23](https://github.com/AppFlowy-IO/appflowy-editor/pull/23))
+* test: redo undo with text formatting by @MayurSMahajan in ([#38](https://github.com/AppFlowy-IO/appflowy-editor/pull/38))
 
 ## 0.1.4
 * chore: export editor style ([#27](https://github.com/AppFlowy-IO/appflowy-editor/pull/25)).
