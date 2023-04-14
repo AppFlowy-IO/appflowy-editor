@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../infra/test_editor.dart';
 import 'package:mockito/mockito.dart';
+import '../infra/test_editor.dart';
 
 class MockNode extends Mock implements Node {}
 

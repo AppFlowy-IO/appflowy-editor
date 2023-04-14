@@ -5,6 +5,7 @@ import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_eve
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/test_editor.dart';
 
 void main() async {
