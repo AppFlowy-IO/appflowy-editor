@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../infra/test_editor.dart';
 
