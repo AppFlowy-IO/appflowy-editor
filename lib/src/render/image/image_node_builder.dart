@@ -4,7 +4,6 @@ import 'package:appflowy_editor/src/render/action_menu/action_menu.dart';
 import 'package:appflowy_editor/src/render/action_menu/action_menu_item.dart';
 import 'package:appflowy_editor/src/service/render_plugin_service.dart';
 import 'package:flutter/material.dart';
-
 import 'image_node_widget.dart';
 
 class ImageNodeBuilder extends NodeWidgetBuilder<Node>
@@ -12,14 +11,20 @@ class ImageNodeBuilder extends NodeWidgetBuilder<Node>
   @override
   Widget build(NodeWidgetContext<Node> context) {
     final src = context.node.attributes['image_src'];
-    final align = context.node.attributes['align'];
+    //some time align attribute is not present from dynamic data so we are adding default value
+    final align = context.node.attributes['align'] ?? "center";
     double? width;
+    double? height;
     if (context.node.attributes.containsKey('width')) {
       width = context.node.attributes['width'].toDouble();
+    }
+    if (context.node.attributes.containsKey('height')) {
+      height = context.node.attributes['height'].toDouble();
     }
     return ImageNodeWidget(
       key: context.node.key,
       node: context.node,
+      height: height,
       src: src,
       width: width,
       editable: context.editorState.editable,

@@ -69,19 +69,25 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
             children: widget.items
                 .map(
                   (item) => Center(
-                    child:
-                        item.itemBuilder?.call(context, widget.editorState) ??
-                            ToolbarItemWidget(
-                              item: item,
-                              isHighlight: item.highlightCallback
-                                      ?.call(widget.editorState) ??
-                                  false,
-                              onPressed: () {
-                                item.handler?.call(widget.editorState, context);
-                                widget.editorState.service.keyboardService
-                                    ?.enable();
-                              },
-                            ),
+                    child: item.itemBuilder
+                            ?.call(context, widget.editorState) ??
+                        ToolbarItemWidget(
+                          item: item,
+                          toolbarIconSize:
+                              widget.editorState.editorStyle.toolbarIconSize,
+                          toolbarItemHeight:
+                              widget.editorState.editorStyle.toolbarItemHeight,
+                          toolbarItemWidth:
+                              widget.editorState.editorStyle.toolbarItemWidth,
+                          isHighlight: item.highlightCallback
+                                  ?.call(widget.editorState) ??
+                              false,
+                          onPressed: () {
+                            item.handler?.call(widget.editorState, context);
+                            widget.editorState.service.keyboardService
+                                ?.enable();
+                          },
+                        ),
                   ),
                 )
                 .toList(growable: false),
