@@ -51,7 +51,7 @@ const rawHTML = """<h1>AppFlowyEditor</h1>
 
 <a href="https://appflowy.io">This is an anchor tag!</a>
 
-<img src="https://images.squarespace-cdn.com/content/v1/617f6f16b877c06711e87373/c3f23723-37f4-44d7-9c5d-6e2a53064ae7/Asset+10.png?format=1500w" />
+<img src="https://images.squarespace-cdn.com/content/v1/617f6f16b877c06711e87373/c3f23723-37f4-44d7-9c5d-6e2a53064ae7/Asset+10.png?format=1500w"  width="252" height="168" />
 
 <h3>Features!</h3>
 

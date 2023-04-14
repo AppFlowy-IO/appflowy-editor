@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/image/image_upload_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../infra/test_editor.dart';
 

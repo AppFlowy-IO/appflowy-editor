@@ -8,18 +8,24 @@ class ToolbarItemWidget extends StatelessWidget {
     required this.item,
     required this.isHighlight,
     required this.onPressed,
+    required this.toolbarIconSize,
+    this.toolbarItemWidth,
+    this.toolbarItemHeight,
   }) : super(key: key);
 
   final ToolbarItem item;
   final VoidCallback onPressed;
+  final double toolbarIconSize;
+  final double? toolbarItemWidth;
+  final double? toolbarItemHeight;
   final bool isHighlight;
 
   @override
   Widget build(BuildContext context) {
     if (item.iconBuilder != null) {
       return SizedBox(
-        width: 28,
-        height: 28,
+        width: toolbarItemHeight,
+        height: toolbarItemWidth,
         child: Tooltip(
           textAlign: TextAlign.center,
           preferBelow: false,
@@ -31,7 +37,7 @@ class ToolbarItemWidget extends StatelessWidget {
               highlightColor: Colors.transparent,
               padding: EdgeInsets.zero,
               icon: item.iconBuilder!(isHighlight),
-              iconSize: 28,
+              iconSize: toolbarIconSize,
               onPressed: onPressed,
             ),
           ),
