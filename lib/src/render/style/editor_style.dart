@@ -183,7 +183,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   static final light = EditorStyle(
     padding: Platform.isAndroid || Platform.isIOS
         ? const EdgeInsets.symmetric(horizontal: 20)
-        : const EdgeInsets.fromLTRB(200.0, 0.0, 200.0, 0.0),
+        : const EdgeInsets.symmetric(horizontal: 200),
     backgroundColor: Colors.white,
     cursorColor: const Color(0xFF00BCF0),
     selectionColor: const Color.fromARGB(53, 111, 201, 231),
