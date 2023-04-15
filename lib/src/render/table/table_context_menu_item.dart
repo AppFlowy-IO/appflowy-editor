@@ -171,13 +171,9 @@ void _showColorMenu(
               ColorOptionList(
                 header: 'background color',
                 selectedColorHex: node.attributes['backgroundColor'],
-                colorOptions: generateBackgroundColorOptions(editorState),
-                onSubmittedAction: (selectedColor) {
+                colorOptions: _generateBackgroundColorOptions(editorState),
+                onSubmittedAction: (color) {
                   final transaction = editorState.transaction;
-                  final String? color =
-                      selectedColor == node.attributes['backgroundColor']
-                          ? null
-                          : selectedColor;
                   action(node.parent!, rowcol, transaction, color);
                   editorState.apply(transaction);
                   _dismissColorMenu();
@@ -213,4 +209,47 @@ void _dismissColorMenu() {
   _editorState?.service.selectionService.currentSelection
       .removeListener(_dismissColorMenu);
   _editorState = null;
+}
+
+List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
+  final defaultBackgroundColor =
+      editorState.editorStyle.backgroundColor ?? Colors.white;
+  return [
+    ColorOption(
+      colorHex: defaultBackgroundColor.toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorDefault,
+    ),
+    ColorOption(
+      colorHex: Colors.grey.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorGray,
+    ),
+    ColorOption(
+      colorHex: Colors.brown.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorBrown,
+    ),
+    ColorOption(
+      colorHex: Colors.yellow.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorYellow,
+    ),
+    ColorOption(
+      colorHex: Colors.green.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorGreen,
+    ),
+    ColorOption(
+      colorHex: Colors.blue.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorBlue,
+    ),
+    ColorOption(
+      colorHex: Colors.purple.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorPurple,
+    ),
+    ColorOption(
+      colorHex: Colors.pink.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorPink,
+    ),
+    ColorOption(
+      colorHex: Colors.red.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorRed,
+    ),
+  ];
 }

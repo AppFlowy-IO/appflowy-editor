@@ -293,3 +293,9 @@ class _ColorPickerState extends State<ColorPicker> {
     return opacity;
   }
 }
+
+extension ConvertToHex on Color {
+  String toHex() {
+    return '0x${value.toRadixString(16)}';
+  }
+}

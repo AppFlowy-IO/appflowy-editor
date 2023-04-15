@@ -305,7 +305,7 @@ List<ToolbarItem> defaultToolbarItems = [
           (value) =>
               value != null &&
               value !=
-                  generateBackgroundColorOptions(editorState).first.colorHex,
+                  _generateBackgroundColorOptions(editorState).first.colorHex,
         ),
     handler: (editorState, context) => showColorMenu(
       context,
@@ -591,7 +591,7 @@ void showColorMenu(
               ColorOptionList(
                 header: 'background color',
                 selectedColorHex: backgroundColorHex,
-                colorOptions: generateBackgroundColorOptions(editorState),
+                colorOptions: _generateBackgroundColorOptions(editorState),
                 onSubmittedAction: (color) {
                   formatHighlightColor(
                     editorState,
@@ -657,7 +657,7 @@ List<ColorOption> _generateFontColorOptions(EditorState editorState) {
   ];
 }
 
-List<ColorOption> generateBackgroundColorOptions(EditorState editorState) {
+List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
   final defaultBackgroundColorHex =
       editorState.editorStyle.highlightColorHex ?? '0x6000BCF0';
   return [
@@ -698,10 +698,4 @@ List<ColorOption> generateBackgroundColorOptions(EditorState editorState) {
       name: AppFlowyEditorLocalizations.current.backgroundColorRed,
     ),
   ];
-}
-
-extension on Color {
-  String toHex() {
-    return '0x${value.toRadixString(16)}';
-  }
 }
