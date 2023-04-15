@@ -48,6 +48,92 @@ void main() async {
                   "attributes": {"subtype": "checkbox", "checkbox": false},
                   "delta": [{"insert": "more to come!"}]
                 },
+                {
+                  "type": "table",
+                  "attributes": {
+                    "colsLen": 2,
+                    "rowsLen": 2,
+                    "colDefaultWidth": 80.0,
+                    "rowDefaultHeight": 40.0,
+                    "colMinimumWidth": 40.0
+                  },
+                  "children": [
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 0,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {"insert": "## a"}
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 0,
+                        "rowPosition": 1,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {
+                              "insert": "b",
+                              "attributes": {"bold": true}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 1,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {
+                              "insert": "c",
+                              "attributes": {"italic": true}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 1,
+                        "rowPosition": 1,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {"insert": "d"}
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
                 {"type": "text", "delta": []},
                 {
                   "type": "text",
@@ -108,6 +194,9 @@ AppFlowy Editor is a **highly customizable** _rich-text editor_
 - [x] Customizable
 - [x] Test-covered
 - [ ] more to come!
+|## a|_c_|
+|-|-|
+|**b**|d|
 
 > Here is an example you can give a try
 
@@ -120,6 +209,74 @@ If you have questions or feedback, please submit an issue on Github or join the 
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = Map<String, Object>.from(json.decode(example));
+      expect(result.toJson(), data);
+    });
+
+    test('parser document', () async {
+      const markdown = r'''
+  |  ## \|a|_c_|
+      | -- |   -|''';
+      const expected = '''
+{
+  "document": {
+              "type": "editor",
+              "children": [
+                {
+                  "type": "table",
+                  "attributes": {
+                    "colsLen": 2,
+                    "rowsLen": 1,
+                    "colDefaultWidth": 80.0,
+                    "rowDefaultHeight": 40.0,
+                    "colMinimumWidth": 40.0
+                  },
+                  "children": [
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 0,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {"insert": "## |a"}
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "attributes": {
+                        "colPosition": 1,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "delta": [
+                            {
+                              "insert": "c",
+                              "attributes": {"italic": true}
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {"type": "text", "delta": [{"insert": ""}]}
+              ]
+            }
+}
+''';
+      final result = DocumentMarkdownDecoder().convert(markdown);
+      final data = Map<String, Object>.from(json.decode(expected));
       expect(result.toJson(), data);
     });
   });

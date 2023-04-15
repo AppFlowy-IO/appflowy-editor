@@ -59,7 +59,8 @@ class TableNode {
     return TableNode(node: Node.fromJson(json));
   }
 
-  factory TableNode.fromList(List<List<String>> cols, {TableConfig? config}) {
+  static TableNode fromList<T>(List<List<T>> cols, {TableConfig? config}) {
+    assert(T == String || T == TextNode);
     assert(cols.isNotEmpty);
     assert(cols[0].isNotEmpty);
     assert(cols.every((col) => col.length == cols[0].length));
@@ -81,11 +82,15 @@ class TableNode {
           type: kTableCellType,
           attributes: {'colPosition': i, 'rowPosition': j},
         );
-        n.insert(
-          TextNode(
-            delta: Delta()..insert(cols[i][j]),
-          ),
-        );
+        if (T == TextNode) {
+          n.insert(cols[i][j] as TextNode);
+        } else if (T == String) {
+          n.insert(
+            TextNode(
+              delta: Delta()..insert(cols[i][j] as String),
+            ),
+          );
+        }
 
         node.insert(n);
       }

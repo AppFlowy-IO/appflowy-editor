@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
+import 'package:appflowy_editor/src/render/table/table_const.dart';
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
   @override
@@ -8,9 +10,20 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     final lines = input.split('\n');
     final document = Document.empty();
 
-    var i = 0;
-    for (final line in lines) {
-      document.insert([i++], [_convertLineToNode(line)]);
+    int path = 0;
+    for (var i = 0; i < lines.length; i++) {
+      late Node node;
+      if (i + 1 < lines.length &&
+          TableMarkdownDecoder.isTable(lines[i], lines[i + 1])) {
+        node = TableMarkdownDecoder().convert(lines.sublist(i));
+      } else {
+        node = _convertLineToNode(lines[i]);
+      }
+
+      document.insert([path++], [node]);
+      if (node.id == kTableType) {
+        i += node.attributes['rowsLen'] as int;
+      }
     }
 
     return document;

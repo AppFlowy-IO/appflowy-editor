@@ -21,19 +21,26 @@ class TableNodeParser extends NodeParser {
     String result = '';
 
     for (var i = 0; i < rowsLen; i++) {
-      if (i == 1) {
-        for (var j = 0; j < colsLen; j++) {
-          result += j == colsLen - 1 ? '|-|\n' : '|-';
-        }
-      }
-
       for (var j = 0; j < colsLen; j++) {
-        var cell = getCellNode(node, j, i)!;
-        result += '|${dme.convert(Document(root: cell))}';
-        result += j == colsLen - 1 ? '|\n' : '';
+        final Node cell = getCellNode(node, j, i)!;
+        String cellStr = '|${dme.convert(Document(root: cell))}';
+        // markdown doesn't have literally empty table cell
+        cellStr = cellStr == '|' ? '| ' : cellStr;
+
+        result += j == colsLen - 1 ? '$cellStr|\n' : cellStr;
       }
     }
+    result = result.substring(0, result.length - 1);
 
-    return result;
+    String tableMark = '';
+    for (var j = 0; j < colsLen; j++) {
+      tableMark += j == colsLen - 1 ? '|-|' : '|-';
+    }
+
+    final List<String> lines = result.split('\n');
+    lines.insert(1, tableMark);
+    result = lines.join('\n');
+
+    return node.next == null ? result : '$result\n';
   }
 }
