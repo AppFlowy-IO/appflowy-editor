@@ -14,7 +14,7 @@ class TodoListBlockKeys {
 class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   TodoListBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
-    this.textStyle = const TextStyle(),
+    this.textStyleBuilder,
     this.icon,
   });
 
@@ -22,7 +22,7 @@ class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   final EdgeInsets padding;
 
   /// The text style of the todo list block.
-  final TextStyle textStyle;
+  final TextStyle Function(bool checked)? textStyleBuilder;
 
   /// The icon of the todo list block.
   final Widget? Function(bool checked)? icon;
@@ -33,7 +33,7 @@ class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
       key: context.node.key,
       node: context.node,
       padding: padding,
-      textStyle: textStyle,
+      textStyleBuilder: textStyleBuilder,
       icon: icon,
     );
   }
@@ -51,13 +51,13 @@ class TodoListBlockComponentWidget extends StatefulWidget {
     super.key,
     required this.node,
     this.padding = const EdgeInsets.all(0.0),
-    this.textStyle = const TextStyle(),
+    this.textStyleBuilder,
     this.icon,
   });
 
   final Node node;
   final EdgeInsets padding;
-  final TextStyle textStyle;
+  final TextStyle Function(bool checked)? textStyleBuilder;
   final Widget? Function(bool checked)? icon;
 
   @override
@@ -85,14 +85,16 @@ class _TodoListBlockComponentWidgetState
         mainAxisSize: MainAxisSize.min,
         children: [
           _TodoListIcon(
-            checked: checked,
-            icon: widget.icon,
+            icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),
             onTap: checkOrUncheck,
           ),
           FlowyRichText(
             key: forwardKey,
             node: widget.node,
             editorState: editorState,
+            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+              widget.textStyleBuilder?.call(checked) ?? defaultTextStyle(),
+            ),
           ),
         ],
       ),
@@ -106,17 +108,34 @@ class _TodoListBlockComponentWidgetState
       });
     return editorState.apply(transaction);
   }
+
+  FlowySvg defaultCheckboxIcon() {
+    return FlowySvg(
+      width: 22,
+      height: 22,
+      padding: const EdgeInsets.only(right: 5.0),
+      name: checked ? 'check' : 'uncheck',
+    );
+  }
+
+  TextStyle? defaultTextStyle() {
+    if (!checked) {
+      return null;
+    }
+    return TextStyle(
+      decoration: TextDecoration.lineThrough,
+      color: Colors.grey.shade400,
+    );
+  }
 }
 
 class _TodoListIcon extends StatelessWidget {
   const _TodoListIcon({
-    required this.checked,
     required this.icon,
     required this.onTap,
   });
 
-  final bool checked;
-  final Widget? Function(bool checked)? icon;
+  final Widget icon;
   final VoidCallback onTap;
 
   @override
@@ -126,17 +145,8 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: icon?.call(checked) ?? defaultCheckboxIcon(),
+        child: icon,
       ),
-    );
-  }
-
-  FlowySvg defaultCheckboxIcon() {
-    return FlowySvg(
-      width: 22,
-      height: 22,
-      padding: const EdgeInsets.only(right: 5.0),
-      name: checked ? 'check' : 'uncheck',
     );
   }
 }
