@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
+import 'package:appflowy_editor/src/infra/node_store.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/number_list_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -63,6 +64,10 @@ void _handleCopy(EditorState editorState) async {
     endNode: endNode,
   ).toList();
 
+  // Save the nodes to memory, so that if they are pasted in AppFlowy, we
+  // can directly paste the nodes without having to parse them
+  NodeStore.saveNodes(nodes);
+
   final html = NodesToHTMLConverter(
     nodes: nodes,
     startOffset: selection.start.offset,
@@ -88,7 +93,14 @@ void _handleCopy(EditorState editorState) async {
 }
 
 void _pasteHTML(EditorState editorState, String html) {
-  var nodes = HTMLToNodesConverter(html).toNodes();
+
+  // First we try to get the nodes from our nodestore - i.e we
+  // try to check if the nodes were copied from Appflowy. If it is
+  // empty we parse the copied html to convert it to nodes and use it
+  var nodes = NodeStore.getNodes();
+
+  Log.keyboard.debug('paste html: $html');
+  nodes ??= HTMLToNodesConverter(html).toNodes();
 
   _pasteNodes(editorState, nodes);
 }
