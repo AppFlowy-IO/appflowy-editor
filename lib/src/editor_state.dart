@@ -45,6 +45,7 @@ class EditorState {
   final service = FlowyService();
 
   AppFlowySelectionService get selection => service.selectionService;
+  AppFlowyRenderPluginService get renderer => service.renderPluginService;
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,

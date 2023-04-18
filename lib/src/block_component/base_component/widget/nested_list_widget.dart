@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NestedListWithPadding extends StatelessWidget {
-  const NestedListWithPadding({
+class NestedListWidget extends StatelessWidget {
+  const NestedListWidget({
     super.key,
     this.padding = const EdgeInsets.only(left: 20.0),
     required this.child,
