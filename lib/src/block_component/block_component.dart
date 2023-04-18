@@ -9,3 +9,6 @@ export 'bulleted_list_block_component/bulleted_list_block_component.dart';
 
 // numbered list
 export 'numbered_list_block_component/numbered_list_block_component.dart';
+
+// quote
+export 'quote_block_component/quote_block_component.dart';

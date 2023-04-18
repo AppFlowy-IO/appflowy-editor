@@ -88,12 +88,14 @@ class _TodoListBlockComponentWidgetState
             icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),
             onTap: checkOrUncheck,
           ),
-          FlowyRichText(
-            key: forwardKey,
-            node: widget.node,
-            editorState: editorState,
-            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-              widget.textStyleBuilder?.call(checked) ?? defaultTextStyle(),
+          Flexible(
+            child: FlowyRichText(
+              key: forwardKey,
+              node: widget.node,
+              editorState: editorState,
+              textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+                widget.textStyleBuilder?.call(checked) ?? defaultTextStyle(),
+              ),
             ),
           ),
         ],

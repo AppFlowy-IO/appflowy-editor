@@ -48,6 +48,7 @@ class TextBlockComponentWidget extends StatefulWidget {
 
 class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     with SelectableMixin, DefaultSelectable {
+  @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
   late final editorState = Provider.of<EditorState>(context, listen: false);
 

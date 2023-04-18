@@ -71,6 +71,50 @@
                 "italic": true,
                 "bold": true
               }
+            },
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            },
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            },
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            },
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
             }
           ]
         }
@@ -131,6 +175,42 @@
         }
       },
       { "type": "text", "delta": [] },
+      {
+        "type": "quote",
+        "attributes": {
+          "delta": [
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "quote",
+        "attributes": {
+          "delta": [
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": "\n " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            }
+          ]
+        }
+      },
       {
         "type": "text",
         "delta": [
@@ -199,6 +279,9 @@
       {
         "type": "text",
         "delta": [
+          {
+            "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+          },
           {
             "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
           }
