@@ -2,17 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BulletedListBlockKeys {
-  BulletedListBlockKeys._();
-
-  /// The checked data of a todo list block.
-  ///
-  /// The value is a boolean.
-  static const String format = 'format';
-}
-
-class BulletedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
-  BulletedListBlockComponentBuilder({
+class NumberedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
+  NumberedListBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
   });
 
@@ -21,7 +12,7 @@ class BulletedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
 
   @override
   Widget build(NodeWidgetContext<Node> context) {
-    return BulletedListBlockComponentWidget(
+    return NumberedListBlockComponentWidget(
       key: context.node.key,
       node: context.node,
       padding: padding,
@@ -32,8 +23,8 @@ class BulletedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   NodeValidator<Node> get nodeValidator => (node) => node.delta != null;
 }
 
-class BulletedListBlockComponentWidget extends StatefulWidget {
-  const BulletedListBlockComponentWidget({
+class NumberedListBlockComponentWidget extends StatefulWidget {
+  const NumberedListBlockComponentWidget({
     super.key,
     required this.node,
     this.padding = const EdgeInsets.all(0.0),
@@ -43,12 +34,12 @@ class BulletedListBlockComponentWidget extends StatefulWidget {
   final EdgeInsets padding;
 
   @override
-  State<BulletedListBlockComponentWidget> createState() =>
-      _BulletedListBlockComponentWidgetState();
+  State<NumberedListBlockComponentWidget> createState() =>
+      _NumberedListBlockComponentWidgetState();
 }
 
-class _BulletedListBlockComponentWidgetState
-    extends State<BulletedListBlockComponentWidget>
+class _NumberedListBlockComponentWidgetState
+    extends State<NumberedListBlockComponentWidget>
     with SelectableMixin, DefaultSelectable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
@@ -77,49 +68,32 @@ class _BulletedListBlockComponentWidgetState
 
   // TODO: support custom icon.
   Widget defaultIcon() {
-    final icon = _BulletedListIconBuilder(node: widget.node).icon;
-    return SizedBox(
-      width: 22,
-      height: 22,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 5.0),
-        child: Center(
-          child: Text(
-            icon,
-            textScaleFactor: 1.2,
-          ),
-        ),
-      ),
+    final level = _NumberedListIconBuilder(node: widget.node).level;
+    return FlowySvg(
+      width: 20,
+      height: 20,
+      padding: const EdgeInsets.only(right: 5.0),
+      number: level,
     );
   }
 }
 
-class _BulletedListIconBuilder {
-  _BulletedListIconBuilder({
+class _NumberedListIconBuilder {
+  _NumberedListIconBuilder({
     required this.node,
   });
 
   final Node node;
 
-  // FIXME: replace with the real icon.
-  static final bulletedListIcons = [
-    '◉',
-    '○',
-    '□',
-    '*',
-  ];
-
   int get level {
-    var level = 0;
-    var parent = node.parent;
-    while (parent != null) {
-      if (parent.type == 'bulleted_list') {
+    var level = 1;
+    var previous = node.previous;
+    while (previous != null) {
+      if (previous.type == 'numbered_list') {
         level++;
       }
-      parent = parent.parent;
+      previous = previous.previous;
     }
     return level;
   }
-
-  String get icon => bulletedListIcons[level % bulletedListIcons.length];
 }
