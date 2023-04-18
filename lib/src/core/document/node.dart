@@ -7,6 +7,14 @@ import 'package:appflowy_editor/src/core/document/path.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 
+/*
+{
+  'type': string,
+  'data': Map<String, Object>,
+  'children': List<Node>,
+}
+ */
+
 class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
@@ -93,16 +101,9 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Path get path => _computePath();
 
   void updateAttributes(Attributes attributes) {
-    final oldAttributes = this.attributes;
-
     _attributes = composeAttributes(this.attributes, attributes) ?? {};
 
-    // Notifies the new attributes
-    // if attributes contains 'subtype', should notify parent to rebuild node
-    // else, just notify current node.
-    bool shouldNotifyParent =
-        this.attributes['subtype'] != oldAttributes['subtype'];
-    shouldNotifyParent ? parent?.notifyListeners() : notifyListeners();
+    notifyListeners();
   }
 
   Node? childAtIndex(int index) {
@@ -168,6 +169,13 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     parent?.notifyListeners();
     parent = null;
+  }
+
+  Delta? get delta {
+    if (attributes['delta'] is List) {
+      return Delta.fromJson(attributes['delta']);
+    }
+    return null;
   }
 
   Map<String, Object> toJson() {
@@ -239,6 +247,7 @@ class TextNode extends Node {
         );
 
   Delta _delta;
+  @override
   Delta get delta => _delta;
   set delta(Delta v) {
     _delta = v;

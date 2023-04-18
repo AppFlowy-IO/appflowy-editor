@@ -38,6 +38,12 @@ class SimpleEditor extends StatelessWidget {
             editorState: editorState,
             themeData: themeData,
             autoFocus: editorState.document.isEmpty,
+            customBuilders: {
+              'paragraph': TextBlockComponentBuilder(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              ),
+              'todo_list': TodoListBlockComponentBuilder(),
+            },
           );
         } else {
           return const Center(

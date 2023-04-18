@@ -46,18 +46,7 @@ class RichTextNodeWidget extends BuiltInTextWidget {
 class _RichTextNodeWidgetState extends State<RichTextNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
-  GlobalKey? get iconKey => null;
-
-  final _richTextKey = GlobalKey(debugLabel: 'rich_text');
-
-  @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return textPadding.topLeft;
-  }
+  final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
 
   EditorStyle get style => widget.editorState.editorStyle;
 
@@ -70,8 +59,8 @@ class _RichTextNodeWidgetState extends State<RichTextNodeWidget>
     return Padding(
       padding: textPadding,
       child: FlowyRichText(
-        key: _richTextKey,
-        textNode: widget.textNode,
+        key: forwardKey,
+        node: widget.textNode,
         textSpanDecorator: (textSpan) => textSpan,
         placeholderTextSpanDecorator: (textSpan) =>
             textSpan.updateTextStyle(textStyle),

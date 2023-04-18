@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 ShortcutEventHandler backspaceEventHandler = (editorState, event) {
+  return KeyEventResult.ignored;
   var selection = editorState.service.selectionService.currentSelection.value;
   if (selection == null) {
     return KeyEventResult.ignored;

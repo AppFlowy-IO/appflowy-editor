@@ -31,11 +31,11 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
-    required this.textNode,
+    required this.node,
     required this.editorState,
   }) : super(key: key);
 
-  final TextNode textNode;
+  final Node node;
   final EditorState editorState;
   final double? cursorHeight;
   final double cursorWidth;
@@ -75,12 +75,12 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   }
 
   @override
-  Position start() => Position(path: widget.textNode.path, offset: 0);
+  Position start() => Position(path: widget.node.path, offset: 0);
 
   @override
   Position end() => Position(
-        path: widget.textNode.path,
-        offset: widget.textNode.toPlainText().length,
+        path: widget.node.path,
+        offset: widget.node.delta?.toPlainText().length ?? 0,
       );
 
   @override
@@ -119,7 +119,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   Position getPositionInOffset(Offset start) {
     final offset = _renderParagraph.globalToLocal(start);
     final baseOffset = _renderParagraph.getPositionForOffset(offset).offset;
-    return Position(path: widget.textNode.path, offset: baseOffset);
+    return Position(path: widget.node.path, offset: baseOffset);
   }
 
   @override
@@ -127,8 +127,8 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     final localOffset = _renderParagraph.globalToLocal(offset);
     final textPosition = _renderParagraph.getPositionForOffset(localOffset);
     final textRange = _renderParagraph.getWordBoundary(textPosition);
-    final start = Position(path: widget.textNode.path, offset: textRange.start);
-    final end = Position(path: widget.textNode.path, offset: textRange.end);
+    final start = Position(path: widget.node.path, offset: textRange.start);
+    final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
   }
 
@@ -136,15 +136,15 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   Selection? getWordBoundaryInPosition(Position position) {
     final textPosition = TextPosition(offset: position.offset);
     final textRange = _renderParagraph.getWordBoundary(textPosition);
-    final start = Position(path: widget.textNode.path, offset: textRange.start);
-    final end = Position(path: widget.textNode.path, offset: textRange.end);
+    final start = Position(path: widget.node.path, offset: textRange.start);
+    final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
   }
 
   @override
   List<Rect> getRectsInSelection(Selection selection) {
     assert(
-      selection.isSingle && selection.start.path.equals(widget.textNode.path),
+      selection.isSingle && selection.start.path.equals(widget.node.path),
     );
 
     final textSelection = TextSelection(
@@ -171,7 +171,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     final baseOffset = _renderParagraph.getPositionForOffset(localStart).offset;
     final extentOffset = _renderParagraph.getPositionForOffset(localEnd).offset;
     return Selection.single(
-      path: widget.textNode.path,
+      path: widget.node.path,
       startOffset: baseOffset,
       endOffset: extentOffset,
     );
@@ -185,7 +185,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   Widget _buildRichText(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.text,
-      child: widget.textNode.toPlainText().isEmpty
+      child: widget.node.delta?.toPlainText().isEmpty ?? true
           ? Stack(
               children: [
                 _buildPlaceholderText(context),
@@ -241,7 +241,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     var offset = 0;
     List<TextSpan> textSpans = [];
     final style = widget.editorState.editorStyle;
-    final textInserts = widget.textNode.delta.whereType<TextInsert>();
+    final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
       var textStyle = style.textStyle!;
       GestureRecognizer? recognizer;
@@ -264,7 +264,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
           recognizer = _buildTapHrefGestureRecognizer(
             attributes.href!,
             Selection.single(
-              path: widget.textNode.path,
+              path: widget.node.path,
               startOffset: offset,
               endOffset: offset + textInsert.length,
             ),
@@ -296,7 +296,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     if (_kRichTextDebugMode) {
       textSpans.add(
         TextSpan(
-          text: '${widget.textNode.path}',
+          text: '${widget.node.path}',
           style: const TextStyle(
             backgroundColor: Colors.red,
             fontSize: 16.0,
