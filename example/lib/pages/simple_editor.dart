@@ -43,6 +43,7 @@ class SimpleEditor extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
               'todo_list': TodoListBlockComponentBuilder(),
+              'bulleted_list': BulletedListBlockComponentBuilder(),
             },
           );
         } else {
