@@ -45,6 +45,7 @@ class SimpleEditor extends StatelessWidget {
               'todo_list': TodoListBlockComponentBuilder(),
               'bulleted_list': BulletedListBlockComponentBuilder(),
               'numbered_list': NumberedListBlockComponentBuilder(),
+              'quote': QuoteBlockComponentBuilder(),
             },
           );
         } else {

@@ -51,15 +51,17 @@ class _BulletedListBlockComponentWidgetState
     return Padding(
       padding: widget.padding,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           defaultIcon(),
-          FlowyRichText(
-            key: forwardKey,
-            node: widget.node,
-            editorState: editorState,
+          Flexible(
+            child: FlowyRichText(
+              key: forwardKey,
+              node: widget.node,
+              editorState: editorState,
+            ),
           ),
         ],
       ),
