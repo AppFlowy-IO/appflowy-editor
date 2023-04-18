@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/delta_input_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,10 +22,7 @@ class TextBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   }
 
   @override
-  NodeValidator<Node> get nodeValidator => (node) {
-        // TODO: implement nodeValidator, delta...
-        return true;
-      };
+  NodeValidator<Node> get nodeValidator => (node) => node.delta != null;
 }
 
 class TextBlockComponentWidget extends StatefulWidget {
@@ -51,18 +47,6 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
   late final editorState = Provider.of<EditorState>(context, listen: false);
-
-  TextInputService? inputService;
-
-  @override
-  SelectableMixin<StatefulWidget> get forward =>
-      forwardKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset => widget.padding.topLeft;
-
-  @override
-  GlobalKey<State<StatefulWidget>>? get iconKey => null;
 
   @override
   void initState() {

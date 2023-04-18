@@ -34,8 +34,7 @@ abstract class TextInputService {
   void close();
 }
 
-class DeltaTextInputService extends TextInputService
-    implements DeltaTextInputClient {
+class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   DeltaTextInputService({
     required super.onInsert,
     required super.onDelete,
@@ -44,6 +43,7 @@ class DeltaTextInputService extends TextInputService
   });
 
   TextInputConnection? textInputConnection;
+
   @override
   TextRange? composingTextRange;
 
@@ -138,6 +138,15 @@ class DeltaTextInputService extends TextInputService
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {}
 
+  @override
+  void didChangeInputControl(
+    TextInputControl? oldControl,
+    TextInputControl? newControl,
+  ) {}
+
+  @override
+  void performSelector(String selectorName) {}
+
   void _updateComposing(TextEditingDelta delta) {
     if (delta is! TextEditingDeltaNonTextUpdate) {
       if (composingTextRange != null &&
@@ -152,13 +161,4 @@ class DeltaTextInputService extends TextInputService
       }
     }
   }
-
-  @override
-  void didChangeInputControl(
-    TextInputControl? oldControl,
-    TextInputControl? newControl,
-  ) {}
-
-  @override
-  void performSelector(String selectorName) {}
 }
