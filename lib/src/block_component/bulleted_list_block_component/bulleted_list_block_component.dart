@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +49,25 @@ class _BulletedListBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
+    if (widget.node.children.isEmpty) {
+      return buildBulletListBlockComponent(context);
+    } else {
+      return buildBulletListBlockComponentWithChildren(context);
+    }
+  }
+
+  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
+    return NestedListWidget(
+      children: editorState.renderer.buildPluginWidgets(
+        context,
+        widget.node.children.toList(growable: false),
+        editorState,
+      ),
+      child: buildBulletListBlockComponent(context),
+    );
+  }
+
+  Widget buildBulletListBlockComponent(BuildContext context) {
     return Padding(
       padding: widget.padding,
       child: Row(
@@ -55,7 +75,9 @@ class _BulletedListBlockComponentWidgetState
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          defaultIcon(),
+          _BulletedListIcon(
+            node: widget.node,
+          ),
           Flexible(
             child: FlowyRichText(
               key: forwardKey,
@@ -67,28 +89,10 @@ class _BulletedListBlockComponentWidgetState
       ),
     );
   }
-
-  // TODO: support custom icon.
-  Widget defaultIcon() {
-    final icon = _BulletedListIconBuilder(node: widget.node).icon;
-    return SizedBox(
-      width: 22,
-      height: 22,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 5.0),
-        child: Center(
-          child: Text(
-            icon,
-            textScaleFactor: 1.2,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-class _BulletedListIconBuilder {
-  _BulletedListIconBuilder({
+class _BulletedListIcon extends StatelessWidget {
+  const _BulletedListIcon({
     required this.node,
   });
 
@@ -115,4 +119,21 @@ class _BulletedListIconBuilder {
   }
 
   String get icon => bulletedListIcons[level % bulletedListIcons.length];
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 22,
+      height: 22,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 5.0),
+        child: Center(
+          child: Text(
+            icon,
+            textScaleFactor: 1.2,
+          ),
+        ),
+      ),
+    );
+  }
 }
