@@ -88,6 +88,12 @@ void _handleCopy(EditorState editorState) async {
 }
 
 void _pasteHTML(EditorState editorState, String html) {
+  var nodes = HTMLToNodesConverter(html).toNodes();
+
+  _pasteNodes(editorState, nodes);
+}
+
+void _pasteNodes(EditorState editorState, List<Node> nodes) {
   final selection = editorState.cursorSelection?.normalized;
   if (selection == null) {
     return;
@@ -99,9 +105,6 @@ void _pasteHTML(EditorState editorState, String html) {
   if (path.isEmpty) {
     return;
   }
-
-  Log.keyboard.debug('paste html: $html');
-  final nodes = HTMLToNodesConverter(html).toNodes();
 
   if (nodes.isEmpty) {
     return;
