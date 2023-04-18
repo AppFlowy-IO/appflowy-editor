@@ -10,6 +10,7 @@ import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
 import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:provider/provider.dart';
 
 NodeWidgetBuilders defaultBuilders = {
   'editor': EditorEntryWidgetBuilder(),
@@ -125,12 +126,15 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
-    return Overlay(
-      initialEntries: [
-        OverlayEntry(
-          builder: (context) => services!,
-        ),
-      ],
+    return Provider.value(
+      value: editorState,
+      child: Overlay(
+        initialEntries: [
+          OverlayEntry(
+            builder: (context) => services!,
+          ),
+        ],
+      ),
     );
   }
 

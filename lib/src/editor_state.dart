@@ -1,16 +1,7 @@
 import 'dart:async';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/infra/log.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_widget.dart';
-import 'package:appflowy_editor/src/render/style/editor_style.dart';
-import 'package:appflowy_editor/src/render/toolbar/toolbar_item.dart';
-import 'package:appflowy_editor/src/service/service.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/core/transform/operation.dart';
-import 'package:appflowy_editor/src/core/transform/transaction.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 
 class ApplyOptions {
@@ -52,6 +43,8 @@ class EditorState {
 
   // Service reference.
   final service = FlowyService();
+
+  AppFlowySelectionService get selection => service.selectionService;
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
