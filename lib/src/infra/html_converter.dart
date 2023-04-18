@@ -451,7 +451,6 @@ class NodesToHTMLConverter {
 
         _result.add(anchor);
       }
-      // TODO: handle image and other blocks
     }
     if (_stashListContainer != null) {
       _result.add(_stashListContainer!);
