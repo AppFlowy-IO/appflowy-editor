@@ -12,3 +12,6 @@ export 'numbered_list_block_component/numbered_list_block_component.dart';
 
 // quote
 export 'quote_block_component/quote_block_component.dart';
+
+// input
+export 'base_component/service/input/delta_input_service.dart';
