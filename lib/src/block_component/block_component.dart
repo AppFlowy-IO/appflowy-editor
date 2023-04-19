@@ -19,3 +19,8 @@ export 'base_component/service/ime/delta_input_service.dart';
 // shortcuts, I think I should move this to a separate package.
 export 'base_component/service/shortcuts/character_shortcut_event.dart';
 export 'base_component/service/shortcuts/command_shortcut_event.dart';
+
+// service, I think I should move this to a separate package.
+export 'base_component/service/keyboard_service_widget.dart';
+export 'base_component/service/scroll_service_widget.dart';
+export 'base_component/service/selection_service_widget.dart';
