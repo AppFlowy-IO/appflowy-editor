@@ -39,9 +39,7 @@ class SimpleEditor extends StatelessWidget {
             themeData: themeData,
             autoFocus: editorState.document.isEmpty,
             customBuilders: {
-              'paragraph': TextBlockComponentBuilder(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              ),
+              'paragraph': TextBlockComponentBuilder(),
               'todo_list': TodoListBlockComponentBuilder(),
               'bulleted_list': BulletedListBlockComponentBuilder(),
               'numbered_list': NumberedListBlockComponentBuilder(),
