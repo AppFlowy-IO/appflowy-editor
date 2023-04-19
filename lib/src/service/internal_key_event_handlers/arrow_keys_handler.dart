@@ -295,7 +295,7 @@ ShortcutEventHandler cursorLeftWordSelect = (editorState, event) {
   }
 
   final end =
-      selection.end.goLeft(editorState, selectionRange: _SelectionRange.word);
+      selection.end.goLeft(editorState, selectionRange: SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -317,7 +317,7 @@ ShortcutEventHandler cursorLeftWordMove = (editorState, event) {
   }
 
   final newPosition = selection.start
-          .goLeft(editorState, selectionRange: _SelectionRange.word) ??
+          .goLeft(editorState, selectionRange: SelectionRange.word) ??
       selection.start;
 
   editorState.service.selectionService.updateSelection(
@@ -337,7 +337,7 @@ ShortcutEventHandler cursorRightWordMove = (editorState, event) {
   }
 
   final newPosition = selection.start
-          .goRight(editorState, selectionRange: _SelectionRange.word) ??
+          .goRight(editorState, selectionRange: SelectionRange.word) ??
       selection.end;
 
   editorState.service.selectionService.updateSelection(
@@ -355,7 +355,7 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
   }
 
   final end =
-      selection.end.goRight(editorState, selectionRange: _SelectionRange.word);
+      selection.end.goRight(editorState, selectionRange: SelectionRange.word);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -366,150 +366,6 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
 
   return KeyEventResult.handled;
 };
-
-ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
-  final textNodes = editorState.service.selectionService.currentSelectedNodes
-      .whereType<TextNode>();
-  final selection = editorState.service.selectionService.currentSelection.value;
-
-  if (textNodes.isEmpty || selection == null) {
-    return KeyEventResult.ignored;
-  }
-
-  final textNode = textNodes.first;
-
-  final startOfWord =
-      selection.end.goLeft(editorState, selectionRange: _SelectionRange.word);
-
-  if (startOfWord == null) {
-    return KeyEventResult.ignored;
-  }
-
-  final transaction = editorState.transaction;
-  transaction.deleteText(
-    textNode,
-    startOfWord.offset,
-    selection.end.offset - startOfWord.offset,
-  );
-
-  editorState.apply(transaction);
-
-  return KeyEventResult.handled;
-};
-
-ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
-  final nodes = editorState.service.selectionService.currentSelectedNodes;
-  final selection = editorState.service.selectionService.currentSelection.value;
-  if (nodes.isEmpty || selection == null) {
-    return KeyEventResult.ignored;
-  }
-
-  if (nodes.length == 1 && nodes.first is TextNode) {
-    final textNode = nodes.first as TextNode;
-    if (textNode.toPlainText().isEmpty) {
-      return KeyEventResult.ignored;
-    }
-  }
-
-  if (selection.isCollapsed) {
-    final deleteTransaction = editorState.transaction;
-    deleteTransaction.deleteText(
-      nodes.first as TextNode,
-      0,
-      selection.end.offset,
-    );
-    editorState.apply(deleteTransaction, withUpdateCursor: true);
-  }
-
-  return KeyEventResult.handled;
-};
-
-enum _SelectionRange {
-  character,
-  word,
-}
-
-extension on Position {
-  Position? goLeft(
-    EditorState editorState, {
-    _SelectionRange selectionRange = _SelectionRange.character,
-  }) {
-    final node = editorState.document.nodeAtPath(path);
-    if (node == null) {
-      return null;
-    }
-
-    if (offset == 0) {
-      final previousEnd = node.previous?.selectable?.end();
-      if (previousEnd != null) {
-        return previousEnd;
-      }
-      return null;
-    }
-
-    switch (selectionRange) {
-      case _SelectionRange.character:
-        if (node is TextNode) {
-          return Position(
-            path: path,
-            offset: node.delta.prevRunePosition(offset),
-          );
-        }
-
-        return Position(path: path, offset: offset);
-      case _SelectionRange.word:
-        if (node is TextNode) {
-          final result = node.selectable?.getWordBoundaryInPosition(
-            Position(
-              path: path,
-              offset: node.delta.prevRunePosition(offset),
-            ),
-          );
-          if (result != null) {
-            return result.start;
-          }
-        }
-
-        return Position(path: path, offset: offset);
-    }
-  }
-
-  Position? goRight(
-    EditorState editorState, {
-    _SelectionRange selectionRange = _SelectionRange.character,
-  }) {
-    final node = editorState.document.nodeAtPath(path);
-    if (node == null) {
-      return null;
-    }
-
-    final end = node.selectable?.end();
-    if (end != null && offset >= end.offset) {
-      return node.next?.selectable?.start();
-    }
-
-    switch (selectionRange) {
-      case _SelectionRange.character:
-        if (node is TextNode) {
-          return Position(
-            path: path,
-            offset: node.delta.nextRunePosition(offset),
-          );
-        }
-
-        return Position(path: path, offset: offset);
-      case _SelectionRange.word:
-        if (node is TextNode) {
-          final result = node.selectable?.getWordBoundaryInPosition(this);
-          if (result != null) {
-            return result.end;
-          }
-        }
-
-        return Position(path: path, offset: offset);
-    }
-  }
-}
 
 Position? _moveVertical(
   EditorState editorState, {
