@@ -18,6 +18,8 @@ abstract class TextInputService {
   Future<void> Function(TextInputAction action) onPerformAction;
 
   TextRange? composingTextRange;
+  bool get attached;
+
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
 
   /// Updates the [TextEditingValue] of the text currently being edited.
@@ -49,6 +51,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   TextRange? composingTextRange;
+
+  @override
+  bool get attached => textInputConnection?.attached ?? false;
 
   @override
   AutofillScope? get currentAutofillScope => throw UnimplementedError();

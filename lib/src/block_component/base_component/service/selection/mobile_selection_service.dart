@@ -1,117 +1,34 @@
-import 'dart:async';
-
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/block_component/base_component/util/debounce.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/node_iterator.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/node_extensions.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:provider/provider.dart';
 
-/// [AppFlowySelectionService] is responsible for processing
-/// the [Selection] changes and updates.
-///
-/// Usually, this service can be obtained by the following code.
-/// ```dart
-/// final selectionService = editorState.service.selectionService;
-///
-/// /** get current selection value*/
-/// final selection = selectionService.currentSelection.value;
-///
-/// /** get current selected nodes*/
-/// final nodes = selectionService.currentSelectedNodes;
-/// ```
-///
-abstract class AppFlowySelectionService {
-  /// The current [Selection] in editor.
-  ///
-  /// The value is null if there is no nodes are selected.
-  ValueNotifier<Selection?> get currentSelection;
-
-  /// The current selected [Node]s in editor.
-  ///
-  /// The order of the result is determined according to the [currentSelection].
-  /// The result are ordered from back to front if the selection is forward.
-  /// The result are ordered from front to back if the selection is backward.
-  ///
-  /// For example, Here is an array of selected nodes, `[n1, n2, n3]`.
-  /// The result will be `[n3, n2, n1]` if the selection is forward,
-  ///   and `[n1, n2, n3]` if the selection is backward.
-  ///
-  /// Returns empty result if there is no nodes are selected.
-  List<Node> get currentSelectedNodes;
-
-  /// Updates the selection.
-  ///
-  /// The editor will update selection area and toolbar area
-  /// if the [selection] is not collapsed,
-  /// otherwise, will update the cursor area.
-  void updateSelection(Selection? selection);
-
-  /// Clears the selection area, cursor area and the popup list area.
-  void clearSelection();
-
-  /// Clears the cursor area.
-  void clearCursor();
-
-  /// Returns the [Node]s in [Selection].
-  List<Node> getNodesInSelection(Selection selection);
-
-  /// Returns the [Node] containing to the [offset].
-  ///
-  /// [offset] must be under the global coordinate system.
-  Node? getNodeInOffset(Offset offset);
-
-  /// Returns the [Position] closest to the [offset].
-  ///
-  /// Returns null if there is no nodes are selected.
-  ///
-  /// [offset] must be under the global coordinate system.
-  Position? getPositionInOffset(Offset offset);
-
-  /// The current selection areas's rect in editor.
-  List<Rect> get selectionRects;
-
-  void register(SelectionInterceptor interceptor);
-  void unRegister(SelectionInterceptor interceptor);
-}
-
-class SelectionInterceptor {
-  bool Function(TapDownDetails details)? canTap;
-}
-
-class AppFlowySelection extends StatefulWidget {
-  const AppFlowySelection({
+class MobileSelectionServiceWidget extends StatefulWidget {
+  const MobileSelectionServiceWidget({
     Key? key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
-    this.editable = true,
-    required this.editorState,
     required this.child,
   }) : super(key: key);
 
-  final EditorState editorState;
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
-  final bool editable;
 
   @override
-  State<AppFlowySelection> createState() => _AppFlowySelectionState();
+  State<MobileSelectionServiceWidget> createState() =>
+      _MobileSelectionServiceWidgetState();
 }
 
-class _AppFlowySelectionState extends State<AppFlowySelection>
+class _MobileSelectionServiceWidgetState
+    extends State<MobileSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
   final _cursorKey = GlobalKey(debugLabel: 'cursor');
@@ -122,23 +39,26 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   final List<OverlayEntry> _cursorAreas = [];
   final List<OverlayEntry> _contextMenuAreas = [];
 
-  // OverlayEntry? _debugOverlay;
+  @override
+  ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
+
+  @override
+  List<Node> currentSelectedNodes = [];
 
   /// Pan
   Offset? _panStartOffset;
   double? _panStartScrollDy;
 
-  EditorState get editorState => widget.editorState;
-
-  // Toolbar
-  Timer? _toolbarTimer;
+  late EditorState editorState = Provider.of<EditorState>(
+    context,
+    listen: false,
+  );
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-    currentSelection.addListener(_onSelectionChange);
   }
 
   @override
@@ -147,7 +67,11 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
     // Need to refresh the selection when the metrics changed.
     if (currentSelection.value != null) {
-      updateSelection(currentSelection.value!);
+      Debounce.debounce(
+        'didChangeMetrics - update selection ',
+        const Duration(milliseconds: 100),
+        () => updateSelection(currentSelection.value!),
+      );
     }
   }
 
@@ -155,40 +79,20 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
-    currentSelection.removeListener(_onSelectionChange);
-    _clearToolbar();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SelectionGestureDetector(
+      onTapDown: _onTapDown,
+      onSecondaryTapDown: _onSecondaryTapDown,
+      onDoubleTapDown: _onDoubleTapDown,
+      onTripleTapDown: _onTripleTapDown,
       child: widget.child,
     );
-    if (!widget.editable) {
-      return Container(
-        child: widget.child,
-      );
-    } else {
-      return SelectionGestureDetector(
-        onPanStart: _onPanStart,
-        onPanUpdate: _onPanUpdate,
-        onPanEnd: _onPanEnd,
-        onTapDown: _onTapDown,
-        onSecondaryTapDown: _onSecondaryTapDown,
-        onDoubleTapDown: _onDoubleTapDown,
-        onTripleTapDown: _onTripleTapDown,
-        child: widget.child,
-      );
-    }
   }
-
-  @override
-  ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
-
-  @override
-  List<Node> currentSelectedNodes = [];
 
   @override
   List<Node> getNodesInSelection(Selection selection) {
@@ -216,13 +120,8 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
   @override
   void updateSelection(Selection? selection) {
-    if (!widget.editable) {
-      return;
-    }
-
     selectionRects.clear();
     clearSelection();
-    _clearToolbar();
 
     if (selection != null) {
       if (selection.isCollapsed) {
@@ -311,8 +210,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     final selection = Selection.collapsed(position);
     updateSelection(selection);
 
-    _enableInteraction();
-
     _showDebugLayerIfNeeded(offset: details.globalPosition);
   }
 
@@ -325,8 +222,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
       return;
     }
     updateSelection(selection);
-
-    _enableInteraction();
   }
 
   void _onTripleTapDown(TapDownDetails details) {
@@ -342,8 +237,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
       end: selectable.end(),
     );
     updateSelection(selection);
-
-    _enableInteraction();
   }
 
   void _onSecondaryTapDown(TapDownDetails details) {
@@ -362,20 +255,15 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
   void _onPanStart(DragStartDetails details) {
     clearSelection();
-    _clearToolbar();
 
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
-
-    _enableInteraction();
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (_panStartOffset == null || _panStartScrollDy == null) {
       return;
     }
-
-    _enableInteraction();
 
     final panEndOffset = details.globalPosition;
     final dy = editorState.service.scrollService?.dy;
@@ -503,9 +391,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     }
 
     Overlay.of(context)?.insertAll(_selectionAreas);
-
-    // show toolbar
-    _showToolbarWithDelay(toolbarOffset, layerLink, alignment!);
   }
 
   void _updateCursorAreas(Position position) {
@@ -519,7 +404,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     currentSelectedNodes = [node];
 
     _showCursor(node, position);
-    _clearToolbar();
   }
 
   void _showCursor(Node node, Position position) {
@@ -573,35 +457,6 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     Overlay.of(context)?.insert(contextMenu);
   }
 
-  void _scrollUpOrDownIfNeeded() {
-    final dy = editorState.service.scrollService?.dy;
-    final selectNodes = currentSelectedNodes;
-    final selection = currentSelection.value;
-    if (dy == null || selection == null || selectNodes.isEmpty) {
-      return;
-    }
-
-    final rect = selectNodes.last.rect;
-
-    final size = MediaQuery.of(context).size.height;
-    final topLimit = size * 0.3;
-    final bottomLimit = size * 0.8;
-
-    // TODO: It is necessary to calculate the relative speed
-    //   according to the gap and move forward more gently.
-    if (rect.top >= bottomLimit) {
-      if (selection.isSingle) {
-        editorState.service.scrollService?.scrollTo(dy + size * 0.2);
-      } else if (selection.isBackward) {
-        editorState.service.scrollService?.scrollTo(dy + 10.0);
-      }
-    } else if (rect.bottom <= topLimit) {
-      if (selection.isForward) {
-        editorState.service.scrollService?.scrollTo(dy - 10.0);
-      }
-    }
-  }
-
   Node? _getNodeInOffset(
     List<Node> sortedNodes,
     Offset offset,
@@ -636,52 +491,9 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     return node;
   }
 
-  void _enableInteraction() {
-    editorState.service.keyboardService?.enable();
-    editorState.service.scrollService?.enable();
-  }
-
   Rect _transformRectToGlobal(SelectableMixin selectable, Rect r) {
     final Offset topLeft = selectable.localToGlobal(Offset(r.left, r.top));
     return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
-  }
-
-  void _onSelectionChange() {
-    _scrollUpOrDownIfNeeded();
-  }
-
-  void _showToolbarWithDelay(
-    Offset? toolbarOffset,
-    LayerLink? layerLink,
-    Alignment alignment, {
-    Duration delay = const Duration(milliseconds: 400),
-  }) {
-    if (toolbarOffset == null && layerLink == null) {
-      _clearToolbar();
-      return;
-    }
-    if (_toolbarTimer?.isActive ?? false) {
-      _toolbarTimer?.cancel();
-    }
-    _toolbarTimer = Timer(
-      delay,
-      () {
-        if (toolbarOffset != null && layerLink != null) {
-          editorState.service.toolbarService?.showInOffset(
-            toolbarOffset,
-            alignment,
-            layerLink,
-          );
-        }
-      },
-    );
-  }
-
-  void _clearToolbar() {
-    editorState.service.toolbarService?.hide();
-    if (_toolbarTimer?.isActive ?? false) {
-      _toolbarTimer?.cancel();
-    }
   }
 
   void _showDebugLayerIfNeeded({Offset? offset}) {
