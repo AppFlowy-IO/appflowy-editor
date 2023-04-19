@@ -116,8 +116,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void scrollTo(double dy) => forward.scrollTo(dy);
 
   @override
-  void startAutoScrollIfNecessary(Rect dragTarget) =>
-      forward.startAutoScrollIfNecessary(dragTarget);
+  void startAutoScroll(Offset offset) => forward.startAutoScroll(offset);
 
   @override
   void stopAutoScroll() => forward.stopAutoScroll();

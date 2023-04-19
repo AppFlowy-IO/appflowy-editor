@@ -136,7 +136,7 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
   }
 
   @override
-  void startAutoScrollIfNecessary(Rect dragTarget) {
+  void startAutoScroll(Offset offset) {
     // TODO: implement startAutoScrollIfNecessary
   }
 
