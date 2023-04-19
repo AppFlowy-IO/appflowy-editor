@@ -33,6 +33,8 @@ abstract class AppFlowyScrollService implements AutoScrollerService {
   /// Only within the range of minScrollExtent and maxScrollExtent are legal values.
   void scrollTo(double dy);
 
+  void goBallistic(double velocity);
+
   /// Enables scroll service.
   void enable();
 
@@ -58,8 +60,7 @@ class AppFlowyScroll extends StatefulWidget {
   State<AppFlowyScroll> createState() => _AppFlowyScrollState();
 }
 
-class _AppFlowyScrollState extends State<AppFlowyScroll>
-    implements AppFlowyScrollService {
+class _AppFlowyScrollState extends State<AppFlowyScroll> {
   final _scrollController = ScrollController();
   final _scrollViewKey = GlobalKey();
 

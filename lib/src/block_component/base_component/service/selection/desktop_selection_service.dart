@@ -296,6 +296,9 @@ class _DesktopSelectionServiceWidgetState
 
   void _onPanEnd(DragEndDetails details) {
     // do nothing
+
+    editorState.service.scrollService
+        ?.goBallistic(-details.velocity.pixelsPerSecond.dy);
   }
 
   void _updateSelectionAreas(Selection selection) {

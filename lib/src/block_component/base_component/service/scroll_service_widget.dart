@@ -120,4 +120,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   @override
   void stopAutoScroll() => forward.stopAutoScroll();
+
+  @override
+  void goBallistic(double velocity) => forward.goBallistic(velocity);
 }

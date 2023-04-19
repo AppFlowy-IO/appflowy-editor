@@ -22,6 +22,9 @@ class DesktopScrollService extends StatefulWidget {
 
 class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
+  bool forward = false;
+  double _panStartDy = 0.0;
+
   bool _scrollEnabled = true;
 
   @override
@@ -54,7 +57,14 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   Widget build(BuildContext context) {
     return Listener(
       onPointerSignal: _onPointerSignal,
+      onPointerPanZoomStart: (event) {
+        _panStartDy = event.localPosition.dy;
+      },
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
+      onPointerPanZoomEnd: (event) {
+        final forward = this.forward ? 1.0 : -1.0;
+        goBallistic(-1000 * forward);
+      },
       child: widget.child,
     );
   }
@@ -91,6 +101,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
     if (_scrollEnabled) {
+      forward = event.panDelta.dy > 0;
       final dy = (widget.scrollController.position.pixels - event.panDelta.dy);
       scrollTo(dy);
     }
@@ -103,5 +114,14 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   void stopAutoScroll() {
     // TODO: implement stopAutoScroll
+  }
+
+  @override
+  void goBallistic(double velocity) {
+    final position = widget.scrollController.position;
+    if (position is ScrollPositionWithSingleContext) {
+      position.goBallistic(velocity);
+      position.context.setIgnorePointer(false);
+    }
   }
 }
