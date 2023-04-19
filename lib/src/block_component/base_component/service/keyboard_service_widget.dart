@@ -18,7 +18,9 @@ class KeyboardServiceWidget extends StatefulWidget {
 }
 
 class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
-  late final DeltaTextInputService deltaTextInputService;
+  bool isAttached = false;
+
+  late final TextInputService textInputService;
   late EditorState editorState;
 
   @override
@@ -27,7 +29,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
 
     editorState = Provider.of<EditorState>(context, listen: false);
 
-    deltaTextInputService = DeltaTextInputService(
+    textInputService = DeltaTextInputService(
       onInsert: (insertion) => onInsert(insertion, editorState),
       onDelete: (deletion) => onDelete(deletion, editorState),
       onReplace: onReplace,
@@ -61,7 +63,10 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     // attach the delta text input service if needed
     final selection = editorState.selection.currentSelection.value;
     if (selection == null) {
-      deltaTextInputService.close();
+      if (textInputService.attached && isAttached) {
+        textInputService.close();
+        isAttached = false;
+      }
     } else {
       Debounce.debounce(
         'attachTextInputService',
@@ -72,12 +77,15 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   }
 
   void _attachTextInputService(Selection selection) {
+    if (textInputService.attached && isAttached) {
+      return;
+    }
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
       Log.input.debug(
         'attach text editing value: $textEditingValue',
       );
-      deltaTextInputService.attach(textEditingValue);
+      textInputService.attach(textEditingValue);
     }
   }
 
@@ -86,7 +94,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       (element) => element.delta != null,
     );
     final selection = editorState.selection.currentSelection.value;
-    final composingTextRange = deltaTextInputService.composingTextRange;
+    final composingTextRange = textInputService.composingTextRange;
     if (editableNodes.isNotEmpty && selection != null) {
       final text = editableNodes.fold<String>(
         '',
