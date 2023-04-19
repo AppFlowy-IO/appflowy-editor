@@ -1,8 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'input/delta_input_impl.dart';
+import 'ime/delta_input_impl.dart';
 
+// handle software keyboard and hardware keyboard
 class KeyboardServiceWidget extends StatefulWidget {
   const KeyboardServiceWidget({
     super.key,
@@ -30,6 +31,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       onDelete: (deletion) => onDelete(deletion, editorState),
       onReplace: onReplace,
       onNonTextUpdate: onNonTextUpdate,
+      onPerformAction: (action) => onPerformAction(action, editorState),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

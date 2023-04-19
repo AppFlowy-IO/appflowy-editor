@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/block_component/base_component/service/shortcuts/character_shortcut_events/insert_newline.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -46,6 +47,8 @@ class EditorState {
 
   AppFlowySelectionService get selection => service.selectionService;
   AppFlowyRenderPluginService get renderer => service.renderPluginService;
+
+  List<CharacterShortcutEvent> characterShortcutEvents = [newlineShortcutEvent];
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
