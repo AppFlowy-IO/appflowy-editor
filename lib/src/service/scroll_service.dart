@@ -93,17 +93,7 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
     return Listener(
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
-      child: CustomScrollView(
-        key: _scrollViewKey,
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _scrollController,
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: widget.child,
-          )
-        ],
-      ),
+      child: widget.child,
     );
   }
 
@@ -130,16 +120,16 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
   }
 
   void _onPointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent && _scrollEnabled) {
-      final dy = (_scrollController.position.pixels + event.scrollDelta.dy);
-      scrollTo(dy);
-    }
+    // if (event is PointerScrollEvent && _scrollEnabled) {
+    //   final dy = (_scrollController.position.pixels + event.scrollDelta.dy);
+    //   scrollTo(dy);
+    // }
   }
 
   void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
-    if (_scrollEnabled) {
-      final dy = (_scrollController.position.pixels - event.panDelta.dy);
-      scrollTo(dy);
-    }
+    // if (_scrollEnabled) {
+    //   final dy = (_scrollController.position.pixels - event.panDelta.dy);
+    //   scrollTo(dy);
+    // }
   }
 }

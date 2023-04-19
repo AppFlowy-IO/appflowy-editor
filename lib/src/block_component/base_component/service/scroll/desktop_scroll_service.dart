@@ -1,24 +1,24 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 
-class AppFlowyScroll extends StatefulWidget {
-  const AppFlowyScroll({
+class DesktopScrollService extends StatefulWidget {
+  const DesktopScrollService({
     Key? key,
     required this.child,
   }) : super(key: key);
 
+  final ScrollController scrollController;
+
   final Widget child;
 
   @override
-  State<AppFlowyScroll> createState() => _AppFlowyScrollState();
+  State<DesktopScrollService> createState() => _DesktopScrollServiceState();
 }
 
-class _AppFlowyScrollState extends State<AppFlowyScroll>
+class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
-  final _scrollController = ScrollController();
-  final _scrollViewKey = GlobalKey();
-
   bool _scrollEnabled = true;
 
   @override
@@ -50,17 +50,7 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
     return Listener(
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
-      child: CustomScrollView(
-        key: _scrollViewKey,
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _scrollController,
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: widget.child,
-          )
-        ],
-      ),
+      child: widget.child,
     );
   }
 
