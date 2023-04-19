@@ -18,8 +18,9 @@ void main() async {
       final editor = tester.editor..insertTextNode(text);
 
       await editor.startTesting();
-      var selection = Selection.single(path: [0], startOffset: text.length);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
@@ -37,12 +38,11 @@ void main() async {
       var nodes =
           editor.editorState.service.selectionService.currentSelectedNodes;
       var textNode = nodes.whereType<TextNode>().first;
-      var newText = textNode.toPlainText();
 
       words.removeLast();
       //expected: Welcome_to_Appflowy_
       //here _ actually represents ' '
-      expect(newText, words.join());
+      expect(textNode.toPlainText(), words.join());
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
@@ -60,13 +60,11 @@ void main() async {
       nodes = editor.editorState.service.selectionService.currentSelectedNodes;
       textNode = nodes.whereType<TextNode>().first;
 
-      newText = textNode.toPlainText();
-
       //removes the whitespace
       words.removeLast();
       words.removeLast();
       //expected is: Welcome_to_
-      expect(newText, words.join());
+      expect(textNode.toPlainText(), words.join());
 
       //we divide words.length by 2 becuase we know half words are whitespaces.
       for (var i = 0; i < words.length / 2; i++) {
@@ -86,9 +84,7 @@ void main() async {
       nodes = editor.editorState.service.selectionService.currentSelectedNodes;
       textNode = nodes.whereType<TextNode>().toList(growable: false).first;
 
-      newText = textNode.toPlainText();
-
-      expect(newText, '');
+      expect(textNode.toPlainText(), '');
     });
 
     testWidgets('ctrl+backspace in the middle of a word', (tester) async {
@@ -96,8 +92,9 @@ void main() async {
       final editor = tester.editor..insertTextNode(text);
 
       await editor.startTesting();
-      var selection = Selection.single(path: [0], startOffset: 0);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: 0),
+      );
 
       if (Platform.isWindows || Platform.isLinux) {
         await editor.pressLogicKey(
@@ -115,13 +112,13 @@ void main() async {
       var nodes =
           editor.editorState.service.selectionService.currentSelectedNodes;
       var textNode = nodes.whereType<TextNode>().first;
-      var newText = textNode.toPlainText();
 
-      //nothing happens
-      expect(newText, text);
+      //nothing happens when there is no words to the left of the cursor
+      expect(textNode.toPlainText(), text);
 
-      selection = Selection.single(path: [0], startOffset: 14);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: 14),
+      );
       //Welcome to App|flowy 😁
 
       if (Platform.isWindows || Platform.isLinux) {
@@ -139,10 +136,9 @@ void main() async {
       //fetching all the text that is still on the editor.
       nodes = editor.editorState.service.selectionService.currentSelectedNodes;
       textNode = nodes.whereType<TextNode>().first;
-      newText = textNode.toPlainText();
 
       const expectedText = 'Welcome to flowy 😁';
-      expect(newText, expectedText);
+      expect(textNode.toPlainText(), expectedText);
     });
 
     testWidgets('Removes space and word after ctrl + backspace',
@@ -152,12 +148,9 @@ void main() async {
 
       await editor.startTesting();
 
-      //fetching all the text that is still on the editor.
-      var nodes =
-          editor.editorState.service.selectionService.currentSelectedNodes;
-
-      final selection = Selection.single(path: [0], startOffset: 11);
-      await editor.updateSelection(selection);
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: 11),
+      );
       //Welcome to |Appflowy 😁
 
       if (Platform.isWindows || Platform.isLinux) {
@@ -173,12 +166,114 @@ void main() async {
       }
 
       //fetching all the text that is still on the editor.
-      nodes = editor.editorState.service.selectionService.currentSelectedNodes;
+      final nodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
       final textNode = nodes.whereType<TextNode>().first;
-      final newText = textNode.toPlainText();
 
       const expectedText = 'Welcome Appflowy 😁';
-      expect(newText, expectedText);
+      expect(textNode.toPlainText(), expectedText);
+    });
+
+    testWidgets('ctrl + backspace works properly with only single whitespace',
+        (tester) async {
+      //edge case that checks if pressing ctrl+backspace on null value
+      //after removing a whitespace, does not throw an exception.
+      const text = ' ';
+      final editor = tester.editor..insertTextNode(text);
+
+      await editor.startTesting();
+
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+      // |
+
+      if (Platform.isWindows || Platform.isLinux) {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: true,
+        );
+      } else {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isAltPressed: true,
+        );
+      }
+
+      //fetching all the text that is still on the editor.
+      final nodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
+      final textNode = nodes.whereType<TextNode>().first;
+
+      expect(textNode.toPlainText().isEmpty, true);
+    });
+
+    testWidgets('ctrl + alt + backspace works properly and deletes a sentence',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor
+        ..insertTextNode(text)
+        ..insertTextNode(text)
+        ..insertTextNode(text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+      //Welcome to Appflowy 😁|
+
+      if (Platform.isWindows || Platform.isLinux) {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: true,
+          isAltPressed: true,
+        );
+      } else {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isMetaPressed: true,
+        );
+      }
+
+      //fetching all the text that is still on the editor.
+      final nodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
+      final textNode = nodes.whereType<TextNode>().first;
+
+      expect(textNode.toPlainText().isEmpty, true);
+    });
+
+    testWidgets('ctrl + alt + backspace works in the middle of a word',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..insertTextNode(text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: 14),
+      );
+      //Welcome to App|flowy 😁
+
+      if (Platform.isWindows || Platform.isLinux) {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: true,
+          isAltPressed: true,
+        );
+      } else {
+        await editor.pressLogicKey(
+          key: LogicalKeyboardKey.backspace,
+          isMetaPressed: true,
+        );
+      }
+
+      //fetching all the text that is still on the editor.
+      final nodes =
+          editor.editorState.service.selectionService.currentSelectedNodes;
+      final textNode = nodes.whereType<TextNode>().first;
+
+      const expectedText = 'flowy 😁';
+      expect(textNode.toPlainText(), expectedText);
     });
   });
 }

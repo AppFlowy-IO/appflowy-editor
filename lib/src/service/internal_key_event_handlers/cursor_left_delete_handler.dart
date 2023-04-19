@@ -12,6 +12,7 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
 
   final textNode = textNodes.first;
 
+  //we store the position of the index where the current word ends.
   var startOfWord =
       selection.end.goLeft(editorState, selectionRange: SelectionRange.word);
 
@@ -33,12 +34,13 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
       startOffset: startOfWord.offset,
     );
 
-    //we need to check if this selection is not null
+    //we need to check if this position is not null
     final newStartOfWord = newSelection.end.goLeft(
       editorState,
       selectionRange: SelectionRange.word,
     );
 
+    //this handles the edge case where the textNode only consists single space.
     if (newStartOfWord != null) {
       startOfWord = newStartOfWord;
     }
