@@ -1,15 +1,18 @@
-import 'package:appflowy_editor/src/infra/log.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/block_component/base_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 
 class DesktopScrollService extends StatefulWidget {
   const DesktopScrollService({
     Key? key,
+    required this.scrollController,
+    required this.autoScroller,
     required this.child,
   }) : super(key: key);
 
   final ScrollController scrollController;
+  final AutoScroller autoScroller;
 
   final Widget child;
 
@@ -22,7 +25,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   bool _scrollEnabled = true;
 
   @override
-  double get dy => _scrollController.position.pixels;
+  double get dy => widget.scrollController.position.pixels;
 
   @override
   double? get onePageHeight {
@@ -31,10 +34,12 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   }
 
   @override
-  double get maxScrollExtent => _scrollController.position.maxScrollExtent;
+  double get maxScrollExtent =>
+      widget.scrollController.position.maxScrollExtent;
 
   @override
-  double get minScrollExtent => _scrollController.position.minScrollExtent;
+  double get minScrollExtent =>
+      widget.scrollController.position.minScrollExtent;
 
   @override
   int? get page {
@@ -56,10 +61,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void scrollTo(double dy) {
-    _scrollController.position.jumpTo(
+    widget.scrollController.position.jumpTo(
       dy.clamp(
-        _scrollController.position.minScrollExtent,
-        _scrollController.position.maxScrollExtent,
+        widget.scrollController.position.minScrollExtent,
+        widget.scrollController.position.maxScrollExtent,
       ),
     );
   }
@@ -78,15 +83,25 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   void _onPointerSignal(PointerSignalEvent event) {
     if (event is PointerScrollEvent && _scrollEnabled) {
-      final dy = (_scrollController.position.pixels + event.scrollDelta.dy);
+      final dy =
+          (widget.scrollController.position.pixels + event.scrollDelta.dy);
       scrollTo(dy);
     }
   }
 
   void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
     if (_scrollEnabled) {
-      final dy = (_scrollController.position.pixels - event.panDelta.dy);
+      final dy = (widget.scrollController.position.pixels - event.panDelta.dy);
       scrollTo(dy);
     }
+  }
+
+  @override
+  void startAutoScrollIfNecessary(Rect dragTarget) =>
+      widget.autoScroller.startAutoScrollIfNecessary(dragTarget);
+
+  @override
+  void stopAutoScroll() {
+    // TODO: implement stopAutoScroll
   }
 }

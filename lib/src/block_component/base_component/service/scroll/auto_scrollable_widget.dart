@@ -1,67 +1,44 @@
+import 'package:appflowy_editor/src/block_component/base_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
 
-class DesktopScrollService extends StatefulWidget {
-  const DesktopScrollService({
+class AutoScrollableWidget extends StatefulWidget {
+  const AutoScrollableWidget({
     Key? key,
-    this.scrollController,
-    required this.child,
+    required this.scrollController,
+    required this.builder,
   }) : super(key: key);
 
-  final ScrollController? scrollController;
-  final Widget child;
+  final ScrollController scrollController;
+  final Widget Function(
+    BuildContext context,
+    AutoScroller autoScroller,
+  ) builder;
 
   @override
-  State<DesktopScrollService> createState() => _DesktopScrollServiceState();
+  State<AutoScrollableWidget> createState() => _AutoScrollableWidgetState();
 }
 
-class _DesktopScrollServiceState extends State<DesktopScrollService> {
-  late EdgeDraggingAutoScroller _autoScroller;
-  late ScrollController _scrollController;
+class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
+  late AutoScroller _autoScroller;
   late ScrollableState _scrollableState;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scrollController = widget.scrollController ?? ScrollController();
-
-    // TODO: Any good idea to get the scrollable area?
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _initAutoScroller();
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant DesktopScrollService oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.scrollController != oldWidget.scrollController) {
-      if (oldWidget.scrollController == null) {
-        // create by self
-        _scrollController.dispose();
-      }
-      _scrollController = widget.scrollController ?? ScrollController();
-      _autoScroller.stopAutoScroll();
-      _initAutoScroller();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
-      controller: _scrollController,
+      controller: widget.scrollController,
       child: Builder(
         builder: (context) {
           _scrollableState = Scrollable.of(context);
-          return widget.child;
+          _initAutoScroller();
+          return widget.builder(context, _autoScroller);
         },
       ),
     );
   }
 
   void _initAutoScroller() {
-    _autoScroller = EdgeDraggingAutoScroller(
+    _autoScroller = AutoScroller(
       _scrollableState,
       velocityScalar: 30,
       onScrollViewScrolled: () {},
