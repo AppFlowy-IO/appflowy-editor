@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/src/block_component/base_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 /// final keyboardService = editorState.service.scrollService;
 /// ```
 ///
-abstract class AppFlowyScrollService {
+abstract class AppFlowyScrollService implements AutoScrollerService {
   /// Returns the offset of the current document on the vertical axis.
   double get dy;
 
@@ -90,6 +91,7 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
 
   @override
   Widget build(BuildContext context) {
+    return widget.child;
     return Listener(
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
@@ -131,5 +133,15 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
     //   final dy = (_scrollController.position.pixels - event.panDelta.dy);
     //   scrollTo(dy);
     // }
+  }
+
+  @override
+  void startAutoScrollIfNecessary(Rect dragTarget) {
+    // TODO: implement startAutoScrollIfNecessary
+  }
+
+  @override
+  void stopAutoScroll() {
+    // TODO: implement stopAutoScroll
   }
 }
