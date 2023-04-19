@@ -289,8 +289,9 @@ class _DesktopSelectionServiceWidgetState
 
     _showDebugLayerIfNeeded(offset: panEndOffset);
 
-    final dragTarget = details.globalPosition & const Size(1, 1);
-    editorState.service.scrollService?.startAutoScrollIfNecessary(dragTarget);
+    editorState.service.scrollService?.startAutoScroll(
+      details.globalPosition,
+    );
   }
 
   void _onPanEnd(DragEndDetails details) {

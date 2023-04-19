@@ -97,8 +97,8 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   }
 
   @override
-  void startAutoScrollIfNecessary(Rect dragTarget) =>
-      widget.autoScroller.startAutoScrollIfNecessary(dragTarget);
+  void startAutoScroll(Offset offset) =>
+      widget.autoScroller.startAutoScroll(offset);
 
   @override
   void stopAutoScroll() {
