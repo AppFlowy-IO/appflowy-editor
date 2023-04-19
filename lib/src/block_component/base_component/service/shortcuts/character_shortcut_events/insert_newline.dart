@@ -8,12 +8,12 @@ CharacterShortcutEventHandler _insertNewLineHandler = (editorState) async {
   await editorState.deleteSelection(selection);
 
   // insert a new line
-  editorState.insertNewLine2(selection);
+  await editorState.insertNewLine2(selection);
 
   return true;
 };
 
-CharacterShortcutEvent newlineShortcutEvent = CharacterShortcutEvent(
+CharacterShortcutEvent insertNewLine = CharacterShortcutEvent(
   key: 'insert a new line',
   character: '\n',
   handler: _insertNewLineHandler,

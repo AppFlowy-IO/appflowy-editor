@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/block_component/base_component/util/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ime/delta_input_impl.dart';
@@ -62,13 +63,21 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     if (selection == null) {
       deltaTextInputService.close();
     } else {
-      final textEditingValue = _getCurrentTextEditingValue(selection);
-      if (textEditingValue != null) {
-        Log.input.debug(
-          'attach text editing value: $textEditingValue',
-        );
-        deltaTextInputService.attach(textEditingValue);
-      }
+      Debounce.debounce(
+        'attachTextInputService',
+        const Duration(milliseconds: 200),
+        () => _attachTextInputService(selection),
+      );
+    }
+  }
+
+  void _attachTextInputService(Selection selection) {
+    final textEditingValue = _getCurrentTextEditingValue(selection);
+    if (textEditingValue != null) {
+      Log.input.debug(
+        'attach text editing value: $textEditingValue',
+      );
+      deltaTextInputService.attach(textEditingValue);
     }
   }
 
