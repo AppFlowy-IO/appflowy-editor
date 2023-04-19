@@ -14,4 +14,8 @@ export 'numbered_list_block_component/numbered_list_block_component.dart';
 export 'quote_block_component/quote_block_component.dart';
 
 // input
-export 'base_component/service/input/delta_input_service.dart';
+export 'base_component/service/ime/delta_input_service.dart';
+
+// shortcuts, I think I should move this to a separate package.
+export 'base_component/service/shortcuts/character_shortcut_event.dart';
+export 'base_component/service/shortcuts/command_shortcut_event.dart';

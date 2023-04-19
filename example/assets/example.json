@@ -214,6 +214,7 @@
           ]
         }
       },
+      { "type": "text", "delta": [{ "insert": "New Line" }] },
       {
         "type": "numbered_list",
         "attributes": {

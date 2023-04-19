@@ -7,6 +7,7 @@ abstract class TextInputService {
     required this.onDelete,
     required this.onReplace,
     required this.onNonTextUpdate,
+    required this.onPerformAction,
   });
 
   Future<void> Function(TextEditingDeltaInsertion insertion) onInsert;
@@ -14,6 +15,7 @@ abstract class TextInputService {
   Future<void> Function(TextEditingDeltaReplacement replacement) onReplace;
   Future<void> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
       onNonTextUpdate;
+  Future<void> Function(TextInputAction action) onPerformAction;
 
   TextRange? composingTextRange;
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
@@ -40,6 +42,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     required super.onDelete,
     required super.onReplace,
     required super.onNonTextUpdate,
+    required super.onPerformAction,
   });
 
   TextInputConnection? textInputConnection;
@@ -79,6 +82,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
           enableDeltaModel: true,
           inputType: TextInputType.multiline,
           textCapitalization: TextCapitalization.sentences,
+          inputAction: TextInputAction.newline,
         ),
       );
     }
@@ -118,7 +122,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   void insertTextPlaceholder(Size size) {}
 
   @override
-  void performAction(TextInputAction action) {}
+  Future<void> performAction(TextInputAction action) async {
+    return onPerformAction(action);
+  }
 
   @override
   void performPrivateCommand(String action, Map<String, dynamic> data) {}
