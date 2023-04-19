@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
 import 'package:flutter/material.dart';
 
 ShortcutEventHandler outdentTabHandler = (editorState, event) {
