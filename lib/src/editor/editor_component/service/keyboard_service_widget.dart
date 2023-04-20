@@ -68,9 +68,6 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
-      Log.input.debug(
-        'attach text editing value: $textEditingValue',
-      );
       textInputService.attach(textEditingValue);
     }
   }
@@ -82,10 +79,11 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     final selection = editorState.selection.currentSelection.value;
     final composingTextRange = textInputService.composingTextRange;
     if (editableNodes.isNotEmpty && selection != null) {
-      final text = editableNodes.fold<String>(
+      var text = editableNodes.fold<String>(
         '',
         (sum, editableNode) => '$sum${editableNode.delta!.toPlainText()}\n',
       );
+      text = text.substring(0, text.length - 1);
       return TextEditingValue(
         text: text,
         selection: TextSelection(

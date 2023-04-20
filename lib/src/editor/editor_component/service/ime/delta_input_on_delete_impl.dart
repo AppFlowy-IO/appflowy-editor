@@ -29,5 +29,3 @@ Future<void> onDelete(
     throw UnimplementedError();
   }
 }
-
-extension on Transaction {}
