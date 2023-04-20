@@ -86,6 +86,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
         'attach text editing value: $textEditingValue',
       );
       textInputService.attach(textEditingValue);
+      isAttached = true;
     }
   }
 

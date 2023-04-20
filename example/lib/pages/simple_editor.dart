@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -33,19 +34,12 @@ class SimpleEditor extends StatelessWidget {
             ..handler = debugPrint
             ..level = LogLevel.all;
           onEditorStateChange(editorState);
-
-          return AppFlowyEditor(
-            editorState: editorState,
-            themeData: themeData,
-            autoFocus: editorState.document.isEmpty,
-            customBuilders: {
-              'paragraph': TextBlockComponentBuilder(),
-              'todo_list': TodoListBlockComponentBuilder(),
-              'bulleted_list': BulletedListBlockComponentBuilder(),
-              'numbered_list': NumberedListBlockComponentBuilder(),
-              'quote':
-                  QuoteBlockComponentBuilder(padding: const EdgeInsets.all(0)),
-            },
+          return Column(
+            children: [
+              Expanded(child: _buildEditor(context, editorState)),
+              if (Platform.isIOS || Platform.isAndroid)
+                _buildMobileToolbar(context, editorState),
+            ],
           );
         } else {
           return const Center(
@@ -54,5 +48,24 @@ class SimpleEditor extends StatelessWidget {
         }
       },
     );
+  }
+
+  Widget _buildEditor(BuildContext context, EditorState editorState) {
+    return AppFlowyEditor(
+      editorState: editorState,
+      themeData: themeData,
+      autoFocus: editorState.document.isEmpty,
+      customBuilders: {
+        'paragraph': TextBlockComponentBuilder(),
+        'todo_list': TodoListBlockComponentBuilder(),
+        'bulleted_list': BulletedListBlockComponentBuilder(),
+        'numbered_list': NumberedListBlockComponentBuilder(),
+        'quote': QuoteBlockComponentBuilder(),
+      },
+    );
+  }
+
+  Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
+    return MobileToolbar(editorState: editorState);
   }
 }
