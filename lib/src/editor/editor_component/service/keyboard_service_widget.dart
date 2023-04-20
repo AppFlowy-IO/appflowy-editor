@@ -21,7 +21,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   bool isAttached = false;
 
   late final TextInputService textInputService;
-  late EditorState editorState;
+  late final EditorState editorState;
 
   @override
   void initState() {
@@ -40,12 +40,6 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       editorState.selection.currentSelection.addListener(_onSelectionChanged);
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    editorState = Provider.of<EditorState>(context, listen: false);
   }
 
   @override
