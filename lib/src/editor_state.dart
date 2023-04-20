@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/shortcuts/character_shortcut_events/insert_newline.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/shortcuts/character_shortcut_events/markdown_syntax.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/insert_newline.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/markdown_syntax.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';

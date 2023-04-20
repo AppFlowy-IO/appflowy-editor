@@ -1,5 +1,5 @@
-import 'package:appflowy_editor/src/block_component/base_component/service/extensions/extensions.dart';
-import 'package:appflowy_editor/src/block_component/block_component.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/extensions/extensions.dart';
+import 'package:appflowy_editor/src/editor/block_component/block_component.dart';
 
 CharacterShortcutEventHandler _insertNewLineHandler = (editorState) async {
   final selection = editorState.selection.currentSelection.value;

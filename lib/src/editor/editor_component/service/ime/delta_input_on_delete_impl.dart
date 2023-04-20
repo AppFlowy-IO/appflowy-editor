@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/extensions/extensions.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/extensions/extensions.dart';
 import 'package:flutter/services.dart';
 
 Future<void> onDelete(
