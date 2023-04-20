@@ -54,6 +54,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   Widget build(BuildContext context) {
+    return widget.child;
     return Listener(
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
@@ -85,8 +86,16 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   }
 
   @override
-  void startAutoScroll(Offset offset) {
-    widget.autoScroller.startAutoScroll(offset);
+  void startAutoScroll(
+    Offset offset, {
+    double edgeOffset = 200,
+    AxisDirection? direction,
+  }) {
+    widget.autoScroller.startAutoScroll(
+      offset,
+      edgeOffset: edgeOffset,
+      direction: direction,
+    );
   }
 
   @override

@@ -25,7 +25,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
+      // physics: const NeverScrollableScrollPhysics(),
       controller: widget.scrollController,
       child: Builder(
         builder: (context) {

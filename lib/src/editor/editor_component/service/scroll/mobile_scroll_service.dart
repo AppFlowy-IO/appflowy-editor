@@ -73,8 +73,16 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   }
 
   @override
-  void startAutoScroll(Offset offset) {
-    widget.autoScroller.startAutoScroll(offset);
+  void startAutoScroll(
+    Offset offset, {
+    double edgeOffset = 200,
+    AxisDirection? direction,
+  }) {
+    widget.autoScroller.startAutoScroll(
+      offset,
+      edgeOffset: edgeOffset,
+      direction: direction,
+    );
   }
 
   @override

@@ -214,6 +214,12 @@ class _MobileSelectionServiceWidgetState
     updateSelection(selection);
 
     _showDebugLayerIfNeeded(offset: details.globalPosition);
+
+    editorState.service.scrollService?.startAutoScroll(
+      details.globalPosition,
+      edgeOffset: 250,
+      direction: AxisDirection.up,
+    );
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
