@@ -1,4 +1,6 @@
+import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
+import 'package:appflowy_editor/src/render/style/editor_style.dart';
 import 'package:flutter/material.dart';
 
 class ColorOption {
@@ -19,6 +21,7 @@ enum _ColorType {
 class ColorPicker extends StatefulWidget {
   const ColorPicker({
     super.key,
+    this.editorState,
     this.selectedFontColorHex,
     this.selectedBackgroundColorHex,
     required this.pickerBackgroundColor,
@@ -29,7 +32,7 @@ class ColorPicker extends StatefulWidget {
     required this.onSubmittedbackgroundColorHex,
     required this.onSubmittedFontColorHex,
   });
-
+  final EditorState? editorState;
   final String? selectedFontColorHex;
   final String? selectedBackgroundColorHex;
   final Color pickerBackgroundColor;
@@ -53,6 +56,7 @@ class _ColorPickerState extends State<ColorPicker> {
       TextEditingController();
   final TextEditingController _backgroundColorOpacityController =
       TextEditingController();
+  EditorStyle? get style => widget.editorState?.editorStyle;
 
   @override
   void initState() {
@@ -131,7 +135,6 @@ class _ColorPickerState extends State<ColorPicker> {
     return Text(
       text,
       style: const TextStyle(
-        color: Colors.grey,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -154,47 +157,42 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget _buildColorItem(_ColorType type, ColorOption option, bool isChecked) {
     return SizedBox(
       height: 36,
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
-        hoverColor: widget.pickerItemHoverColor,
-        onTap: () {
+      child: TextButton.icon(
+        onPressed: () {
           if (type == _ColorType.font) {
             widget.onSubmittedFontColorHex(option.colorHex);
           } else if (type == _ColorType.background) {
             widget.onSubmittedbackgroundColorHex(option.colorHex);
           }
         },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // padding
-            const SizedBox(width: 6),
-            // icon
-            SizedBox.square(
-              dimension: 12,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(int.tryParse(option.colorHex) ?? 0xFFFFFFFF),
-                  shape: BoxShape.circle,
-                ),
-              ),
+        icon: SizedBox.square(
+          dimension: 12,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color(int.tryParse(option.colorHex) ?? 0xFFFFFFFF),
+              shape: BoxShape.circle,
             ),
-            // padding
-            const SizedBox(width: 10),
-            // text
-            Expanded(
-              child: Text(
-                option.name,
-                style:
-                    TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
-              ),
+          ),
+        ),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered)) {
+                return style!.popupMenuHoverColor!;
+              }
+              return Colors.transparent;
+            },
+          ),
+        ),
+        label: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              option.name,
+              style: TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
             ),
             // checkbox
             if (isChecked) const FlowySvg(name: 'checkmark'),
-            const SizedBox(width: 6),
           ],
         ),
       ),
