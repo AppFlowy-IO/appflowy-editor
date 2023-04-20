@@ -120,7 +120,7 @@ class _MobileSelectionServiceWidgetState
   @override
   void updateSelection(Selection? selection) {
     selectionRects.clear();
-    clearSelection();
+    _clearSelection();
 
     if (selection != null) {
       if (selection.isCollapsed) {
@@ -143,6 +143,10 @@ class _MobileSelectionServiceWidgetState
     currentSelectedNodes = [];
     currentSelection.value = null;
 
+    _clearSelection();
+  }
+
+  void _clearSelection() {
     clearCursor();
     // clear selection areas
     _selectionAreas
