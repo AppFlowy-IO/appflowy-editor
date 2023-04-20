@@ -18,8 +18,6 @@ class KeyboardServiceWidget extends StatefulWidget {
 }
 
 class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
-  bool isAttached = false;
-
   late final TextInputService textInputService;
   late final EditorState editorState;
 
@@ -57,10 +55,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     // attach the delta text input service if needed
     final selection = editorState.selection.currentSelection.value;
     if (selection == null) {
-      if (textInputService.attached && isAttached) {
-        textInputService.close();
-        isAttached = false;
-      }
+      textInputService.close();
     } else {
       Debounce.debounce(
         'attachTextInputService',
@@ -71,16 +66,12 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   }
 
   void _attachTextInputService(Selection selection) {
-    if (textInputService.attached && isAttached) {
-      return;
-    }
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
       Log.input.debug(
         'attach text editing value: $textEditingValue',
       );
       textInputService.attach(textEditingValue);
-      isAttached = true;
     }
   }
 
