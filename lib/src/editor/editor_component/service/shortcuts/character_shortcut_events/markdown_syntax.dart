@@ -1,4 +1,4 @@
-import 'package:appflowy_editor/src/block_component/block_component.dart';
+import 'package:appflowy_editor/src/editor/block_component/block_component.dart';
 
 CharacterShortcutEventHandler _markdownBlockHandler = (editorState) async {
   final selection = editorState.selection.currentSelection.value;

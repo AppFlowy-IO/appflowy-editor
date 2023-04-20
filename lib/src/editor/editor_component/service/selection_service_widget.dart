@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/selection/desktop_selection_service.dart';
-import 'package:appflowy_editor/src/block_component/base_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 

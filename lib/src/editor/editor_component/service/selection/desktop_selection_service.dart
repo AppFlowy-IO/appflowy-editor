@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/util/debounce.dart';
+import 'package:appflowy_editor/src/editor/util/debounce.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';

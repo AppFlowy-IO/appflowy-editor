@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/block_component/base_component/util/debounce.dart';
+import 'package:appflowy_editor/src/editor/util/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ime/delta_input_impl.dart';

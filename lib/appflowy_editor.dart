@@ -53,4 +53,4 @@ export 'src/service/default_text_operations/format_rich_text_style.dart';
 export 'src/infra/html_converter.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 
-export 'src/block_component/block_component.dart';
+export 'src/editor/block_component/block_component.dart';
