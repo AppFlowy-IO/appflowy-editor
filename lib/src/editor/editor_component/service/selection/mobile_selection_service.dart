@@ -203,6 +203,8 @@ class _MobileSelectionServiceWidgetState
         _interceptors.every((element) => element.canTap?.call(details) ?? true);
     if (!canTap) return;
 
+    editorState.service.scrollService?.stopAutoScroll();
+
     // clear old state.
     _panStartOffset = null;
 
@@ -217,7 +219,7 @@ class _MobileSelectionServiceWidgetState
 
     editorState.service.scrollService?.startAutoScroll(
       details.globalPosition,
-      edgeOffset: 250,
+      edgeOffset: 300,
       direction: AxisDirection.up,
     );
   }
