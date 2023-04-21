@@ -8,15 +8,15 @@ extension TextTransforms on EditorState {
   ///
   /// Then it inserts a new paragraph node. After that, it sets the selection to be at the
   /// beginning of the new paragraph.
-  Future<void> insertNewLine({
-    Position? at,
-  }) async {
+  Future<void> insertNewLine(
+    Position? position,
+  ) async {
     // If the position is not passed in, use the current selection.
-    final position = at ?? selection.currentSelection.value?.start;
+    position = position ?? selectionService.currentSelection.value?.start;
 
     // If there is no position, or if the selection is not collapsed, do nothing.
     if (position == null ||
-        !(selection.currentSelection.value?.isCollapsed ?? false)) {
+        !(selectionService.currentSelection.value?.isCollapsed ?? false)) {
       return;
     }
 

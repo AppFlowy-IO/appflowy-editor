@@ -230,25 +230,37 @@ extension TextTransaction on Transaction {
   }
 
   void mergeText(
-    TextNode first,
-    TextNode second, {
-    int? firstOffset,
-    int secondOffset = 0,
+    Node left,
+    Node right, {
+    int? leftOffset,
+    int rightOffset = 0,
   }) {
-    final firstLength = first.delta.length;
-    final secondLength = second.delta.length;
-    firstOffset ??= firstLength;
-    updateText(
-      first,
-      Delta()
-        ..retain(firstOffset)
-        ..delete(firstLength - firstOffset)
-        ..addAll(second.delta.slice(secondOffset, secondLength)),
-    );
+    final leftDelta = left.delta;
+    final rightDelta = right.delta;
+    if (leftDelta == null || rightDelta == null) {
+      return;
+    }
+    final leftLength = leftDelta.length;
+    final rightLength = rightDelta.length;
+    leftOffset ??= leftLength;
+
+    final composed = leftDelta
+        .compose(
+          Delta()
+            ..retain(leftOffset)
+            ..delete(leftLength - leftOffset)
+            ..addAll(rightDelta.slice(rightOffset, rightLength)),
+        )
+        .toJson();
+
+    updateNode(left, {
+      'delta': composed,
+    });
+
     afterSelection = Selection.collapsed(
       Position(
-        path: first.path,
-        offset: firstOffset,
+        path: left.path,
+        offset: leftOffset,
       ),
     );
   }

@@ -33,7 +33,7 @@ Future<void> onInsert(
     }
   }
 
-  final selection = editorState.selection.currentSelection.value;
+  final selection = editorState.selection;
   if (selection == null) {
     return;
   }
@@ -41,7 +41,7 @@ Future<void> onInsert(
   // IME
   // single line
   if (selection.isCollapsed) {
-    final node = editorState.selection.currentSelectedNodes.first;
+    final node = editorState.selectionService.currentSelectedNodes.first;
     assert(node.delta != null);
 
     final transaction = editorState.transaction

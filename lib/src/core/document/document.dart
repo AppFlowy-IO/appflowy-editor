@@ -34,6 +34,15 @@ class Document {
     );
   }
 
+  factory Document.blank() {
+    final root = Node(
+      type: 'editor',
+    );
+    return Document(
+      root: root,
+    );
+  }
+
   final Node root;
 
   /// Returns the node at the given [path].

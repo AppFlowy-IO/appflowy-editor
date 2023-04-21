@@ -279,10 +279,11 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   }
 
   void _onSelectionChange() {
-    final editableNodes = _editorState.selection.currentSelectedNodes.where(
+    final editableNodes =
+        _editorState.selectionService.currentSelectedNodes.where(
       (element) => element.delta != null,
     );
-    final selection = _editorState.selection.currentSelection.value;
+    final selection = _editorState.selection;
     if (editableNodes.isNotEmpty && selection != null) {
       final text = editableNodes.fold<String>(
         '',

@@ -43,10 +43,17 @@ enum CursorUpdateReason {
 class EditorState {
   final Document document;
 
+  final ValueNotifier<Selection?> selectionNotifier =
+      ValueNotifier<Selection?>(null);
+  Selection? get selection => selectionNotifier.value;
+  set selection(Selection? value) {
+    selectionNotifier.value = value;
+  }
+
   // Service reference.
   final service = FlowyService();
 
-  AppFlowySelectionService get selection => service.selectionService;
+  AppFlowySelectionService get selectionService => service.selectionService;
   AppFlowyRenderPluginService get renderer => service.renderPluginService;
 
   List<CharacterShortcutEvent> characterShortcutEvents = [
@@ -134,33 +141,72 @@ class EditorState {
   ///
   /// The options can be used to determine whether the editor
   /// should record the transaction in undo/redo stack.
+  ///
+  /// The maximumRuleApplyLoop is used to prevent infinite loop.
+  ///
+  /// The withUpdateSelection is used to determine whether the editor
+  /// should update the selection after applying the transaction.
   Future<void> apply(
     Transaction transaction, {
+    bool isRemote = false,
     ApplyOptions options = const ApplyOptions(recordUndo: true),
-    ruleCount = 0,
-    withUpdateCursor = true,
+    bool withUpdateSelection = true,
   }) async {
+    if (!editable) {
+      return;
+    }
+
     final completer = Completer<void>();
 
-    if (!editable) {
-      completer.complete();
-      return completer.future;
-    }
-    // TODO: validate the transaction.
-    for (final op in transaction.operations) {
-      _applyOperation(op);
+    for (final operation in transaction.operations) {
+      _applyOperation(operation);
     }
 
+    // broadcast to other users here
     _observer.add(transaction);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _applyRules(ruleCount);
-      if (withUpdateCursor) {
-        await updateCursorSelection(transaction.afterSelection);
-      }
-      completer.complete();
-    });
+    _recordRedoOrUndo(options, transaction);
 
+    if (withUpdateSelection) {
+      selection = transaction.afterSelection;
+    }
+
+    // TODO: execute this line after the UI has been updated.
+    {
+      completer.complete();
+    }
+
+    return completer.future;
+  }
+
+  /// get nodes in selection
+  ///
+  /// if selection is backward, return nodes in order
+  /// if selection is forward, return nodes in reverse order
+  ///
+  List<Node> getNodesInSelection(Selection selection) {
+    // Normalize the selection.
+    final normalized = selection.normalized;
+
+    // Get the start and end nodes.
+    final startNode = document.nodeAtPath(normalized.start.path);
+    final endNode = document.nodeAtPath(normalized.end.path);
+
+    // If we have both nodes, we can find the nodes in the selection.
+    if (startNode != null && endNode != null) {
+      final nodes = NodeIterator(
+        document: document,
+        startNode: startNode,
+        endNode: endNode,
+      ).toList();
+      return nodes;
+    }
+
+    // If we don't have both nodes, we can't find the nodes in the selection.
+    return [];
+  }
+
+  void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
     if (options.recordUndo) {
       final undoItem = undoManager.getUndoHistoryItem();
       undoItem.addAll(transaction.operations);
@@ -177,33 +223,6 @@ class EditorState {
       redoItem.afterSelection = transaction.afterSelection;
       undoManager.redoStack.push(redoItem);
     }
-
-    return completer.future;
-  }
-
-  /// get nodes in selection
-  ///
-  List<Node> getNodesInSelection(Selection selection) {
-    final start =
-        selection.isBackward ? selection.start.path : selection.end.path;
-    final end =
-        selection.isBackward ? selection.end.path : selection.start.path;
-    assert(start <= end);
-    final startNode = editorState.document.nodeAtPath(start);
-    final endNode = editorState.document.nodeAtPath(end);
-    if (startNode != null && endNode != null) {
-      final nodes = NodeIterator(
-        document: editorState.document,
-        startNode: startNode,
-        endNode: endNode,
-      ).toList();
-      if (selection.isBackward) {
-        return nodes;
-      } else {
-        return nodes.reversed.toList(growable: false);
-      }
-    }
-    return [];
   }
 
   void _debouncedSealHistoryItem() {
@@ -233,9 +252,9 @@ class EditorState {
     }
   }
 
-  void _applyRules(int ruleCount) {
+  void _applyRules(int maximumRuleApplyLoop) {
     // Set a maximum count to prevent a dead loop.
-    if (ruleCount >= 5 || disableRules) {
+    if (maximumRuleApplyLoop >= 5 || disableRules) {
       return;
     }
 
@@ -243,7 +262,10 @@ class EditorState {
     _insureLastNodeEditable(transaction);
 
     if (transaction.operations.isNotEmpty) {
-      apply(transaction, ruleCount: ruleCount + 1, withUpdateCursor: false);
+      apply(
+        transaction,
+        withUpdateSelection: false,
+      );
     }
   }
 

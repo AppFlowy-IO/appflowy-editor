@@ -418,7 +418,7 @@ ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
       0,
       selection.end.offset,
     );
-    editorState.apply(deleteTransaction, withUpdateCursor: true);
+    editorState.apply(deleteTransaction);
   }
 
   return KeyEventResult.handled;
