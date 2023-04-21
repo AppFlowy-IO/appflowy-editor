@@ -26,6 +26,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     super.initState();
 
     editorState = Provider.of<EditorState>(context, listen: false);
+    editorState.selectionNotifier.addListener(_onSelectionChanged);
 
     textInputService = DeltaTextInputService(
       onInsert: (insertion) => onInsert(insertion, editorState),
@@ -34,15 +35,11 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       onNonTextUpdate: onNonTextUpdate,
       onPerformAction: (action) => onPerformAction(action, editorState),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      editorState.selection.currentSelection.addListener(_onSelectionChanged);
-    });
   }
 
   @override
   void dispose() {
-    editorState.selection.currentSelection.removeListener(_onSelectionChanged);
+    editorState.selectionNotifier.removeListener(_onSelectionChanged);
     super.dispose();
   }
 
@@ -53,7 +50,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
 
   void _onSelectionChanged() {
     // attach the delta text input service if needed
-    final selection = editorState.selection.currentSelection.value;
+    final selection = editorState.selection;
     if (selection == null) {
       textInputService.close();
     } else {
@@ -73,10 +70,11 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   }
 
   TextEditingValue? _getCurrentTextEditingValue(Selection selection) {
-    final editableNodes = editorState.selection.currentSelectedNodes.where(
+    final editableNodes =
+        editorState.selectionService.currentSelectedNodes.where(
       (element) => element.delta != null,
     );
-    final selection = editorState.selection.currentSelection.value;
+    final selection = editorState.selection;
     final composingTextRange = textInputService.composingTextRange;
     if (editableNodes.isNotEmpty && selection != null) {
       var text = editableNodes.fold<String>(

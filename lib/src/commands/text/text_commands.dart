@@ -95,18 +95,18 @@ extension TextCommands on EditorState {
     );
   }
 
-  Future<void> insertNewLine({
-    Path? path,
-  }) async {
-    final p = path ?? getSelection(null).start.path.next;
-    final transaction = this.transaction;
-    transaction.insertNode(p, TextNode.empty());
-    transaction.afterSelection = Selection.single(
-      path: p,
-      startOffset: 0,
-    );
-    return apply(transaction);
-  }
+  // Future<void> insertNewLine({
+  //   Path? path,
+  // }) async {
+  //   final p = path ?? getSelection(null).start.path.next;
+  //   final transaction = this.transaction;
+  //   transaction.insertNode(p, TextNode.empty());
+  //   transaction.afterSelection = Selection.single(
+  //     path: p,
+  //     startOffset: 0,
+  //   );
+  //   return apply(transaction);
+  // }
 
   Future<void> insertNewLineAtCurrentSelection() async {
     final selection = getSelection(null);

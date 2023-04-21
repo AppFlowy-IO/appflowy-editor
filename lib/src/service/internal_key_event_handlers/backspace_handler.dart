@@ -275,7 +275,7 @@ void _deleteTextNodes(
     ..mergeText(
       first,
       last,
-      firstOffset: selection.start.offset,
-      secondOffset: selection.end.offset,
+      leftOffset: selection.start.offset,
+      rightOffset: selection.end.offset,
     );
 }

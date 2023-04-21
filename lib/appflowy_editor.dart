@@ -55,3 +55,4 @@ export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 
 export 'src/editor/block_component/block_component.dart';
 export 'src/editor/editor_component/editor_component.dart';
+export 'src/editor/transform/transform.dart';

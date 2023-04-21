@@ -27,7 +27,7 @@ class MobileToolbar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    editorState.selection.updateSelection(null);
+                    editorState.selectionService.updateSelection(null);
                   },
                   icon: const Icon(Icons.keyboard_hide),
                 ),

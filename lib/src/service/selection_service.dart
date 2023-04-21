@@ -138,7 +138,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-    currentSelection.addListener(_onSelectionChange);
+    editorState.selectionNotifier.addListener(_onSelectionChange);
   }
 
   @override
@@ -155,7 +155,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
-    currentSelection.removeListener(_onSelectionChange);
+    editorState.selectionNotifier.removeListener(_onSelectionChange);
     _clearToolbar();
 
     super.dispose();
@@ -647,6 +647,9 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   }
 
   void _onSelectionChange() {
+    // update the selection
+    updateSelection(editorState.selection);
+
     _scrollUpOrDownIfNeeded();
   }
 
