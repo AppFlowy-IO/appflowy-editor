@@ -77,15 +77,27 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
   //  insert a empty text node before.
   if (selection.isCollapsed && selection.start.offset == 0) {
     if (textNode.toPlainText().isEmpty && textNode.subtype != null) {
+      final path =
+          textNode.path.length > 1 ? [++textNode.path.first] : textNode.path;
+
       final afterSelection = Selection.collapsed(
-        Position(path: textNode.path, offset: 0),
+        Position(path: path, offset: 0),
       );
-      final transaction = editorState.transaction
-        ..updateNode(textNode, {
-          BuiltInAttributeKey.subtype: null,
-          textNode.subtype!: null,
-        })
-        ..afterSelection = afterSelection;
+
+      final transaction = editorState.transaction;
+      if (textNode.path.length > 1) {
+        transaction
+          ..deleteNode(textNode)
+          ..insertNode(path, textNode)
+          ..afterSelection = afterSelection;
+      } else {
+        transaction
+          ..updateNode(textNode, {
+            BuiltInAttributeKey.subtype: null,
+            textNode.subtype!: null,
+          })
+          ..afterSelection = afterSelection;
+      }
       editorState.apply(transaction);
 
       final nextNode = textNode.next;
