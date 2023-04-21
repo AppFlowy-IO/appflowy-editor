@@ -1,3 +1,8 @@
+## 0.1.9
+* feat: dark mode improvement by @hyj1204 in https://github.com/AppFlowy-IO/appflowy-editor/pull/90
+* feat: shift+tab to outdent a indented bulletpoint or checkbox. by @MayurSMahajan in https://github.com/AppFlowy-IO/appflowy-editor/pull/63
+* fix: enter to outdent checkbox/bullet lists by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/84
+
 ## 0.1.8
 * chore: minor updates to documentation.
 
