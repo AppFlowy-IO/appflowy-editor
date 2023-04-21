@@ -12,7 +12,7 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
 
   final textNode = textNodes.first;
 
-  //we store the position of the index where the current word ends.
+  //we store the position where the current word starts.
   var startOfWord =
       selection.end.goLeft(editorState, selectionRange: SelectionRange.word);
 
@@ -26,7 +26,7 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
       .substring(startOfWord.offset, selection.end.offset);
 
   //if it is whitespace then we have to update the selection to include
-  //the left word of the whitespace.
+  //the left word from the whitespace.
   if (selectedWord.trim().isEmpty) {
     //make a new selection from the left of the whitespace.
     final newSelection = Selection.single(

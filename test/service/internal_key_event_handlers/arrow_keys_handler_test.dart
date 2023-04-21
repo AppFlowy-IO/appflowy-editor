@@ -56,7 +56,9 @@ void main() async {
       ..insertTextNode("Welcome to AppFlowy");
     await editor.startTesting();
 
-    await editor.updateSelection(Selection.single(path: [1], startOffset: 19));
+    await editor.updateSelection(
+      Selection.single(path: [1], startOffset: 19),
+    );
 
     await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
 
@@ -90,7 +92,9 @@ void main() async {
       );
     }
 
-    await editor.updateSelection(Selection.single(path: [1], startOffset: 7));
+    await editor.updateSelection(
+      Selection.single(path: [1], startOffset: 7),
+    );
 
     await select(true);
 
@@ -686,7 +690,6 @@ void main() async {
       ),
     );
   });
-
 }
 
 Future<void> _testPressArrowKeyInNotCollapsedSelection(
