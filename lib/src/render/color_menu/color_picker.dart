@@ -187,9 +187,15 @@ class _ColorPickerState extends State<ColorPicker> {
         label: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              option.name,
-              style: TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
+            Expanded(
+              child: Text(
+                option.name,
+                style:
+                    TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
+                softWrap: false,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
             ),
             // checkbox
             if (isChecked) const FlowySvg(name: 'checkmark'),
