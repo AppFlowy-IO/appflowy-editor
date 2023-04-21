@@ -156,6 +156,79 @@ class Transaction {
 }
 
 extension TextTransaction on Transaction {
+  /// Inserts the [text] at the given [index].
+  ///
+  /// If the [attributes] is null, the attributes of the previous character will be used.
+  /// If the [attributes] is not null, the attributes will be used.
+  void insertText(
+    Node node,
+    int index,
+    String text, {
+    Attributes? attributes,
+  }) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index <= delta.length && index >= 0,
+      'The index($index) is out of range or negative.',
+    );
+
+    final newAttributes = attributes ?? delta.sliceAttributes(index);
+
+    final composed = delta
+        .compose(
+          Delta()
+            ..retain(index)
+            ..insert(text, attributes: newAttributes),
+        )
+        .toJson();
+
+    updateNode(node, {
+      'delta': composed,
+    });
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index + text.length),
+    );
+  }
+
+  void deleteText(
+    Node node,
+    int index,
+    int length,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index + length <= delta.length && index >= 0 && length >= 0,
+      'The index($index) or length($length) is out of range or negative.',
+    );
+
+    final composed = delta
+        .compose(
+          Delta()
+            ..retain(index)
+            ..delete(length),
+        )
+        .toJson();
+
+    updateNode(node, {
+      'delta': composed,
+    });
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index),
+    );
+  }
+
   void mergeText(
     TextNode first,
     TextNode second, {
@@ -204,30 +277,30 @@ extension TextTransaction on Transaction {
   ///
   /// Optionally, you may specify formatting attributes that are applied to the inserted string.
   /// By default, the formatting attributes before the insert position will be reused.
-  void insertText(
-    TextNode textNode,
-    int index,
-    String text, {
-    Attributes? attributes,
-  }) {
-    var newAttributes = attributes;
-    if (index != 0 && attributes == null) {
-      newAttributes =
-          textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-      if (newAttributes != null) {
-        newAttributes = {...newAttributes}; // make a copy
-      }
-    }
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..insert(text, attributes: newAttributes),
-    );
-    afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: index + text.length),
-    );
-  }
+  // void insertText(
+  //   TextNode textNode,
+  //   int index,
+  //   String text, {
+  //   Attributes? attributes,
+  // }) {
+  //   var newAttributes = attributes;
+  //   if (index != 0 && attributes == null) {
+  //     newAttributes =
+  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
+  //     if (newAttributes != null) {
+  //       newAttributes = {...newAttributes}; // make a copy
+  //     }
+  //   }
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..insert(text, attributes: newAttributes),
+  //   );
+  //   afterSelection = Selection.collapsed(
+  //     Position(path: textNode.path, offset: index + text.length),
+  //   );
+  // }
 
   /// Assigns a formatting attributes to a range of text.
   void formatText(
@@ -245,22 +318,22 @@ extension TextTransaction on Transaction {
     );
   }
 
-  /// Deletes the text of specified length starting at index.
-  void deleteText(
-    TextNode textNode,
-    int index,
-    int length,
-  ) {
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..delete(length),
-    );
-    afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: index),
-    );
-  }
+  // /// Deletes the text of specified length starting at index.
+  // void deleteText(
+  //   TextNode textNode,
+  //   int index,
+  //   int length,
+  // ) {
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..delete(length),
+  //   );
+  //   afterSelection = Selection.collapsed(
+  //     Position(path: textNode.path, offset: index),
+  //   );
+  // }
 
   /// Replaces the text of specified length starting at index.
   ///
@@ -453,5 +526,15 @@ extension TextTransaction on Transaction {
       afterSelection = null;
       return;
     }
+  }
+}
+
+extension on Delta {
+  Attributes? sliceAttributes(int index) {
+    if (index <= 0) {
+      return null;
+    }
+
+    return slice(index - 1, index).first.attributes;
   }
 }

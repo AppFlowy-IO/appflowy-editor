@@ -181,6 +181,31 @@ class EditorState {
     return completer.future;
   }
 
+  /// get nodes in selection
+  ///
+  List<Node> getNodesInSelection(Selection selection) {
+    final start =
+        selection.isBackward ? selection.start.path : selection.end.path;
+    final end =
+        selection.isBackward ? selection.end.path : selection.start.path;
+    assert(start <= end);
+    final startNode = editorState.document.nodeAtPath(start);
+    final endNode = editorState.document.nodeAtPath(end);
+    if (startNode != null && endNode != null) {
+      final nodes = NodeIterator(
+        document: editorState.document,
+        startNode: startNode,
+        endNode: endNode,
+      ).toList();
+      if (selection.isBackward) {
+        return nodes;
+      } else {
+        return nodes.reversed.toList(growable: false);
+      }
+    }
+    return [];
+  }
+
   void _debouncedSealHistoryItem() {
     if (disableSealTimer) {
       return;

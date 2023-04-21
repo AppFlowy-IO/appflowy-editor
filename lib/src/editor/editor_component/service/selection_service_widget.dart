@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/util/util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
@@ -33,14 +32,14 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb || Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+    if (kIsWeb || PlatformExtension.isDesktop) {
       return DesktopSelectionServiceWidget(
         key: forwardKey,
         cursorColor: widget.cursorColor,
         selectionColor: widget.selectionColor,
         child: widget.child,
       );
-    } else if (Platform.isIOS || Platform.isAndroid) {
+    } else if (PlatformExtension.isMobile) {
       return MobileSelectionServiceWidget(
         key: forwardKey,
         cursorColor: widget.cursorColor,
