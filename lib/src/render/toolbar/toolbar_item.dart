@@ -571,10 +571,11 @@ void showColorMenu(
         child: Material(
           color: Colors.transparent,
           child: ColorPicker(
+            editorState: editorState,
             pickerBackgroundColor:
                 style.selectionMenuBackgroundColor ?? Colors.white,
-            pickerItemHoverColor: style.selectionMenuItemSelectedColor ??
-                Colors.blue.withOpacity(0.3),
+            pickerItemHoverColor:
+                style.popupMenuHoverColor ?? Colors.blue.withOpacity(0.3),
             pickerItemTextColor:
                 style.selectionMenuItemTextColor ?? Colors.black,
             selectedFontColorHex: fontColorHex,
