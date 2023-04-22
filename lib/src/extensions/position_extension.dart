@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 enum SelectionRange {
   character,
@@ -6,8 +7,9 @@ enum SelectionRange {
 }
 
 extension PositionExtension on Position {
-  Position? goLeft(
+  Position? moveHorizontal(
     EditorState editorState, {
+    bool moveLeft = true,
     SelectionRange selectionRange = SelectionRange.character,
   }) {
     final node = editorState.document.nodeAtPath(path);
@@ -15,12 +17,17 @@ extension PositionExtension on Position {
       return null;
     }
 
-    if (offset == 0) {
+    if (moveLeft && offset == 0) {
       final previousEnd = node.previous?.selectable?.end();
       if (previousEnd != null) {
         return previousEnd;
       }
       return null;
+    } else if (!moveLeft) {
+      final end = node.selectable?.end();
+      if (end != null && offset >= end.offset) {
+        return node.next?.selectable?.start();
+      }
     }
 
     switch (selectionRange) {
@@ -28,21 +35,25 @@ extension PositionExtension on Position {
         if (node is TextNode) {
           return Position(
             path: path,
-            offset: node.delta.prevRunePosition(offset),
+            offset: moveLeft
+                ? node.delta.prevRunePosition(offset)
+                : node.delta.nextRunePosition(offset),
           );
         }
 
         return Position(path: path, offset: offset);
       case SelectionRange.word:
         if (node is TextNode) {
-          final result = node.selectable?.getWordBoundaryInPosition(
-            Position(
-              path: path,
-              offset: node.delta.prevRunePosition(offset),
-            ),
-          );
+          final result = moveLeft
+              ? node.selectable?.getWordBoundaryInPosition(
+                  Position(
+                    path: path,
+                    offset: node.delta.prevRunePosition(offset),
+                  ),
+                )
+              : node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
-            return result.start;
+            return moveLeft ? result.start : result.end;
           }
         }
 
@@ -50,39 +61,34 @@ extension PositionExtension on Position {
     }
   }
 
-  Position? goRight(
+  Position? moveVertical(
     EditorState editorState, {
-    SelectionRange selectionRange = SelectionRange.character,
+    bool upwards = true,
   }) {
-    final node = editorState.document.nodeAtPath(path);
-    if (node == null) {
+    final selection =
+        editorState.service.selectionService.currentSelection.value;
+    final rects = editorState.service.selectionService.selectionRects;
+    if (rects.isEmpty || selection == null) {
       return null;
     }
 
-    final end = node.selectable?.end();
-    if (end != null && offset >= end.offset) {
-      return node.next?.selectable?.start();
+    Offset offset;
+    if (selection.isBackward) {
+      final rect = rects.reduce(
+        (current, next) => current.bottom >= next.bottom ? current : next,
+      );
+      offset = upwards
+          ? rect.topRight.translate(0, -rect.height)
+          : rect.bottomRight.translate(0, rect.height);
+    } else {
+      final rect = rects.reduce(
+        (current, next) => current.top <= next.top ? current : next,
+      );
+      offset = upwards
+          ? rect.topLeft.translate(0, -rect.height)
+          : rect.bottomLeft.translate(0, rect.height);
     }
 
-    switch (selectionRange) {
-      case SelectionRange.character:
-        if (node is TextNode) {
-          return Position(
-            path: path,
-            offset: node.delta.nextRunePosition(offset),
-          );
-        }
-
-        return Position(path: path, offset: offset);
-      case SelectionRange.word:
-        if (node is TextNode) {
-          final result = node.selectable?.getWordBoundaryInPosition(this);
-          if (result != null) {
-            return result.end;
-          }
-        }
-
-        return Position(path: path, offset: offset);
-    }
+    return editorState.service.selectionService.getPositionInOffset(offset);
   }
 }

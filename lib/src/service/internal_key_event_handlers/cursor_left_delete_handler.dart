@@ -13,8 +13,10 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
   final textNode = textNodes.first;
 
   //we store the position where the current word starts.
-  var startOfWord =
-      selection.end.goLeft(editorState, selectionRange: SelectionRange.word);
+  var startOfWord = selection.end.moveHorizontal(
+    editorState,
+    selectionRange: SelectionRange.word,
+  );
 
   if (startOfWord == null) {
     return KeyEventResult.ignored;
@@ -35,7 +37,7 @@ ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
     );
 
     //we need to check if this position is not null
-    final newStartOfWord = newSelection.end.goLeft(
+    final newStartOfWord = newSelection.end.moveHorizontal(
       editorState,
       selectionRange: SelectionRange.word,
     );

@@ -7,7 +7,7 @@ ShortcutEventHandler cursorLeftSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.goLeft(editorState);
+  final end = selection.end.moveHorizontal(editorState);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -23,7 +23,7 @@ ShortcutEventHandler cursorRightSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.goRight(editorState);
+  final end = selection.end.moveHorizontal(editorState, moveLeft: false);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -39,7 +39,7 @@ ShortcutEventHandler cursorUpSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _moveVertical(editorState);
+  final end = selection.end.moveVertical(editorState);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -55,7 +55,7 @@ ShortcutEventHandler cursorDownSelect = (editorState, event) {
   if (nodes.isEmpty || selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = _moveVertical(editorState, upwards: false);
+  final end = selection.end.moveVertical(editorState, upwards: false);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -225,7 +225,7 @@ ShortcutEventHandler cursorUp = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final upPosition = _moveVertical(editorState);
+  final upPosition = selection.end.moveVertical(editorState);
   editorState.updateCursorSelection(
     upPosition == null ? null : Selection.collapsed(upPosition),
   );
@@ -241,7 +241,7 @@ ShortcutEventHandler cursorDown = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final downPosition = _moveVertical(editorState, upwards: false);
+  final downPosition = selection.end.moveVertical(editorState, upwards: false);
   editorState.updateCursorSelection(
     downPosition == null ? null : Selection.collapsed(downPosition),
   );
@@ -258,7 +258,7 @@ ShortcutEventHandler cursorLeft = (editorState, event) {
   }
 
   Position newPosition = selection.isCollapsed
-      ? selection.start.goLeft(editorState) ?? selection.start
+      ? selection.start.moveHorizontal(editorState) ?? selection.start
       : selection.start;
 
   editorState.service.selectionService.updateSelection(
@@ -277,7 +277,8 @@ ShortcutEventHandler cursorRight = (editorState, event) {
   }
 
   final newPosition = selection.isCollapsed
-      ? selection.start.goRight(editorState) ?? selection.end
+      ? selection.start.moveHorizontal(editorState, moveLeft: false) ??
+          selection.end
       : selection.end;
 
   editorState.service.selectionService.updateSelection(
@@ -294,8 +295,10 @@ ShortcutEventHandler cursorLeftWordSelect = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final end =
-      selection.end.goLeft(editorState, selectionRange: SelectionRange.word);
+  final end = selection.end.moveHorizontal(
+    editorState,
+    selectionRange: SelectionRange.word,
+  );
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -316,8 +319,10 @@ ShortcutEventHandler cursorLeftWordMove = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final newPosition = selection.start
-          .goLeft(editorState, selectionRange: SelectionRange.word) ??
+  final newPosition = selection.start.moveHorizontal(
+        editorState,
+        selectionRange: SelectionRange.word,
+      ) ??
       selection.start;
 
   editorState.service.selectionService.updateSelection(
@@ -336,8 +341,11 @@ ShortcutEventHandler cursorRightWordMove = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final newPosition = selection.start
-          .goRight(editorState, selectionRange: SelectionRange.word) ??
+  final newPosition = selection.start.moveHorizontal(
+        editorState,
+        selectionRange: SelectionRange.word,
+        moveLeft: false,
+      ) ??
       selection.end;
 
   editorState.service.selectionService.updateSelection(
@@ -354,8 +362,11 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  final end =
-      selection.end.goRight(editorState, selectionRange: SelectionRange.word);
+  final end = selection.end.moveHorizontal(
+    editorState,
+    selectionRange: SelectionRange.word,
+    moveLeft: false,
+  );
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -366,33 +377,3 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
 
   return KeyEventResult.handled;
 };
-
-Position? _moveVertical(
-  EditorState editorState, {
-  bool upwards = true,
-}) {
-  final selection = editorState.service.selectionService.currentSelection.value;
-  final rects = editorState.service.selectionService.selectionRects;
-  if (rects.isEmpty || selection == null) {
-    return null;
-  }
-
-  Offset offset;
-  if (selection.isBackward) {
-    final rect = rects.reduce(
-      (current, next) => current.bottom >= next.bottom ? current : next,
-    );
-    offset = upwards
-        ? rect.topRight.translate(0, -rect.height)
-        : rect.bottomRight.translate(0, rect.height);
-  } else {
-    final rect = rects.reduce(
-      (current, next) => current.top <= next.top ? current : next,
-    );
-    offset = upwards
-        ? rect.topLeft.translate(0, -rect.height)
-        : rect.bottomLeft.translate(0, rect.height);
-  }
-
-  return editorState.service.selectionService.getPositionInOffset(offset);
-}
