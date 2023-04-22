@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Iterable<ThemeExtension<dynamic>> get lightEditorStyleExtension => [
@@ -204,7 +205,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   }
 
   static final light = EditorStyle(
-    padding: Platform.isAndroid || Platform.isIOS
+    padding: _isMobile
         ? const EdgeInsets.symmetric(horizontal: 20)
         : const EdgeInsets.symmetric(horizontal: 200),
     backgroundColor: Colors.white,
@@ -258,4 +259,16 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     popupMenuFGColor: Colors.white,
     popupMenuHoverColor: const Color(0xFF00BCF0),
   );
+
+  static bool get _isMobile {
+    if (kIsWeb) {
+      return false;
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return true;
+    }
+
+    return false;
+  }
 }
