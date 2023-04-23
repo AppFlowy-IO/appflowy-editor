@@ -6,7 +6,43 @@ import 'package:flutter/foundation.dart';
 
 /// Defines the implementation of shortcut event.
 class ShortcutEvent {
-  ShortcutEvent({
+  factory ShortcutEvent.fromCharacter({
+    required String key,
+    required String character,
+    required ShortcutEventHandler handler,
+    String? windowsCommand,
+    String? macOSCommand,
+    String? linuxCommand,
+  }) =>
+      ShortcutEvent._(
+        key: key,
+        character: character,
+        command: null,
+        handler: handler,
+        windowsCommand: windowsCommand,
+        macOSCommand: macOSCommand,
+        linuxCommand: linuxCommand,
+      );
+
+  factory ShortcutEvent.fromCommand({
+    required String key,
+    required String command,
+    required ShortcutEventHandler handler,
+    String? windowsCommand,
+    String? macOSCommand,
+    String? linuxCommand,
+  }) =>
+      ShortcutEvent._(
+        key: key,
+        character: null,
+        command: command,
+        handler: handler,
+        windowsCommand: windowsCommand,
+        macOSCommand: macOSCommand,
+        linuxCommand: linuxCommand,
+      );
+
+  ShortcutEvent._({
     required this.key,
     this.character,
     this.command,
@@ -117,18 +153,6 @@ class ShortcutEvent {
           .map((e) => Keybinding.parse(e))
           .toList(growable: false);
     }
-  }
-
-  ShortcutEvent copyWith({
-    String? key,
-    String? command,
-    ShortcutEventHandler? handler,
-  }) {
-    return ShortcutEvent(
-      key: key ?? this.key,
-      command: command ?? this.command,
-      handler: handler ?? this.handler,
-    );
   }
 
   @override

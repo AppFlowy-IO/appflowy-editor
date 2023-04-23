@@ -14,7 +14,7 @@ void main() async {
 
   group('shortcut_event.dart', () {
     test('redefine shortcut event command', () {
-      final shortcutEvent = ShortcutEvent(
+      final shortcutEvent = ShortcutEvent.fromCommand(
         key: 'Sample',
         command: 'cmd+shift+alt+ctrl+a',
         handler: (editorState, event) {

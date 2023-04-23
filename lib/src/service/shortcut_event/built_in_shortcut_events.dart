@@ -17,321 +17,321 @@ import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event.dart';
 import 'package:flutter/foundation.dart';
 
 List<ShortcutEvent> builtInShortcutEvents = [
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor up',
     command: 'arrow up',
     handler: cursorUp,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor down',
     command: 'arrow down',
     handler: cursorDown,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor left',
     command: 'arrow left',
     handler: cursorLeft,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor right',
     command: 'arrow right',
     handler: cursorRight,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor up select',
     command: 'shift+arrow up',
     handler: cursorUpSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor down select',
     command: 'shift+arrow down',
     handler: cursorDownSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor left word select',
     command: 'shift+alt+arrow left',
     windowsCommand: 'shift+alt+arrow left',
     linuxCommand: 'shift+alt+arrow left',
     handler: cursorLeftWordSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor right word select',
     command: 'shift+alt+arrow right',
     windowsCommand: 'shift+alt+arrow right',
     linuxCommand: 'shift+alt+arrow right',
     handler: cursorRightWordSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor word delete',
     command: 'alt+backspace',
     windowsCommand: 'ctrl+backspace',
     linuxCommand: 'ctrl+backspace',
     handler: cursorLeftWordDelete,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor sentence delete',
     command: 'meta+backspace',
     windowsCommand: 'ctrl+alt+backspace',
     linuxCommand: 'ctrl+alt+backspace',
     handler: cursorLeftSentenceDelete,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor left select',
     command: 'shift+arrow left',
     handler: cursorLeftSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor right select',
     command: 'shift+arrow right',
     handler: cursorRightSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor top',
     command: 'meta+arrow up',
     windowsCommand: 'ctrl+arrow up',
     linuxCommand: 'ctrl+arrow up',
     handler: cursorTop,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor bottom',
     command: 'meta+arrow down',
     windowsCommand: 'ctrl+arrow down',
     linuxCommand: 'ctrl+arrow down',
     handler: cursorBottom,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor begin',
     command: 'meta+arrow left',
     windowsCommand: 'ctrl+arrow left',
     linuxCommand: 'ctrl+arrow left',
     handler: cursorBegin,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor end',
     command: 'meta+arrow right',
     windowsCommand: 'ctrl+arrow right',
     linuxCommand: 'ctrl+arrow right',
     handler: cursorEnd,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor top select',
     command: 'meta+shift+arrow up',
     windowsCommand: 'ctrl+shift+arrow up',
     linuxCommand: 'ctrl+shift+arrow up',
     handler: cursorTopSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor bottom select',
     command: 'meta+shift+arrow down',
     windowsCommand: 'ctrl+shift+arrow down',
     linuxCommand: 'ctrl+shift+arrow down',
     handler: cursorBottomSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor begin select',
     command: 'meta+shift+arrow left,shift+home',
     windowsCommand: 'ctrl+shift+arrow left,shift+home',
     linuxCommand: 'ctrl+shift+arrow left,shift+home',
     handler: cursorBeginSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cursor end select',
     command: 'meta+shift+arrow right,shift+end',
     windowsCommand: 'ctrl+shift+arrow right,shift+end',
     linuxCommand: 'ctrl+shift+arrow right,shift+end',
     handler: cursorEndSelect,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Redo',
     command: 'meta+shift+z,meta+y',
     windowsCommand: 'ctrl+shift+z,ctrl+y',
     linuxCommand: 'ctrl+shift+z,ctrl+y',
     handler: redoEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Undo',
     command: 'meta+z',
     windowsCommand: 'ctrl+z',
     linuxCommand: 'ctrl+z',
     handler: undoEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format bold',
     command: 'meta+b',
     windowsCommand: 'ctrl+b',
     linuxCommand: 'ctrl+b',
     handler: formatBoldEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format italic',
     command: 'meta+i',
     windowsCommand: 'ctrl+i',
     linuxCommand: 'ctrl+i',
     handler: formatItalicEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format underline',
     command: 'meta+u',
     windowsCommand: 'ctrl+u',
     linuxCommand: 'ctrl+u',
     handler: formatUnderlineEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Toggle Checkbox',
     command: 'meta+enter',
     windowsCommand: 'ctrl+enter',
     linuxCommand: 'ctrl+enter',
     handler: toggleCheckbox,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format strikethrough',
     command: 'meta+shift+s',
     windowsCommand: 'ctrl+shift+s',
     linuxCommand: 'ctrl+shift+s',
     handler: formatStrikethroughEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format highlight',
     command: 'meta+shift+h',
     windowsCommand: 'ctrl+shift+h',
     linuxCommand: 'ctrl+shift+h',
     handler: formatHighlightEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format embed code',
     command: 'meta+e',
     windowsCommand: 'ctrl+e',
     linuxCommand: 'ctrl+e',
     handler: formatEmbedCodeEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Format link',
     command: 'meta+k',
     windowsCommand: 'ctrl+k',
     linuxCommand: 'ctrl+k',
     handler: formatLinkEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Copy',
     command: 'meta+c',
     windowsCommand: 'ctrl+c',
     linuxCommand: 'ctrl+c',
     handler: copyEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Paste',
     command: 'meta+v',
     windowsCommand: 'ctrl+v',
     linuxCommand: 'ctrl+v',
     handler: pasteEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Cut',
     command: 'meta+x',
     windowsCommand: 'ctrl+x',
     linuxCommand: 'ctrl+x',
     handler: cutEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Home',
     command: 'home',
     handler: cursorBegin,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'End',
     command: 'end',
     handler: cursorEnd,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Delete Text by backspace',
     command: 'backspace',
     handler: backspaceEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Delete Text',
     command: 'delete',
     handler: deleteEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCharacter(
     key: 'selection menu',
     character: '/',
     handler: slashShortcutHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'enter',
     command: 'enter',
     handler: enterWithoutShiftInTextNodesHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'markdown',
     command: 'space',
     handler: whiteSpaceHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'select all',
     command: 'meta+a',
     windowsCommand: 'ctrl+a',
     linuxCommand: 'ctrl+a',
     handler: selectAllHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Page up',
     command: 'page up',
     handler: pageUpHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Page down',
     command: 'page down',
     handler: pageDownHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Tab',
     command: 'tab',
     handler: tabHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Backquote to code',
     command: 'backquote',
     handler: backquoteToCodeHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCharacter(
     key: 'Double tilde to strikethrough',
     character: '~',
     handler: doubleTildeToStrikethrough,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Markdown link or image',
     command: 'shift+parenthesis right',
     handler: markdownLinkOrImageHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Exit editing mode',
     command: 'escape',
     handler: exitEditingModeEventHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCharacter(
     key: 'Underscore to italic',
     character: '_',
     handler: underscoreToItalicHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCharacter(
     key: 'Double asterisk to bold',
     character: '*',
     handler: doubleAsteriskToBoldHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCharacter(
     key: 'Double underscore to bold',
     character: '_',
     handler: doubleUnderscoreToBoldHandler,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor left one word',
     command: 'alt+arrow left',
     windowsCommand: 'alt+arrow left',
     linuxCommand: 'alt+arrow left',
     handler: cursorLeftWordMove,
   ),
-  ShortcutEvent(
+  ShortcutEvent.fromCommand(
     key: 'Move cursor right one word',
     command: 'alt+arrow right',
     windowsCommand: 'alt+arrow right',
@@ -344,7 +344,7 @@ List<ShortcutEvent> builtInShortcutEvents = [
   //  so adding a shortcut event to handle the space input instead of using the
   //  `input_service`.
   if (kIsWeb)
-    ShortcutEvent(
+    ShortcutEvent.fromCommand(
       key: 'Space on the Web',
       command: 'space',
       handler: spaceOnWebHandler,
