@@ -58,6 +58,7 @@ class _MobileSelectionServiceWidgetState
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+    editorState.selectionNotifier.addListener(_updateSelection);
   }
 
   @override
@@ -78,6 +79,7 @@ class _MobileSelectionServiceWidgetState
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
+    editorState.selectionNotifier.removeListener(_updateSelection);
 
     super.dispose();
   }
@@ -136,6 +138,29 @@ class _MobileSelectionServiceWidgetState
 
     currentSelection.value = selection;
     editorState.updateCursorSelection(selection, CursorUpdateReason.uiEvent);
+  }
+
+  void _updateSelection() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      selectionRects.clear();
+      _clearSelection();
+
+      final selection = editorState.selection;
+
+      if (selection != null) {
+        if (selection.isCollapsed) {
+          // updates cursor area.
+          Log.selection.debug('update cursor area, $selection');
+          _updateCursorAreas(selection.start);
+        } else {
+          // updates selection area.
+          Log.selection.debug('update cursor area, $selection');
+          _updateSelectionAreas(selection);
+        }
+      }
+
+      currentSelection.value = selection;
+    });
   }
 
   @override

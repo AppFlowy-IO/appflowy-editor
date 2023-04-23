@@ -202,6 +202,10 @@ class EditorState {
     return [];
   }
 
+  Node? getNodeAtPath(Path path) {
+    return document.nodeAtPath(path);
+  }
+
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
     if (options.recordUndo) {
       final undoItem = undoManager.getUndoHistoryItem();

@@ -27,12 +27,20 @@ extension SelectionTransform on EditorState {
         final node = nodes[i];
         if (node.delta != null) {
           if (i == 0) {
-            transaction.mergeText(
-              node,
-              nodes.last,
-              leftOffset: selection.startIndex,
-              rightOffset: selection.endIndex,
-            );
+            if (nodes.last.delta != null) {
+              transaction.mergeText(
+                node,
+                nodes.last,
+                leftOffset: selection.startIndex,
+                rightOffset: selection.endIndex,
+              );
+            } else {
+              transaction.deleteText(
+                node,
+                selection.startIndex,
+                selection.length,
+              );
+            }
           } else {
             transaction.deleteNode(node);
           }

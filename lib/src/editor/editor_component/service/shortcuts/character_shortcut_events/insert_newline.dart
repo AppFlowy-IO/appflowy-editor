@@ -4,8 +4,10 @@ import '../../../../util/util.dart';
 
 /// insert a new line block
 ///
-/// - on desktop or web: enter
-/// - on mobile: enter
+/// - support
+///   - desktop
+///   - mobile
+///   - web
 ///
 CharacterShortcutEvent insertNewLine = CharacterShortcutEvent(
   key: 'insert a new line',
