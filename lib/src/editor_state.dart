@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/insert_newline.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/markdown_syntax.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -56,10 +54,7 @@ class EditorState {
   AppFlowySelectionService get selectionService => service.selectionService;
   AppFlowyRenderPluginService get renderer => service.renderPluginService;
 
-  List<CharacterShortcutEvent> characterShortcutEvents = [
-    insertNewLine,
-    markdownBlockSyntax,
-  ];
+  List<CharacterShortcutEvent> characterShortcutEvents = [];
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -119,6 +114,7 @@ class EditorState {
       service.selectionService.updateSelection(cursorSelection);
     }
     _cursorSelection = cursorSelection;
+    selection = cursorSelection;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       completer.complete();
     });

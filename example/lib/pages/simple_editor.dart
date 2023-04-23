@@ -62,6 +62,13 @@ class SimpleEditor extends StatelessWidget {
         'numbered_list': NumberedListBlockComponentBuilder(),
         'quote': QuoteBlockComponentBuilder(),
       },
+      characterShortcutEvents: [
+        insertNewLine,
+
+        // bulleted list
+        formatAsteriskToBulletedList,
+        formatMinusToBulletedList,
+      ],
     );
   }
 

@@ -29,6 +29,7 @@ class AppFlowyEditor extends StatefulWidget {
     required this.editorState,
     this.customBuilders = const {},
     this.shortcutEvents = const [],
+    this.characterShortcutEvents = const [],
     this.selectionMenuItems = const [],
     this.toolbarItems = const [],
     this.editable = true,
@@ -55,6 +56,10 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Keyboard event handlers.
   final List<ShortcutEvent> shortcutEvents;
+
+  /// Character event handlers
+  final List<CharacterShortcutEvent> characterShortcutEvents;
+
   final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
@@ -95,6 +100,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.themeData = widget.themeData;
     editorState.service.renderPluginService = _createRenderPlugin();
     editorState.editable = widget.editable;
+    editorState.characterShortcutEvents = widget.characterShortcutEvents;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -119,6 +125,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     editorState.themeData = widget.themeData;
     editorState.editable = widget.editable;
+    editorState.characterShortcutEvents = widget.characterShortcutEvents;
     services = null;
   }
 

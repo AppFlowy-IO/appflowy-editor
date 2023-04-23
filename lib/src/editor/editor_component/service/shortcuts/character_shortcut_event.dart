@@ -23,6 +23,10 @@ class CharacterShortcutEvent {
 
   final CharacterShortcutEventHandler handler;
 
+  Future<bool> execute(EditorState editorState) async {
+    return handler(editorState);
+  }
+
   @override
   String toString() =>
       'ShortcutEvent(key: $key, character: $character, handler: $handler)';
