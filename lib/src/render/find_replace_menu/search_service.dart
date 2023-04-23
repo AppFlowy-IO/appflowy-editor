@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'dart:math' as math;
 
 class SearchService {
@@ -10,6 +9,9 @@ class SearchService {
   final EditorState editorState;
   Map<Node, List<int>> nodeMatchMap = {};
 
+  /// Finds the pattern in editorState.document and stores it in a
+  /// map. Calls the highlightMatch method to highlight the pattern
+  /// if it is found.
   void findAndHighlight(String pattern) {
     final contents = editorState.document.root.children;
 
@@ -23,27 +25,39 @@ class SearchService {
       (element) => element is TextNode,
     );
 
+    //iterate within all the text nodes of the document.
     final nodes = NodeIterator(
       document: editorState.document,
       startNode: firstNode,
       endNode: lastNode,
     ).toList();
 
-    for (var n in nodes) {
+    //traversing all the nodes
+    for (final n in nodes) {
       if (n is TextNode) {
-        //we will try to find the pattern using bayer moore search.
-        List<int> matches = boyerMooreSearch(pattern, n.toPlainText());
+        //matches list will contain the offsets where the desired word,
+        //is found.
+        List<int> matches = _boyerMooreSearch(pattern, n.toPlainText());
+        //we will store this list of offsets in a hashmap where each node,
+        //will be the respective key and its matches will be its value.
         nodeMatchMap[n] = matches;
+        //finally we will highlight all the mathces.
         highlightMatches(n.path, matches, pattern.length);
       }
     }
   }
 
+  /// This method takes in the TextNode's path, matches is a list of offsets,
+  ///  patternLength is the length of the word which is being searched.
+  ///
+  /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
+  /// that the word is located on path 1 from [1,10] to [1,14]
   void highlightMatches(Path path, List<int> matches, int patternLength) {
-    for (var match in matches) {
+    for (final match in matches) {
       Position start = Position(path: path, offset: match);
       Position end = Position(path: path, offset: match + patternLength);
 
+      //we select the matched word and hide the toolbar.
       editorState.updateCursorSelection(Selection(start: start, end: end));
 
       formatHighlight(
@@ -57,14 +71,15 @@ class SearchService {
     findAndHighlight(pattern);
   }
 
-  List<int> boyerMooreSearch(String pattern, String text) {
+  //this is a standard algorithm used for searching patterns in long text samples
+  List<int> _boyerMooreSearch(String pattern, String text) {
     int m = pattern.length;
     int n = text.length;
 
     Map<String, int> badchar = {};
     List<int> matches = [];
 
-    badCharHeuristic(pattern, m, badchar);
+    _badCharHeuristic(pattern, m, badchar);
 
     int s = 0;
 
@@ -87,12 +102,11 @@ class SearchService {
     return matches;
   }
 
-  void badCharHeuristic(String pat, int size, Map<String, int> badchar) {
-    // Initialize all occurrences as -1
+  void _badCharHeuristic(String pat, int size, Map<String, int> badchar) {
     badchar.clear();
 
-    // Fill the actual value of last occurrence
-    // of a character (indices of table are characters and values are index of occurrence)
+    // Fill the actual value of last occurrence of a character
+    // (indices of table are characters and values are index of occurrence)
     for (int i = 0; i < size; i++) {
       String ch = pat[i];
       badchar[ch] = i;

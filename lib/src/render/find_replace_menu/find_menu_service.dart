@@ -57,7 +57,7 @@ class FindReplaceMenu implements FindReplaceService {
           right: rightOffset,
           child: Material(
             borderRadius: BorderRadius.circular(8.0),
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 color: editorState.editorStyle.selectionMenuBackgroundColor ??
                     Colors.white,
