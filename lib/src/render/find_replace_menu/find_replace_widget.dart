@@ -18,6 +18,7 @@ class FindMenuWidget extends StatefulWidget {
 
 class _FindMenuWidgetState extends State<FindMenuWidget> {
   final controller = TextEditingController();
+  String queriedPattern = '';
   late SearchService searchService;
 
   @override
@@ -40,8 +41,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
             child: TextField(
               autofocus: true,
               controller: controller,
-              onSubmitted: (_) =>
-                  searchService.findAndHighlight(controller.text),
+              onSubmitted: (_) => _searchPattern(),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter text to search',
@@ -50,17 +50,27 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
           ),
         ),
         IconButton(
-          onPressed: () => searchService.findAndHighlight(controller.text),
+          onPressed: () => _searchPattern(),
           icon: const Icon(Icons.search),
         ),
         IconButton(
           onPressed: () {
             widget.dismiss();
-            searchService.unHighlight(controller.text);
+            searchService.unHighlight(queriedPattern);
+            setState(() {
+              queriedPattern = '';
+            });
           },
           icon: const Icon(Icons.close),
         ),
       ],
     );
+  }
+
+  void _searchPattern() {
+    searchService.findAndHighlight(controller.text);
+    setState(() {
+      queriedPattern = controller.text;
+    });
   }
 }

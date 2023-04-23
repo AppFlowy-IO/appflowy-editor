@@ -7,10 +7,13 @@ class SearchService {
   });
 
   final EditorState editorState;
-  Map<Node, List<int>> nodeMatchMap = {};
+  //matchedPositions will contain a list of positions of the matched patterns
+  //the position here consists of the node and the starting offset of the
+  //matched pattern. We will use this to traverse between the matched patterns.
+  List<Position> matchedPositions = [];
 
-  /// Finds the pattern in editorState.document and stores it in a
-  /// map. Calls the highlightMatch method to highlight the pattern
+  /// Finds the pattern in editorState.document and stores it in matchedPositions.
+  /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
   void findAndHighlight(String pattern) {
     final contents = editorState.document.root.children;
@@ -38,21 +41,27 @@ class SearchService {
         //matches list will contain the offsets where the desired word,
         //is found.
         List<int> matches = _boyerMooreSearch(pattern, n.toPlainText());
-        //we will store this list of offsets in a hashmap where each node,
-        //will be the respective key and its matches will be its value.
-        nodeMatchMap[n] = matches;
+        //we will store this list of offsets along with their path,
+        //in a list of positions.
+        for (int matchedOffset in matches) {
+          matchedPositions.add(Position(path: n.path, offset: matchedOffset));
+        }
         //finally we will highlight all the mathces.
-        highlightMatches(n.path, matches, pattern.length);
+        _highlightMatches(n.path, matches, pattern.length);
       }
     }
   }
 
+  void unHighlight(String pattern) {
+    findAndHighlight(pattern);
+  }
+
   /// This method takes in the TextNode's path, matches is a list of offsets,
-  ///  patternLength is the length of the word which is being searched.
+  /// patternLength is the length of the word which is being searched.
   ///
   /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
   /// that the word is located on path 1 from [1,10] to [1,14]
-  void highlightMatches(Path path, List<int> matches, int patternLength) {
+  void _highlightMatches(Path path, List<int> matches, int patternLength) {
     for (final match in matches) {
       Position start = Position(path: path, offset: match);
       Position end = Position(path: path, offset: match + patternLength);
@@ -65,10 +74,6 @@ class SearchService {
         editorState.editorStyle.highlightColorHex!,
       );
     }
-  }
-
-  void unHighlight(String pattern) {
-    findAndHighlight(pattern);
   }
 
   //this is a standard algorithm used for searching patterns in long text samples
