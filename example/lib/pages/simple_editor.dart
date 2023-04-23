@@ -68,6 +68,9 @@ class SimpleEditor extends StatelessWidget {
         // bulleted list
         formatAsteriskToBulletedList,
         formatMinusToBulletedList,
+
+        // slash
+        slashCommand,
       ],
     );
   }

@@ -1,6 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// `*` or `-`  -> bulleted-list
+/// Convert '* ' to bulleted list
+///
+/// - support
+///   - desktop
+///   - mobile
+///   - web
+///
 CharacterShortcutEvent formatAsteriskToBulletedList = CharacterShortcutEvent(
   key: 'format asterisk to bulleted list',
   character: ' ',
@@ -8,6 +14,13 @@ CharacterShortcutEvent formatAsteriskToBulletedList = CharacterShortcutEvent(
       await _formatSymbolToBulletedList(editorState, '*'),
 );
 
+/// Convert '- ' to bulleted list
+///
+/// - support
+///   - desktop
+///   - mobile
+///   - web
+///
 CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
   key: 'format minus to bulleted list',
   character: ' ',
@@ -15,6 +28,10 @@ CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
       await _formatSymbolToBulletedList(editorState, '-'),
 );
 
+// This function formats a symbol in the selection to a bulleted list.
+// If the selection is not collapsed, it returns false.
+// If the selection is collapsed and the text is not the symbol, it returns false.
+// If the selection is collapsed and the text is the symbol, it will format the current node to a bulleted list.
 Future<bool> _formatSymbolToBulletedList(
   EditorState editorState,
   String symbol,
@@ -22,7 +39,7 @@ Future<bool> _formatSymbolToBulletedList(
   assert(symbol.length == 1);
 
   final selection = editorState.selection;
-  if (selection == null) {
+  if (selection == null || !selection.isCollapsed) {
     return false;
   }
 
