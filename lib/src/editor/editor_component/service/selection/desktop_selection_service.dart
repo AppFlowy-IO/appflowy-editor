@@ -59,6 +59,7 @@ class _DesktopSelectionServiceWidgetState
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+    editorState.selectionNotifier.addListener(_updateSelection);
   }
 
   @override
@@ -79,6 +80,7 @@ class _DesktopSelectionServiceWidgetState
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
+    editorState.selectionNotifier.removeListener(_updateSelection);
 
     super.dispose();
   }
@@ -124,7 +126,7 @@ class _DesktopSelectionServiceWidgetState
   @override
   void updateSelection(Selection? selection) {
     selectionRects.clear();
-    clearSelection();
+    _clearSelection();
 
     if (selection != null) {
       if (selection.isCollapsed) {
@@ -140,6 +142,30 @@ class _DesktopSelectionServiceWidgetState
 
     currentSelection.value = selection;
     editorState.updateCursorSelection(selection, CursorUpdateReason.uiEvent);
+    editorState.selection = selection;
+  }
+
+  void _updateSelection() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      selectionRects.clear();
+      _clearSelection();
+
+      final selection = editorState.selection;
+
+      if (selection != null) {
+        if (selection.isCollapsed) {
+          // updates cursor area.
+          Log.selection.debug('update cursor area, $selection');
+          _updateCursorAreas(selection.start);
+        } else {
+          // updates selection area.
+          Log.selection.debug('update cursor area, $selection');
+          _updateSelectionAreas(selection);
+        }
+      }
+
+      currentSelection.value = selection;
+    });
   }
 
   @override
@@ -147,6 +173,10 @@ class _DesktopSelectionServiceWidgetState
     currentSelectedNodes = [];
     currentSelection.value = null;
 
+    _clearSelection();
+  }
+
+  void _clearSelection() {
     clearCursor();
     // clear selection areas
     _selectionAreas
