@@ -246,26 +246,36 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ..insertTextNode(text);
   await editor.startTesting();
 
-  final selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  await editor.updateSelection(Selection.single(path: [0], startOffset: 7));
+
+  // Do not trigger link menu without a selection
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: !Platform.isMacOS,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(find.byType(ToolbarWidget), findsNothing);
+
+  final selection = Selection.single(
+    path: [1],
+    startOffset: 0,
+    endOffset: text.length,
+  );
+
   await editor.updateSelection(selection);
 
   // show toolbar
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
   expect(find.byType(ToolbarWidget), findsOneWidget);
 
-  // trigger the link menu
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  // Trigger link overlay
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: !Platform.isMacOS,
+    isMetaPressed: Platform.isMacOS,
+  );
+
   expect(find.byType(LinkMenu), findsOneWidget);
 
   await tester.enterText(find.byType(TextField), link);
