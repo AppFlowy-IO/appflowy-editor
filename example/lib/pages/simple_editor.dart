@@ -63,6 +63,7 @@ class SimpleEditor extends StatelessWidget {
         'quote': QuoteBlockComponentBuilder(),
       },
       characterShortcutEvents: [
+        // '\n'
         insertNewLine,
 
         // bulleted list
@@ -71,6 +72,10 @@ class SimpleEditor extends StatelessWidget {
 
         // slash
         slashCommand,
+      ],
+      commandShortcutEvents: [
+        // backspace
+        backspaceCommand,
       ],
     );
   }

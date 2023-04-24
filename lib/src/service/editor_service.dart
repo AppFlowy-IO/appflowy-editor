@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/editor/editor_entry.dart';
 import 'package:appflowy_editor/src/render/image/image_node_builder.dart';
@@ -31,6 +30,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.customBuilders = const {},
     this.shortcutEvents = const [],
     this.characterShortcutEvents = const [],
+    this.commandShortcutEvents = const [],
     this.selectionMenuItems = const [],
     this.toolbarItems = const [],
     this.editable = true,
@@ -60,6 +60,9 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Character event handlers
   final List<CharacterShortcutEvent> characterShortcutEvents;
+
+  // Command event handlers
+  final List<CommandShortcutEvent> commandShortcutEvents;
 
   final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
@@ -177,6 +180,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
                 editorState: editorState,
                 editable: widget.editable,
                 child: KeyboardServiceWidget(
+                  characterShortcutEvents: widget.characterShortcutEvents,
+                  commandShortcutEvents: widget.commandShortcutEvents,
                   child: AppFlowyInput(
                     key: editorState.service.inputServiceKey,
                     editorState: editorState,
