@@ -85,11 +85,6 @@ class ShortcutEvent {
     }
     var matched = false;
     if (kIsWeb) {
-      debugPrint("REACHED ONE!");
-      debugPrint("REACHED ONE!!");
-      debugPrint("REACHED ONE!!!");
-      debugPrint("REACHED ONE!!!!");
-      debugPrint("REACHED ONE!!!!!");
       // We shouldn't continue to run the below `else if` code in Web platform, it will throw an `_operatingSystem` exception.
       if (command != null && command.isNotEmpty) {
         this.command = command;
