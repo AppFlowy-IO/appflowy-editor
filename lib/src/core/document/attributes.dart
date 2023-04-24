@@ -1,7 +1,13 @@
+import 'package:flutter/foundation.dart';
+
 /// Attributes is used to describe the Node's information.
 ///
 /// Please note: The keywords in [BuiltInAttributeKey] are reserved.
 typedef Attributes = Map<String, dynamic>;
+
+bool isAttributesEqual(Attributes? a, Attributes? b) {
+  return mapEquals(a, b);
+}
 
 Attributes? composeAttributes(
   Attributes? base,
