@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/arrow_keys_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/backspace_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
+import 'package:appflowy_editor/src/service/internal_key_event_handlers/cursor_left_delete_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/enter_without_shift_in_text_node_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/exit_editing_mode_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart';
