@@ -364,8 +364,7 @@ bool _allSatisfy(
       );
 }
 
-OverlayEntry? _linkMenuOverlay;
-OverlayEntry? _colorMenuOverlay;
+OverlayEntry? _overlay;
 
 EditorState? _editorState;
 bool _changeSelectionInner = false;
@@ -387,7 +386,7 @@ void showLinkMenu(
       editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
   matchRect = matchRect.shift(-baseOffset);
 
-  _dismissLinkMenu();
+  _dismissOverlay();
   _editorState = editorState;
 
   // Since the link menu will only show in single text selection,
@@ -410,7 +409,7 @@ void showLinkMenu(
     );
   }
 
-  _linkMenuOverlay = OverlayEntry(
+  _overlay = OverlayEntry(
     builder: (context) {
       return Positioned(
         top: matchRect.bottom + 5.0,
@@ -428,11 +427,11 @@ void showLinkMenu(
                 textNode: textNode,
               );
 
-              _dismissLinkMenu();
+              _dismissOverlay();
             },
             onCopyLink: () {
               AppFlowyClipboard.setData(text: linkText);
-              _dismissLinkMenu();
+              _dismissOverlay();
             },
             onRemoveLink: () {
               final transaction = editorState.transaction
@@ -443,7 +442,7 @@ void showLinkMenu(
                   {BuiltInAttributeKey.href: null},
                 );
               editorState.apply(transaction);
-              _dismissLinkMenu();
+              _dismissOverlay();
             },
             onFocusChange: (value) {
               if (value && customSelection != null) {
@@ -457,15 +456,15 @@ void showLinkMenu(
       );
     },
   );
-  Overlay.of(context)?.insert(_linkMenuOverlay!);
+  Overlay.of(context)?.insert(_overlay!);
 
   editorState.service.scrollService?.disable();
   editorState.service.keyboardService?.disable();
   editorState.service.selectionService.currentSelection
-      .addListener(_dismissLinkMenu);
+      .addListener(_dismissOverlay);
 }
 
-void _dismissLinkMenu() {
+void _dismissOverlay() {
   // workaround: SelectionService has been released after hot reload.
   final isSelectionDisposed =
       _editorState?.service.selectionServiceKey.currentState == null;
@@ -479,37 +478,13 @@ void _dismissLinkMenu() {
     _changeSelectionInner = false;
     return;
   }
-  _linkMenuOverlay?.remove();
-  _linkMenuOverlay = null;
+  _overlay?.remove();
+  _overlay = null;
 
   _editorState?.service.scrollService?.enable();
   _editorState?.service.keyboardService?.enable();
   _editorState?.service.selectionService.currentSelection
-      .removeListener(_dismissLinkMenu);
-  _editorState = null;
-}
-
-void _dismissColorMenu() {
-  // workaround: SelectionService has been released after hot reload.
-  final isSelectionDisposed =
-      _editorState?.service.selectionServiceKey.currentState == null;
-  if (isSelectionDisposed) {
-    return;
-  }
-  if (_editorState?.service.selectionService.currentSelection.value == null) {
-    return;
-  }
-  if (_changeSelectionInner) {
-    _changeSelectionInner = false;
-    return;
-  }
-  _colorMenuOverlay?.remove();
-  _colorMenuOverlay = null;
-
-  _editorState?.service.scrollService?.enable();
-  _editorState?.service.keyboardService?.enable();
-  _editorState?.service.selectionService.currentSelection
-      .removeListener(_dismissColorMenu);
+      .removeListener(_dismissOverlay);
   _editorState = null;
 }
 
@@ -531,7 +506,7 @@ void showColorMenu(
       editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
   matchRect = matchRect.shift(-baseOffset);
 
-  _dismissColorMenu();
+  _dismissOverlay();
   _editorState = editorState;
 
   // Since the link menu will only show in single text selection,
@@ -563,7 +538,7 @@ void showColorMenu(
   }
 
   final style = editorState.editorStyle;
-  _colorMenuOverlay = OverlayEntry(
+  _overlay = OverlayEntry(
     builder: (context) {
       return Positioned(
         top: matchRect.bottom + 5.0,
@@ -588,26 +563,26 @@ void showColorMenu(
                 editorState,
                 color,
               );
-              _dismissColorMenu();
+              _dismissOverlay();
             },
             onSubmittedFontColorHex: (color) {
               formatFontColor(
                 editorState,
                 color,
               );
-              _dismissColorMenu();
+              _dismissOverlay();
             },
           ),
         ),
       );
     },
   );
-  Overlay.of(context)?.insert(_colorMenuOverlay!);
+  Overlay.of(context)?.insert(_overlay!);
 
   editorState.service.scrollService?.disable();
   editorState.service.keyboardService?.disable();
   editorState.service.selectionService.currentSelection
-      .addListener(_dismissColorMenu);
+      .addListener(_dismissOverlay);
 }
 
 List<ColorOption> _generateFontColorOptions(EditorState editorState) {
