@@ -4,6 +4,7 @@ import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_pas
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/cursor_left_delete_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/enter_without_shift_in_text_node_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/exit_editing_mode_handler.dart';
+import 'package:appflowy_editor/src/service/internal_key_event_handlers/link_open_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/outdent_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/page_up_down_handler.dart';
@@ -263,6 +264,13 @@ List<ShortcutEvent> builtInShortcutEvents = [
     key: 'enter',
     command: 'enter',
     handler: enterWithoutShiftInTextNodesHandler,
+  ),
+  ShortcutEvent(
+    key: 'open link',
+    command: 'alt+enter',
+    windowsCommand: 'alt+enter',
+    linuxCommand: 'alt+enter',
+    handler: linkOpenHandler,
   ),
   ShortcutEvent(
     key: 'markdown',
