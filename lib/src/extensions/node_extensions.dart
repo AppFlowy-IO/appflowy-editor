@@ -36,6 +36,46 @@ extension NodeExtensions on Node {
     return currentSelectedNodes.length == 1 &&
         currentSelectedNodes.first == this;
   }
+
+  /// Returns the first previous node in the subtree that satisfies the given predicate
+  Node? previousNodeWhere(bool Function(Node element) test) {
+    var previous = this.previous;
+    while (previous != null) {
+      final last = lastNodeWhere(test);
+      if (last != null) {
+        return last;
+      }
+      if (test(previous)) {
+        return previous;
+      }
+      previous = previous.previous;
+    }
+    final parent = this.parent;
+    if (parent != null) {
+      if (test(parent)) {
+        return parent;
+      }
+      return previousNodeWhere(test);
+    }
+    return null;
+  }
+
+  /// Returns the last node in the subtree that satisfies the given predicate
+  Node? lastNodeWhere(bool Function(Node element) test) {
+    final children = this.children.toList().reversed;
+    for (final child in children) {
+      if (child.children.isNotEmpty) {
+        final last = lastNodeWhere(test);
+        if (last != null) {
+          return last;
+        }
+      }
+      if (test(child)) {
+        return child;
+      }
+    }
+    return null;
+  }
 }
 
 extension NodesExtensions<T extends Node> on List<T> {

@@ -46,6 +46,9 @@ class Transaction {
     Iterable<Node> nodes, {
     bool deepCopy = true,
   }) {
+    if (nodes.isEmpty) {
+      return;
+    }
     if (deepCopy) {
       add(InsertOperation(path, nodes.map((e) => e.copyWith())));
     } else {
@@ -196,6 +199,7 @@ extension TextTransaction on Transaction {
     );
   }
 
+  /// Deletes the [length] characters at the given [index].
   void deleteText(
     Node node,
     int index,
