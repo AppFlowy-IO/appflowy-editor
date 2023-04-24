@@ -1,8 +1,26 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 extension PlatformExtension on Platform {
-  static bool get isDesktop =>
-      Platform.isWindows || Platform.isLinux || Platform.isMacOS;
-  static bool get isMobile => Platform.isAndroid || Platform.isIOS;
-  static bool get isNotMobile => !isMobile;
+  static bool get isDesktop {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+  }
+
+  static bool get isMobile {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isAndroid || Platform.isIOS;
+  }
+
+  static bool get isNotMobile {
+    if (kIsWeb) {
+      return false;
+    }
+    return !isMobile;
+  }
 }
