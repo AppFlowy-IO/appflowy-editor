@@ -1,8 +1,12 @@
 import 'dart:io';
 
-import 'package:appflowy_editor/src/service/shortcut_event/keybinding.dart';
-import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+typedef CommandShortcutEventHandler = KeyEventResult Function(
+  EditorState editorState,
+);
 
 /// Defines the implementation of shortcut event based on command.
 class CommandShortcutEvent {
@@ -45,7 +49,7 @@ class CommandShortcutEvent {
   ///
   String command;
 
-  final ShortcutEventHandler handler;
+  final CommandShortcutEventHandler handler;
 
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
@@ -98,10 +102,14 @@ class CommandShortcutEvent {
     }
   }
 
+  bool canRespondToRawKeyEvent(RawKeyEvent event) {
+    return keybindings.containsKeyEvent(event);
+  }
+
   CommandShortcutEvent copyWith({
     String? key,
     String? command,
-    ShortcutEventHandler? handler,
+    CommandShortcutEventHandler? handler,
   }) {
     return CommandShortcutEvent(
       key: key ?? this.key,

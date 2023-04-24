@@ -1,6 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_event.dart';
 import 'package:appflowy_editor/src/editor/util/debounce.dart';
+import 'package:appflowy_editor/src/editor/util/util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'ime/delta_input_impl.dart';
 
@@ -8,9 +12,15 @@ import 'ime/delta_input_impl.dart';
 class KeyboardServiceWidget extends StatefulWidget {
   const KeyboardServiceWidget({
     super.key,
+    this.commandShortcutEvents = const [],
+    this.characterShortcutEvents = const [],
+    this.focusNode,
     required this.child,
   });
 
+  final FocusNode? focusNode;
+  final List<CommandShortcutEvent> commandShortcutEvents;
+  final List<CharacterShortcutEvent> characterShortcutEvents;
   final Widget child;
 
   @override
@@ -18,8 +28,9 @@ class KeyboardServiceWidget extends StatefulWidget {
 }
 
 class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
-  late final TextInputService textInputService;
   late final EditorState editorState;
+  late final TextInputService textInputService;
+  late final FocusNode focusNode;
 
   @override
   void initState() {
@@ -29,23 +40,73 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     editorState.selectionNotifier.addListener(_onSelectionChanged);
 
     textInputService = DeltaTextInputService(
-      onInsert: (insertion) => onInsert(insertion, editorState),
-      onDelete: (deletion) => onDelete(deletion, editorState),
-      onReplace: onReplace,
+      onInsert: (insertion) async => await onInsert(
+        insertion,
+        editorState,
+        widget.characterShortcutEvents,
+      ),
+      onDelete: (deletion) async => await onDelete(
+        deletion,
+        editorState,
+      ),
+      onReplace: (replacement) async => await onReplace(
+        replacement,
+        editorState,
+      ),
       onNonTextUpdate: onNonTextUpdate,
-      onPerformAction: (action) => onPerformAction(action, editorState),
+      onPerformAction: (action) async => await onPerformAction(
+        action,
+        editorState,
+      ),
     );
+
+    focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
+    if (widget.focusNode == null) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.commandShortcutEvents.isNotEmpty) {
+      // the Focus widget is used to handle hardware keyboard.
+      return Focus(
+        focusNode: focusNode,
+        onKey: _onKey,
+        child: widget.child,
+      );
+    }
+    // if there is no command shortcut event, we don't need to handle hardware keyboard.
+    // like in read-only mode.
     return widget.child;
+  }
+
+  /// handle hardware keyboard
+  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
+    if (event is! RawKeyDownEvent) {
+      return KeyEventResult.ignored;
+    }
+
+    for (final shortcutEvent in widget.commandShortcutEvents) {
+      // check if the shortcut event can respond to the raw key event
+      if (shortcutEvent.canRespondToRawKeyEvent(event)) {
+        final result = shortcutEvent.handler(editorState);
+        if (result == KeyEventResult.handled) {
+          return KeyEventResult.handled;
+        } else if (result == KeyEventResult.skipRemainingHandlers) {
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        continue;
+      }
+    }
+
+    return KeyEventResult.ignored;
   }
 
   void _onSelectionChanged() {
@@ -54,6 +115,8 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     if (selection == null) {
       textInputService.close();
     } else {
+      // debounce the attachTextInputService function to avoid
+      // the text input service being attached too frequently.
       Debounce.debounce(
         'attachTextInputService',
         const Duration(milliseconds: 200),
@@ -69,19 +132,26 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     }
   }
 
+  // This function is used to get the current text editing value of the editor
+  // based on the given selection.
   TextEditingValue? _getCurrentTextEditingValue(Selection selection) {
-    final editableNodes =
-        editorState.selectionService.currentSelectedNodes.where(
-      (element) => element.delta != null,
-    );
-    final selection = editorState.selection;
+    // Get all the editable nodes in the selection.
+    final editableNodes = editorState
+        .getNodesInSelection(selection)
+        .where((element) => element.delta != null);
+
+    // Get the composing text range.
     final composingTextRange = textInputService.composingTextRange;
-    if (editableNodes.isNotEmpty && selection != null) {
+    if (editableNodes.isNotEmpty) {
+      // Get the text by concatenating all the editable nodes in the selection.
       var text = editableNodes.fold<String>(
         '',
         (sum, editableNode) => '$sum${editableNode.delta!.toPlainText()}\n',
       );
+
+      // Remove the last '\n'.
       text = text.substring(0, text.length - 1);
+
       return TextEditingValue(
         text: text,
         selection: TextSelection(

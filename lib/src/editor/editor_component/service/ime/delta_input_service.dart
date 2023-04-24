@@ -49,19 +49,19 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     required super.onPerformAction,
   });
 
-  TextInputConnection? textInputConnection;
-
   @override
   TextRange? composingTextRange;
 
   @override
-  bool get attached => textInputConnection?.attached ?? false;
+  bool get attached => _textInputConnection?.attached ?? false;
 
   @override
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
   @override
   TextEditingValue? get currentTextEditingValue => throw UnimplementedError();
+
+  TextInputConnection? _textInputConnection;
 
   @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
@@ -83,8 +83,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void attach(TextEditingValue textEditingValue) {
-    if (textInputConnection == null || textInputConnection!.attached == false) {
-      textInputConnection = TextInput.attach(
+    if (_textInputConnection == null ||
+        _textInputConnection!.attached == false) {
+      _textInputConnection = TextInput.attach(
         this,
         const TextInputConfiguration(
           enableDeltaModel: true,
@@ -96,7 +97,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     }
 
     final formattedValue = textEditingValue.format();
-    textInputConnection!
+    _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
 
@@ -107,8 +108,8 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void close() {
-    textInputConnection?.close();
-    textInputConnection = null;
+    _textInputConnection?.close();
+    _textInputConnection = null;
   }
 
   @override
@@ -123,7 +124,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   // Only support macOS now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
-    textInputConnection
+    _textInputConnection
       ?..setEditableSizeAndTransform(size, transform)
       ..setCaretRect(rect);
   }

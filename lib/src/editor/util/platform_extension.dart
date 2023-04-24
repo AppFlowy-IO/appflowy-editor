@@ -3,6 +3,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 extension PlatformExtension on Platform {
+  static bool get isDesktopOrWeb {
+    if (kIsWeb) {
+      return true;
+    }
+    return isDesktop;
+  }
+
   static bool get isDesktop {
     if (kIsWeb) {
       return false;

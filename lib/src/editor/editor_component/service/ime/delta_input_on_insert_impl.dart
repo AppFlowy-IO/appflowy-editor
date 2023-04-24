@@ -1,32 +1,21 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:flutter/services.dart';
-
-Future<bool> executeCharacterShortcutEvent(
-  EditorState editorState,
-  String character,
-) async {
-  final shortcutEvents = editorState.characterShortcutEvents;
-  for (final shortcutEvent in shortcutEvents) {
-    if (shortcutEvent.character == character &&
-        await shortcutEvent.handler(editorState)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 Future<void> onInsert(
   TextEditingDeltaInsertion insertion,
   EditorState editorState,
+  List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
   Log.input.debug('onInsert: $insertion');
 
   // character events
   final character = insertion.textInserted;
   if (character.length == 1) {
-    final execution = await executeCharacterShortcutEvent(
+    final execution = await _executeCharacterShortcutEvent(
       editorState,
       character,
+      characterShortcutEvents,
     );
     if (execution) {
       return;
@@ -54,4 +43,18 @@ Future<void> onInsert(
   } else {
     throw UnimplementedError();
   }
+}
+
+Future<bool> _executeCharacterShortcutEvent(
+  EditorState editorState,
+  String character,
+  List<CharacterShortcutEvent> characterShortcutEvents,
+) async {
+  for (final shortcutEvent in characterShortcutEvents) {
+    if (shortcutEvent.character == character &&
+        await shortcutEvent.handler(editorState)) {
+      return true;
+    }
+  }
+  return false;
 }
