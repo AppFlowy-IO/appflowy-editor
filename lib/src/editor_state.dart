@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';

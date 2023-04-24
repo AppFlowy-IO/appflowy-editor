@@ -29,7 +29,7 @@ class CharacterShortcutEvent {
 
   @override
   String toString() =>
-      'ShortcutEvent(key: $key, character: $character, handler: $handler)';
+      'CharacterShortcutEvent(key: $key, character: $character, handler: $handler)';
 
   @override
   bool operator ==(Object other) {
