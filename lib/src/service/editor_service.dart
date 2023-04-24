@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/editor/editor_entry.dart';
 import 'package:appflowy_editor/src/render/image/image_node_builder.dart';

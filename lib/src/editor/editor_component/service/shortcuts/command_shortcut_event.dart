@@ -112,7 +112,7 @@ class CommandShortcutEvent {
 
   @override
   String toString() =>
-      'ShortcutEvent(key: $key, command: $command, handler: $handler)';
+      'CommandShortcutEvent(key: $key, command: $command, handler: $handler)';
 
   @override
   bool operator ==(Object other) {

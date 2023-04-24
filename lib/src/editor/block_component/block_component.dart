@@ -14,15 +14,3 @@ export 'numbered_list_block_component/numbered_list_block_component.dart';
 
 // quote
 export 'quote_block_component/quote_block_component.dart';
-
-// input
-export '../editor_component/service/ime/delta_input_service.dart';
-
-// shortcuts, I think I should move this to a separate package.
-export '../editor_component/service/shortcuts/character_shortcut_event.dart';
-export '../editor_component/service/shortcuts/command_shortcut_event.dart';
-
-// service, I think I should move this to a separate package.
-export '../editor_component/service/keyboard_service_widget.dart';
-export '../editor_component/service/scroll_service_widget.dart';
-export '../editor_component/service/selection_service_widget.dart';
