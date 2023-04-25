@@ -29,13 +29,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   AppFlowyScrollService get forward =>
       _forwardKey.currentState as AppFlowyScrollService;
 
-  late ScrollController _scrollController;
+  @override
+  late ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
 
-    _scrollController = widget.scrollController ?? ScrollController();
+    scrollController = widget.scrollController ?? ScrollController();
   }
 
   @override
@@ -45,7 +46,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     if (widget.scrollController != oldWidget.scrollController) {
       if (oldWidget.scrollController == null) {
         // create by self
-        _scrollController.dispose();
+        scrollController.dispose();
       }
     }
   }
@@ -53,7 +54,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   Widget build(BuildContext context) {
     return AutoScrollableWidget(
-      scrollController: _scrollController,
+      scrollController: scrollController,
       builder: ((context, autoScroller) {
         if (kIsWeb ||
             Platform.isLinux ||
@@ -74,7 +75,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return DesktopScrollService(
       key: _forwardKey,
-      scrollController: _scrollController,
+      scrollController: scrollController,
       autoScroller: autoScroller,
       child: widget.child,
     );
@@ -86,7 +87,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return MobileScrollService(
       key: _forwardKey,
-      scrollController: _scrollController,
+      scrollController: scrollController,
       autoScroller: autoScroller,
       child: widget.child,
     );

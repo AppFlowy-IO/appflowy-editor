@@ -143,14 +143,10 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 
   @override
   List<Rect> getRectsInSelection(Selection selection) {
-    assert(
-      selection.isSingle && selection.start.path.equals(widget.node.path),
-    );
-
-    final textSelection = TextSelection(
-      baseOffset: selection.start.offset,
-      extentOffset: selection.end.offset,
-    );
+    final textSelection = textSelectionFromEditorSelection(selection);
+    if (textSelection == null) {
+      return [];
+    }
     final rects = _renderParagraph
         .getBoxesForSelection(textSelection, boxHeightStyle: BoxHeightStyle.max)
         .map((box) => box.toRect())
@@ -341,5 +337,57 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
         });
       };
     return tapGestureRecognizer;
+  }
+
+  TextSelection? textSelectionFromEditorSelection(Selection? selection) {
+    if (selection == null) {
+      return null;
+    }
+
+    final normalized = selection.normalized;
+    final path = widget.node.path;
+    if (path < normalized.start.path || path > normalized.end.path) {
+      return null;
+    }
+
+    final length = widget.node.delta?.length;
+    if (length == null) {
+      return null;
+    }
+
+    TextSelection? textSelection;
+
+    if (normalized.isSingle) {
+      if (path.equals(normalized.start.path)) {
+        if (normalized.isCollapsed) {
+          textSelection = TextSelection.collapsed(
+            offset: normalized.startIndex,
+          );
+        } else {
+          textSelection = TextSelection(
+            baseOffset: normalized.startIndex,
+            extentOffset: normalized.endIndex,
+          );
+        }
+      }
+    } else {
+      if (path.equals(normalized.start.path)) {
+        textSelection = TextSelection(
+          baseOffset: normalized.startIndex,
+          extentOffset: length,
+        );
+      } else if (path.equals(normalized.end.path)) {
+        textSelection = TextSelection(
+          baseOffset: 0,
+          extentOffset: normalized.endIndex,
+        );
+      } else {
+        textSelection = TextSelection(
+          baseOffset: 0,
+          extentOffset: length,
+        );
+      }
+    }
+    return textSelection;
   }
 }

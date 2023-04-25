@@ -137,4 +137,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     // }
     // goBallistic(dyPerSecond);
   }
+
+  @override
+  ScrollController get scrollController => widget.scrollController;
 }
