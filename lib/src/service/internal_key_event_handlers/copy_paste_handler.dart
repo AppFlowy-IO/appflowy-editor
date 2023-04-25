@@ -105,31 +105,61 @@ void _pasteHTML(EditorState editorState, String html) {
 
   if (nodes.isEmpty) {
     return;
-  } else if (nodes.length == 1) {
+  }
+
+  if (nodes.length == 1) {
     final firstNode = nodes[0];
     final nodeAtPath = editorState.document.nodeAtPath(path)!;
     final tb = editorState.transaction;
     final startOffset = selection.start.offset;
+
     if (nodeAtPath.type == "text" && firstNode.type == "text") {
       final textNodeAtPath = nodeAtPath as TextNode;
       final firstTextNode = firstNode as TextNode;
+
       tb.updateText(
         textNodeAtPath,
         (Delta()..retain(startOffset)) + firstTextNode.delta,
       );
-      tb.updateNode(textNodeAtPath, firstTextNode.attributes);
-      tb.afterSelection = (Selection.collapsed(
+
+      if (_isirreconcilableTypes(textNodeAtPath)) {
+        tb.updateNode(textNodeAtPath, textNodeAtPath.attributes);
+      } else {
+        tb.updateNode(textNodeAtPath, firstTextNode.attributes);
+      }
+
+      tb.afterSelection = Selection.collapsed(
         Position(
           path: path,
           offset: startOffset + firstTextNode.delta.length,
         ),
-      ));
+      );
+
       editorState.apply(tb);
+
       return;
     }
   }
 
   _pasteMultipleLinesInText(editorState, path, selection.start.offset, nodes);
+}
+
+/// Used to be able to paste contents of eg. a bulleted list,
+/// quote, number list, etc, without changing the attirbutes
+/// of the target text node.
+bool _isirreconcilableTypes(TextNode to) {
+  final types = [
+    BuiltInAttributeKey.bulletedList,
+    BuiltInAttributeKey.checkbox,
+    BuiltInAttributeKey.numberList,
+    BuiltInAttributeKey.quote,
+  ];
+
+  if (types.contains(to.subtype)) {
+    return true;
+  }
+
+  return false;
 }
 
 void _pasteMultipleLinesInText(
@@ -209,25 +239,25 @@ void _handlePaste(EditorState editorState) async {
   final data = await AppFlowyClipboard.getData();
 
   if (editorState.cursorSelection?.isCollapsed ?? false) {
-    _pastRichClipboard(editorState, data);
+    _pasteRichClipboard(editorState, data);
     return;
   }
 
   _deleteSelectedContent(editorState);
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    _pastRichClipboard(editorState, data);
+    _pasteRichClipboard(editorState, data);
   });
 }
 
-void _pastRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
+void _pasteRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
   if (data.html != null) {
     _pasteHTML(editorState, data.html!);
     return;
   }
+
   if (data.text != null) {
     _handlePastePlainText(editorState, data.text!);
-    return;
   }
 }
 
@@ -245,9 +275,9 @@ void _pasteSingleLine(
         ..retain(beginOffset)
         ..addAll(_lineContentToDelta(line)),
     )
-    ..afterSelection = (Selection.collapsed(
+    ..afterSelection = Selection.collapsed(
       Position(path: selection.end.path, offset: beginOffset + line.length),
-    ));
+    );
   editorState.apply(transaction);
 }
 
