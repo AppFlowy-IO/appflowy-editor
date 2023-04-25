@@ -55,7 +55,14 @@ class SimpleEditor extends StatelessWidget {
       editorState: editorState,
       themeData: themeData,
       autoFocus: editorState.document.isEmpty,
-      customBuilders: {
+      // customBuilders: {
+      //   'paragraph': TextBlockComponentBuilder(),
+      //   'todo_list': TodoListBlockComponentBuilder(),
+      //   'bulleted_list': BulletedListBlockComponentBuilder(),
+      //   'numbered_list': NumberedListBlockComponentBuilder(),
+      //   'quote': QuoteBlockComponentBuilder(),
+      // },
+      blockComponentBuilders: {
         'paragraph': TextBlockComponentBuilder(),
         'todo_list': TodoListBlockComponentBuilder(),
         'bulleted_list': BulletedListBlockComponentBuilder(),

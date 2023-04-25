@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -53,7 +53,11 @@ class EditorState {
   final service = FlowyService();
 
   AppFlowySelectionService get selectionService => service.selectionService;
-  AppFlowyRenderPluginService get renderer => service.renderPluginService;
+  // AppFlowyRenderPluginService get renderer => service.renderPluginService;
+  BlockComponentRendererService get renderer => service.rendererService;
+  set renderer(BlockComponentRendererService value) {
+    service.rendererService = value;
+  }
 
   List<CharacterShortcutEvent> characterShortcutEvents = [];
 

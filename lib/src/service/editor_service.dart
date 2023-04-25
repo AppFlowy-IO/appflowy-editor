@@ -28,6 +28,7 @@ class AppFlowyEditor extends StatefulWidget {
     Key? key,
     required this.editorState,
     this.customBuilders = const {},
+    this.blockComponentBuilders = const {},
     this.shortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.commandShortcutEvents = const [],
@@ -54,6 +55,8 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Render plugins.
   final NodeWidgetBuilders customBuilders;
+
+  final Map<String, BlockComponentBuilder> blockComponentBuilders;
 
   /// Keyboard event handlers.
   final List<ShortcutEvent> shortcutEvents;
@@ -102,7 +105,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.selectionMenuItems = widget.selectionMenuItems;
     editorState.toolbarItems = widget.toolbarItems;
     editorState.themeData = widget.themeData;
-    editorState.service.renderPluginService = _createRenderPlugin();
+    editorState.renderer = _blockComponentRendererService;
     editorState.editable = widget.editable;
     editorState.characterShortcutEvents = widget.characterShortcutEvents;
 
@@ -124,7 +127,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
       editorState.toolbarItems = widget.toolbarItems;
-      editorState.service.renderPluginService = _createRenderPlugin();
+      editorState.renderer = _blockComponentRendererService;
     }
 
     editorState.themeData = widget.themeData;
@@ -198,13 +201,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
                         showDefaultToolbar: widget.showDefaultToolbar,
                         key: editorState.service.toolbarServiceKey,
                         editorState: editorState,
-                        child: editorState.service.renderPluginService
-                            .buildPluginWidget(
-                          NodeWidgetContext(
-                            context: context,
-                            node: editorState.document.root,
-                            editorState: editorState,
-                          ),
+                        child: DocumentComponent(
+                          node: editorState.document.root,
                         ),
                       ),
                     ),
@@ -225,5 +223,10 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           ...widget.customBuilders,
         },
         customActionMenuBuilder: widget.customActionMenuBuilder,
+      );
+
+  BlockComponentRendererService get _blockComponentRendererService =>
+      BlockComponentRenderer(
+        builders: {...widget.blockComponentBuilders},
       );
 }

@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NumberedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
+class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
   });
@@ -11,16 +11,17 @@ class NumberedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   final EdgeInsets padding;
 
   @override
-  Widget build(NodeWidgetContext<Node> context) {
+  Widget build(BlockComponentContext blockComponentContext) {
+    final node = blockComponentContext.node;
     return NumberedListBlockComponentWidget(
-      key: context.node.key,
-      node: context.node,
+      key: node.key,
+      node: node,
       padding: padding,
     );
   }
 
   @override
-  NodeValidator<Node> get nodeValidator => (node) => node.delta != null;
+  bool validate(Node node) => node.delta != null;
 }
 
 class NumberedListBlockComponentWidget extends StatefulWidget {

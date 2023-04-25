@@ -1,8 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_context.dart';
 import 'package:flutter/material.dart';
-
-typedef NodeValidator = bool Function(Node node);
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
 abstract class BlockComponentBuilder {
@@ -13,7 +10,7 @@ abstract class BlockComponentBuilder {
   ///   and the node will be displayed as a PlaceHolder widget.
   bool validate(Node node) => true;
 
-  BlockComponentWidget build(BlockComponentContext blockComponentContext);
+  Widget build(BlockComponentContext blockComponentContext);
 }
 
 abstract class BlockComponentRendererService {
@@ -37,28 +34,56 @@ abstract class BlockComponentRendererService {
   ///
   BlockComponentBuilder? blockComponentBuilder(String type);
 
+  /// Build a widget for the specified [node].
+  ///
+  /// the widget is embedded in a [BlockComponentContainer] widget.
   Widget build(
-    BlockComponentContext blockComponentContext,
+    BuildContext buildContext,
+    Node node,
   );
+
+  List<Widget> buildList(
+    BuildContext buildContext,
+    List<Node> nodes,
+  ) {
+    return nodes
+        .map((node) => build(buildContext, node))
+        .toList(growable: false);
+  }
 }
 
 class BlockComponentRenderer extends BlockComponentRendererService {
+  BlockComponentRenderer({
+    required Map<String, BlockComponentBuilder> builders,
+  }) {
+    registerAll(builders);
+  }
+
   final Map<String, BlockComponentBuilder> _builders = {};
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
-    final node = blockComponentContext.node;
+  Widget build(
+    BuildContext buildContext,
+    Node node,
+  ) {
+    final blockComponentContext = BlockComponentContext(buildContext, node);
     final builder = blockComponentBuilder(node.type);
     if (builder == null) {
       assert(false, 'no builder for node type(${node.type})');
       return _buildPlaceHolderWidget(blockComponentContext);
     }
     if (!builder.validate(node)) {
-      assert(false,
-          'node(${node.type}) is invalid, attributes: ${node.attributes}, children: ${node.children}');
+      assert(
+        false,
+        'node(${node.type}) is invalid, attributes: ${node.attributes}, children: ${node.children}',
+      );
       return _buildPlaceHolderWidget(blockComponentContext);
     }
-    final child = builder.build(blockComponentContext);
+
+    return BlockComponentContainer(
+      node: node,
+      builder: (_) => builder.build(blockComponentContext),
+    );
   }
 
   @override

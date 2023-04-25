@@ -11,7 +11,7 @@ class TodoListBlockKeys {
   static const String checked = 'checked';
 }
 
-class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
+class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
     this.textStyleBuilder,
@@ -28,10 +28,11 @@ class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   final Widget? Function(bool checked)? icon;
 
   @override
-  Widget build(NodeWidgetContext<Node> context) {
+  Widget build(BlockComponentContext blockComponentContext) {
+    final node = blockComponentContext.node;
     return TodoListBlockComponentWidget(
-      key: context.node.key,
-      node: context.node,
+      key: node.key,
+      node: node,
       padding: padding,
       textStyleBuilder: textStyleBuilder,
       icon: icon,
@@ -39,11 +40,9 @@ class TodoListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   }
 
   @override
-  NodeValidator<Node> get nodeValidator => (node) =>
-      node.delta != null &&
-      node.attributes.containsKey(
-        TodoListBlockKeys.checked,
-      );
+  bool validate(Node node) {
+    return node.delta != null;
+  }
 }
 
 class TodoListBlockComponentWidget extends StatefulWidget {
