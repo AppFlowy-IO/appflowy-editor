@@ -27,6 +27,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final Color? selectionMenuItemSelectedColor;
   final Color? toolbarColor;
   final double toolbarElevation;
+  final double toolbarIconSize;
+  final double? toolbarIteeHeight;
+  final double? toolbarItemWidth;
 
   // Text styles
   final EdgeInsets? textPadding;
@@ -60,6 +63,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.selectionMenuItemSelectedColor,
     required this.toolbarColor,
     required this.toolbarElevation,
+    required this.toolbarIconSize,
+    required this.toolbarIteeHeight,
+    required this.toolbarItemWidth,
     required this.textPadding,
     required this.textStyle,
     required this.placeholderTextStyle,
@@ -89,6 +95,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? selectionMenuItemSelectedColor,
     Color? toolbarColor,
     double? toolbarElevation,
+    double? toolbarIconSize,
+    double? toolbarIteeHeight,
+    double? toolbarItemWidth,
     TextStyle? textStyle,
     TextStyle? placeholderTextStyle,
     TextStyle? bold,
@@ -121,6 +130,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
           selectionMenuItemSelectedColor ?? this.selectionMenuItemSelectedColor,
       toolbarColor: toolbarColor ?? this.toolbarColor,
       toolbarElevation: toolbarElevation ?? this.toolbarElevation,
+      toolbarIconSize: toolbarIconSize ?? this.toolbarIconSize,
+      toolbarIteeHeight: toolbarIteeHeight ?? this.toolbarIteeHeight,
+      toolbarItemWidth: toolbarItemWidth ?? this.toolbarItemWidth,
       textPadding: textPadding ?? textPadding,
       textStyle: textStyle ?? this.textStyle,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
@@ -183,6 +195,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       ),
       toolbarColor: Color.lerp(toolbarColor, other.toolbarColor, t),
       toolbarElevation: toolbarElevation,
+      toolbarIconSize: toolbarIconSize,
+      toolbarIteeHeight: toolbarIteeHeight,
+      toolbarItemWidth: toolbarItemWidth,
       textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
       placeholderTextStyle:
           TextStyle.lerp(placeholderTextStyle, other.placeholderTextStyle, t),
@@ -219,6 +234,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     selectionMenuItemSelectedColor: const Color(0xFFE0F8FF),
     toolbarColor: const Color(0xFF333333),
     toolbarElevation: 0.0,
+    toolbarIconSize: 28,
+    toolbarIteeHeight: 28,
+    toolbarItemWidth: 28,
     textPadding: const EdgeInsets.symmetric(vertical: 8.0),
     textStyle: const TextStyle(fontSize: 16.0, color: Colors.black),
     placeholderTextStyle: const TextStyle(fontSize: 16.0, color: Colors.grey),
