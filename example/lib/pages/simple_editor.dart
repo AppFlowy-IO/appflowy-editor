@@ -69,6 +69,7 @@ class SimpleEditor extends StatelessWidget {
       //   'quote': QuoteBlockComponentBuilder(),
       // },
       blockComponentBuilders: {
+        'document': DocumentComponentBuilder(),
         'paragraph': TextBlockComponentBuilder(),
         'todo_list': TodoListBlockComponentBuilder(),
         'bulleted_list': BulletedListBlockComponentBuilder(),

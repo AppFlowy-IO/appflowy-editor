@@ -2,15 +2,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// class DocumentComponentBuilder extends BlockComponentBuilder {
-//   @override
-//   Widget build(BlockComponentContext blockComponentContext) {
-//     return DocumentComponent(
-//       key: blockComponentContext.node.key,
-//       node: blockComponentContext.node,
-//     );
-//   }
-// }
+class DocumentComponentBuilder extends BlockComponentBuilder {
+  @override
+  Widget build(BlockComponentContext blockComponentContext) {
+    return DocumentComponent(
+      key: blockComponentContext.node.key,
+      node: blockComponentContext.node,
+    );
+  }
+}
 
 class DocumentComponent extends StatelessWidget {
   const DocumentComponent({
