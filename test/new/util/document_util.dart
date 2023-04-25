@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-typedef DeltaBuilder = Delta Function(int index);
+import 'util.dart';
+
 typedef NodeDecorator = void Function(int index, Node node);
 
 extension DocumentExtension on Document {

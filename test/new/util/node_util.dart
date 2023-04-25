@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-typedef DeltaBuilder = Delta Function(int index);
+import 'delta_builder_util.dart';
 
 extension NodeExtension on Node {
   void appendParagraphs(
