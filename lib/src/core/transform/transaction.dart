@@ -60,6 +60,19 @@ class Transaction {
   ///
   /// The [attributes] will be merged into the existing attributes.
   void updateNode(Node node, Attributes attributes) {
+    // workaround for the delta update
+    {
+      if (attributes.containsKey('delta')) {
+        final previous = node.delta;
+        final now = attributes['delta'] as Delta;
+        if (previous != null) {
+          attributes['delta'] = previous.compose(now).toJson();
+        } else {
+          attributes['delta'] = now.toJson();
+        }
+      }
+    }
+
     final inverted = invertAttributes(node.attributes, attributes);
     add(
       UpdateOperation(
@@ -182,16 +195,12 @@ extension TextTransaction on Transaction {
 
     final newAttributes = attributes ?? delta.sliceAttributes(index);
 
-    final composed = delta
-        .compose(
-          Delta()
-            ..retain(index)
-            ..insert(text, attributes: newAttributes),
-        )
-        .toJson();
+    final insert = Delta()
+      ..retain(index)
+      ..insert(text, attributes: newAttributes);
 
     updateNode(node, {
-      'delta': composed,
+      'delta': insert,
     });
 
     afterSelection = Selection.collapsed(
@@ -216,16 +225,12 @@ extension TextTransaction on Transaction {
       'The index($index) or length($length) is out of range or negative.',
     );
 
-    final composed = delta
-        .compose(
-          Delta()
-            ..retain(index)
-            ..delete(length),
-        )
-        .toJson();
+    final delete = Delta()
+      ..retain(index)
+      ..delete(length);
 
     updateNode(node, {
-      'delta': composed,
+      'delta': delete,
     });
 
     afterSelection = Selection.collapsed(
@@ -248,17 +253,13 @@ extension TextTransaction on Transaction {
     final rightLength = rightDelta.length;
     leftOffset ??= leftLength;
 
-    final composed = leftDelta
-        .compose(
-          Delta()
-            ..retain(leftOffset)
-            ..delete(leftLength - leftOffset)
-            ..addAll(rightDelta.slice(rightOffset, rightLength)),
-        )
-        .toJson();
+    final merge = Delta()
+      ..retain(leftOffset)
+      ..delete(leftLength - leftOffset)
+      ..addAll(rightDelta.slice(rightOffset, rightLength));
 
     updateNode(left, {
-      'delta': composed,
+      'delta': merge,
     });
 
     afterSelection = Selection.collapsed(
@@ -267,6 +268,26 @@ extension TextTransaction on Transaction {
         offset: leftOffset,
       ),
     );
+  }
+
+  void formatText(
+    Node node,
+    int index,
+    int length,
+    Attributes attributes,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      return;
+    }
+    afterSelection = beforeSelection;
+    final format = Delta()
+      ..retain(index)
+      ..retain(length, attributes: attributes);
+
+    updateNode(node, {
+      'delta': format,
+    });
   }
 
   void splitText(TextNode textNode, int offset) {
@@ -319,20 +340,20 @@ extension TextTransaction on Transaction {
   // }
 
   /// Assigns a formatting attributes to a range of text.
-  void formatText(
-    TextNode textNode,
-    int index,
-    int length,
-    Attributes attributes,
-  ) {
-    afterSelection = beforeSelection;
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..retain(length, attributes: attributes),
-    );
-  }
+  // void formatText(
+  //   TextNode textNode,
+  //   int index,
+  //   int length,
+  //   Attributes attributes,
+  // ) {
+  //   afterSelection = beforeSelection;
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..retain(length, attributes: attributes),
+  //   );
+  // }
 
   // /// Deletes the text of specified length starting at index.
   // void deleteText(

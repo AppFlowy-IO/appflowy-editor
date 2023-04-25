@@ -86,6 +86,9 @@ class SimpleEditor extends StatelessWidget {
 
         // slash
         slashCommand,
+
+        // format italic, _italic_
+        formatUnderscoreToItalic,
       ],
       commandShortcutEvents: [
         // backspace
