@@ -201,8 +201,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
                         showDefaultToolbar: widget.showDefaultToolbar,
                         key: editorState.service.toolbarServiceKey,
                         editorState: editorState,
-                        child: DocumentComponent(
-                          node: editorState.document.root,
+                        child: editorState.renderer.build(
+                          context,
+                          editorState.document.root,
                         ),
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-import 'util.dart';
+import 'delta_builder_util.dart';
 
 typedef NodeDecorator = void Function(int index, Node node);
 
