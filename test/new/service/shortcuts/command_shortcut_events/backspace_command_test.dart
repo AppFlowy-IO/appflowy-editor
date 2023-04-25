@@ -122,7 +122,7 @@ void main() async {
         // Welcome to AppFlowy Editor 🔥!
         // |Welcome to AppFlowy Editor 🔥!
         final selection = Selection.collapsed(
-          Position(path: [0, 1], offset: 0),
+          Position(path: [0, 0], offset: 0),
         );
         editorState.selection = selection;
 
