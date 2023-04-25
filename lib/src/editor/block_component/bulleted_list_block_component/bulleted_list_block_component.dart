@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/widget
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BulletedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
+class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   BulletedListBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
   });
@@ -12,16 +12,17 @@ class BulletedListBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   final EdgeInsets padding;
 
   @override
-  Widget build(NodeWidgetContext<Node> context) {
+  Widget build(BlockComponentContext blockComponentContext) {
+    final node = blockComponentContext.node;
     return BulletedListBlockComponentWidget(
-      key: context.node.key,
-      node: context.node,
+      key: node.key,
+      node: node,
       padding: padding,
     );
   }
 
   @override
-  NodeValidator<Node> get nodeValidator => (node) => node.delta != null;
+  bool validate(Node node) => node.delta != null;
 }
 
 class BulletedListBlockComponentWidget extends StatefulWidget {
@@ -58,11 +59,12 @@ class _BulletedListBlockComponentWidgetState
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
     return NestedListWidget(
-      children: editorState.renderer.buildPluginWidgets(
-        context,
-        widget.node.children.toList(growable: false),
-        editorState,
-      ),
+      children: editorState.renderer
+          .buildList(
+            context,
+            widget.node.children.toList(growable: false),
+          )
+          .toList(),
       child: buildBulletListBlockComponent(context),
     );
   }

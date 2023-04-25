@@ -1,39 +1,74 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_context.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-typedef NodeValidator = bool Function(Node node);
-typedef OnNodeChanged = void Function(Node node);
-
-/// BlockComponentBuilder is used to build a BlockComponentWidget.
-abstract class BlockComponentBuilder {
-  /// validate the node.
-  ///
-  /// return true if the node is valid.
-  /// return false if the node is invalid,
-  ///   and the node will be displayed as a PlaceHolder widget.
-  bool validate(Node node);
-
-  Widget build(BlockComponentContext blockComponentContext);
-}
-
-class BlockComponentContainer extends StatelessWidget {
+/// BlockComponentContainer is a wrapper of block component
+///
+/// 1. used to update the child widget when node is changed
+/// 2. used to show block component actions
+/// 3. used to add the layer link to the child widget
+class BlockComponentContainer extends StatefulWidget {
   const BlockComponentContainer({
     super.key,
+    this.showBlockComponentActions = false,
     required this.node,
-    required this.child,
+    required this.builder,
   });
 
+  /// show block component actions or not
+  ///
+  /// + and option button
+  final bool showBlockComponentActions;
   final Node node;
-  final Widget child;
+  final WidgetBuilder builder;
+
+  @override
+  State<BlockComponentContainer> createState() =>
+      _BlockComponentContainerState();
+}
+
+class _BlockComponentContainerState extends State<BlockComponentContainer> {
+  bool showActions = false;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        Icon(Icons.add),
-        // Icon(Icons),
-      ],
+    final child = ChangeNotifierProvider<Node>.value(
+      value: widget.node,
+      child: Consumer<Node>(
+        builder: (_, __, ___) {
+          Log.editor.debug('node is rebuilding...: type: ${widget.node.type} ');
+          return CompositedTransformTarget(
+            link: widget.node.layerLink,
+            child: widget.builder(context),
+          );
+        },
+      ),
+    );
+
+    if (!widget.showBlockComponentActions) {
+      return child;
+    }
+
+    return MouseRegion(
+      onEnter: (_) => setState(() {
+        showActions = true;
+      }),
+      onExit: (_) => setState(() {
+        showActions = false;
+      }),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BlockComponentActionContainer(
+            node: widget.node,
+            showActions: showActions,
+          ),
+          child,
+        ],
+      ),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TextBlockComponentBuilder extends NodeWidgetBuilder<Node> {
+class TextBlockComponentBuilder extends BlockComponentBuilder {
   TextBlockComponentBuilder({
     this.padding = const EdgeInsets.all(0.0),
     this.textStyle = const TextStyle(),
@@ -12,17 +12,20 @@ class TextBlockComponentBuilder extends NodeWidgetBuilder<Node> {
   final TextStyle textStyle;
 
   @override
-  Widget build(NodeWidgetContext<Node> context) {
+  Widget build(BlockComponentContext blockComponentContext) {
+    final node = blockComponentContext.node;
     return TextBlockComponentWidget(
-      key: context.node.key,
-      node: context.node,
+      node: node,
+      key: node.key,
       padding: padding,
       textStyle: textStyle,
     );
   }
 
   @override
-  NodeValidator<Node> get nodeValidator => (node) => node.delta != null;
+  bool validate(Node node) {
+    return node.delta != null;
+  }
 }
 
 class TextBlockComponentWidget extends StatefulWidget {

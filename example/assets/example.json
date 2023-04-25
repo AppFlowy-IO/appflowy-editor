@@ -1,6 +1,6 @@
 {
   "document": {
-    "type": "editor",
+    "type": "document",
     "children": [
       {
         "type": "paragraph",
@@ -233,7 +233,7 @@
           ]
         }
       },
-      { "type": "text", "delta": [] },
+      { "type": "paragraph", "attributes": { "delta": [] } },
       {
         "type": "quote",
         "attributes": {

@@ -40,20 +40,7 @@ mixin BuiltInTextWidgetMixin<T extends BuiltInTextWidget> on State<T>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: widget.textNode.children
                     .map(
-                      (child) => widget.editorState.service.renderPluginService
-                          .buildPluginWidget(
-                        child is TextNode
-                            ? NodeWidgetContext<TextNode>(
-                                context: context,
-                                node: child,
-                                editorState: widget.editorState,
-                              )
-                            : NodeWidgetContext<Node>(
-                                context: context,
-                                node: child,
-                                editorState: widget.editorState,
-                              ),
-                      ),
+                      (child) => const SizedBox(),
                     )
                     .toList(),
               ),
