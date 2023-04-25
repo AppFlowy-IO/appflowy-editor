@@ -27,6 +27,9 @@ abstract class AppFlowyScrollService implements AutoScrollerService {
   /// Returns the minimum scroll height on the vertical axis.
   double get minScrollExtent;
 
+  /// scroll controller
+  ScrollController get scrollController;
+
   /// Scrolls to the specified position.
   ///
   /// This function will filter illegal values.

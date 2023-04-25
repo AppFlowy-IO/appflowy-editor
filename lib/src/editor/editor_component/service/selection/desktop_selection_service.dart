@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/util/debounce.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
@@ -125,6 +124,10 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   void updateSelection(Selection? selection) {
+    if (currentSelection.value == selection) {
+      return;
+    }
+
     selectionRects.clear();
     _clearSelection();
 
@@ -141,16 +144,18 @@ class _DesktopSelectionServiceWidgetState
     }
 
     currentSelection.value = selection;
-    editorState.updateCursorSelection(selection, CursorUpdateReason.uiEvent);
     editorState.selection = selection;
   }
 
   void _updateSelection() {
+    final selection = editorState.selection;
+    if (currentSelection.value == selection) {
+      return;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       selectionRects.clear();
       _clearSelection();
-
-      final selection = editorState.selection;
 
       if (selection != null) {
         if (selection.isCollapsed) {
@@ -309,7 +314,7 @@ class _DesktopSelectionServiceWidgetState
 
     // compute the selection in range.
     if (first != null && last != null) {
-      Log.selection.debug('first = $first, last = $last');
+      // Log.selection.debug('first = $first, last = $last');
       final start =
           first.getSelectionInRange(panStartOffset, panEndOffset).start;
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;

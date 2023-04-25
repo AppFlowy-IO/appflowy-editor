@@ -97,4 +97,7 @@ class _MobileScrollServiceState extends State<MobileScrollService>
       position.goBallistic(velocity);
     }
   }
+
+  @override
+  ScrollController get scrollController => widget.scrollController;
 }

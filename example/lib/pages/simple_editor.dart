@@ -34,13 +34,19 @@ class SimpleEditor extends StatelessWidget {
             ..handler = debugPrint
             ..level = LogLevel.all;
           onEditorStateChange(editorState);
-          return Column(
-            children: [
-              Expanded(child: _buildEditor(context, editorState)),
-              if (Platform.isIOS || Platform.isAndroid)
-                _buildMobileToolbar(context, editorState),
-            ],
-          );
+          if (PlatformExtension.isDesktopOrWeb) {
+            return FloatingToolbar(
+                editorState: editorState,
+                child: _buildEditor(context, editorState));
+          } else {
+            return Column(
+              children: [
+                Expanded(child: _buildEditor(context, editorState)),
+                if (Platform.isIOS || Platform.isAndroid)
+                  _buildMobileToolbar(context, editorState),
+              ],
+            );
+          }
         } else {
           return const Center(
             child: CircularProgressIndicator(),
