@@ -28,7 +28,7 @@ void main() async {
         final result = await formatAsteriskToBulletedList.execute(editorState);
 
         expect(result, true);
-        final after = editorState.getNodesInSelection(selection).first;
+        final after = editorState.getNodeAtPath([0])!;
         expect(after.delta!.toPlainText(), text);
         expect(after.type, 'bulleted_list');
       });
