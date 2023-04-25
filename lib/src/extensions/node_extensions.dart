@@ -41,7 +41,7 @@ extension NodeExtensions on Node {
   Node? previousNodeWhere(bool Function(Node element) test) {
     var previous = this.previous;
     while (previous != null) {
-      final last = lastNodeWhere(test);
+      final last = previous.lastNodeWhere(test);
       if (last != null) {
         return last;
       }
@@ -55,7 +55,7 @@ extension NodeExtensions on Node {
       if (test(parent)) {
         return parent;
       }
-      return previousNodeWhere(test);
+      return parent.previousNodeWhere(test);
     }
     return null;
   }
@@ -65,7 +65,7 @@ extension NodeExtensions on Node {
     final children = this.children.toList().reversed;
     for (final child in children) {
       if (child.children.isNotEmpty) {
-        final last = lastNodeWhere(test);
+        final last = child.lastNodeWhere(test);
         if (last != null) {
           return last;
         }

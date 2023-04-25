@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/util.dart';
 import 'package:flutter/material.dart';
 
 /// Backspace key event.
@@ -14,6 +15,10 @@ CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
+  if (PlatformExtension.isMobile) {
+    assert(false, 'backspaceCommand is not supported on mobile platform.');
+    return KeyEventResult.ignored;
+  }
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -77,6 +82,9 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
               offset: previousNodeWithDelta.delta!.length,
             ),
           );
+      } else {
+        // do nothing if there is no previous node contains delta.
+        return KeyEventResult.ignored;
       }
     }
   } else {

@@ -10,7 +10,7 @@ import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 /*
 {
   'type': string,
-  'data': Map<String, Object>,
+  'data': Map<String, Object>
   'children': List<Node>,
 }
  */

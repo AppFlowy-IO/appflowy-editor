@@ -106,6 +106,10 @@ class CommandShortcutEvent {
     return keybindings.containsKeyEvent(event);
   }
 
+  KeyEventResult execute(EditorState editorState) {
+    return handler(editorState);
+  }
+
   CommandShortcutEvent copyWith({
     String? key,
     String? command,
