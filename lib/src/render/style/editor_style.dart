@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 import 'package:flutter/material.dart';
 
@@ -191,7 +191,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   }
 
   static final light = EditorStyle(
-    padding: Platform.isAndroid || Platform.isIOS
+    padding: PlatformExtension.isMobile
         ? const EdgeInsets.symmetric(horizontal: 20)
         : const EdgeInsets.symmetric(horizontal: 200),
     backgroundColor: Colors.white,
