@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -160,6 +159,7 @@ class EditorState {
     final completer = Completer<void>();
 
     for (final operation in transaction.operations) {
+      Log.editor.debug('apply op: ${operation.toJson()}');
       _applyOperation(operation);
     }
 
