@@ -411,51 +411,93 @@ void showLinkMenu(
 
   _overlay = OverlayEntry(
     builder: (context) {
-      return Positioned(
-        top: matchRect.bottom + 5.0,
-        left: matchRect.left,
-        child: Material(
-          child: LinkMenu(
-            linkText: linkText,
-            editorState: editorState,
-            onOpenLink: () async {
-              await safeLaunchUrl(linkText);
-            },
-            onSubmitted: (text) async {
-              await editorState.formatLinkInText(
-                text,
-                textNode: textNode,
-              );
+      final size = MediaQuery.of(context).size;
 
-              _dismissOverlay();
-            },
-            onCopyLink: () {
-              AppFlowyClipboard.setData(text: linkText);
-              _dismissOverlay();
-            },
-            onRemoveLink: () {
-              final transaction = editorState.transaction
-                ..formatText(
-                  textNode,
-                  index,
-                  length,
-                  {BuiltInAttributeKey.href: null},
-                );
-              editorState.apply(transaction);
-              _dismissOverlay();
-            },
-            onFocusChange: (value) {
-              if (value && customSelection != null) {
-                _changeSelectionInner = true;
-                editorState.service.selectionService
-                    .updateSelection(customSelection);
-              }
-            },
-          ),
+      final screenWidth = size.width;
+      final screenHeight = size.height;
+
+      final matchRectAtTopRight =
+          matchRect.top <= screenHeight / 2 && matchRect.left > screenWidth / 2;
+      final matchRectAtBottomLeft =
+          matchRect.top > screenHeight / 2 && matchRect.left <= screenWidth / 2;
+      final matchRectAtBottomRight =
+          matchRect.top > screenHeight / 2 && matchRect.left > screenWidth / 2;
+
+      final linkMenu = Material(
+        child: LinkMenu(
+          linkText: linkText,
+          editorState: editorState,
+          onOpenLink: () async {
+            await safeLaunchUrl(linkText);
+          },
+          onSubmitted: (text) async {
+            await editorState.formatLinkInText(
+              text,
+              textNode: textNode,
+            );
+
+            _dismissOverlay();
+          },
+          onCopyLink: () {
+            AppFlowyClipboard.setData(text: linkText);
+            _dismissOverlay();
+          },
+          onRemoveLink: () {
+            final transaction = editorState.transaction
+              ..formatText(
+                textNode,
+                index,
+                length,
+                {BuiltInAttributeKey.href: null},
+              );
+            editorState.apply(transaction);
+            _dismissOverlay();
+          },
+          onFocusChange: (value) {
+            if (value && customSelection != null) {
+              _changeSelectionInner = true;
+              editorState.service.selectionService
+                  .updateSelection(customSelection);
+            }
+          },
         ),
       );
+
+      // Default case (top left quarter)
+      var positioned = Positioned(
+        top: matchRect.bottom + 5.0,
+        left: matchRect.left,
+        child: linkMenu,
+      );
+
+      if (matchRectAtTopRight) {
+        positioned = Positioned(
+          top: matchRect.bottom + 5.0,
+          right: screenWidth - matchRect.right,
+          child: linkMenu,
+        );
+      }
+
+      if (matchRectAtBottomLeft) {
+        positioned = Positioned(
+          bottom: screenHeight - matchRect.top + 5,
+          left: matchRect.left,
+          child: linkMenu,
+        );
+      }
+
+      if (matchRectAtBottomRight) {
+        positioned = Positioned(
+          bottom: screenHeight - matchRect.top + 5,
+          right: screenWidth - matchRect.right,
+          child: linkMenu,
+        );
+      }
+
+      return positioned;
     },
   );
+
   Overlay.of(context)?.insert(_overlay!);
 
   editorState.service.scrollService?.disable();
