@@ -71,11 +71,11 @@ Future<bool> _formatSymbolToBulletedList(
     },
   );
   final transaction = editorState.transaction
-    ..deleteNode(node)
     ..insertNode(
       node.path,
       bulletedListNode,
     )
+    ..deleteNode(node)
     ..afterSelection = afterSelection;
   await editorState.apply(transaction);
   return true;

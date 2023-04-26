@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,6 +8,18 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
+  setUpAll(() {
+    if (kDebugMode) {
+      activateLog();
+    }
+  });
+
+  tearDownAll(() {
+    if (kDebugMode) {
+      deactivateLog();
+    }
+  });
+
   group('backspace_command.dart', () {
     group('backspaceCommand - collapsed selection', () {
       const text = 'Welcome to AppFlowy Editor 🔥!';
