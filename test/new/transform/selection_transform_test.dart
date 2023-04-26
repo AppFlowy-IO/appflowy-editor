@@ -7,7 +7,7 @@ void main() async {
   group('selection_transform.dart', () {
     group('deleteSelection', () {
       test('the selection is collapsed', () async {
-        final document = Document.blank().combineParagraphs(
+        final document = Document.blank().addParagraphs(
           3,
           builder: (index) =>
               Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
@@ -30,7 +30,7 @@ void main() async {
       });
 
       test('the selection is single', () async {
-        final document = Document.blank().combineParagraphs(
+        final document = Document.blank().addParagraphs(
           3,
           builder: (index) =>
               Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
@@ -53,7 +53,7 @@ void main() async {
       });
 
       test('the selection is not single and not collapsed', () async {
-        final document = Document.blank().combineParagraphs(
+        final document = Document.blank().addParagraphs(
           3,
           builder: (index) =>
               Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),

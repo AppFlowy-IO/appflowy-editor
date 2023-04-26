@@ -27,7 +27,6 @@ CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
   } else {
     return _backspaceInNotCollapsedSelection(editorState);
   }
-  return KeyEventResult.ignored;
 };
 
 /// Handle backspace key event when selection is collapsed.
@@ -74,6 +73,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
         transaction
           ..mergeText(previousNodeWithDelta, node)
           ..insertNodes(
+            // insert children to previous node
             previousNodeWithDelta.path.next,
             node.children.toList(),
           )

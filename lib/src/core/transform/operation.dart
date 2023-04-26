@@ -265,9 +265,17 @@ Operation transformOperation(Operation a, Operation b) {
     final newPath = transformPath(a.path, b.path, a.nodes.length);
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
+    if (b is DeleteOperation) {
+      if (a.path.isParentOf(b.path)) {
+        return b.copyWith(path: a.path);
+      } else if (b.path.isParentOf(a.path)) {
+        return a.copyWith(path: b.path);
+      }
+    }
     final newPath = transformPath(a.path, b.path, -1 * a.nodes.length);
     return b.copyWith(path: newPath);
   }
+
   // TODO: transform update and textedit
   return b;
 }
