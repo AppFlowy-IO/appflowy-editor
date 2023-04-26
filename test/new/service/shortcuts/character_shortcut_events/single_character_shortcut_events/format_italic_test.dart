@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../../util/util.dart';
 
 void main() async {
-  group('format the text surrounded by single backquote to code', () {
+  group('format the text surrounded by single underscore to italic', () {
     setUpAll(() {
       if (kDebugMode) {
         activateLog();
@@ -18,14 +18,14 @@ void main() async {
     });
 
     // Before
-    // `AppFlowy|
+    // _AppFlowy|
     // After
-    // [code]AppFlowy
-    test('`AppFlowy` to code AppFlowy', () async {
+    // [italic]AppFlowy
+    test('_AppFlowy_ to italic AppFlowy', () async {
       const text = 'AppFlowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()..insert('`$text'),
+        builder: (index) => Delta()..insert('_$text'),
       );
 
       final editorState = EditorState(document: document);
@@ -36,24 +36,24 @@ void main() async {
       );
       editorState.selection = selection;
       // run targeted CharacterShortcutEvent
-      final result = await formatBackquoteToCode.execute(editorState);
+      final result = await formatUnderscoreToItalic.execute(editorState);
 
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), text);
-      expect(after.delta!.toList()[0].attributes, {'code': true});
+      expect(after.delta!.toList()[0].attributes, {'italic': true});
     });
 
     // Before
-    // App`Flowy|
+    // App_Flowy|
     // After
-    // App[code]Flowy
-    test('App`Flowy` to App[code]Flowy', () async {
+    // App[italic]Flowy
+    test('App_Flowy_ to App[italic]Flowy', () async {
       const text1 = 'App';
       const text2 = 'Flowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()..insert('$text1`$text2'),
+        builder: (index) => Delta()..insert('${text1}_$text2'),
       );
 
       final editorState = EditorState(document: document);
@@ -63,21 +63,21 @@ void main() async {
       );
       editorState.selection = selection;
 
-      final result = await formatBackquoteToCode.execute(editorState);
+      final result = await formatUnderscoreToItalic.execute(editorState);
 
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), '$text1$text2');
       expect(after.delta!.toList()[0].attributes, null);
-      expect(after.delta!.toList()[1].attributes, {'code': true});
+      expect(after.delta!.toList()[1].attributes, {'italic': true});
     });
 
     // Before
-    // AppFlowy`|
+    // AppFlowy_|
     // After
-    // AppFlowy``| (last backquote used to trigger the formatBackquoteToCode)
-    test('`` doule backquote change nothing', () async {
-      const text = 'AppFlowy`';
+    // AppFlowy__| (last underscore used to trigger the formatUnderscoreToItalic)
+    test('__doule underscore change nothing', () async {
+      const text = 'AppFlowy_';
       final document = Document.blank().addParagraphs(
         1,
         builder: (index) => Delta()..insert(text),
@@ -90,7 +90,7 @@ void main() async {
       );
       editorState.selection = selection;
 
-      final result = await formatBackquoteToCode.execute(editorState);
+      final result = await formatUnderscoreToItalic.execute(editorState);
 
       expect(result, false);
       final after = editorState.getNodeAtPath([0])!;
