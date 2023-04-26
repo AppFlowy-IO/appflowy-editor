@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/util/util.dart';
 import 'package:flutter/material.dart';
 
 /// Backspace key event.
@@ -25,10 +24,13 @@ CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
   }
   if (selection.isCollapsed) {
     return _backspaceInCollapsedSelection(editorState);
+  } else {
+    return _backspaceInNotCollapsedSelection(editorState);
   }
   return KeyEventResult.ignored;
 };
 
+/// Handle backspace key event when selection is collapsed.
 CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -98,5 +100,15 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
   }
 
   editorState.apply(transaction);
+  return KeyEventResult.handled;
+};
+
+/// Handle backspace key event when selection is not collapsed.
+CommandShortcutEventHandler _backspaceInNotCollapsedSelection = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || selection.isCollapsed) {
+    return KeyEventResult.ignored;
+  }
+  editorState.deleteSelection(selection);
   return KeyEventResult.handled;
 };

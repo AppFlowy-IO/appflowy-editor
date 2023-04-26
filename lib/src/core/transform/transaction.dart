@@ -23,13 +23,29 @@ class Transaction {
   final Document document;
 
   /// The operations to be applied.
-  final List<Operation> operations = [];
+  final List<Operation> _operations = [];
+  List<Operation> get operations {
+    if (markNeedsComposing) {
+      // compose the delta operations
+      compose();
+      markNeedsComposing = false;
+    }
+    return _operations;
+  }
+
+  set operations(List<Operation> value) {
+    _operations.clear();
+    _operations.addAll(value);
+  }
 
   /// The selection to be applied.
   Selection? afterSelection;
 
   /// The before selection is to be recovered if needed.
   Selection? beforeSelection;
+
+  // mark needs to be composed
+  bool markNeedsComposing = false;
 
   /// Inserts the [Node] at the given [Path].
   void insertNode(
@@ -49,30 +65,18 @@ class Transaction {
     if (nodes.isEmpty) {
       return;
     }
-    if (deepCopy) {
-      add(InsertOperation(path, nodes.map((e) => e.copyWith())));
-    } else {
-      add(InsertOperation(path, nodes));
-    }
+    add(
+      InsertOperation(
+        path,
+        deepCopy ? nodes.map((e) => e.copyWith()) : nodes,
+      ),
+    );
   }
 
   /// Updates the attributes of the [Node].
   ///
   /// The [attributes] will be merged into the existing attributes.
   void updateNode(Node node, Attributes attributes) {
-    // workaround for the delta update
-    {
-      if (attributes.containsKey('delta')) {
-        final previous = node.delta;
-        final now = attributes['delta'] as Delta;
-        if (previous != null) {
-          attributes['delta'] = previous.compose(now).toJson();
-        } else {
-          attributes['delta'] = now.toJson();
-        }
-      }
-    }
-
     final inverted = invertAttributes(node.attributes, attributes);
     add(
       UpdateOperation(
@@ -145,7 +149,7 @@ class Transaction {
   /// Also, this method will transform the path of the operations
   /// to avoid conflicts.
   void add(Operation op, {bool transform = true}) {
-    final Operation? last = operations.isEmpty ? null : operations.last;
+    final Operation? last = _operations.isEmpty ? null : _operations.last;
     if (last != null) {
       if (op is UpdateTextOperation &&
           last is UpdateTextOperation &&
@@ -155,23 +159,29 @@ class Transaction {
           last.delta.compose(op.delta),
           op.inverted.compose(last.inverted),
         );
-        operations[operations.length - 1] = newOp;
+        operations[_operations.length - 1] = newOp;
         return;
       }
     }
     if (transform) {
-      for (var i = 0; i < operations.length; i++) {
-        op = transformOperation(operations[i], op);
+      for (var i = 0; i < _operations.length; i++) {
+        op = transformOperation(_operations[i], op);
       }
     }
     if (op is UpdateTextOperation && op.delta.isEmpty) {
       return;
     }
-    operations.add(op);
+    _operations.add(op);
   }
 }
 
 extension TextTransaction on Transaction {
+  /// We use this map to cache the delta waiting to be composed.
+  ///
+  /// This is for make calling the below function as chained.
+  /// For example, transaction..deleteText(..)..insertText(..);
+  static final Map<Node, List<Delta>> _composeMap = {};
+
   /// Inserts the [text] at the given [index].
   ///
   /// If the [attributes] is null, the attributes of the previous character will be used.
@@ -199,9 +209,7 @@ extension TextTransaction on Transaction {
       ..retain(index)
       ..insert(text, attributes: newAttributes);
 
-    updateNode(node, {
-      'delta': insert,
-    });
+    addDeltaToComposeMap(node, insert);
 
     afterSelection = Selection.collapsed(
       Position(path: node.path, offset: index + text.length),
@@ -229,9 +237,7 @@ extension TextTransaction on Transaction {
       ..retain(index)
       ..delete(length);
 
-    updateNode(node, {
-      'delta': delete,
-    });
+    addDeltaToComposeMap(node, delete);
 
     afterSelection = Selection.collapsed(
       Position(path: node.path, offset: index),
@@ -258,9 +264,7 @@ extension TextTransaction on Transaction {
       ..delete(leftLength - leftOffset)
       ..addAll(rightDelta.slice(rightOffset, rightLength));
 
-    updateNode(left, {
-      'delta': merge,
-    });
+    addDeltaToComposeMap(left, merge);
 
     afterSelection = Selection.collapsed(
       Position(
@@ -285,11 +289,37 @@ extension TextTransaction on Transaction {
       ..retain(index)
       ..retain(length, attributes: attributes);
 
-    updateNode(node, {
-      'delta': format,
-    });
+    addDeltaToComposeMap(node, format);
   }
 
+  /// Compose the delta in the compose map.
+  void compose() {
+    if (_composeMap.isEmpty) {
+      markNeedsComposing = false;
+      return;
+    }
+    for (final entry in _composeMap.entries) {
+      final node = entry.key;
+      if (node.delta == null) {
+        continue;
+      }
+      final deltaQueue = entry.value;
+      final composed =
+          deltaQueue.fold<Delta>(node.delta!, (p, e) => p.compose(e));
+      updateNode(node, {
+        'delta': composed.toJson(),
+      });
+    }
+    markNeedsComposing = false;
+    _composeMap.clear();
+  }
+
+  void addDeltaToComposeMap(Node node, Delta delta) {
+    markNeedsComposing = true;
+    _composeMap.putIfAbsent(node, () => []).add(delta);
+  }
+
+  // the below code is deprecated.
   void splitText(TextNode textNode, int offset) {
     final delta = textNode.delta;
     final second = delta.slice(offset, delta.length);
