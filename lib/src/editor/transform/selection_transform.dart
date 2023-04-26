@@ -66,6 +66,15 @@ extension SelectionTransform on EditorState {
               leftOffset: selection.startIndex,
               rightOffset: selection.endIndex,
             );
+
+            // combine the children of the last node into the first node.
+            if (nodes.last.children.isNotEmpty) {
+              transaction.insertNodes(
+                node.path + [node.children.length],
+                nodes.last.children,
+                deepCopy: true,
+              );
+            }
           }
 
           // Otherwise, we can just delete the selected text.
@@ -88,9 +97,12 @@ extension SelectionTransform on EditorState {
     // After the selection is deleted, we want to move the selection to the
     // beginning of the deleted selection.
     transaction.afterSelection = selection.collapse(atStart: true);
+    Log.editor
+        .debug(transaction.operations.map((e) => e.toString()).toString());
 
     // Apply the transaction.
     await apply(transaction);
+
     return true;
   }
 }

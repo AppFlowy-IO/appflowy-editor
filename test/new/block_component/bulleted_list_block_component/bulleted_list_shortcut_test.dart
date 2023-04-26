@@ -14,7 +14,7 @@ void main() async {
           'mock inputting a ` ` after asterisk which is located at the front of the text',
           () async {
         const text = 'Welcome to AppFlowy Editor 🔥!';
-        final document = Document.blank().combineParagraphs(
+        final document = Document.blank().addParagraphs(
           1,
           builder: (index) => Delta()..insert('*$text'),
         );
@@ -39,7 +39,7 @@ void main() async {
       // *W|elcome to AppFlowy Editor 🔥!
       test('mock inputting a ` ` in the middle of the text', () async {
         const text = 'Welcome to AppFlowy Editor 🔥!';
-        final document = Document.blank().combineParagraphs(
+        final document = Document.blank().addParagraphs(
           1,
           builder: (index) => Delta()..insert('*$text'),
         );

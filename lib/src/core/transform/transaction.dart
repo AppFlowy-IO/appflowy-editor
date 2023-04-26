@@ -1,13 +1,6 @@
 import 'dart:math';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/core/transform/operation.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// A [Transaction] has a list of [Operation] objects that will be applied
 /// to the editor.

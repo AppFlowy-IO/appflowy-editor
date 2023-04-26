@@ -26,7 +26,7 @@ class Document {
   /// Creates a empty document with a single text node.
   factory Document.empty() {
     final root = Node(
-      type: 'editor',
+      type: 'document',
       children: LinkedList<Node>()..add(TextNode.empty()),
     );
     return Document(
@@ -36,7 +36,7 @@ class Document {
 
   factory Document.blank() {
     final root = Node(
-      type: 'editor',
+      type: 'document',
     );
     return Document(
       root: root,

@@ -1,11 +1,7 @@
 import 'dart:collection';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 
 /*
 {
@@ -126,6 +122,8 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final length = children.length;
     index ??= length;
 
+    Log.editor.debug('insert Node $entry at path ${path + [index]}}');
+
     if (children.isEmpty) {
       entry.parent = this;
       children.add(entry);
@@ -165,6 +163,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void unlink() {
+    Log.editor.debug('delete Node $this from path $path }');
     super.unlink();
 
     parent?.notifyListeners();
