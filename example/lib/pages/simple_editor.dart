@@ -88,7 +88,7 @@ class SimpleEditor extends StatelessWidget {
         slashCommand,
 
         // format code, 'code'
-        formatBacktickToCode,
+        formatBackquoteToCode,
 
         // format italic, _italic_ or *italic*
         formatUnderscoreToItalic,

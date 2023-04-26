@@ -1,19 +1,19 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-const _backtick = '`';
+const _backquote = '`';
 
-/// format the text surrounded by single backtick to code
+/// format the text surrounded by single backquote to code
 ///
 /// - support
 ///   - desktop
 ///   - mobile
 ///   - web
 ///
-CharacterShortcutEvent formatBacktickToCode = CharacterShortcutEvent(
-  key: 'format the text surrounded by single backtick to code',
-  character: _backtick,
+CharacterShortcutEvent formatBackquoteToCode = CharacterShortcutEvent(
+  key: 'format the text surrounded by single backquote to code',
+  character: _backquote,
   handler: handleSingleCharacterFormat(
-    char: _backtick,
+    char: _backquote,
     formatStyle: SingleCharacterFormatStyle.code,
   ),
 );
