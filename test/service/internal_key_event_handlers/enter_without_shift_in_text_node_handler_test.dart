@@ -102,12 +102,23 @@ void main() async {
     testWidgets('Presses enter key in bulleted list', (tester) async {
       await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.bulletedList);
     });
+
     testWidgets('Presses enter key in numbered list', (tester) async {
       await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.numberList);
     });
+
     testWidgets('Presses enter key in checkbox styled text', (tester) async {
       await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.checkbox);
     });
+
+    testWidgets('Presses enter key in checkbox list indented', (tester) async {
+      await _testListOutdent(tester, BuiltInAttributeKey.checkbox);
+    });
+
+    testWidgets('Presses enter key in bulleted list indented', (tester) async {
+      await _testListOutdent(tester, BuiltInAttributeKey.bulletedList);
+    });
+
     testWidgets('Presses enter key in quoted text', (tester) async {
       await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.quote);
     });
@@ -201,6 +212,50 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
     );
     expect(editor.nodeAtPath([4])?.subtype, null);
   }
+}
+
+Future<void> _testListOutdent(WidgetTester tester, String style) async {
+  const text = 'Welcome to Appflowy 😁';
+  final Attributes attributes = {
+    BuiltInAttributeKey.subtype: style,
+    style: true,
+  };
+
+  final editor = tester.editor
+    ..insertTextNode(text)
+    ..insertTextNode(text, attributes: attributes)
+    ..insertTextNode('', attributes: attributes);
+
+  await editor.startTesting();
+  await editor.updateSelection(
+    Selection.single(path: [2], startOffset: 0),
+  );
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.tab,
+  );
+  expect(
+    editor.documentSelection,
+    Selection.single(path: [1, 0], startOffset: 0),
+  );
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.enter,
+  );
+  expect(
+    editor.documentSelection,
+    Selection.single(path: [2], startOffset: 0),
+  );
+  expect(editor.nodeAtPath([2])?.subtype, style);
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.enter,
+  );
+  expect(
+    editor.documentSelection,
+    Selection.single(path: [2], startOffset: 0),
+  );
+
+  expect(editor.nodeAtPath([2])?.subtype, null);
 }
 
 Future<void> _testMultipleSelection(
