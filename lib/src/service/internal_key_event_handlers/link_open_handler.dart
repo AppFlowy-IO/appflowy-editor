@@ -23,10 +23,6 @@ ShortcutEventHandler linkOpenHandler = (editorState, event) {
     return KeyEventResult.handled;
   }
 
-  launchUrl(linkText);
+  safeLaunchUrl(linkText);
   return KeyEventResult.handled;
 };
-
-Future<void> launchUrl(String linkText) async {
-  await safeLaunchUrl(linkText);
-}
