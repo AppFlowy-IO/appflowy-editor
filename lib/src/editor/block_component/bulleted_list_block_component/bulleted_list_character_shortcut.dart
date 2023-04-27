@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/markdown_format_helper.dart';
 
 /// Convert '* ' to bulleted list
 ///
@@ -38,45 +39,15 @@ Future<bool> _formatSymbolToBulletedList(
 ) async {
   assert(symbol.length == 1);
 
-  final selection = editorState.selection;
-  if (selection == null || !selection.isCollapsed) {
-    return false;
-  }
-
-  final nodes = editorState.getNodesInSelection(selection);
-  if (nodes.length != 1 || nodes.first.type == 'bulleted_list') {
-    return false;
-  }
-
-  final node = nodes.first;
-  final delta = node.delta;
-  if (delta == null) {
-    return false;
-  }
-  final text = delta.toPlainText().substring(0, selection.end.offset);
-  if (symbol != text) {
-    return false;
-  }
-
-  final afterSelection = Selection.collapsed(
-    Position(
-      path: node.path,
-      offset: 0,
+  return formatMarkdownSymbol(
+    editorState,
+    (node) => node.type != 'bulleted_list',
+    (text, _) => text == symbol,
+    (_, node, delta) => Node(
+      type: 'bulleted_list',
+      attributes: {
+        'delta': delta.compose(Delta()..delete(symbol.length)).toJson(),
+      },
     ),
   );
-  final bulletedListNode = Node(
-    type: 'bulleted_list',
-    attributes: {
-      'delta': delta.compose(Delta()..delete(symbol.length)).toJson(),
-    },
-  );
-  final transaction = editorState.transaction
-    ..insertNode(
-      node.path,
-      bulletedListNode,
-    )
-    ..deleteNode(node)
-    ..afterSelection = afterSelection;
-  await editorState.apply(transaction);
-  return true;
 }

@@ -40,6 +40,10 @@ class Selection {
       : start = position,
         end = position;
 
+  Selection.invalid()
+      : start = Position.invalid(),
+        end = Position.invalid();
+
   final Position start;
   final Position end;
 

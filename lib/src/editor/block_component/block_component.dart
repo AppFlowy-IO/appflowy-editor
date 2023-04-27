@@ -11,6 +11,7 @@ export 'bulleted_list_block_component/bulleted_list_character_shortcut.dart';
 
 // numbered list
 export 'numbered_list_block_component/numbered_list_block_component.dart';
+export 'numbered_list_block_component/numbered_list_character_shortcut.dart';
 
 // quote
 export 'quote_block_component/quote_block_component.dart';
