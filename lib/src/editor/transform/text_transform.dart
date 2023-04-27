@@ -29,6 +29,21 @@ extension TextTransforms on EditorState {
     final transaction = this.transaction;
     final next = position.path.next;
     final children = node.children;
+    final delta = node.delta;
+
+    if (delta != null) {
+      // Delete the text after the cursor in the current node.
+      transaction.deleteText(
+        node,
+        position.offset,
+        delta.length - position.offset,
+      );
+    }
+
+    // Delete the current node's children if it is not empty.
+    if (children.isNotEmpty) {
+      transaction.deleteNodes(children);
+    }
 
     // Insert a new paragraph node.
     transaction.insertNode(
@@ -36,29 +51,14 @@ extension TextTransforms on EditorState {
       Node(
         type: 'paragraph',
         attributes: {
-          'delta': (node.delta == null
-                  ? Delta()
-                  : node.delta!.slice(position.offset))
-              .toJson(),
+          'delta':
+              (delta == null ? Delta() : delta.slice(position.offset)).toJson(),
         },
         children:
             children, // move the current node's children to the new paragraph node if it has any.
       ),
       deepCopy: true,
     );
-
-    if (node.delta != null) {
-      transaction.deleteText(
-        node,
-        position.offset,
-        node.delta!.length - position.offset,
-      );
-    }
-
-    // Delete the current node's children if it is not empty.
-    // if (children != null && children.isNotEmpty) {
-    //   transaction.deleteNodes(children);
-    // }
 
     // Set the selection to be at the beginning of the new paragraph.
     transaction.afterSelection = Selection.collapsed(
