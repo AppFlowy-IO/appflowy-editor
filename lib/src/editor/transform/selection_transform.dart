@@ -1,5 +1,16 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+enum SelectionMoveRange {
+  character,
+  word,
+  line,
+}
+
+enum SelectionMoveDirection {
+  forward,
+  backward,
+}
+
 extension SelectionTransform on EditorState {
   /// Deletes the selection.
   ///
@@ -106,5 +117,110 @@ extension SelectionTransform on EditorState {
     await apply(transaction);
 
     return true;
+  }
+
+  /// move the cursor forward.
+  ///
+  /// TODO: I think we should add move forward function to the SelectableMixin.
+  /// Don't hardcode the logic here.
+  /// For example,
+  ///   final position = node.selectable?.moveForward(selection.startIndex);
+  ///   if (position == null) { ... // move to the previous node}
+  ///   else { ... // move to the position }
+  void moveCursorForward([
+    SelectionMoveRange range = SelectionMoveRange.character,
+  ]) {
+    return moveCursor(SelectionMoveDirection.forward, range);
+  }
+
+  /// move the cursor backward.
+  void moveCursorBackward(SelectionMoveRange range) {
+    return moveCursor(SelectionMoveDirection.backward, range);
+  }
+
+  void moveCursor(
+    SelectionMoveDirection direction, [
+    SelectionMoveRange range = SelectionMoveRange.character,
+  ]) {
+    final selection = this.selection?.normalized;
+    if (selection == null) {
+      return;
+    }
+
+    // If the selection is not collapsed, then we want to collapse the selection
+    if (!selection.isCollapsed) {
+      // move the cursor to the start or end of the selection
+      this.selection = selection.collapse(
+        atStart: direction == SelectionMoveDirection.forward,
+      );
+      return;
+    }
+
+    final node = getNodeAtPath(selection.start.path);
+    if (node == null) {
+      return;
+    }
+    // Originally, I want to make this function as pure as possible,
+    //  but I have to import the selectable here to compute the selection.
+    final start = node.selectable?.start();
+    final end = node.selectable?.end();
+    final offset = direction == SelectionMoveDirection.forward
+        ? selection.startIndex
+        : selection.endIndex;
+
+    // the cursor is at the start of the node
+    // move the cursor to the end of the previous node
+    if (direction == SelectionMoveDirection.forward &&
+        start != null &&
+        start.offset >= offset) {
+      final previousEnd = node
+          .previousNodeWhere((element) => element.selectable != null)
+          ?.selectable
+          ?.end();
+      if (previousEnd != null) {
+        updateSelectionWithReason(
+          Selection.collapsed(previousEnd),
+          reason: SelectionUpdateReason.uiEvent,
+        );
+      }
+      return;
+    }
+    // the cursor is at the end of the node
+    // move the cursor to the start of the next node
+    else if (direction == SelectionMoveDirection.backward &&
+        end != null &&
+        end.offset <= offset) {
+      final nextStart = node.next?.selectable?.start();
+      if (nextStart != null) {
+        updateSelectionWithReason(
+          Selection.collapsed(nextStart),
+          reason: SelectionUpdateReason.uiEvent,
+        );
+      }
+      return;
+    }
+
+    switch (range) {
+      case SelectionMoveRange.character:
+        final delta = node.delta;
+        if (delta != null) {
+          // move the cursor to the left or right by one character
+          updateSelectionWithReason(
+            Selection.collapsed(
+              selection.start.copyWith(
+                offset: direction == SelectionMoveDirection.forward
+                    ? delta.prevRunePosition(offset)
+                    : delta.nextRunePosition(offset),
+              ),
+            ),
+            reason: SelectionUpdateReason.uiEvent,
+          );
+        } else {
+          throw UnimplementedError();
+        }
+        break;
+      default:
+        throw UnimplementedError();
+    }
   }
 }

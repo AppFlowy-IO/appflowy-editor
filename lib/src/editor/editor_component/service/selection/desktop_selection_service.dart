@@ -153,24 +153,25 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      selectionRects.clear();
-      _clearSelection();
+    currentSelection.value = selection;
 
-      if (selection != null) {
-        if (selection.isCollapsed) {
-          // updates cursor area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateCursorAreas(selection.start);
-        } else {
-          // updates selection area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateSelectionAreas(selection);
-        }
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    selectionRects.clear();
+    _clearSelection();
+
+    if (selection != null) {
+      if (selection.isCollapsed) {
+        // updates cursor area.
+        Log.selection.debug('update cursor area, $selection');
+        _updateCursorAreas(selection.start);
+      } else {
+        // updates selection area.
+        Log.selection.debug('update cursor area, $selection');
+        _updateSelectionAreas(selection);
       }
+    }
 
-      currentSelection.value = selection;
-    });
+    // });
   }
 
   @override
@@ -245,8 +246,9 @@ class _DesktopSelectionServiceWidgetState
     if (position == null) {
       return;
     }
-    final selection = Selection.collapsed(position);
-    updateSelection(selection);
+
+    // updateSelection(selection);
+    editorState.selection = Selection.collapsed(position);
 
     _showDebugLayerIfNeeded(offset: details.globalPosition);
   }
