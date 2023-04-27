@@ -48,14 +48,12 @@ extension TextTransforms on EditorState {
     // Insert a new paragraph node.
     transaction.insertNode(
       next,
-      Node(
+      node.copyWith(
         type: 'paragraph',
         attributes: {
           'delta':
               (delta == null ? Delta() : delta.slice(position.offset)).toJson(),
-        },
-        children:
-            children, // move the current node's children to the new paragraph node if it has any.
+        }, // move the current node's children to the new paragraph node if it has any.
       ),
       deepCopy: true,
     );

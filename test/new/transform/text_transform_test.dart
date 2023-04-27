@@ -83,7 +83,7 @@ void main() async {
           editorState.getNodeAtPath([1])?.delta?.toPlainText(),
           text.substring(welcome.length),
         );
-        // expect(editorState.getNodeAtPath([1, 0])?.delta?.toPlainText(), text);
+        expect(editorState.getNodeAtPath([1, 0])?.delta?.toPlainText(), text);
       });
     });
   });
