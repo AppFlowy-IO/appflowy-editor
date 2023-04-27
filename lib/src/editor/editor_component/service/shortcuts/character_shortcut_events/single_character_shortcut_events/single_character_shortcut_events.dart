@@ -7,4 +7,4 @@
 export 'format_code.dart';
 export 'format_italic.dart';
 export 'format_strikethrough.dart';
-export 'single_character_format_handler.dart';
+export 'handle_single_character_format.dart';
