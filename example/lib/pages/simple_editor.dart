@@ -87,6 +87,9 @@ class SimpleEditor extends StatelessWidget {
         // numbered list
         formatNumberToNumberedList,
 
+        // quote
+        formatGreaterToQuote,
+
         // slash
         slashCommand,
 

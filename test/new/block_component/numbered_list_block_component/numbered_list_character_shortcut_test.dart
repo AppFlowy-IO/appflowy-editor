@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../util/util.dart';
+import '../test_character_shortcut.dart';
 
 void main() async {
   setUpAll(() {
@@ -18,6 +19,7 @@ void main() async {
   });
 
   group('formatAsteriskToBulletedList', () {
+    const text = 'Welcome to AppFlowy Editor 🔥!';
     // Before
     // *|Welcome to AppFlowy Editor 🔥!
     // After
@@ -25,50 +27,35 @@ void main() async {
     test(
         'mock inputting a ` ` after asterisk which is located at the front of the text',
         () async {
-      const text = 'Welcome to AppFlowy Editor 🔥!';
-      final document = Document.blank().addParagraphs(
+      testFormatCharacterShortcut(
+        formatAsteriskToBulletedList,
+        '*',
         1,
-        builder: (index) => Delta()..insert('*$text'),
+        (result, before, after) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, 'bulleted_list');
+        },
+        text: text,
       );
-      final editorState = EditorState(document: document);
-
-      // *|Welcome to AppFlowy Editor 🔥!
-      final selection = Selection.collapsed(
-        Position(path: [0], offset: 1),
-      );
-      editorState.selection = selection;
-      final result = await formatAsteriskToBulletedList.execute(editorState);
-
-      expect(result, true);
-      final after = editorState.getNodeAtPath([0])!;
-      expect(after.delta!.toPlainText(), text);
-      expect(after.type, 'bulleted_list');
     });
 
     // Before
     // *W|elcome to AppFlowy Editor 🔥!
     // After
     // *W|elcome to AppFlowy Editor 🔥!
-    test('mock inputting a ` ` in the middle of the text', () async {
-      const text = 'Welcome to AppFlowy Editor 🔥!';
-      final document = Document.blank().addParagraphs(
-        1,
-        builder: (index) => Delta()..insert('*$text'),
+    test('mock inputting a ` ` in the middle of the text - 1', () async {
+      return testFormatCharacterShortcut(
+        formatAsteriskToBulletedList,
+        '*',
+        2,
+        (result, before, after) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
       );
-      final editorState = EditorState(document: document);
-
-      // *W|elcome to AppFlowy Editor 🔥!
-      final selection = Selection.collapsed(
-        Position(path: [0], offset: 2),
-      );
-      editorState.selection = selection;
-      final before = editorState.getNodesInSelection(selection).first;
-      final result = await formatAsteriskToBulletedList.execute(editorState);
-      final after = editorState.getNodesInSelection(selection).first;
-
-      // nothing happens
-      expect(result, false);
-      expect(before.toJson(), after.toJson());
     });
 
     // Before
@@ -77,7 +64,7 @@ void main() async {
     // After
     // Welcome to AppFlowy Editor 🔥!
     //[bulleted_list] Welcome to AppFlowy Editor 🔥!
-    test('mock inputting a ` ` in the middle of the text', () async {
+    test('mock inputting a ` ` in the middle of the text - 2', () async {
       const text = 'Welcome to AppFlowy Editor 🔥!';
       final document = Document.blank()
           .addParagraphs(
