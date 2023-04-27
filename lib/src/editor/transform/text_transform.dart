@@ -8,37 +8,62 @@ extension TextTransforms on EditorState {
   ///
   /// Then it inserts a new paragraph node. After that, it sets the selection to be at the
   /// beginning of the new paragraph.
-  Future<void> insertNewLine(
+  Future<void> insertNewLine({
     Position? position,
-  ) async {
+  }) async {
     // If the position is not passed in, use the current selection.
-    position = position ?? selectionService.currentSelection.value?.start;
+    position = position ?? selection?.start;
 
     // If there is no position, or if the selection is not collapsed, do nothing.
-    if (position == null ||
-        !(selectionService.currentSelection.value?.isCollapsed ?? false)) {
+    if (position == null || !(selection?.isCollapsed ?? false)) {
+      return;
+    }
+
+    final node = getNodeAtPath(position.path);
+
+    if (node == null) {
       return;
     }
 
     // Get the transaction and the path of the next node.
     final transaction = this.transaction;
-    final path = position.path.next;
+    final next = position.path.next;
+    final children = node.children;
 
     // Insert a new paragraph node.
     transaction.insertNode(
-      path,
+      next,
       Node(
         type: 'paragraph',
         attributes: {
-          'delta': Delta().toJson(),
+          'delta': (node.delta == null
+                  ? Delta()
+                  : node.delta!.slice(position.offset))
+              .toJson(),
         },
+        children:
+            children, // move the current node's children to the new paragraph node if it has any.
       ),
+      deepCopy: true,
     );
+
+    if (node.delta != null) {
+      transaction.deleteText(
+        node,
+        position.offset,
+        node.delta!.length - position.offset,
+      );
+    }
+
+    // Delete the current node's children if it is not empty.
+    // if (children != null && children.isNotEmpty) {
+    //   transaction.deleteNodes(children);
+    // }
 
     // Set the selection to be at the beginning of the new paragraph.
     transaction.afterSelection = Selection.collapsed(
       Position(
-        path: path,
+        path: next,
         offset: 0,
       ),
     );
