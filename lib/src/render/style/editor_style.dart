@@ -42,6 +42,10 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final TextStyle? code;
   final String? highlightColorHex;
 
+  // Item's pop up menu styles
+  final Color? popupMenuFGColor;
+  final Color? popupMenuHoverColor;
+
   EditorStyle({
     required this.padding,
     required this.backgroundColor,
@@ -66,6 +70,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.code,
     required this.highlightColorHex,
     required this.lineHeight,
+    required this.popupMenuFGColor,
+    required this.popupMenuHoverColor,
   });
 
   @override
@@ -92,6 +98,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     TextStyle? code,
     String? highlightColorHex,
     double? lineHeight,
+    Color? popupMenuFGColor,
+    Color? popupMenuHoverColor,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -123,6 +131,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       code: code ?? this.code,
       highlightColorHex: highlightColorHex ?? this.highlightColorHex,
       lineHeight: lineHeight ?? this.lineHeight,
+      popupMenuFGColor: popupMenuFGColor ?? this.popupMenuFGColor,
+      popupMenuHoverColor: popupMenuHoverColor ?? this.popupMenuHoverColor,
     );
   }
 
@@ -183,6 +193,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       code: TextStyle.lerp(code, other.code, t),
       highlightColorHex: highlightColorHex,
       lineHeight: lineHeight,
+      popupMenuFGColor: Color.lerp(popupMenuFGColor, other.popupMenuFGColor, t),
+      popupMenuHoverColor:
+          Color.lerp(popupMenuHoverColor, other.popupMenuHoverColor, t),
     );
   }
 
@@ -223,6 +236,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     ),
     highlightColorHex: '0x6000BCF0',
     lineHeight: 1.5,
+    popupMenuFGColor: const Color(0xFF333333),
+    popupMenuHoverColor: const Color(0xFFE0F8FF),
   );
 
   static final dark = light.copyWith(
@@ -240,5 +255,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     selectionMenuItemSelectedColor: const Color(0xFF00BCF0),
     toolbarColor: const Color(0xFF131720),
     toolbarElevation: 0.0,
+    popupMenuFGColor: Colors.white,
+    popupMenuHoverColor: const Color(0xFF00BCF0),
   );
 }

@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 ShortcutEventHandler tabHandler = (editorState, event) {
-  // Only Supports BulletedList For Now.
+  // Only Supports BulletedList and Checkboxes for now.
 
   final selection = editorState.service.selectionService.currentSelection.value;
   final textNodes = editorState.service.selectionService.currentSelectedNodes
@@ -14,17 +14,14 @@ ShortcutEventHandler tabHandler = (editorState, event) {
   final textNode = textNodes.first;
   final previous = textNode.previous;
 
-  if (textNode.subtype != BuiltInAttributeKey.bulletedList &&
-      textNode.subtype != BuiltInAttributeKey.checkbox) {
+  if (textNode.isNotBulletOrCheckbox) {
     final transaction = editorState.transaction
       ..insertText(textNode, selection.end.offset, ' ' * 4);
     editorState.apply(transaction);
     return KeyEventResult.handled;
   }
 
-  if (previous == null ||
-      (previous.subtype != BuiltInAttributeKey.bulletedList &&
-          previous.subtype != BuiltInAttributeKey.checkbox)) {
+  if (previous == null || textNode.isNotBulletOrCheckbox) {
     return KeyEventResult.ignored;
   }
 

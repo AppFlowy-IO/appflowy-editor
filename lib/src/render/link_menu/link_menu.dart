@@ -77,19 +77,19 @@ class _LinkMenuState extends State<LinkMenu> {
               if (widget.linkText != null) ...[
                 _buildIconButton(
                   iconName: 'link',
-                  color: style?.selectionMenuItemIconColor,
+                  color: style?.popupMenuFGColor,
                   text: 'Open link',
                   onPressed: widget.onOpenLink,
                 ),
                 _buildIconButton(
                   iconName: 'copy',
-                  color: style?.selectionMenuItemIconColor,
+                  color: style?.popupMenuFGColor,
                   text: 'Copy link',
                   onPressed: widget.onCopyLink,
                 ),
                 _buildIconButton(
                   iconName: 'delete',
-                  color: style?.selectionMenuItemIconColor,
+                  color: style?.popupMenuFGColor,
                   text: 'Remove link',
                   onPressed: widget.onRemoveLink,
                 ),
@@ -102,11 +102,10 @@ class _LinkMenuState extends State<LinkMenu> {
   }
 
   Widget _buildHeader() {
-    return const Text(
+    return Text(
       'Add your link',
       style: TextStyle(
-        color: Colors.grey,
-        fontWeight: FontWeight.bold,
+        fontSize: style?.textStyle?.fontSize,
       ),
     );
   }
@@ -114,13 +113,17 @@ class _LinkMenuState extends State<LinkMenu> {
   Widget _buildInput() {
     return TextField(
       focusNode: _focusNode,
-      style: const TextStyle(fontSize: 14.0),
+      style: TextStyle(
+        fontSize: style?.textStyle?.fontSize,
+      ),
       textAlign: TextAlign.left,
       controller: _textEditingController,
       onSubmitted: widget.onSubmitted,
       decoration: InputDecoration(
         hintText: 'URL',
-        hintStyle: const TextStyle(fontSize: 14.0),
+        hintStyle: TextStyle(
+          fontSize: style?.textStyle?.fontSize,
+        ),
         contentPadding: const EdgeInsets.all(16.0),
         isDense: true,
         suffixIcon: IconButton(
@@ -151,18 +154,22 @@ class _LinkMenuState extends State<LinkMenu> {
         name: iconName,
         color: color,
       ),
-      style: TextButton.styleFrom(
-        minimumSize: const Size.fromHeight(40),
-        padding: EdgeInsets.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        alignment: Alignment.centerLeft,
-      ),
       label: Text(
         text,
         textAlign: TextAlign.left,
         style: TextStyle(
-          color: style?.selectionMenuItemTextColor ?? Colors.black,
+          color: color,
           fontSize: 14.0,
+        ),
+      ),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered)) {
+              return style!.popupMenuHoverColor!;
+            }
+            return Colors.transparent;
+          },
         ),
       ),
       onPressed: onPressed,
