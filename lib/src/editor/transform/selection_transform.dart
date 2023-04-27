@@ -68,10 +68,12 @@ extension SelectionTransform on EditorState {
             );
 
             // combine the children of the last node into the first node.
-            if (nodes.last.children.isNotEmpty) {
+            final last = nodes.last;
+
+            if (last.children.isNotEmpty) {
               transaction.insertNodes(
-                node.path + [node.children.length],
-                nodes.last.children,
+                node.path + [0],
+                last.children,
                 deepCopy: true,
               );
             }
