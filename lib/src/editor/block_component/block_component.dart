@@ -15,3 +15,4 @@ export 'numbered_list_block_component/numbered_list_character_shortcut.dart';
 
 // quote
 export 'quote_block_component/quote_block_component.dart';
+export 'quote_block_component/quote_character_shortcut.dart';
