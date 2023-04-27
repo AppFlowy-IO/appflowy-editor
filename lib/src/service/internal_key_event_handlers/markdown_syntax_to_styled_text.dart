@@ -365,21 +365,90 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
+  bool textContainsNestedItalics = false;
+  var nestedItalicsIndexes = [];
+  for (var i = 0; i < text.length; i++) {
+    if (text[i] == '_') {
+      nestedItalicsIndexes.add(i);
+    }
+  }
+  if (nestedItalicsIndexes.length > 1) {
+    textContainsNestedItalics = true;
+  }
+
+  if (!textContainsNestedItalics) {
 //delete the last three asterisks
 //update the style of the text surround by '** **' to bold
 //update the cursor position
-  final transaction = editorState.transaction
-    ..deleteText(textNode, lastAsteriskIndex, 1)
-    ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
-    ..formatText(textNode, thirdToLastAsteriskIndex,
-        selection.end.offset - thirdToLastAsteriskIndex - 2, {
-      BuiltInAttributeKey.bold: true,
-    })
-    ..afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: selection.end.offset - 3),
-    );
+    final transaction = editorState.transaction
+      ..deleteText(textNode, lastAsteriskIndex, 1)
+      ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
+      ..formatText(textNode, thirdToLastAsteriskIndex,
+          selection.end.offset - thirdToLastAsteriskIndex - 2, {
+        BuiltInAttributeKey.bold: true,
+      })
+      ..afterSelection = Selection.collapsed(
+        Position(path: textNode.path, offset: selection.end.offset - 3),
+      );
+    editorState.apply(transaction);
+  } else {
+    // Store all needed operations inside a single transaction
+    Transaction transaction = Transaction(document: editorState.document);
 
-  editorState.apply(transaction);
+    // Set the entire text enclosed in asterixes to bold to start
+    var transactionBoldFormat = editorState.transaction
+      ..formatText(textNode, thirdToLastAsteriskIndex,
+          lastAsteriskIndex - thirdToLastAsteriskIndex, {
+        BuiltInAttributeKey.bold: true,
+      });
+    transaction.operations.addAll(transactionBoldFormat.operations);
+    for (var i = 0; i < nestedItalicsIndexes.length; i = i + 2) {
+      // Set the selected italics segment to italics
+      var transactionItalicFormat = editorState.transaction
+        ..formatText(textNode, nestedItalicsIndexes[i],
+            nestedItalicsIndexes[i + 1] - nestedItalicsIndexes[i], {
+          BuiltInAttributeKey.italic: true,
+        });
+      transaction.operations.addAll(transactionItalicFormat.operations);
+      // Check if we reached the final loop we can do
+      if (i + 2 >= nestedItalicsIndexes.length) {
+        break;
+      }
+    }
+
+// Remove all underscore characters in the string
+// If we have an uneven number of underscore characters we keep the last character
+// as it did not form an italics segment
+    if (nestedItalicsIndexes.length % 2 == 1) {
+      nestedItalicsIndexes.removeLast();
+    }
+    for (var i = 0; i < nestedItalicsIndexes.length; i++) {
+      // Since we are deleting multiple items in a single transaction, everytime
+      // we delete a character the next deletion's index must be decremented by
+      // the amount of characters we have removed, to compensate for the shifted
+      // indexes after the deletion
+      var transactionDelete = editorState.transaction
+        ..deleteText(textNode, nestedItalicsIndexes[i] - i, 1);
+      transaction.operations.addAll(transactionDelete.operations);
+    }
+
+    // Remove the asterixes from the text
+    var transactionDelete = editorState.transaction
+      ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
+      ..deleteText(
+          textNode, lastAsteriskIndex - 2 - nestedItalicsIndexes.length, 1);
+    transaction.operations.addAll(transactionDelete.operations);
+
+    var transactionSelection = editorState.transaction
+      ..afterSelection = Selection.collapsed(
+        Position(
+          path: textNode.path,
+          offset: selection.end.offset - 3 - nestedItalicsIndexes.length,
+        ),
+      );
+    transaction.operations.addAll(transactionSelection.operations);
+    editorState.apply(transaction);
+  }
 
   return KeyEventResult.handled;
 };
