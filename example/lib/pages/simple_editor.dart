@@ -99,6 +99,10 @@ class SimpleEditor extends StatelessWidget {
       commandShortcutEvents: [
         // backspace
         backspaceCommand,
+
+        // arrow keys
+        arrowLeftCommand,
+        arrowRightCommand,
       ],
     );
   }

@@ -16,9 +16,15 @@ class ApplyOptions {
   });
 }
 
+// deprecated
 enum CursorUpdateReason {
   uiEvent,
   others,
+}
+
+enum SelectionUpdateReason {
+  uiEvent, // like mouse click, keyboard event
+  transaction, // like insert, delete, format
 }
 
 /// The state of the editor.
@@ -47,6 +53,9 @@ class EditorState {
   set selection(Selection? value) {
     selectionNotifier.value = value;
   }
+
+  SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
+  SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
   // Service reference.
   final service = FlowyService();
@@ -105,6 +114,25 @@ class EditorState {
       return renderObject;
     }
     return null;
+  }
+
+  Future<void> updateSelectionWithReason(
+    Selection? selection, {
+    SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+  }) async {
+    final completer = Completer<void>();
+
+    if (reason == SelectionUpdateReason.uiEvent) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => completer.complete(),
+      );
+    }
+
+    // broadcast to other users here
+    _selectionUpdateReason = reason;
+    this.selection = selection;
+
+    return completer.future;
   }
 
   Future<void> updateCursorSelection(
@@ -169,6 +197,7 @@ class EditorState {
     _recordRedoOrUndo(options, transaction);
 
     if (withUpdateSelection) {
+      _selectionUpdateReason = SelectionUpdateReason.transaction;
       selection = transaction.afterSelection;
     }
 
