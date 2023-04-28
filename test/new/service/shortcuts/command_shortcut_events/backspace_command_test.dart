@@ -22,7 +22,7 @@ void main() async {
     }
   });
 
-  group('backspace_command.dart', () {
+  group('backspaceCommand - unit test', () {
     group('backspaceCommand - collapsed selection', () {
       const text = 'Welcome to AppFlowy Editor 🔥!';
       // Before
@@ -277,40 +277,40 @@ void main() async {
         expect(editorState.getNodeAtPath([0, 0])?.delta?.toPlainText(), text);
       });
     });
+  });
 
-    group('widget test', () {
-      const text = 'Welcome to AppFlowy Editor 🔥!';
-      // Before
-      // |Welcome| to AppFlowy Editor 🔥!
-      // After
-      // | to AppFlowy Editor 🔥!
-      testWidgets('Delete the collapsed selection', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
-        await editor.startTesting();
-
-        // Welcome| to AppFlowy Editor 🔥!
-        const welcome = 'Welcome';
-        final selection = Selection.single(
-          path: [0],
-          startOffset: 0,
-          endOffset: welcome.length,
+  group('backspaceCommand - widget test', () {
+    const text = 'Welcome to AppFlowy Editor 🔥!';
+    // Before
+    // |Welcome| to AppFlowy Editor 🔥!
+    // After
+    // | to AppFlowy Editor 🔥!
+    testWidgets('Delete the collapsed selection', (tester) async {
+      final editor = tester.editor
+        ..addParagraph(
+          initialText: text,
         );
-        await editor.updateSelection(selection);
+      await editor.startTesting();
 
-        await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
-        await tester.pumpAndSettle();
+      // Welcome| to AppFlowy Editor 🔥!
+      const welcome = 'Welcome';
+      final selection = Selection.single(
+        path: [0],
+        startOffset: 0,
+        endOffset: welcome.length,
+      );
+      await editor.updateSelection(selection);
 
-        // the first node should be deleted.
-        expect(
-          editor.nodeAtPath([0])?.delta?.toPlainText(),
-          text.substring(welcome.length),
-        );
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
 
-        await editor.dispose();
-      });
+      // the first node should be deleted.
+      expect(
+        editor.nodeAtPath([0])?.delta?.toPlainText(),
+        text.substring(welcome.length),
+      );
+
+      await editor.dispose();
     });
   });
 }
