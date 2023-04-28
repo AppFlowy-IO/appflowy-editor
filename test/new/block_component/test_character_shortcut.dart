@@ -11,7 +11,7 @@ Future<void> testFormatCharacterShortcut(
   String text = 'Welcome to AppFlowy Editor 🔥!',
 }) async {
   final document = Document.blank().addParagraph(
-    builder: (index) => '$prefix$text',
+    builder: (index) => Delta()..insert('$prefix$text'),
   );
   final editorState = EditorState(document: document);
 

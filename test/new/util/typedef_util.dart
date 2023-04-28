@@ -4,7 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 typedef DeltaBuilder = Delta Function(int index);
 
 /// customize the initial text
-typedef TextBuilder = String Function(int index);
+typedef TextBuilder = Delta Function(int index);
 
 /// customize the node
 typedef NodeDecorator = void Function(int index, Node node);

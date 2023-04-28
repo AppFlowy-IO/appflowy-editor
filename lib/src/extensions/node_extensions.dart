@@ -1,9 +1,4 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 extension NodeExtensions on Node {
@@ -76,6 +71,26 @@ extension NodeExtensions on Node {
     }
     return null;
   }
+
+  bool allSatisfyInSelection(
+    Selection selection,
+    bool Function(Delta delta) test,
+  ) {
+    if (selection.isCollapsed) {
+      return false;
+    }
+
+    selection = selection.normalized;
+
+    var delta = this.delta;
+    if (delta == null) {
+      return false;
+    }
+
+    delta = delta.slice(selection.startIndex, selection.endIndex);
+
+    return test(delta);
+  }
 }
 
 extension NodesExtensions<T extends Node> on List<T> {
@@ -89,5 +104,40 @@ extension NodesExtensions<T extends Node> on List<T> {
     }
 
     return this;
+  }
+
+  bool allSatisfyInSelection(
+    Selection selection,
+    bool Function(Delta delta) test,
+  ) {
+    if (selection.isCollapsed) {
+      return false;
+    }
+
+    selection = selection.normalized;
+    final nodes = this.normalized;
+
+    if (nodes.length == 1) {
+      return nodes.first.allSatisfyInSelection(selection, test);
+    }
+
+    for (var i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      var delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+
+      if (i == 0) {
+        delta = delta.slice(selection.start.offset);
+      } else if (i == nodes.length - 1) {
+        delta = delta.slice(0, selection.end.offset);
+      }
+      if (!test(delta)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

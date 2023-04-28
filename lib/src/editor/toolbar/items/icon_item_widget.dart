@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class IconItemWidget extends StatelessWidget {
   const IconItemWidget({
     super.key,
-    this.size = const Size.square(28.0),
+    this.size = const Size.square(32.0),
     required this.iconName,
     required this.isHighlight,
     this.tooltip,

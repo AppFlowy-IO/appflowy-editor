@@ -91,7 +91,7 @@ void main() async {
             initialText: text,
           )
           .addParagraph(
-            builder: (index) => '1.$text',
+            builder: (index) => Delta()..insert('1.$text'),
           );
       final editorState = EditorState(document: document);
 
