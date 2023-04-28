@@ -436,7 +436,10 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
     var transactionDelete = editorState.transaction
       ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
       ..deleteText(
-          textNode, lastAsteriskIndex - 2 - nestedItalicsIndexes.length, 1);
+        textNode,
+        lastAsteriskIndex - 2 - nestedItalicsIndexes.length,
+        1,
+      );
     transaction.operations.addAll(transactionDelete.operations);
 
     var transactionSelection = editorState.transaction
