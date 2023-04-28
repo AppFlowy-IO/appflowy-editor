@@ -54,6 +54,14 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
           icon: const Icon(Icons.search),
         ),
         IconButton(
+          onPressed: () => _navigateToMatchedIndex(moveUp: true),
+          icon: const Icon(Icons.arrow_upward),
+        ),
+        IconButton(
+          onPressed: () => _navigateToMatchedIndex(),
+          icon: const Icon(Icons.arrow_downward),
+        ),
+        IconButton(
           onPressed: () {
             widget.dismiss();
             searchService.unHighlight(queriedPattern);
@@ -72,5 +80,9 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
     setState(() {
       queriedPattern = controller.text;
     });
+  }
+
+  void _navigateToMatchedIndex({bool moveUp = false}) {
+    searchService.navigateToMatch(moveUp);
   }
 }

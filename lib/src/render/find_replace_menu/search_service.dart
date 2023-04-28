@@ -12,6 +12,7 @@ class SearchService {
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
   String queriedPattern = '';
+  int selectedIndex = 0;
 
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
@@ -58,10 +59,33 @@ class SearchService {
         _highlightMatches(n.path, matches, pattern.length);
       }
     }
+
+    selectedIndex = matchedPositions.length - 1;
   }
 
   void unHighlight(String pattern) {
     findAndHighlight(pattern);
+  }
+
+  /// This method takes in a boolean parameter moveUp, if set to true,
+  /// the match located above the current selected match is newly selected.
+  /// Otherwise the match below the current selected match is newly selected.
+  void navigateToMatch(bool moveUp) {
+    if (moveUp) {
+      selectedIndex =
+          selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
+
+      final match = matchedPositions[selectedIndex];
+      _selectWordAtPosition(match);
+      //FIXME: selecting a word should scroll editor automatically.
+    } else {
+      selectedIndex =
+          (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
+
+      final match = matchedPositions[selectedIndex];
+      _selectWordAtPosition(match);
+      //FIXME: selecting a word should scroll editor automatically.
+    }
   }
 
   /// This method takes in the TextNode's path, matches is a list of offsets,
@@ -72,16 +96,22 @@ class SearchService {
   void _highlightMatches(Path path, List<int> matches, int patternLength) {
     for (final match in matches) {
       Position start = Position(path: path, offset: match);
-      Position end = Position(path: path, offset: match + patternLength);
-
-      //we select the matched word and hide the toolbar.
-      editorState.updateCursorSelection(Selection(start: start, end: end));
+      _selectWordAtPosition(start);
 
       formatHighlight(
         editorState,
         editorState.editorStyle.highlightColorHex!,
       );
     }
+  }
+
+  void _selectWordAtPosition(Position start) {
+    Position end = Position(
+      path: start.path,
+      offset: start.offset + queriedPattern.length,
+    );
+
+    editorState.updateCursorSelection(Selection(start: start, end: end));
   }
 
   //this is a standard algorithm used for searching patterns in long text samples
