@@ -12,8 +12,8 @@ const String _tilde = '~';
 CharacterShortcutEvent formatTildeToStrikethrough = CharacterShortcutEvent(
   key: 'format the text surrounded by single tilde to strikethrough',
   character: _tilde,
-  handler: handleSingleCharacterFormat(
+  handler: handleFormatByWrappingWithSingleChar(
     char: _tilde,
-    formatStyle: SingleCharacterFormatStyle.strikethrough,
+    formatStyle: FormatStyleByWrappingWithSingleChar.strikethrough,
   ),
 );
