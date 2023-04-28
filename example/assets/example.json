@@ -3,6 +3,25 @@
     "type": "document",
     "children": [
       {
+        "type": "heading",
+        "attributes": {
+          "delta": [
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
         "type": "paragraph",
         "attributes": {
           "delta": [
