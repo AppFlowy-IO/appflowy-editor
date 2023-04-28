@@ -37,6 +37,13 @@ class SimpleEditor extends StatelessWidget {
           final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
+              items: [
+                paragraphItem,
+                heading1Item,
+                heading2Item,
+                heading3Item,
+                placeholderItem,
+              ],
               editorState: editorState,
               scrollController: scrollController,
               child: _buildEditor(
@@ -75,13 +82,6 @@ class SimpleEditor extends StatelessWidget {
       themeData: themeData,
       autoFocus: editorState.document.isEmpty,
       scrollController: scrollController,
-      // customBuilders: {
-      //   'paragraph': TextBlockComponentBuilder(),
-      //   'todo_list': TodoListBlockComponentBuilder(),
-      //   'bulleted_list': BulletedListBlockComponentBuilder(),
-      //   'numbered_list': NumberedListBlockComponentBuilder(),
-      //   'quote': QuoteBlockComponentBuilder(),
-      // },
       blockComponentBuilders: {
         'document': DocumentComponentBuilder(),
         'paragraph': TextBlockComponentBuilder(),

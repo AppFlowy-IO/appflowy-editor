@@ -18,25 +18,32 @@ typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 class ToolbarItem {
   ToolbarItem({
     required this.id,
-    required this.type,
+    this.type = 1,
     this.tooltipsMessage = '',
     this.iconBuilder,
-    required this.validator,
+    this.validator,
     this.highlightCallback,
     this.handler,
     this.itemBuilder,
+    this.isActive,
+    this.builder,
   }) {
-    assert(
-      (iconBuilder != null && itemBuilder == null) ||
-          (iconBuilder == null && itemBuilder != null),
-      'iconBuilder and itemBuilder must be set one of them',
-    );
+    // assert(
+    //   (iconBuilder != null && itemBuilder == null) ||
+    //       (iconBuilder == null && itemBuilder != null),
+    //   'iconBuilder and itemBuilder must be set one of them',
+    // );
   }
 
   final String id;
+  final bool Function(EditorState editorState)? isActive;
+  final Widget Function(BuildContext context, EditorState editorState)? builder;
+
+  // deprecated
   final int type;
   final String tooltipsMessage;
-  final ToolbarItemValidator validator;
+
+  final ToolbarItemValidator? validator;
 
   final Widget Function(bool isHighlight)? iconBuilder;
   final ToolbarItemEventHandler? handler;
@@ -355,7 +362,7 @@ bool _allSatisfy(
   String styleKey,
   bool Function(dynamic value) test,
 ) {
-  final selection = editorState.service.selectionService.currentSelection.value;
+  final selection = editorState.selection;
   return selection != null &&
       editorState.selectedTextNodes.allSatisfyInSelection(
         selection,
