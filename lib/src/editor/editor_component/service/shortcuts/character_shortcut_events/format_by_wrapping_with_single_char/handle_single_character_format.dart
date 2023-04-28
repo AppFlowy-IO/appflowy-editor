@@ -1,14 +1,14 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-enum SingleCharacterFormatStyle {
+enum FormatStyleByWrappingWithSingleChar {
   code,
   italic,
   strikethrough,
 }
 
-Future<bool> Function(EditorState) handleSingleCharacterFormat({
+Future<bool> Function(EditorState) handleFormatByWrappingWithSingleChar({
   required String char,
-  required SingleCharacterFormatStyle formatStyle,
+  required FormatStyleByWrappingWithSingleChar formatStyle,
 }) {
   assert(char.length == 1);
   return (editorState) async {
@@ -60,13 +60,13 @@ Future<bool> Function(EditorState) handleSingleCharacterFormat({
     final String style;
 
     switch (formatStyle) {
-      case SingleCharacterFormatStyle.code:
+      case FormatStyleByWrappingWithSingleChar.code:
         style = 'code';
         break;
-      case SingleCharacterFormatStyle.italic:
+      case FormatStyleByWrappingWithSingleChar.italic:
         style = 'italic';
         break;
-      case SingleCharacterFormatStyle.strikethrough:
+      case FormatStyleByWrappingWithSingleChar.strikethrough:
         style = 'strikethrough';
         break;
       default:
