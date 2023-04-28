@@ -14,9 +14,9 @@ bool handleFormatByWrappingWithSingleChar({
   assert(char.length == 1);
 
   final selection = editorState.selection;
-  // if the selection is not collapsed,
+  // if the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
   // we should return false to let the IME handle it.
-  if (selection == null || !selection.isCollapsed) {
+  if (selection == null || !selection.isCollapsed || selection.end.offset < 2) {
     return false;
   }
 
