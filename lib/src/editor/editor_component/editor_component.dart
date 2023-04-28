@@ -14,7 +14,7 @@ export 'service/selection_service_widget.dart';
 
 // toolbar
 export '../toolbar/mobile_toolbar.dart';
-export '../toolbar/floating_toolbar.dart';
+export '../toolbar/desktop/floating_toolbar.dart';
 
 // renderer
 export 'service/renderer/block_component_widget.dart';

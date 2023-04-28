@@ -9,11 +9,13 @@ import 'package:flutter/material.dart';
 class FloatingToolbar extends StatefulWidget {
   const FloatingToolbar({
     super.key,
+    required this.items,
     required this.editorState,
     required this.scrollController,
     required this.child,
   });
 
+  final List<ToolbarItem> items;
   final EditorState editorState;
   final ScrollController scrollController;
   final Widget child;
@@ -24,6 +26,7 @@ class FloatingToolbar extends StatefulWidget {
 
 class _FloatingToolbarState extends State<FloatingToolbar> {
   OverlayEntry? _toolbarContainer;
+  FloatingToolbarWidget? _toolbarWidget;
 
   EditorState get editorState => widget.editorState;
 
@@ -32,8 +35,20 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
     super.initState();
 
     editorState.selectionNotifier.addListener(_onSelectionChanged);
-
     widget.scrollController.addListener(_onScrollPositionChanged);
+  }
+
+  @override
+  void didUpdateWidget(FloatingToolbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.editorState != oldWidget.editorState) {
+      editorState.selectionNotifier.addListener(_onSelectionChanged);
+    }
+
+    if (widget.scrollController != oldWidget.scrollController) {
+      widget.scrollController.addListener(_onScrollPositionChanged);
+    }
   }
 
   @override
@@ -42,6 +57,14 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
     widget.scrollController.removeListener(_onScrollPositionChanged);
 
     super.dispose();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+
+    _clear();
+    _toolbarWidget = null;
   }
 
   @override
@@ -55,8 +78,11 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.
-      _showAfter(const Duration(milliseconds: 200));
+      _showAfterDelay(const Duration(milliseconds: 200));
     }
+
+    // clear the toolbar widget
+    _toolbarWidget = null;
   }
 
   void _onScrollPositionChanged() {
@@ -64,7 +90,10 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
     Log.toolbar.debug('offset = $offset');
 
     _clear();
-    _showAfter(Duration.zero);
+
+    // TODO: optimize the toolbar showing logic, making it more smooth.
+    // A quick idea: based on the scroll controller's offset to display the toolbar.
+    _showAfterDelay(Duration.zero);
   }
 
   final String _debounceKey = 'show the toolbar';
@@ -75,7 +104,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
     _toolbarContainer = null;
   }
 
-  void _showAfter([Duration duration = Duration.zero]) {
+  void _showAfterDelay([Duration duration = Duration.zero]) {
     _clear(); // clear the previous toolbar
 
     // uses debounce to avoid the computing the rects too frequently.
@@ -108,11 +137,9 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   Widget _buildToolbar(BuildContext context) {
-    return Container(
-      width: 300,
-      height: 30,
-      color: Colors.red,
-    );
+    _toolbarWidget ??=
+        FloatingToolbarWidget(items: widget.items, editorState: editorState);
+    return _toolbarWidget!;
   }
 
   /// Compute the rects of the selection.

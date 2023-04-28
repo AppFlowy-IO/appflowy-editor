@@ -1,3 +1,4 @@
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 extension TextTransforms on EditorState {
