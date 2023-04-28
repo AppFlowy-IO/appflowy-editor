@@ -52,7 +52,7 @@ Future<bool> Function(EditorState) handleFormatByWrappingWithSingleChar({
       ..deleteText(
         node,
         headCharIndex,
-        char.length,
+        1,
       );
     editorState.apply(deletion);
 
