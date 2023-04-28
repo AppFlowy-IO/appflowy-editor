@@ -18,6 +18,8 @@ class TestableEditor {
   Document get document => _editorState.document;
   int get documentRootLen => document.root.children.length;
 
+  Selection? get selection => _editorState.selection;
+
   Future<TestableEditor> startTesting({
     Locale locale = const Locale('en'),
   }) async {
@@ -83,7 +85,22 @@ class TestableEditor {
     String? initialText,
     NodeDecorator? decorator,
   }) {
-    _editorState.document.addParagraph(
+    addParagraphs(
+      1,
+      builder: builder,
+      initialText: initialText,
+      decorator: decorator,
+    );
+  }
+
+  void addParagraphs(
+    int count, {
+    TextBuilder? builder,
+    String? initialText,
+    NodeDecorator? decorator,
+  }) {
+    _editorState.document.addParagraphs(
+      count,
       builder: builder,
       initialText: initialText,
       decorator: decorator,
