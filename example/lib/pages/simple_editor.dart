@@ -120,6 +120,14 @@ class SimpleEditor extends StatelessWidget {
 
         //format strikethrough, ~strikethrough~
         formatTildeToStrikethrough,
+
+        // format unchecked box, [] or -[]
+        formatEmptyBracketsToUncheckedBox,
+        formatHyphenEmptyBracketsToUncheckedBox,
+
+        // format checked box, [x] or -[x]
+        formatFilledBracketsToCheckedBox,
+        formatHyphenFilledBracketsToCheckedBox,
       ],
       commandShortcutEvents: [
         // backspace
