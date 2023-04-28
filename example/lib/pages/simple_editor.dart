@@ -89,6 +89,7 @@ class SimpleEditor extends StatelessWidget {
         'bulleted_list': BulletedListBlockComponentBuilder(),
         'numbered_list': NumberedListBlockComponentBuilder(),
         'quote': QuoteBlockComponentBuilder(),
+        'heading': HeadingBlockComponentBuilder(),
       },
       characterShortcutEvents: [
         // '\n'
@@ -103,6 +104,9 @@ class SimpleEditor extends StatelessWidget {
 
         // quote
         formatGreaterToQuote,
+
+        // heading
+        formatSignToHeading,
 
         // slash
         slashCommand,

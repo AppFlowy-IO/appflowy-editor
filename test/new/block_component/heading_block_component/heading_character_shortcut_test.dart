@@ -18,17 +18,37 @@ void main() async {
     }
   });
 
-  group('formatNumberToNumberedList', () {
+  group('formate', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
     // Before
-    // 1|Welcome to AppFlowy Editor 🔥!
+    // #|Welcome to AppFlowy Editor 🔥!
     // After
-    // 1|Welcome to AppFlowy Editor 🔥!
-    test('mock inputting a ` ` after the number but not dot', () async {
+    // [heading] Welcome to AppFlowy Editor 🔥!
+    test('mock inputting a ` ` after the >', () async {
+      for (var i = 1; i <= 6; i++) {
+        testFormatCharacterShortcut(
+          formatSignToHeading,
+          '#' * i,
+          i,
+          (result, before, after) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, 'heading');
+          },
+          text: text,
+        );
+      }
+    });
+
+    // Before
+    // #######|Welcome to AppFlowy Editor 🔥!
+    // After
+    // #######|Welcome to AppFlowy Editor 🔥!
+    test('mock inputting a ` ` after the >', () async {
       testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1',
-        1,
+        formatSignToHeading,
+        '#' * 7,
+        7,
         (result, before, after) {
           // nothing happens
           expect(result, false);
@@ -39,34 +59,14 @@ void main() async {
     });
 
     // Before
-    // 1.|Welcome to AppFlowy Editor 🔥!
+    // >W|elcome to AppFlowy Editor 🔥!
     // After
-    // [numbered_list]Welcome to AppFlowy Editor 🔥!
-    test(
-        'mock inputting a ` ` after the number which is located at the front of the text',
-        () async {
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1.',
-        2,
-        (result, before, after) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, 'numbered_list');
-        },
-        text: text,
-      );
-    });
-
-    // Before
-    // 1.W|elcome to AppFlowy Editor 🔥!
-    // After
-    // 1.W|elcome to AppFlowy Editor 🔥!
+    // >W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
       testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1.',
-        3,
+        formatSignToHeading,
+        '#',
+        2,
         (result, before, after) {
           // nothing happens
           expect(result, false);
@@ -78,10 +78,10 @@ void main() async {
 
     // Before
     // Welcome to AppFlowy Editor 🔥!
-    // 1.|Welcome to AppFlowy Editor 🔥!
+    // >|Welcome to AppFlowy Editor 🔥!
     // After
     // Welcome to AppFlowy Editor 🔥!
-    //[numbered_list] Welcome to AppFlowy Editor 🔥!
+    //[quote] Welcome to AppFlowy Editor 🔥!
     test(
         'mock inputting a ` ` in the middle of the node, and there\'s a other node at the front of it.',
         () async {
@@ -91,22 +91,22 @@ void main() async {
             initialText: text,
           )
           .addParagraph(
-            builder: (index) => '1.$text',
+            initialText: '#$text',
           );
       final editorState = EditorState(document: document);
 
       // Welcome to AppFlowy Editor 🔥!
       // *|Welcome to AppFlowy Editor 🔥!
       final selection = Selection.collapsed(
-        Position(path: [1], offset: 2),
+        Position(path: [1], offset: 1),
       );
       editorState.selection = selection;
-      final result = await formatNumberToNumberedList.execute(editorState);
+      final result = await formatSignToHeading.execute(editorState);
       final after = editorState.getNodeAtPath([1])!;
 
       // the second line will be formatted as the bulleted list style
       expect(result, true);
-      expect(after.type, 'numbered_list');
+      expect(after.type, 'heading');
       expect(after.delta!.toPlainText(), text);
     });
   });

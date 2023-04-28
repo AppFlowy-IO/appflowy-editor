@@ -18,7 +18,7 @@ void main() async {
     }
   });
 
-  group('formatNumberToNumberedList', () {
+  group('formatGreaterToQuote', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
     // Before
     // >|Welcome to AppFlowy Editor 🔥!
