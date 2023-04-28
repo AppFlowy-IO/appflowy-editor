@@ -11,11 +11,19 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
+  String queriedPattern = '';
 
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
   void findAndHighlight(String pattern) {
+    if (queriedPattern != pattern) {
+      //this means we have a new pattern, but before we highlight the new matches,
+      //lets unhiglight the old pattern
+      unHighlight(queriedPattern);
+      queriedPattern = pattern;
+    }
+
     final contents = editorState.document.root.children;
 
     if (contents.isEmpty || pattern.isEmpty) return;
