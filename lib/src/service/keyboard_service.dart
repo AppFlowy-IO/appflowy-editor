@@ -159,7 +159,8 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
 extension on ShortcutEvent {
   bool canRespondToRawKeyEvent(RawKeyEvent event) {
-    return ((character?.isNotEmpty ?? false) && character == event.character) ||
-        keybindings.containsKeyEvent(event);
+    return false;
+    // return ((character?.isNotEmpty ?? false) && character == event.character) ||
+    //    keybindings.containsKeyEvent(event);
   }
 }

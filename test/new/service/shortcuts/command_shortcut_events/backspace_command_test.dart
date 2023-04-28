@@ -1,8 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../infra/testable_editor.dart';
 import '../../../util/util.dart';
 
 // single | means the cursor
@@ -28,9 +30,8 @@ void main() async {
       // After
       // | to AppFlowy Editor 🔥!
       test('delete in collapsed selection when the index > 0', () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -56,9 +57,8 @@ void main() async {
       test(
           'Delete the collapsed selection when the index is 0 and there is no previous node that contains a delta',
           () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -87,7 +87,7 @@ void main() async {
           () async {
         final document = Document.blank().addParagraphs(
           2,
-          builder: (index) => Delta()..insert(text),
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -124,12 +124,10 @@ void main() async {
       test('''Delete the collapsed selection when the index is 0
           and there is a previous node that contains a delta
           and the previous node is the parent of the current node''', () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
-          decorator: (index, node) => node.addParagraphs(
-            1,
-            builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
+          decorator: (index, node) => node.addParagraph(
+            initialText: text,
           ),
         );
         final editorState = EditorState(document: document);
@@ -165,9 +163,8 @@ void main() async {
       // After
       // |Editor 🔥!
       test('Delete in the not collapsed selection that is single', () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -203,7 +200,7 @@ void main() async {
           () async {
         final document = Document.blank().addParagraphs(
           2,
-          builder: (index) => Delta()..insert(text),
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -237,19 +234,15 @@ void main() async {
           () async {
         Delta deltaBuilder(index) => Delta()..insert(text);
         final document = Document.blank()
-            .addParagraphs(
-              1,
-              builder: deltaBuilder,
+            .addParagraph(
+              initialText: text,
             ) // Welcome to AppFlowy Editor 🔥!
-            .addParagraphs(
-              1,
-              builder: deltaBuilder,
-              decorator: (index, node) => node.addParagraphs(
-                1,
-                builder: deltaBuilder,
-                decorator: (index, node) => node.addParagraphs(
-                  1,
-                  builder: deltaBuilder,
+            .addParagraph(
+              initialText: text,
+              decorator: (index, node) => node.addParagraph(
+                initialText: text,
+                decorator: (index, node) => node.addParagraph(
+                  initialText: text,
                 ),
               ),
             );
@@ -282,6 +275,41 @@ void main() async {
 
         expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), text);
         expect(editorState.getNodeAtPath([0, 0])?.delta?.toPlainText(), text);
+      });
+    });
+
+    group('widget test', () {
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      // Before
+      // |Welcome| to AppFlowy Editor 🔥!
+      // After
+      // | to AppFlowy Editor 🔥!
+      testWidgets('Delete the collapsed selection', (tester) async {
+        final editor = tester.editor
+          ..addParagraph(
+            initialText: text,
+          );
+        await editor.startTesting();
+
+        // Welcome| to AppFlowy Editor 🔥!
+        const welcome = 'Welcome';
+        final selection = Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: welcome.length,
+        );
+        await editor.updateSelection(selection);
+
+        await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
+
+        // the first node should be deleted.
+        expect(
+          editor.nodeAtPath([0])?.delta?.toPlainText(),
+          text.substring(welcome.length),
+        );
+
+        await editor.dispose();
       });
     });
   });

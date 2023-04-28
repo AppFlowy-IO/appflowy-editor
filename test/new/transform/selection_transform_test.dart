@@ -22,8 +22,7 @@ void main() async {
       test('the selection is collapsed', () async {
         final document = Document.blank().addParagraphs(
           3,
-          builder: (index) =>
-              Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
+          builder: (index) => '$index. Welcome to AppFlowy Editor 🔥!',
         );
         final editorState = EditorState(document: document);
 
@@ -45,8 +44,7 @@ void main() async {
       test('the selection is single', () async {
         final document = Document.blank().addParagraphs(
           3,
-          builder: (index) =>
-              Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
+          builder: (index) => '$index. Welcome to AppFlowy Editor 🔥!',
         );
         final editorState = EditorState(document: document);
 
@@ -68,8 +66,7 @@ void main() async {
       test('the selection is not single and not collapsed - 1', () async {
         final document = Document.blank().addParagraphs(
           3,
-          builder: (index) =>
-              Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
+          builder: (index) => '$index. Welcome to AppFlowy Editor 🔥!',
         );
         final editorState = EditorState(document: document);
 
@@ -109,23 +106,18 @@ void main() async {
       //   0.0.0. Welcome to AppFlowy Editor 🔥!
       //   0.1. Welcome to AppFlowy Editor 🔥!
       test('the selection is not single and not collapsed - 2', () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) =>
-              Delta()..insert('$index. Welcome to AppFlowy Editor 🔥!'),
+        final document = Document.blank().addParagraph(
+          builder: (index) => '$index. Welcome to AppFlowy Editor 🔥!',
           decorator: (index, node) {
             node.addParagraphs(
               2,
-              builder: (index2) => Delta()
-                ..insert('$index.$index2. Welcome to AppFlowy Editor 🔥!'),
+              builder: (index2) =>
+                  '$index.$index2. Welcome to AppFlowy Editor 🔥!',
               decorator: (index2, node2) {
                 if (index2 == 0) {
-                  node2.addParagraphs(
-                    1,
-                    builder: (index3) => Delta()
-                      ..insert(
+                  node2.addParagraph(
+                    builder: (index3) =>
                         '$index.$index2.$index3. Welcome to AppFlowy Editor 🔥!',
-                      ),
                   );
                 }
               },

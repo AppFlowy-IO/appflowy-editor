@@ -5,14 +5,12 @@ import 'typedef_util.dart';
 extension NodeExtension on Node {
   void addParagraphs(
     int count, {
-    DeltaBuilder? builder,
+    TextBuilder? builder,
+    String? initialText,
     NodeDecorator? decorator,
   }) {
     final builder0 = builder ??
-        (index) => Delta()
-          ..insert(
-            '🔥 $index. Welcome to AppFlowy Editor!',
-          );
+        (index) => initialText ?? '🔥 $index. Welcome to AppFlowy Editor!';
     final decorator0 = decorator ?? (index, node) {};
     final nodes = List.generate(
       count,
@@ -20,11 +18,24 @@ extension NodeExtension on Node {
         final node = Node(type: 'paragraph');
         decorator0(index, node);
         node.updateAttributes({
-          'delta': builder0(index).toJson(),
+          'delta': (Delta()..insert(builder0(index))).toJson(),
         });
         return node;
       },
     );
     nodes.forEach(insert);
+  }
+
+  void addParagraph({
+    TextBuilder? builder,
+    String? initialText,
+    NodeDecorator? decorator,
+  }) {
+    addParagraphs(
+      1,
+      builder: builder,
+      initialText: initialText,
+      decorator: decorator,
+    );
   }
 }

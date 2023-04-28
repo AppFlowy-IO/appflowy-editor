@@ -28,9 +28,8 @@ void main() async {
       // |AppFlowy Editor 🔥!
       test('insert new line at the node which  doesn\'t contains children',
           () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
         );
         final editorState = EditorState(document: document);
 
@@ -57,13 +56,11 @@ void main() async {
       // AppFlowy Editor 🔥!
       //    Welcome to AppFlowy Editor 🔥!
       test('insert new line at the node which contains children', () async {
-        final document = Document.blank().addParagraphs(
-          1,
-          builder: (index) => Delta()..insert(text),
+        final document = Document.blank().addParagraph(
+          initialText: text,
           decorator: (index, node) {
-            node.addParagraphs(
-              1,
-              builder: (index2) => Delta()..insert(text),
+            node.addParagraph(
+              initialText: text,
             );
           },
         );

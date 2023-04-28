@@ -21,4 +21,3 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
   editorState.moveCursorForward(SelectionMoveRange.character);
   return KeyEventResult.handled;
 };
-// Compare this snippet from lib/src/editor/editor_component/service/shortcuts/command_shortcut_events/arrow_right_command.dart:

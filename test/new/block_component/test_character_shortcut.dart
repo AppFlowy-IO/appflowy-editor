@@ -10,9 +10,8 @@ Future<void> testFormatCharacterShortcut(
   void Function(bool result, Node before, Node after) test, {
   String text = 'Welcome to AppFlowy Editor 🔥!',
 }) async {
-  final document = Document.blank().addParagraphs(
-    1,
-    builder: (index) => Delta()..insert('$prefix$text'),
+  final document = Document.blank().addParagraph(
+    builder: (index) => '$prefix$text',
   );
   final editorState = EditorState(document: document);
 
