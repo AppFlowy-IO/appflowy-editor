@@ -10,13 +10,14 @@ extension DocumentExtension on Document {
     NodeDecorator? decorator,
   }) {
     final builder0 = builder ??
-        (index) => initialText ?? '🔥 $index. Welcome to AppFlowy Editor!';
+        (index) => Delta()
+          ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
     final decorator0 = decorator ?? (index, node) {};
     final children = List.generate(count, (index) {
       final node = Node(type: 'paragraph');
       decorator0(index, node);
       node.updateAttributes({
-        'delta': (Delta()..insert(builder0(index))).toJson(),
+        'delta': builder0(index).toJson(),
       });
       return node;
     });

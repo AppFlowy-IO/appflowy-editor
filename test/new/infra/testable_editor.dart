@@ -32,6 +32,7 @@ class TestableEditor {
         'bulleted_list': BulletedListBlockComponentBuilder(),
         'numbered_list': NumberedListBlockComponentBuilder(),
         'quote': QuoteBlockComponentBuilder(),
+        'heading': HeadingBlockComponentBuilder(),
       },
       characterShortcutEvents: [
         insertNewLine,
@@ -39,6 +40,7 @@ class TestableEditor {
         formatMinusToBulletedList,
         formatNumberToNumberedList,
         formatGreaterToQuote,
+        formatSignToHeading,
         slashCommand,
         formatUnderscoreToItalic,
       ],
