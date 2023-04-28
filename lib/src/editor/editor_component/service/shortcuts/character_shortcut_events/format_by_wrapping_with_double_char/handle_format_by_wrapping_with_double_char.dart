@@ -15,9 +15,9 @@ bool handleFormatByWrappingWithDoubleChar({
 }) {
   assert(char.length == 1);
   final selection = editorState.selection;
-  // if the selection is not collapsed,
+  // if the selection is not collapsed or the cursor is at the first three index range, we don't need to format it.
   // we should return false to let the IME handle it.
-  if (selection == null || !selection.isCollapsed) {
+  if (selection == null || !selection.isCollapsed || selection.end.offset < 4) {
     return false;
   }
 
@@ -32,8 +32,9 @@ bool handleFormatByWrappingWithDoubleChar({
 
   final plainText = delta.toPlainText();
 
-  // The plainText should look like **abc*, the last char in the plainText should be *[char]. Otherwise, we don't need to format it.
-  if (plainText.length < 2 || plainText[selection.end.offset - 1] != char) {
+  // The plainText should have at least 4 characters,like **a*.
+  // The last char in the plainText should be *[char]. Otherwise, we don't need to format it.
+  if (plainText.length < 4 || plainText[selection.end.offset - 1] != char) {
     return false;
   }
 
@@ -44,6 +45,7 @@ bool handleFormatByWrappingWithDoubleChar({
       charIndexList.add(i);
     }
   }
+
   if (charIndexList.length < 3) {
     return false;
   }
