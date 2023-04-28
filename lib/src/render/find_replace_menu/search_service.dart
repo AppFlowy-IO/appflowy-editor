@@ -102,6 +102,7 @@ class SearchService {
         editorState,
         editorState.editorStyle.highlightColorHex!,
       );
+      editorState.undoManager.forgetRecentUndo();
     }
   }
 
