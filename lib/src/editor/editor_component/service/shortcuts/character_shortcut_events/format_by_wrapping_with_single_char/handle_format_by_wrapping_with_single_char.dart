@@ -12,7 +12,7 @@ bool handleFormatByWrappingWithSingleChar({
   required FormatStyleByWrappingWithSingleChar formatStyle,
 }) {
   assert(char.length == 1);
-  // return (editorState) async {
+
   final selection = editorState.selection;
   // if the selection is not collapsed,
   // we should return false to let the IME handle it.
