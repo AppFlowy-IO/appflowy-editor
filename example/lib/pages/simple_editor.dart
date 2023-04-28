@@ -34,14 +34,23 @@ class SimpleEditor extends StatelessWidget {
             ..handler = debugPrint
             ..level = LogLevel.all;
           onEditorStateChange(editorState);
+          final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
-                editorState: editorState,
-                child: _buildEditor(context, editorState));
+              editorState: editorState,
+              scrollController: scrollController,
+              child: _buildEditor(
+                context,
+                editorState,
+                scrollController,
+              ),
+            );
           } else {
             return Column(
               children: [
-                Expanded(child: _buildEditor(context, editorState)),
+                Expanded(
+                  child: _buildEditor(context, editorState, scrollController),
+                ),
                 if (Platform.isIOS || Platform.isAndroid)
                   _buildMobileToolbar(context, editorState),
               ],
@@ -56,11 +65,16 @@ class SimpleEditor extends StatelessWidget {
     );
   }
 
-  Widget _buildEditor(BuildContext context, EditorState editorState) {
+  Widget _buildEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
     return AppFlowyEditor(
       editorState: editorState,
       themeData: themeData,
       autoFocus: editorState.document.isEmpty,
+      scrollController: scrollController,
       // customBuilders: {
       //   'paragraph': TextBlockComponentBuilder(),
       //   'todo_list': TodoListBlockComponentBuilder(),

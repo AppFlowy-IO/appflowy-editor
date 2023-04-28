@@ -120,7 +120,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   void startAutoScroll(
     Offset offset, {
-    double edgeOffset = 200,
+    double edgeOffset = 100,
     AxisDirection? direction,
   }) =>
       forward.startAutoScroll(

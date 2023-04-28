@@ -36,5 +36,5 @@ ThemeData customizeEditorTheme(BuildContext context) {
     editorStyle,
     ...darkPluginStyleExtension,
     quote,
-  ]);
+  ],);
 }

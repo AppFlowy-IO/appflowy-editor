@@ -111,9 +111,9 @@ class TestableEditor {
     _editorState.document.addParagraph(initialText: '');
   }
 
-  Future<void> updateSelection(Selection? selection) {
+  Future<void> updateSelection(Selection? selection) async {
     _editorState.selection = selection;
-    return tester.pumpAndSettle();
+    await tester.pumpAndSettle();
   }
 
   Node? nodeAtPath(Path path) {
