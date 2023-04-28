@@ -29,6 +29,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   tuple: ^2.0.1
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:

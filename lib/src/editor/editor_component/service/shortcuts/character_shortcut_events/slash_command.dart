@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
-import 'package:appflowy_editor/src/editor/util/util.dart';
 
 /// Show the slash menu
 ///

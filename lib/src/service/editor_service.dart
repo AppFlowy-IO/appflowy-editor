@@ -40,6 +40,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.customActionMenuBuilder,
     this.showDefaultToolbar = true,
     this.shrinkWrap = false,
+    this.scrollController,
     ThemeData? themeData,
   }) : super(key: key) {
     this.themeData = themeData ??
@@ -86,6 +87,8 @@ class AppFlowyEditor extends StatefulWidget {
   final bool shrinkWrap;
 
   late final ThemeData themeData;
+
+  final ScrollController? scrollController;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -169,6 +172,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       child: _buildScroll(
         child: ScrollServiceWidget(
           key: editorState.service.scrollServiceKey,
+          scrollController: widget.scrollController,
           child: Container(
             color: editorStyle.backgroundColor,
             padding: editorStyle.padding!,
