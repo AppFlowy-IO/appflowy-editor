@@ -67,13 +67,11 @@ void main() async {
     test('mock inputting a ` ` in the middle of the text - 2', () async {
       const text = 'Welcome to AppFlowy Editor 🔥!';
       final document = Document.blank()
-          .addParagraphs(
-            1,
-            builder: (index) => Delta()..insert(text),
+          .addParagraph(
+            initialText: text,
           )
-          .addParagraphs(
-            1,
-            builder: (index) => Delta()..insert('*$text'),
+          .addParagraph(
+            initialText: '*$text',
           );
       final editorState = EditorState(document: document);
 

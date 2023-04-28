@@ -94,8 +94,14 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       if (shortcutEvent.canRespondToRawKeyEvent(event)) {
         final result = shortcutEvent.handler(editorState);
         if (result == KeyEventResult.handled) {
+          Log.keyboard.debug(
+            'keyboard service - handled by command shortcut event: $shortcutEvent',
+          );
           return KeyEventResult.handled;
         } else if (result == KeyEventResult.skipRemainingHandlers) {
+          Log.keyboard.debug(
+            'keyboard service - skip by command shortcut event: $shortcutEvent',
+          );
           return KeyEventResult.skipRemainingHandlers;
         }
         continue;
@@ -118,6 +124,11 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
         const Duration(milliseconds: 200),
         () => _attachTextInputService(selection),
       );
+
+      if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
+        focusNode.requestFocus();
+        Log.editor.debug('keyboard service - request focus');
+      }
     }
   }
 

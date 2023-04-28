@@ -87,13 +87,11 @@ void main() async {
         () async {
       const text = 'Welcome to AppFlowy Editor 🔥!';
       final document = Document.blank()
-          .addParagraphs(
-            1,
-            builder: (index) => Delta()..insert(text),
+          .addParagraph(
+            initialText: text,
           )
-          .addParagraphs(
-            1,
-            builder: (index) => Delta()..insert('1.$text'),
+          .addParagraph(
+            builder: (index) => '1.$text',
           );
       final editorState = EditorState(document: document);
 
