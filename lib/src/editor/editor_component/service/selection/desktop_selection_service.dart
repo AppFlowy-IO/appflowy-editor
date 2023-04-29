@@ -149,7 +149,9 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateSelection() {
     final selection = editorState.selection;
-    if (currentSelection.value == selection) {
+    // TODO: why do we need to check this?
+    if (currentSelection.value == selection &&
+        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
       return;
     }
 
