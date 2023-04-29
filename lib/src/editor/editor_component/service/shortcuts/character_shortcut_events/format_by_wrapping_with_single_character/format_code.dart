@@ -12,8 +12,7 @@ const _backquote = '`';
 final CharacterShortcutEvent formatBackquoteToCode = CharacterShortcutEvent(
   key: 'format the text surrounded by single backquote to code',
   character: _backquote,
-  handler: (editorState) async =>
-      await handleFormatByWrappingWithSingleCharacter(
+  handler: (editorState) async => handleFormatByWrappingWithSingleCharacter(
     editorState: editorState,
     character: _backquote,
     formatStyle: FormatStyleByWrappingWithSingleChar.code,

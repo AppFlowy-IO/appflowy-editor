@@ -13,16 +13,14 @@ const _asterisk = '*';
 CharacterShortcutEvent formatUnderscoreToItalic = CharacterShortcutEvent(
   key: 'format the text surrounded by single underscore to italic',
   character: _underscore,
-  handler: (editorState) async {
-    return handleFormatByWrappingWithSingleCharacter(
-      editorState: editorState,
-      character: _underscore,
-      formatStyle: FormatStyleByWrappingWithSingleChar.italic,
-    );
-  },
+  handler: (editorState) async => handleFormatByWrappingWithSingleCharacter(
+    editorState: editorState,
+    character: _underscore,
+    formatStyle: FormatStyleByWrappingWithSingleChar.italic,
+  ),
 );
 
-/// format the text surrounded by single sterisk to italic
+/// format the text surrounded by single asterisk to italic
 ///
 /// - support
 ///   - desktop
@@ -32,8 +30,7 @@ CharacterShortcutEvent formatUnderscoreToItalic = CharacterShortcutEvent(
 final CharacterShortcutEvent formatAsteriskToItalic = CharacterShortcutEvent(
   key: 'format the text surrounded by single asterisk to italic',
   character: _asterisk,
-  handler: (editorState) async =>
-      await handleFormatByWrappingWithSingleCharacter(
+  handler: (editorState) async => handleFormatByWrappingWithSingleCharacter(
     editorState: editorState,
     character: _asterisk,
     formatStyle: FormatStyleByWrappingWithSingleChar.italic,
