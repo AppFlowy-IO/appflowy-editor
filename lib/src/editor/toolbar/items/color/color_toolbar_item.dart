@@ -33,7 +33,7 @@ final colorItem = ToolbarItem(
       iconName: 'toolbar/highlight',
       isHighlight: isHighlight,
       tooltip:
-          '${AppFlowyEditorLocalizations.current.link}${shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}',
+          '${AppFlowyEditorLocalizations.current.link}${shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}',
       onPressed: () {},
     );
   },

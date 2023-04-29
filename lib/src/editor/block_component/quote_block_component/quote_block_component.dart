@@ -57,10 +57,12 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
           mainAxisSize: MainAxisSize.min,
           children: [
             defaultIcon(),
-            FlowyRichText(
-              key: forwardKey,
-              node: widget.node,
-              editorState: editorState,
+            Flexible(
+              child: FlowyRichText(
+                key: forwardKey,
+                node: widget.node,
+                editorState: editorState,
+              ),
             ),
           ],
         ),
