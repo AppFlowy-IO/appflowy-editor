@@ -6,7 +6,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 ///   - desktop
 ///   - web
 ///
-CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
+final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   key: 'show the slash menu',
   character: '/',
   handler: _showSlashMenu,
