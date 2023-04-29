@@ -43,6 +43,7 @@ class SimpleEditor extends StatelessWidget {
                 heading2Item,
                 heading3Item,
                 placeholderItem,
+                ...formatItems,
               ],
               editorState: editorState,
               scrollController: scrollController,

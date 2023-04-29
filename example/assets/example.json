@@ -26,7 +26,7 @@
         "attributes": {
           "delta": [
             { "insert": "👋 " },
-            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": "Welcome to" },
             { "insert": " " },
             {
               "insert": "AppFlowy Editor",
