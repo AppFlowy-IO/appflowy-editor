@@ -6,17 +6,17 @@ enum FormatStyleByWrappingWithSingleChar {
   strikethrough,
 }
 
-bool handleFormatByWrappingWithSingleChar({
+Future<bool> handleFormatByWrappingWithSingleCharacter({
   required EditorState editorState,
-  required String char,
+  required String character,
   required FormatStyleByWrappingWithSingleChar formatStyle,
-}) {
-  assert(char.length == 1);
+}) async {
+  assert(character.length == 1);
 
   final selection = editorState.selection;
-  // if the selection is not collapsed,
+  // if the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
   // we should return false to let the IME handle it.
-  if (selection == null || !selection.isCollapsed) {
+  if (selection == null || !selection.isCollapsed || selection.end.offset < 2) {
     return false;
   }
 
@@ -31,8 +31,8 @@ bool handleFormatByWrappingWithSingleChar({
 
   final plainText = delta.toPlainText();
 
-  final headCharIndex = plainText.indexOf(char);
-  final endCharIndex = plainText.lastIndexOf(char);
+  final headCharIndex = plainText.indexOf(character);
+  final endCharIndex = plainText.lastIndexOf(character);
 
   // Determine if a 'Character' already exists in the node and only once.
   // 1. This is no 'Character' in the plainText: indexOf returns -1.

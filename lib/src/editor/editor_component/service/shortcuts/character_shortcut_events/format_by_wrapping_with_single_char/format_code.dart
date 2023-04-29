@@ -9,14 +9,13 @@ const _backquote = '`';
 ///   - mobile
 ///   - web
 ///
-CharacterShortcutEvent formatBackquoteToCode = CharacterShortcutEvent(
+final CharacterShortcutEvent formatBackquoteToCode = CharacterShortcutEvent(
   key: 'format the text surrounded by single backquote to code',
   character: _backquote,
-  handler: (editorState) async {
-    return handleFormatByWrappingWithSingleChar(
-      editorState: editorState,
-      char: _backquote,
-      formatStyle: FormatStyleByWrappingWithSingleChar.code,
-    );
-  },
+  handler: (editorState) async =>
+      await handleFormatByWrappingWithSingleCharacter(
+    editorState: editorState,
+    character: _backquote,
+    formatStyle: FormatStyleByWrappingWithSingleChar.code,
+  ),
 );

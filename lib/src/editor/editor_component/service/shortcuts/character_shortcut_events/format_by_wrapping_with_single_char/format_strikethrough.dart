@@ -9,13 +9,15 @@ const String _tilde = '~';
 ///   - mobile
 ///   - web
 ///
+
 CharacterShortcutEvent formatTildeToStrikethrough = CharacterShortcutEvent(
-    key: 'format the text surrounded by single tilde to strikethrough',
-    character: _tilde,
-    handler: (editorState) async {
-      return handleFormatByWrappingWithSingleChar(
-        editorState: editorState,
-        char: _tilde,
-        formatStyle: FormatStyleByWrappingWithSingleChar.strikethrough,
-      );
-    });
+  key: 'format the text surrounded by single tilde to strikethrough',
+  character: _tilde,
+  handler: (editorState) async {
+    return handleFormatByWrappingWithSingleChar(
+      editorState: editorState,
+      char: _tilde,
+      formatStyle: FormatStyleByWrappingWithSingleChar.strikethrough,
+    );
+  },
+);
