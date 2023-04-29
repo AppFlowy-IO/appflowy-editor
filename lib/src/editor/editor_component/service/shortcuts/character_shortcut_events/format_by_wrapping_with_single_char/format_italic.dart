@@ -14,9 +14,9 @@ CharacterShortcutEvent formatUnderscoreToItalic = CharacterShortcutEvent(
   key: 'format the text surrounded by single underscore to italic',
   character: _underscore,
   handler: (editorState) async {
-    return handleFormatByWrappingWithSingleChar(
+    return handleFormatByWrappingWithSingleCharacter(
       editorState: editorState,
-      char: _underscore,
+      character: _underscore,
       formatStyle: FormatStyleByWrappingWithSingleChar.italic,
     );
   },
@@ -29,14 +29,13 @@ CharacterShortcutEvent formatUnderscoreToItalic = CharacterShortcutEvent(
 ///   - mobile
 ///   - web
 ///
-CharacterShortcutEvent formatAsteriskToItalic = CharacterShortcutEvent(
+final CharacterShortcutEvent formatAsteriskToItalic = CharacterShortcutEvent(
   key: 'format the text surrounded by single asterisk to italic',
   character: _asterisk,
-  handler: (editorState) async {
-    return handleFormatByWrappingWithSingleChar(
-      editorState: editorState,
-      char: _asterisk,
-      formatStyle: FormatStyleByWrappingWithSingleChar.italic,
-    );
-  },
+  handler: (editorState) async =>
+      await handleFormatByWrappingWithSingleCharacter(
+    editorState: editorState,
+    character: _asterisk,
+    formatStyle: FormatStyleByWrappingWithSingleChar.italic,
+  ),
 );
