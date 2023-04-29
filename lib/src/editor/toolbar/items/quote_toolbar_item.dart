@@ -12,7 +12,15 @@ ToolbarItem quoteItem = ToolbarItem(
       iconName: 'toolbar/quote',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.quote,
-      onPressed: () {},
+      onPressed: () => editorState.formatNode(
+        selection,
+        (node) => node.copyWith(
+          type: isHighlight ? 'paragraph' : 'quote',
+          attributes: {
+            'delta': (node.delta ?? Delta()).toJson(),
+          },
+        ),
+      ),
     );
   },
 );

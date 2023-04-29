@@ -12,7 +12,15 @@ ToolbarItem numberedListItem = ToolbarItem(
       iconName: 'toolbar/numbered_list',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.numberedList,
-      onPressed: () {},
+      onPressed: () => editorState.formatNode(
+        selection,
+        (node) => node.copyWith(
+          type: isHighlight ? 'paragraph' : 'numbered_list',
+          attributes: {
+            'delta': (node.delta ?? Delta()).toJson(),
+          },
+        ),
+      ),
     );
   },
 );

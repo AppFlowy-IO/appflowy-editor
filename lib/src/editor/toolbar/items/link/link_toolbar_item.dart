@@ -18,7 +18,9 @@ final linkItem = ToolbarItem(
       isHighlight: isHighlight,
       tooltip:
           '${AppFlowyEditorLocalizations.current.link}${shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}',
-      onPressed: () {},
+      onPressed: () {
+        throw UnimplementedError();
+      },
     );
   },
 );

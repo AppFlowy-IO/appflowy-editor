@@ -12,7 +12,15 @@ ToolbarItem paragraphItem = ToolbarItem(
       iconName: 'toolbar/text',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.text,
-      onPressed: () {},
+      onPressed: () => editorState.formatNode(
+        selection,
+        (node) => node.copyWith(
+          type: 'paragraph',
+          attributes: {
+            'delta': (node.delta ?? Delta()).toJson(),
+          },
+        ),
+      ),
     );
   },
 );
