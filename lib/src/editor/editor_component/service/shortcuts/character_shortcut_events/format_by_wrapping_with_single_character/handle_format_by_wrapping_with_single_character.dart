@@ -75,13 +75,20 @@ bool handleFormatByWrappingWithSingleCharacter({
       assert(false, 'Invalid format style');
   }
 
+  // if the text is already formatted, we should remove the format.
+  final sliced = delta.slice(
+    headCharIndex + 1,
+    selection.end.offset - headCharIndex - 1,
+  );
+  final result = sliced.everyAttributes((element) => element[style] == true);
+
   final format = editorState.transaction
     ..formatText(
       node,
       headCharIndex,
       selection.end.offset - headCharIndex - 1,
       {
-        style: true,
+        style: !result,
       },
     )
     ..afterSelection = Selection.collapsed(

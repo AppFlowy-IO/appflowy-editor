@@ -76,7 +76,7 @@ void main() async {
     // AppFlowy`|
     // After
     // AppFlowy``| (last backquote used to trigger the formatBackquoteToCode)
-    test('`` doule backquote change nothing', () async {
+    test('`` double backquote change nothing', () async {
       const text = 'AppFlowy`';
       final document = Document.blank().addParagraphs(
         1,
@@ -95,6 +95,46 @@ void main() async {
       expect(result, false);
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), text);
+    });
+
+    // Before
+    // <code>`AppFlowy</code>
+    // After
+    // AppFlowy
+    test('remove the format', () async {
+      const text = '`AppFlowy';
+      final document = Document.blank().addParagraphs(
+        1,
+        builder: (index) => Delta()
+          ..insert(
+            text,
+            attributes: {
+              'code': true,
+            },
+          ),
+      );
+
+      final editorState = EditorState(document: document);
+
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+
+      final result = await formatBackquoteToCode.execute(editorState);
+
+      expect(result, true);
+      final after = editorState.getNodeAtPath([0])!;
+      expect(
+        after.delta!.toPlainText(),
+        text.substring(1),
+      ); // remove the first backquote
+      final isCode =
+          after.delta!.everyAttributes((element) => element['code'] == true);
+      expect(
+        isCode,
+        false,
+      );
     });
   });
 }

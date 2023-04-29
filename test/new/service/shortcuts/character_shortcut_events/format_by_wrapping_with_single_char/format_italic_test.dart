@@ -77,7 +77,7 @@ void main() async {
       // AppFlowy_|
       // After
       // AppFlowy__| (last underscore used to trigger the formatUnderscoreToItalic)
-      test('__doule underscore change nothing', () async {
+      test('__double underscore change nothing', () async {
         const text = 'AppFlowy_';
         final document = Document.blank().addParagraphs(
           1,
@@ -179,6 +179,46 @@ void main() async {
         final after = editorState.getNodeAtPath([0])!;
         expect(after.delta!.toPlainText(), text);
       });
+    });
+
+    // Before
+    // <italic>_AppFlowy</italic>
+    // After
+    // AppFlowy
+    test('remove the format', () async {
+      const text = '_AppFlowy';
+      final document = Document.blank().addParagraphs(
+        1,
+        builder: (index) => Delta()
+          ..insert(
+            text,
+            attributes: {
+              'italic': true,
+            },
+          ),
+      );
+
+      final editorState = EditorState(document: document);
+
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+
+      final result = await formatUnderscoreToItalic.execute(editorState);
+
+      expect(result, true);
+      final after = editorState.getNodeAtPath([0])!;
+      expect(
+        after.delta!.toPlainText(),
+        text.substring(1),
+      ); // remove the first underscore
+      final isItalic =
+          after.delta!.everyAttributes((element) => element['italic'] == true);
+      expect(
+        isItalic,
+        false,
+      );
     });
   });
 }

@@ -84,13 +84,20 @@ bool handleFormatByWrappingWithDoubleCharacter({
       assert(false, 'Invalid format style');
   }
 
+  // if the text is already formatted, we should remove the format.
+  final sliced = delta.slice(
+    thirdLastCharIndex + 2,
+    selection.end.offset - 1,
+  );
+  final result = sliced.everyAttributes((element) => element[style] == true);
+
   final format = editorState.transaction
     ..formatText(
       node,
       thirdLastCharIndex,
       selection.end.offset - thirdLastCharIndex - 3,
       {
-        style: true,
+        style: !result,
       },
     )
     ..afterSelection = Selection.collapsed(
