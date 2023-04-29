@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
-ToolbarItem paragraphItem = ToolbarItem(
-  id: 'editor.paragraph',
+ToolbarItem quoteItem = ToolbarItem(
+  id: 'editor.quote',
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
     final selection = editorState.selection!;

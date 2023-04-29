@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 ///   - mobile
 ///   - web
 ///
-CharacterShortcutEvent insertNewLine = CharacterShortcutEvent(
+final CharacterShortcutEvent insertNewLine = CharacterShortcutEvent(
   key: 'insert a new line',
   character: '\n',
   handler: _insertNewLineHandler,

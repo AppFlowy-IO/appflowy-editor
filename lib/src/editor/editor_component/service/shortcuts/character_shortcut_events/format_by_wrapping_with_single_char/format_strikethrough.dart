@@ -9,6 +9,7 @@ const String _tilde = '~';
 ///   - mobile
 ///   - web
 ///
+
 CharacterShortcutEvent formatTildeToStrikethrough = CharacterShortcutEvent(
   key: 'format the text surrounded by single tilde to strikethrough',
   character: _tilde,
