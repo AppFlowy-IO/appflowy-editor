@@ -12,7 +12,12 @@ ToolbarItem bulletedListItem = ToolbarItem(
       iconName: 'toolbar/bulleted_list',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.bulletedList,
-      onPressed: () {},
+      onPressed: () => editorState.formatNode(
+        selection,
+        (node) => node.copyWith(
+          type: isHighlight ? 'paragraph' : 'bulleted_list',
+        ),
+      ),
     );
   },
 );
