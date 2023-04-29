@@ -1,4 +1,3 @@
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 extension TextTransforms on EditorState {
@@ -13,7 +12,7 @@ extension TextTransforms on EditorState {
     Position? position,
   }) async {
     // If the position is not passed in, use the current selection.
-    position = position ?? selection?.start;
+    position ??= selection?.start;
 
     // If there is no position, or if the selection is not collapsed, do nothing.
     if (position == null || !(selection?.isCollapsed ?? false)) {
@@ -68,7 +67,7 @@ extension TextTransforms on EditorState {
     );
 
     // Apply the transaction.
-    await apply(transaction);
+    return apply(transaction);
   }
 
   /// Inserts text at the given position.
@@ -81,21 +80,24 @@ extension TextTransforms on EditorState {
     Position? position,
   }) async {
     // If the position is not passed in, use the current selection.
-    position = position ?? selectionService.currentSelection.value?.start;
+    position ??= selection?.start;
 
     // If there is no position, or if the selection is not collapsed, do nothing.
-    if (position == null ||
-        !(selectionService.currentSelection.value?.isCollapsed ?? false)) {
+    if (position == null || !(selection?.isCollapsed ?? false)) {
+      return;
+    }
+
+    final path = position.path;
+    final node = getNodeAtPath(path);
+
+    if (node == null) {
       return;
     }
 
     // Get the transaction and the path of the next node.
     final transaction = this.transaction;
-    final path = position.path;
-    final node = getNodeAtPath(path);
-    final delta = node?.delta;
-
-    if (node == null || delta == null) {
+    final delta = node.delta;
+    if (delta == null) {
       return;
     }
 
@@ -111,6 +113,81 @@ extension TextTransforms on EditorState {
     );
 
     // Apply the transaction.
-    await apply(transaction);
+    return apply(transaction);
+  }
+
+  /// format the delta at the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  Future<void> formatDelta(Selection? selection, Attributes attributes) async {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+
+    if (selection == null || selection.isCollapsed) {
+      return;
+    }
+
+    final nodes = getNodesInSelection(selection);
+    if (nodes.isEmpty) {
+      return;
+    }
+
+    final transaction = this.transaction;
+
+    for (final node in nodes) {
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      final startIndex = node == nodes.first ? selection.startIndex : 0;
+      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
+      transaction
+        ..formatText(
+          node,
+          startIndex,
+          endIndex - startIndex,
+          attributes,
+        )
+        ..afterSelection = transaction.beforeSelection;
+    }
+
+    return apply(transaction);
+  }
+
+  /// format the node at the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  Future<void> formatNode(
+    Selection? selection,
+    Node Function(
+      Node node,
+    )
+        nodeBuilder,
+  ) async {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+
+    if (selection == null) {
+      return;
+    }
+
+    final nodes = getNodesInSelection(selection);
+    if (nodes.isEmpty) {
+      return;
+    }
+
+    final transaction = this.transaction;
+
+    for (final node in nodes) {
+      transaction
+        ..insertNode(
+          node.path,
+          nodeBuilder(node),
+        )
+        ..deleteNode(node)
+        ..afterSelection = transaction.beforeSelection;
+    }
+
+    return apply(transaction);
   }
 }

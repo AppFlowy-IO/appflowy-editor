@@ -130,12 +130,12 @@ extension SelectionTransform on EditorState {
   void moveCursorForward([
     SelectionMoveRange range = SelectionMoveRange.character,
   ]) {
-    return moveCursor(SelectionMoveDirection.forward, range);
+    moveCursor(SelectionMoveDirection.forward, range);
   }
 
   /// move the cursor backward.
   void moveCursorBackward(SelectionMoveRange range) {
-    return moveCursor(SelectionMoveDirection.backward, range);
+    moveCursor(SelectionMoveDirection.backward, range);
   }
 
   void moveCursor(
