@@ -39,9 +39,7 @@ class SimpleEditor extends StatelessWidget {
             return FloatingToolbar(
               items: [
                 paragraphItem,
-                heading1Item,
-                heading2Item,
-                heading3Item,
+                ...headingItems,
                 placeholderItem,
                 ...formatItems,
                 placeholderItem,
