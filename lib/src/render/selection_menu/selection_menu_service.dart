@@ -8,6 +8,7 @@ import '../../service/default_text_operations/format_rich_text_style.dart';
 import '../image/image_upload_widget.dart';
 import 'selection_menu_widget.dart';
 
+// TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
   Offset get topLeft;
   Offset get offset;
@@ -68,6 +69,7 @@ class SelectionMenu implements SelectionMenuService {
     final editorOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorHeight = editorState.renderBox!.size.height;
+    final editorWidth = editorState.renderBox!.size.width;
 
     // show below default
     var showBelow = true;
@@ -90,27 +92,41 @@ class SelectionMenu implements SelectionMenuService {
 
     _selectionMenuEntry = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          top: showBelow ? _offset.dy : null,
-          bottom: showBelow ? null : _offset.dy,
-          left: offset.dx,
-          right: 0,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SelectionMenuWidget(
-              items: [
-                ..._defaultSelectionMenuItems,
-                ...editorState.selectionMenuItems,
+        return SizedBox(
+          width: editorWidth,
+          height: editorHeight,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              dismiss();
+            },
+            child: Stack(
+              children: [
+                Positioned(
+                  top: showBelow ? _offset.dy : null,
+                  bottom: showBelow ? null : _offset.dy,
+                  left: offset.dx,
+                  right: 0,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SelectionMenuWidget(
+                      items: [
+                        ..._defaultSelectionMenuItems,
+                        ...editorState.selectionMenuItems,
+                      ],
+                      maxItemInRow: 5,
+                      editorState: editorState,
+                      menuService: this,
+                      onExit: () {
+                        dismiss();
+                      },
+                      onSelectionUpdate: () {
+                        _selectionUpdateByInner = true;
+                      },
+                    ),
+                  ),
+                )
               ],
-              maxItemInRow: 5,
-              editorState: editorState,
-              menuService: this,
-              onExit: () {
-                dismiss();
-              },
-              onSelectionUpdate: () {
-                _selectionUpdateByInner = true;
-              },
             ),
           ),
         );

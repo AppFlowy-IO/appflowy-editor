@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class DesktopScrollService extends StatefulWidget {
@@ -22,8 +21,6 @@ class DesktopScrollService extends StatefulWidget {
 
 class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
-  AxisDirection _direction = AxisDirection.down;
-
   bool _scrollEnabled = true;
 
   @override
@@ -55,12 +52,6 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   Widget build(BuildContext context) {
     return widget.child;
-    return Listener(
-      onPointerSignal: _onPointerSignal,
-      onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
-      onPointerPanZoomEnd: _onPointerPanZoomEnd,
-      child: widget.child,
-    );
   }
 
   @override
@@ -109,33 +100,6 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     if (position is ScrollPositionWithSingleContext) {
       position.goBallistic(velocity);
     }
-  }
-
-  void _onPointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent && _scrollEnabled) {
-      final dy =
-          (widget.scrollController.position.pixels + event.scrollDelta.dy);
-      scrollTo(dy);
-    }
-  }
-
-  void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
-    if (_scrollEnabled) {
-      final dy = (widget.scrollController.position.pixels - event.panDelta.dy);
-      scrollTo(dy);
-
-      _direction =
-          event.panDelta.dy > 0 ? AxisDirection.down : AxisDirection.up;
-    }
-  }
-
-  void _onPointerPanZoomEnd(PointerPanZoomEndEvent event) {
-    // TODO: calculate the pixelsPerSecond
-    // var dyPerSecond = -1000.0;
-    // if (_direction == AxisDirection.up) {
-    //   dyPerSecond *= -1.0;
-    // }
-    // goBallistic(dyPerSecond);
   }
 
   @override
