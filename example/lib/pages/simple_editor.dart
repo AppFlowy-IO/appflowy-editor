@@ -128,6 +128,10 @@ class SimpleEditor extends StatelessWidget {
 
         //format strikethrough, ~strikethrough~
         formatTildeToStrikethrough,
+
+        //format bold, **bold** or __bold__
+        formatDoubleAsterisksToBold,
+        formatDoubleUnderscoresToBold,
       ],
       commandShortcutEvents: [
         // backspace
