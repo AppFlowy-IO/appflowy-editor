@@ -99,7 +99,7 @@ class EditorState {
 
   Transaction get transaction {
     final transaction = Transaction(document: document);
-    transaction.beforeSelection = _cursorSelection;
+    transaction.beforeSelection = selection;
     return transaction;
   }
 
