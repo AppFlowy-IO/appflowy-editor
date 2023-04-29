@@ -7,7 +7,7 @@
         "attributes": {
           "delta": [
             { "insert": "👋 " },
-            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": "Welcome to", "attributes": { "italic": true } },
             { "insert": " " },
             {
               "insert": "AppFlowy Editor",
@@ -26,7 +26,7 @@
         "attributes": {
           "delta": [
             { "insert": "👋 " },
-            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": "Welcome to", "attributes": { "italic": true }   },
             { "insert": " " },
             {
               "insert": "AppFlowy Editor",

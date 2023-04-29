@@ -43,6 +43,14 @@ class SimpleEditor extends StatelessWidget {
                 heading2Item,
                 heading3Item,
                 placeholderItem,
+                ...formatItems,
+                placeholderItem,
+                quoteItem,
+                bulletedListItem,
+                numberedListItem,
+                placeholderItem,
+                linkItem,
+                colorItem,
               ],
               editorState: editorState,
               scrollController: scrollController,
@@ -128,6 +136,10 @@ class SimpleEditor extends StatelessWidget {
         // format checked box, [x] or -[x]
         formatFilledBracketsToCheckedBox,
         formatHyphenFilledBracketsToCheckedBox,
+
+        //format bold, **bold** or __bold__
+        formatDoubleAsterisksToBold,
+        formatDoubleUnderscoresToBold,
       ],
       commandShortcutEvents: [
         // backspace
