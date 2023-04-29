@@ -3,4 +3,4 @@
 // 2. double underscore to bold -> __abc__
 
 export 'format_bold.dart';
-export 'handle_format_by_wrapping_with_double_char.dart';
+export 'handle_format_by_wrapping_with_double_character.dart';

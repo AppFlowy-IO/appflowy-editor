@@ -7,13 +7,13 @@ enum DoubleCharacterFormatStyle {
   bold,
 }
 
-bool handleFormatByWrappingWithDoubleChar({
+bool handleFormatByWrappingWithDoubleCharacter({
   // for demonstration purpose, the following comments use * to represent the character from the parameter [char].
   required EditorState editorState,
-  required String char,
+  required String character,
   required DoubleCharacterFormatStyle formatStyle,
 }) {
-  assert(char.length == 1);
+  assert(character.length == 1);
   final selection = editorState.selection;
   // if the selection is not collapsed or the cursor is at the first three index range, we don't need to format it.
   // we should return false to let the IME handle it.
@@ -34,14 +34,15 @@ bool handleFormatByWrappingWithDoubleChar({
 
   // The plainText should have at least 4 characters,like **a*.
   // The last char in the plainText should be *[char]. Otherwise, we don't need to format it.
-  if (plainText.length < 4 || plainText[selection.end.offset - 1] != char) {
+  if (plainText.length < 4 ||
+      plainText[selection.end.offset - 1] != character) {
     return false;
   }
 
   // find all the index of *[char]
   final charIndexList = <int>[];
   for (var i = 0; i < plainText.length; i++) {
-    if (plainText[i] == char) {
+    if (plainText[i] == character) {
       charIndexList.add(i);
     }
   }

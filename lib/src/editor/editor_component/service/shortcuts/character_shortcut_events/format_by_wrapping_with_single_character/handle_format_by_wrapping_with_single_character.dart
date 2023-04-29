@@ -6,11 +6,11 @@ enum FormatStyleByWrappingWithSingleChar {
   strikethrough,
 }
 
-Future<bool> handleFormatByWrappingWithSingleCharacter({
+bool handleFormatByWrappingWithSingleCharacter({
   required EditorState editorState,
   required String character,
   required FormatStyleByWrappingWithSingleChar formatStyle,
-}) async {
+}) {
   assert(character.length == 1);
 
   final selection = editorState.selection;
