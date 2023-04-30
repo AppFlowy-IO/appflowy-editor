@@ -48,6 +48,7 @@ void _handleCopy(EditorState editorState) async {
             selection.endIndex,
           );
       Log.keyboard.debug('copy html: $htmlString');
+      NodeStore.clearNodes();
       AppFlowyClipboard.setData(
         text: textString,
         html: htmlString,
