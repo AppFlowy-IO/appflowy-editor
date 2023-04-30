@@ -240,4 +240,68 @@ void main() async {
       );
     });
   });
+
+  group('getNodesInSelection', () {
+    const text = 'Welcome to AppFlowy Editor 🔥!';
+
+    // Welcome| to AppFlowy Editor 🔥!
+    test('get nodes in collapsed selection', () async {
+      final document = Document.blank().addParagraph(
+        initialText: text,
+      );
+      // Welcome| to AppFlowy Editor 🔥!
+      final selection = Selection.collapse(
+        [0],
+        4,
+      );
+      final editorState = EditorState(document: document);
+      editorState.selection = selection;
+      final texts = editorState.getTextInSelection(selection);
+      expect(texts, []);
+    });
+
+    // Welcome to |AppFlowy| Editor 🔥!
+    test('get nodes in single selection', () async {
+      final document = Document.blank().addParagraph(
+        initialText: text,
+      );
+      // Welcome to |AppFlowy| Editor 🔥!
+      final selection = Selection.single(
+        path: [0],
+        startOffset: 'Welcome to '.length,
+        endOffset: 'Welcome to AppFlowy'.length,
+      );
+      final editorState = EditorState(document: document);
+      editorState.selection = selection;
+      final texts = editorState.getTextInSelection(selection);
+      expect(texts, ['AppFlowy']);
+    });
+
+    // Wel|come
+    // To
+    // App|Flowy
+    test('get nodes in multi selection', () async {
+      final document = Document.blank()
+          .addParagraph(
+            initialText: 'Welcome',
+          )
+          .addParagraph(
+            initialText: 'To',
+          )
+          .addParagraph(
+            initialText: 'AppFlowy',
+          );
+      // Wel|come
+      // To
+      // App|Flowy
+      final selection = Selection(
+        start: Position(path: [0], offset: 3),
+        end: Position(path: [2], offset: 3),
+      );
+      final editorState = EditorState(document: document);
+      editorState.selection = selection;
+      final texts = editorState.getTextInSelection(selection);
+      expect(texts, ['come', 'To', 'App']);
+    });
+  });
 }
