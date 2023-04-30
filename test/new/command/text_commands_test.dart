@@ -177,4 +177,67 @@ void main() async {
       expect(editorState.getNodeAtPath([1, 0])?.delta?.toPlainText(), text);
     });
   });
+
+  group('insertText', () {
+    const text = 'Welcome to AppFlowy Editor 🔥!';
+
+    /// Before
+    /// |
+    /// Welcome to AppFlowy Editor 🔥!
+    ///
+    /// After
+    /// Hello|
+    /// Welcome to AppFlowy Editor 🔥!
+    test('insertText', () async {
+      final document = Document.blank()
+          .addParagraph(
+            initialText: '',
+          )
+          .addParagraph(
+            initialText: text,
+            decorator: (index, node) {
+              node.addParagraph(
+                initialText: text,
+              );
+            },
+          );
+      final editorState = EditorState(document: document);
+
+      const hello = 'Hello';
+      await editorState.insertText(0, hello, path: [0]);
+
+      expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), hello);
+    });
+
+    test('insertTextAtCurrentSelection', () async {
+      final document = Document.blank()
+          .addParagraph(
+            initialText: '',
+          )
+          .addParagraph(
+            initialText: text,
+            decorator: (index, node) {
+              node.addParagraph(
+                initialText: text,
+              );
+            },
+          );
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: 0),
+      );
+      final editorState = EditorState(document: document);
+      editorState.selection = selection;
+
+      const hello = 'Hello';
+      await editorState.insertTextAtCurrentSelection(hello);
+
+      expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), hello);
+      expect(
+        editorState.selection,
+        Selection.collapsed(
+          Position(path: [0], offset: hello.length),
+        ),
+      );
+    });
+  });
 }

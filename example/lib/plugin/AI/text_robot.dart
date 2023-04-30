@@ -44,7 +44,7 @@ class TextRobot {
 
       // insert new line
       if (lines.length > 1) {
-        await editorState.insertNewLineAtCurrentSelection();
+        await editorState.insertNewLine();
       }
     }
   }

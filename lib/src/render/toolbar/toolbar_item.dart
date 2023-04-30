@@ -429,10 +429,10 @@ void showLinkMenu(
               await safeLaunchUrl(linkText);
             },
             onSubmitted: (text) async {
-              await editorState.formatLinkInText(
-                text,
-                textNode: textNode,
-              );
+              // await editorState.formatLinkInText(
+              //   text,
+              //   textNode: textNode,
+              // );
 
               _dismissOverlay();
             },
