@@ -71,10 +71,10 @@ class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () async {
-              await widget.editorState.formatTextToCheckbox(
-                !check,
-                textNode: widget.textNode,
-              );
+              // await widget.editorState.formatTextToCheckbox(
+              //   !check,
+              //   textNode: widget.textNode,
+              // );
             },
             child: icon,
           ),

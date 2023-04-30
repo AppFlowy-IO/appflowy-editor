@@ -190,4 +190,36 @@ extension TextTransforms on EditorState {
 
     return apply(transaction);
   }
+
+  /// Insert text at the given index of the given [TextNode] or the [Path].
+  ///
+  /// [Path] and [TextNode] are mutually exclusive.
+  /// One of these two parameters must have a value.
+  Future<void> insertText(
+    int index,
+    String text, {
+    Path? path,
+    Node? node,
+  }) async {
+    node ??= getNodeAtPath(path!);
+    if (node == null) {
+      assert(false, 'node is null');
+      return;
+    }
+    return apply(
+      transaction..insertText(node, index, text),
+    );
+  }
+
+  Future<void> insertTextAtCurrentSelection(String text) async {
+    final selection = this.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
+    }
+    return insertText(
+      selection.startIndex,
+      text,
+      path: selection.end.path,
+    );
+  }
 }
