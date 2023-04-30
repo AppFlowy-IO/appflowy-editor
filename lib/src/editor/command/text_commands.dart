@@ -222,4 +222,29 @@ extension TextTransforms on EditorState {
       path: selection.end.path,
     );
   }
+
+  /// Get the text in the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  ///
+  List<String> getTextInSelection([
+    Selection? selection,
+  ]) {
+    List<String> res = [];
+    selection ??= this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return res;
+    }
+    final nodes = getNodesInSelection(selection);
+    for (final node in nodes) {
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      final startIndex = node == nodes.first ? selection.startIndex : 0;
+      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
+      res.add(delta.slice(startIndex, endIndex).toPlainText());
+    }
+    return res;
+  }
 }

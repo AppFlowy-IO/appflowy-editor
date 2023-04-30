@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/commands/command_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import '../infra/test_editor.dart';
