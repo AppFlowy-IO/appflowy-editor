@@ -17,8 +17,10 @@ class FindMenuWidget extends StatefulWidget {
 }
 
 class _FindMenuWidgetState extends State<FindMenuWidget> {
-  final controller = TextEditingController();
+  final findController = TextEditingController();
+  final replaceController = TextEditingController();
   String queriedPattern = '';
+  bool replaceFlag = false;
   late SearchService searchService;
 
   @override
@@ -31,58 +33,115 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: SizedBox(
-            width: 200,
-            height: 50,
-            child: TextField(
-              autofocus: true,
-              controller: controller,
-              onSubmitted: (_) => _searchPattern(),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter text to search',
+        Row(
+          children: [
+            IconButton(
+              onPressed: () => setState(() {
+                replaceFlag = !replaceFlag;
+              }),
+              icon: replaceFlag
+                  ? const Icon(Icons.expand_less)
+                  : const Icon(Icons.expand_more),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: SizedBox(
+                width: 200,
+                height: 50,
+                child: TextField(
+                  autofocus: true,
+                  controller: findController,
+                  onSubmitted: (_) => _searchPattern(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter text to search',
+                  ),
+                ),
               ),
             ),
-          ),
+            IconButton(
+              onPressed: () => _navigateToMatchedIndex(moveUp: true),
+              icon: const Icon(Icons.arrow_upward),
+              tooltip: 'Previous Match',
+            ),
+            IconButton(
+              onPressed: () => _navigateToMatchedIndex(),
+              icon: const Icon(Icons.arrow_downward),
+              tooltip: 'Next Match',
+            ),
+            IconButton(
+              onPressed: () {
+                widget.dismiss();
+                searchService.unHighlight(queriedPattern);
+                setState(() {
+                  queriedPattern = '';
+                });
+              },
+              icon: const Icon(Icons.close),
+              tooltip: 'Close',
+            ),
+          ],
         ),
-        IconButton(
-          onPressed: () => _searchPattern(),
-          icon: const Icon(Icons.search),
-        ),
-        IconButton(
-          onPressed: () => _navigateToMatchedIndex(moveUp: true),
-          icon: const Icon(Icons.arrow_upward),
-        ),
-        IconButton(
-          onPressed: () => _navigateToMatchedIndex(),
-          icon: const Icon(Icons.arrow_downward),
-        ),
-        IconButton(
-          onPressed: () {
-            widget.dismiss();
-            searchService.unHighlight(queriedPattern);
-            setState(() {
-              queriedPattern = '';
-            });
-          },
-          icon: const Icon(Icons.close),
-        ),
+        replaceFlag
+            ? Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: TextField(
+                        autofocus: false,
+                        controller: replaceController,
+                        onSubmitted: (_) => _replaceSelectedWord(),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Replace',
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _replaceSelectedWord(),
+                    icon: const Icon(Icons.find_replace),
+                    tooltip: 'Replace',
+                  ),
+                  IconButton(
+                    onPressed: () => _replaceAllMatches(),
+                    icon: const Icon(Icons.change_circle_outlined),
+                    tooltip: 'Replace All',
+                  ),
+                ],
+              )
+            : const SizedBox(height: 0),
       ],
     );
   }
 
   void _searchPattern() {
-    searchService.findAndHighlight(controller.text);
+    searchService.findAndHighlight(findController.text);
     setState(() {
-      queriedPattern = controller.text;
+      queriedPattern = findController.text;
     });
   }
 
   void _navigateToMatchedIndex({bool moveUp = false}) {
     searchService.navigateToMatch(moveUp);
+  }
+
+  void _replaceSelectedWord() {
+    if (findController.text != queriedPattern) {
+      _searchPattern();
+    }
+    searchService.replaceSelectedWord(replaceController.text);
+  }
+
+  void _replaceAllMatches() {
+    if (findController.text != queriedPattern) {
+      _searchPattern();
+    }
+    searchService.replaceAllMatches(replaceController.text);
   }
 }

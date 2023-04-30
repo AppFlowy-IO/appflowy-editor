@@ -71,6 +71,7 @@ class SearchService {
   /// the match located above the current selected match is newly selected.
   /// Otherwise the match below the current selected match is newly selected.
   void navigateToMatch(bool moveUp) {
+    if (matchedPositions.isEmpty) return;
     if (moveUp) {
       selectedIndex =
           selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
@@ -85,6 +86,61 @@ class SearchService {
       final match = matchedPositions[selectedIndex];
       _selectWordAtPosition(match);
       //FIXME: selecting a word should scroll editor automatically.
+    }
+  }
+
+  /// Replaces the current selected word with replaceText.
+  /// After replacing the selected word, this method selects the next
+  /// matched word if that exists.
+  void replaceSelectedWord(String replaceText) {
+    if (replaceText.isEmpty ||
+        queriedPattern.isEmpty ||
+        matchedPositions.isEmpty) {
+      return;
+    }
+
+    final matchedPosition = matchedPositions[selectedIndex];
+    _selectWordAtPosition(matchedPosition);
+
+    //unhighlight the selected word before it is replaced
+    formatHighlight(
+      editorState,
+      editorState.editorStyle.highlightColorHex!,
+    );
+    editorState.undoManager.forgetRecentUndo();
+
+    final textNode = editorState.service.selectionService.currentSelectedNodes
+        .whereType<TextNode>()
+        .first;
+
+    final transaction = editorState.transaction;
+
+    transaction.replaceText(
+      textNode,
+      matchedPosition.offset,
+      queriedPattern.length,
+      replaceText,
+    );
+
+    editorState.apply(transaction);
+
+    matchedPositions.removeAt(selectedIndex);
+    navigateToMatch(false);
+  }
+
+  /// Replaces all the found occurances of pattern with replaceText
+  void replaceAllMatches(String replaceText) {
+    if (replaceText.isEmpty || queriedPattern.isEmpty) {
+      return;
+    }
+    //we need to create a final variable matchesLength here, because
+    //when we replaceSelectedWord we reduce the length of matchedPositions
+    //list, this causes the value to shrink dynamically and thus it may
+    //result in pretermination.
+    final int matchesLength = matchedPositions.length;
+
+    for (int i = 0; i < matchesLength; i++) {
+      replaceSelectedWord(replaceText);
     }
   }
 
@@ -115,7 +171,9 @@ class SearchService {
     editorState.updateCursorSelection(Selection(start: start, end: end));
   }
 
-  //this is a standard algorithm used for searching patterns in long text samples
+  //This is a standard algorithm used for searching patterns in long text samples
+  //It is more efficient than brute force searching because it is able to skip
+  //characters that will never possibly match with required pattern.
   List<int> _boyerMooreSearch(String pattern, String text) {
     int m = pattern.length;
     int n = text.length;
