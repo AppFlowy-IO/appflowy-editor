@@ -28,12 +28,15 @@ Selection _computeSelectionAfterPasteMultipleNodes(
 
 void _handleCopy(EditorState editorState) async {
   final selection = editorState.cursorSelection?.normalized;
-  if (selection == null || selection.isCollapsed) {
+  if (selection == null) {
     return;
   }
   if (selection.start.path.equals(selection.end.path)) {
     final nodeAtPath = editorState.document.nodeAtPath(selection.end.path)!;
     if (nodeAtPath.type == "text") {
+      if (selection.isCollapsed) {
+        return;
+      }
       final textNode = nodeAtPath as TextNode;
       final htmlString = NodesToHTMLConverter(
         nodes: [textNode],
@@ -47,6 +50,19 @@ void _handleCopy(EditorState editorState) async {
       Log.keyboard.debug('copy html: $htmlString');
       AppFlowyClipboard.setData(
         text: textString,
+        html: htmlString,
+      );
+    } else if (nodeAtPath.type == "image") {
+      final node =  editorState.document.nodeAtPath((selection.start.path)) as Node;
+      final htmlString = NodesToHTMLConverter(
+        nodes: [node],
+        startOffset: selection.start.offset,
+        endOffset: selection.end.offset,
+      ).toHTMLString();
+
+      NodeStore.saveNodes([node]);
+      AppFlowyClipboard.setData(
+        text: '',
         html: htmlString,
       );
     } else {
