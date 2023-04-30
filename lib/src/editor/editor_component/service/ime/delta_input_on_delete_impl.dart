@@ -14,8 +14,11 @@ Future<void> onDelete(
 
   // single line
   if (selection.isSingle) {
-    final node = editorState.selectionService.currentSelectedNodes.first;
-    assert(node.delta != null);
+    final node = editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
 
     final transaction = editorState.transaction
       ..deleteText(
