@@ -119,6 +119,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     tooltip: 'Replace',
                   ),
                   IconButton(
+                    key: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     tooltip: 'Replace All',

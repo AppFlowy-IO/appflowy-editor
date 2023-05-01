@@ -12,7 +12,7 @@ void main() async {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  group('find_replace_menu.dart', () {
+  group('find_replace_menu.dart findMenu', () {
     testWidgets('find menu appears properly', (tester) async {
       await _prepare(tester, lines: 3);
 
@@ -36,19 +36,13 @@ void main() async {
     });
 
     testWidgets('find menu does not work with empty input', (tester) async {
-      const textInputKey = Key('findTextField');
-      final editor = await _prepare(tester);
+      const pattern = '';
 
-      await tester.tap(find.byKey(textInputKey));
-      await tester.enterText(find.byKey(textInputKey), '');
-      await tester.pumpAndSettle();
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-
-      //pressing enter should trigger the findAndHighlight method, but
-      //since the input is empty the document is not affected.
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.enter,
+      //we are passing empty string for pattern
+      final editor = await _prepareWithTextInputForFind(
+        tester,
+        lines: 1,
+        pattern: pattern,
       );
 
       //since the method will not select anything as searched pattern is
@@ -75,20 +69,11 @@ void main() async {
     testWidgets('find menu works properly when match is not found',
         (tester) async {
       const pattern = 'Flutter';
-      const textInputKey = Key('findTextField');
 
-      final editor = await _prepare(tester, lines: 3);
-
-      await tester.tap(find.byKey(textInputKey));
-      await tester.enterText(find.byKey(textInputKey), pattern);
-      await tester.pumpAndSettle();
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-
-      //pressing enter should trigger the findAndHighlight method, which
-      //will find the pattern inside the editor.
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.enter,
+      final editor = await _prepareWithTextInputForFind(
+        tester,
+        lines: 1,
+        pattern: pattern,
       );
 
       //fetching the current selection
