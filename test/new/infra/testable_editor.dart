@@ -82,6 +82,10 @@ class TestableEditor {
     await tester.pumpAndSettle(const Duration(seconds: 1));
   }
 
+  void addNode(Node node) {
+    _editorState.document.root.insert(node);
+  }
+
   void addParagraph({
     TextBuilder? builder,
     String? initialText,
@@ -109,7 +113,7 @@ class TestableEditor {
     );
   }
 
-  void insertEmptyParagraph() {
+  void addEmptyParagraph() {
     _editorState.document.addParagraph(initialText: '');
   }
 

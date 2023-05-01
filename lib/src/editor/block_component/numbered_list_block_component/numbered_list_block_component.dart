@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Node numberedListNode({
-  required Attributes attributes,
+  Attributes? attributes,
   LinkedList<Node>? children,
 }) {
+  attributes ??= {'delta': Delta().toJson()};
   return Node(
     type: 'numbered_list',
     attributes: {

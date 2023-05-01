@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Node quoteNode({
-  required Attributes attributes,
+  Attributes? attributes,
   LinkedList<Node>? children,
 }) {
+  attributes ??= {'delta': Delta().toJson()};
   return Node(
     type: 'quote',
     attributes: {

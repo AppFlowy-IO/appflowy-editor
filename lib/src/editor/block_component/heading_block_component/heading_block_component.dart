@@ -14,8 +14,9 @@ class HeadingBlockKeys {
 
 Node headingNode({
   required int level,
-  required Attributes attributes,
+  Attributes? attributes,
 }) {
+  attributes ??= {'delta': Delta().toJson()};
   return Node(
     type: 'heading',
     attributes: {
