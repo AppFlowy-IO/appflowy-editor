@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,8 +47,8 @@ class TestableEditor {
       ],
       commandShortcutEvents: [
         backspaceCommand,
-        arrowLeftCommand,
-        arrowRightCommand,
+        ...arrowLeftKeys,
+        ...arrowRightKeys,
       ],
     );
     await tester.pumpWidget(
@@ -76,7 +77,6 @@ class TestableEditor {
   }
 
   Future<void> dispose() async {
-    Debounce.clear();
     // Workaround: to wait all the debounce calls expire.
     //  https://github.com/flutter/flutter/issues/11181#issuecomment-568737491
     await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -120,6 +120,44 @@ class TestableEditor {
 
   Node? nodeAtPath(Path path) {
     return _editorState.getNodeAtPath(path);
+  }
+
+  Future<void> pressLogicKey({
+    String? character,
+    LogicalKeyboardKey? key,
+    bool isControlPressed = false,
+    bool isShiftPressed = false,
+    bool isAltPressed = false,
+    bool isMetaPressed = false,
+  }) async {
+    if (key != null) {
+      if (isControlPressed) {
+        await simulateKeyDownEvent(LogicalKeyboardKey.control);
+      }
+      if (isShiftPressed) {
+        await simulateKeyDownEvent(LogicalKeyboardKey.shift);
+      }
+      if (isAltPressed) {
+        await simulateKeyDownEvent(LogicalKeyboardKey.alt);
+      }
+      if (isMetaPressed) {
+        await simulateKeyDownEvent(LogicalKeyboardKey.meta);
+      }
+      await simulateKeyDownEvent(key);
+      if (isControlPressed) {
+        await simulateKeyUpEvent(LogicalKeyboardKey.control);
+      }
+      if (isShiftPressed) {
+        await simulateKeyUpEvent(LogicalKeyboardKey.shift);
+      }
+      if (isAltPressed) {
+        await simulateKeyUpEvent(LogicalKeyboardKey.alt);
+      }
+      if (isMetaPressed) {
+        await simulateKeyUpEvent(LogicalKeyboardKey.meta);
+      }
+    }
+    await tester.pumpAndSettle();
   }
 }
 

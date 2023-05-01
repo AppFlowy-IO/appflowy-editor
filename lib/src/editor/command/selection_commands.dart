@@ -160,6 +160,7 @@ extension SelectionTransform on EditorState {
     if (node == null) {
       return;
     }
+
     // Originally, I want to make this function as pure as possible,
     //  but I have to import the selectable here to compute the selection.
     final start = node.selectable?.start();
@@ -167,42 +168,43 @@ extension SelectionTransform on EditorState {
     final offset = direction == SelectionMoveDirection.forward
         ? selection.startIndex
         : selection.endIndex;
-
-    // the cursor is at the start of the node
-    // move the cursor to the end of the previous node
-    if (direction == SelectionMoveDirection.forward &&
-        start != null &&
-        start.offset >= offset) {
-      final previousEnd = node
-          .previousNodeWhere((element) => element.selectable != null)
-          ?.selectable
-          ?.end();
-      if (previousEnd != null) {
-        updateSelectionWithReason(
-          Selection.collapsed(previousEnd),
-          reason: SelectionUpdateReason.uiEvent,
-        );
+    {
+      // the cursor is at the start of the node
+      // move the cursor to the end of the previous node
+      if (direction == SelectionMoveDirection.forward &&
+          start != null &&
+          start.offset >= offset) {
+        final previousEnd = node
+            .previousNodeWhere((element) => element.selectable != null)
+            ?.selectable
+            ?.end();
+        if (previousEnd != null) {
+          updateSelectionWithReason(
+            Selection.collapsed(previousEnd),
+            reason: SelectionUpdateReason.uiEvent,
+          );
+        }
+        return;
       }
-      return;
-    }
-    // the cursor is at the end of the node
-    // move the cursor to the start of the next node
-    else if (direction == SelectionMoveDirection.backward &&
-        end != null &&
-        end.offset <= offset) {
-      final nextStart = node.next?.selectable?.start();
-      if (nextStart != null) {
-        updateSelectionWithReason(
-          Selection.collapsed(nextStart),
-          reason: SelectionUpdateReason.uiEvent,
-        );
+      // the cursor is at the end of the node
+      // move the cursor to the start of the next node
+      else if (direction == SelectionMoveDirection.backward &&
+          end != null &&
+          end.offset <= offset) {
+        final nextStart = node.next?.selectable?.start();
+        if (nextStart != null) {
+          updateSelectionWithReason(
+            Selection.collapsed(nextStart),
+            reason: SelectionUpdateReason.uiEvent,
+          );
+        }
+        return;
       }
-      return;
     }
 
+    final delta = node.delta;
     switch (range) {
       case SelectionMoveRange.character:
-        final delta = node.delta;
         if (delta != null) {
           // move the cursor to the left or right by one character
           updateSelectionWithReason(
@@ -211,6 +213,23 @@ extension SelectionTransform on EditorState {
                 offset: direction == SelectionMoveDirection.forward
                     ? delta.prevRunePosition(offset)
                     : delta.nextRunePosition(offset),
+              ),
+            ),
+            reason: SelectionUpdateReason.uiEvent,
+          );
+        } else {
+          throw UnimplementedError();
+        }
+        break;
+      case SelectionMoveRange.line:
+        if (delta != null) {
+          // move the cursor to the left or right by one character
+          updateSelectionWithReason(
+            Selection.collapsed(
+              selection.start.copyWith(
+                offset: direction == SelectionMoveDirection.forward
+                    ? 0
+                    : delta.length,
               ),
             ),
             reason: SelectionUpdateReason.uiEvent,

@@ -53,7 +53,10 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   }
 
   @override
-  void scrollTo(double dy) {
+  void scrollTo(
+    double dy, {
+    Duration? duration,
+  }) {
     widget.scrollController.position.jumpTo(
       dy.clamp(
         widget.scrollController.position.minScrollExtent,

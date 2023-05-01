@@ -115,7 +115,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   int? get page => forward.page;
 
   @override
-  void scrollTo(double dy) => forward.scrollTo(dy);
+  void scrollTo(double dy, {Duration? duration}) =>
+      forward.scrollTo(dy, duration: duration);
 
   @override
   void startAutoScroll(

@@ -55,13 +55,23 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   }
 
   @override
-  void scrollTo(double dy) {
-    widget.scrollController.position.jumpTo(
-      dy.clamp(
-        widget.scrollController.position.minScrollExtent,
-        widget.scrollController.position.maxScrollExtent,
-      ),
+  void scrollTo(
+    double dy, {
+    Duration? duration,
+  }) {
+    dy = dy.clamp(
+      widget.scrollController.position.minScrollExtent,
+      widget.scrollController.position.maxScrollExtent,
     );
+    if (duration != null) {
+      widget.scrollController.position.animateTo(
+        dy,
+        duration: duration,
+        curve: Curves.bounceInOut,
+      );
+    } else {
+      widget.scrollController.position.jumpTo(dy);
+    }
   }
 
   @override

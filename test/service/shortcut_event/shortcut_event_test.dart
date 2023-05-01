@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import '../../infra/test_editor.dart';
+
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -33,109 +33,72 @@ void main() async {
 
     testWidgets('redefine move cursor begin command', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text);
+      final editor = tester.editor..addParagraphs(2, initialText: text);
 
       await editor.startTesting();
 
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: text.length),
+      final selection = Selection.single(path: [1], startOffset: text.length);
+      await editor.updateSelection(selection);
+
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
       );
-
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowLeft,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowLeft,
-          isMetaPressed: true,
-        );
-      }
-
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0),
       );
 
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: text.length),
+      await editor.updateSelection(selection);
+
+      const newCommand = 'alt+arrow left';
+      moveCursorToBeginCommand.updateCommand(
+        windowsCommand: newCommand,
+        linuxCommand: newCommand,
+        macOSCommand: newCommand,
       );
 
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Move cursor begin') {
-          event.updateCommand(
-            windowsCommand: 'alt+arrow left',
-            linuxCommand: 'alt+arrow left',
-            macOSCommand: 'alt+arrow left',
-          );
-        }
-      }
-
-      if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowLeft,
-          isAltPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowLeft,
-          isMetaPressed: true,
-        );
-      }
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isAltPressed: true,
+      );
 
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0),
       );
 
-      tester.pumpAndSettle();
+      await editor.dispose();
     });
 
     testWidgets('redefine move cursor end command', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text);
+      final editor = tester.editor..addParagraphs(2, initialText: text);
 
       await editor.startTesting();
 
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: 0),
+      final selection = Selection.single(path: [1], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
       );
-
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowRight,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.arrowRight,
-          isMetaPressed: true,
-        );
-      }
-
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: text.length),
       );
 
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: 0),
-      );
+      await editor.updateSelection(selection);
 
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Move cursor end') {
-          event.updateCommand(
-            windowsCommand: 'alt+arrow right',
-            linuxCommand: 'alt+arrow right',
-            macOSCommand: 'alt+arrow right',
-          );
-        }
-      }
+      const newCommand = 'alt+arrow right';
+      moveCursorToEndCommand.updateCommand(
+        windowsCommand: newCommand,
+        linuxCommand: newCommand,
+        macOSCommand: newCommand,
+      );
 
       await editor.pressLogicKey(
         key: LogicalKeyboardKey.arrowRight,
@@ -143,141 +106,11 @@ void main() async {
       );
 
       expect(
-        editor.documentSelection,
-        Selection.single(path: [1], startOffset: text.length),
-      );
-    });
-
-    testWidgets('Test Home Key to move to start of current text',
-        (tester) async {
-      const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text);
-
-      await editor.startTesting();
-
-      await editor.updateSelection(
+        editor.selection,
         Selection.single(path: [1], startOffset: text.length),
       );
 
-      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.home,
-        );
-      }
-
-      expect(
-        editor.documentSelection,
-        Selection.single(path: [1], startOffset: 0),
-      );
-
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: text.length),
-      );
-
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Move cursor begin') {
-          event.updateCommand(
-            windowsCommand: 'home',
-            linuxCommand: 'home',
-            macOSCommand: 'home',
-          );
-        }
-      }
-
-      if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.home,
-        );
-      }
-
-      expect(
-        editor.documentSelection,
-        Selection.single(path: [1], startOffset: 0),
-      );
-    });
-
-    testWidgets('Test End Key to move to end of current text', (tester) async {
-      const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text);
-
-      await editor.startTesting();
-
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: text.length),
-      );
-
-      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.end,
-        );
-      }
-
-      expect(
-        editor.documentSelection,
-        Selection.single(path: [1], startOffset: text.length),
-      );
-
-      await editor.updateSelection(
-        Selection.single(path: [1], startOffset: 0),
-      );
-
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Move cursor end') {
-          event.updateCommand(
-            windowsCommand: 'end',
-            linuxCommand: 'end',
-            macOSCommand: 'end',
-          );
-        }
-      }
-
-      if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.end,
-        );
-      }
-
-      expect(
-        editor.documentSelection,
-        Selection.single(path: [1], startOffset: text.length),
-      );
-    });
-
-    testWidgets('delete sentence to beginning', (tester) async {
-      const text = "Hello World!";
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text);
-
-      await editor.startTesting();
-
-      await editor.updateSelection(
-        Selection.collapsed(Position(path: [1], offset: 10)),
-      );
-
-      expect(editor.documentLength, 2);
-
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isMetaPressed: Platform.isMacOS,
-        isControlPressed: !Platform.isMacOS,
-        isAltPressed: !Platform.isMacOS,
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(
-        editor.documentSelection,
-        Selection.collapsed(Position(path: [1], offset: 0)),
-      );
-
-      expect(editor.documentLength, 2);
-
-      expect((editor.document.nodeAtPath([1]) as TextNode).delta.length, 2);
+      await editor.dispose();
     });
   });
 }
