@@ -1,12 +1,7 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/legacy/built_in_attribute_keys.dart';
-import '../../editor_state.dart';
-import '../../infra/flowy_svg.dart';
-import '../../l10n/l10n.dart';
-import '../../service/default_text_operations/format_rich_text_style.dart';
 import '../image/image_upload_widget.dart';
-import 'selection_menu_widget.dart';
 
 // TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
@@ -185,7 +180,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('text', editorState, onSelected),
     keywords: ['text'],
     handler: (editorState, _, __) {
-      insertTextNodeAfterSelection(editorState, {});
+      insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
   SelectionMenuItem(
@@ -194,7 +189,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h1', editorState, onSelected),
     keywords: ['heading 1, h1'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h1);
+      insertHeadingAfterSelection(editorState, 1);
     },
   ),
   SelectionMenuItem(
@@ -203,7 +198,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h2', editorState, onSelected),
     keywords: ['heading 2, h2'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h2);
+      insertHeadingAfterSelection(editorState, 2);
     },
   ),
   SelectionMenuItem(
@@ -212,7 +207,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h3', editorState, onSelected),
     keywords: ['heading 3, h3'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h3);
+      insertHeadingAfterSelection(editorState, 3);
     },
   ),
   SelectionMenuItem(

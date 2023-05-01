@@ -15,9 +15,10 @@ class TodoListBlockKeys {
 
 Node todoListNode({
   required bool checked,
-  required Attributes attributes,
+  Attributes? attributes,
   LinkedList<Node>? children,
 }) {
+  attributes ??= {'delta': Delta().toJson()};
   return Node(
     type: 'todo_list',
     attributes: {
