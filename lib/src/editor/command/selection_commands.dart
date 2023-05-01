@@ -221,9 +221,36 @@ extension SelectionTransform on EditorState {
           throw UnimplementedError();
         }
         break;
+      case SelectionMoveRange.word:
+        final delta = node.delta;
+        if (delta != null) {
+          final position = direction == SelectionMoveDirection.forward
+              ? Position(
+                  path: node.path,
+                  offset: delta.prevRunePosition(offset),
+                )
+              : selection.start;
+          // move the cursor to the left or right by one line
+          final wordSelection =
+              node.selectable?.getWordBoundaryInPosition(position);
+          if (wordSelection != null) {
+            updateSelectionWithReason(
+              Selection.collapsed(
+                direction == SelectionMoveDirection.forward
+                    ? wordSelection.start
+                    : wordSelection.end,
+              ),
+              reason: SelectionUpdateReason.uiEvent,
+            );
+          }
+        } else {
+          throw UnimplementedError();
+        }
+
+        break;
       case SelectionMoveRange.line:
         if (delta != null) {
-          // move the cursor to the left or right by one character
+          // move the cursor to the left or right by one line
           updateSelectionWithReason(
             Selection.collapsed(
               selection.start.copyWith(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 final List<CommandShortcutEvent> arrowRightKeys = [
   moveCursorRightCommand,
   moveCursorToEndCommand,
+  moveCursorToRightWordCommand,
 ];
 
 /// Arrow right key events.
@@ -45,5 +46,23 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.moveCursorBackward(SelectionMoveRange.line);
+  return KeyEventResult.handled;
+};
+
+// arrow right key + alt
+// move the cursor to the right word
+CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
+  key: 'move the cursor to the right word',
+  command: 'alt+arrow right',
+  handler: _moveCursorToRightWordCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  editorState.moveCursorBackward(SelectionMoveRange.word);
   return KeyEventResult.handled;
 };
