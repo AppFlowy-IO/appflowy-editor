@@ -18,7 +18,7 @@ import 'package:appflowy_editor/src/extensions/attributes_extension.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_item.dart';
 
-const _kRichTextDebugMode = true;
+const _kRichTextDebugMode = false;
 
 typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 

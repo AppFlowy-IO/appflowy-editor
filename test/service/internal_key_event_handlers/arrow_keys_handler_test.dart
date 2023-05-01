@@ -44,34 +44,36 @@ void main() async {
         }
       }
 
-      editor.dispose();
+      await editor.dispose();
     });
   });
 
-//   testWidgets('Cursor up/down', (tester) async {
-//     final editor = tester.editor
-//       ..insertTextNode("Welcome")
-//       ..insertTextNode("Welcome to AppFlowy");
-//     await editor.startTesting();
+  testWidgets('Cursor up/down', (tester) async {
+    const text1 = 'Welcome';
+    const text2 = 'Welcome to AppFlowy';
+    final editor = tester.editor
+      ..addParagraph(initialText: text1)
+      ..addParagraph(initialText: text2);
+    await editor.startTesting();
 
-//     await editor.updateSelection(
-//       Selection.single(path: [1], startOffset: 19),
-//     );
+    await editor.updateSelection(
+      Selection.single(path: [1], startOffset: text2.length),
+    );
 
-//     await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
+    expect(
+      editor.selection,
+      Selection.single(path: [0], startOffset: text1.length),
+    );
 
-//     expect(
-//       editor.documentSelection,
-//       Selection.single(path: [0], startOffset: 7),
-//     );
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
+    expect(
+      editor.selection,
+      Selection.single(path: [1], startOffset: text1.length),
+    );
 
-//     await editor.pressLogicKey(key: LogicalKeyboardKey.arrowDown);
-
-//     expect(
-//       editor.documentSelection,
-//       Selection.single(path: [1], startOffset: 7),
-//     );
-//   });
+    await editor.dispose();
+  });
 
 //   testWidgets('Cursor top/bottom select', (tester) async {
 //     const text = 'Welcome to Appflowy';

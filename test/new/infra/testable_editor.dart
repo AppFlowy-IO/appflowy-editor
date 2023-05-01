@@ -50,6 +50,7 @@ class TestableEditor {
         ...arrowLeftKeys,
         ...arrowRightKeys,
         ...arrowUpKeys,
+        ...arrowDownKeys,
       ],
     );
     await tester.pumpWidget(
