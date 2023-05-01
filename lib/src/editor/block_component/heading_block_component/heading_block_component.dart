@@ -3,6 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
+class HeadingBlockKeys {
+  HeadingBlockKeys._();
+
+  /// The level data of a heading block.
+  ///
+  /// The value is a int.
+  static const String level = 'level';
+}
+
+Node headingNode({
+  required int level,
+  required Attributes attributes,
+}) {
+  return Node(
+    type: 'heading',
+    attributes: {
+      HeadingBlockKeys.level: level,
+      ...attributes,
+    },
+  );
+}
+
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   HeadingBlockComponentBuilder({
     this.padding = const EdgeInsets.symmetric(vertical: 8.0),
@@ -22,7 +44,10 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.delta != null && node.children.isEmpty;
+  bool validate(Node node) =>
+      node.delta != null &&
+      node.children.isEmpty &&
+      node.attributes[HeadingBlockKeys.level] is int;
 }
 
 class HeadingBlockComponentWidget extends StatefulWidget {
@@ -52,7 +77,7 @@ class _HeadingBlockComponentWidgetState
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
-  int get level => widget.node.attributes['level'] as int? ?? 1;
+  int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
 
   @override
   Widget build(BuildContext context) {

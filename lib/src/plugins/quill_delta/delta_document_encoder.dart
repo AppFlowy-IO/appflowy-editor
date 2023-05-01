@@ -204,9 +204,9 @@ class DeltaDocumentConvert {
   }
 
   /*
-  // convert code-block to appflowy style code
+  // convert code_block to appflowy style code
   void _applyCodeBlock(TextNode textNode, Map? attributes) {
-    final codeBlock = attributes?['code-block'] as bool?;
+    final codeBlock = attributes?['code_block'] as bool?;
     if (codeBlock != null) {
       textNode.updateAttributes({
         BuiltInAttributeKey.subtype: 'code_block',
