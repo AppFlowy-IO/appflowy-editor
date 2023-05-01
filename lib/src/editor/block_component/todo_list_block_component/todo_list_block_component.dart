@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +11,21 @@ class TodoListBlockKeys {
   ///
   /// The value is a boolean.
   static const String checked = 'checked';
+}
+
+Node todoListNode({
+  required bool checked,
+  required Attributes attributes,
+  LinkedList<Node>? children,
+}) {
+  return Node(
+    type: 'todo_list',
+    attributes: {
+      TodoListBlockKeys.checked: checked,
+      ...attributes,
+    },
+    children: children,
+  );
 }
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
@@ -41,7 +58,8 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   bool validate(Node node) {
-    return node.delta != null;
+    return node.delta != null &&
+        node.attributes[TodoListBlockKeys.checked] is bool;
   }
 }
 

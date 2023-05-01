@@ -1,20 +1,23 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-class TextNodeParser extends NodeParser {
-  const TextNodeParser();
+class QuoteNodeParser extends NodeParser {
+  const QuoteNodeParser();
 
   @override
-  String get id => 'paragraph';
+  String get id => 'quote';
 
   @override
   String transform(Node node) {
+    assert(node.type == 'quote');
+
     final delta = node.delta;
     if (delta == null) {
-      assert(false, 'Delta is null');
-      return '';
+      throw Exception('Delta is null');
     }
     final markdown = DeltaMarkdownEncoder().convert(delta);
+    final result = '> $markdown';
     final suffix = node.next == null ? '' : '\n';
-    return '$markdown$suffix';
+
+    return '$result$suffix';
   }
 }

@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -6,129 +7,85 @@ void main() async {
     const text = 'Welcome to AppFlowy';
 
     test('heading style', () {
-      final h1 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h1,
-        },
-      );
-      final h2 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h2,
-        },
-      );
-      final h3 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h3,
-        },
-      );
-      final h4 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h4,
-        },
-      );
-      final h5 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h5,
-        },
-      );
-      final h6 = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
-        attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-          BuiltInAttributeKey.heading: BuiltInAttributeKey.h6,
-        },
-      );
-
-      expect(const TextNodeParser().transform(h1), '# $text');
-      expect(const TextNodeParser().transform(h2), '## $text');
-      expect(const TextNodeParser().transform(h3), '### $text');
-      expect(const TextNodeParser().transform(h4), '#### $text');
-      expect(const TextNodeParser().transform(h5), '##### $text');
-      expect(const TextNodeParser().transform(h6), '###### $text');
+      for (var i = 1; i <= 6; i++) {
+        final node = headingNode(
+          level: i,
+          attributes: {
+            'delta': (Delta()..insert(text)).toJson(),
+          },
+        );
+        expect(
+          const HeadingNodeParser().transform(node),
+          '${'#' * i} $text',
+        );
+      }
     });
 
     test('bulleted list style', () {
-      final node = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+      final node = bulletedListNode(
         attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList,
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TextNodeParser().transform(node), '* $text');
+      expect(const BulletedListNodeParser().transform(node), '* $text');
     });
 
-    test('number list style', () {
-      final node = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+    test('numbered list style', () {
+      final node = numberedListNode(
         attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.numberList,
-          BuiltInAttributeKey.number: 1,
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TextNodeParser().transform(node), '1. $text');
+      expect(const NumberedListNodeParser().transform(node), '1. $text');
     });
 
-    test('checkbox style', () {
-      final checkbox = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+    test('todo list style', () {
+      final checkedNode = todoListNode(
+        checked: true,
         attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-          BuiltInAttributeKey.checkbox: true,
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      final unCheckbox = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+      final uncheckedNode = todoListNode(
+        checked: false,
         attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-          BuiltInAttributeKey.checkbox: false,
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TextNodeParser().transform(checkbox), '- [x] $text');
-      expect(const TextNodeParser().transform(unCheckbox), '- [ ] $text');
+      expect(const TodoListNodeParser().transform(checkedNode), '- [x] $text');
+      expect(
+        const TodoListNodeParser().transform(uncheckedNode),
+        '- [ ] $text',
+      );
     });
 
     test('quote style', () {
-      final node = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+      final node = quoteNode(
         attributes: {
-          BuiltInAttributeKey.subtype: BuiltInAttributeKey.quote,
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TextNodeParser().transform(node), '> $text');
+      expect(const QuoteNodeParser().transform(node), '> $text');
     });
 
     test('code block style', () {
-      final node = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+      final node = Node(
+        type: 'code_block',
         attributes: {
-          BuiltInAttributeKey.subtype: 'code_block',
+          'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TextNodeParser().transform(node), '```\n$text\n```');
+      expect(const CodeBlockNodeParser().transform(node), '```\n$text\n```');
     });
 
     test('fallback', () {
-      final node = TextNode(
-        delta: Delta(operations: [TextInsert(text)]),
+      final node = paragraphNode(
         attributes: {
-          BuiltInAttributeKey.bold: true,
+          'delta': (Delta()..insert(text)).toJson(),
+          'bold': true,
         },
       );
       expect(const TextNodeParser().transform(node), text);
-    });
-
-    test('TextNodeParser.id', () {
-      expect(const TextNodeParser().id, 'text');
     });
   });
 }

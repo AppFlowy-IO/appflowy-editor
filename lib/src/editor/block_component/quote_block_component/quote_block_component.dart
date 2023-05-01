@@ -1,6 +1,21 @@
+import 'dart:collection';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+Node quoteNode({
+  required Attributes attributes,
+  LinkedList<Node>? children,
+}) {
+  return Node(
+    type: 'quote',
+    attributes: {
+      ...attributes,
+    },
+    children: children,
+  );
+}
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   QuoteBlockComponentBuilder({

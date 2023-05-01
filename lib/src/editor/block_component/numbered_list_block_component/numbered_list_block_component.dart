@@ -1,7 +1,22 @@
+import 'dart:collection';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+Node numberedListNode({
+  required Attributes attributes,
+  LinkedList<Node>? children,
+}) {
+  return Node(
+    type: 'numbered_list',
+    attributes: {
+      ...attributes,
+    },
+    children: children,
+  );
+}
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({

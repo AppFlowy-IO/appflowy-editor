@@ -176,7 +176,7 @@ const quillDeltaSample = r'''
   },
   {
     "attributes": {
-      "code-block": true
+      "code_block": true
     },
     "insert": "\n"
   },
