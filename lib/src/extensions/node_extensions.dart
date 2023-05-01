@@ -25,13 +25,6 @@ extension NodeExtensions on Node {
     return Rect.zero;
   }
 
-  bool isSelected(EditorState editorState) {
-    final currentSelectedNodes =
-        editorState.service.selectionService.currentSelectedNodes;
-    return currentSelectedNodes.length == 1 &&
-        currentSelectedNodes.first == this;
-  }
-
   /// Returns the first previous node in the subtree that satisfies the given predicate
   Node? previousNodeWhere(bool Function(Node element) test) {
     var previous = this.previous;
