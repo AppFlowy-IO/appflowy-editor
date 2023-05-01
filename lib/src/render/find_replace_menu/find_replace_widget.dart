@@ -7,10 +7,12 @@ class FindMenuWidget extends StatefulWidget {
     super.key,
     required this.dismiss,
     required this.editorState,
+    required this.replaceFlag,
   });
 
   final VoidCallback dismiss;
   final EditorState editorState;
+  final bool replaceFlag;
 
   @override
   State<FindMenuWidget> createState() => _FindMenuWidgetState();
@@ -26,6 +28,9 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      replaceFlag = widget.replaceFlag;
+    });
     searchService = SearchService(
       editorState: widget.editorState,
     );
@@ -62,12 +67,12 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               ),
             ),
             IconButton(
-              onPressed: () => _navigateToMatchedIndex(moveUp: true),
+              onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: 'Previous Match',
             ),
             IconButton(
-              onPressed: () => _navigateToMatchedIndex(),
+              onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: 'Next Match',
             ),
@@ -125,10 +130,6 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
     setState(() {
       queriedPattern = findController.text;
     });
-  }
-
-  void _navigateToMatchedIndex({bool moveUp = false}) {
-    searchService.navigateToMatch(moveUp);
   }
 
   void _replaceSelectedWord() {

@@ -21,8 +21,38 @@ ShortcutEventHandler findShortcutHandler = (editorState, event) {
   }
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    _findMenuService =
-        FindReplaceMenu(context: context, editorState: editorState);
+    _findMenuService = FindReplaceMenu(
+      context: context,
+      editorState: editorState,
+      replaceFlag: false,
+    );
+    _findMenuService?.show();
+  });
+
+  return KeyEventResult.handled;
+};
+
+ShortcutEventHandler replaceShortcutHandler = (editorState, event) {
+  final textNodes = editorState.service.selectionService.currentSelectedNodes
+      .whereType<TextNode>();
+  if (textNodes.length != 1) {
+    return KeyEventResult.ignored;
+  }
+
+  final selection = editorState.service.selectionService.currentSelection.value;
+  final textNode = textNodes.first;
+  final context = textNode.context;
+  final selectable = textNode.selectable;
+  if (selection == null || context == null || selectable == null) {
+    return KeyEventResult.ignored;
+  }
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    _findMenuService = FindReplaceMenu(
+      context: context,
+      editorState: editorState,
+      replaceFlag: true,
+    );
     _findMenuService?.show();
   });
 

@@ -70,7 +70,7 @@ class SearchService {
   /// This method takes in a boolean parameter moveUp, if set to true,
   /// the match located above the current selected match is newly selected.
   /// Otherwise the match below the current selected match is newly selected.
-  void navigateToMatch(bool moveUp) {
+  void navigateToMatch({bool moveUp = false}) {
     if (matchedPositions.isEmpty) return;
     if (moveUp) {
       selectedIndex =
@@ -125,7 +125,7 @@ class SearchService {
     editorState.apply(transaction);
 
     matchedPositions.removeAt(selectedIndex);
-    navigateToMatch(false);
+    navigateToMatch(moveUp: false);
   }
 
   /// Replaces all the found occurances of pattern with replaceText

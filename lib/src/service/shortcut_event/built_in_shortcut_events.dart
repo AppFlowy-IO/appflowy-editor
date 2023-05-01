@@ -268,6 +268,13 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: findShortcutHandler,
   ),
   ShortcutEvent(
+    key: 'Replace',
+    command: 'meta+h',
+    windowsCommand: 'ctrl+h',
+    linuxCommand: 'ctrl+h',
+    handler: replaceShortcutHandler,
+  ),
+  ShortcutEvent(
     key: 'enter',
     command: 'enter',
     handler: enterWithoutShiftInTextNodesHandler,

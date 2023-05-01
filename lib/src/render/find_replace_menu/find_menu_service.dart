@@ -12,10 +12,12 @@ class FindReplaceMenu implements FindReplaceService {
   FindReplaceMenu({
     required this.context,
     required this.editorState,
+    required this.replaceFlag,
   });
 
   final BuildContext context;
   final EditorState editorState;
+  final bool replaceFlag;
   final double topOffset = 52;
   final double rightOffset = 40;
 
@@ -73,6 +75,7 @@ class FindReplaceMenu implements FindReplaceService {
               child: FindMenuWidget(
                 dismiss: dismiss,
                 editorState: editorState,
+                replaceFlag: replaceFlag,
               ),
             ),
           ),
