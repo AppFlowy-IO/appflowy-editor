@@ -26,8 +26,9 @@ void main() async {
         ..replaceTexts(nodes, selection, texts);
       await editorState.apply(transaction);
 
-      expect(editorState.document.root.children.length, 4);
       nodes = editorState.getNodesInSelection(selection);
+
+      expect(editorState.document.root.children.length, 4);
       expect(nodes[0].delta?.toPlainText(), '0123ABC');
       expect(nodes[1].delta?.toPlainText(), 'ABC');
       expect(nodes[2].delta?.toPlainText(), 'ABC');
@@ -56,7 +57,6 @@ void main() async {
       await editorState.apply(transaction);
 
       expect(editorState.document.root.children.length, 4);
-
       expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), '0123ABC');
       expect(editorState.getNodeAtPath([1])?.delta?.toPlainText(), 'ABC');
       expect(editorState.getNodeAtPath([2])?.delta?.toPlainText(), 'ABC');
@@ -71,6 +71,7 @@ void main() async {
       final editorState = EditorState(document: document);
 
       expect(editorState.document.root.children.length, 5);
+
       final selection = Selection(
         start: Position(path: [0], offset: 4),
         end: Position(path: [4], offset: 4),
@@ -84,155 +85,138 @@ void main() async {
       await editorState.apply(transaction);
 
       expect(editorState.document.root.children.length, 1);
-
       expect(
         editorState.getNodeAtPath([0])?.delta?.toPlainText(),
         '0123ABC456789789',
       );
     });
 
-    // testWidgets('test replaceTexts, textNodes.length < texts.length',
-    //     (tester) async {
-    //   TestWidgetsFlutterBinding.ensureInitialized();
+    test('test replaceTexts, textNodes.length < texts.length', () async {
+      final document = Document.blank().addParagraphs(
+        3,
+        initialText: '0123456789',
+      );
+      final editorState = EditorState(document: document);
 
-    //   final editor = tester.editor
-    //     ..insertTextNode('0123456789')
-    //     ..insertTextNode('0123456789')
-    //     ..insertTextNode('0123456789');
-    //   await editor.startTesting();
-    //   await tester.pumpAndSettle();
+      expect(editorState.document.root.children.length, 3);
 
-    //   expect(editor.documentLength, 3);
+      final selection = Selection(
+        start: Position(path: [0], offset: 4),
+        end: Position(path: [2], offset: 4),
+      );
+      final transaction = editorState.transaction;
+      final nodes = editorState.getNodesInSelection(selection);
 
-    //   final selection = Selection(
-    //     start: Position(path: [0], offset: 4),
-    //     end: Position(path: [2], offset: 4),
-    //   );
-    //   final transaction = editor.editorState.transaction;
-    //   var textNodes = [0, 1, 2]
-    //       .map((e) => editor.nodeAtPath([e])!)
-    //       .whereType<TextNode>()
-    //       .toList(growable: false);
-    //   final texts = ['ABC', 'ABC', 'ABC', 'ABC'];
-    //   transaction.replaceTexts(textNodes, selection, texts);
-    //   editor.editorState.apply(transaction);
-    //   await tester.pumpAndSettle();
+      final texts = ['ABC', 'ABC', 'ABC', 'ABC'];
+      transaction.replaceTexts(nodes, selection, texts);
+      await editorState.apply(transaction);
 
-    //   expect(editor.documentLength, 4);
-    //   textNodes = [0, 1, 2, 3]
-    //       .map((e) => editor.nodeAtPath([e])!)
-    //       .whereType<TextNode>()
-    //       .toList(growable: false);
-    //   expect(textNodes[0].toPlainText(), '0123ABC');
-    //   expect(textNodes[1].toPlainText(), 'ABC');
-    //   expect(textNodes[2].toPlainText(), 'ABC');
-    //   expect(textNodes[3].toPlainText(), 'ABC456789');
-    // });
+      expect(editorState.document.root.children.length, 4);
+      expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), '0123ABC');
+      expect(editorState.getNodeAtPath([1])?.delta?.toPlainText(), 'ABC');
+      expect(editorState.getNodeAtPath([2])?.delta?.toPlainText(), 'ABC');
+      expect(editorState.getNodeAtPath([3])?.delta?.toPlainText(), 'ABC456789');
+    });
 
-    // testWidgets('test replaceTexts, textNodes.length << texts.length',
-    //     (tester) async {
-    //   TestWidgetsFlutterBinding.ensureInitialized();
+    test('test replaceTexts, textNodes.length << texts.length', () async {
+      final document = Document.blank().addParagraphs(
+        1,
+        initialText: 'Welcome to AppFlowy!',
+      );
+      final editorState = EditorState(document: document);
 
-    //   final editor = tester.editor..insertTextNode('Welcome to AppFlowy!');
-    //   await editor.startTesting();
-    //   await tester.pumpAndSettle();
+      expect(editorState.document.root.children.length, 1);
 
-    //   expect(editor.documentLength, 1);
+      // select 'to'
+      final selection = Selection(
+        start: Position(path: [0], offset: 8),
+        end: Position(path: [0], offset: 10),
+      );
+      final transaction = editorState.transaction;
+      var nodes = editorState.getNodesInSelection(selection);
+      final texts = ['ABC1', 'ABC2', 'ABC3', 'ABC4', 'ABC5'];
+      transaction.replaceTexts(nodes, selection, texts);
+      await editorState.apply(transaction);
 
-    //   // select 'to'
-    //   final selection = Selection(
-    //     start: Position(path: [0], offset: 8),
-    //     end: Position(path: [0], offset: 10),
-    //   );
-    //   final transaction = editor.editorState.transaction;
-    //   var textNodes = [0]
-    //       .map((e) => editor.nodeAtPath([e])!)
-    //       .whereType<TextNode>()
-    //       .toList(growable: false);
-    //   final texts = ['ABC1', 'ABC2', 'ABC3', 'ABC4', 'ABC5'];
-    //   transaction.replaceTexts(textNodes, selection, texts);
-    //   editor.editorState.apply(transaction);
-    //   await tester.pumpAndSettle();
+      expect(editorState.document.root.children.length, 5);
+      expect(
+        editorState.getNodeAtPath([0])?.delta?.toPlainText(),
+        'Welcome ABC1',
+      );
+      expect(editorState.getNodeAtPath([1])?.delta?.toPlainText(), 'ABC2');
+      expect(editorState.getNodeAtPath([2])?.delta?.toPlainText(), 'ABC3');
+      expect(editorState.getNodeAtPath([3])?.delta?.toPlainText(), 'ABC4');
+      expect(
+        editorState.getNodeAtPath([4])?.delta?.toPlainText(),
+        'ABC5 AppFlowy!',
+      );
+    });
 
-    //   expect(editor.documentLength, 5);
-    //   textNodes = [0, 1, 2, 3, 4]
-    //       .map((e) => editor.nodeAtPath([e])!)
-    //       .whereType<TextNode>()
-    //       .toList(growable: false);
-    //   expect(textNodes[0].toPlainText(), 'Welcome ABC1');
-    //   expect(textNodes[1].toPlainText(), 'ABC2');
-    //   expect(textNodes[2].toPlainText(), 'ABC3');
-    //   expect(textNodes[3].toPlainText(), 'ABC4');
-    //   expect(textNodes[4].toPlainText(), 'ABC5 AppFlowy!');
-    // });
+    test('test selection propagates if non-selected node is deleted', () async {
+      final document = Document.blank()
+          .addParagraphs(
+            1,
+            initialText: 'Welcome to AppFlowy!',
+          )
+          .addParagraphs(
+            1,
+            initialText: 'Testing selection on this',
+          );
+      final editorState = EditorState(document: document);
 
-    // testWidgets('test selection propagates if non-selected node is deleted',
-    //     (tester) async {
-    //   TestWidgetsFlutterBinding.ensureInitialized();
+      expect(editorState.document.root.children.length, 2);
 
-    //   final editor = tester.editor
-    //     ..insertTextNode('Welcome to AppFlowy!')
-    //     ..insertTextNode('Testing selection on this');
+      editorState.selection = Selection.single(
+        path: [0],
+        startOffset: 0,
+        endOffset: 20,
+      );
 
-    //   await editor.startTesting();
-    //   await tester.pumpAndSettle();
+      final transaction = editorState.transaction;
+      transaction.deleteNode(editorState.getNodeAtPath([1])!);
+      await editorState.apply(transaction);
 
-    //   expect(editor.documentLength, 2);
+      expect(editorState.document.root.children.length, 1);
+      expect(
+        editorState.selection,
+        Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: 20,
+        ),
+      );
+    });
 
-    //   await editor.updateSelection(
-    //     Selection.single(
-    //       path: [0],
-    //       startOffset: 0,
-    //       endOffset: 20,
-    //     ),
-    //   );
-    //   await tester.pumpAndSettle();
+    test('test selection does not propagate if selected node is deleted',
+        () async {
+      final document = Document.blank()
+          .addParagraphs(
+            1,
+            initialText: 'Welcome to AppFlowy!',
+          )
+          .addParagraphs(
+            1,
+            initialText: 'Testing selection on this',
+          );
+      final editorState = EditorState(document: document);
 
-    //   final transaction = editor.editorState.transaction;
-    //   transaction.deleteNode(editor.nodeAtPath([1])!);
-    //   editor.editorState.apply(transaction);
-    //   await tester.pumpAndSettle();
+      expect(editorState.document.root.children.length, 2);
 
-    //   expect(editor.documentLength, 1);
-    //   expect(
-    //     editor.editorState.cursorSelection,
-    //     Selection.single(
-    //       path: [0],
-    //       startOffset: 0,
-    //       endOffset: 20,
-    //     ),
-    //   );
-    // });
+      editorState.selection = Selection.single(
+        path: [0],
+        startOffset: 0,
+        endOffset: 20,
+      );
 
-    // testWidgets('test selection does not propagate if selected node is deleted',
-    //     (tester) async {
-    //   TestWidgetsFlutterBinding.ensureInitialized();
+      final transaction = editorState.transaction;
+      transaction.deleteNode(editorState.getNodeAtPath([0])!);
+      await editorState.apply(transaction);
 
-    //   final editor = tester.editor
-    //     ..insertTextNode('Welcome to AppFlowy!')
-    //     ..insertTextNode('Testing selection on this');
-
-    //   await editor.startTesting();
-    //   await tester.pumpAndSettle();
-
-    //   expect(editor.documentLength, 2);
-
-    //   await editor.updateSelection(
-    //     Selection.single(
-    //       path: [0],
-    //       startOffset: 0,
-    //       endOffset: 20,
-    //     ),
-    //   );
-    //   await tester.pumpAndSettle();
-
-    //   final transaction = editor.editorState.transaction;
-    //   transaction.deleteNode(editor.nodeAtPath([0])!);
-    //   editor.editorState.apply(transaction);
-    //   await tester.pumpAndSettle();
-
-    //   expect(editor.documentLength, 1);
-    //   expect(editor.editorState.cursorSelection, null);
-    // });
+      expect(editorState.document.root.children.length, 1);
+      expect(
+        editorState.selection,
+        null,
+      );
+    });
   });
 }
