@@ -146,6 +146,8 @@ class SimpleEditor extends StatelessWidget {
         // arrow keys
         ...arrowLeftKeys,
         ...arrowRightKeys,
+        ...arrowUpKeys,
+        ...arrowDownKeys,
 
         //
         homeCommand,

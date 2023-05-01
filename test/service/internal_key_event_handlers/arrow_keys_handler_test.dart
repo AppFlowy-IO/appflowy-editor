@@ -34,7 +34,6 @@ void main() async {
           );
         } else {
           final delta = editor.nodeAtPath([0])!.delta!;
-
           expect(
             editor.selection,
             Selection.single(

@@ -49,6 +49,7 @@ class TestableEditor {
         backspaceCommand,
         ...arrowLeftKeys,
         ...arrowRightKeys,
+        ...arrowUpKeys,
       ],
     );
     await tester.pumpWidget(
