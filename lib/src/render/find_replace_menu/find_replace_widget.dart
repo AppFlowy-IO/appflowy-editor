@@ -56,6 +56,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 width: 200,
                 height: 50,
                 child: TextField(
+                  key: const Key('findTextField'),
                   autofocus: true,
                   controller: findController,
                   onSubmitted: (_) => _searchPattern(),
@@ -67,16 +68,19 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               ),
             ),
             IconButton(
+              key: const Key('previousMatchButton'),
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: 'Previous Match',
             ),
             IconButton(
+              key: const Key('nextMatchButton'),
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: 'Next Match',
             ),
             IconButton(
+              key: const Key('closeButton'),
               onPressed: () {
                 widget.dismiss();
                 searchService.unHighlight(queriedPattern);
@@ -98,6 +102,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                       width: 200,
                       height: 50,
                       child: TextField(
+                        key: const Key('replaceTextField'),
                         autofocus: false,
                         controller: replaceController,
                         onSubmitted: (_) => _replaceSelectedWord(),
