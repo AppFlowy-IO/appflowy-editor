@@ -144,8 +144,12 @@ class SimpleEditor extends StatelessWidget {
         backspaceCommand,
 
         // arrow keys
-        arrowLeftCommand,
-        arrowRightCommand,
+        ...arrowLeftKeys,
+        ...arrowRightKeys,
+
+        //
+        homeCommand,
+        endCommand,
       ],
     );
   }
