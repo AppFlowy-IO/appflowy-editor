@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowUpKeys = [
   moveCursorUpCommand,
+  moveCursorTopSelectCommand,
 ];
 
 /// Arrow up key events.
@@ -37,5 +38,33 @@ CommandShortcutEventHandler _moveCursorUpCommandHandler = (editorState) {
     reason: SelectionUpdateReason.uiEvent,
   );
 
+  return KeyEventResult.handled;
+};
+
+/// arrow up + shift + ctrl or cmd
+/// cursor top select
+CommandShortcutEvent moveCursorTopSelectCommand = CommandShortcutEvent(
+  key: 'cursor top select', // TODO: rename it.
+  command: 'ctrl+shift+arrow up',
+  macOSCommand: 'cmd+shift+arrow up',
+  handler: _moveCursorTopSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final selectable = editorState.document.root.children
+      .firstWhereOrNull((element) => element.selectable != null)
+      ?.selectable;
+  if (selectable == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selectable.start();
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
   return KeyEventResult.handled;
 };
