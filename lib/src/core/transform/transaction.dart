@@ -409,6 +409,10 @@ extension TextTransaction on Transaction {
         } else {
           deleteNode(node);
           if (i == nodes.length - 1) {
+            final delta = nodes.last.delta;
+            if (delta == null) {
+              continue;
+            }
             final newDelta = Delta()
               ..insert(texts[0])
               ..addAll(
@@ -455,12 +459,12 @@ extension TextTransaction on Transaction {
           );
           path = path.next;
         } else {
-          final node = nodes[i];
-          final delta = node.delta;
-          if (delta == null) {
-            continue;
-          }
           if (i < nodes.length - 1) {
+            final node = nodes[i];
+            final delta = node.delta;
+            if (delta == null) {
+              continue;
+            }
             replaceText(
               node,
               0,
@@ -470,6 +474,10 @@ extension TextTransaction on Transaction {
             path = path.next;
           } else {
             if (i == texts.length - 1) {
+              final delta = nodes.last.delta;
+              if (delta == null) {
+                continue;
+              }
               final mewDelta = Delta()
                 ..insert(text)
                 ..addAll(
