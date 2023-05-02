@@ -151,6 +151,7 @@ class SimpleEditor extends StatelessWidget {
 
         //
         toggleTodoListCommand,
+        ...toggleMarkdownCommands,
 
         //
         indentCommand,

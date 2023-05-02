@@ -17,7 +17,7 @@ final List<CommandShortcutEvent> arrowUpKeys = [
 
 // arrow up key
 // move the cursor backward one character
-CommandShortcutEvent moveCursorUpCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorUpCommand = CommandShortcutEvent(
   key: 'move the cursor upward',
   command: 'arrow up',
   handler: _moveCursorUpCommandHandler,
