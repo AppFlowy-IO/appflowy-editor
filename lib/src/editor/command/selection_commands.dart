@@ -148,7 +148,7 @@ extension SelectionTransform on EditorState {
     }
 
     // If the selection is not collapsed, then we want to collapse the selection
-    if (!selection.isCollapsed) {
+    if (!selection.isCollapsed && range != SelectionMoveRange.line) {
       // move the cursor to the start or end of the selection
       this.selection = selection.collapse(
         atStart: direction == SelectionMoveDirection.forward,

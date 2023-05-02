@@ -5,6 +5,9 @@ final List<CommandShortcutEvent> arrowLeftKeys = [
   moveCursorLeftCommand,
   moveCursorToBeginCommand,
   moveCursorToLeftWordCommand,
+  moveCursorLeftSelectCommand,
+  moveCursorBeginSelectCommand,
+  moveCursorLeftWordSelectCommand,
 ];
 
 /// Arrow left key events.
@@ -64,5 +67,87 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
     return KeyEventResult.ignored;
   }
   editorState.moveCursorForward(SelectionMoveRange.word);
+  return KeyEventResult.handled;
+};
+
+// arrow left key + alt + shift
+CommandShortcutEvent moveCursorLeftWordSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor to select the left word',
+  command: 'alt+shift+arrow left',
+  handler: _moveCursorLeftWordSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selection.end.moveHorizontal(
+    editorState,
+    selectionRange: SelectionRange.word,
+  );
+  if (end == null) {
+    return KeyEventResult.ignored;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+// arrow left key + shift
+//
+CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor left select',
+  command: 'shift+arrow left',
+  handler: _moveCursorLeftSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selection.end.moveHorizontal(editorState);
+  if (end == null) {
+    return KeyEventResult.ignored;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+// arrow left key + shift + ctrl or cmd
+CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor left select',
+  command: 'ctrl+shift+arrow left',
+  macOSCommand: 'cmd+shift+arrow left',
+  handler: _moveCursorBeginSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final nodes = editorState.getNodesInSelection(selection);
+  if (nodes.isEmpty) {
+    return KeyEventResult.ignored;
+  }
+  var end = selection.end;
+  final position = nodes.last.selectable?.start();
+  if (position != null) {
+    end = position;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
   return KeyEventResult.handled;
 };

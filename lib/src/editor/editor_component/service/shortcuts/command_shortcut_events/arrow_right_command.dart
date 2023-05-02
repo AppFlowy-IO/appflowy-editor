@@ -5,6 +5,9 @@ final List<CommandShortcutEvent> arrowRightKeys = [
   moveCursorRightCommand,
   moveCursorToEndCommand,
   moveCursorToRightWordCommand,
+  moveCursorRightSelectCommand,
+  moveCursorEndSelectCommand,
+  moveCursorRightWordSelectCommand,
 ];
 
 /// Arrow right key events.
@@ -64,5 +67,87 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
     return KeyEventResult.ignored;
   }
   editorState.moveCursorBackward(SelectionMoveRange.word);
+  return KeyEventResult.handled;
+};
+
+// arrow right key + alt + shift
+CommandShortcutEvent moveCursorRightWordSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor to select the right word',
+  command: 'alt+shift+arrow right',
+  handler: _moveCursorRightWordSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selection.end.moveHorizontal(
+    editorState,
+    selectionRange: SelectionRange.word,
+    moveLeft: false,
+  );
+  if (end == null) {
+    return KeyEventResult.ignored;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+// arrow right key + shift
+//
+CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor right select',
+  command: 'shift+arrow right',
+  handler: _moveCursorRightSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selection.end.moveHorizontal(editorState, moveLeft: false);
+  if (end == null) {
+    return KeyEventResult.ignored;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+// arrow right key + shift + ctrl or cmd
+CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
+  key: 'move the cursor right select',
+  command: 'ctrl+shift+arrow right',
+  macOSCommand: 'cmd+shift+arrow right',
+  handler: _moveCursorEndSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorEndSelectCommandHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final nodes = editorState.getNodesInSelection(selection);
+  if (nodes.isEmpty) {
+    return KeyEventResult.ignored;
+  }
+  var end = selection.end;
+  final position = nodes.last.selectable?.end();
+  if (position != null) {
+    end = position;
+  }
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
   return KeyEventResult.handled;
 };
