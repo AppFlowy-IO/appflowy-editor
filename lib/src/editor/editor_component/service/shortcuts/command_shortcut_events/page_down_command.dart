@@ -25,7 +25,7 @@ CommandShortcutEventHandler _pageUpCommandHandler = (editorState) {
 
   final scrollHeight = scrollService.onePageHeight;
   final dy = scrollService.dy;
-  if (dy <= 0 || scrollHeight == null) {
+  if (dy < 0 || scrollHeight == null) {
     return KeyEventResult.ignored;
   }
   scrollService.scrollTo(

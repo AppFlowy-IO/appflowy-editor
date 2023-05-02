@@ -109,6 +109,10 @@ class TestableEditor {
         outdentCommand,
 
         exitEditingCommand,
+
+        //
+        pageUpCommand,
+        pageDownCommand,
       ],
     );
     await tester.pumpWidget(
