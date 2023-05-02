@@ -53,7 +53,7 @@ extension TextTransforms on EditorState {
       },
       children: children,
     );
-    nodeBuilder ??= (node) => node;
+    nodeBuilder ??= (node) => node.copyWith();
 
     // Insert a new paragraph node.
     transaction.insertNode(
@@ -156,6 +156,31 @@ extension TextTransforms on EditorState {
     }
 
     return apply(transaction);
+  }
+
+  /// Toggles the given attribute on or off for the selected text.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  Future<void> toggleAttribute(
+    String key, {
+    Selection? selection,
+  }) async {
+    selection ??= this.selection;
+    if (selection == null) {
+      return;
+    }
+    final nodes = getNodesInSelection(selection);
+    final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
+      return delta.everyAttributes(
+        (attributes) => attributes[key] == true,
+      );
+    });
+    formatDelta(
+      selection,
+      {
+        key: !isHighlight,
+      },
+    );
   }
 
   /// format the node at the given selection.
