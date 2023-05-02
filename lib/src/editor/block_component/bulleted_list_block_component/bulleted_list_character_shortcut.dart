@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/insert_newline_in_type.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/markdown_format_helper.dart';
 
 /// Convert '* ' to bulleted list
@@ -27,6 +28,22 @@ CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
   character: ' ',
   handler: (editorState) async =>
       await _formatSymbolToBulletedList(editorState, '-'),
+);
+
+/// Insert a new block after the bulleted list block.
+///
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
+CharacterShortcutEvent insertNewLineAfterBulletedList = CharacterShortcutEvent(
+  key: 'insert new block after bulleted list',
+  character: '\n',
+  handler: (editorState) async => await insertNewLineInType(
+    editorState,
+    'bulleted_list',
+  ),
 );
 
 // This function formats a symbol in the selection to a bulleted list.

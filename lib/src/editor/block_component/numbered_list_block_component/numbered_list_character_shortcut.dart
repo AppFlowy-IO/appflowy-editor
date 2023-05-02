@@ -37,3 +37,19 @@ CharacterShortcutEvent formatNumberToNumberedList = CharacterShortcutEvent(
     },
   ),
 );
+
+/// Insert a new block after the numbered list block.
+///
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
+CharacterShortcutEvent insertNewLineAfterNumberedList = CharacterShortcutEvent(
+  key: 'insert new block after numbered list',
+  character: '\n',
+  handler: (editorState) async => await insertNewLineInType(
+    editorState,
+    'numbered_list',
+  ),
+);
