@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_double_character/format_bold.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_double_character/format_strikethrough.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_code.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_italic.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_strikethrough.dart';
@@ -15,17 +16,22 @@ import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/ch
 // 4. tilde to strikethrough -> ~abc~
 
 final List<CharacterShortcutEvent> markdownSyntaxShortcutEvents = [
-  // format code, 'code'
+  // format code, `code`
   formatBackquoteToCode,
 
-  // format italic, _italic_ or *italic*
+  // format italic,
+  // _italic_
+  // *italic*
   formatUnderscoreToItalic,
   formatAsteriskToItalic,
 
-  //format strikethrough, ~strikethrough~
+  // format strikethrough,
+  // ~strikethrough~
+  // ~~strikethrough~~
   formatTildeToStrikethrough,
+  formatDoubleTilesToStrikethrough,
 
-  //format bold, **bold** or __bold__
+  // format bold, **bold** or __bold__
   formatDoubleAsterisksToBold,
   formatDoubleUnderscoresToBold,
 ];

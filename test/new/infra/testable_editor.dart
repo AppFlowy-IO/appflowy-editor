@@ -184,6 +184,10 @@ class TestableEditor {
   final keyToCharacterMap = {
     LogicalKeyboardKey.space: ' ',
     LogicalKeyboardKey.enter: '\n',
+    LogicalKeyboardKey.backquote: '`',
+    LogicalKeyboardKey.tilde: '~',
+    LogicalKeyboardKey.asterisk: '*',
+    LogicalKeyboardKey.underscore: '_',
   };
   Future<void> pressLogicKey({
     String? character,
