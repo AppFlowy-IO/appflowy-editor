@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/tooltip_util.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
-final List<ToolbarItem> formatItems = [
+final List<ToolbarItem> markdownFormatItems = [
   _FormatToolbarItem(
     id: 'editor.underline',
     name: 'underline',
@@ -55,12 +55,7 @@ class _FormatToolbarItem extends ToolbarItem {
               iconName: 'toolbar/$name',
               isHighlight: isHighlight,
               tooltip: tooltip,
-              onPressed: () => editorState.formatDelta(
-                selection,
-                {
-                  name: !isHighlight,
-                },
-              ),
+              onPressed: () => editorState.toggleAttribute(name),
             );
           },
         );

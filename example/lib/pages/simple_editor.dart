@@ -41,7 +41,7 @@ class SimpleEditor extends StatelessWidget {
                 paragraphItem,
                 ...headingItems,
                 placeholderItem,
-                ...formatItems,
+                ...markdownFormatItems,
                 placeholderItem,
                 quoteItem,
                 bulletedListItem,
