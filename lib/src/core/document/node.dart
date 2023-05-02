@@ -88,6 +88,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   String? get subtype {
+    throw const Deprecated('use type instead of subtype');
     if (attributes[BuiltInAttributeKey.subtype] is String) {
       return attributes[BuiltInAttributeKey.subtype] as String;
     }
