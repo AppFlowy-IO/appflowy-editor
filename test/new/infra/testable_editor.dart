@@ -82,6 +82,8 @@ class TestableEditor {
         // backspace
         convertToParagraphCommand,
         backspaceCommand,
+        deleteLeftWordCommand,
+        deleteLeftSentenceCommand,
 
         // arrow keys
         ...arrowLeftKeys,

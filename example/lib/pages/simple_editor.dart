@@ -136,6 +136,8 @@ class SimpleEditor extends StatelessWidget {
         // backspace
         convertToParagraphCommand,
         backspaceCommand,
+        deleteLeftWordCommand,
+        deleteLeftSentenceCommand,
 
         // arrow keys
         ...arrowLeftKeys,
