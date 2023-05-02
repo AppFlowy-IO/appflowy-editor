@@ -19,7 +19,7 @@ final List<CommandShortcutEvent> arrowRightKeys = [
 
 // arrow right key
 // move the cursor backward one character
-CommandShortcutEvent moveCursorRightCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorRightCommand = CommandShortcutEvent(
   key: 'move the cursor backward one character',
   command: 'arrow right',
   handler: _arrowRightCommandHandler,
@@ -36,7 +36,7 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
 
 // arrow right key + ctrl or command
 // move the cursor to the end of the block
-CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
   key: 'move the cursor backward one character',
   command: 'ctrl+arrow right',
   macOSCommand: 'cmd+arrow right',
@@ -54,7 +54,7 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
 
 // arrow right key + alt
 // move the cursor to the right word
-CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the right word',
   command: 'alt+arrow right',
   handler: _moveCursorToRightWordCommandHandler,
@@ -71,7 +71,8 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
 };
 
 // arrow right key + alt + shift
-CommandShortcutEvent moveCursorRightWordSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorRightWordSelectCommand =
+    CommandShortcutEvent(
   key: 'move the cursor to select the right word',
   command: 'alt+shift+arrow right',
   handler: _moveCursorRightWordSelectCommandHandler,

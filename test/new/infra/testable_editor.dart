@@ -96,6 +96,7 @@ class TestableEditor {
         endCommand,
 
         toggleTodoListCommand,
+        ...toggleMarkdownCommands,
 
         //
         indentCommand,
