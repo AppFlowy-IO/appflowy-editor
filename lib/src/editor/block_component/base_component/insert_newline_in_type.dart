@@ -16,10 +16,10 @@ Future<bool> insertNewLineInType(
   }
 
   await editorState.insertNewLine(
-    nodeBuilder: (delta) => Node(
+    nodeBuilder: (node) => node.copyWith(
       type: type,
       attributes: {
-        'delta': delta.toJson(),
+        ...node.attributes,
         ...attributes,
       },
     ),
