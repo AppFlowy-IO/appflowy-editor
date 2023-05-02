@@ -151,6 +151,10 @@ class SimpleEditor extends StatelessWidget {
 
         //
         toggleTodoListCommand,
+
+        //
+        indentCommand,
+        outdentCommand,
       ],
     );
   }

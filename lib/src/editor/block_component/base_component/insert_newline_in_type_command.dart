@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 Future<bool> insertNewLineInType(
   EditorState editorState,
@@ -11,8 +12,16 @@ Future<bool> insertNewLineInType(
   }
 
   final node = editorState.getNodeAtPath(selection.end.path);
-  if (node?.type != type) {
+  final delta = node?.delta;
+  if (node?.type != type || delta == null) {
     return false;
+  }
+
+  if (selection.startIndex == 0 && delta.isEmpty) {
+    // clear the style
+
+    return KeyEventResult.ignored !=
+        convertToParagraphCommand.execute(editorState);
   }
 
   await editorState.insertNewLine(

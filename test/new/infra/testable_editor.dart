@@ -96,6 +96,10 @@ class TestableEditor {
         endCommand,
 
         toggleTodoListCommand,
+
+        //
+        indentCommand,
+        outdentCommand,
       ],
     );
     await tester.pumpWidget(
@@ -176,6 +180,7 @@ class TestableEditor {
 
   final keyToCharacterMap = {
     LogicalKeyboardKey.space: ' ',
+    LogicalKeyboardKey.enter: '\n',
   };
   Future<void> pressLogicKey({
     String? character,
@@ -200,7 +205,7 @@ class TestableEditor {
       }
       if (keyToCharacterMap.containsKey(key)) {
         final character = keyToCharacterMap[key]!;
-        await ime.insertText(character);
+        await ime.typeText(character);
       } else {
         await simulateKeyDownEvent(key);
         await simulateKeyUpEvent(key);
@@ -243,6 +248,20 @@ class MockIMEInput {
     return keyboardService.textInputService;
   }
 
+  Future<void> typeText(String text) async {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return;
+    }
+    // if the selection is collapsed, do insertion.
+    //  else if the selection is not collapsed, do replacement.
+    if (selection.isCollapsed) {
+      return insertText(text);
+    } else {
+      return replaceText(text);
+    }
+  }
+
   Future<void> insertText(String text) async {
     final selection = editorState.selection;
     if (selection == null || !selection.isCollapsed) {
@@ -255,10 +274,34 @@ class MockIMEInput {
     }
     return imeInput.apply([
       TextEditingDeltaInsertion(
-        oldText: delta.toPlainText(),
+        oldText: ' ${delta.toPlainText()}', // TODO: fix this workaround
         textInserted: text,
-        insertionOffset: selection.startIndex,
-        selection: TextSelection.collapsed(offset: selection.startIndex),
+        insertionOffset: selection.startIndex + 1,
+        selection: TextSelection.collapsed(
+          offset: selection.startIndex + 1 + text.length,
+        ),
+        composing: TextRange.empty,
+      )
+    ]);
+  }
+
+  Future<void> replaceText(String text) async {
+    final selection = editorState.selection?.normalized;
+    if (selection == null || selection.isCollapsed) {
+      return;
+    }
+    final texts = editorState.getTextInSelection(selection).join('\n');
+    return imeInput.apply([
+      TextEditingDeltaReplacement(
+        oldText: ' $texts',
+        replacementText: text,
+        replacedRange: TextSelection(
+          baseOffset: selection.startIndex + 1,
+          extentOffset: selection.endIndex + 1,
+        ),
+        selection: TextSelection.collapsed(
+          offset: selection.startIndex + 1 + text.length,
+        ),
         composing: TextRange.empty,
       )
     ]);
