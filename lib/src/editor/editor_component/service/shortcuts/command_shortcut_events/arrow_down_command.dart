@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 final List<CommandShortcutEvent> arrowDownKeys = [
   moveCursorDownCommand,
   moveCursorBottomSelectCommand,
+  moveCursorBottomCommand,
+  moveCursorDownSelectCommand,
 ];
 
 /// Arrow down key events.
@@ -64,6 +66,59 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
     return KeyEventResult.ignored;
   }
   final end = selectable.end();
+  editorState.updateSelectionWithReason(
+    selection.copyWith(end: end),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+/// arrow down + ctrl or cmd
+/// move the cursor to the bottommost position of the document and select it
+CommandShortcutEvent moveCursorBottomCommand = CommandShortcutEvent(
+  key: 'move cursor bottom', // TODO: rename it.
+  command: 'ctrl+arrow down',
+  macOSCommand: 'cmd+arrow down',
+  handler: _moveCursorBottomCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final selectable = editorState.document.root.children
+      .lastWhereOrNull((element) => element.selectable != null)
+      ?.selectable;
+  if (selectable == null) {
+    return KeyEventResult.ignored;
+  }
+  final position = selectable.end();
+  editorState.updateSelectionWithReason(
+    Selection.collapsed(position),
+    reason: SelectionUpdateReason.uiEvent,
+  );
+  return KeyEventResult.handled;
+};
+
+/// arrow up + ctrl or cmd
+CommandShortcutEvent moveCursorDownSelectCommand = CommandShortcutEvent(
+  key: 'move cursor down select', // TODO: rename it.
+  command: 'shift+arrow down',
+  macOSCommand: 'shift+arrow down',
+  handler: _moveCursorDownSelectCommandHandler,
+);
+
+CommandShortcutEventHandler _moveCursorDownSelectCommandHandler =
+    (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+  final end = selection.end.moveVertical(editorState, upwards: false);
+  if (end == null) {
+    return KeyEventResult.ignored;
+  }
   editorState.updateSelectionWithReason(
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,

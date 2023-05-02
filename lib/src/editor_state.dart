@@ -231,7 +231,7 @@ class EditorState {
         startNode: startNode,
         endNode: endNode,
       ).toList();
-      return nodes;
+      return selection.isForward ? nodes.reversed.toList() : nodes;
     }
 
     // If we don't have both nodes, we can't find the nodes in the selection.

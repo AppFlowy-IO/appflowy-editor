@@ -32,23 +32,25 @@ extension PositionExtension on Position {
 
     switch (selectionRange) {
       case SelectionRange.character:
-        if (node is TextNode) {
+        final delta = node.delta;
+        if (delta != null) {
           return Position(
             path: path,
             offset: moveLeft
-                ? node.delta.prevRunePosition(offset)
-                : node.delta.nextRunePosition(offset),
+                ? delta.prevRunePosition(offset)
+                : delta.nextRunePosition(offset),
           );
         }
 
         return Position(path: path, offset: offset);
       case SelectionRange.word:
-        if (node is TextNode) {
+        final delta = node.delta;
+        if (delta != null) {
           final result = moveLeft
               ? node.selectable?.getWordBoundaryInPosition(
                   Position(
                     path: path,
-                    offset: node.delta.prevRunePosition(offset),
+                    offset: delta.prevRunePosition(offset),
                   ),
                 )
               : node.selectable?.getWordBoundaryInPosition(this);

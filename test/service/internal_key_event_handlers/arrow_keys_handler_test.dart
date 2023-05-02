@@ -231,547 +231,511 @@ void main() async {
     await editor.dispose();
   });
 
-  Future<void> testPressArrowKeyInNotCollapsedSelection(
-    WidgetTester tester,
-    bool isBackward,
-  ) async {
-    const text = 'Welcome to Appflowy 😁';
-    final editor = tester.editor..addParagraphs(2, initialText: text);
-    await editor.startTesting();
-
-    final start = Position(path: [0], offset: 5);
-    final end = Position(path: [1], offset: 10);
-    final selection = Selection(
-      start: isBackward ? start : end,
-      end: isBackward ? end : start,
-    );
-    await editor.updateSelection(selection);
-    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowLeft);
-    expect(editor.selection?.start, start);
-
-    await editor.updateSelection(selection);
-    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
-    expect(editor.selection?.end, end);
-
-    await editor.dispose();
-  }
-
   testWidgets(
       'Presses arrow left/right key since selection is not collapsed and backward',
       (tester) async {
-    await testPressArrowKeyInNotCollapsedSelection(tester, true);
+    await _testPressArrowKeyInNotCollapsedSelection(tester, true);
   });
 
   testWidgets(
       'Presses arrow left/right key since selection is not collapsed and forward',
       (tester) async {
-    await testPressArrowKeyInNotCollapsedSelection(tester, false);
+    await _testPressArrowKeyInNotCollapsedSelection(tester, false);
   });
 
-//   testWidgets('Presses arrow left/right + shift in collapsed selection',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     const offset = 8;
-//     final selection = Selection.single(path: [1], startOffset: offset);
-//     await editor.updateSelection(selection);
-//     for (var i = offset - 1; i >= 0; i--) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [1], offset: i),
-//         ),
-//       );
-//     }
-//     for (var i = text.length; i >= 0; i--) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//     for (var i = 1; i <= text.length; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//     for (var i = 0; i < text.length; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [1], offset: i),
-//         ),
-//       );
-//     }
-//   });
+  testWidgets('Presses arrow left/right + shift in collapsed selection',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
 
-//   testWidgets(
-//       'Presses arrow left/right + shift in not collapsed and backward selection',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     const start = 8;
-//     const end = 12;
-//     final selection = Selection.single(
-//       path: [0],
-//       startOffset: start,
-//       endOffset: end,
-//     );
-//     await editor.updateSelection(selection);
-//     for (var i = end + 1; i <= text.length; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//     for (var i = text.length - 1; i >= 0; i--) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//   });
+    const offset = 8;
+    final selection = Selection.single(path: [1], startOffset: offset);
+    await editor.updateSelection(selection);
 
-//   testWidgets(
-//       'Presses arrow left/right + command in not collapsed and forward selection',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     const start = 12;
-//     const end = 8;
-//     final selection = Selection.single(
-//       path: [0],
-//       startOffset: start,
-//       endOffset: end,
-//     );
-//     await editor.updateSelection(selection);
-//     for (var i = end - 1; i >= 0; i--) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//     for (var i = 1; i <= text.length; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//       );
-//       expect(
-//         editor.documentSelection,
-//         selection.copyWith(
-//           end: Position(path: [0], offset: i),
-//         ),
-//       );
-//     }
-//   });
+    for (var i = offset - 1; i >= 0; i--) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [1], offset: i),
+        ),
+      );
+    }
+    for (var i = text.length; i >= 0; i--) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
+    for (var i = 1; i <= text.length; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
+    for (var i = 0; i < text.length; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [1], offset: i),
+        ),
+      );
+    }
 
-//   testWidgets('Presses arrow left/right/up/down + meta in collapsed selection',
-//       (tester) async {
-//     await _testPressArrowKeyWithMetaInSelection(tester, true, false);
-//   });
+    await editor.dispose();
+  });
 
-//   testWidgets(
-//       'Presses arrow left/right/up/down + meta in not collapsed and backward selection',
-//       (tester) async {
-//     await _testPressArrowKeyWithMetaInSelection(tester, false, true);
-//   });
+  testWidgets(
+      'Presses arrow left/right + shift in not collapsed and backward selection',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
 
-//   testWidgets(
-//       'Presses arrow left/right/up/down + meta in not collapsed and forward selection',
-//       (tester) async {
-//     await _testPressArrowKeyWithMetaInSelection(tester, false, false);
-//   });
+    const start = 8;
+    const end = 12;
+    final selection = Selection.single(
+      path: [0],
+      startOffset: start,
+      endOffset: end,
+    );
+    await editor.updateSelection(selection);
+    for (var i = end + 1; i <= text.length; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
+    for (var i = text.length - 1; i >= 0; i--) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
 
-//   testWidgets('Presses arrow up/down + shift in not collapsed selection',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy 😁';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text)
-//       ..insertTextNode(null)
-//       ..insertTextNode(text)
-//       ..insertTextNode(null)
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     final selection = Selection.single(path: [3], startOffset: 8);
-//     await editor.updateSelection(selection);
-//     for (int i = 0; i < 3; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowUp,
-//         isShiftPressed: true,
-//       );
-//     }
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 0),
-//       ),
-//     );
-//     for (int i = 0; i < 7; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowDown,
-//         isShiftPressed: true,
-//       );
-//     }
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [6], offset: 0),
-//       ),
-//     );
-//     for (int i = 0; i < 3; i++) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowUp,
-//         isShiftPressed: true,
-//       );
-//     }
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [3], offset: 0),
-//       ),
-//     );
-//   });
+    await editor.dispose();
+  });
 
-//   testWidgets('Presses shift + arrow down and meta/ctrl + shift + right',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy 😁';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     final selection = Selection.single(path: [0], startOffset: 8);
-//     await editor.updateSelection(selection);
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowDown,
-//       isShiftPressed: true,
-//     );
-//     if (Platform.isWindows || Platform.isLinux) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//         isControlPressed: true,
-//       );
-//     } else {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowRight,
-//         isShiftPressed: true,
-//         isMetaPressed: true,
-//       );
-//     }
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [1], offset: text.length),
-//       ),
-//     );
-//   });
+  testWidgets(
+      'Presses arrow left/right + command in not collapsed and forward selection',
+      (tester) async {
+    const text = 'Welcome to Appflowy';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
 
-//   testWidgets('Presses shift + arrow up and meta/ctrl + shift + left',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy 😁';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     final selection = Selection.single(path: [1], startOffset: 8);
-//     await editor.updateSelection(selection);
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowUp,
-//       isShiftPressed: true,
-//     );
-//     if (Platform.isWindows || Platform.isLinux) {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//         isControlPressed: true,
-//       );
-//     } else {
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.arrowLeft,
-//         isShiftPressed: true,
-//         isMetaPressed: true,
-//       );
-//     }
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 0),
-//       ),
-//     );
-//   });
+    const start = 12;
+    const end = 8;
+    final selection = Selection.single(
+      path: [0],
+      startOffset: start,
+      endOffset: end,
+    );
+    await editor.updateSelection(selection);
+    for (var i = end - 1; i >= 0; i--) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
+    for (var i = 1; i <= text.length; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isShiftPressed: true,
+      );
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: i),
+        ),
+      );
+    }
 
-//   testWidgets('Presses shift + alt + arrow left to select a word',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy 😁';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     final selection = Selection.single(path: [1], startOffset: 10);
-//     await editor.updateSelection(selection);
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // <to>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [1], offset: 8),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // < to>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [1], offset: 7),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // <Welcome to>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [1], offset: 0),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // <😁>
-//     // <Welcome to>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 22),
-//       ),
-//     );
-//   });
+    await editor.dispose();
+  });
 
-//   testWidgets('Presses shift + alt + arrow right to select a word',
-//       (tester) async {
-//     const text = 'Welcome to Appflowy 😁';
-//     final editor = tester.editor
-//       ..insertTextNode(text)
-//       ..insertTextNode(text);
-//     await editor.startTesting();
-//     final selection = Selection.single(path: [0], startOffset: 10);
-//     await editor.updateSelection(selection);
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // < >
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 11),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // < Appflowy>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 19),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // < Appflowy 😁>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [0], offset: 22),
-//       ),
-//     );
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isShiftPressed: true,
-//       isAltPressed: true,
-//     );
-//     // < Appflowy 😁>
-//     // <>
-//     expect(
-//       editor.documentSelection,
-//       selection.copyWith(
-//         end: Position(path: [1], offset: 0),
-//       ),
-//     );
-//   });
-// }
+  testWidgets('Presses arrow left/right/up/down + meta in collapsed selection',
+      (tester) async {
+    await _testPressArrowKeyWithMetaInSelection(tester, true, false);
+  });
 
-// Future<void> _testPressArrowKeyWithMetaInSelection(
-//   WidgetTester tester,
-//   bool isSingle,
-//   bool isBackward,
-// ) async {
-//   const text = 'Welcome to Appflowy';
-//   final editor = tester.editor
-//     ..insertTextNode(text)
-//     ..insertTextNode(text);
-//   await editor.startTesting();
-//   Selection selection;
-//   if (isSingle) {
-//     selection = Selection.single(
-//       path: [0],
-//       startOffset: 8,
-//     );
-//   } else {
-//     if (isBackward) {
-//       selection = Selection.single(
-//         path: [0],
-//         startOffset: 8,
-//         endOffset: text.length,
-//       );
-//     } else {
-//       selection = Selection.single(
-//         path: [0],
-//         startOffset: text.length,
-//         endOffset: 8,
-//       );
-//     }
-//   }
-//   await editor.updateSelection(selection);
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowLeft,
-//       isMetaPressed: true,
-//     );
-//   }
+  testWidgets(
+      'Presses arrow left/right/up/down + meta in not collapsed and backward selection',
+      (tester) async {
+    await _testPressArrowKeyWithMetaInSelection(tester, false, true);
+  });
 
-//   expect(
-//     editor.documentSelection,
-//     Selection.single(path: [0], startOffset: 0),
-//   );
+  testWidgets(
+      'Presses arrow left/right/up/down + meta in not collapsed and forward selection',
+      (tester) async {
+    await _testPressArrowKeyWithMetaInSelection(tester, false, false);
+  });
 
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowRight,
-//       isMetaPressed: true,
-//     );
-//   }
+  testWidgets('Presses arrow up/down + shift in not collapsed selection',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor
+      ..addParagraphs(2, initialText: text)
+      ..addEmptyParagraph()
+      ..addParagraph(initialText: text)
+      ..addEmptyParagraph()
+      ..addParagraphs(2, initialText: text);
+    await editor.startTesting();
+    final selection = Selection.single(path: [3], startOffset: 8);
+    await editor.updateSelection(selection);
+    for (int i = 0; i < 3; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowUp,
+        isShiftPressed: true,
+      );
+    }
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 0),
+      ),
+    );
+    for (int i = 0; i < 7; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowDown,
+        isShiftPressed: true,
+      );
+    }
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [6], offset: 0),
+      ),
+    );
+    for (int i = 0; i < 3; i++) {
+      await editor.pressLogicKey(
+        key: LogicalKeyboardKey.arrowUp,
+        isShiftPressed: true,
+      );
+    }
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [3], offset: 0),
+      ),
+    );
 
-//   expect(
-//     editor.documentSelection,
-//     Selection.single(path: [0], startOffset: text.length),
-//   );
+    await editor.dispose();
+  });
 
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowUp,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowUp,
-//       isMetaPressed: true,
-//     );
-//   }
+  testWidgets('Presses shift + arrow down and meta/ctrl + shift + right',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
+    final selection = Selection.single(path: [0], startOffset: 8);
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowDown,
+      isShiftPressed: true,
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
+      isMetaPressed: Platform.isMacOS,
+    );
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [1], offset: text.length),
+      ),
+    );
+    await editor.dispose();
+  });
 
-//   expect(
-//     editor.documentSelection,
-//     Selection.single(path: [0], startOffset: 0),
-//   );
+  testWidgets('Presses shift + arrow up and meta/ctrl + shift + left',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
+    final selection = Selection.single(path: [1], startOffset: 8);
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowUp,
+      isShiftPressed: true,
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isShiftPressed: true,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
+      isMetaPressed: Platform.isMacOS,
+    );
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 0),
+      ),
+    );
+    await editor.dispose();
+  });
 
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowDown,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.arrowDown,
-//       isMetaPressed: true,
-//     );
-//   }
+  testWidgets('Presses shift + alt + arrow left to select a word',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
+    final selection = Selection.single(path: [1], startOffset: 10);
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // <to>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [1], offset: 8),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // < to>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [1], offset: 7),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // <Welcome to>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [1], offset: 0),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowLeft,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // <😁>
+    // <Welcome to>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 22),
+      ),
+    );
+    await editor.dispose();
+  });
 
-//   expect(
-//     editor.documentSelection,
-//     Selection.single(path: [1], startOffset: text.length),
-//   );
+  testWidgets('Presses shift + alt + arrow right to select a word',
+      (tester) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
+    final selection = Selection.single(path: [0], startOffset: 10);
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // < >
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 11),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // < Appflowy>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 19),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // < Appflowy 😁>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [0], offset: 22),
+      ),
+    );
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.arrowRight,
+      isShiftPressed: true,
+      isAltPressed: true,
+    );
+    // < Appflowy 😁>
+    // <>
+    expect(
+      editor.selection,
+      selection.copyWith(
+        end: Position(path: [1], offset: 0),
+      ),
+    );
+    await editor.dispose();
+  });
+}
+
+Future<void> _testPressArrowKeyWithMetaInSelection(
+  WidgetTester tester,
+  bool isSingle,
+  bool isBackward,
+) async {
+  const text = 'Welcome to Appflowy';
+  final editor = tester.editor..addParagraphs(2, initialText: text);
+  await editor.startTesting();
+
+  Selection selection;
+  if (isSingle) {
+    selection = Selection.single(
+      path: [0],
+      startOffset: 8,
+    );
+  } else {
+    if (isBackward) {
+      selection = Selection.single(
+        path: [0],
+        startOffset: 8,
+        endOffset: text.length,
+      );
+    } else {
+      selection = Selection.single(
+        path: [0],
+        startOffset: text.length,
+        endOffset: 8,
+      );
+    }
+  }
+  await editor.updateSelection(selection);
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.arrowLeft,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(
+    editor.selection,
+    Selection.single(path: [0], startOffset: 0),
+  );
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.arrowRight,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(
+    editor.selection,
+    Selection.single(path: [0], startOffset: text.length),
+  );
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.arrowUp,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(
+    editor.selection,
+    Selection.single(path: [0], startOffset: 0),
+  );
+
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.arrowDown,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(
+    editor.selection,
+    Selection.single(path: [1], startOffset: text.length),
+  );
+
+  await editor.dispose();
+}
+
+Future<void> _testPressArrowKeyInNotCollapsedSelection(
+  WidgetTester tester,
+  bool isBackward,
+) async {
+  const text = 'Welcome to Appflowy 😁';
+  final editor = tester.editor..addParagraphs(2, initialText: text);
+  await editor.startTesting();
+
+  final start = Position(path: [0], offset: 5);
+  final end = Position(path: [1], offset: 10);
+  final selection = Selection(
+    start: isBackward ? start : end,
+    end: isBackward ? end : start,
+  );
+  await editor.updateSelection(selection);
+  await editor.pressLogicKey(key: LogicalKeyboardKey.arrowLeft);
+  expect(editor.selection?.start, start);
+
+  await editor.updateSelection(selection);
+  await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
+  expect(editor.selection?.end, end);
+
+  await editor.dispose();
 }
