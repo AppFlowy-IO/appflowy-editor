@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Node bulletedListNode({
+  String? text,
   Attributes? attributes,
   LinkedList<Node>? children,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
   return Node(
     type: 'bulleted_list',
     attributes: {
