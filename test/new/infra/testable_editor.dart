@@ -94,6 +94,8 @@ class TestableEditor {
         //
         homeCommand,
         endCommand,
+        pageUpCommand,
+        pageDownCommand,
 
         toggleTodoListCommand,
         ...toggleMarkdownCommands,
@@ -173,7 +175,10 @@ class TestableEditor {
   }
 
   Future<void> updateSelection(Selection? selection) async {
-    _editorState.selection = selection;
+    _editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
     await tester.pumpAndSettle();
   }
 
