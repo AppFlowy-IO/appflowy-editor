@@ -31,9 +31,13 @@ class TestableEditor {
 
   Future<TestableEditor> startTesting({
     Locale locale = const Locale('en'),
+    bool autoFocus = false,
+    bool editable = true,
   }) async {
     final editor = AppFlowyEditor(
       editorState: editorState,
+      autoFocus: autoFocus,
+      editable: editable,
       blockComponentBuilders: {
         'document': DocumentComponentBuilder(),
         'paragraph': TextBlockComponentBuilder(),
