@@ -155,6 +155,8 @@ class SimpleEditor extends StatelessWidget {
         //
         indentCommand,
         outdentCommand,
+
+        exitEditingCommand,
       ],
     );
   }

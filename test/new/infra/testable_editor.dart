@@ -100,6 +100,8 @@ class TestableEditor {
         //
         indentCommand,
         outdentCommand,
+
+        exitEditingCommand,
       ],
     );
     await tester.pumpWidget(
