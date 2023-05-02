@@ -158,6 +158,10 @@ class SimpleEditor extends StatelessWidget {
         outdentCommand,
 
         exitEditingCommand,
+
+        //
+        pageUpCommand,
+        pageDownCommand,
       ],
     );
   }
