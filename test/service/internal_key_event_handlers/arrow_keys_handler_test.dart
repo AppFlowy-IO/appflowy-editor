@@ -231,17 +231,42 @@ void main() async {
     await editor.dispose();
   });
 
-//   testWidgets(
-//       'Presses arrow left/right key since selection is not collapsed and backward',
-//       (tester) async {
-//     await _testPressArrowKeyInNotCollapsedSelection(tester, true);
-//   });
+  Future<void> testPressArrowKeyInNotCollapsedSelection(
+    WidgetTester tester,
+    bool isBackward,
+  ) async {
+    const text = 'Welcome to Appflowy 😁';
+    final editor = tester.editor..addParagraphs(2, initialText: text);
+    await editor.startTesting();
 
-//   testWidgets(
-//       'Presses arrow left/right key since selection is not collapsed and forward',
-//       (tester) async {
-//     await _testPressArrowKeyInNotCollapsedSelection(tester, false);
-//   });
+    final start = Position(path: [0], offset: 5);
+    final end = Position(path: [1], offset: 10);
+    final selection = Selection(
+      start: isBackward ? start : end,
+      end: isBackward ? end : start,
+    );
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowLeft);
+    expect(editor.selection?.start, start);
+
+    await editor.updateSelection(selection);
+    await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
+    expect(editor.selection?.end, end);
+
+    await editor.dispose();
+  }
+
+  testWidgets(
+      'Presses arrow left/right key since selection is not collapsed and backward',
+      (tester) async {
+    await testPressArrowKeyInNotCollapsedSelection(tester, true);
+  });
+
+  testWidgets(
+      'Presses arrow left/right key since selection is not collapsed and forward',
+      (tester) async {
+    await testPressArrowKeyInNotCollapsedSelection(tester, false);
+  });
 
 //   testWidgets('Presses arrow left/right + shift in collapsed selection',
 //       (tester) async {
@@ -648,31 +673,6 @@ void main() async {
 //       ),
 //     );
 //   });
-// }
-
-// Future<void> _testPressArrowKeyInNotCollapsedSelection(
-//   WidgetTester tester,
-//   bool isBackward,
-// ) async {
-//   const text = 'Welcome to Appflowy 😁';
-//   final editor = tester.editor
-//     ..insertTextNode(text)
-//     ..insertTextNode(text);
-//   await editor.startTesting();
-
-//   final start = Position(path: [0], offset: 5);
-//   final end = Position(path: [1], offset: 10);
-//   final selection = Selection(
-//     start: isBackward ? start : end,
-//     end: isBackward ? end : start,
-//   );
-//   await editor.updateSelection(selection);
-//   await editor.pressLogicKey(key: LogicalKeyboardKey.arrowLeft);
-//   expect(editor.documentSelection?.start, start);
-
-//   await editor.updateSelection(selection);
-//   await editor.pressLogicKey(key: LogicalKeyboardKey.arrowRight);
-//   expect(editor.documentSelection?.end, end);
 // }
 
 // Future<void> _testPressArrowKeyWithMetaInSelection(
