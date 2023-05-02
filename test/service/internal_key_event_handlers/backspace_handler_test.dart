@@ -1,13 +1,24 @@
 import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../new/infra/testable_editor.dart';
+import '../../new/util/util.dart';
 
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    if (kDebugMode) {
+      activateLog();
+    }
+  });
+
+  tearDownAll(() {
+    if (kDebugMode) {
+      deactivateLog();
+    }
   });
 
   group('backspace_handler.dart', () {
@@ -172,7 +183,7 @@ void main() async {
 
   testWidgets('Presses delete key in styled text (bulletedList)',
       (tester) async {
-    await _deleteStyledTextByDelete(tester, BuiltInAttributeKey.bulletedList);
+    await _deleteStyledTextByDelete(tester, 'bulleted_list');
   });
 
   testWidgets('Presses delete key in styled text (heading)', (tester) async {
@@ -257,9 +268,9 @@ void main() async {
       Selection.single(path: [0], startOffset: 0),
     );
 
-    final node = editor.nodeAtPath([0]);
-    await editor.editorState.insertText(0, '#', node: node);
+    await editor.editorState.insertTextAtCurrentSelection('#');
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+
     var after = editor.nodeAtPath([0])!;
     expect(
       after.type,
@@ -274,13 +285,16 @@ void main() async {
       'paragraph',
     );
 
-    await editor.editorState.insertText(0, '#', node: node);
+    await editor.editorState.insertTextAtCurrentSelection('##');
     await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+    after = editor.nodeAtPath([0])!;
     expect(
       after.type,
       'heading',
     );
-    expect(after.attributes[HeadingBlockKeys.level], 1);
+    expect(after.attributes[HeadingBlockKeys.level], 2);
+
+    await editor.dispose();
   });
 
   testWidgets('Delete the nested bulleted list', (tester) async {
@@ -288,18 +302,6 @@ void main() async {
     //  * Welcome to Appflowy 😁
     //    * Welcome to Appflowy 😁
     const text = 'Welcome to Appflowy 😁';
-    // final node = TextNode(
-    //   delta: Delta()..insert(text),
-    //   attributes: {
-    //     BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList,
-    //   },
-    // );
-    // node.insert(
-    //   node.copyWith()
-    //     ..insert(
-    //       node.copyWith(),
-    //     ),
-    // );
     final node = bulletedListNode(
       attributes: {
         'delta': (Delta()..insert(text)).toJson(),
@@ -321,7 +323,7 @@ void main() async {
       Selection.single(path: [0, 0, 0], startOffset: 0),
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
-    expect(editor.nodeAtPath([0, 0, 0])?.subtype, null);
+    expect(editor.nodeAtPath([0, 0, 0])?.type, 'paragraph');
 
     await editor.updateSelection(
       Selection.single(path: [0, 0, 0], startOffset: 0),
@@ -347,6 +349,8 @@ void main() async {
       Selection.single(path: [0, 0], startOffset: text.length),
     );
     expect(editor.nodeAtPath([0, 0])?.delta?.toPlainText(), text * 2);
+
+    await editor.dispose();
   });
 
   testWidgets('Delete the complicated nested bulleted list', (tester) async {
@@ -361,7 +365,6 @@ void main() async {
         'delta': (Delta()..insert(text)).toJson(),
       },
     );
-
     node
       ..insert(
         node.copyWith(children: LinkedList()),
@@ -375,7 +378,6 @@ void main() async {
             node.copyWith(children: LinkedList()),
           ),
       );
-
     final editor = tester.editor..addNode(node);
     await editor.startTesting();
 
@@ -384,18 +386,18 @@ void main() async {
     );
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(
-      editor.nodeAtPath([0, 1])!.subtype != BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 1])!.type != 'bulleted_list',
       true,
     );
 
     expect(
-      editor.nodeAtPath([0, 1, 0])!.subtype,
-      BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 1, 0])!.type,
+      'bulleted_list',
     );
 
     expect(
-      editor.nodeAtPath([0, 1, 1])!.subtype,
-      BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 1, 1])!.type,
+      'bulleted_list',
     );
 
     expect(find.byType(FlowyRichText), findsNWidgets(5));
@@ -413,7 +415,7 @@ void main() async {
     //  * Welcome to Appflowy 😁
     await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
     expect(
-      editor.nodeAtPath([0, 0])!.subtype == BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 0])!.type == 'bulleted_list',
       true,
     );
 
@@ -423,14 +425,16 @@ void main() async {
     );
 
     expect(
-      editor.nodeAtPath([0, 1])!.subtype == BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 1])!.type == 'bulleted_list',
       true,
     );
 
     expect(
-      editor.nodeAtPath([0, 2])!.subtype == BuiltInAttributeKey.bulletedList,
+      editor.nodeAtPath([0, 2])!.type == 'bulleted_list',
       true,
     );
+
+    await editor.dispose();
   });
 }
 
@@ -575,7 +579,7 @@ Future<void> _deleteStyledTextByDelete(
   // FIXME: migrate the delete key.
   // const text = 'Welcome to Appflowy 😁';
   // Attributes attributes = {
-  //   BuiltInAttributeKey.subtype: style,
+  //   BuiltInAttributeKey.type: style,
   // };
   // if (style == BuiltInAttributeKey.checkbox) {
   //   attributes[BuiltInAttributeKey.checkbox] = true;
@@ -601,7 +605,7 @@ Future<void> _deleteStyledTextByDelete(
   //     editor.selection,
   //     Selection.single(path: [1], startOffset: 0),
   //   );
-  //   expect(editor.nodeAtPath([1])?.subtype, style);
+  //   expect(editor.nodeAtPath([1])?.type, style);
   //   expect(
   //     (editor.nodeAtPath([1]) as TextNode).toPlainText(),
   //     text.safeSubString(i),
@@ -613,7 +617,7 @@ Future<void> _deleteStyledTextByDelete(
   // );
   // expect(editor.documentRootLen, 2);
   // expect(editor.selection, Selection.single(path: [1], startOffset: 0));
-  // expect(editor.nodeAtPath([1])?.subtype, style);
+  // expect(editor.nodeAtPath([1])?.type, style);
   // expect((editor.nodeAtPath([1]) as TextNode).toPlainText(), text);
 }
 

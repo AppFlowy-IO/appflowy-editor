@@ -43,7 +43,9 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
         attributes: {
           'delta': delta.toJson(),
         },
+        children: node.children,
       ),
+      deepCopy: true,
     )
     ..deleteNode(node)
     ..afterSelection = transaction.beforeSelection;

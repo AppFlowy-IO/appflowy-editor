@@ -20,10 +20,11 @@ class KeyboardServiceWidget extends StatefulWidget {
   final Widget child;
 
   @override
-  State<KeyboardServiceWidget> createState() => _KeyboardServiceWidgetState();
+  State<KeyboardServiceWidget> createState() => KeyboardServiceWidgetState();
 }
 
-class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
+@visibleForTesting
+class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   late final EditorState editorState;
   late final TextInputService textInputService;
   late final FocusNode focusNode;

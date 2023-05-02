@@ -1,14 +1,25 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../new/infra/testable_editor.dart';
+import '../../new/util/util.dart';
 
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    if (kDebugMode) {
+      activateLog();
+    }
+  });
+
+  tearDownAll(() {
+    if (kDebugMode) {
+      deactivateLog();
+    }
   });
 
   group('arrow_keys_handler.dart', () {

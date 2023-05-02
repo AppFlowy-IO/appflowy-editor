@@ -117,19 +117,7 @@ class SimpleEditor extends StatelessWidget {
         // heading
         formatSignToHeading,
 
-        // slash
-        slashCommand,
-
-        // format code, 'code'
-        formatBackquoteToCode,
-
-        // format italic, _italic_ or *italic*
-        formatUnderscoreToItalic,
-        formatAsteriskToItalic,
-
-        //format strikethrough, ~strikethrough~
-        formatTildeToStrikethrough,
-
+        // checkbox
         // format unchecked box, [] or -[]
         formatEmptyBracketsToUncheckedBox,
         formatHyphenEmptyBracketsToUncheckedBox,
@@ -138,9 +126,11 @@ class SimpleEditor extends StatelessWidget {
         formatFilledBracketsToCheckedBox,
         formatHyphenFilledBracketsToCheckedBox,
 
-        //format bold, **bold** or __bold__
-        formatDoubleAsterisksToBold,
-        formatDoubleUnderscoresToBold,
+        // slash
+        slashCommand,
+
+        // markdown syntax
+        ...markdownSyntaxShortcutEvents,
       ],
       commandShortcutEvents: [
         // backspace

@@ -10,7 +10,7 @@ extension TextTransforms on EditorState {
   /// beginning of the new paragraph.
   Future<void> insertNewLine({
     Position? position,
-    Node Function(Delta delta)? nodeBuilder,
+    Node Function(Node node)? nodeBuilder,
   }) async {
     // If the position is not passed in, use the current selection.
     position ??= selection?.start;
@@ -47,18 +47,18 @@ extension TextTransforms on EditorState {
     }
 
     final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
-    final insertedNode = nodeBuilder?.call(slicedDelta) ??
-        node.copyWith(
-          type: 'paragraph',
-          attributes: {
-            'delta': slicedDelta.toJson(),
-          },
-        );
+    final insertedNode = paragraphNode(
+      attributes: {
+        'delta': slicedDelta.toJson(),
+      },
+      children: children,
+    );
+    nodeBuilder ??= (node) => node;
 
     // Insert a new paragraph node.
     transaction.insertNode(
       next,
-      insertedNode,
+      nodeBuilder(insertedNode),
       deepCopy: true,
     );
 
@@ -195,9 +195,9 @@ extension TextTransforms on EditorState {
     return apply(transaction);
   }
 
-  /// Insert text at the given index of the given [TextNode] or the [Path].
+  /// Insert text at the given index of the given [Node] or the [Path].
   ///
-  /// [Path] and [TextNode] are mutually exclusive.
+  /// [Path] and [Node] are mutually exclusive.
   /// One of these two parameters must have a value.
   Future<void> insertText(
     int index,
