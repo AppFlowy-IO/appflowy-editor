@@ -22,6 +22,7 @@ void main() async {
         LogicalKeyboardKey.keyB,
       );
     });
+
     testWidgets('Presses Command + I to update text style', (tester) async {
       await _testUpdateTextStyleByCommandX(
         tester,
@@ -30,6 +31,7 @@ void main() async {
         LogicalKeyboardKey.keyI,
       );
     });
+
     testWidgets('Presses Command + U to update text style', (tester) async {
       await _testUpdateTextStyleByCommandX(
         tester,
@@ -38,6 +40,7 @@ void main() async {
         LogicalKeyboardKey.keyU,
       );
     });
+
     testWidgets('Presses Command + Shift + S to update text style',
         (tester) async {
       await _testUpdateTextStyleByCommandX(

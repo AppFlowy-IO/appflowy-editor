@@ -5,6 +5,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 // If we have more in the future, we should add them in this enum and update the [style] variable in [handleDoubleCharactersFormat].
 enum DoubleCharacterFormatStyle {
   bold,
+  strikethrough,
 }
 
 bool handleFormatByWrappingWithDoubleCharacter({
@@ -78,6 +79,9 @@ bool handleFormatByWrappingWithDoubleCharacter({
   switch (formatStyle) {
     case DoubleCharacterFormatStyle.bold:
       style = 'bold';
+      break;
+    case DoubleCharacterFormatStyle.strikethrough:
+      style = 'strikethrough';
       break;
     default:
       style = '';

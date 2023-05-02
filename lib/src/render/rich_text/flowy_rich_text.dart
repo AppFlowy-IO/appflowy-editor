@@ -56,7 +56,8 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       _textKey.currentContext?.findRenderObject() as RenderParagraph;
 
   RenderParagraph? get _placeholderRenderParagraph =>
-      _placeholderTextKey.currentContext?.findRenderObject() as RenderParagraph;
+      _placeholderTextKey.currentContext?.findRenderObject()
+          as RenderParagraph?;
 
   @override
   void didUpdateWidget(covariant FlowyRichText oldWidget) {
