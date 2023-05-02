@@ -14,11 +14,7 @@ Future<void> onReplace(
   if (selection == null) {
     return;
   }
-  if (selection.isSingle) {
-    await editorState.deleteSelection(selection);
-  } else {
-    throw UnimplementedError();
-  }
+  await editorState.deleteSelection(selection);
 
   // insert the replacement
   final insertion = replacement.toInsertion();

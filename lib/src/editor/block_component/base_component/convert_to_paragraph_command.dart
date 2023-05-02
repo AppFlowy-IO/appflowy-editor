@@ -17,7 +17,7 @@ const convertibleBlockTypes = [
 ///   - mobile
 ///
 /// convert the current block to paragraph.
-CommandShortcutEvent convertToParagraphCommand = CommandShortcutEvent(
+final CommandShortcutEvent convertToParagraphCommand = CommandShortcutEvent(
   key: 'convert to paragraph',
   command: 'backspace',
   handler: _convertToParagraphCommandHandler,
@@ -33,6 +33,10 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
   if (node == null ||
       delta == null ||
       !convertibleBlockTypes.contains(node.type)) {
+    return KeyEventResult.ignored;
+  }
+  final index = delta.prevRunePosition(selection.startIndex);
+  if (index >= 0) {
     return KeyEventResult.ignored;
   }
   final transaction = editorState.transaction;

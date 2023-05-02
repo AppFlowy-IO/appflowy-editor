@@ -24,5 +24,7 @@ export 'heading_block_component/heading_block_component.dart';
 export 'heading_block_component/heading_character_shortcut.dart';
 
 // base
-export 'base_component/convert_to_paragraph_command_shortcut.dart';
-export 'base_component/insert_newline_in_type.dart';
+export 'base_component/convert_to_paragraph_command.dart';
+export 'base_component/insert_newline_in_type_command.dart';
+export 'base_component/indent_comand.dart';
+export 'base_component/outdent_command.dart';

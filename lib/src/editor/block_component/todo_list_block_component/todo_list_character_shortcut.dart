@@ -90,6 +90,9 @@ CharacterShortcutEvent insertNewLineAfterTodoList = CharacterShortcutEvent(
   handler: (editorState) async => await insertNewLineInType(
     editorState,
     'todo_list',
+    attributes: {
+      TodoListBlockKeys.checked: false,
+    },
   ),
 );
 
