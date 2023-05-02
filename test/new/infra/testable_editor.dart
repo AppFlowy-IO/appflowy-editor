@@ -92,6 +92,8 @@ class TestableEditor {
         //
         homeCommand,
         endCommand,
+
+        toggleTodoListCommand,
       ],
     );
     await tester.pumpWidget(
