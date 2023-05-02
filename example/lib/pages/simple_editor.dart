@@ -99,6 +99,9 @@ class SimpleEditor extends StatelessWidget {
       },
       characterShortcutEvents: [
         // '\n'
+        insertNewLineAfterBulletedList,
+        insertNewLineAfterTodoList,
+        insertNewLineAfterNumberedList,
         insertNewLine,
 
         // bulleted list
@@ -141,6 +144,7 @@ class SimpleEditor extends StatelessWidget {
       ],
       commandShortcutEvents: [
         // backspace
+        convertToParagraphCommand,
         backspaceCommand,
 
         // arrow keys

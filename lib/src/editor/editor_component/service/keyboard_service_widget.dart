@@ -48,6 +48,7 @@ class _KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       onReplace: (replacement) async => await onReplace(
         replacement,
         editorState,
+        widget.characterShortcutEvents,
       ),
       onNonTextUpdate: onNonTextUpdate,
       onPerformAction: (action) async => await onPerformAction(

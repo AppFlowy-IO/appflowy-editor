@@ -10,6 +10,7 @@ extension TextTransforms on EditorState {
   /// beginning of the new paragraph.
   Future<void> insertNewLine({
     Position? position,
+    Node Function(Delta delta)? nodeBuilder,
   }) async {
     // If the position is not passed in, use the current selection.
     position ??= selection?.start;
@@ -45,16 +46,19 @@ extension TextTransforms on EditorState {
       transaction.deleteNodes(children);
     }
 
+    final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
+    final insertedNode = nodeBuilder?.call(slicedDelta) ??
+        node.copyWith(
+          type: 'paragraph',
+          attributes: {
+            'delta': slicedDelta.toJson(),
+          },
+        );
+
     // Insert a new paragraph node.
     transaction.insertNode(
       next,
-      node.copyWith(
-        type: 'paragraph',
-        attributes: {
-          'delta':
-              (delta == null ? Delta() : delta.slice(position.offset)).toJson(),
-        }, // move the current node's children to the new paragraph node if it has any.
-      ),
+      insertedNode,
       deepCopy: true,
     );
 

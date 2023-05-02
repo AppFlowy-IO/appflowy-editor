@@ -77,6 +77,22 @@ CharacterShortcutEvent formatHyphenFilledBracketsToCheckedBox =
   },
 );
 
+/// Insert a new block after the todo list block.
+///
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
+CharacterShortcutEvent insertNewLineAfterTodoList = CharacterShortcutEvent(
+  key: 'insert new block after todo list',
+  character: '\n',
+  handler: (editorState) async => await insertNewLineInType(
+    editorState,
+    'todo_list',
+  ),
+);
+
 Future<bool> _formatSymbolToUncheckedBox({
   required EditorState editorState,
   required String symbol,
