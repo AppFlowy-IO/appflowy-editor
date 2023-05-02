@@ -115,9 +115,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.editable && widget.autoFocus) {
-        editorState.service.selectionService.updateSelection(
+        editorState.updateSelectionWithReason(
           widget.focusedSelection ??
-              Selection.single(path: [0], startOffset: 0),
+              Selection.single(
+                path: [0],
+                startOffset: 0,
+              ),
+          reason: SelectionUpdateReason.uiEvent,
         );
       }
     });
