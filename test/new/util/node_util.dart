@@ -39,4 +39,28 @@ extension NodeExtension on Node {
       decorator: decorator,
     );
   }
+
+  bool everyAttributeValue(
+    Selection selection,
+    String key,
+    bool Function(dynamic value) test,
+  ) {
+    return allSatisfyInSelection(
+      selection,
+      (delta) => delta.whereType<TextInsert>().every(
+            (element) => test(element.attributes?[key]),
+          ),
+    );
+  }
+
+  bool allBold(Selection selection) =>
+      everyAttributeValue(selection, 'bold', (value) => value == true);
+  bool allItalic(Selection selection) =>
+      everyAttributeValue(selection, 'italic', (value) => value == true);
+  bool allCode(Selection selection) =>
+      everyAttributeValue(selection, 'code', (value) => value == true);
+  bool allStrikethrough(Selection selection) =>
+      everyAttributeValue(selection, 'strikethrough', (value) => value == true);
+  bool allUnderline(Selection selection) =>
+      everyAttributeValue(selection, 'underline', (value) => value == true);
 }

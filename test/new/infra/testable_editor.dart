@@ -83,6 +83,10 @@ class TestableEditor {
         ...markdownSyntaxShortcutEvents,
       ],
       commandShortcutEvents: [
+        // undo, redo
+        undoCommand,
+        redoCommand,
+
         // backspace
         convertToParagraphCommand,
         backspaceCommand,
