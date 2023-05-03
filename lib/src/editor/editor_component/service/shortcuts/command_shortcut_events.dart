@@ -10,3 +10,4 @@ export 'command_shortcut_events/markdown_commands.dart';
 export 'command_shortcut_events/page_up_command.dart';
 export 'command_shortcut_events/page_down_command.dart';
 export 'command_shortcut_events/undo_redo_command.dart';
+export 'command_shortcut_events/select_all_command.dart';

@@ -7,20 +7,20 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
+final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   key: 'backspace',
   command: 'backspace',
   handler: _backspaceCommandHandler,
 );
 
-CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
+final CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
   key: 'delete the left word',
   command: 'ctrl+backspace',
   macOSCommand: 'alt+backspace',
   handler: _deleteLeftWordCommandHandler,
 );
 
-CommandShortcutEvent deleteLeftSentenceCommand = CommandShortcutEvent(
+final CommandShortcutEvent deleteLeftSentenceCommand = CommandShortcutEvent(
   key: 'delete the left word',
   command: 'ctrl+alt+backspace',
   macOSCommand: 'cmd+backspace',

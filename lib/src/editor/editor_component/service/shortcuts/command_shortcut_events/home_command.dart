@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent homeCommand = CommandShortcutEvent(
+final CommandShortcutEvent homeCommand = CommandShortcutEvent(
   key: 'scroll to the top of the document',
   command: 'home',
   handler: _homeCommandHandler,

@@ -101,7 +101,7 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
 
 // arrow right key + shift
 //
-CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
   key: 'move the cursor right select',
   command: 'shift+arrow right',
   handler: _moveCursorRightSelectCommandHandler,
@@ -125,7 +125,7 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
 };
 
 // arrow right key + shift + ctrl or cmd
-CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
   key: 'move the cursor right select',
   command: 'ctrl+shift+arrow right',
   macOSCommand: 'cmd+shift+arrow right',

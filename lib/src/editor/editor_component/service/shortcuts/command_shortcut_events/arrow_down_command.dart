@@ -18,7 +18,7 @@ final List<CommandShortcutEvent> arrowDownKeys = [
 
 // arrow down key
 // move the cursor backward one character
-CommandShortcutEvent moveCursorDownCommand = CommandShortcutEvent(
+final CommandShortcutEvent  moveCursorDownCommand = CommandShortcutEvent(
   key: 'move the cursor downward',
   command: 'arrow down',
   handler: _moveCursorDownCommandHandler,

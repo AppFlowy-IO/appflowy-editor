@@ -34,90 +34,10 @@ class TestableEditor {
     bool autoFocus = false,
     bool editable = true,
   }) async {
-    final editor = AppFlowyEditor(
+    final editor = AppFlowyEditor.standard(
       editorState: editorState,
-      autoFocus: autoFocus,
       editable: editable,
-      blockComponentBuilders: {
-        'document': DocumentComponentBuilder(),
-        'paragraph': TextBlockComponentBuilder(),
-        'todo_list': TodoListBlockComponentBuilder(),
-        'bulleted_list': BulletedListBlockComponentBuilder(),
-        'numbered_list': NumberedListBlockComponentBuilder(),
-        'quote': QuoteBlockComponentBuilder(),
-        'heading': HeadingBlockComponentBuilder(),
-      },
-      characterShortcutEvents: [
-        // '\n'
-        insertNewLineAfterBulletedList,
-        insertNewLineAfterTodoList,
-        insertNewLineAfterNumberedList,
-        insertNewLine,
-
-        // bulleted list
-        formatAsteriskToBulletedList,
-        formatMinusToBulletedList,
-
-        // numbered list
-        formatNumberToNumberedList,
-
-        // quote
-        formatGreaterToQuote,
-
-        // heading
-        formatSignToHeading,
-
-        // checkbox
-        // format unchecked box, [] or -[]
-        formatEmptyBracketsToUncheckedBox,
-        formatHyphenEmptyBracketsToUncheckedBox,
-
-        // format checked box, [x] or -[x]
-        formatFilledBracketsToCheckedBox,
-        formatHyphenFilledBracketsToCheckedBox,
-
-        // slash
-        slashCommand,
-
-        // markdown syntax
-        ...markdownSyntaxShortcutEvents,
-      ],
-      commandShortcutEvents: [
-        // undo, redo
-        undoCommand,
-        redoCommand,
-
-        // backspace
-        convertToParagraphCommand,
-        backspaceCommand,
-        deleteLeftWordCommand,
-        deleteLeftSentenceCommand,
-
-        // arrow keys
-        ...arrowLeftKeys,
-        ...arrowRightKeys,
-        ...arrowUpKeys,
-        ...arrowDownKeys,
-
-        //
-        homeCommand,
-        endCommand,
-        pageUpCommand,
-        pageDownCommand,
-
-        toggleTodoListCommand,
-        ...toggleMarkdownCommands,
-
-        //
-        indentCommand,
-        outdentCommand,
-
-        exitEditingCommand,
-
-        //
-        pageUpCommand,
-        pageDownCommand,
-      ],
+      autoFocus: autoFocus,
     );
     await tester.pumpWidget(
       MaterialApp(
@@ -200,7 +120,6 @@ class TestableEditor {
 
   final keyToCharacterMap = {
     LogicalKeyboardKey.space: ' ',
-    LogicalKeyboardKey.enter: '\n',
     LogicalKeyboardKey.backquote: '`',
     LogicalKeyboardKey.tilde: '~',
     LogicalKeyboardKey.asterisk: '*',
