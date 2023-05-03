@@ -48,9 +48,9 @@ void main() async {
         endNode: root.childAtPath([1]),
       ).toList();
 
-      expect(nodes[0].id, n1.id);
-      expect(nodes[1].id, n1.childAtIndex(0)!.id);
-      expect(nodes[nodes.length - 1].id, n2.id);
+      expect(nodes[0].type, n1.type);
+      expect(nodes[1].type, n1.childAtIndex(0)!.type);
+      expect(nodes[nodes.length - 1].type, n2.type);
     });
   });
 }
