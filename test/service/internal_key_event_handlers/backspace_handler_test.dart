@@ -38,7 +38,7 @@ void main() async {
       );
       // Pressing the backspace key continuously.
       for (int i = 1; i <= 10; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.backspace,
         );
         expect(editor.documentRootLen, 1);
@@ -269,7 +269,7 @@ void main() async {
     );
 
     await editor.editorState.insertTextAtCurrentSelection('#');
-    await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+    await editor.pressKey(key: LogicalKeyboardKey.space);
 
     var after = editor.nodeAtPath([0])!;
     expect(
@@ -278,7 +278,7 @@ void main() async {
     );
     expect(after.attributes[HeadingBlockKeys.level], 1);
 
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     after = editor.nodeAtPath([0])!;
     expect(
       after.type,
@@ -286,7 +286,7 @@ void main() async {
     );
 
     await editor.editorState.insertTextAtCurrentSelection('##');
-    await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+    await editor.pressKey(key: LogicalKeyboardKey.space);
     after = editor.nodeAtPath([0])!;
     expect(
       after.type,
@@ -322,19 +322,19 @@ void main() async {
     await editor.updateSelection(
       Selection.single(path: [0, 0, 0], startOffset: 0),
     );
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 0, 0])?.type, 'paragraph');
 
     await editor.updateSelection(
       Selection.single(path: [0, 0, 0], startOffset: 0),
     );
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([0, 1]) != null, true);
 
     await editor.updateSelection(
       Selection.single(path: [0, 1], startOffset: 0),
     );
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(editor.nodeAtPath([1]) != null, true);
 
     await editor.updateSelection(
@@ -343,7 +343,7 @@ void main() async {
 
     // * Welcome to Appflowy 😁
     //  * Welcome to Appflowy 😁Welcome to Appflowy 😁
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(
       editor.selection,
       Selection.single(path: [0, 0], startOffset: text.length),
@@ -384,7 +384,7 @@ void main() async {
     await editor.updateSelection(
       Selection.single(path: [0, 1], startOffset: 0),
     );
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(
       editor.nodeAtPath([0, 1])!.type != 'bulleted_list',
       true,
@@ -413,7 +413,7 @@ void main() async {
     //  * Welcome to Appflowy 😁Welcome to Appflowy 😁
     //  * Welcome to Appflowy 😁
     //  * Welcome to Appflowy 😁
-    await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+    await editor.pressKey(key: LogicalKeyboardKey.backspace);
     expect(
       editor.nodeAtPath([0, 0])!.type == 'bulleted_list',
       true,
@@ -541,13 +541,13 @@ Future<void> _deleteStyledTextByBackspace(
   await editor.updateSelection(
     Selection.single(path: [2], startOffset: 0),
   );
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.backspace,
   );
   expect(editor.selection, Selection.single(path: [2], startOffset: 0));
   expect(editor.nodeAtPath([2])?.type, 'paragraph');
 
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.backspace,
   );
   expect(editor.documentRootLen, 2);
@@ -562,7 +562,7 @@ Future<void> _deleteStyledTextByBackspace(
   await editor.updateSelection(
     Selection.single(path: [1], startOffset: 0),
   );
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.backspace,
   );
   expect(editor.documentRootLen, 2);
@@ -633,7 +633,7 @@ Future<void> _deleteTextByBackspace(
   await editor.updateSelection(
     Selection.single(path: [1], startOffset: 10),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+  await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
   expect(editor.documentRootLen, 3);
   expect(editor.selection, Selection.single(path: [1], startOffset: 9));
@@ -646,7 +646,7 @@ Future<void> _deleteTextByBackspace(
   await editor.updateSelection(
     Selection.single(path: [2], startOffset: 8, endOffset: 11),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+  await editor.pressKey(key: LogicalKeyboardKey.backspace);
   expect(editor.documentRootLen, 3);
   expect(editor.selection, Selection.single(path: [2], startOffset: 8));
   expect(
@@ -665,7 +665,7 @@ Future<void> _deleteTextByBackspace(
       end: isBackwardSelection ? end : start,
     ),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.backspace);
+  await editor.pressKey(key: LogicalKeyboardKey.backspace);
   expect(editor.documentRootLen, 1);
   expect(
     editor.selection,
@@ -690,7 +690,7 @@ Future<void> _deleteTextByDelete(
   await editor.updateSelection(
     Selection.single(path: [1], startOffset: 9),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
+  await editor.pressKey(key: LogicalKeyboardKey.delete);
 
   expect(editor.documentRootLen, 3);
   expect(editor.selection, Selection.single(path: [1], startOffset: 9));
@@ -703,7 +703,7 @@ Future<void> _deleteTextByDelete(
   await editor.updateSelection(
     Selection.single(path: [2], startOffset: 8, endOffset: 11),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
+  await editor.pressKey(key: LogicalKeyboardKey.delete);
   expect(editor.documentRootLen, 3);
   expect(editor.selection, Selection.single(path: [2], startOffset: 8));
   expect(
@@ -722,7 +722,7 @@ Future<void> _deleteTextByDelete(
       end: isBackwardSelection ? end : start,
     ),
   );
-  await editor.pressLogicKey(key: LogicalKeyboardKey.delete);
+  await editor.pressKey(key: LogicalKeyboardKey.delete);
   expect(editor.documentRootLen, 1);
   expect(
     editor.selection,

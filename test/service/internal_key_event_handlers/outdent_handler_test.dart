@@ -17,7 +17,7 @@ void main() async {
       final snapshotDocument = editor.document;
 
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.tab,
         isShiftPressed: true,
       );
@@ -42,7 +42,7 @@ void main() async {
 
       final selection = Selection.single(path: [1], startOffset: 0);
       await editor.updateSelection(selection);
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.tab,
         isShiftPressed: true,
       );
@@ -69,10 +69,10 @@ void main() async {
 
         final selection = Selection.collapse([1], 0);
         await editor.updateSelection(selection);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         await editor.updateSelection(selection);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         // Before
         // [] Welcome to Appflowy 😁
@@ -106,7 +106,7 @@ void main() async {
           Selection.single(path: [0, 1], startOffset: 0),
         );
 
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.tab,
           isShiftPressed: true,
         );
@@ -148,7 +148,7 @@ void main() async {
         var selection = Selection.single(path: [1], startOffset: 0);
         await editor.updateSelection(selection);
 
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         // Before
         // * Welcome to Appflowy 😁
@@ -180,7 +180,7 @@ void main() async {
         await editor
             .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
 
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.tab,
           isShiftPressed: true,
         );

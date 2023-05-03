@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -14,13 +13,11 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       const lines = 3;
       final editor = tester.editor;
-      for (var i = 0; i < lines; i++) {
-        editor.insertTextNode(text);
-      }
+      editor.addParagraphs(lines, initialText: text);
+
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
-      await editor.pressLogicKey(key: LogicalKeyboardKey.slash);
-
+      await editor.pressKey(character: '/');
       await tester.pumpAndSettle(const Duration(milliseconds: 1000));
 
       expect(
@@ -33,9 +30,7 @@ void main() async {
       }
 
       await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
-
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
-
       expect(
         find.byType(SelectionMenuItemWidget, skipOffstage: false),
         findsNothing,
@@ -47,12 +42,11 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       const lines = 3;
       final editor = tester.editor;
-      for (var i = 0; i < lines; i++) {
-        editor.insertTextNode(text);
-      }
+      editor.addParagraphs(lines, initialText: text);
+
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [1], startOffset: 5));
-      await editor.pressLogicKey(key: LogicalKeyboardKey.slash);
+      await editor.pressKey(character: '/');
 
       await tester.pumpAndSettle(const Duration(milliseconds: 1000));
 

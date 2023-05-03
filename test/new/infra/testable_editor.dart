@@ -202,7 +202,7 @@ class TestableEditor {
     LogicalKeyboardKey.asterisk: '*',
     LogicalKeyboardKey.underscore: '_',
   };
-  Future<void> pressLogicKey({
+  Future<void> pressKey({
     String? character,
     LogicalKeyboardKey? key,
     bool isControlPressed = false,
@@ -242,6 +242,8 @@ class TestableEditor {
       if (isMetaPressed) {
         await simulateKeyUpEvent(LogicalKeyboardKey.meta);
       }
+    } else if (character != null) {
+      await ime.typeText(character);
     }
     await tester.pumpAndSettle();
   }

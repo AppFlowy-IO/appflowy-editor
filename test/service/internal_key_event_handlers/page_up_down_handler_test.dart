@@ -25,7 +25,7 @@ void main() async {
       // Pressing the pageDown key continuously.
       var currentOffsetY = 0.0;
       for (int i = 1; i <= page; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.pageDown,
         );
         if (i == page) {
@@ -38,7 +38,7 @@ void main() async {
       }
 
       for (int i = 1; i <= 5; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.pageDown,
         );
         final dy = scrollService.dy;
@@ -47,7 +47,7 @@ void main() async {
 
       // Pressing the pageUp key continuously.
       for (int i = page; i >= 1; i--) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.pageUp,
         );
         if (i == 1) {
@@ -60,7 +60,7 @@ void main() async {
       }
 
       for (int i = 1; i <= 5; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.pageUp,
         );
         final dy = scrollService.dy;

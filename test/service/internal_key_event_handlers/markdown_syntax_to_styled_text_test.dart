@@ -54,7 +54,7 @@ void main() async {
       int repeat = 1,
     }) async {
       for (var i = 0; i < repeat; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.backquote,
         );
       }
@@ -171,7 +171,7 @@ void main() async {
         int repeat = 1,
       }) async {
         for (var i = 0; i < repeat; i++) {
-          await editor.pressLogicKey(key: LogicalKeyboardKey.tilde);
+          await editor.pressKey(key: LogicalKeyboardKey.tilde);
         }
       }
 
@@ -255,7 +255,7 @@ void main() async {
       int repeat = 1,
     }) async {
       for (var i = 0; i < repeat; i++) {
-        await editor.pressLogicKey(key: LogicalKeyboardKey.asterisk);
+        await editor.pressKey(key: LogicalKeyboardKey.asterisk);
       }
     }
 
@@ -374,7 +374,7 @@ void main() async {
       int repeat = 1,
     }) async {
       for (var i = 0; i < repeat; i++) {
-        await editor.pressLogicKey(key: LogicalKeyboardKey.underscore);
+        await editor.pressKey(key: LogicalKeyboardKey.underscore);
       }
     }
 

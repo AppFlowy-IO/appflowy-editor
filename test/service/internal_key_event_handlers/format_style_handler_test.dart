@@ -96,7 +96,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     endOffset: text.length - 2,
   );
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: key,
     isShiftPressed: isShiftPressed,
     isMetaPressed: Platform.isMacOS,
@@ -119,7 +119,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     endOffset: text.length,
   );
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: key,
     isShiftPressed: isShiftPressed,
     isMetaPressed: Platform.isMacOS,
@@ -137,7 +137,7 @@ Future<void> _testUpdateTextStyleByCommandX(
 
   // clear the style
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: key,
     isShiftPressed: isShiftPressed,
     isMetaPressed: Platform.isMacOS,
@@ -157,7 +157,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     end: Position(path: [2], offset: text.length),
   );
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: key,
     isShiftPressed: isShiftPressed,
     isMetaPressed: Platform.isMacOS,
@@ -177,7 +177,7 @@ Future<void> _testUpdateTextStyleByCommandX(
   }
 
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: key,
     isShiftPressed: isShiftPressed,
     isMetaPressed: Platform.isMacOS,
@@ -215,12 +215,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   // trigger the link menu
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isMetaPressed: true,
     );
@@ -245,12 +245,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isMetaPressed: true,
     );
@@ -270,12 +270,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   // Remove link
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isMetaPressed: true,
     );

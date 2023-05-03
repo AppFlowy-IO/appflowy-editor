@@ -40,7 +40,7 @@ void main() async {
       final selection = Selection.single(path: [1], startOffset: text.length);
       await editor.updateSelection(selection);
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.arrowLeft,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
@@ -59,7 +59,7 @@ void main() async {
         macOSCommand: newCommand,
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.arrowLeft,
         isAltPressed: true,
       );
@@ -81,7 +81,7 @@ void main() async {
       final selection = Selection.single(path: [1], startOffset: 0);
       await editor.updateSelection(selection);
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.arrowRight,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
@@ -100,7 +100,7 @@ void main() async {
         macOSCommand: newCommand,
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.arrowRight,
         isAltPressed: true,
       );
