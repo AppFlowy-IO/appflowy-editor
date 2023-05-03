@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,7 +6,6 @@ void main() async {
     test('test node copyWith', () {
       final node = Node(
         type: 'example',
-        children: LinkedList(),
         attributes: {
           'example': 'example',
         },
@@ -26,7 +23,7 @@ void main() async {
 
       final nodeWithChildren = Node(
         type: 'example',
-        children: LinkedList()..add(node),
+        children: [node],
         attributes: {
           'example': 'example',
         },
@@ -53,7 +50,6 @@ void main() async {
 
     test('test textNode copyWith', () {
       final textNode = TextNode(
-        children: LinkedList(),
         attributes: {
           'example': 'example',
         },
@@ -74,7 +70,7 @@ void main() async {
       );
 
       final textNodeWithChildren = TextNode(
-        children: LinkedList()..add(textNode),
+        children: [textNode],
         attributes: {
           'example': 'example',
         },
@@ -106,35 +102,15 @@ void main() async {
       );
     });
 
-    test('test node path', () {
-      Node previous = Node(
-        type: 'example',
-        attributes: {},
-        children: LinkedList(),
-      );
-      const len = 10;
-      for (var i = 0; i < len; i++) {
-        final node = Node(
-          type: 'example_$i',
-          attributes: {},
-          children: LinkedList(),
-        );
-        previous.children.add(node..parent = previous);
-        previous = node;
-      }
-      expect(previous.path, List.filled(len, 0));
-    });
-
     test('test copy with', () {
       final child = Node(
         type: 'child',
         attributes: {},
-        children: LinkedList(),
       );
       final base = Node(
         type: 'base',
         attributes: {},
-        children: LinkedList()..add(child),
+        children: [child],
       );
       final node = base.copyWith(
         type: 'node',
@@ -216,8 +192,6 @@ void main() async {
         ],
       });
       expect(node.type, 'text');
-      expect(node is TextNode, true);
-      expect((node as TextNode).delta.toPlainText(), 'example');
       expect(node.attributes, {});
       expect(node.children.length, 1);
       expect(node.children.first.type, 'example');

@@ -1,12 +1,10 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Node quoteNode({
   Attributes? attributes,
-  LinkedList<Node>? children,
+  Iterable<Node>? children,
 }) {
   attributes ??= {'delta': Delta().toJson()};
   return Node(
@@ -14,7 +12,7 @@ Node quoteNode({
     attributes: {
       ...attributes,
     },
-    children: children,
+    children: children ?? [],
   );
 }
 

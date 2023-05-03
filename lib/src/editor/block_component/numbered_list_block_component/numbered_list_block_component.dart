@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +5,7 @@ import 'package:provider/provider.dart';
 
 Node numberedListNode({
   Attributes? attributes,
-  LinkedList<Node>? children,
+  Iterable<Node>? children,
 }) {
   attributes ??= {'delta': Delta().toJson()};
   return Node(
@@ -15,7 +13,7 @@ Node numberedListNode({
     attributes: {
       ...attributes,
     },
-    children: children,
+    children: children ?? [],
   );
 }
 

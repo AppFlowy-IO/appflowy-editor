@@ -137,7 +137,7 @@ extension TextNodeExtension on TextNode {
   bool get isNotBulletOrCheckbox => ![
         BuiltInAttributeKey.bulletedList,
         BuiltInAttributeKey.checkbox
-      ].contains(subtype);
+      ].contains('');
 }
 
 extension TextNodesExtension on List<TextNode> {

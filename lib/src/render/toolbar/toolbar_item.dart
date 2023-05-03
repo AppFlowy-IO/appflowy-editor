@@ -351,8 +351,7 @@ ToolbarItemValidator _showInBuiltInTextSelection = (editorState) {
       .whereType<TextNode>()
       .where(
         (textNode) =>
-            BuiltInAttributeKey.globalStyleKeys.contains(textNode.subtype) ||
-            textNode.subtype == null,
+            BuiltInAttributeKey.globalStyleKeys.contains(textNode.type),
       );
   return nodes.isNotEmpty;
 };
