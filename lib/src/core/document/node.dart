@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
   'children': List<Node>,
 }
  */
-
 class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
