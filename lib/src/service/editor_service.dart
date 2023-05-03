@@ -131,7 +131,7 @@ class AppFlowyEditor extends StatefulWidget {
           scrollController: scrollController,
           themeData: themeData,
           editable: editable,
-          autoFocus: editorState.document.isEmpty,
+          autoFocus: autoFocus,
           blockComponentBuilders: standardBlockComponentBuilderMap,
           characterShortcutEvents: standardCharacterShortcutEvents,
           commandShortcutEvents: standardCommandShortcutEvents,

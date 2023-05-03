@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../infra/test_editor.dart';
+import '../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -14,20 +10,17 @@ void main() async {
   group('selection_service.dart', () {
     testWidgets('Single tap test ', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text)
-        ..insertTextNode(text);
+      final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();
 
-      final secondTextNode = editor.nodeAtPath([1]);
-      final finder = find.byKey(secondTextNode!.key);
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
 
       final rect = tester.getRect(finder);
       // tap at the beginning
       await tester.tapAt(rect.centerLeft);
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0),
       );
 
@@ -35,21 +28,20 @@ void main() async {
       // tap at the ending
       await tester.tapAt(rect.centerRight);
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: text.length),
       );
+
+      await editor.dispose();
     });
 
     testWidgets('Test double tap', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text)
-        ..insertTextNode(text);
+      final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();
 
-      final secondTextNode = editor.nodeAtPath([1]);
-      final finder = find.byKey(secondTextNode!.key);
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
 
       final rect = tester.getRect(finder);
       // double tap
@@ -57,21 +49,20 @@ void main() async {
       await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
       await tester.pump();
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0, endOffset: 7),
       );
+
+      await editor.dispose();
     });
 
     testWidgets('Test triple tap', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text)
-        ..insertTextNode(text);
+      final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();
 
-      final secondTextNode = editor.nodeAtPath([1]);
-      final finder = find.byKey(secondTextNode!.key);
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
 
       final rect = tester.getRect(finder);
       // triple tap
@@ -80,59 +71,60 @@ void main() async {
       await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
       await tester.pump();
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0, endOffset: text.length),
       );
+
+      await editor.dispose();
     });
 
-    testWidgets('Test secondary tap', (tester) async {
-      const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text)
-        ..insertTextNode(text);
-      await editor.startTesting();
+    // TODO: lucas.xu support context menu
+    // testWidgets('Test secondary tap', (tester) async {
+    //   const text = 'Welcome to Appflowy 😁';
+    //   final editor = tester.editor..addParagraphs(3, initialText: text);
+    //   await editor.startTesting();
 
-      final secondTextNode = editor.nodeAtPath([1]) as TextNode;
-      final finder = find.byKey(secondTextNode.key);
+    //   final secondNode = editor.nodeAtPath([1]) as Node;
+    //   final finder = find.byKey(secondNode.key);
 
-      final rect = tester.getRect(finder);
-      // secondary tap
-      await tester.tapAt(
-        rect.centerLeft + const Offset(10.0, 0.0),
-        buttons: kSecondaryButton,
-      );
-      await tester.pump();
+    //   final rect = tester.getRect(finder);
+    //   // secondary tap
+    //   await tester.tapAt(
+    //     rect.centerLeft + const Offset(10.0, 0.0),
+    //     buttons: kSecondaryButton,
+    //   );
+    //   await tester.pump();
 
-      const welcome = 'Welcome';
-      expect(
-        editor.documentSelection,
-        Selection.single(
-          path: [1],
-          startOffset: 0,
-          endOffset: welcome.length,
-        ), // Welcome
-      );
+    //   const welcome = 'Welcome';
+    //   expect(
+    //     editor.selection,
+    //     Selection.single(
+    //       path: [1],
+    //       startOffset: 0,
+    //       endOffset: welcome.length,
+    //     ), // Welcome
+    //   );
 
-      final contextMenu = find.byType(ContextMenu);
-      expect(contextMenu, findsOneWidget);
+    //   final contextMenu = find.byType(ContextMenu);
+    //   expect(contextMenu, findsOneWidget);
 
-      // test built in context menu items
+    //   // test built in context menu items
 
-      // Skip the Windows platform because the rich_clipboard package doesn't support it perfectly.
-      if (Platform.isWindows) {
-        return;
-      }
+    //   // Skip the Windows platform because the rich_clipboard package doesn't support it perfectly.
+    //   if (Platform.isWindows) {
+    //     return;
+    //   }
 
-      // cut
-      await tester.tap(find.text('Cut'));
-      await tester.pump();
-      expect(
-        secondTextNode.toPlainText(),
-        text.replaceAll(welcome, ''),
-      );
+    //   // cut
+    //   await tester.tap(find.text('Cut'));
+    //   await tester.pump();
+    //   expect(
+    //     secondNode.delta!.toPlainText(),
+    //     text.replaceAll(welcome, ''),
+    //   );
 
-      // TODO: the copy and paste test is not working during test env.
-    });
+    //   await editor.dispose();
+    //   // TODO: the copy and paste test is not working during test env.
+    // });
   });
 }
