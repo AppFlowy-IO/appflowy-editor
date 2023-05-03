@@ -40,7 +40,7 @@ bool insertNodeAfterSelection(
   Node node,
 ) {
   final selection = editorState.selection;
-  if (selection == null || selection.isCollapsed) {
+  if (selection == null || !selection.isCollapsed) {
     return false;
   }
 

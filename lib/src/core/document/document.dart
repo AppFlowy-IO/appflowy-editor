@@ -5,7 +5,7 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/document/path.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 
-/// [Document] reprensents a AppFlowy Editor document structure.
+/// [Document] represents a AppFlowy Editor document structure.
 ///
 /// It stores the root of the document.
 ///

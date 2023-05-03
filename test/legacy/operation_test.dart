@@ -57,7 +57,7 @@ void main() {
     final item2 = Node(type: "node", attributes: {}, children: LinkedList());
     final item3 = Node(type: "node", attributes: {}, children: LinkedList());
     final root = Node(
-      type: "root",
+      type: 'document',
       attributes: {},
       children: LinkedList()
         ..addAll([
