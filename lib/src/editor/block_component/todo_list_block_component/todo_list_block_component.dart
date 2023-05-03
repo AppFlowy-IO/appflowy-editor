@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +15,7 @@ Node todoListNode({
   required bool checked,
   String? text,
   Attributes? attributes,
-  LinkedList<Node>? children,
+  Iterable<Node>? children,
 }) {
   attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
   return Node(
@@ -26,7 +24,7 @@ Node todoListNode({
       TodoListBlockKeys.checked: checked,
       ...attributes,
     },
-    children: children,
+    children: children ?? [],
   );
 }
 

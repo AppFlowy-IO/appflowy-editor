@@ -64,10 +64,7 @@ void main() async {
         'document': {
           'type': 'editor',
           'children': [
-            {
-              'type': 'text',
-              'delta': [],
-            }
+            {'type': 'text'}
           ],
           'attributes': {'a': 'a'}
         }
