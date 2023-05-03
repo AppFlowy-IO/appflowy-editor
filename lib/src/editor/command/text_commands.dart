@@ -276,4 +276,44 @@ extension TextTransforms on EditorState {
     }
     return res;
   }
+
+  /// Get the attributes in the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  ///
+  T? getDeltaAttributeValueInSelection<T>(
+    String key, [
+    Selection? selection,
+  ]) {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+    if (selection == null || !selection.isSingle) {
+      return null;
+    }
+    final node = getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (delta == null) {
+      return null;
+    }
+    final ops = delta.whereType<TextInsert>();
+    final startOffset = selection.start.offset;
+    final endOffset = selection.end.offset;
+    var start = 0;
+    for (final op in ops) {
+      if (start >= endOffset) {
+        break;
+      }
+      final length = op.length;
+      if (start < endOffset && start + length > startOffset) {
+        final attributes = op.attributes;
+        if (attributes != null &&
+            attributes.containsKey(key) &&
+            attributes[key] is T) {
+          return attributes[key] as T;
+        }
+      }
+      start += length;
+    }
+    return null;
+  }
 }
