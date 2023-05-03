@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -15,16 +15,14 @@ void main() async {
       const count = 10;
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor;
-      for (var i = 0; i < count; i++) {
-        editor.insertTextNode(text);
-      }
+      editor.addParagraphs(count, initialText: text);
       await editor.startTesting();
 
       for (var i = 0; i < count; i++) {
         await editor.updateSelection(
           Selection.single(path: [i], startOffset: 1),
         );
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
         expect(
           (editor.nodeAtPath([i]) as TextNode).toPlainText(),
           'W elcome to Appflowy 😁',
@@ -34,7 +32,7 @@ void main() async {
         await editor.updateSelection(
           Selection.single(path: [i], startOffset: text.length + 1),
         );
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
         expect(
           (editor.nodeAtPath([i]) as TextNode).toPlainText(),
           'W elcome to Appflowy 😁 ',
