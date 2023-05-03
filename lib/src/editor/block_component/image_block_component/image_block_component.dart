@@ -30,7 +30,7 @@ class ImageBlockKeys {
   static const String height = 'height';
 }
 
-Node ImageNode({
+Node imageNode({
   required String url,
   String align = 'center',
   double? height,
@@ -60,7 +60,7 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   bool validate(Node node) =>
-      node.delta != null &&
+      node.delta == null &&
       node.children.isEmpty &&
       node.attributes[ImageBlockKeys.url] is String;
 }
@@ -86,9 +86,8 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final node = widget.node;
     final attributes = node.attributes;
     final src = attributes[ImageBlockKeys.url];
-    final align = attributes[ImageBlockKeys.align];
-    final width = attributes[ImageBlockKeys.width].toDouble();
-    final height = attributes[ImageBlockKeys.height].toDouble();
+    final align = attributes[ImageBlockKeys.align] ?? 'center';
+    final width = attributes[ImageBlockKeys.width]?.toDouble();
 
     return ImageNodeWidget(
       key: node.key,

@@ -78,7 +78,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   bool get shouldCursorBlink => false;
 
   @override
-  CursorStyle get cursorStyle => CursorStyle.borderLine;
+  CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
   Position start() {
@@ -263,7 +263,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
                   child: Container(
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withOpacity(0.5),
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5.0),
                       ),
