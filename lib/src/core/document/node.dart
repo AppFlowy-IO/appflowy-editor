@@ -19,7 +19,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     LinkedList<Node>? children,
   })  : children = children ?? LinkedList<Node>(),
         _attributes = attributes ?? {} {
-    for (final child in this.children.map((e) => e.copyWith())) {
+    for (final child in this.children) {
       child.parent = this;
     }
   }

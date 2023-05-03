@@ -5,16 +5,6 @@ import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service
 import 'package:appflowy_editor/src/render/style/editor_style.dart';
 import 'package:flutter/material.dart';
 
-// void showImageMenu(
-//   OverlayState container,
-//   EditorState editorState,
-//   SelectionMenuService menuService,
-// ) {
-//   menuService.dismiss();
-
-//   final imageMenu =
-// }
-
 OverlayEntry? _imageUploadMenu;
 EditorState? _editorState;
 void showImageUploadMenu(
