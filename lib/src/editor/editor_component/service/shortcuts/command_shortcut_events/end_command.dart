@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent endCommand = CommandShortcutEvent(
+final CommandShortcutEvent endCommand = CommandShortcutEvent(
   key: 'scroll to the bottom of the document',
   command: 'end',
   handler: _endCommandHandler,

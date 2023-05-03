@@ -18,11 +18,7 @@ void main() async {
         ..addNode(
           todoListNode(
             checked: false,
-            attributes: {
-              'delta': Delta(
-                operations: [TextInsert(text)],
-              ).toJson()
-            },
+            text: text,
           ),
         );
       await editor.startTesting();

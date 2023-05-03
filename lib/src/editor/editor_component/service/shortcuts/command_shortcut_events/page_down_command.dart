@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent pageDownCommand = CommandShortcutEvent(
+final CommandShortcutEvent pageDownCommand = CommandShortcutEvent(
   key: 'scroll one page down',
   command: 'page down',
   handler: _pageUpCommandHandler,

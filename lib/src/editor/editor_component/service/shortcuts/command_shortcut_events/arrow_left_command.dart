@@ -19,7 +19,7 @@ final List<CommandShortcutEvent> arrowLeftKeys = [
 
 // arrow left key
 // move the cursor forward one character
-CommandShortcutEvent moveCursorLeftCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorLeftCommand = CommandShortcutEvent(
   key: 'move the cursor forward one character',
   command: 'arrow left',
   handler: _arrowLeftCommandHandler,
@@ -36,7 +36,7 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
 
 // arrow left key + ctrl or command
 // move the cursor to the beginning of the block
-CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
   key: 'move the cursor forward one character',
   command: 'ctrl+arrow left',
   macOSCommand: 'cmd+arrow left',
@@ -54,7 +54,7 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
 
 // arrow left key + alt
 // move the cursor to the left word
-CommandShortcutEvent moveCursorToLeftWordCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorToLeftWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the left word',
   command: 'alt+arrow left',
   handler: _moveCursorToLeftWordCommandHandler,
@@ -71,7 +71,8 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
 };
 
 // arrow left key + alt + shift
-CommandShortcutEvent moveCursorLeftWordSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorLeftWordSelectCommand =
+    CommandShortcutEvent(
   key: 'move the cursor to select the left word',
   command: 'alt+shift+arrow left',
   handler: _moveCursorLeftWordSelectCommandHandler,
@@ -99,7 +100,7 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
 
 // arrow left key + shift
 //
-CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
   key: 'move the cursor left select',
   command: 'shift+arrow left',
   handler: _moveCursorLeftSelectCommandHandler,
@@ -123,7 +124,7 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
 };
 
 // arrow left key + shift + ctrl or cmd
-CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
   key: 'move the cursor left select',
   command: 'ctrl+shift+arrow left',
   macOSCommand: 'cmd+shift+arrow left',

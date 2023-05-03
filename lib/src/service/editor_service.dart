@@ -1,27 +1,93 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/render/editor/editor_entry.dart';
-import 'package:appflowy_editor/src/render/image/image_node_builder.dart';
-import 'package:appflowy_editor/src/render/rich_text/bulleted_list_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/checkbox_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/heading_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/number_list_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
-NodeWidgetBuilders defaultBuilders = {
-  'editor': EditorEntryWidgetBuilder(),
-  'text': RichTextNodeWidgetBuilder(),
-  'text/checkbox': CheckboxNodeWidgetBuilder(),
-  'text/heading': HeadingTextNodeWidgetBuilder(),
-  'text/bulleted-list': BulletedListTextNodeWidgetBuilder(),
-  'text/number-list': NumberListTextNodeWidgetBuilder(),
-  'text/quote': QuotedTextNodeWidgetBuilder(),
-  'image': ImageNodeBuilder(),
+final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
+  'document': DocumentComponentBuilder(),
+  'paragraph': TextBlockComponentBuilder(),
+  'todo_list': TodoListBlockComponentBuilder(),
+  'bulleted_list': BulletedListBlockComponentBuilder(),
+  'numbered_list': NumberedListBlockComponentBuilder(),
+  'quote': QuoteBlockComponentBuilder(),
+  'heading': HeadingBlockComponentBuilder(),
 };
+
+final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
+  // '\n'
+  insertNewLineAfterBulletedList,
+  insertNewLineAfterTodoList,
+  insertNewLineAfterNumberedList,
+  insertNewLine,
+
+  // bulleted list
+  formatAsteriskToBulletedList,
+  formatMinusToBulletedList,
+
+  // numbered list
+  formatNumberToNumberedList,
+
+  // quote
+  formatGreaterToQuote,
+
+  // heading
+  formatSignToHeading,
+
+  // checkbox
+  // format unchecked box, [] or -[]
+  formatEmptyBracketsToUncheckedBox,
+  formatHyphenEmptyBracketsToUncheckedBox,
+
+  // format checked box, [x] or -[x]
+  formatFilledBracketsToCheckedBox,
+  formatHyphenFilledBracketsToCheckedBox,
+
+  // slash
+  slashCommand,
+
+  // markdown syntax
+  ...markdownSyntaxShortcutEvents,
+];
+
+final List<CommandShortcutEvent> standardCommandShortcutEvents = [
+  // undo, redo
+  undoCommand,
+  redoCommand,
+
+  // backspace
+  convertToParagraphCommand,
+  backspaceCommand,
+  deleteLeftWordCommand,
+  deleteLeftSentenceCommand,
+
+  // arrow keys
+  ...arrowLeftKeys,
+  ...arrowRightKeys,
+  ...arrowUpKeys,
+  ...arrowDownKeys,
+
+  //
+  homeCommand,
+  endCommand,
+
+  //
+  toggleTodoListCommand,
+  ...toggleMarkdownCommands,
+
+  //
+  indentCommand,
+  outdentCommand,
+
+  exitEditingCommand,
+
+  //
+  pageUpCommand,
+  pageDownCommand,
+
+  //
+  selectAllCommand,
+];
 
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
@@ -51,6 +117,25 @@ class AppFlowyEditor extends StatefulWidget {
           ],
         );
   }
+
+  AppFlowyEditor.standard({
+    Key? key,
+    required EditorState editorState,
+    ScrollController? scrollController,
+    bool editable = true,
+    bool autoFocus = false,
+    ThemeData? themeData,
+  }) : this(
+          key: key,
+          editorState: editorState,
+          scrollController: scrollController,
+          themeData: themeData,
+          editable: editable,
+          autoFocus: editorState.document.isEmpty,
+          blockComponentBuilders: standardBlockComponentBuilderMap,
+          characterShortcutEvents: standardCharacterShortcutEvents,
+          commandShortcutEvents: standardCommandShortcutEvents,
+        );
 
   final EditorState editorState;
 
@@ -224,15 +309,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       ),
     );
   }
-
-  AppFlowyRenderPlugin _createRenderPlugin() => AppFlowyRenderPlugin(
-        editorState: editorState,
-        builders: {
-          ...defaultBuilders,
-          ...widget.customBuilders,
-        },
-        customActionMenuBuilder: widget.customActionMenuBuilder,
-      );
 
   BlockComponentRendererService get _blockComponentRendererService =>
       BlockComponentRenderer(

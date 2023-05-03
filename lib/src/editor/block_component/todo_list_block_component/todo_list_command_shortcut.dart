@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 ///
 
 // toggle the todo list
-CommandShortcutEvent toggleTodoListCommand = CommandShortcutEvent(
+final CommandShortcutEvent toggleTodoListCommand = CommandShortcutEvent(
   key: 'toggle the todo list',
   command: 'ctrl+enter',
   macOSCommand: 'cmd+enter',
@@ -37,8 +37,9 @@ CommandShortcutEventHandler _toggleTodoListCommandHandler = (editorState) {
 
   final transaction = editorState.transaction;
   for (final node in todoNodes) {
-    transaction
-        .updateNode(node, {TodoListBlockKeys.checked: !areAllTodoListChecked});
+    transaction.updateNode(node, {
+      TodoListBlockKeys.checked: !areAllTodoListChecked,
+    });
   }
   transaction.afterSelection = selection;
   editorState.apply(transaction);

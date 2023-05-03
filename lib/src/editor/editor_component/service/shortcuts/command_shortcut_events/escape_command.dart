@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
+final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
   key: 'exit the editing mode',
   command: 'escape',
   handler: _exitEditingCommandHandler,

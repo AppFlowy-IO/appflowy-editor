@@ -37,7 +37,7 @@ void main() async {
       // Pressing the enter key continuously.
       for (int i = 1; i <= 10; i++) {
         await editor.pressKey(
-          key: LogicalKeyboardKey.enter,
+          character: '\n',
         );
         expect(editor.documentRootLen, i + 1);
         expect(
@@ -77,7 +77,7 @@ void main() async {
         Selection.single(path: [lines - 1], startOffset: 0),
       );
       await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
+        character: '\n',
       );
       lines += 1;
       expect(editor.documentRootLen, lines);
@@ -157,7 +157,7 @@ void main() async {
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: 0),
       );
-      await editor.pressKey(key: LogicalKeyboardKey.enter);
+      await editor.pressKey(character: '\n');
       expect(editor.documentRootLen, 2);
       expect(editor.nodeAtPath([1])?.delta?.toPlainText(), text);
 
@@ -194,7 +194,7 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
     Selection.single(path: [1], startOffset: 0),
   );
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
   expect(editor.selection, Selection.single(path: [2], startOffset: 0));
 
@@ -202,14 +202,14 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
     Selection.single(path: [3], startOffset: text.length),
   );
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
   expect(editor.selection, Selection.single(path: [4], startOffset: 0));
 
   expect(editor.nodeAtPath([4])?.type, style);
 
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
   expect(
     editor.selection,
@@ -261,7 +261,7 @@ Future<void> _testListOutdent(WidgetTester tester, String style) async {
   );
 
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
   // clear the style
   expect(
@@ -271,7 +271,7 @@ Future<void> _testListOutdent(WidgetTester tester, String style) async {
   expect(editor.nodeAtPath([1, 0])?.type, 'paragraph');
 
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
   expect(
     editor.selection,
@@ -315,7 +315,7 @@ Future<void> _testMultipleSelection(
     ),
   );
   await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
+    character: '\n',
   );
 
   expect(editor.documentRootLen, 2);

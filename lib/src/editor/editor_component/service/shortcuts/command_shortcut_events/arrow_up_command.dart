@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowUpKeys = [
@@ -45,7 +46,7 @@ CommandShortcutEventHandler _moveCursorUpCommandHandler = (editorState) {
 
 /// arrow up + shift + ctrl or cmd
 /// cursor top select
-CommandShortcutEvent moveCursorTopSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorTopSelectCommand = CommandShortcutEvent(
   key: 'cursor top select', // TODO: rename it.
   command: 'ctrl+shift+arrow up',
   macOSCommand: 'cmd+shift+arrow up',
@@ -73,7 +74,7 @@ CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
 
 /// arrow up + ctrl or cmd
 /// move the cursor to the topmost position of the document and select it
-CommandShortcutEvent moveCursorTopCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorTopCommand = CommandShortcutEvent(
   key: 'move cursor top', // TODO: rename it.
   command: 'ctrl+arrow up',
   macOSCommand: 'cmd+arrow up',
@@ -100,7 +101,7 @@ CommandShortcutEventHandler _moveCursorTopCommandHandler = (editorState) {
 };
 
 /// arrow up + ctrl or cmd
-CommandShortcutEvent moveCursorUpSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorUpSelectCommand = CommandShortcutEvent(
   key: 'move cursor up select', // TODO: rename it.
   command: 'shift+arrow up',
   macOSCommand: 'shift+arrow up',

@@ -83,90 +83,9 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor(
+    return AppFlowyEditor.standard(
       editorState: editorState,
-      themeData: themeData,
-      autoFocus: editorState.document.isEmpty,
       scrollController: scrollController,
-      blockComponentBuilders: {
-        'document': DocumentComponentBuilder(),
-        'paragraph': TextBlockComponentBuilder(),
-        'todo_list': TodoListBlockComponentBuilder(),
-        'bulleted_list': BulletedListBlockComponentBuilder(),
-        'numbered_list': NumberedListBlockComponentBuilder(),
-        'quote': QuoteBlockComponentBuilder(),
-        'heading': HeadingBlockComponentBuilder(),
-      },
-      characterShortcutEvents: [
-        // '\n'
-        insertNewLineAfterBulletedList,
-        insertNewLineAfterTodoList,
-        insertNewLineAfterNumberedList,
-        insertNewLine,
-
-        // bulleted list
-        formatAsteriskToBulletedList,
-        formatMinusToBulletedList,
-
-        // numbered list
-        formatNumberToNumberedList,
-
-        // quote
-        formatGreaterToQuote,
-
-        // heading
-        formatSignToHeading,
-
-        // checkbox
-        // format unchecked box, [] or -[]
-        formatEmptyBracketsToUncheckedBox,
-        formatHyphenEmptyBracketsToUncheckedBox,
-
-        // format checked box, [x] or -[x]
-        formatFilledBracketsToCheckedBox,
-        formatHyphenFilledBracketsToCheckedBox,
-
-        // slash
-        slashCommand,
-
-        // markdown syntax
-        ...markdownSyntaxShortcutEvents,
-      ],
-      commandShortcutEvents: [
-        // undo, redo
-        undoCommand,
-        redoCommand,
-
-        // backspace
-        convertToParagraphCommand,
-        backspaceCommand,
-        deleteLeftWordCommand,
-        deleteLeftSentenceCommand,
-
-        // arrow keys
-        ...arrowLeftKeys,
-        ...arrowRightKeys,
-        ...arrowUpKeys,
-        ...arrowDownKeys,
-
-        //
-        homeCommand,
-        endCommand,
-
-        //
-        toggleTodoListCommand,
-        ...toggleMarkdownCommands,
-
-        //
-        indentCommand,
-        outdentCommand,
-
-        exitEditingCommand,
-
-        //
-        pageUpCommand,
-        pageDownCommand,
-      ],
     );
   }
 

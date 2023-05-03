@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent undoCommand = CommandShortcutEvent(
+final CommandShortcutEvent undoCommand = CommandShortcutEvent(
   key: 'undo',
   command: 'ctrl+z',
   macOSCommand: 'cmd+z',
@@ -16,7 +16,7 @@ CommandShortcutEvent undoCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _undoCommandHandler = (editorState) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'pageUpCommand is not supported on mobile platform.');
+    assert(false, 'undoCommand is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
   editorState.undoManager.undo();
@@ -29,7 +29,7 @@ CommandShortcutEventHandler _undoCommandHandler = (editorState) {
 ///   - desktop
 ///   - web
 ///
-CommandShortcutEvent redoCommand = CommandShortcutEvent(
+final CommandShortcutEvent redoCommand = CommandShortcutEvent(
   key: 'undo',
   command: 'ctrl+shift+z',
   macOSCommand: 'cmd+shift+z',
@@ -38,7 +38,7 @@ CommandShortcutEvent redoCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _redoCommandHandler = (editorState) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'pageUpCommand is not supported on mobile platform.');
+    assert(false, 'redoCommand is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
   editorState.undoManager.redo();
