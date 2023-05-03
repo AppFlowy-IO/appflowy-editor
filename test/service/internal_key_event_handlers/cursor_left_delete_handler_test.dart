@@ -21,7 +21,7 @@ void main() async {
         Selection.single(path: [0], startOffset: text.length),
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -37,7 +37,7 @@ void main() async {
       //here _ actually represents ' '
       expect(node.delta!.toPlainText(), words.join());
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -54,7 +54,7 @@ void main() async {
 
       //we divide words.length by 2 becuase we know half words are whitespaces.
       for (var i = 0; i < words.length / 2; i++) {
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.backspace,
           isControlPressed: Platform.isWindows || Platform.isLinux,
           isAltPressed: Platform.isMacOS,
@@ -77,7 +77,7 @@ void main() async {
         Selection.single(path: [0], startOffset: 0),
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -95,7 +95,7 @@ void main() async {
       );
       //Welcome to App|flowy 😁
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -122,7 +122,7 @@ void main() async {
         Selection.single(path: [0], startOffset: 11),
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -152,7 +152,7 @@ void main() async {
       );
       // |
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isMacOS,
@@ -178,7 +178,7 @@ void main() async {
       );
       //Welcome to Appflowy 😁|
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isWindows || Platform.isLinux,
@@ -205,7 +205,7 @@ void main() async {
       );
       //Welcome to App|flowy 😁
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.backspace,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isAltPressed: Platform.isWindows || Platform.isLinux,

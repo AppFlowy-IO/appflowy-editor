@@ -34,7 +34,7 @@ void main() async {
       expect(node.type, 'todo_list');
       expect(node.attributes[TodoListBlockKeys.checked], false);
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.enter,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
@@ -47,7 +47,7 @@ void main() async {
         Selection.single(path: [0], startOffset: text.length),
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.enter,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
@@ -94,7 +94,7 @@ void main() async {
         expect(node.attributes[TodoListBlockKeys.checked], true);
       }
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.enter,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
@@ -142,7 +142,7 @@ void main() async {
         selection,
       );
 
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.enter,
         isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
