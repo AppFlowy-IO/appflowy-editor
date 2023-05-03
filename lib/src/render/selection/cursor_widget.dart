@@ -94,6 +94,13 @@ class CursorWidgetState extends State<CursorWidget> {
             border: Border.all(color: color, width: 2),
           ),
         );
+      case CursorStyle.cover:
+        final size = widget.rect.size;
+        return Container(
+          width: size.width,
+          height: size.height,
+          color: color.withOpacity(0.2),
+        );
     }
   }
 }

@@ -1,70 +1,49 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
-import 'package:appflowy_editor/src/render/style/editor_style.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/widget/full_scrren_overlay_entry.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 import 'package:flutter/material.dart';
 
-OverlayEntry? _imageUploadMenu;
-EditorState? _editorState;
-void showImageUploadMenu(
+void showImageMenu(
+  OverlayState container,
   EditorState editorState,
   SelectionMenuService menuService,
-  BuildContext context,
 ) {
   menuService.dismiss();
 
-  _imageUploadMenu?.remove();
-  _imageUploadMenu = OverlayEntry(
-    builder: (context) => Positioned(
-      top: menuService.topLeft.dy,
-      left: menuService.topLeft.dx,
-      child: Material(
-        child: ImageUploadMenu(
-          editorState: editorState,
-          onSubmitted: editorState.insertImageNode,
-          onUpload: editorState.insertImageNode,
-        ),
-      ),
+  final topLeft = menuService.topLeft;
+  final imageMenuEntry = FullScreenOverlayEntry(
+    offset: topLeft,
+    builder: (context, size) => UploadImageMenu(
+      backgroundColor: Colors.white, // TODO: customize the color
+      width: size.width * 0.5,
+      onSubmitted: editorState.insertImageNode,
+      onUpload: editorState.insertImageNode,
     ),
-  );
-
-  Overlay.of(context).insert(_imageUploadMenu!);
-
-  editorState.service.selectionService.currentSelection
-      .addListener(_dismissImageUploadMenu);
+  ).build();
+  container.insert(imageMenuEntry);
 }
 
-void _dismissImageUploadMenu() {
-  _imageUploadMenu?.remove();
-  _imageUploadMenu = null;
-
-  _editorState?.service.selectionService.currentSelection
-      .removeListener(_dismissImageUploadMenu);
-  _editorState = null;
-}
-
-class ImageUploadMenu extends StatefulWidget {
-  const ImageUploadMenu({
+class UploadImageMenu extends StatefulWidget {
+  const UploadImageMenu({
     Key? key,
+    this.backgroundColor = Colors.white,
+    this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
-    this.editorState,
   }) : super(key: key);
 
+  final Color backgroundColor;
+  final double width;
   final void Function(String text) onSubmitted;
   final void Function(String text) onUpload;
-  final EditorState? editorState;
 
   @override
-  State<ImageUploadMenu> createState() => _ImageUploadMenuState();
+  State<UploadImageMenu> createState() => _UploadImageMenuState();
 }
 
-class _ImageUploadMenuState extends State<ImageUploadMenu> {
+class _UploadImageMenuState extends State<UploadImageMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
-
-  EditorStyle? get style => widget.editorState?.editorStyle;
 
   @override
   void initState() {
@@ -81,10 +60,10 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
+      width: widget.width,
       padding: const EdgeInsets.all(24.0),
       decoration: BoxDecoration(
-        color: style?.selectionMenuBackgroundColor ?? Colors.white,
+        color: widget.backgroundColor,
         boxShadow: [
           BoxShadow(
             blurRadius: 5,
@@ -108,12 +87,12 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Text(
+    return const Text(
       'URL Image',
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 14.0,
-        color: style?.selectionMenuItemTextColor ?? Colors.black,
+        color: Colors.black,
         fontWeight: FontWeight.w500,
       ),
     );
@@ -171,24 +150,26 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 }
 
-extension InsertImage on EditorState {
-  void insertImageNode(String src) {
-    final selection = service.selectionService.currentSelection.value;
-    if (selection == null) {
+extension on EditorState {
+  Future<void> insertImageNode(String src) async {
+    final selection = this.selection;
+    if (selection == null || !selection.isCollapsed) {
       return;
     }
-    final imageNode = Node(
-      type: 'image',
-      attributes: {
-        'image_src': src,
-        'align': 'center',
-      },
-    );
+    final node = getNodeAtPath(selection.end.path);
+    if (node == null) {
+      return;
+    }
     final transaction = this.transaction;
-    transaction.insertNode(
-      selection.start.path,
-      imageNode,
-    );
-    apply(transaction);
+    // if the current node is empty paragraph, replace it with image node
+    if (node.type == 'paragraph' && (node.delta?.isEmpty ?? false)) {
+      transaction
+        ..insertNode(node.path, imageNode(url: src))
+        ..deleteNode(node);
+    } else {
+      transaction.insertNode(node.path.next, imageNode(url: src));
+    }
+
+    return apply(transaction);
   }
 }

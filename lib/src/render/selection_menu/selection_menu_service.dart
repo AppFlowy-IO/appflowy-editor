@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_upload_widget.dart';
 import 'package:flutter/material.dart';
-
-import '../image/image_upload_widget.dart';
 
 // TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
@@ -215,7 +214,10 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
     icon: (editorState, onSelected) =>
         _selectionMenuIcon('image', editorState, onSelected),
     keywords: ['image'],
-    handler: showImageUploadMenu,
+    handler: (editorState, menuService, context) {
+      final container = Overlay.of(context);
+      showImageMenu(container, editorState, menuService);
+    },
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.bulletedList,

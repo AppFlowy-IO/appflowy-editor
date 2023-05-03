@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -12,6 +13,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   'numbered_list': NumberedListBlockComponentBuilder(),
   'quote': QuoteBlockComponentBuilder(),
   'heading': HeadingBlockComponentBuilder(),
+  'image': ImageBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [

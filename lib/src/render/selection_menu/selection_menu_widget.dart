@@ -20,9 +20,9 @@ class SelectionMenuItem {
   }) {
     this.handler = (editorState, menuService, context) {
       _deleteSlash(editorState);
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        handler(editorState, menuService, context);
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      handler(editorState, menuService, context);
+      // });
     };
   }
 
