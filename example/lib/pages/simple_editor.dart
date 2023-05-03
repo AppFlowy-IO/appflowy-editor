@@ -133,6 +133,10 @@ class SimpleEditor extends StatelessWidget {
         ...markdownSyntaxShortcutEvents,
       ],
       commandShortcutEvents: [
+        // undo, redo
+        undoCommand,
+        redoCommand,
+
         // backspace
         convertToParagraphCommand,
         backspaceCommand,
