@@ -85,8 +85,7 @@ class EditorState {
   final StreamController<Transaction> _observer = StreamController.broadcast();
 
   late ThemeData themeData;
-  EditorStyle get editorStyle =>
-      themeData.extension<EditorStyle>() ?? EditorStyle.light;
+  late EditorStyle editorStyle;
 
   final UndoManager undoManager = UndoManager();
   Selection? _cursorSelection;

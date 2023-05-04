@@ -31,3 +31,10 @@ extension PlatformExtension on Platform {
     return !isMobile;
   }
 }
+
+bool isMobile() {
+  if (kIsWeb) {
+    return false;
+  }
+  return Platform.isAndroid || Platform.isIOS;
+}

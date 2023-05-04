@@ -1,124 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
-const standardBlockComponentConfiguration = BlockComponentConfiguration();
-
-final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
-  'document': DocumentComponentBuilder(),
-  'paragraph': const TextBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration,
-  ),
-  'todo_list': TodoListBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'To-do',
-    ),
-  ),
-  'bulleted_list': BulletedListBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'List',
-    ),
-  ),
-  'numbered_list': NumberedListBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'List',
-    ),
-  ),
-  'quote': QuoteBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'Quote',
-    ),
-  ),
-  'heading': HeadingBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (node) =>
-          'Heading ${node.attributes[HeadingBlockKeys.level]}',
-    ),
-  ),
-  'image': const ImageBlockComponentBuilder(),
-};
-
-final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
-  // '\n'
-  insertNewLineAfterBulletedList,
-  insertNewLineAfterTodoList,
-  insertNewLineAfterNumberedList,
-  insertNewLine,
-
-  // bulleted list
-  formatAsteriskToBulletedList,
-  formatMinusToBulletedList,
-
-  // numbered list
-  formatNumberToNumberedList,
-
-  // quote
-  formatGreaterToQuote,
-
-  // heading
-  formatSignToHeading,
-
-  // checkbox
-  // format unchecked box, [] or -[]
-  formatEmptyBracketsToUncheckedBox,
-  formatHyphenEmptyBracketsToUncheckedBox,
-
-  // format checked box, [x] or -[x]
-  formatFilledBracketsToCheckedBox,
-  formatHyphenFilledBracketsToCheckedBox,
-
-  // slash
-  slashCommand,
-
-  // markdown syntax
-  ...markdownSyntaxShortcutEvents,
-];
-
-final List<CommandShortcutEvent> standardCommandShortcutEvents = [
-  // undo, redo
-  undoCommand,
-  redoCommand,
-
-  // backspace
-  convertToParagraphCommand,
-  backspaceCommand,
-  deleteLeftWordCommand,
-  deleteLeftSentenceCommand,
-
-  // arrow keys
-  ...arrowLeftKeys,
-  ...arrowRightKeys,
-  ...arrowUpKeys,
-  ...arrowDownKeys,
-
-  //
-  homeCommand,
-  endCommand,
-
-  //
-  toggleTodoListCommand,
-  ...toggleMarkdownCommands,
-
-  //
-  indentCommand,
-  outdentCommand,
-
-  exitEditingCommand,
-
-  //
-  pageUpCommand,
-  pageDownCommand,
-
-  //
-  selectAllCommand,
-];
-
 class AppFlowyEditor extends StatefulWidget {
-  AppFlowyEditor({
-    Key? key,
+  @Deprecated('Use AppFlowyEditor.custom or AppFlowyEditor.standard instead')
+  const AppFlowyEditor({
+    super.key,
     required this.editorState,
     this.customBuilders = const {},
     this.blockComponentBuilders = const {},
@@ -134,16 +22,33 @@ class AppFlowyEditor extends StatefulWidget {
     this.showDefaultToolbar = true,
     this.shrinkWrap = false,
     this.scrollController,
-    ThemeData? themeData,
-  }) : super(key: key) {
-    this.themeData = themeData ??
-        ThemeData.light().copyWith(
-          extensions: [
-            ...lightEditorStyleExtension,
-            ...lightPluginStyleExtension,
-          ],
+    this.themeData,
+    this.editorStyle = const EditorStyle.desktop(),
+  });
+
+  const AppFlowyEditor.custom({
+    Key? key,
+    required EditorState editorState,
+    ScrollController? scrollController,
+    bool editable = true,
+    bool autoFocus = false,
+    EditorStyle? editorStyle,
+    Map<String, BlockComponentBuilder> blockComponentBuilders = const {},
+    List<CharacterShortcutEvent> characterShortcutEvents = const [],
+    List<CommandShortcutEvent> commandShortcutEvents = const [],
+    List<SelectionMenuItem> selectionMenuItems = const [],
+  }) : this(
+          key: key,
+          editorState: editorState,
+          scrollController: scrollController,
+          editable: editable,
+          autoFocus: autoFocus,
+          blockComponentBuilders: blockComponentBuilders,
+          characterShortcutEvents: characterShortcutEvents,
+          commandShortcutEvents: commandShortcutEvents,
+          selectionMenuItems: selectionMenuItems,
+          editorStyle: editorStyle ?? const EditorStyle.desktop(),
         );
-  }
 
   AppFlowyEditor.standard({
     Key? key,
@@ -151,28 +56,24 @@ class AppFlowyEditor extends StatefulWidget {
     ScrollController? scrollController,
     bool editable = true,
     bool autoFocus = false,
-    ThemeData? themeData,
+    EditorStyle? editorStyle,
   }) : this(
           key: key,
           editorState: editorState,
           scrollController: scrollController,
-          themeData: themeData,
           editable: editable,
           autoFocus: autoFocus,
           blockComponentBuilders: standardBlockComponentBuilderMap,
           characterShortcutEvents: standardCharacterShortcutEvents,
           commandShortcutEvents: standardCommandShortcutEvents,
+          editorStyle: editorStyle ?? const EditorStyle.desktop(),
         );
 
   final EditorState editorState;
 
-  /// Render plugins.
-  final NodeWidgetBuilders customBuilders;
+  final EditorStyle editorStyle;
 
   final Map<String, BlockComponentBuilder> blockComponentBuilders;
-
-  /// Keyboard event handlers.
-  final List<ShortcutEvent> shortcutEvents;
 
   /// Character event handlers
   final List<CharacterShortcutEvent> characterShortcutEvents;
@@ -180,11 +81,12 @@ class AppFlowyEditor extends StatefulWidget {
   // Command event handlers
   final List<CommandShortcutEvent> commandShortcutEvents;
 
+  final ScrollController? scrollController;
+
   final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
-  final List<ToolbarItem> toolbarItems;
-
+  /// Set the value to false to disable editing.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -198,9 +100,19 @@ class AppFlowyEditor extends StatefulWidget {
   /// If false the Editor is inside an [AppFlowyScroll]
   final bool shrinkWrap;
 
-  late final ThemeData themeData;
+  /// Render plugins.
+  @Deprecated('Use blockComponentBuilders instead.')
+  final NodeWidgetBuilders customBuilders;
 
-  final ScrollController? scrollController;
+  @Deprecated('Use FloatingToolbar or MobileToolbar instead.')
+  final List<ToolbarItem> toolbarItems;
+
+  /// Keyboard event handlers.
+  @Deprecated('Use characterShortcutEvents or commandShortcutEvents instead.')
+  final List<ShortcutEvent> shortcutEvents;
+
+  @Deprecated('Customize the style that block component provides instead.')
+  final ThemeData? themeData;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -210,32 +122,20 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget? services;
 
   EditorState get editorState => widget.editorState;
-  EditorStyle get editorStyle =>
-      editorState.themeData.extension<EditorStyle>() ?? EditorStyle.light;
 
   @override
   void initState() {
     super.initState();
 
     editorState.selectionMenuItems = widget.selectionMenuItems;
-    editorState.toolbarItems = widget.toolbarItems;
-    editorState.themeData = widget.themeData;
-    editorState.renderer = _blockComponentRendererService;
+    editorState.renderer = _renderer;
     editorState.editable = widget.editable;
     editorState.characterShortcutEvents = widget.characterShortcutEvents;
+    editorState.editorStyle = widget.editorStyle;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.editable && widget.autoFocus) {
-        editorState.updateSelectionWithReason(
-          widget.focusedSelection ??
-              Selection.single(
-                path: [0],
-                startOffset: 0,
-              ),
-          reason: SelectionUpdateReason.uiEvent,
-        );
-      }
+      _autoFocusIfNeeded();
     });
   }
 
@@ -245,11 +145,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
-      editorState.toolbarItems = widget.toolbarItems;
-      editorState.renderer = _blockComponentRendererService;
+      editorState.renderer = _renderer;
     }
 
-    editorState.themeData = widget.themeData;
+    editorState.editorStyle = widget.editorStyle;
+
     editorState.editable = widget.editable;
     editorState.characterShortcutEvents = widget.characterShortcutEvents;
     services = null;
@@ -271,65 +171,23 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     );
   }
 
-  Widget _buildScroll({required Widget child}) {
-    if (widget.shrinkWrap) {
-      return child;
-    }
-
-    return AppFlowyScroll(
-      // key: editorState.service.scrollServiceKey,
-      child: child,
-    );
-  }
-
   Widget _buildServices(BuildContext context) {
-    return Theme(
-      data: widget.themeData,
-      child: _buildScroll(
-        child: ScrollServiceWidget(
-          key: editorState.service.scrollServiceKey,
-          scrollController: widget.scrollController,
-          child: Container(
-            color: editorStyle.backgroundColor,
-            padding: editorStyle.padding!,
-            child: SelectionServiceWidget(
-              key: editorState.service.selectionServiceKey,
-              cursorColor: editorStyle.cursorColor!,
-              selectionColor: editorStyle.selectionColor!,
-              child: AppFlowySelection(
-                // key: editorState.service.selectionServiceKey,
-                cursorColor: editorStyle.cursorColor!,
-                selectionColor: editorStyle.selectionColor!,
-                editorState: editorState,
-                editable: widget.editable,
-                child: KeyboardServiceWidget(
-                  characterShortcutEvents: widget.characterShortcutEvents,
-                  commandShortcutEvents: widget.commandShortcutEvents,
-                  child: AppFlowyInput(
-                    key: editorState.service.inputServiceKey,
-                    editorState: editorState,
-                    editable: widget.editable,
-                    child: AppFlowyKeyboard(
-                      key: editorState.service.keyboardServiceKey,
-                      editable: widget.editable,
-                      shortcutEvents: [
-                        ...widget.shortcutEvents,
-                        ...builtInShortcutEvents,
-                      ],
-                      editorState: editorState,
-                      child: FlowyToolbar(
-                        showDefaultToolbar: widget.showDefaultToolbar,
-                        key: editorState.service.toolbarServiceKey,
-                        editorState: editorState,
-                        child: editorState.renderer.build(
-                          context,
-                          editorState.document.root,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+    return ScrollServiceWidget(
+      key: editorState.service.scrollServiceKey,
+      scrollController: widget.scrollController,
+      child: Container(
+        color: widget.editorStyle.backgroundColor,
+        padding: widget.editorStyle.padding,
+        child: SelectionServiceWidget(
+          key: editorState.service.selectionServiceKey,
+          cursorColor: widget.editorStyle.cursorColor,
+          selectionColor: widget.editorStyle.selectionColor,
+          child: KeyboardServiceWidget(
+            characterShortcutEvents: widget.characterShortcutEvents,
+            commandShortcutEvents: widget.commandShortcutEvents,
+            child: editorState.renderer.build(
+              context,
+              editorState.document.root,
             ),
           ),
         ),
@@ -337,8 +195,20 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     );
   }
 
-  BlockComponentRendererService get _blockComponentRendererService =>
-      BlockComponentRenderer(
+  void _autoFocusIfNeeded() {
+    if (widget.editable && widget.autoFocus) {
+      editorState.updateSelectionWithReason(
+        widget.focusedSelection ??
+            Selection.single(
+              path: [0],
+              startOffset: 0,
+            ),
+        reason: SelectionUpdateReason.uiEvent,
+      );
+    }
+  }
+
+  BlockComponentRendererService get _renderer => BlockComponentRenderer(
         builders: {...widget.blockComponentBuilders},
       );
 }
