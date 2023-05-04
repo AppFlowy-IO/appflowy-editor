@@ -214,6 +214,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       children: [
         TextSpan(
           text: widget.placeholderText,
+          style: widget.editorState.editorStyle.textStyleConfiguration.text,
         ),
       ],
     );
