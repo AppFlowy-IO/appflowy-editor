@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -17,27 +15,24 @@ void main() {
       // I use an empty implementation instead of mock, because the mocked
       // version throws error trying to access the path.
 
-      final subLinkedList = LinkedList<Node>()
-        ..addAll([
-          Node(type: 'type', children: LinkedList(), attributes: {}),
-          Node(type: 'type', children: LinkedList(), attributes: {}),
-          Node(type: 'type', children: LinkedList(), attributes: {}),
-          Node(type: 'type', children: LinkedList(), attributes: {}),
-          Node(type: 'type', children: LinkedList(), attributes: {}),
-        ]);
+      final subNodes = [
+        Node(type: 'type'),
+        Node(type: 'type'),
+        Node(type: 'type'),
+        Node(type: 'type'),
+        Node(type: 'type'),
+      ];
 
-      final linkedList = LinkedList<Node>()
-        ..addAll([
-          Node(
-            type: 'type',
-            children: subLinkedList,
-            attributes: {},
-          ),
-        ]);
+      final nodes = [
+        Node(
+          type: 'type',
+          children: subNodes,
+        ),
+      ];
 
       final node = Node(
         type: 'type',
-        children: linkedList,
+        children: nodes,
         attributes: {},
       );
       final result = node.inSelection(selection);
@@ -45,18 +40,15 @@ void main() {
     });
 
     test('inSelection w/ Reverse selection', () {
-      final linkedList = LinkedList<Node>()
-        ..addAll([
-          Node(
-            type: 'type',
-            attributes: {},
-          ),
-        ]);
+      final subNodes = [
+        Node(
+          type: 'type',
+        )
+      ];
 
       final node = Node(
         type: 'type',
-        children: linkedList,
-        attributes: {},
+        children: subNodes,
       );
 
       final reverseSelection = Selection(
