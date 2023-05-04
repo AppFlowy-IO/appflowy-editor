@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// only for the common config of text style
 class TextStyleConfiguration {
   const TextStyleConfiguration({
+    this.text = const TextStyle(fontSize: 16.0),
     this.bold = const TextStyle(fontWeight: FontWeight.bold),
     this.italic = const TextStyle(fontStyle: FontStyle.italic),
     this.underline = const TextStyle(
@@ -21,6 +22,7 @@ class TextStyleConfiguration {
     ),
   });
 
+  final TextStyle text;
   final TextStyle bold;
   final TextStyle italic;
   final TextStyle underline;
@@ -29,6 +31,7 @@ class TextStyleConfiguration {
   final TextStyle code;
 
   TextStyleConfiguration copyWith({
+    TextStyle? text,
     TextStyle? bold,
     TextStyle? italic,
     TextStyle? underline,
@@ -37,6 +40,7 @@ class TextStyleConfiguration {
     TextStyle? code,
   }) {
     return TextStyleConfiguration(
+      text: text ?? this.text,
       bold: bold ?? this.bold,
       italic: italic ?? this.italic,
       underline: underline ?? this.underline,

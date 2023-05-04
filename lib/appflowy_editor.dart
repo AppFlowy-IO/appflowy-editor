@@ -59,3 +59,4 @@ export 'src/editor/command/transform.dart';
 export 'src/editor/util/util.dart';
 export 'src/editor/toolbar/toolbar.dart';
 export 'src/extensions/node_extensions.dart';
+export 'src/service/standard_block_components.dart';

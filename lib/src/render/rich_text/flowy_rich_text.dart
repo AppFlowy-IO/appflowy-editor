@@ -1,22 +1,10 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
-import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
-import 'package:appflowy_editor/src/extensions/attributes_extension.dart';
-
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
-import 'package:appflowy_editor/src/render/toolbar/toolbar_item.dart';
 
 const _kRichTextDebugMode = false;
 
@@ -222,13 +210,10 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   }
 
   TextSpan get _placeholderTextSpan {
-    final placeholderTextStyle =
-        widget.editorState.editorStyle.placeholderTextStyle;
     return TextSpan(
       children: [
         TextSpan(
           text: widget.placeholderText,
-          style: placeholderTextStyle,
         ),
       ],
     );
@@ -237,10 +222,10 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   TextSpan get _textSpan {
     var offset = 0;
     List<TextSpan> textSpans = [];
-    final style = widget.editorState.editorStyle;
+    final style = widget.editorState.editorStyle.textStyleConfiguration;
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
-      var textStyle = style.textStyle!;
+      var textStyle = style.text;
       GestureRecognizer? recognizer;
       final attributes = textInsert.attributes;
       if (attributes != null) {
