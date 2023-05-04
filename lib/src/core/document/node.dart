@@ -23,7 +23,12 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     this.parent,
     Attributes attributes = const {},
     Iterable<Node> children = const [],
-  })  : _children = LinkedList<Node>()..addAll(children),
+  })  : _children = LinkedList<Node>()
+          ..addAll(
+            children.map(
+              (e) => e..unlink(),
+            ),
+          ), // unlink the given children to avoid the error of "node has already a parent"
         _attributes = attributes {
     for (final child in this.children) {
       child.parent = this;
@@ -82,7 +87,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     notifyListeners();
   }
 
-  Node? childAtIndex(int index) {
+  Node? childAtIndexOrNull(int index) {
     if (children.length <= index || index < 0) {
       return null;
     }
@@ -95,7 +100,9 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
       return this;
     }
 
-    return childAtIndex(path.first)?.childAtPath(path.sublist(1));
+    final index = path.first;
+    final child = childAtIndexOrNull(index);
+    return child?.childAtPath(path.sublist(1));
   }
 
   void insert(Node entry, {int? index}) {
@@ -119,7 +126,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     } else if (index <= 0) {
       _children.first.insertBefore(entry);
     } else {
-      childAtIndex(index)?.insertBefore(entry);
+      childAtIndexOrNull(index)?.insertBefore(entry);
     }
   }
 
@@ -143,6 +150,9 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void unlink() {
+    if (parent == null) {
+      return;
+    }
     Log.editor.debug('delete Node $this from path $path');
     super.unlink();
 
@@ -158,7 +168,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   Map<String, Object> toJson() {
-    var map = <String, Object>{
+    final map = <String, Object>{
       'type': type,
     };
     if (children.isNotEmpty) {
@@ -198,18 +208,12 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     if (parent == null) {
       return previous;
     }
-    var index = 0;
-    for (final child in parent!.children) {
-      if (child == this) {
-        break;
-      }
-      index += 1;
-    }
+    final index = parent!.children.toList().indexOf(this);
     return parent!._computePath([index, ...previous]);
   }
 }
 
-@Deprecated('Use Node instead')
+@Deprecated('Use Paragraph instead')
 class TextNode extends Node {
   TextNode({
     required Delta delta,
@@ -286,12 +290,10 @@ extension NodeEquality on Iterable<Node> {
     return true;
   }
 
-  bool _nodeEquals<T, U>(T base, U other) {
-    if (identical(this, other)) return true;
-
-    return base is Node &&
-        other is Node &&
-        other.type == base.type &&
-        other.children.equals(base.children);
-  }
+  bool _nodeEquals<T, U>(T base, U other) =>
+      identical(this, other) ||
+      base is Node &&
+          other is Node &&
+          other.type == base.type &&
+          other.children.equals(base.children);
 }

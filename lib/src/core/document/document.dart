@@ -129,8 +129,8 @@ class Document {
     }
 
     final node = root.children.first;
-    if (node is TextNode &&
-        (node.delta.isEmpty || node.delta.toPlainText().isEmpty)) {
+    final delta = node.delta;
+    if (delta != null && (delta.isEmpty || delta.toPlainText().isEmpty)) {
       return true;
     }
 

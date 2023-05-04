@@ -131,7 +131,7 @@ void main() async {
       );
       base.insert(childA);
       expect(
-        identical(base.childAtIndex(0), childA),
+        identical(base.childAtIndexOrNull(0), childA),
         true,
       );
 
@@ -141,7 +141,7 @@ void main() async {
       );
       base.insert(childB, index: -1);
       expect(
-        identical(base.childAtIndex(0), childB),
+        identical(base.childAtIndexOrNull(0), childB),
         true,
       );
 
@@ -151,7 +151,7 @@ void main() async {
       );
       base.insert(childC, index: 1000);
       expect(
-        identical(base.childAtIndex(base.children.length - 1), childC),
+        identical(base.childAtIndexOrNull(base.children.length - 1), childC),
         true,
       );
 
@@ -161,7 +161,7 @@ void main() async {
       );
       base.insert(childD);
       expect(
-        identical(base.childAtIndex(base.children.length - 1), childD),
+        identical(base.childAtIndexOrNull(base.children.length - 1), childD),
         true,
       );
 
@@ -171,7 +171,7 @@ void main() async {
       );
       base.insert(childE, index: 1);
       expect(
-        identical(base.childAtIndex(1), childE),
+        identical(base.childAtIndexOrNull(1), childE),
         true,
       );
     });

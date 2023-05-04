@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -367,15 +365,15 @@ void main() async {
     );
     node
       ..insert(
-        node.copyWith(children: LinkedList()),
+        node.copyWith(children: []),
       )
       ..insert(
-        node.copyWith(children: LinkedList())
+        node.copyWith(children: [])
           ..insert(
-            node.copyWith(children: LinkedList()),
+            node.copyWith(children: []),
           )
           ..insert(
-            node.copyWith(children: LinkedList()),
+            node.copyWith(children: []),
           ),
       );
     final editor = tester.editor..addNode(node);
