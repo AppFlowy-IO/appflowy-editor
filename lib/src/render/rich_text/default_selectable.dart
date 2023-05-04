@@ -2,19 +2,19 @@ import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 mixin DefaultSelectable {
   GlobalKey get forwardKey;
+  GlobalKey get containerKey;
 
   SelectableMixin<StatefulWidget> get forward =>
       forwardKey.currentState as SelectableMixin;
 
   Offset get baseOffset {
-    final renderBox = forwardKey.currentContext?.findRenderObject();
-    final parentData = renderBox?.parentData;
-    if (parentData is BoxParentData) {
-      return parentData.offset;
+    final parentBox = containerKey.currentContext?.findRenderObject();
+    final childBox = forwardKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && childBox is RenderBox) {
+      return childBox.localToGlobal(Offset.zero, ancestor: parentBox);
     }
     return Offset.zero;
   }

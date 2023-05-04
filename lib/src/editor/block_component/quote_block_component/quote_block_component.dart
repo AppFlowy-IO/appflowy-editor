@@ -17,12 +17,11 @@ Node quoteNode({
 }
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
-  QuoteBlockComponentBuilder({
-    this.padding = const EdgeInsets.all(0.0),
+  const QuoteBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
   });
 
-  /// The padding of the todo list block.
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -30,7 +29,7 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
     return QuoteBlockComponentWidget(
       key: node.key,
       node: node,
-      padding: padding,
+      configuration: configuration,
     );
   }
 
@@ -42,11 +41,11 @@ class QuoteBlockComponentWidget extends StatefulWidget {
   const QuoteBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
   final Node node;
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   State<QuoteBlockComponentWidget> createState() =>
@@ -54,16 +53,25 @@ class QuoteBlockComponentWidget extends StatefulWidget {
 }
 
 class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,6 +84,14 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 key: forwardKey,
                 node: widget.node,
                 editorState: editorState,
+                placeholderText: placeholderText,
+                textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+                  textStyle,
+                ),
+                placeholderTextSpanDecorator: (textSpan) =>
+                    textSpan.updateTextStyle(
+                  placeholderTextStyle,
+                ),
               ),
             ),
           ],

@@ -47,7 +47,9 @@ class _RichTextNodeWidgetState extends State<RichTextNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
-
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   EditorStyle get style => widget.editorState.editorStyle;
 
   EdgeInsets get textPadding => style.textPadding!;

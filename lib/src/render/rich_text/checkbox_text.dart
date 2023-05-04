@@ -40,7 +40,9 @@ class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
-
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   CheckboxPluginStyle get style =>
       Theme.of(context).extensionOrNull<CheckboxPluginStyle>() ??
       CheckboxPluginStyle.light;

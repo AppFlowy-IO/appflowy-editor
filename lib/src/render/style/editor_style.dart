@@ -17,16 +17,6 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final Color? cursorColor;
   final Color? selectionColor;
 
-  // Selection menu styles
-  final Color? selectionMenuBackgroundColor;
-  final Color? selectionMenuItemTextColor;
-  final Color? selectionMenuItemIconColor;
-  final Color? selectionMenuItemSelectedTextColor;
-  final Color? selectionMenuItemSelectedIconColor;
-  final Color? selectionMenuItemSelectedColor;
-  final Color? toolbarColor;
-  final double toolbarElevation;
-
   // Text styles
   final EdgeInsets? textPadding;
   final TextStyle? textStyle;
@@ -41,6 +31,24 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final TextStyle? href;
   final TextStyle? code;
   final String? highlightColorHex;
+
+  // Selection menu styles
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuBackgroundColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemTextColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemIconColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedTextColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedIconColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? toolbarColor;
+  @Deprecated('customize the selection menu directly')
+  final double toolbarElevation;
 
   // Item's pop up menu styles
   final Color? popupMenuFGColor;

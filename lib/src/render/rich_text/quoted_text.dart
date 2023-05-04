@@ -48,7 +48,9 @@ class _QuotedTextNodeWidgetState extends State<QuotedTextNodeWidget>
     with SelectableMixin, DefaultSelectable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
-
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   QuotedTextPluginStyle get style =>
       Theme.of(context).extensionOrNull<QuotedTextPluginStyle>() ??
       QuotedTextPluginStyle.light;

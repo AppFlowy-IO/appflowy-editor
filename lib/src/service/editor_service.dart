@@ -5,15 +5,40 @@ import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_eve
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
+const standardBlockComponentConfiguration = BlockComponentConfiguration();
+
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   'document': DocumentComponentBuilder(),
-  'paragraph': TextBlockComponentBuilder(),
-  'todo_list': TodoListBlockComponentBuilder(),
-  'bulleted_list': BulletedListBlockComponentBuilder(),
-  'numbered_list': NumberedListBlockComponentBuilder(),
-  'quote': QuoteBlockComponentBuilder(),
-  'heading': HeadingBlockComponentBuilder(),
-  'image': ImageBlockComponentBuilder(),
+  'paragraph': const TextBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration,
+  ),
+  'todo_list': TodoListBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => 'To-do',
+    ),
+  ),
+  'bulleted_list': BulletedListBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => 'List',
+    ),
+  ),
+  'numbered_list': NumberedListBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => 'List',
+    ),
+  ),
+  'quote': QuoteBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => 'Quote',
+    ),
+  ),
+  'heading': HeadingBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (node) =>
+          'Heading ${node.attributes[HeadingBlockKeys.level]}',
+    ),
+  ),
+  'image': const ImageBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [

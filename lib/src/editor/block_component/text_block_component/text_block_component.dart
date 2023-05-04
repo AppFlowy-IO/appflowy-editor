@@ -19,13 +19,11 @@ Node paragraphNode({
 }
 
 class TextBlockComponentBuilder extends BlockComponentBuilder {
-  TextBlockComponentBuilder({
-    this.padding = const EdgeInsets.all(0.0),
-    this.textStyle = const TextStyle(),
+  const TextBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
   });
 
-  final EdgeInsets padding;
-  final TextStyle textStyle;
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -33,8 +31,7 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
     return TextBlockComponentWidget(
       node: node,
       key: node.key,
-      padding: padding,
-      textStyle: textStyle,
+      configuration: configuration,
     );
   }
 
@@ -48,13 +45,11 @@ class TextBlockComponentWidget extends StatefulWidget {
   const TextBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
-    this.textStyle = const TextStyle(),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
   final Node node;
-  final EdgeInsets padding;
-  final TextStyle textStyle;
+  final BlockComponentConfiguration configuration;
 
   @override
   State<TextBlockComponentWidget> createState() =>
@@ -62,49 +57,52 @@ class TextBlockComponentWidget extends StatefulWidget {
 }
 
 class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.node.children.isEmpty) {
-      return buildBulletListBlockComponent(context);
-    } else {
-      return buildBulletListBlockComponentWithChildren(context);
-    }
+    return widget.node.children.isEmpty
+        ? buildBulletListBlockComponent(context)
+        : buildBulletListBlockComponentWithChildren(context);
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
     return NestedListWidget(
-      children: editorState.renderer
-          .buildList(
-            context,
-            widget.node.children.toList(growable: false),
-          )
-          .toList(),
+      children: editorState.renderer.buildList(
+        context,
+        widget.node.children,
+      ),
       child: buildBulletListBlockComponent(context),
     );
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,
         editorState: editorState,
+        placeholderText: placeholderText,
+        textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+          textStyle,
+        ),
+        placeholderTextSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+          placeholderTextStyle,
+        ),
       ),
     );
   }

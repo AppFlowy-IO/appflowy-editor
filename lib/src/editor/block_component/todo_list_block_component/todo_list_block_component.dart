@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,14 +30,13 @@ Node todoListNode({
 }
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
-  TodoListBlockComponentBuilder({
-    this.padding = const EdgeInsets.all(0.0),
+  const TodoListBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.icon,
   });
 
-  /// The padding of the todo list block.
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
@@ -50,7 +50,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
     return TodoListBlockComponentWidget(
       key: node.key,
       node: node,
-      padding: padding,
+      configuration: configuration,
       textStyleBuilder: textStyleBuilder,
       icon: icon,
     );
@@ -67,13 +67,13 @@ class TodoListBlockComponentWidget extends StatefulWidget {
   const TodoListBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.icon,
   });
 
   final Node node;
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
   final TextStyle Function(bool checked)? textStyleBuilder;
   final Widget? Function(bool checked)? icon;
 
@@ -84,9 +84,18 @@ class TodoListBlockComponentWidget extends StatefulWidget {
 
 class _TodoListBlockComponentWidgetState
     extends State<TodoListBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
@@ -94,8 +103,24 @@ class _TodoListBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
+    return widget.node.children.isEmpty
+        ? buildTodoListBlockComponent(context)
+        : buildTodoListBlockComponentWithChildren(context);
+  }
+
+  Widget buildTodoListBlockComponentWithChildren(BuildContext context) {
+    return NestedListWidget(
+      children: editorState.renderer.buildList(
+        context,
+        widget.node.children,
+      ),
+      child: buildTodoListBlockComponent(context),
+    );
+  }
+
+  Widget buildTodoListBlockComponent(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -110,8 +135,15 @@ class _TodoListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
-              textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-                widget.textStyleBuilder?.call(checked) ?? defaultTextStyle(),
+              placeholderText: placeholderText,
+              textSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(textStyle).updateTextStyle(
+                        widget.textStyleBuilder?.call(checked) ??
+                            defaultTextStyle(),
+                      ),
+              placeholderTextSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(
+                placeholderTextStyle,
               ),
             ),
           ),

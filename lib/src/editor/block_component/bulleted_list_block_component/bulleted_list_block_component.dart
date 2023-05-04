@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_configuration.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,11 +21,10 @@ Node bulletedListNode({
 
 class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   BulletedListBlockComponentBuilder({
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
-  /// The padding of the todo list block.
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -32,7 +32,7 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
     return BulletedListBlockComponentWidget(
       key: node.key,
       node: node,
-      padding: padding,
+      configuration: configuration,
     );
   }
 
@@ -44,11 +44,11 @@ class BulletedListBlockComponentWidget extends StatefulWidget {
   const BulletedListBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
   final Node node;
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   State<BulletedListBlockComponentWidget> createState() =>
@@ -57,36 +57,41 @@ class BulletedListBlockComponentWidget extends StatefulWidget {
 
 class _BulletedListBlockComponentWidgetState
     extends State<BulletedListBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
-    if (widget.node.children.isEmpty) {
-      return buildBulletListBlockComponent(context);
-    } else {
-      return buildBulletListBlockComponentWithChildren(context);
-    }
+    return widget.node.children.isEmpty
+        ? buildBulletListBlockComponent(context)
+        : buildBulletListBlockComponentWithChildren(context);
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
     return NestedListWidget(
-      children: editorState.renderer
-          .buildList(
-            context,
-            widget.node.children.toList(growable: false),
-          )
-          .toList(),
+      children: editorState.renderer.buildList(
+        context,
+        widget.node.children,
+      ),
       child: buildBulletListBlockComponent(context),
     );
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -100,6 +105,14 @@ class _BulletedListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              placeholderText: placeholderText,
+              textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+                textStyle,
+              ),
+              placeholderTextSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(
+                placeholderTextStyle,
+              ),
             ),
           ),
         ],
