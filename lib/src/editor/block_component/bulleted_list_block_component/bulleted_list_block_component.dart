@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_configuration.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +98,7 @@ class _BulletedListBlockComponentWidgetState
         children: [
           _BulletedListIcon(
             node: widget.node,
+            textStyle: textStyle,
           ),
           Flexible(
             child: FlowyRichText(
@@ -124,16 +124,16 @@ class _BulletedListBlockComponentWidgetState
 class _BulletedListIcon extends StatelessWidget {
   const _BulletedListIcon({
     required this.node,
+    required this.textStyle,
   });
 
   final Node node;
+  final TextStyle textStyle;
 
-  // FIXME: replace with the real icon.
   static final bulletedListIcons = [
-    '◉',
-    '○',
+    '●',
+    '◯',
     '□',
-    '*',
   ];
 
   int get level {
@@ -160,7 +160,8 @@ class _BulletedListIcon extends StatelessWidget {
         child: Center(
           child: Text(
             icon,
-            textScaleFactor: 1.2,
+            style: textStyle,
+            textScaleFactor: 0.5,
           ),
         ),
       ),
