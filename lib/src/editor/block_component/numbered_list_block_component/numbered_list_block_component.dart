@@ -19,11 +19,10 @@ Node numberedListNode({
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
-  /// The padding of the todo list block.
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -31,7 +30,7 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
     return NumberedListBlockComponentWidget(
       key: node.key,
       node: node,
-      padding: padding,
+      configuration: configuration,
     );
   }
 
@@ -43,11 +42,11 @@ class NumberedListBlockComponentWidget extends StatefulWidget {
   const NumberedListBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
   });
 
   final Node node;
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   State<NumberedListBlockComponentWidget> createState() =>
@@ -56,36 +55,41 @@ class NumberedListBlockComponentWidget extends StatefulWidget {
 
 class _NumberedListBlockComponentWidgetState
     extends State<NumberedListBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
-    if (widget.node.children.isEmpty) {
-      return buildBulletListBlockComponent(context);
-    } else {
-      return buildBulletListBlockComponentWithChildren(context);
-    }
+    return widget.node.children.isEmpty
+        ? buildBulletListBlockComponent(context)
+        : buildBulletListBlockComponentWithChildren(context);
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
     return NestedListWidget(
-      children: editorState.renderer
-          .buildList(
-            context,
-            widget.node.children.toList(growable: false),
-          )
-          .toList(),
+      children: editorState.renderer.buildList(
+        context,
+        widget.node.children,
+      ),
       child: buildBulletListBlockComponent(context),
     );
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -97,6 +101,14 @@ class _NumberedListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              placeholderText: placeholderText,
+              textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+                textStyle,
+              ),
+              placeholderTextSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(
+                placeholderTextStyle,
+              ),
             ),
           ),
         ],

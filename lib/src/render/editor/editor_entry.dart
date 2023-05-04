@@ -34,7 +34,7 @@ class EditorNodeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: editorState.renderer.buildList(context, node.children.toList()),
+      children: editorState.renderer.buildList(context, node.children),
     );
   }
 }

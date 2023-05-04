@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
@@ -27,12 +28,11 @@ Node headingNode({
 }
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
-  HeadingBlockComponentBuilder({
-    this.padding = const EdgeInsets.symmetric(vertical: 8.0),
+  const HeadingBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
   });
 
-  /// The padding of the todo list block.
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -40,7 +40,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
     return HeadingBlockComponentWidget(
       key: node.key,
       node: node,
-      padding: padding,
+      configuration: configuration,
     );
   }
 
@@ -55,14 +55,14 @@ class HeadingBlockComponentWidget extends StatefulWidget {
   const HeadingBlockComponentWidget({
     super.key,
     required this.node,
-    this.padding = const EdgeInsets.all(0.0),
+    this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
   });
 
   final Node node;
-  final EdgeInsets padding;
+  final BlockComponentConfiguration configuration;
 
-  /// The text style of the todo list block.
+  /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;
 
   @override
@@ -72,9 +72,18 @@ class HeadingBlockComponentWidget extends StatefulWidget {
 
 class _HeadingBlockComponentWidgetState
     extends State<HeadingBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable {
+    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
+
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
@@ -83,14 +92,24 @@ class _HeadingBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: widget.padding,
+      padding: padding,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,
         editorState: editorState,
-        textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-          widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
-        ),
+        textSpanDecorator: (textSpan) => textSpan
+            .updateTextStyle(textStyle)
+            .updateTextStyle(
+              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
+            ),
+        placeholderText: placeholderText,
+        placeholderTextSpanDecorator: (textSpan) => textSpan
+            .updateTextStyle(
+              placeholderTextStyle,
+            )
+            .updateTextStyle(
+              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
+            ),
       ),
     );
   }

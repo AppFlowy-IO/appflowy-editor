@@ -48,7 +48,9 @@ class _NumberListTextNodeWidgetState extends State<NumberListTextNodeWidget>
     with SelectableMixin, DefaultSelectable {
   @override
   final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
-
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   NumberListPluginStyle get style =>
       Theme.of(context).extensionOrNull<NumberListPluginStyle>() ??
       NumberListPluginStyle.light;

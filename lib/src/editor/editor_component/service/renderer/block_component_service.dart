@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
 abstract class BlockComponentBuilder {
+  const BlockComponentBuilder();
+
   /// validate the node.
   ///
   /// return true if the node is valid.
@@ -44,7 +46,7 @@ abstract class BlockComponentRendererService {
 
   List<Widget> buildList(
     BuildContext buildContext,
-    List<Node> nodes,
+    Iterable<Node> nodes,
   ) {
     return nodes
         .map((node) => build(buildContext, node))

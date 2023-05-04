@@ -49,7 +49,9 @@ class _BulletedListTextNodeWidgetState extends State<BulletedListTextNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'bulleted_list_text');
-
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   BulletedListPluginStyle get style =>
       Theme.of(context).extensionOrNull<BulletedListPluginStyle>() ??
       BulletedListPluginStyle.light;

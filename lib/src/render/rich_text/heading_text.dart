@@ -49,6 +49,10 @@ class _HeadingTextNodeWidgetState extends State<HeadingTextNodeWidget>
   @override
   final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
 
+  @override
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
+
   HeadingPluginStyle get style =>
       Theme.of(context).extensionOrNull<HeadingPluginStyle>() ??
       HeadingPluginStyle.light;

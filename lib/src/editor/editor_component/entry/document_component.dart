@@ -23,8 +23,7 @@ class DocumentComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final editorState = Provider.of<EditorState>(context, listen: false);
-    final children =
-        editorState.renderer.buildList(context, node.children.toList());
+    final children = editorState.renderer.buildList(context, node.children);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
