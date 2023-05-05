@@ -68,7 +68,8 @@ class ImageUploadMenu extends StatefulWidget {
   State<ImageUploadMenu> createState() => _ImageUploadMenuState();
 }
 
-class _ImageUploadMenuState extends State<ImageUploadMenu> {
+class _ImageUploadMenuState extends State<ImageUploadMenu>
+    with TickerProviderStateMixin {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   String? _fileName;
@@ -181,8 +182,6 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
               ],
             ),
           ),
-          const SizedBox(height: 18.0),
-          _buildUploadButton(context),
         ],
       ),
     );
@@ -271,7 +270,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 }
 
-extension on EditorState {
+extension InsertImageNode on EditorState {
   void insertImageNode(String src, String type) {
     final selection = service.selectionService.currentSelection.value;
     if (selection == null) {

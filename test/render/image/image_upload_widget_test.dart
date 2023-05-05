@@ -34,7 +34,7 @@ void main() {
         Selection.single(path: [0], startOffset: 19),
       );
 
-      editor.editorState.insertImageNode('no_src');
+      editor.editorState.insertImageNode('no_src', 'no_type');
       await tester.pumpAndSettle();
 
       expect(editor.documentLength, 2);

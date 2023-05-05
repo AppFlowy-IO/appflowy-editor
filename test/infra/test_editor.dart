@@ -75,13 +75,19 @@ class EditorWidgetTester {
     );
   }
 
-  void insertImageNode(String src, {String? align, double? width}) {
+  void insertImageNode(
+    String src, {
+    String? align,
+    double? width,
+    String? type,
+  }) {
     insert(
       Node(
         type: 'image',
         children: LinkedList(),
         attributes: {
           'image_src': src,
+          'type': type,
           'align': align ?? 'center',
           ...width != null ? {'width': width} : {},
         },

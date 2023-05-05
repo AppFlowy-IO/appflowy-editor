@@ -22,6 +22,7 @@ void main() async {
           src: src,
           width: 100,
           editable: true,
+          type: 'network',
           node: Node(
             type: 'image',
             children: LinkedList(),
@@ -74,6 +75,7 @@ void main() async {
           src: src,
           width: 100,
           editable: true,
+          type: 'network',
           node: Node(
             type: 'image',
             children: LinkedList(),
@@ -141,6 +143,7 @@ void main() async {
           src: src,
           width: 100,
           editable: false,
+          type: 'network',
           node: Node(
             type: 'image',
             children: LinkedList(),

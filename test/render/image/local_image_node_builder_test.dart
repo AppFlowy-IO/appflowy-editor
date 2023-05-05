@@ -7,6 +7,8 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 import '../../infra/test_editor.dart';
 
+const localImage = '../../../documentation/images/example.png';
+
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -14,13 +16,12 @@ void main() async {
 
   group('image_node_builder.dart', () {
     testWidgets('render image node', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src)
+          ..insertImageNode(src, type: 'file')
           ..insertTextNode(text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -31,13 +32,12 @@ void main() async {
     });
 
     testWidgets('cannot see action menu when not editable', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src)
+          ..insertImageNode(src, type: 'file')
           ..insertTextNode(text);
 
         await editor.startTesting(editable: false);
@@ -60,13 +60,12 @@ void main() async {
     });
 
     testWidgets('can see action menu when editable', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src)
+          ..insertImageNode(src, type: 'file')
           ..insertTextNode(text);
 
         await editor.startTesting();
@@ -89,15 +88,14 @@ void main() async {
     });
 
     testWidgets('render image align', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src, align: 'left', width: 100)
-          ..insertImageNode(src, align: 'center', width: 100)
-          ..insertImageNode(src, align: 'right', width: 100)
+          ..insertImageNode(src, align: 'left', width: 100, type: 'file')
+          ..insertImageNode(src, align: 'center', width: 100, type: 'file')
+          ..insertImageNode(src, align: 'right', width: 100, type: 'file')
           ..insertTextNode(text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -146,13 +144,12 @@ void main() async {
     });
 
     testWidgets('render image copy', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src)
+          ..insertImageNode(src, type: 'file')
           ..insertTextNode(text);
         await editor.startTesting();
 
@@ -162,20 +159,20 @@ void main() async {
 
         final imageNode = editor.document.nodeAtPath([1]);
 
+        print(imageNode);
         expect(editor.runAction(3, imageNode!), true); // copy
         await tester.pump();
       });
     });
 
     testWidgets('render image delete', (tester) async {
-      mockNetworkImagesFor(() async {
+      (() async {
         const text = 'Welcome to Appflowy 😁';
-        const src =
-            'https://images.unsplash.com/photo-1471897488648-5eae4ac6686b?ixlib=rb-1.2.1&dl=sarah-dorweiler-QeVmJxZOv3k-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+        const src = localImage;
         final editor = tester.editor
           ..insertTextNode(text)
-          ..insertImageNode(src)
-          ..insertImageNode(src)
+          ..insertImageNode(src, type: 'local')
+          ..insertImageNode(src, type: 'local')
           ..insertTextNode(text);
         await editor.startTesting();
 
