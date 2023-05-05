@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Iterable<ThemeExtension<dynamic>> get lightEditorStyleExtension => [
@@ -22,6 +25,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final Color? selectionMenuItemSelectedTextColor;
   final Color? selectionMenuItemSelectedIconColor;
   final Color? selectionMenuItemSelectedColor;
+  final Color? toolbarColor;
+  final double toolbarElevation;
 
   // Text styles
   final EdgeInsets? textPadding;
@@ -38,6 +43,10 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final TextStyle? code;
   final String? highlightColorHex;
 
+  // Item's pop up menu styles
+  final Color? popupMenuFGColor;
+  final Color? popupMenuHoverColor;
+
   EditorStyle({
     required this.padding,
     required this.backgroundColor,
@@ -49,6 +58,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.selectionMenuItemSelectedTextColor,
     required this.selectionMenuItemSelectedIconColor,
     required this.selectionMenuItemSelectedColor,
+    required this.toolbarColor,
+    required this.toolbarElevation,
     required this.textPadding,
     required this.textStyle,
     required this.placeholderTextStyle,
@@ -60,6 +71,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.code,
     required this.highlightColorHex,
     required this.lineHeight,
+    required this.popupMenuFGColor,
+    required this.popupMenuHoverColor,
   });
 
   @override
@@ -74,6 +87,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? selectionMenuItemSelectedTextColor,
     Color? selectionMenuItemSelectedIconColor,
     Color? selectionMenuItemSelectedColor,
+    Color? toolbarColor,
+    double? toolbarElevation,
     TextStyle? textStyle,
     TextStyle? placeholderTextStyle,
     TextStyle? bold,
@@ -84,6 +99,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     TextStyle? code,
     String? highlightColorHex,
     double? lineHeight,
+    Color? popupMenuFGColor,
+    Color? popupMenuHoverColor,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -102,6 +119,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
           this.selectionMenuItemSelectedIconColor,
       selectionMenuItemSelectedColor:
           selectionMenuItemSelectedColor ?? this.selectionMenuItemSelectedColor,
+      toolbarColor: toolbarColor ?? this.toolbarColor,
+      toolbarElevation: toolbarElevation ?? this.toolbarElevation,
       textPadding: textPadding ?? textPadding,
       textStyle: textStyle ?? this.textStyle,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
@@ -113,6 +132,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       code: code ?? this.code,
       highlightColorHex: highlightColorHex ?? this.highlightColorHex,
       lineHeight: lineHeight ?? this.lineHeight,
+      popupMenuFGColor: popupMenuFGColor ?? this.popupMenuFGColor,
+      popupMenuHoverColor: popupMenuHoverColor ?? this.popupMenuHoverColor,
     );
   }
 
@@ -160,6 +181,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
         other.selectionMenuItemSelectedColor,
         t,
       ),
+      toolbarColor: Color.lerp(toolbarColor, other.toolbarColor, t),
+      toolbarElevation: toolbarElevation,
       textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
       placeholderTextStyle:
           TextStyle.lerp(placeholderTextStyle, other.placeholderTextStyle, t),
@@ -171,6 +194,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       code: TextStyle.lerp(code, other.code, t),
       highlightColorHex: highlightColorHex,
       lineHeight: lineHeight,
+      popupMenuFGColor: Color.lerp(popupMenuFGColor, other.popupMenuFGColor, t),
+      popupMenuHoverColor:
+          Color.lerp(popupMenuHoverColor, other.popupMenuHoverColor, t),
     );
   }
 
@@ -179,7 +205,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   }
 
   static final light = EditorStyle(
-    padding: const EdgeInsets.fromLTRB(200.0, 0.0, 200.0, 0.0),
+    padding: _isMobile
+        ? const EdgeInsets.symmetric(horizontal: 20)
+        : const EdgeInsets.symmetric(horizontal: 200),
     backgroundColor: Colors.white,
     cursorColor: const Color(0xFF00BCF0),
     selectionColor: const Color.fromARGB(53, 111, 201, 231),
@@ -189,6 +217,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     selectionMenuItemSelectedTextColor: const Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedIconColor: const Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedColor: const Color(0xFFE0F8FF),
+    toolbarColor: const Color(0xFF333333),
+    toolbarElevation: 0.0,
     textPadding: const EdgeInsets.symmetric(vertical: 8.0),
     textStyle: const TextStyle(fontSize: 16.0, color: Colors.black),
     placeholderTextStyle: const TextStyle(fontSize: 16.0, color: Colors.grey),
@@ -207,6 +237,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     ),
     highlightColorHex: '0x6000BCF0',
     lineHeight: 1.5,
+    popupMenuFGColor: const Color(0xFF333333),
+    popupMenuHoverColor: const Color(0xFFE0F8FF),
   );
 
   static final dark = light.copyWith(
@@ -222,5 +254,21 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     selectionMenuItemSelectedTextColor: const Color(0xFF131720),
     selectionMenuItemSelectedIconColor: const Color(0xFF131720),
     selectionMenuItemSelectedColor: const Color(0xFF00BCF0),
+    toolbarColor: const Color(0xFF131720),
+    toolbarElevation: 0.0,
+    popupMenuFGColor: Colors.white,
+    popupMenuHoverColor: const Color(0xFF00BCF0),
   );
+
+  static bool get _isMobile {
+    if (kIsWeb) {
+      return false;
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return true;
+    }
+
+    return false;
+  }
 }

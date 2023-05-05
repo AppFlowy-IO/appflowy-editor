@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
 
 void insertHeadingAfterSelection(EditorState editorState, String heading) {
   insertTextNodeAfterSelection(editorState, {
@@ -109,21 +108,21 @@ bool formatTextNodes(EditorState editorState, Attributes attributes) {
 
   for (final textNode in textNodes) {
     var newAttributes = {...textNode.attributes};
-    for (final globalStyleKey in BuiltInAttributeKey.globalStyleKeys) {
-      if (newAttributes.keys.contains(globalStyleKey)) {
-        newAttributes[globalStyleKey] = null;
+    if (isAttributesEqual(newAttributes, attributes)) {
+      for (final key in attributes.keys) {
+        newAttributes[key] = null;
       }
+    } else {
+      for (final globalStyleKey in BuiltInAttributeKey.globalStyleKeys) {
+        if (newAttributes.keys.contains(globalStyleKey)) {
+          newAttributes[globalStyleKey] = null;
+        }
+      }
+
+      // if an attribute already exists in the node, it should be removed instead
+      newAttributes.addAll(attributes);
     }
 
-    // if an attribute already exists in the node, it should be removed instead
-    for (final entry in attributes.entries) {
-      if (textNode.attributes.containsKey(entry.key) &&
-          textNode.attributes[entry.key] == entry.value) {
-        // attribute is not added to the node new attributes
-      } else {
-        newAttributes.addEntries([entry]);
-      }
-    }
     transaction
       ..updateNode(
         textNode,

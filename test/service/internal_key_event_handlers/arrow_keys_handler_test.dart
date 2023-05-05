@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/test_editor.dart';
 
 void main() async {
@@ -55,7 +56,9 @@ void main() async {
       ..insertTextNode("Welcome to AppFlowy");
     await editor.startTesting();
 
-    await editor.updateSelection(Selection.single(path: [1], startOffset: 19));
+    await editor.updateSelection(
+      Selection.single(path: [1], startOffset: 19),
+    );
 
     await editor.pressLogicKey(key: LogicalKeyboardKey.arrowUp);
 
@@ -89,7 +92,9 @@ void main() async {
       );
     }
 
-    await editor.updateSelection(Selection.single(path: [1], startOffset: 7));
+    await editor.updateSelection(
+      Selection.single(path: [1], startOffset: 7),
+    );
 
     await select(true);
 
@@ -684,133 +689,6 @@ void main() async {
         end: Position(path: [1], offset: 0),
       ),
     );
-  });
-
-  testWidgets('Presses ctrl + backspace to delete a word', (tester) async {
-    List<String> words = ["Welcome", " ", "to", " ", "Appflowy", " ", "😁"];
-    final text = words.join();
-    final editor = tester.editor..insertTextNode(text);
-
-    await editor.startTesting();
-    var selection = Selection.single(path: [0], startOffset: text.length);
-    await editor.updateSelection(selection);
-
-    if (Platform.isWindows || Platform.isLinux) {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isControlPressed: true,
-      );
-    } else {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isAltPressed: true,
-      );
-    }
-
-    //fetching all the text that is still on the editor.
-    var nodes =
-        editor.editorState.service.selectionService.currentSelectedNodes;
-    var textNode = nodes.whereType<TextNode>().first;
-    var newText = textNode.toPlainText();
-
-    words.removeLast();
-    expect(newText, words.join());
-
-    if (Platform.isWindows || Platform.isLinux) {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isControlPressed: true,
-      );
-    } else {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isAltPressed: true,
-      );
-    }
-
-    //fetching all the text that is still on the editor.
-    nodes = editor.editorState.service.selectionService.currentSelectedNodes;
-    textNode = nodes.whereType<TextNode>().first;
-
-    newText = textNode.toPlainText();
-
-    words.removeLast();
-    expect(newText, words.join());
-
-    for (var i = 0; i < words.length; i++) {
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.backspace,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.backspace,
-          isAltPressed: true,
-        );
-      }
-    }
-
-    nodes = editor.editorState.service.selectionService.currentSelectedNodes;
-    textNode = nodes.whereType<TextNode>().toList(growable: false).first;
-
-    newText = textNode.toPlainText();
-
-    expect(newText, '');
-  });
-
-  testWidgets('Testing ctrl + backspace edge cases', (tester) async {
-    const text = 'Welcome to Appflowy 😁';
-    final editor = tester.editor..insertTextNode(text);
-
-    await editor.startTesting();
-    var selection = Selection.single(path: [0], startOffset: 0);
-    await editor.updateSelection(selection);
-
-    if (Platform.isWindows || Platform.isLinux) {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isControlPressed: true,
-      );
-    } else {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isAltPressed: true,
-      );
-    }
-
-    //fetching all the text that is still on the editor.
-    var nodes =
-        editor.editorState.service.selectionService.currentSelectedNodes;
-    var textNode = nodes.whereType<TextNode>().first;
-    var newText = textNode.toPlainText();
-
-    //nothing happens
-    expect(newText, text);
-
-    selection = Selection.single(path: [0], startOffset: 14);
-    await editor.updateSelection(selection);
-    //Welcome to App|flowy 😁
-
-    if (Platform.isWindows || Platform.isLinux) {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isControlPressed: true,
-      );
-    } else {
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.backspace,
-        isAltPressed: true,
-      );
-    }
-
-    //fetching all the text that is still on the editor.
-    nodes = editor.editorState.service.selectionService.currentSelectedNodes;
-    textNode = nodes.whereType<TextNode>().first;
-    newText = textNode.toPlainText();
-
-    const expectedText = 'Welcome to flowy 😁';
-    expect(newText, expectedText);
   });
 }
 

@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/extensions/text_node_extensions.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 
 import 'package:flutter/material.dart';
 
@@ -274,7 +272,17 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
   return KeyEventResult.handled;
 };
 
-ShortcutEventHandler underscoreToItalicHandler = (editorState, event) {
+ShortcutEventHandler singleUnderscoreToItalicHandler = (editorState, event) {
+  return singleCharacterToItalicHandler(editorState, event, '_');
+};
+
+ShortcutEventHandler singleAsteriskToItalicHandler = (editorState, event) {
+  return singleCharacterToItalicHandler(editorState, event, '*');
+};
+
+KeyEventResult Function(EditorState, RawKeyEvent?, String)
+    singleCharacterToItalicHandler =
+    (EditorState editorState, RawKeyEvent? event, String character) {
   // Obtain the selection and selected nodes of the current document through the 'selectionService'
   // to determine whether the selection is collapsed and whether the selected node is a text node.
   final selectionService = editorState.service.selectionService;
@@ -286,24 +294,24 @@ ShortcutEventHandler underscoreToItalicHandler = (editorState, event) {
 
   final textNode = textNodes.first;
   final text = textNode.toPlainText();
-  // Determine if an 'underscore' already exists in the text node and only once.
-  final firstUnderscore = text.indexOf('_');
-  final lastUnderscore = text.lastIndexOf('_');
-  if (firstUnderscore == -1 ||
-      firstUnderscore != lastUnderscore ||
-      firstUnderscore == selection.start.offset - 1) {
+  // Determine if a 'character' already exists in the text node and only once.
+  final firstCharacter = text.indexOf(character);
+  final lastCharacter = text.lastIndexOf(character);
+  if (firstCharacter == -1 ||
+      firstCharacter != lastCharacter ||
+      firstCharacter == selection.start.offset - 1) {
     return KeyEventResult.ignored;
   }
 
-  // Delete the previous 'underscore',
-  // update the style of the text surrounded by the two underscores to 'italic',
+  // Delete the previous 'character',
+  // update the style of the text surrounded by the two characters to 'italic',
   // and update the cursor position.
   final transaction = editorState.transaction
-    ..deleteText(textNode, firstUnderscore, 1)
+    ..deleteText(textNode, firstCharacter, 1)
     ..formatText(
       textNode,
-      firstUnderscore,
-      selection.end.offset - firstUnderscore - 1,
+      firstCharacter,
+      selection.end.offset - firstCharacter - 1,
       {
         BuiltInAttributeKey.italic: true,
       },
