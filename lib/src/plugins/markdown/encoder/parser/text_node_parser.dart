@@ -17,7 +17,6 @@ class TextNodeParser extends NodeParser {
     final attributes = textNode.attributes;
     var result = markdown;
     var suffix = '\n';
-
     if (attributes.isNotEmpty &&
         attributes.containsKey(BuiltInAttributeKey.subtype)) {
       final subtype = attributes[BuiltInAttributeKey.subtype];
@@ -64,7 +63,6 @@ class TextNodeParser extends NodeParser {
     final children = textNode.children;
     if (children.length > 0) {
       result += childrenString(1, textNode);
-      // print("after calling childrenString - result: $result");
     }
 
     return '$result$suffix';
@@ -72,26 +70,19 @@ class TextNodeParser extends NodeParser {
 
   String childrenString(int level, TextNode textNode) {
     assert(textNode is TextNode);
-    // final textNode = node as TextNode;
-    // print(node.children.length);
-
     var childResult = '\n';
     var childSuffix = '';
 
     final children = textNode.children;
 
     children.forEach((var child) {
-      // print('child: $child');
       final children = textNode.children;
       if (child.attributes.isNotEmpty &&
           child.attributes.containsKey(BuiltInAttributeKey.subtype)) {
         final childsubtype = child.attributes[BuiltInAttributeKey.subtype];
-        // print('childsubtype: $childsubtype');
         final childmarkdown =
             DeltaMarkdownEncoder().convert((child as TextNode).delta);
-        // print('childmarkdown: $childmarkdown');
-        // print(child.next);
-        final indentation = indentedString(level);
+\        final indentation = indentedString(level);
         if (childsubtype == 'checkbox') {
           if (child.attributes[BuiltInAttributeKey.checkbox] == true) {
             childResult += '$indentation- [x] $childmarkdown';
@@ -100,7 +91,6 @@ class TextNodeParser extends NodeParser {
           }
           if (child.next != null &&
               (child.children == null || child.children.length <= 0)) {
-            // print('inside child.next != null');
             childResult += '\n';
           }
         }
@@ -108,15 +98,11 @@ class TextNodeParser extends NodeParser {
 
       if (child.children.length > 0) {
         childResult += childrenString(level + 1, child as TextNode);
-        // print(child.next);
         if (child.next != null) {
           childResult += '\n';
         }
-        // print("after calling childrenString(recursively) - childResult: $childResult");
       }
     });
-
-    // print("childrenString - childResult: $childResult");
 
     return '$childResult$childSuffix';
   }
