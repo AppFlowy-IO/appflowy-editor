@@ -68,6 +68,7 @@ class TextNodeParser extends NodeParser {
     return '$result$suffix';
   }
 
+// returns the string by looping through all the child text nodes
   String childrenString(int level, TextNode textNode) {
     assert(textNode is TextNode);
     var childResult = '\n';
