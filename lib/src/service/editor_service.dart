@@ -32,6 +32,7 @@ class AppFlowyEditor extends StatefulWidget {
     ScrollController? scrollController,
     bool editable = true,
     bool autoFocus = false,
+    Selection? focusedSelection,
     EditorStyle? editorStyle,
     Map<String, BlockComponentBuilder> blockComponentBuilders = const {},
     List<CharacterShortcutEvent> characterShortcutEvents = const [],
@@ -43,6 +44,7 @@ class AppFlowyEditor extends StatefulWidget {
           scrollController: scrollController,
           editable: editable,
           autoFocus: autoFocus,
+          focusedSelection: focusedSelection,
           blockComponentBuilders: blockComponentBuilders,
           characterShortcutEvents: characterShortcutEvents,
           commandShortcutEvents: commandShortcutEvents,
@@ -56,6 +58,7 @@ class AppFlowyEditor extends StatefulWidget {
     ScrollController? scrollController,
     bool editable = true,
     bool autoFocus = false,
+    Selection? focusedSelection,
     EditorStyle? editorStyle,
   }) : this(
           key: key,
@@ -63,6 +66,7 @@ class AppFlowyEditor extends StatefulWidget {
           scrollController: scrollController,
           editable: editable,
           autoFocus: autoFocus,
+          focusedSelection: focusedSelection,
           blockComponentBuilders: standardBlockComponentBuilderMap,
           characterShortcutEvents: standardCharacterShortcutEvents,
           commandShortcutEvents: standardCommandShortcutEvents,
@@ -176,7 +180,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       key: editorState.service.scrollServiceKey,
       scrollController: widget.scrollController,
       child: Container(
-        color: widget.editorStyle.backgroundColor,
         padding: widget.editorStyle.padding,
         child: SelectionServiceWidget(
           key: editorState.service.selectionServiceKey,

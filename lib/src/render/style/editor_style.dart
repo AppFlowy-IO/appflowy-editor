@@ -13,10 +13,13 @@ Iterable<ThemeExtension<dynamic>> get darkEditorStyleExtension => [
 class EditorStyle extends ThemeExtension<EditorStyle> {
   // Editor styles
   final EdgeInsets? padding;
-  final Color? backgroundColor;
+
   final Color cursorColor;
   final Color selectionColor;
   final TextStyleConfiguration textStyleConfiguration;
+
+  @Deprecated('customize the editor\'s background color directly')
+  final Color? backgroundColor;
 
   // Text styles
   @Deprecated('customize the block component directly')
@@ -68,10 +71,10 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
 
   const EditorStyle({
     required this.padding,
-    required this.backgroundColor,
     required this.cursorColor,
     required this.selectionColor,
     required this.textStyleConfiguration,
+    required this.backgroundColor,
     required this.selectionMenuBackgroundColor,
     required this.selectionMenuItemTextColor,
     required this.selectionMenuItemIconColor,
