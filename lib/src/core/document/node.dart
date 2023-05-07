@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:nanoid/nanoid.dart';
 
 /// [Node] represents a node in the document tree.
 ///
@@ -20,6 +21,7 @@ import 'package:flutter/material.dart';
 class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
+    String? id,
     this.parent,
     Attributes attributes = const {},
     Iterable<Node> children = const [],
@@ -29,7 +31,8 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
               (e) => e..unlink(),
             ),
           ), // unlink the given children to avoid the error of "node has already a parent"
-        _attributes = attributes {
+        _attributes = attributes,
+        id = id ?? nanoid(10) {
     for (final child in this.children) {
       child.parent = this;
     }
@@ -54,11 +57,14 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   /// The type of the node.
   final String type;
 
+  /// The id of the node.
+  final String id;
+
   @Deprecated('Use type instead')
   String get subtype => type;
 
-  @Deprecated('Use type instead')
-  String get id => type;
+  // @Deprecated('Use type instead')
+  // String get id => type;
 
   /// The parent of the node.
   Node? parent;
@@ -111,8 +117,9 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     Log.editor.debug('insert Node $entry at path ${path + [index]}}');
 
+    entry.parent = this;
+
     if (children.isEmpty) {
-      entry.parent = this;
       _children.add(entry);
       notifyListeners();
       return;
@@ -160,6 +167,15 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     parent = null;
   }
 
+  @override
+  String toString() {
+    return '''Node(id: $id,
+    type: $type,
+    attributes: $attributes,
+    children: $children,
+    )''';
+  }
+
   Delta? get delta {
     if (attributes['delta'] is List) {
       return Delta.fromJson(attributes['delta']);
@@ -186,11 +202,13 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   Node copyWith({
     String? type,
+    String? id,
     Iterable<Node>? children,
     Attributes? attributes,
   }) {
     final node = Node(
       type: type ?? this.type,
+      id: id ?? this.id,
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );
@@ -224,6 +242,7 @@ class TextNode extends Node {
           type: 'text',
           children: children?.toList() ?? [],
           attributes: attributes ?? {},
+          id: '',
         );
 
   TextNode.empty({Attributes? attributes})
@@ -258,6 +277,7 @@ class TextNode extends Node {
     Iterable<Node>? children,
     Attributes? attributes,
     Delta? delta,
+    String? id,
   }) {
     final textNode = TextNode(
       children: children ?? [],

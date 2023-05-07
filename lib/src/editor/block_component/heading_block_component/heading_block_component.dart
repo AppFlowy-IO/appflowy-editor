@@ -1,11 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
 class HeadingBlockKeys {
-  HeadingBlockKeys._();
+  const HeadingBlockKeys._();
 
   /// The level data of a heading block.
   ///
