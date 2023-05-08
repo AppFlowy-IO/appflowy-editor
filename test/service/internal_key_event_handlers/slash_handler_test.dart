@@ -25,7 +25,7 @@ void main() async {
         findsOneWidget,
       );
 
-      for (final item in defaultSelectionMenuItems) {
+      for (final item in standardSelectionMenuItems) {
         expect(find.text(item.name), findsOneWidget);
       }
 
@@ -55,7 +55,7 @@ void main() async {
         findsOneWidget,
       );
 
-      for (final item in defaultSelectionMenuItems) {
+      for (final item in standardSelectionMenuItems) {
         expect(find.text(item.name), findsOneWidget);
       }
 
