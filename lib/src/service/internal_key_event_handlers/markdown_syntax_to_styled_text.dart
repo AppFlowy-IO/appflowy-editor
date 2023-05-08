@@ -411,7 +411,7 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
         });
       transaction.operations.addAll(transactionItalicFormat.operations);
       // Check if we reached the final loop we can do
-      if (i + 2 >= nestedItalicsIndexes.length) {
+      if (i + 3 >= nestedItalicsIndexes.length) {
         break;
       }
     }

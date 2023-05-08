@@ -583,6 +583,68 @@ void main() async {
         expect(plainText, plainResult);
       },
     );
+
+    testWidgets(
+      '**bold and _nested_ italics with a _ unescaped**',
+      (widgetTester) async {
+        const doubleAsterix = "**";
+        const singleAstrix = "*";
+        const firstBoldSegment = "bold and ";
+        const underscore = "_";
+        const italicsSegment = "nested";
+        const secondBoldSegment = " italics with a _ unescaped";
+        const text = doubleAsterix +
+            firstBoldSegment +
+            underscore +
+            italicsSegment +
+            underscore +
+            secondBoldSegment +
+            singleAstrix;
+        final editor = widgetTester.editor..insertTextNode('');
+
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        final textNode = editor.nodeAtPath([0]) as TextNode;
+        for (var i = 0; i < text.length; i++) {
+          await editor.insertText(textNode, text[i], i);
+        }
+
+        await insertAsterisk(editor);
+
+        final allTextBold = textNode.allSatisfyBoldInSelection(
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+
+        final segmentItalic = textNode.allSatisfyItalicInSelection(
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length,
+            endOffset: firstBoldSegment.length + italicsSegment.length - 1,
+          ),
+        );
+
+        final lastSegmentItalic = textNode.allSatisfyItalicInSelection(
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length + italicsSegment.length,
+            endOffset: text.length,
+          ),
+        );
+
+        const plainText = firstBoldSegment + italicsSegment + secondBoldSegment;
+        final plainResult = textNode.toPlainText();
+        expect(allTextBold, true);
+        expect(segmentItalic, true);
+        expect(lastSegmentItalic, false);
+        expect(plainText, plainResult);
+      },
+    );
+
   });
 
   group('convert double underscore to bold', () {
