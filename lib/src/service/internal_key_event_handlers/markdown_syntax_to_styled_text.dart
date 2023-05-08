@@ -366,13 +366,13 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
   }
 
   bool textContainsNestedItalics = false;
-  var nestedItalicsIndexes = [];
+  final nestedItalicsIndices = [];
   for (var i = 0; i < text.length; i++) {
     if (text[i] == '_') {
-      nestedItalicsIndexes.add(i);
+      nestedItalicsIndices.add(i);
     }
   }
-  if (nestedItalicsIndexes.length > 1) {
+  if (nestedItalicsIndices.length > 1) {
     textContainsNestedItalics = true;
   }
 
@@ -392,26 +392,26 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       );
     editorState.apply(transaction);
   } else {
-    // Store all needed operations inside a single transaction
-    Transaction transaction = Transaction(document: editorState.document);
 
-    // Set the entire text enclosed in asterixes to bold to start
-    var transactionBoldFormat = editorState.transaction
-      ..formatText(textNode, thirdToLastAsteriskIndex,
-          lastAsteriskIndex - thirdToLastAsteriskIndex, {
+    final transaction = editorState.transaction
+      ..formatText(
+      textNode, thirdToLastAsteriskIndex,
+      lastAsteriskIndex - thirdToLastAsteriskIndex,
+      {
         BuiltInAttributeKey.bold: true,
-      });
-    transaction.operations.addAll(transactionBoldFormat.operations);
-    for (var i = 0; i < nestedItalicsIndexes.length; i = i + 2) {
+      },
+    );
+
+    for (var i = 0; i < nestedItalicsIndices.length; i = i + 2) {
       // Set the selected italics segment to italics
       var transactionItalicFormat = editorState.transaction
-        ..formatText(textNode, nestedItalicsIndexes[i],
-            nestedItalicsIndexes[i + 1] - nestedItalicsIndexes[i], {
+        ..formatText(textNode, nestedItalicsIndices[i],
+            nestedItalicsIndices[i + 1] - nestedItalicsIndices[i], {
           BuiltInAttributeKey.italic: true,
         });
       transaction.operations.addAll(transactionItalicFormat.operations);
       // Check if we reached the final loop we can do
-      if (i + 3 >= nestedItalicsIndexes.length) {
+      if (i + 3 >= nestedItalicsIndices.length) {
         break;
       }
     }
@@ -419,15 +419,16 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
 // Remove all underscore characters in the string
 // If we have an uneven number of underscore characters we keep the last character
 // as it did not form an italics segment
-    if (nestedItalicsIndexes.length % 2 == 1) {
-      nestedItalicsIndexes.removeLast();
+    if (nestedItalicsIndices.length % 2 == 1) {
+      nestedItalicsIndices.removeLast();
     }
-    for (var i = 0; i < nestedItalicsIndexes.length; i++) {
+
+    for (var i = 0; i < nestedItalicsIndices.length; i++) {
       // Since we are deleting multiple items in a single transaction, everytime
       // we delete a character the next deletion's index must be decremented by
       // the amount of characters we have removed, to compensate for the shifted
       // indexes after the deletion
-      transaction.deleteText(textNode, nestedItalicsIndexes[i] - i, 1);
+      transaction.deleteText(textNode, nestedItalicsIndices[i] - i, 1);
     }
 
     // Remove the asterixes from the text
@@ -435,19 +436,18 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
       ..deleteText(
         textNode,
-        lastAsteriskIndex - 2 - nestedItalicsIndexes.length,
+        lastAsteriskIndex - 2 - nestedItalicsIndices.length,
         1,
       );
 
-    var transactionSelection = editorState.transaction
-      ..afterSelection = Selection.collapsed(
+    transaction
+      .afterSelection = Selection.collapsed(
         Position(
           path: textNode.path,
-          offset: selection.end.offset - 3 - nestedItalicsIndexes.length,
+          offset: selection.end.offset - 3 - nestedItalicsIndices.length,
         ),
       );
 
-    transaction.operations.addAll(transactionSelection.operations);
     editorState.apply(transaction);
   }
   return KeyEventResult.handled;
