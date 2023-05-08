@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -279,7 +280,10 @@ class EditorState {
     if (op is InsertOperation) {
       document.insert(op.path, op.nodes);
     } else if (op is UpdateOperation) {
-      document.update(op.path, op.attributes);
+      // ignore the update operation if the attributes are the same.
+      if (!mapEquals(op.attributes, op.oldAttributes)) {
+        document.update(op.path, op.attributes);
+      }
     } else if (op is DeleteOperation) {
       document.delete(op.path, op.nodes.length);
     } else if (op is UpdateTextOperation) {
