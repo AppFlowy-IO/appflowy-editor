@@ -8,94 +8,95 @@ void main() async {
     const example = '''
 {
   "document": {
-              "type": "editor",
-              "children": [
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "heading", "heading": "h2"},
-                  "delta": [
-                    {"insert": "👋 "},
-                    {"insert": "Welcome to", "attributes": {"bold": true}},
-                    {"insert": " "},
-                    {
-                      "insert": "AppFlowy Editor",
-                      "attributes": {"italic": true, "bold": true, "href": "appflowy.io"}
-                    }
-                  ]
-                },
-                {"type": "text", "delta": []},
-                {
-                  "type": "text",
-                  "delta": [
-                    {"insert": "AppFlowy Editor is a "},
-                    {"insert": "highly customizable", "attributes": {"bold": true}},
-                    {"insert": " "},
-                    {"insert": "rich-text editor", "attributes": {"italic": true}}
-                  ]
-                },
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "checkbox", "checkbox": true},
-                  "delta": [{"insert": "Customizable"}]
-                },
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "checkbox", "checkbox": true},
-                  "delta": [{"insert": "Test-covered"}]
-                },
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "checkbox", "checkbox": false},
-                  "delta": [{"insert": "more to come!"}]
-                },
-                {"type": "text", "delta": []},
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "quote"},
-                  "delta": [{"insert": "Here is an example you can give a try"}]
-                },
-                {"type": "text", "delta": []},
-                {
-                  "type": "text",
-                  "delta": [
-                    {"insert": "You can also use "},
-                    {
-                      "insert": "AppFlowy Editor",
-                      "attributes": {"italic": true, "bold": true}
-                    },
-                    {"insert": " as a component to build your own app."}
-                  ]
-                },
-                {"type": "text", "delta": []},
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "bulleted-list"},
-                  "delta": [{"insert": "Use / to insert blocks"}]
-                },
-                {
-                  "type": "text",
-                  "attributes": {"subtype": "bulleted-list"},
-                  "delta": [
-                    {
-                      "insert": "Select text to trigger to the toolbar to format your notes."
-                    }
-                  ]
-                },
-                {"type": "text", "delta": []},
-                {
-                  "type": "text",
-                  "delta": [
-                    {
-                      "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-                    }
-                  ]
-                },
-                {"type": "text", "delta": []},
-                {"type": "text", "delta": [{"insert": ""}]}
-              ]
-            }
+    "type": "editor",
+    "children": [
+      {
+        "type": "text",
+        "attributes": {"subtype": "heading", "heading": "h2"},
+        "delta": [
+          {"insert": "👋 "},
+          {"insert": "Welcome to", "attributes": {"bold": true}},
+          {"insert": " "},
+          {
+            "insert": "AppFlowy Editor",
+            "attributes": {"italic": true, "bold": true, "href": "appflowy.io"}
+          }
+        ]
+      },
+      {"type": "text", "delta": []},
+      {
+        "type": "text",
+        "delta": [
+          {"insert": "AppFlowy Editor is a "},
+          {"insert": "highly customizable", "attributes": {"bold": true}},
+          {"insert": " "},
+          {"insert": "rich-text editor", "attributes": {"italic": true}}
+        ]
+      },
+      {
+        "type": "text",
+        "attributes": {"subtype": "checkbox", "checkbox": true},
+        "delta": [{"insert": "Customizable"}]
+      },
+      {
+        "type": "text",
+        "attributes": {"subtype": "checkbox", "checkbox": true},
+        "delta": [{"insert": "Test-covered"}]
+      },
+      {
+        "type": "text",
+        "attributes": {"subtype": "checkbox", "checkbox": false},
+        "delta": [{"insert": "more to come!"}]
+      },
+      {"type": "text", "delta": []},
+      {
+        "type": "text",
+        "attributes": {"subtype": "quote"},
+        "delta": [{"insert": "Here is an example you can give a try"}]
+      },
+      {"type": "text", "delta": []},
+      {
+        "type": "text",
+        "delta": [
+          {"insert": "You can also use "},
+          {
+            "insert": "AppFlowy Editor",
+            "attributes": {"italic": true, "bold": true}
+          },
+          {"insert": " as a component to build your own app."}
+        ]
+      },
+      {"type": "text", "delta": []},
+      {
+        "type": "text",
+        "attributes": {"subtype": "bulleted-list"},
+        "delta": [{"insert": "Use / to insert blocks"}]
+      },
+      {
+        "type": "text",
+        "attributes": {"subtype": "bulleted-list"},
+        "delta": [
+          {
+            "insert": "Select text to trigger to the toolbar to format your notes."
+          }
+        ]
+      },
+      {"type": "text", "delta": []},
+      {
+        "type": "text",
+        "delta": [
+          {
+            "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+          }
+        ]
+      },
+      {"type": "text", "delta": []},
+      {"type": "text", "delta": [{"insert": ""}]}
+    ]
+  }
 }
 ''';
+
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });

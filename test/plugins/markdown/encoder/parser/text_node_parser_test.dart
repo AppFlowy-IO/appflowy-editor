@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -79,22 +81,77 @@ void main() async {
     });
 
     test('checkbox style', () {
-      final checkbox = TextNode(
+      final checkedbox = TextNode(
         delta: Delta(operations: [TextInsert(text)]),
         attributes: {
           BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
           BuiltInAttributeKey.checkbox: true,
         },
       );
-      final unCheckbox = TextNode(
+      final uncheckedbox = TextNode(
         delta: Delta(operations: [TextInsert(text)]),
         attributes: {
           BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
           BuiltInAttributeKey.checkbox: false,
         },
       );
-      expect(const TextNodeParser().transform(checkbox), '- [x] $text');
-      expect(const TextNodeParser().transform(unCheckbox), '- [ ] $text');
+
+      expect(const TextNodeParser().transform(checkedbox), '- [x] $text');
+      expect(const TextNodeParser().transform(uncheckedbox), '- [ ] $text');
+    });
+
+    test('checkbox style w/ children', () {
+      final secondChildren = LinkedList<Node>();
+      secondChildren.add(
+        TextNode(
+          delta: Delta(operations: [TextInsert(text)]),
+          attributes: {
+            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
+            BuiltInAttributeKey.checkbox: false,
+          },
+        ),
+      );
+
+      expect(
+        const TextNodeParser().transform(secondChildren.first),
+        '- [ ] $text',
+      );
+
+      final firstChildren = LinkedList<Node>();
+      firstChildren.add(
+        TextNode(
+          delta: Delta(operations: [TextInsert(text)]),
+          attributes: {
+            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
+            BuiltInAttributeKey.checkbox: true,
+          },
+          children: secondChildren,
+        ),
+      );
+
+      expect(
+        const TextNodeParser().transform(firstChildren.first),
+        """- [x] $text
+  - [ ] $text""",
+      );
+
+      final checkboxWithChildren = TextNode(
+        delta: Delta(operations: [TextInsert(text)]),
+        attributes: {
+          BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
+          BuiltInAttributeKey.checkbox: false,
+        },
+        children: firstChildren,
+      );
+
+      const resultWithChildren = """- [ ] $text
+  - [x] $text
+    - [ ] $text""";
+
+      expect(
+        const TextNodeParser().transform(checkboxWithChildren),
+        resultWithChildren,
+      );
     });
 
     test('quote style', () {
