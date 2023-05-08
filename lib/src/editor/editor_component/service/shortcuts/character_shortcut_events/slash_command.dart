@@ -9,11 +9,31 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   key: 'show the slash menu',
   character: '/',
-  handler: _showSlashMenu,
+  handler: (editorState) async => await _showSlashMenu(
+    editorState,
+    standardSelectionMenuItems,
+  ),
 );
 
+CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
+  return CharacterShortcutEvent(
+    key: 'show the slash menu',
+    character: '/',
+    handler: (editorState) => _showSlashMenu(
+      editorState,
+      [
+        ...standardSelectionMenuItems,
+        ...items,
+      ],
+    ),
+  );
+}
+
 SelectionMenuService? _selectionMenuService;
-CharacterShortcutEventHandler _showSlashMenu = (editorState) async {
+Future<bool> _showSlashMenu(
+  EditorState editorState,
+  List<SelectionMenuItem> items,
+) async {
   if (PlatformExtension.isMobile) {
     return false;
   }
@@ -44,10 +64,11 @@ CharacterShortcutEventHandler _showSlashMenu = (editorState) async {
       _selectionMenuService = SelectionMenu(
         context: context,
         editorState: editorState,
+        selectionMenuItems: items,
       );
       _selectionMenuService?.show();
     }
   }
 
   return true;
-};
+}

@@ -16,10 +16,12 @@ class SelectionMenu implements SelectionMenuService {
   SelectionMenu({
     required this.context,
     required this.editorState,
+    required this.selectionMenuItems,
   });
 
   final BuildContext context;
   final EditorState editorState;
+  final List<SelectionMenuItem> selectionMenuItems;
 
   OverlayEntry? _selectionMenuEntry;
   bool _selectionUpdateByInner = false;
@@ -104,10 +106,7 @@ class SelectionMenu implements SelectionMenuService {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
-                      items: [
-                        ..._defaultSelectionMenuItems,
-                        ...editorState.selectionMenuItems,
-                      ],
+                      items: selectionMenuItems,
                       maxItemInRow: 5,
                       editorState: editorState,
                       menuService: this,
@@ -169,10 +168,7 @@ class SelectionMenu implements SelectionMenuService {
   }
 }
 
-@visibleForTesting
-List<SelectionMenuItem> get defaultSelectionMenuItems =>
-    _defaultSelectionMenuItems;
-final List<SelectionMenuItem> _defaultSelectionMenuItems = [
+final List<SelectionMenuItem> standardSelectionMenuItems = [
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.text,
     icon: (editorState, onSelected) =>
