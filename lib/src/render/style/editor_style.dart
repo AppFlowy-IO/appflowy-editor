@@ -101,6 +101,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     double? lineHeight,
     Color? popupMenuFGColor,
     Color? popupMenuHoverColor,
+    EdgeInsets? textPadding,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -121,7 +122,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
           selectionMenuItemSelectedColor ?? this.selectionMenuItemSelectedColor,
       toolbarColor: toolbarColor ?? this.toolbarColor,
       toolbarElevation: toolbarElevation ?? this.toolbarElevation,
-      textPadding: textPadding ?? textPadding,
+      textPadding: textPadding ?? this.textPadding,
       textStyle: textStyle ?? this.textStyle,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
       bold: bold ?? this.bold,
