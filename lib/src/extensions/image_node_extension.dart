@@ -3,9 +3,10 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 extension InsertImage on EditorState {
   void insertImageNode(String src) {
     final selection = service.selectionService.currentSelection.value;
-    if (selection == null) {
+    if (selection == null||selection.isCollapsed) {
       return;
     }
+ 
     final imageNode = Node(
       type: 'image',
       attributes: {
@@ -21,3 +22,4 @@ extension InsertImage on EditorState {
     apply(transaction);
   }
 }
+

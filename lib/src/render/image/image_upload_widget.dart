@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/extensions/extensions.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
 import 'package:appflowy_editor/src/render/style/editor_style.dart';
@@ -171,27 +172,3 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 }
 
-extension InsertImage on EditorState {
-  void insertImageNode(String src) {
-    final selection = service.selectionService.currentSelection.value;
-    if (selection == null) {
-      return;
-    }
-    if (selection.isCollapsed) {
-      return;
-    }
-    final imageNode = Node(
-      type: 'image',
-      attributes: {
-        'image_src': src,
-        'align': 'center',
-      },
-    );
-    final transaction = this.transaction;
-    transaction.insertNode(
-      selection.start.path,
-      imageNode,
-    );
-    apply(transaction);
-  }
-}
