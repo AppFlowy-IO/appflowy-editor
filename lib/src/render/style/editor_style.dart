@@ -101,6 +101,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     TextStyle? code,
     String? highlightColorHex,
     double? lineHeight,
+    EdgeInsets? textPadding,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -124,7 +125,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       toolbarIconSize: toolbarIconSize ?? this.toolbarIconSize,
       toolbarIteeHeight: toolbarIteeHeight ?? this.toolbarIteeHeight,
       toolbarItemWidth: toolbarItemWidth ?? this.toolbarItemWidth,
-      textPadding: textPadding ?? textPadding,
+      textPadding: textPadding ?? this.textPadding,
       textStyle: textStyle ?? this.textStyle,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
       bold: bold ?? this.bold,
