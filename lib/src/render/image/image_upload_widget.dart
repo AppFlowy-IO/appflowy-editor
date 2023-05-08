@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/extensions/extensions.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
@@ -171,4 +170,3 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
     );
   }
 }
-
