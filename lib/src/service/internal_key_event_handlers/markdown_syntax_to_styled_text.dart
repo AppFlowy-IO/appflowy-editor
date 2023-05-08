@@ -427,20 +427,17 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       // we delete a character the next deletion's index must be decremented by
       // the amount of characters we have removed, to compensate for the shifted
       // indexes after the deletion
-      var transactionDelete = editorState.transaction
-        ..deleteText(textNode, nestedItalicsIndexes[i] - i, 1);
-      transaction.operations.addAll(transactionDelete.operations);
+      transaction.deleteText(textNode, nestedItalicsIndexes[i] - i, 1);
     }
 
     // Remove the asterixes from the text
-    var transactionDelete = editorState.transaction
+    transaction
       ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
       ..deleteText(
         textNode,
         lastAsteriskIndex - 2 - nestedItalicsIndexes.length,
         1,
       );
-    transaction.operations.addAll(transactionDelete.operations);
 
     var transactionSelection = editorState.transaction
       ..afterSelection = Selection.collapsed(
@@ -449,10 +446,10 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
           offset: selection.end.offset - 3 - nestedItalicsIndexes.length,
         ),
       );
+
     transaction.operations.addAll(transactionSelection.operations);
     editorState.apply(transaction);
   }
-
   return KeyEventResult.handled;
 };
 

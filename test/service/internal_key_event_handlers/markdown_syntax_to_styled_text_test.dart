@@ -382,7 +382,7 @@ void main() async {
 
     testWidgets(
       '**bold and _nested_ italics**',
-      ((widgetTester) async {
+      (widgetTester) async {
         const doubleAsterix = "**";
         const singleAstrix = "*";
         const firstBoldSegment = "bold and ";
@@ -438,12 +438,12 @@ void main() async {
         expect(segmentItalic, true);
         expect(lastSegmentItalic, false);
         expect(plainText, plainResult);
-      }),
+      },
     );
 
     testWidgets(
       'regular then **bold and _nested_ italics**',
-      ((widgetTester) async {
+      (widgetTester) async {
         const doubleAsterix = "**";
         const singleAstrix = "*";
         const regularSegment = "regular then ";
@@ -506,12 +506,12 @@ void main() async {
         expect(segmentItalic, true);
         expect(lastSegmentItalic, false);
         expect(plainText, plainResult);
-      }),
+      },
     );
 
     testWidgets(
       '**bold and _double_ _nested_ italics**',
-      ((widgetTester) async {
+      (widgetTester) async {
         const doubleAsterix = "**";
         const singleAstrix = "*";
         const firstBoldSegment = "bold and ";
@@ -581,7 +581,7 @@ void main() async {
         expect(firstSegmentItalic, true);
         expect(secondSegmentItalic, true);
         expect(plainText, plainResult);
-      }),
+      },
     );
   });
 
