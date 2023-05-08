@@ -177,6 +177,9 @@ extension InsertImage on EditorState {
     if (selection == null) {
       return;
     }
+    if (selection.isCollapsed) {
+      return;
+    }
     final imageNode = Node(
       type: 'image',
       attributes: {
