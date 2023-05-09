@@ -644,7 +644,6 @@ void main() async {
         expect(plainText, plainResult);
       },
     );
-
   });
 
   group('convert double underscore to bold', () {

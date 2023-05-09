@@ -389,15 +389,15 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       );
     editorState.apply(transaction);
   } else {
-
     final transaction = editorState.transaction
       ..formatText(
-      textNode, thirdToLastAsteriskIndex,
-      lastAsteriskIndex - thirdToLastAsteriskIndex,
-      {
-        BuiltInAttributeKey.bold: true,
-      },
-    );
+        textNode,
+        thirdToLastAsteriskIndex,
+        lastAsteriskIndex - thirdToLastAsteriskIndex,
+        {
+          BuiltInAttributeKey.bold: true,
+        },
+      );
 
     for (var i = 0; i < nestedItalicsIndices.length; i = i + 2) {
       // Set the selected italics segment to italics
@@ -437,13 +437,12 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
         1,
       );
 
-    transaction
-      .afterSelection = Selection.collapsed(
-        Position(
-          path: textNode.path,
-          offset: selection.end.offset - 3 - nestedItalicsIndices.length,
-        ),
-      );
+    transaction.afterSelection = Selection.collapsed(
+      Position(
+        path: textNode.path,
+        offset: selection.end.offset - 3 - nestedItalicsIndices.length,
+      ),
+    );
 
     editorState.apply(transaction);
   }
