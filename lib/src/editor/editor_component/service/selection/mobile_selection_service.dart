@@ -569,14 +569,14 @@ class _MobileSelectionServiceWidgetState
     // }
   }
 
-  final List<SelectionInterceptor> _interceptors = [];
+  final List<SelectionGestureInterceptor> _interceptors = [];
   @override
-  void register(SelectionInterceptor interceptor) {
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
     _interceptors.add(interceptor);
   }
 
   @override
-  void unRegister(SelectionInterceptor interceptor) {
-    _interceptors.removeWhere((element) => element == interceptor);
+  void unregisterGestureInterceptor(String key) {
+    _interceptors.removeWhere((element) => element.key == key);
   }
 }

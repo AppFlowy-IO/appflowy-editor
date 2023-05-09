@@ -83,11 +83,18 @@ abstract class AppFlowySelectionService {
   /// The current selection areas's rect in editor.
   List<Rect> get selectionRects;
 
-  void register(SelectionInterceptor interceptor);
-  void unRegister(SelectionInterceptor interceptor);
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor);
+  void unregisterGestureInterceptor(String key);
 }
 
-class SelectionInterceptor {
+class SelectionGestureInterceptor {
+  SelectionGestureInterceptor({
+    required this.key,
+    this.canTap,
+  });
+
+  final String key;
+
   bool Function(TapDownDetails details)? canTap;
 }
 
@@ -724,14 +731,14 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     // }
   }
 
-  final List<SelectionInterceptor> _interceptors = [];
+  final List<SelectionGestureInterceptor> _interceptors = [];
   @override
-  void register(SelectionInterceptor interceptor) {
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
     _interceptors.add(interceptor);
   }
 
   @override
-  void unRegister(SelectionInterceptor interceptor) {
-    _interceptors.removeWhere((element) => element == interceptor);
+  void unregisterGestureInterceptor(String key) {
+    _interceptors.removeWhere((element) => element.key == key);
   }
 }

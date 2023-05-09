@@ -25,6 +25,7 @@ class KeyboardServiceWidget extends StatefulWidget {
 
 @visibleForTesting
 class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
+  late final SelectionGestureInterceptor interceptor;
   late final EditorState editorState;
   late final TextInputService textInputService;
   late final FocusNode focusNode;
@@ -35,6 +36,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
 
     editorState = Provider.of<EditorState>(context, listen: false);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
+
+    interceptor = SelectionGestureInterceptor(
+      key: 'keyboard',
+      canTap: (details) {
+        focusNode.requestFocus();
+        return true;
+      },
+    );
+    editorState.service.selectionService
+        .registerGestureInterceptor(interceptor);
 
     textInputService = DeltaTextInputService(
       onInsert: (insertion) async => await onInsert(
@@ -64,6 +75,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
+    editorState.service.selectionService.unregisterGestureInterceptor(
+      'keyboard',
+    );
     if (widget.focusNode == null) {
       focusNode.dispose();
     }

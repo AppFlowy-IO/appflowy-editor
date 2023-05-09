@@ -30,8 +30,11 @@ ShortcutEventHandler slashShortcutHandler = (editorState, event) {
   editorState.apply(transaction);
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    _selectionMenuService =
-        SelectionMenu(context: context, editorState: editorState);
+    _selectionMenuService = SelectionMenu(
+      context: context,
+      editorState: editorState,
+      selectionMenuItems: [],
+    );
     _selectionMenuService?.show();
   });
 
