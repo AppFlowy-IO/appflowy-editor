@@ -372,11 +372,8 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
       nestedItalicsIndices.add(i);
     }
   }
-  if (nestedItalicsIndices.length > 1) {
-    textContainsNestedItalics = true;
-  }
 
-  if (!textContainsNestedItalics) {
+  if (nestedItalicsIndices.length < 2) {
 //delete the last three asterisks
 //update the style of the text surround by '** **' to bold
 //update the cursor position
