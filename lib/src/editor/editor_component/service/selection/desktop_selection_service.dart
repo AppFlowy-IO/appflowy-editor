@@ -44,6 +44,8 @@ class _DesktopSelectionServiceWidgetState
   @override
   List<Node> currentSelectedNodes = [];
 
+  final List<SelectionGestureInterceptor> _interceptors = [];
+
   /// Pan
   Offset? _panStartOffset;
   double? _panStartScrollDy;
@@ -244,8 +246,9 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onTapDown(TapDownDetails details) {
-    final canTap =
-        _interceptors.every((element) => element.canTap?.call(details) ?? true);
+    final canTap = _interceptors.every(
+      (element) => element.canTap?.call(details) ?? true,
+    );
     if (!canTap) return;
 
     // clear old state.
@@ -586,14 +589,13 @@ class _DesktopSelectionServiceWidgetState
     // }
   }
 
-  final List<SelectionInterceptor> _interceptors = [];
   @override
-  void register(SelectionInterceptor interceptor) {
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
     _interceptors.add(interceptor);
   }
 
   @override
-  void unRegister(SelectionInterceptor interceptor) {
-    _interceptors.removeWhere((element) => element == interceptor);
+  void unregisterGestureInterceptor(String key) {
+    _interceptors.removeWhere((element) => element.key == key);
   }
 }

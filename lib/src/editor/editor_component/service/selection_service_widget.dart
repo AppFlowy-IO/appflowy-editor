@@ -73,15 +73,15 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       forward.getPositionInOffset(offset);
 
   @override
-  void register(SelectionInterceptor interceptor) =>
-      forward.register(interceptor);
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) =>
+      forward.registerGestureInterceptor(interceptor);
 
   @override
   List<Rect> get selectionRects => forward.selectionRects;
 
   @override
-  void unRegister(SelectionInterceptor interceptor) =>
-      forward.unRegister(interceptor);
+  void unregisterGestureInterceptor(String key) =>
+      forward.unregisterGestureInterceptor(key);
 
   @override
   void updateSelection(Selection? selection) =>
