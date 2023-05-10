@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 class FullScreenOverlayEntry {
   FullScreenOverlayEntry({
-    required this.offset,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
     required this.builder,
     this.tapToDismiss = true,
   });
 
-  final Offset offset;
-  final Widget Function(
-    BuildContext context,
-    Size size,
-  ) builder;
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final WidgetBuilder builder;
   final bool tapToDismiss;
 
   OverlayEntry? _entry;
@@ -36,11 +39,13 @@ class FullScreenOverlayEntry {
             child: Stack(
               children: [
                 Positioned(
-                  top: offset.dy,
-                  left: offset.dx,
+                  top: top,
+                  bottom: bottom,
+                  left: left,
+                  right: right,
                   child: IgnoreParentPointer(
                     child: Material(
-                      child: builder(context, size),
+                      child: builder(context),
                     ),
                   ),
                 ),

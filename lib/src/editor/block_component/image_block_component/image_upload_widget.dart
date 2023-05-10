@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/full_scrren_overlay_entry.dart';
 import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +11,11 @@ void showImageMenu(
 
   final topLeft = menuService.topLeft;
   final imageMenuEntry = FullScreenOverlayEntry(
-    offset: topLeft,
-    builder: (context, size) => UploadImageMenu(
+    top: topLeft.dy,
+    left: topLeft.dx,
+    builder: (context) => UploadImageMenu(
       backgroundColor: Colors.white, // TODO: customize the color
-      width: size.width * 0.5,
+      width: MediaQuery.of(context).size.width * 0.5,
       onSubmitted: editorState.insertImageNode,
       onUpload: editorState.insertImageNode,
     ),
