@@ -1,8 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+const placeholderItemId = 'editor.placeholder';
+
 ToolbarItem placeholderItem = ToolbarItem(
-  id: 'editor.placeholder',
+  id: placeholderItemId,
   isActive: (editorState) => true,
   builder: (_, __) {
     return Padding(

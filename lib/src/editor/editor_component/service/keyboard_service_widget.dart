@@ -24,7 +24,8 @@ class KeyboardServiceWidget extends StatefulWidget {
 }
 
 @visibleForTesting
-class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
+class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
+    implements AppFlowyKeyboardService {
   late final SelectionGestureInterceptor interceptor;
   late final EditorState editorState;
   late final TextInputService textInputService;
@@ -70,6 +71,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     );
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
+    focusNode.addListener(_onFocusChanged);
   }
 
   @override
@@ -78,11 +80,28 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
     editorState.service.selectionService.unregisterGestureInterceptor(
       'keyboard',
     );
+    focusNode.removeListener(_onFocusChanged);
     if (widget.focusNode == null) {
       focusNode.dispose();
     }
     super.dispose();
   }
+
+  @override
+  void disable({
+    bool showCursor = false,
+    UnfocusDisposition disposition = UnfocusDisposition.previouslyFocusedChild,
+  }) =>
+      focusNode.unfocus(disposition: disposition);
+
+  @override
+  void enable() => focusNode.requestFocus();
+
+  @override
+  KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
+
+  @override
+  List<ShortcutEvent> get shortcutEvents => throw UnimplementedError();
 
   @override
   Widget build(BuildContext context) {
@@ -186,5 +205,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget> {
       );
     }
     return null;
+  }
+
+  void _onFocusChanged() {
+    Log.editor.debug(
+      'keyboard service - focus changed: ${focusNode.hasFocus}}',
+    );
   }
 }

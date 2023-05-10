@@ -137,8 +137,10 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   Widget _buildToolbar(BuildContext context) {
-    _toolbarWidget ??=
-        FloatingToolbarWidget(items: widget.items, editorState: editorState);
+    _toolbarWidget ??= FloatingToolbarWidget(
+      items: widget.items,
+      editorState: editorState,
+    );
     return _toolbarWidget!;
   }
 
