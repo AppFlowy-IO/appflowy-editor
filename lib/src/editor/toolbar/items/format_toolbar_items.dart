@@ -42,7 +42,14 @@ class _FormatToolbarItem extends ToolbarItem {
     required String tooltip,
   }) : super(
           id: 'editor.$id',
-          isActive: (editorState) => editorState.selection?.isSingle ?? false,
+          isActive: (editorState) {
+            final selection = editorState.selection;
+            if (selection == null) {
+              return false;
+            }
+            final nodes = editorState.getNodesInSelection(selection);
+            return nodes.every((element) => element.delta != null);
+          },
           builder: (context, editorState) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);

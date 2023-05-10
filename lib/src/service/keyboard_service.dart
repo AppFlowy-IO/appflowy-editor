@@ -20,9 +20,11 @@ import 'package:flutter/material.dart';
 ///
 abstract class AppFlowyKeyboardService {
   /// Processes shortcut key input.
+  @Deprecated('Not used anymore')
   KeyEventResult onKey(RawKeyEvent event);
 
   /// Gets the shortcut events
+  @Deprecated('Not used anymore')
   List<ShortcutEvent> get shortcutEvents;
 
   /// Enables shortcuts service.

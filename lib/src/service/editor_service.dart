@@ -186,6 +186,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           cursorColor: widget.editorStyle.cursorColor,
           selectionColor: widget.editorStyle.selectionColor,
           child: KeyboardServiceWidget(
+            key: editorState.service.keyboardServiceKey,
             characterShortcutEvents: widget.characterShortcutEvents,
             commandShortcutEvents: widget.commandShortcutEvents,
             child: editorState.renderer.build(

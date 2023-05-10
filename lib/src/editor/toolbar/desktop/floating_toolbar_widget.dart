@@ -20,9 +20,7 @@ class FloatingToolbarWidget extends StatefulWidget {
 class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
   @override
   Widget build(BuildContext context) {
-    final activeItems = widget.items.where(
-      (element) => element.isActive?.call(widget.editorState) ?? false,
-    );
+    var activeItems = _computeActiveItems();
     if (activeItems.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -45,6 +43,24 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Iterable<ToolbarItem> _computeActiveItems() {
+    var activeItems = widget.items
+        .where(
+          (element) => element.isActive?.call(widget.editorState) ?? false,
+        )
+        .toList();
+    // remove the unused placeholder items.
+    return activeItems.where(
+      (item) => !(item.id == placeholderItemId &&
+          (activeItems.indexOf(item) == 0 ||
+              activeItems.indexOf(item) == activeItems.length - 1 ||
+              activeItems[activeItems.indexOf(item) - 1].id ==
+                  placeholderItemId ||
+              activeItems[activeItems.indexOf(item) + 1].id ==
+                  placeholderItemId)),
     );
   }
 }
