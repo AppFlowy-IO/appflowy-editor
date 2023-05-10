@@ -58,10 +58,7 @@ EdgeInsets _padding(Node node) {
 }
 
 TextStyle _textStyle(Node node) {
-  return const TextStyle(
-    fontSize: 16.0,
-    height: 1.0,
-  );
+  return const TextStyle();
 }
 
 String _placeholderText(Node node) {
