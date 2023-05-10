@@ -365,7 +365,6 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-  bool textContainsNestedItalics = false;
   final nestedItalicsIndices = [];
   for (var i = 0; i < text.length; i++) {
     if (text[i] == '_') {
