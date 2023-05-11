@@ -13,3 +13,5 @@ export 'items/quote_toolbar_item.dart';
 export 'items/link/link_toolbar_item.dart';
 export 'items/color/color_toolbar_item.dart';
 export 'items/highlight_toolbar_item.dart';
+
+export 'items/icon_item_widget.dart';
