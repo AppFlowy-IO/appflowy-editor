@@ -113,12 +113,12 @@ bool formatEmbedCode(EditorState editorState) {
 bool formatHighlight(EditorState editorState, String colorHex) {
   bool value = _allSatisfyInSelection(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     colorHex,
   );
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     customValue: value ? '0x00000000' : colorHex,
   );
 }
@@ -126,7 +126,7 @@ bool formatHighlight(EditorState editorState, String colorHex) {
 bool formatHighlightColor(EditorState editorState, String colorHex) {
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     customValue: colorHex,
   );
 }
@@ -134,7 +134,7 @@ bool formatHighlightColor(EditorState editorState, String colorHex) {
 bool formatFontColor(EditorState editorState, String colorHex) {
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.color,
+    BuiltInAttributeKey.textColor,
     customValue: colorHex,
   );
 }

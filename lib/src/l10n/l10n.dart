@@ -121,21 +121,61 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Highlight`
-  String get highlight {
+  /// `Text Color`
+  String get textColor {
     return Intl.message(
-      'Highlight',
-      name: 'highlight',
+      'Text Color',
+      name: 'textColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `Color`
-  String get color {
+  /// `Highlight Color`
+  String get highlightColor {
     return Intl.message(
-      'Color',
-      name: 'color',
+      'Highlight Color',
+      name: 'highlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Color`
+  String get customColor {
+    return Intl.message(
+      'Custom Color',
+      name: 'customColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hex Value`
+  String get hexValue {
+    return Intl.message(
+      'Hex Value',
+      name: 'hexValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opacity`
+  String get opacity {
+    return Intl.message(
+      'Opacity',
+      name: 'opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear highlight color'
+  String get clearHighlightColor {
+    return Intl.message(
+      'Clear highlight color',
+      name: 'clearHighlightColor',
       desc: '',
       args: [],
     );
@@ -166,6 +206,46 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Link',
       name: 'link',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your link`
+  String get addYourLink {
+    return Intl.message(
+      'Add your link',
+      name: 'addYourLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open link`
+  String get openLink {
+    return Intl.message(
+      'Open link',
+      name: 'openLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy link`
+  String get copyLink {
+    return Intl.message(
+      'Copy link',
+      name: 'copyLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove link`
+  String get removeLink {
+    return Intl.message(
+      'Remove link',
+      name: 'removeLink',
       desc: '',
       args: [],
     );

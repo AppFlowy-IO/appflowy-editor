@@ -35,12 +35,12 @@ extension TextNodeExtension on TextNode {
       });
 
   bool allSatisfyFontColorInSelection(Selection selection) =>
-      allSatisfyInSelection(selection, BuiltInAttributeKey.color, (value) {
+      allSatisfyInSelection(selection, BuiltInAttributeKey.textColor, (value) {
         return value != null;
       });
 
   bool allSatisfyBackgroundColorInSelection(Selection selection) =>
-      allSatisfyInSelection(selection, BuiltInAttributeKey.backgroundColor,
+      allSatisfyInSelection(selection, BuiltInAttributeKey.highlightColor,
           (value) {
         return value != null;
       });

@@ -15,10 +15,7 @@ final List<CommandShortcutEvent> toggleMarkdownCommands = [
 /// Cmd / Ctrl + I: toggle italic
 /// Cmd / Ctrl + U: toggle underline
 /// Cmd / Ctrl + Shift + S: toggle strikethrough
-/// Cmd / Ctrl + Shift + H: toggle highlight
-/// Cmd / Ctrl + k: link
 /// Cmd / Ctrl + E: code
-///
 /// - support
 ///   - desktop
 ///   - web
@@ -57,8 +54,6 @@ final CommandShortcutEvent toggleCodeCommand = CommandShortcutEvent(
   macOSCommand: 'cmd+e',
   handler: (editorState) => _toggleAttribute(editorState, 'code'),
 );
-
-// TODO: implement the link and color command
 
 KeyEventResult _toggleAttribute(
   EditorState editorState,

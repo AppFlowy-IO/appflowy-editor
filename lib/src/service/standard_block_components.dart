@@ -97,6 +97,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   //
   toggleTodoListCommand,
   ...toggleMarkdownCommands,
+  showLinkMenuCommand,
 
   //
   indentCommand,

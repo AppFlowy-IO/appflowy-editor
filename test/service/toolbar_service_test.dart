@@ -40,7 +40,7 @@ void main() async {
 //         (tester) async {
 //       final attributes = BuiltInAttributeKey.partialStyleKeys
 //           .fold<Attributes>({}, (previousValue, element) {
-//         if (element == BuiltInAttributeKey.backgroundColor) {
+//         if (element == BuiltInAttributeKey.highlightColor) {
 //           previousValue[element] = '0x6000BCF0';
 //         } else if (element == BuiltInAttributeKey.href) {
 //           previousValue[element] = 'appflowy.io';
@@ -73,7 +73,7 @@ void main() async {
 //       void testHighlight(bool expectedValue) {
 //         for (final styleKey in BuiltInAttributeKey.partialStyleKeys) {
 //           var key = styleKey;
-//           if (styleKey == BuiltInAttributeKey.backgroundColor) {
+//           if (styleKey == BuiltInAttributeKey.highlightColor) {
 //             key = 'highlight';
 //           } else if (styleKey == BuiltInAttributeKey.href) {
 //             key = 'link';

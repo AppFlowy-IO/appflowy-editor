@@ -55,6 +55,52 @@ class EditorState {
     selectionNotifier.value = value;
   }
 
+  /// The current selection areas's rect in editor.
+  List<Rect> get selectionRects {
+    final selection = this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return [];
+    }
+
+    final nodes = getNodesInSelection(selection);
+    final rects = <Rect>[];
+    for (final node in nodes) {
+      final selectable = node.selectable;
+      if (selectable == null) {
+        continue;
+      }
+      final nodeRects = selectable.getRectsInSelection(selection);
+      if (nodeRects.isEmpty) {
+        continue;
+      }
+      final renderBox = node.renderBox;
+      if (renderBox == null) {
+        continue;
+      }
+      for (final rect in nodeRects) {
+        final globalOffset = renderBox.localToGlobal(rect.topLeft);
+        rects.add(globalOffset & rect.size);
+      }
+    }
+
+    /*
+    final rects = nodes
+        .map(
+          (node) => node.selectable
+              ?.getRectsInSelection(selection)
+              .map(
+                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
+              )
+              .whereNotNull(),
+        )
+        .whereNotNull()
+        .expand((element) => element)
+        .toList();
+    */
+
+    return rects;
+  }
+
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 

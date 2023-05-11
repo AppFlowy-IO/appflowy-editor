@@ -88,12 +88,12 @@ class DeltaDocumentConvert {
     final color = attributes?['color'] as String?;
     final colorHex = _convertColorToHexString(color);
     if (colorHex != null) {
-      attrs[BuiltInAttributeKey.color] = colorHex;
+      attrs[BuiltInAttributeKey.textColor] = colorHex;
     }
     final backgroundColor = attributes?['background'] as String?;
     final backgroundHex = _convertColorToHexString(backgroundColor);
     if (backgroundHex != null) {
-      attrs[BuiltInAttributeKey.backgroundColor] = backgroundHex;
+      attrs[BuiltInAttributeKey.highlightColor] = backgroundHex;
     }
 
     textNode.delta.insert(text, attributes: attrs);

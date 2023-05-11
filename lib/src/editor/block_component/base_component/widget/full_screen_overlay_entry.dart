@@ -45,6 +45,8 @@ class FullScreenOverlayEntry {
                   right: right,
                   child: IgnoreParentPointer(
                     child: Material(
+                      // Avoid background color behind the child, so the child can fully control the overlay style
+                      color: Colors.transparent,
                       child: builder(context),
                     ),
                   ),

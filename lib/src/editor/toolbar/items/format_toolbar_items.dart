@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/tooltip_util.dart';
+import 'package:appflowy_editor/src/editor/toolbar/items/utils/tooltip_util.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
 final List<ToolbarItem> markdownFormatItems = [
