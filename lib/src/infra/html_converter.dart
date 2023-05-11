@@ -216,7 +216,7 @@ class HTMLToNodesConverter {
         ? null
         : ColorExtension.tryFromRgbaString(backgroundColorStr);
     if (backgroundColor != null) {
-      attrs[BuiltInAttributeKey.backgroundColor] =
+      attrs[BuiltInAttributeKey.highlightColor] =
           '0x${backgroundColor.value.toRadixString(16)}';
     }
 
@@ -516,15 +516,15 @@ class NodesToHTMLConverter {
 
   String _attributesToCssStyle(Map<String, dynamic> attributes) {
     final cssMap = <String, String>{};
-    if (attributes[BuiltInAttributeKey.backgroundColor] != null) {
+    if (attributes[BuiltInAttributeKey.highlightColor] != null) {
       final color = Color(
-        int.parse(attributes[BuiltInAttributeKey.backgroundColor]),
+        int.parse(attributes[BuiltInAttributeKey.highlightColor]),
       );
       cssMap["background-color"] = color.toRgbaString();
     }
-    if (attributes[BuiltInAttributeKey.color] != null) {
+    if (attributes[BuiltInAttributeKey.textColor] != null) {
       final color = Color(
-        int.parse(attributes[BuiltInAttributeKey.color]),
+        int.parse(attributes[BuiltInAttributeKey.textColor]),
       );
       cssMap["color"] = color.toRgbaString();
     }

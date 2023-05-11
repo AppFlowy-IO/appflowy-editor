@@ -66,21 +66,21 @@ extension DeltaAttributesExtensions on Attributes {
   static const whiteInt = 0XFFFFFFFF;
 
   Color? get color {
-    if (containsKey(BuiltInAttributeKey.color) &&
-        this[BuiltInAttributeKey.color] is String) {
+    if (containsKey(BuiltInAttributeKey.textColor) &&
+        this[BuiltInAttributeKey.textColor] is String) {
       return Color(
         // If the parse fails returns white by default
-        int.tryParse(this[BuiltInAttributeKey.color]) ?? whiteInt,
+        int.tryParse(this[BuiltInAttributeKey.textColor]) ?? whiteInt,
       );
     }
     return null;
   }
 
   Color? get backgroundColor {
-    if (containsKey(BuiltInAttributeKey.backgroundColor) &&
-        this[BuiltInAttributeKey.backgroundColor] is String) {
+    if (containsKey(BuiltInAttributeKey.highlightColor) &&
+        this[BuiltInAttributeKey.highlightColor] is String) {
       return Color(
-        int.tryParse(this[BuiltInAttributeKey.backgroundColor]) ?? whiteInt,
+        int.tryParse(this[BuiltInAttributeKey.highlightColor]) ?? whiteInt,
       );
     }
     return null;

@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 const _kRichTextDebugMode = false;
 
@@ -315,11 +316,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
           widget.editorState.service.selectionService
               .updateSelection(selection);
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            showLinkMenu(
-              context,
-              widget.editorState,
-              customSelection: selection,
-            );
+            showLinkMenu(context, widget.editorState, selection, true);
           });
         });
       };

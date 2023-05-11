@@ -118,7 +118,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   void _showToolbar() {
-    final rects = _computeSelectionRects();
+    final rects = editorState.selectionRects;
     if (rects.isEmpty) {
       return;
     }
@@ -142,52 +142,6 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
       editorState: editorState,
     );
     return _toolbarWidget!;
-  }
-
-  /// Compute the rects of the selection.
-  List<Rect> _computeSelectionRects() {
-    final selection = editorState.selection;
-    if (selection == null || selection.isCollapsed) {
-      return [];
-    }
-
-    final nodes = editorState.getNodesInSelection(selection);
-    final rects = <Rect>[];
-    for (final node in nodes) {
-      final selectable = node.selectable;
-      if (selectable == null) {
-        continue;
-      }
-      final nodeRects = selectable.getRectsInSelection(selection);
-      if (nodeRects.isEmpty) {
-        continue;
-      }
-      final renderBox = node.renderBox;
-      if (renderBox == null) {
-        continue;
-      }
-      for (final rect in nodeRects) {
-        final globalOffset = renderBox.localToGlobal(rect.topLeft);
-        rects.add(globalOffset & rect.size);
-      }
-    }
-
-    /*
-    final rects = nodes
-        .map(
-          (node) => node.selectable
-              ?.getRectsInSelection(selection)
-              .map(
-                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
-              )
-              .whereNotNull(),
-        )
-        .whereNotNull()
-        .expand((element) => element)
-        .toList();
-    */
-
-    return rects;
   }
 
   Offset _findSuitableOffset(Iterable<Offset> offsets) {

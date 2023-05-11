@@ -1,49 +1,73 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/tooltip_util.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
-import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
 import 'package:flutter/material.dart';
 
-final colorItem = ToolbarItem(
-  id: 'editor.color',
-  isActive: (editorState) => editorState.selection?.isSingle ?? false,
-  builder: (context, editorState) {
-    final selection = editorState.selection!;
-    final nodes = editorState.getNodesInSelection(selection);
-    final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-      return delta.everyAttributes(
-        (attributes) {
-          // TODO: refactor this part.
-          //  just copy from the origin code.
-          final color = attributes['color'];
-          final backgroundColor = attributes['backgroundColor'];
-          final defaultColor = _generateFontColorOptions(
-            editorState,
-          ).first.colorHex;
-          final defaultBackgroundColor = _generateBackgroundColorOptions(
-            editorState,
-          ).first.colorHex;
-          return (color != null && color != defaultColor) ||
-              (backgroundColor != null &&
-                  backgroundColor != defaultBackgroundColor);
-        },
-      );
-    });
-    return IconItemWidget(
-      iconName: 'toolbar/highlight',
-      isHighlight: isHighlight,
-      tooltip:
-          '${AppFlowyEditorLocalizations.current.link}${shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}',
-      onPressed: () {
-        throw UnimplementedError();
-      },
-    );
-  },
-);
+void showColorMenu(
+  BuildContext context,
+  EditorState editorState,
+  Selection selection, {
+  String? currentColorHex,
+  required bool isTextColor,
+}) {
+  // Since link format is only available for single line selection,
+  // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
+  final rect = editorState.selectionRects.first;
+  OverlayEntry? overlay;
 
-List<ColorOption> _generateFontColorOptions(EditorState editorState) {
-  final defaultColor =
-      editorState.editorStyle.textStyle?.color ?? Colors.black; // black
+  void dismissOverlay() {
+    overlay?.remove();
+    overlay = null;
+  }
+
+  overlay = FullScreenOverlayEntry(
+    top: rect.bottom + 5,
+    left: rect.left + 10,
+    builder: (context) {
+      return ColorPicker(
+        isTextColor: isTextColor,
+        editorState: editorState,
+        selectedColorHex: currentColorHex,
+        colorOptions: isTextColor
+            ? _generateTextColorOptions(editorState)
+            : _generateHighlightColorOptions(editorState),
+        onSubmittedColorHex: (color) {
+          isTextColor
+              ? _formatFontColor(
+                  editorState,
+                  color,
+                )
+              : _formatHighlightColor(
+                  editorState,
+                  color,
+                );
+          dismissOverlay();
+        },
+        onDismiss: dismissOverlay,
+      );
+    },
+  ).build();
+  Overlay.of(context).insert(overlay!);
+}
+
+void _formatHighlightColor(EditorState editorState, String color) {
+  final selection = editorState.selection!;
+  editorState.formatDelta(selection, {'highlightColor': color});
+}
+
+void _formatFontColor(EditorState editorState, String color) {
+  final selection = editorState.selection!;
+  //Since there is no additional color for the text, remove the 'textColor' attribute, so that the textColor item on the toolbar won't be highlighted
+  //'0xff000000' is the deault color when developer doesn't set.
+  if (color == editorState.editorStyle.textStyle?.color?.toHex() ||
+      color == '0xff000000') {
+    editorState.formatDelta(selection, {'textColor': null});
+  } else {
+    editorState.formatDelta(selection, {'textColor': color});
+  }
+}
+
+List<ColorOption> _generateTextColorOptions(EditorState editorState) {
+  final defaultColor = editorState.editorStyle.textStyle?.color ??
+      Colors.black; // the deault text color when developer doesn't set
   return [
     ColorOption(
       colorHex: defaultColor.toHex(),
@@ -84,9 +108,9 @@ List<ColorOption> _generateFontColorOptions(EditorState editorState) {
   ];
 }
 
-List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
-  final defaultBackgroundColorHex =
-      editorState.editorStyle.highlightColorHex ?? '0x6000BCF0';
+List<ColorOption> _generateHighlightColorOptions(EditorState editorState) {
+  final defaultBackgroundColorHex = editorState.editorStyle.highlightColorHex ??
+      '0x6000BCF0'; // the deault highlight color when developer doesn't set
   return [
     ColorOption(
       colorHex: defaultBackgroundColorHex,

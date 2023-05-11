@@ -1,6 +1,8 @@
-import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
+import 'package:appflowy_editor/src/editor/toolbar/items/color/color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../../infra/testable_editor.dart';
 
 void main() {
   setUpAll(() {
@@ -9,18 +11,17 @@ void main() {
 
   group('color_picker.dart widget test', () {
     testWidgets('test expansion tile widget in color picker', (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
       final key = GlobalKey();
       final widget = ColorPicker(
         key: key,
-        selectedFontColorHex: '0xFFFFFFFF',
-        selectedBackgroundColorHex: '0xFFFFFFFF',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {},
+        editorState: editor.editorState,
+        isTextColor: true,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {},
+        selectedColorHex: '0xFFFFFFFF',
       );
 
       await tester.pumpWidget(
@@ -32,18 +33,10 @@ void main() {
       );
 
       expect(find.byKey(key), findsOneWidget);
-      expect(find.byType(ExpansionTile), findsNWidgets(2));
+      final expansionTile = find.byType(ExpansionTile);
+      expect(expansionTile, findsOneWidget);
 
-      final firstExpansionTile = find.byType(ExpansionTile).at(0);
-
-      await tester.tap(firstExpansionTile);
-      await tester.pumpAndSettle();
-
-      expect(find.byType(TextField), findsNWidgets(2));
-
-      final secondExpansionTile = find.byType(ExpansionTile).at(0);
-
-      await tester.tap(secondExpansionTile);
+      await tester.tap(expansionTile);
       await tester.pumpAndSettle();
 
       expect(find.byType(TextField), findsNWidgets(2));
@@ -52,16 +45,15 @@ void main() {
     testWidgets(
         'test if custom font color selector text field are initialised correctly when selectedFontColorhex is provided',
         (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: '0xFAFFFF08',
-        selectedBackgroundColorHex: '0xFBFFFF08',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {},
+        editorState: editor.editorState,
+        isTextColor: true,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {},
+        selectedColorHex: '0xFAFFFF08',
       );
 
       await tester.pumpWidget(
@@ -72,7 +64,7 @@ void main() {
         ),
       );
 
-      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+      final fontColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(fontColorExpansionTile);
       await tester.pumpAndSettle();
@@ -92,16 +84,15 @@ void main() {
     testWidgets(
         'test if custom font color selector text field are initialised correctly when selectedFontColorhex is null',
         (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: null,
-        selectedBackgroundColorHex: '0xFBFFFF08',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {},
+        editorState: editor.editorState,
+        isTextColor: true,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {},
+        selectedColorHex: null,
       );
 
       await tester.pumpWidget(
@@ -112,7 +103,7 @@ void main() {
         ),
       );
 
-      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+      final fontColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(fontColorExpansionTile);
       await tester.pumpAndSettle();
@@ -132,16 +123,15 @@ void main() {
     testWidgets(
         'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is provided',
         (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: '0xFAFFFF08',
-        selectedBackgroundColorHex: '0xFBFFFF08',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {},
+        editorState: editor.editorState,
+        isTextColor: false,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {},
+        selectedColorHex: '0xFBFFFF08',
       );
 
       await tester.pumpWidget(
@@ -152,7 +142,7 @@ void main() {
         ),
       );
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+      final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(backgroundColorExpansionTile);
       await tester.pumpAndSettle();
@@ -173,16 +163,15 @@ void main() {
     testWidgets(
         'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is null',
         (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: '0xFAFFFF08',
-        selectedBackgroundColorHex: null,
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {},
+        editorState: editor.editorState,
+        isTextColor: false,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {},
+        selectedColorHex: null,
       );
 
       await tester.pumpWidget(
@@ -193,7 +182,7 @@ void main() {
         ),
       );
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+      final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(backgroundColorExpansionTile);
       await tester.pumpAndSettle();
@@ -208,24 +197,23 @@ void main() {
         (tester.widget(backgroundOpacityTextField) as TextField)
             .controller!
             .text,
-        '0',
+        '100',
       );
     });
 
     testWidgets('test submitting font color and opacity', (tester) async {
       String fontColorHex = '0xFAFFFF08';
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: fontColorHex,
-        selectedBackgroundColorHex: '0xFBFFFF08',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {
+        editorState: editor.editorState,
+        isTextColor: true,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {
           fontColorHex = color;
         },
+        selectedColorHex: fontColorHex,
       );
 
       await tester.pumpWidget(
@@ -236,7 +224,7 @@ void main() {
         ),
       );
 
-      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+      final fontColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(fontColorExpansionTile);
       await tester.pumpAndSettle();
@@ -254,18 +242,18 @@ void main() {
 
     testWidgets('test submitting wrong font color and opacity', (tester) async {
       String fontColorHex = '0xFAFFFF08';
+
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: fontColorHex,
-        selectedBackgroundColorHex: '0xFBFFFF08',
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {},
-        onSubmittedFontColorHex: (color) {
+        editorState: editor.editorState,
+        isTextColor: true,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {
           fontColorHex = color;
         },
+        selectedColorHex: fontColorHex,
       );
 
       await tester.pumpWidget(
@@ -276,7 +264,7 @@ void main() {
         ),
       );
 
-      final fontColorExpansionTile = find.byType(ExpansionTile).at(0);
+      final fontColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(fontColorExpansionTile);
       await tester.pumpAndSettle();
@@ -284,8 +272,8 @@ void main() {
       final fontColorTextField = find.byType(TextField).at(0);
       final fontOpacityTexField = find.byType(TextField).at(1);
 
-      await tester.enterText(fontColorTextField, '00tg00');
-      await tester.enterText(fontOpacityTexField, '999');
+      await tester.enterText(fontColorTextField, '====');
+      await tester.enterText(fontOpacityTexField, '***');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
       fontColorHex = fontColorHex.toLowerCase();
@@ -295,18 +283,18 @@ void main() {
     testWidgets('test submitting  background color and opacity',
         (tester) async {
       String backgroundColorHex = '0xFAFFFFAD';
+
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: '0xFAFFFF08',
-        selectedBackgroundColorHex: backgroundColorHex,
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {
+        editorState: editor.editorState,
+        isTextColor: false,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {
           backgroundColorHex = color;
         },
-        onSubmittedFontColorHex: (color) {},
+        selectedColorHex: backgroundColorHex,
       );
 
       await tester.pumpWidget(
@@ -317,7 +305,7 @@ void main() {
         ),
       );
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+      final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(backgroundColorExpansionTile);
       await tester.pumpAndSettle();
@@ -336,18 +324,17 @@ void main() {
     testWidgets('test submitting wrong background color and opacity',
         (tester) async {
       String backgroundColorHex = '0xFAFFFF08';
+      final editor = tester.editor;
+      await editor.startTesting();
       final widget = ColorPicker(
-        selectedFontColorHex: '0xFAFFFF08',
-        selectedBackgroundColorHex: backgroundColorHex,
-        pickerBackgroundColor: Colors.white,
-        fontColorOptions: const [],
-        backgroundColorOptions: const [],
-        pickerItemHoverColor: Colors.white,
-        pickerItemTextColor: Colors.white,
-        onSubmittedbackgroundColorHex: (color) {
+        editorState: editor.editorState,
+        isTextColor: false,
+        colorOptions: const [],
+        onDismiss: () {},
+        onSubmittedColorHex: (String color) {
           backgroundColorHex = color;
         },
-        onSubmittedFontColorHex: (color) {},
+        selectedColorHex: backgroundColorHex,
       );
 
       await tester.pumpWidget(
@@ -358,7 +345,7 @@ void main() {
         ),
       );
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile).at(1);
+      final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
       await tester.tap(backgroundColorExpansionTile);
       await tester.pumpAndSettle();
@@ -366,8 +353,8 @@ void main() {
       final backgroundColorTextField = find.byType(TextField).at(0);
       final backgroundOpacityTexField = find.byType(TextField).at(1);
 
-      await tester.enterText(backgroundColorTextField, '00tg00');
-      await tester.enterText(backgroundOpacityTexField, '999');
+      await tester.enterText(backgroundColorTextField, '***');
+      await tester.enterText(backgroundOpacityTexField, '===');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
       backgroundColorHex = backgroundColorHex.toLowerCase();

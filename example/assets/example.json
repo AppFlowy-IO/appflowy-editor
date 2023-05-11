@@ -129,7 +129,8 @@
               "attributes": {
                 "italic": true,
                 "bold": true,
-                "backgroundColor": "0x6000BCF0"
+                "textColor": "0xffD70040",
+                "highlightColor": "0x6000BCF0"
               }
             },
             {
