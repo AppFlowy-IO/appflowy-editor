@@ -208,7 +208,7 @@ class EditorState {
   }
 
   factory EditorState.empty() {
-    return EditorState(document: Document.empty());
+    return EditorState(document: Document.blank());
   }
 
   /// Apply the transaction to the state.
