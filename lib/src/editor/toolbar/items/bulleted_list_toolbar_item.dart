@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
-ToolbarItem bulletedListItem = ToolbarItem(
+final ToolbarItem bulletedListItem = ToolbarItem(
   id: 'editor.bulleted_list',
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {

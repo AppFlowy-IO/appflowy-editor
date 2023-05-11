@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 const placeholderItemId = 'editor.placeholder';
 
-ToolbarItem placeholderItem = ToolbarItem(
+final ToolbarItem placeholderItem = ToolbarItem(
   id: placeholderItemId,
   isActive: (editorState) => true,
   builder: (_, __) {

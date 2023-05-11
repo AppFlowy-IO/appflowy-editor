@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
-ToolbarItem numberedListItem = ToolbarItem(
+final ToolbarItem numberedListItem = ToolbarItem(
   id: 'editor.numbered_list',
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
