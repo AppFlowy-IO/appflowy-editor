@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'dart:math' as math;
+import 'package:appflowy_editor/src/render/find_replace_menu/search_algorithm.dart';
 
 class SearchService {
   SearchService({
@@ -11,6 +11,7 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
+  BayerMooreAlgorithm searchAlgorithm = BayerMooreAlgorithm();
   String queriedPattern = '';
   int selectedIndex = 0;
 
@@ -49,7 +50,8 @@ class SearchService {
       if (n is TextNode) {
         //matches list will contain the offsets where the desired word,
         //is found.
-        List<int> matches = _boyerMooreSearch(pattern, n.toPlainText());
+        List<int> matches =
+            searchAlgorithm.boyerMooreSearch(pattern, n.toPlainText());
         //we will store this list of offsets along with their path,
         //in a list of positions.
         for (int matchedOffset in matches) {
@@ -169,49 +171,5 @@ class SearchService {
     );
 
     editorState.updateCursorSelection(Selection(start: start, end: end));
-  }
-
-  //This is a standard algorithm used for searching patterns in long text samples
-  //It is more efficient than brute force searching because it is able to skip
-  //characters that will never possibly match with required pattern.
-  List<int> _boyerMooreSearch(String pattern, String text) {
-    int m = pattern.length;
-    int n = text.length;
-
-    Map<String, int> badchar = {};
-    List<int> matches = [];
-
-    _badCharHeuristic(pattern, m, badchar);
-
-    int s = 0;
-
-    while (s <= (n - m)) {
-      int j = m - 1;
-
-      while (j >= 0 && pattern[j] == text[s + j]) {
-        j--;
-      }
-
-      //if pattern is present at current shift, the index will become -1
-      if (j < 0) {
-        matches.add(s);
-        s += (s + m < n) ? m - (badchar[text[s + m]] ?? -1) : 1;
-      } else {
-        s += math.max(1, j - (badchar[text[s + j]] ?? -1));
-      }
-    }
-
-    return matches;
-  }
-
-  void _badCharHeuristic(String pat, int size, Map<String, int> badchar) {
-    badchar.clear();
-
-    // Fill the actual value of last occurrence of a character
-    // (indices of table are characters and values are index of occurrence)
-    for (int i = 0; i < size; i++) {
-      String ch = pat[i];
-      badchar[ch] = i;
-    }
   }
 }
