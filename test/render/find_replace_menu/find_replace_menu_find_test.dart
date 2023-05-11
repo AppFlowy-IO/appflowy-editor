@@ -219,7 +219,7 @@ void main() async {
         pattern: pattern,
       );
 
-      var selection =
+      final selection =
           editor.editorState.service.selectionService.currentSelection.value;
 
       final textNode = editor.nodeAtPath([2]) as TextNode;

@@ -152,13 +152,9 @@ class UndoManager {
 
   void forgetRecentUndo() {
     Log.editor.debug('forgetRecentUndo');
-    final s = state;
-    if (s == null) {
+    if (state == null) {
       return;
     }
-    final historyItem = undoStack.pop();
-    if (historyItem == null) {
-      return;
-    }
+    undoStack.pop();
   }
 }

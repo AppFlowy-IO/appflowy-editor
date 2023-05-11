@@ -28,9 +28,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      replaceFlag = widget.replaceFlag;
-    });
+    replaceFlag = widget.replaceFlag;
     searchService = SearchService(
       editorState: widget.editorState,
     );
@@ -83,7 +81,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               key: const Key('closeButton'),
               onPressed: () {
                 widget.dismiss();
-                searchService.unHighlight(queriedPattern);
+                searchService.unhighlight(queriedPattern);
                 setState(() {
                   queriedPattern = '';
                 });
@@ -126,7 +124,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   ),
                 ],
               )
-            : const SizedBox(height: 0),
+            : const SizedBox.shrink(),
       ],
     );
   }
