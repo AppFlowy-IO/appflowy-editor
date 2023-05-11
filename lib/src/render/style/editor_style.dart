@@ -18,7 +18,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final Color selectionColor;
   final TextStyleConfiguration textStyleConfiguration;
 
-  @Deprecated('customize the editor\'s background color directly')
+  // @Deprecated('customize the editor\'s background color directly')
   final Color? backgroundColor;
 
   // Text styles
@@ -105,7 +105,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
   }) : this(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 200),
           backgroundColor: backgroundColor ?? Colors.white,
           cursorColor: cursorColor ?? const Color(0xFF00BCF0),
           selectionColor:
