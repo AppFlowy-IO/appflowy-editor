@@ -95,8 +95,10 @@ class Document {
 
   /// Updates the [Node] at the given [Path]
   bool update(Path path, Attributes attributes) {
+    // if the path is empty, it means the root node.
     if (path.isEmpty) {
-      return false;
+      root.updateAttributes(attributes);
+      return true;
     }
     final target = nodeAtPath(path);
     if (target == null) {
