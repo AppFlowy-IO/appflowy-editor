@@ -66,7 +66,7 @@ ShortcutEventHandler formatLinkEventHandler = (editorState, event) {
   final selection = editorState.service.selectionService.currentSelection.value;
   final nodes = editorState.service.selectionService.currentSelectedNodes;
   final textNodes = nodes.whereType<TextNode>().toList(growable: false);
-  if (selection == null || textNodes.isEmpty) {
+  if (selection == null ||selection.length==0 || textNodes.isEmpty) {
     return KeyEventResult.ignored;
   }
   if (editorState.service.toolbarService
