@@ -20,8 +20,9 @@ class _BlockComponentActionContainerState
     extends State<BlockComponentActionContainer> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: 50,
+      color: Colors.transparent,
       child: !widget.showActions
           ? const SizedBox.shrink()
           : Row(
