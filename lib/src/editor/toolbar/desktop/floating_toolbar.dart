@@ -74,7 +74,10 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
 
   void _onSelectionChanged() {
     final selection = editorState.selection;
-    if (selection == null || selection.isCollapsed) {
+    final selectionType = editorState.selectionType;
+    if (selection == null ||
+        selection.isCollapsed ||
+        selectionType == SelectionType.block) {
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.

@@ -367,82 +367,96 @@ class _DesktopSelectionServiceWidgetState
 
     Log.selection.debug('update selection areas, $normalizedSelection');
 
-    for (var i = 0; i < backwardNodes.length; i++) {
-      final node = backwardNodes[i];
-      final selectable = node.selectable;
-      if (selectable == null) {
-        continue;
-      }
+    if (editorState.selectionType == SelectionType.block) {
+      final node = backwardNodes.first;
+      final rect = Offset.zero & node.rect.size;
+      final overlay = OverlayEntry(
+        builder: (context) => SelectionWidget(
+          color: widget.selectionColor,
+          layerLink: node.layerLink,
+          rect: rect,
+        ),
+      );
+      _selectionAreas.add(overlay);
+    } else {
+      for (var i = 0; i < backwardNodes.length; i++) {
+        final node = backwardNodes[i];
 
-      var newSelection = normalizedSelection.copyWith();
+        final selectable = node.selectable;
+        if (selectable == null) {
+          continue;
+        }
 
-      /// In the case of multiple selections,
-      ///  we need to return a new selection for each selected node individually.
-      ///
-      /// < > means selected.
-      /// text: abcd<ef
-      /// text: ghijkl
-      /// text: mn>opqr
-      ///
-      if (!normalizedSelection.isSingle) {
-        if (i == 0) {
-          newSelection = newSelection.copyWith(end: selectable.end());
-        } else if (i == nodes.length - 1) {
-          newSelection = newSelection.copyWith(start: selectable.start());
-        } else {
-          newSelection = Selection(
-            start: selectable.start(),
-            end: selectable.end(),
+        var newSelection = normalizedSelection.copyWith();
+
+        /// In the case of multiple selections,
+        ///  we need to return a new selection for each selected node individually.
+        ///
+        /// < > means selected.
+        /// text: abcd<ef
+        /// text: ghijkl
+        /// text: mn>opqr
+        ///
+        if (!normalizedSelection.isSingle) {
+          if (i == 0) {
+            newSelection = newSelection.copyWith(end: selectable.end());
+          } else if (i == nodes.length - 1) {
+            newSelection = newSelection.copyWith(start: selectable.start());
+          } else {
+            newSelection = Selection(
+              start: selectable.start(),
+              end: selectable.end(),
+            );
+          }
+        }
+
+        const baseToolbarOffset = Offset(0, 35.0);
+        final rects = selectable.getRectsInSelection(newSelection);
+        for (final rect in rects) {
+          final selectionRect = _transformRectToGlobal(selectable, rect);
+          selectionRects.add(selectionRect);
+
+          // TODO: Need to compute more precise location.
+          if ((selectionRect.topLeft.dy - editorOffset.dy) <=
+              baseToolbarOffset.dy) {
+            if (selectionRect.topLeft.dx <=
+                editorSize.width / 3.0 + editorOffset.dx) {
+              toolbarOffset ??= rect.bottomLeft;
+              alignment ??= Alignment.topLeft;
+            } else if (selectionRect.topRight.dx >=
+                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
+              toolbarOffset ??= rect.bottomRight;
+              alignment ??= Alignment.topRight;
+            } else {
+              toolbarOffset ??= rect.bottomCenter;
+              alignment ??= Alignment.topCenter;
+            }
+          } else {
+            if (selectionRect.topLeft.dx <=
+                editorSize.width / 3.0 + editorOffset.dx) {
+              toolbarOffset ??= rect.topLeft - baseToolbarOffset;
+              alignment ??= Alignment.topLeft;
+            } else if (selectionRect.topRight.dx >=
+                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
+              toolbarOffset ??= rect.topRight - baseToolbarOffset;
+              alignment ??= Alignment.topRight;
+            } else {
+              toolbarOffset ??= rect.topCenter - baseToolbarOffset;
+              alignment ??= Alignment.topCenter;
+            }
+          }
+
+          layerLink ??= node.layerLink;
+
+          final overlay = OverlayEntry(
+            builder: (context) => SelectionWidget(
+              color: widget.selectionColor,
+              layerLink: node.layerLink,
+              rect: rect,
+            ),
           );
+          _selectionAreas.add(overlay);
         }
-      }
-
-      const baseToolbarOffset = Offset(0, 35.0);
-      final rects = selectable.getRectsInSelection(newSelection);
-      for (final rect in rects) {
-        final selectionRect = _transformRectToGlobal(selectable, rect);
-        selectionRects.add(selectionRect);
-
-        // TODO: Need to compute more precise location.
-        if ((selectionRect.topLeft.dy - editorOffset.dy) <=
-            baseToolbarOffset.dy) {
-          if (selectionRect.topLeft.dx <=
-              editorSize.width / 3.0 + editorOffset.dx) {
-            toolbarOffset ??= rect.bottomLeft;
-            alignment ??= Alignment.topLeft;
-          } else if (selectionRect.topRight.dx >=
-              editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-            toolbarOffset ??= rect.bottomRight;
-            alignment ??= Alignment.topRight;
-          } else {
-            toolbarOffset ??= rect.bottomCenter;
-            alignment ??= Alignment.topCenter;
-          }
-        } else {
-          if (selectionRect.topLeft.dx <=
-              editorSize.width / 3.0 + editorOffset.dx) {
-            toolbarOffset ??= rect.topLeft - baseToolbarOffset;
-            alignment ??= Alignment.topLeft;
-          } else if (selectionRect.topRight.dx >=
-              editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-            toolbarOffset ??= rect.topRight - baseToolbarOffset;
-            alignment ??= Alignment.topRight;
-          } else {
-            toolbarOffset ??= rect.topCenter - baseToolbarOffset;
-            alignment ??= Alignment.topCenter;
-          }
-        }
-
-        layerLink ??= node.layerLink;
-
-        final overlay = OverlayEntry(
-          builder: (context) => SelectionWidget(
-            color: widget.selectionColor,
-            layerLink: node.layerLink,
-            rect: rect,
-          ),
-        );
-        _selectionAreas.add(overlay);
       }
     }
 

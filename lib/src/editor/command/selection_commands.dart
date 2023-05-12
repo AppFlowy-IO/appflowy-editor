@@ -4,6 +4,7 @@ enum SelectionMoveRange {
   character,
   word,
   line,
+  block,
 }
 
 enum SelectionMoveDirection {
