@@ -46,59 +46,36 @@ enum SelectionUpdateReason {
 ///
 /// Mutating the document with document's API is not recommended.
 class EditorState {
-  final Document document;
-
-  final ValueNotifier<Selection?> selectionNotifier =
-      ValueNotifier<Selection?>(null);
-  Selection? get selection => selectionNotifier.value;
-  set selection(Selection? value) {
-    selectionNotifier.value = value;
+  EditorState({
+    required this.document,
+    this.editable = true,
+  }) {
+    undoManager.state = this;
   }
 
-  /// The current selection areas's rect in editor.
-  List<Rect> get selectionRects {
-    final selection = this.selection;
-    if (selection == null || selection.isCollapsed) {
-      return [];
-    }
+  EditorState.empty()
+      : this(
+          document: Document.blank(),
+        );
 
-    final nodes = getNodesInSelection(selection);
-    final rects = <Rect>[];
-    for (final node in nodes) {
-      final selectable = node.selectable;
-      if (selectable == null) {
-        continue;
-      }
-      final nodeRects = selectable.getRectsInSelection(selection);
-      if (nodeRects.isEmpty) {
-        continue;
-      }
-      final renderBox = node.renderBox;
-      if (renderBox == null) {
-        continue;
-      }
-      for (final rect in nodeRects) {
-        final globalOffset = renderBox.localToGlobal(rect.topLeft);
-        rects.add(globalOffset & rect.size);
-      }
-    }
+  final Document document;
 
-    /*
-    final rects = nodes
-        .map(
-          (node) => node.selectable
-              ?.getRectsInSelection(selection)
-              .map(
-                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
-              )
-              .whereNotNull(),
-        )
-        .whereNotNull()
-        .expand((element) => element)
-        .toList();
-    */
+  /// Whether the editor is editable.
+  final bool editable;
 
-    return rects;
+  /// The style of the editor.
+  late final EditorStyle editorStyle;
+
+  /// The selection notifier of the editor.
+  final ValueNotifier<Selection?> selectionNotifier =
+      ValueNotifier<Selection?>(null);
+
+  /// The selection of the editor.
+  Selection? get selection => selectionNotifier.value;
+
+  /// Sets the selection of the editor.
+  set selection(Selection? value) {
+    selectionNotifier.value = value;
   }
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
@@ -108,13 +85,10 @@ class EditorState {
   final service = FlowyService();
 
   AppFlowySelectionService get selectionService => service.selectionService;
-  // AppFlowyRenderPluginService get renderer => service.renderPluginService;
   BlockComponentRendererService get renderer => service.rendererService;
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
-
-  List<CharacterShortcutEvent> characterShortcutEvents = [];
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -125,23 +99,14 @@ class EditorState {
   List<SelectionMenuItem> selectionMenuItems = [];
 
   /// Stores the toolbar items.
+  @Deprecated('use floating toolbar or mobile toolbar instead')
   List<ToolbarItem> toolbarItems = [];
 
-  /// Operation stream.
+  /// listen to this stream to get notified when the transaction applies.
   Stream<Transaction> get transactionStream => _observer.stream;
   final StreamController<Transaction> _observer = StreamController.broadcast();
 
-  late ThemeData themeData;
-  late EditorStyle editorStyle;
-
   final UndoManager undoManager = UndoManager();
-  Selection? _cursorSelection;
-
-  // TODO: only for testing.
-  bool disableSealTimer = false;
-  bool disableRules = false;
-
-  bool editable = true;
 
   Transaction get transaction {
     final transaction = Transaction(document: document);
@@ -149,6 +114,13 @@ class EditorState {
     return transaction;
   }
 
+  // TODO: only for testing.
+  bool disableSealTimer = false;
+  bool disableRules = false;
+
+  @Deprecated('use editorState.selection instead')
+  Selection? _cursorSelection;
+  @Deprecated('use editorState.selection instead')
   Selection? get cursorSelection {
     return _cursorSelection;
   }
@@ -181,6 +153,7 @@ class EditorState {
     return completer.future;
   }
 
+  @Deprecated('use updateSelectionWithReason or editorState.selection instead')
   Future<void> updateCursorSelection(
     Selection? cursorSelection, [
     CursorUpdateReason reason = CursorUpdateReason.others,
@@ -200,16 +173,6 @@ class EditorState {
   }
 
   Timer? _debouncedSealHistoryItemTimer;
-
-  EditorState({
-    required this.document,
-  }) {
-    undoManager.state = this;
-  }
-
-  factory EditorState.empty() {
-    return EditorState(document: Document.blank());
-  }
 
   /// Apply the transaction to the state.
   ///
@@ -286,6 +249,52 @@ class EditorState {
 
   Node? getNodeAtPath(Path path) {
     return document.nodeAtPath(path);
+  }
+
+  /// The current selection areas's rect in editor.
+  List<Rect> selectionRects() {
+    final selection = this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return [];
+    }
+
+    final nodes = getNodesInSelection(selection);
+    final rects = <Rect>[];
+    for (final node in nodes) {
+      final selectable = node.selectable;
+      if (selectable == null) {
+        continue;
+      }
+      final nodeRects = selectable.getRectsInSelection(selection);
+      if (nodeRects.isEmpty) {
+        continue;
+      }
+      final renderBox = node.renderBox;
+      if (renderBox == null) {
+        continue;
+      }
+      for (final rect in nodeRects) {
+        final globalOffset = renderBox.localToGlobal(rect.topLeft);
+        rects.add(globalOffset & rect.size);
+      }
+    }
+
+    /*
+    final rects = nodes
+        .map(
+          (node) => node.selectable
+              ?.getRectsInSelection(selection)
+              .map(
+                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
+              )
+              .whereNotNull(),
+        )
+        .whereNotNull()
+        .expand((element) => element)
+        .toList();
+    */
+
+    return rects;
   }
 
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {

@@ -131,11 +131,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void initState() {
     super.initState();
 
+    editorState.editorStyle = widget.editorStyle;
     editorState.selectionMenuItems = widget.selectionMenuItems;
     editorState.renderer = _renderer;
-    editorState.editable = widget.editable;
-    editorState.characterShortcutEvents = widget.characterShortcutEvents;
-    editorState.editorStyle = widget.editorStyle;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -147,15 +145,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    editorState.editorStyle = widget.editorStyle;
+
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
       editorState.renderer = _renderer;
     }
 
-    editorState.editorStyle = widget.editorStyle;
-
-    editorState.editable = widget.editable;
-    editorState.characterShortcutEvents = widget.characterShortcutEvents;
     services = null;
   }
 
