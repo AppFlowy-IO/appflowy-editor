@@ -10,7 +10,7 @@ void showColorMenu(
 }) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
-  final rect = editorState.selectionRects.first;
+  final rect = editorState.selectionRects().first;
   OverlayEntry? overlay;
 
   void dismissOverlay() {

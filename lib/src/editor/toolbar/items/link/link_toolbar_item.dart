@@ -1,7 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/link/link_menu.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/utils/tooltip_util.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +34,7 @@ void showLinkMenu(
 ) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
-  final rect = editorState.selectionRects.first;
+  final rect = editorState.selectionRects().first;
 
   // get node, index and length for formatting text when the link is removed
   final node = editorState.getNodeAtPath(selection.end.path);
