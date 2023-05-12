@@ -246,9 +246,10 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ..insertTextNode(text);
   await editor.startTesting();
 
-  final selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
-  await editor.updateSelection(selection);
+// selection is null now
+  final emptySelection =
+      Selection.single(path: [0], startOffset: 7);
+  await editor.updateSelection(emptySelection);
 
   // Link dialog should not be visible when selection is null or collapsed
   if(Platform.isWindows || Platform.isLinux){
@@ -263,7 +264,11 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     );
   }
   expect(find.byType(LinkMenu), findsNothing);
-  
+
+// selection is not null now
+   final selection =
+      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  await editor.updateSelection(selection);
 
   // show toolbar
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
