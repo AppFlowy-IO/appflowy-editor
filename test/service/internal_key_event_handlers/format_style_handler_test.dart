@@ -250,6 +250,21 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
       Selection.single(path: [1], startOffset: 0, endOffset: text.length);
   await editor.updateSelection(selection);
 
+  // Link dialog should not be visible when selection is null or collapsed
+  if(Platform.isWindows || Platform.isLinux){
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.keyK,
+      isControlPressed: true,
+    );
+  } else {
+    await editor.pressLogicKey(
+      key: LogicalKeyboardKey.keyK,
+      isMetaPressed: true,
+    );
+  }
+  expect(find.byType(LinkMenu), findsNothing);
+  
+
   // show toolbar
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
   expect(find.byType(ToolbarWidget), findsOneWidget);
