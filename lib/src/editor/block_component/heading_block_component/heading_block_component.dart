@@ -27,7 +27,7 @@ Node headingNode({
 }
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
-  const HeadingBlockComponentBuilder({
+  HeadingBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
   });
 

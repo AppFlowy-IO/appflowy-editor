@@ -3,6 +3,10 @@ import 'package:appflowy_editor/src/editor/editor_component/service/renderer/blo
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+abstract class BlockComponentState {
+  set alwaysShowActions(bool alwaysShowActions);
+}
+
 /// BlockComponentContainer is a wrapper of block component
 ///
 /// 1. used to update the child widget when node is changed
@@ -14,6 +18,7 @@ class BlockComponentContainer extends StatefulWidget {
     this.showBlockComponentActions = false,
     required this.node,
     required this.builder,
+    required this.actionBuilder,
   });
 
   /// show block component actions or not
@@ -22,14 +27,29 @@ class BlockComponentContainer extends StatefulWidget {
   final bool showBlockComponentActions;
   final Node node;
   final WidgetBuilder builder;
+  final Widget Function(
+    BuildContext context,
+    BlockComponentState state,
+  ) actionBuilder;
 
   @override
   State<BlockComponentContainer> createState() =>
-      _BlockComponentContainerState();
+      BlockComponentContainerState();
 }
 
-class _BlockComponentContainerState extends State<BlockComponentContainer> {
-  bool showActions = false;
+class BlockComponentContainerState extends State<BlockComponentContainer>
+    implements BlockComponentState {
+  final showActionsNotifier = ValueNotifier<bool>(false);
+
+  bool _alwaysShowActions = false;
+  bool get alwaysShowActions => _alwaysShowActions;
+  @override
+  set alwaysShowActions(bool alwaysShowActions) {
+    _alwaysShowActions = alwaysShowActions;
+    if (_alwaysShowActions == false && showActionsNotifier.value == true) {
+      showActionsNotifier.value = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +71,8 @@ class _BlockComponentContainerState extends State<BlockComponentContainer> {
     }
 
     return MouseRegion(
-      onEnter: (_) => setState(() {
-        showActions = true;
-      }),
-      onExit: (_) => setState(() {
-        showActions = false;
-      }),
+      onEnter: (_) => showActionsNotifier.value = true,
+      onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
       hitTestBehavior: HitTestBehavior.deferToChild,
       opaque: false,
       child: Row(
@@ -64,9 +80,13 @@ class _BlockComponentContainerState extends State<BlockComponentContainer> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          BlockComponentActionContainer(
-            node: widget.node,
-            showActions: showActions,
+          ValueListenableBuilder<bool>(
+            valueListenable: showActionsNotifier,
+            builder: (context, value, child) => BlockComponentActionContainer(
+              node: widget.node,
+              showActions: value,
+              actionBuilder: (context) => widget.actionBuilder(context, this),
+            ),
           ),
           Expanded(child: child),
         ],

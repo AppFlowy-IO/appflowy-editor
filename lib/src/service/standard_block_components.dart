@@ -5,7 +5,7 @@ const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   'document': DocumentComponentBuilder(),
-  'paragraph': const TextBlockComponentBuilder(
+  'paragraph': TextBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration,
   ),
   'todo_list': TodoListBlockComponentBuilder(
@@ -34,7 +34,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
           'Heading ${node.attributes[HeadingBlockKeys.level]}',
     ),
   ),
-  'image': const ImageBlockComponentBuilder(),
+  'image': ImageBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [

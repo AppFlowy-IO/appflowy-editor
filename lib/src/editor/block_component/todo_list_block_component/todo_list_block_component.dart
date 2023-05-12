@@ -30,7 +30,7 @@ Node todoListNode({
 }
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
-  const TodoListBlockComponentBuilder({
+  TodoListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.icon,

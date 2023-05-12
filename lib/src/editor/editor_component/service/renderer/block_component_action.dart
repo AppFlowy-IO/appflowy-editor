@@ -1,54 +1,66 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class BlockComponentActionContainer extends StatefulWidget {
+class BlockComponentActionContainer extends StatelessWidget {
   const BlockComponentActionContainer({
     super.key,
     required this.node,
     required this.showActions,
+    required this.actionBuilder,
   });
 
   final Node node;
   final bool showActions;
+  final WidgetBuilder actionBuilder;
 
-  @override
-  State<BlockComponentActionContainer> createState() =>
-      _BlockComponentActionContainerState();
-}
-
-class _BlockComponentActionContainerState
-    extends State<BlockComponentActionContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      color: Colors.transparent,
-      child: !widget.showActions
-          ? const SizedBox.shrink()
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                BlockComponentActionButton(
-                  icon: const Icon(
-                    Icons.add,
-                    size: 18,
-                  ),
-                  onTap: () {},
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BlockComponentActionButton(
-                  icon: const Icon(
-                    Icons.apps,
-                    size: 18,
-                  ),
-                  onTap: () {},
-                ),
-              ],
-            ),
+      alignment: Alignment.centerRight,
+      width: 30,
+      height: 20, // TODO: magic number, change it to the height of the block
+      color: Colors
+          .transparent, // have to set the color to transparent to make the MouseRegion work
+      child: !showActions ? const SizedBox.shrink() : actionBuilder(context),
+    );
+  }
+}
+
+class BlockComponentActionList extends StatelessWidget {
+  const BlockComponentActionList({
+    super.key,
+    required this.onTapAdd,
+    required this.onTapOption,
+  });
+
+  final VoidCallback onTapAdd;
+  final VoidCallback onTapOption;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BlockComponentActionButton(
+          icon: const Icon(
+            Icons.add,
+            size: 18,
+          ),
+          onTap: () {},
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        BlockComponentActionButton(
+          icon: const Icon(
+            Icons.apps,
+            size: 18,
+          ),
+          onTap: () {},
+        ),
+      ],
     );
   }
 }
