@@ -17,7 +17,7 @@ class ApplyOptions {
   });
 }
 
-// deprecated
+@Deprecated('use SelectionUpdateReason instead')
 enum CursorUpdateReason {
   uiEvent,
   others,
@@ -26,6 +26,11 @@ enum CursorUpdateReason {
 enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
+}
+
+enum SelectionType {
+  inline,
+  block,
 }
 
 /// The state of the editor.
@@ -64,7 +69,7 @@ class EditorState {
   final bool editable;
 
   /// The style of the editor.
-  late final EditorStyle editorStyle;
+  late EditorStyle editorStyle;
 
   /// The selection notifier of the editor.
   final ValueNotifier<Selection?> selectionNotifier =
@@ -77,6 +82,8 @@ class EditorState {
   set selection(Selection? value) {
     selectionNotifier.value = value;
   }
+
+  SelectionType? selectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
