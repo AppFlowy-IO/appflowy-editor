@@ -17,7 +17,7 @@ Node quoteNode({
 }
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
-  const QuoteBlockComponentBuilder({
+  QuoteBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
   });
 

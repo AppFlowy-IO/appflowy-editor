@@ -48,7 +48,7 @@ Node imageNode({
 }
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
-  const ImageBlockComponentBuilder();
+  ImageBlockComponentBuilder();
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {

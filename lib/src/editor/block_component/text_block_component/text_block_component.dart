@@ -19,7 +19,7 @@ Node paragraphNode({
 }
 
 class TextBlockComponentBuilder extends BlockComponentBuilder {
-  const TextBlockComponentBuilder({
+  TextBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
   });
 

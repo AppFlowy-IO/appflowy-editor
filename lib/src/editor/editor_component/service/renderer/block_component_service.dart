@@ -1,9 +1,14 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+typedef BlockActionBuilder = Widget Function(
+  BlockComponentContext blockComponentContext,
+  BlockComponentState state,
+);
+
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
 abstract class BlockComponentBuilder {
-  const BlockComponentBuilder();
+  BlockComponentBuilder();
 
   /// validate the node.
   ///
@@ -13,6 +18,10 @@ abstract class BlockComponentBuilder {
   bool validate(Node node) => true;
 
   Widget build(BlockComponentContext blockComponentContext);
+
+  bool showActions(Node node) => true;
+
+  BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 }
 
 abstract class BlockComponentRendererService {
@@ -83,9 +92,13 @@ class BlockComponentRenderer extends BlockComponentRendererService {
     }
 
     return BlockComponentContainer(
-      showBlockComponentActions: node.path.isNotEmpty,
+      showBlockComponentActions: builder.showActions(node),
       node: node,
       builder: (_) => builder.build(blockComponentContext),
+      actionBuilder: (_, state) => builder.actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
