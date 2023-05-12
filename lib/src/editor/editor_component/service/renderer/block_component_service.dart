@@ -83,6 +83,7 @@ class BlockComponentRenderer extends BlockComponentRendererService {
     }
 
     return BlockComponentContainer(
+      showBlockComponentActions: node.path.isNotEmpty,
       node: node,
       builder: (_) => builder.build(blockComponentContext),
     );

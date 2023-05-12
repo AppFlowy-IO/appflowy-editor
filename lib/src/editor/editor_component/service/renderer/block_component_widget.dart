@@ -57,8 +57,10 @@ class _BlockComponentContainerState extends State<BlockComponentContainer> {
       onExit: (_) => setState(() {
         showActions = false;
       }),
+      hitTestBehavior: HitTestBehavior.deferToChild,
+      opaque: false,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -66,7 +68,7 @@ class _BlockComponentContainerState extends State<BlockComponentContainer> {
             node: widget.node,
             showActions: showActions,
           ),
-          child,
+          Expanded(child: child),
         ],
       ),
     );
