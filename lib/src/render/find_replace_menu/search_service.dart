@@ -22,7 +22,7 @@ class SearchService {
     if (queriedPattern != pattern) {
       //this means we have a new pattern, but before we highlight the new matches,
       //lets unhiglight the old pattern
-      unhighlight(queriedPattern);
+      findAndHighlight(queriedPattern);
       queriedPattern = pattern;
     }
 
@@ -63,10 +63,6 @@ class SearchService {
     }
 
     selectedIndex = matchedPositions.length - 1;
-  }
-
-  void unhighlight(String pattern) {
-    findAndHighlight(pattern);
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,

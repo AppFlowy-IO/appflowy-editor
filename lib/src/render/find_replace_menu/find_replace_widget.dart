@@ -81,7 +81,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               key: const Key('closeButton'),
               onPressed: () {
                 widget.dismiss();
-                searchService.unhighlight(queriedPattern);
+                searchService.findAndHighlight(queriedPattern);
                 setState(() {
                   queriedPattern = '';
                 });
