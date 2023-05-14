@@ -3,14 +3,27 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/widget
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class ParagraphBlockKeys {
+  ParagraphBlockKeys._();
+
+  static const String type = 'paragraph';
+
+  static const String delta = 'delta';
+
+  static const String backgroundColor = 'bgColor';
+}
+
 Node paragraphNode({
   String? text,
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
-  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
+  attributes ??= {
+    ParagraphBlockKeys.delta: (Delta()..insert(text ?? '')).toJson(),
+    ParagraphBlockKeys.backgroundColor: Colors.transparent.toHex(),
+  };
   return Node(
-    type: 'paragraph',
+    type: ParagraphBlockKeys.type,
     attributes: {
       ...attributes,
     },
@@ -70,6 +83,15 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  Color get backgroundColor {
+    final colorString =
+        node.attributes[ParagraphBlockKeys.backgroundColor] as String?;
+    if (colorString == null) {
+      return Colors.transparent;
+    }
+    return colorString.toColor();
+  }
+
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
@@ -90,7 +112,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
-    return Padding(
+    return Container(
+      color: backgroundColor,
       padding: padding,
       child: FlowyRichText(
         key: forwardKey,

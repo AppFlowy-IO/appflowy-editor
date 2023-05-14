@@ -89,7 +89,8 @@ class _BulletedListBlockComponentWidgetState
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
-    return Padding(
+    return Container(
+      color: configuration.backgroundColor,
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -78,17 +78,21 @@ class _NumberedListBlockComponentWidgetState
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return NestedListWidget(
-      children: editorState.renderer.buildList(
-        context,
-        widget.node.children,
+    return Container(
+      color: configuration.backgroundColor,
+      child: NestedListWidget(
+        children: editorState.renderer.buildList(
+          context,
+          widget.node.children,
+        ),
+        child: buildBulletListBlockComponent(context),
       ),
-      child: buildBulletListBlockComponent(context),
     );
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
-    return Padding(
+    return Container(
+      color: configuration.backgroundColor,
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

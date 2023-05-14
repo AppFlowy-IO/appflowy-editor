@@ -150,9 +150,3 @@ List<ColorOption> _generateHighlightColorOptions(EditorState editorState) {
     ),
   ];
 }
-
-extension on Color {
-  String toHex() {
-    return '0x${value.toRadixString(16)}';
-  }
-}
