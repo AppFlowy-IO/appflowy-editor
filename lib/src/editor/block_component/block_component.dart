@@ -32,3 +32,4 @@ export 'base_component/widget/full_screen_overlay_entry.dart';
 
 export 'base_component/block_component_configuration.dart';
 export 'base_component/text_style_configuration.dart';
+export 'base_component/background_color_mixin.dart';
