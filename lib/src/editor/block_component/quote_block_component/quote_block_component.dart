@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,11 @@ class QuoteBlockComponentWidget extends StatefulWidget {
 }
 
 class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
+    with
+        SelectableMixin,
+        DefaultSelectable,
+        BlockComponentConfigurable,
+        BackgroundColorMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -71,7 +76,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: configuration.backgroundColor,
+      color: backgroundColor,
       padding: padding,
       child: IntrinsicHeight(
         child: Row(

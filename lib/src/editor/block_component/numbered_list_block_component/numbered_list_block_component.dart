@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,11 @@ class NumberedListBlockComponentWidget extends StatefulWidget {
 
 class _NumberedListBlockComponentWidgetState
     extends State<NumberedListBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
+    with
+        SelectableMixin,
+        DefaultSelectable,
+        BlockComponentConfigurable,
+        BackgroundColorMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -78,21 +83,18 @@ class _NumberedListBlockComponentWidgetState
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: configuration.backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildBulletListBlockComponent(context),
+    return NestedListWidget(
+      children: editorState.renderer.buildList(
+        context,
+        widget.node.children,
       ),
+      child: buildBulletListBlockComponent(context),
     );
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Container(
-      color: configuration.backgroundColor,
+      color: backgroundColor,
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
