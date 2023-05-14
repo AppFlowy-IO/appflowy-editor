@@ -202,13 +202,12 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   Node copyWith({
     String? type,
-    String? id,
     Iterable<Node>? children,
     Attributes? attributes,
   }) {
     final node = Node(
       type: type ?? this.type,
-      id: id ?? this.id,
+      id: nanoid(10),
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );

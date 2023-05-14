@@ -115,6 +115,12 @@ class Transaction {
     add(DeleteOperation(path, nodes));
   }
 
+  /// move the node
+  void moveNode(Path path, Node node) {
+    deleteNode(node);
+    insertNode(path, node, deepCopy: false);
+  }
+
   /// Update the [TextNode]s with the given [Delta].
   void updateText(TextNode textNode, Delta delta) {
     final inverted = delta.invert(textNode.delta);
