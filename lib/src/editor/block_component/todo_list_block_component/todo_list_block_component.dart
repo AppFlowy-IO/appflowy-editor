@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +85,11 @@ class TodoListBlockComponentWidget extends StatefulWidget {
 
 class _TodoListBlockComponentWidgetState
     extends State<TodoListBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
+    with
+        SelectableMixin,
+        DefaultSelectable,
+        BlockComponentConfigurable,
+        BackgroundColorMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -120,7 +125,7 @@ class _TodoListBlockComponentWidgetState
 
   Widget buildTodoListBlockComponent(BuildContext context) {
     return Container(
-      color: configuration.backgroundColor,
+      color: backgroundColor,
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

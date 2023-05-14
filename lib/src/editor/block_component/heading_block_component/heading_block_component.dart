@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
@@ -71,7 +72,11 @@ class HeadingBlockComponentWidget extends StatefulWidget {
 
 class _HeadingBlockComponentWidgetState
     extends State<HeadingBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
+    with
+        SelectableMixin,
+        DefaultSelectable,
+        BlockComponentConfigurable,
+        BackgroundColorMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -91,7 +96,7 @@ class _HeadingBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: configuration.backgroundColor,
+      color: backgroundColor,
       padding: padding,
       child: FlowyRichText(
         key: forwardKey,

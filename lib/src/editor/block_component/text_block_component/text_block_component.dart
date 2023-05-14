@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +10,6 @@ class ParagraphBlockKeys {
   static const String type = 'paragraph';
 
   static const String delta = 'delta';
-
-  static const String backgroundColor = 'bgColor';
 }
 
 Node paragraphNode({
@@ -20,7 +19,6 @@ Node paragraphNode({
 }) {
   attributes ??= {
     ParagraphBlockKeys.delta: (Delta()..insert(text ?? '')).toJson(),
-    ParagraphBlockKeys.backgroundColor: Colors.transparent.toHex(),
   };
   return Node(
     type: ParagraphBlockKeys.type,
@@ -70,7 +68,11 @@ class TextBlockComponentWidget extends StatefulWidget {
 }
 
 class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
-    with SelectableMixin, DefaultSelectable, BlockComponentConfigurable {
+    with
+        SelectableMixin,
+        DefaultSelectable,
+        BlockComponentConfigurable,
+        BackgroundColorMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -82,15 +84,6 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
 
   @override
   Node get node => widget.node;
-
-  Color get backgroundColor {
-    final colorString =
-        node.attributes[ParagraphBlockKeys.backgroundColor] as String?;
-    if (colorString == null) {
-      return Colors.transparent;
-    }
-    return colorString.toColor();
-  }
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
