@@ -70,7 +70,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      color: configuration.backgroundColor,
       padding: padding,
       child: IntrinsicHeight(
         child: Row(

@@ -119,7 +119,8 @@ class _TodoListBlockComponentWidgetState
   }
 
   Widget buildTodoListBlockComponent(BuildContext context) {
-    return Padding(
+    return Container(
+      color: configuration.backgroundColor,
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

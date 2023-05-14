@@ -214,7 +214,7 @@ class HTMLToNodesConverter {
     final backgroundColorStr = cssMap["background-color"];
     final backgroundColor = backgroundColorStr == null
         ? null
-        : ColorExtension.tryFromRgbaString(backgroundColorStr);
+        : ColorExtension2.tryFromRgbaString(backgroundColorStr);
     if (backgroundColor != null) {
       attrs[BuiltInAttributeKey.highlightColor] =
           '0x${backgroundColor.value.toRadixString(16)}';

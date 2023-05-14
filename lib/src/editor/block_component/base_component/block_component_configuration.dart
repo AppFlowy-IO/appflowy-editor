@@ -8,6 +8,7 @@ class BlockComponentConfiguration {
     this.placeholderText = _placeholderText,
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
+    this.backgroundColor = Colors.transparent,
   });
 
   /// The padding of a block component.
@@ -23,6 +24,8 @@ class BlockComponentConfiguration {
   ///
   /// It inherits the style from [textStyle].
   final TextStyle Function(Node node) placeholderTextStyle;
+
+  final Color backgroundColor;
 
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
