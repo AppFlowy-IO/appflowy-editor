@@ -101,5 +101,6 @@
   "clearHighlightColor": "clear highlight color",
   "customColor": "custom color",
   "hexValue": "hex value",
-  "opacity": "opacity"
+  "opacity": "opacity",
+  "resetToDefaultColor": "reset to default color"
 }
