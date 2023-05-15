@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +34,42 @@ class SimpleEditor extends StatelessWidget {
             ..handler = debugPrint
             ..level = LogLevel.all;
           onEditorStateChange(editorState);
-
-          return AppFlowyEditor(
-            editorState: editorState,
-            themeData: themeData,
-            autoFocus: editorState.document.isEmpty,
-          );
+          final scrollController = ScrollController();
+          if (PlatformExtension.isDesktopOrWeb) {
+            return FloatingToolbar(
+              items: [
+                paragraphItem,
+                ...headingItems,
+                placeholderItem,
+                ...markdownFormatItems,
+                placeholderItem,
+                quoteItem,
+                bulletedListItem,
+                numberedListItem,
+                placeholderItem,
+                linkItem,
+                textColorItem,
+                highlightColorItem
+              ],
+              editorState: editorState,
+              scrollController: scrollController,
+              child: _buildEditor(
+                context,
+                editorState,
+                scrollController,
+              ),
+            );
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  child: _buildEditor(context, editorState, scrollController),
+                ),
+                if (Platform.isIOS || Platform.isAndroid)
+                  _buildMobileToolbar(context, editorState),
+              ],
+            );
+          }
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -46,5 +77,20 @@ class SimpleEditor extends StatelessWidget {
         }
       },
     );
+  }
+
+  Widget _buildEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.standard(
+      editorState: editorState,
+      scrollController: scrollController,
+    );
+  }
+
+  Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
+    return MobileToolbar(editorState: editorState);
   }
 }

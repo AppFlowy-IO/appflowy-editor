@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 ShortcutEventHandler backspaceEventHandler = (editorState, event) {
+  // return KeyEventResult.ignored;
   var selection = editorState.service.selectionService.currentSelection.value;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -274,7 +275,7 @@ void _deleteTextNodes(
     ..mergeText(
       first,
       last,
-      firstOffset: selection.start.offset,
-      secondOffset: selection.end.offset,
+      leftOffset: selection.start.offset,
+      rightOffset: selection.end.offset,
     );
 }

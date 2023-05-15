@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 /// final keyboardService = editorState.service.scrollService;
 /// ```
 ///
-abstract class AppFlowyScrollService {
+abstract class AppFlowyScrollService implements AutoScrollerService {
   /// Returns the offset of the current document on the vertical axis.
   double get dy;
 
@@ -26,11 +27,16 @@ abstract class AppFlowyScrollService {
   /// Returns the minimum scroll height on the vertical axis.
   double get minScrollExtent;
 
+  /// scroll controller
+  ScrollController get scrollController;
+
   /// Scrolls to the specified position.
   ///
   /// This function will filter illegal values.
   /// Only within the range of minScrollExtent and maxScrollExtent are legal values.
-  void scrollTo(double dy);
+  void scrollTo(double dy, {Duration? duration,});
+
+  void goBallistic(double velocity);
 
   /// Enables scroll service.
   void enable();
@@ -57,8 +63,7 @@ class AppFlowyScroll extends StatefulWidget {
   State<AppFlowyScroll> createState() => _AppFlowyScrollState();
 }
 
-class _AppFlowyScrollState extends State<AppFlowyScroll>
-    implements AppFlowyScrollService {
+class _AppFlowyScrollState extends State<AppFlowyScroll> {
   final _scrollController = ScrollController();
   final _scrollViewKey = GlobalKey();
 
@@ -90,20 +95,11 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
 
   @override
   Widget build(BuildContext context) {
+    return widget.child;
     return Listener(
       onPointerSignal: _onPointerSignal,
       onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
-      child: CustomScrollView(
-        key: _scrollViewKey,
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _scrollController,
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: widget.child,
-          )
-        ],
-      ),
+      child: widget.child,
     );
   }
 
@@ -130,16 +126,26 @@ class _AppFlowyScrollState extends State<AppFlowyScroll>
   }
 
   void _onPointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent && _scrollEnabled) {
-      final dy = (_scrollController.position.pixels + event.scrollDelta.dy);
-      scrollTo(dy);
-    }
+    // if (event is PointerScrollEvent && _scrollEnabled) {
+    //   final dy = (_scrollController.position.pixels + event.scrollDelta.dy);
+    //   scrollTo(dy);
+    // }
   }
 
   void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
-    if (_scrollEnabled) {
-      final dy = (_scrollController.position.pixels - event.panDelta.dy);
-      scrollTo(dy);
-    }
+    // if (_scrollEnabled) {
+    //   final dy = (_scrollController.position.pixels - event.panDelta.dy);
+    //   scrollTo(dy);
+    // }
+  }
+
+  @override
+  void startAutoScroll(Offset offset) {
+    // TODO: implement startAutoScrollIfNecessary
+  }
+
+  @override
+  void stopAutoScroll() {
+    // TODO: implement stopAutoScroll
   }
 }

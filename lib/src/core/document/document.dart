@@ -5,7 +5,7 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/document/path.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 
-/// [Document] reprensents a AppFlowy Editor document structure.
+/// [Document] represents a AppFlowy Editor document structure.
 ///
 /// It stores the root of the document.
 ///
@@ -26,8 +26,17 @@ class Document {
   /// Creates a empty document with a single text node.
   factory Document.empty() {
     final root = Node(
-      type: 'editor',
+      type: 'document',
       children: LinkedList<Node>()..add(TextNode.empty()),
+    );
+    return Document(
+      root: root,
+    );
+  }
+
+  factory Document.blank() {
+    final root = Node(
+      type: 'document',
     );
     return Document(
       root: root,
@@ -86,8 +95,10 @@ class Document {
 
   /// Updates the [Node] at the given [Path]
   bool update(Path path, Attributes attributes) {
+    // if the path is empty, it means the root node.
     if (path.isEmpty) {
-      return false;
+      root.updateAttributes(attributes);
+      return true;
     }
     final target = nodeAtPath(path);
     if (target == null) {
@@ -120,8 +131,8 @@ class Document {
     }
 
     final node = root.children.first;
-    if (node is TextNode &&
-        (node.delta.isEmpty || node.delta.toPlainText().isEmpty)) {
+    final delta = node.delta;
+    if (delta != null && (delta.isEmpty || delta.toPlainText().isEmpty)) {
       return true;
     }
 

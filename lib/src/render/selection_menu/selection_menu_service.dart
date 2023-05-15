@@ -1,13 +1,8 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_upload_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/legacy/built_in_attribute_keys.dart';
-import '../../editor_state.dart';
-import '../../infra/flowy_svg.dart';
-import '../../l10n/l10n.dart';
-import '../../service/default_text_operations/format_rich_text_style.dart';
-import '../image/image_upload_widget.dart';
-import 'selection_menu_widget.dart';
-
+// TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
   Offset get topLeft;
   Offset get offset;
@@ -21,10 +16,12 @@ class SelectionMenu implements SelectionMenuService {
   SelectionMenu({
     required this.context,
     required this.editorState,
+    required this.selectionMenuItems,
   });
 
   final BuildContext context;
   final EditorState editorState;
+  final List<SelectionMenuItem> selectionMenuItems;
 
   OverlayEntry? _selectionMenuEntry;
   bool _selectionUpdateByInner = false;
@@ -68,6 +65,7 @@ class SelectionMenu implements SelectionMenuService {
     final editorOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorHeight = editorState.renderBox!.size.height;
+    final editorWidth = editorState.renderBox!.size.width;
 
     // show below default
     var showBelow = true;
@@ -90,27 +88,38 @@ class SelectionMenu implements SelectionMenuService {
 
     _selectionMenuEntry = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          top: showBelow ? _offset.dy : null,
-          bottom: showBelow ? null : _offset.dy,
-          left: offset.dx,
-          right: 0,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SelectionMenuWidget(
-              items: [
-                ..._defaultSelectionMenuItems,
-                ...editorState.selectionMenuItems,
+        return SizedBox(
+          width: editorWidth,
+          height: editorHeight,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              dismiss();
+            },
+            child: Stack(
+              children: [
+                Positioned(
+                  top: showBelow ? _offset.dy : null,
+                  bottom: showBelow ? null : _offset.dy,
+                  left: offset.dx,
+                  right: 0,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SelectionMenuWidget(
+                      items: selectionMenuItems,
+                      maxItemInRow: 5,
+                      editorState: editorState,
+                      menuService: this,
+                      onExit: () {
+                        dismiss();
+                      },
+                      onSelectionUpdate: () {
+                        _selectionUpdateByInner = true;
+                      },
+                    ),
+                  ),
+                )
               ],
-              maxItemInRow: 5,
-              editorState: editorState,
-              menuService: this,
-              onExit: () {
-                dismiss();
-              },
-              onSelectionUpdate: () {
-                _selectionUpdateByInner = true;
-              },
             ),
           ),
         );
@@ -159,17 +168,14 @@ class SelectionMenu implements SelectionMenuService {
   }
 }
 
-@visibleForTesting
-List<SelectionMenuItem> get defaultSelectionMenuItems =>
-    _defaultSelectionMenuItems;
-final List<SelectionMenuItem> _defaultSelectionMenuItems = [
+final List<SelectionMenuItem> standardSelectionMenuItems = [
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.text,
     icon: (editorState, onSelected) =>
         _selectionMenuIcon('text', editorState, onSelected),
     keywords: ['text'],
     handler: (editorState, _, __) {
-      insertTextNodeAfterSelection(editorState, {});
+      insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
   SelectionMenuItem(
@@ -178,7 +184,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h1', editorState, onSelected),
     keywords: ['heading 1, h1'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h1);
+      insertHeadingAfterSelection(editorState, 1);
     },
   ),
   SelectionMenuItem(
@@ -187,7 +193,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h2', editorState, onSelected),
     keywords: ['heading 2, h2'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h2);
+      insertHeadingAfterSelection(editorState, 2);
     },
   ),
   SelectionMenuItem(
@@ -196,7 +202,7 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
         _selectionMenuIcon('h3', editorState, onSelected),
     keywords: ['heading 3, h3'],
     handler: (editorState, _, __) {
-      insertHeadingAfterSelection(editorState, BuiltInAttributeKey.h3);
+      insertHeadingAfterSelection(editorState, 3);
     },
   ),
   SelectionMenuItem(
@@ -204,7 +210,10 @@ final List<SelectionMenuItem> _defaultSelectionMenuItems = [
     icon: (editorState, onSelected) =>
         _selectionMenuIcon('image', editorState, onSelected),
     keywords: ['image'],
-    handler: showImageUploadMenu,
+    handler: (editorState, menuService, context) {
+      final container = Overlay.of(context);
+      showImageMenu(container, editorState, menuService);
+    },
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.bulletedList,

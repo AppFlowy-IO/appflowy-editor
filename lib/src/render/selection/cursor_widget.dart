@@ -68,7 +68,7 @@ class CursorWidgetState extends State<CursorWidget> {
       child: CompositedTransformFollower(
         link: widget.layerLink,
         offset: widget.rect.topCenter,
-        showWhenUnlinked: true,
+        showWhenUnlinked: false,
         // Ignore the gestures in cursor
         //  to solve the problem that cursor area cannot be selected.
         child: IgnorePointer(
@@ -93,6 +93,13 @@ class CursorWidgetState extends State<CursorWidget> {
           decoration: BoxDecoration(
             border: Border.all(color: color, width: 2),
           ),
+        );
+      case CursorStyle.cover:
+        final size = widget.rect.size;
+        return Container(
+          width: size.width,
+          height: size.height,
+          color: color.withOpacity(0.2),
         );
     }
   }

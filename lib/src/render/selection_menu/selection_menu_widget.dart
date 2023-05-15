@@ -20,9 +20,9 @@ class SelectionMenuItem {
   }) {
     this.handler = (editorState, menuService, context) {
       _deleteSlash(editorState);
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        handler(editorState, menuService, context);
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      handler(editorState, menuService, context);
+      // });
     };
   }
 
@@ -36,24 +36,27 @@ class SelectionMenuItem {
   late final SelectionMenuItemHandler handler;
 
   void _deleteSlash(EditorState editorState) {
-    final selectionService = editorState.service.selectionService;
-    final selection = selectionService.currentSelection.value;
-    final nodes = selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      final node = nodes.first as TextNode;
-      final end = selection.start.offset;
-      final lastSlashIndex =
-          node.toPlainText().substring(0, end).lastIndexOf('/');
-      // delete all the texts after '/' along with '/'
-      final transaction = editorState.transaction
-        ..deleteText(
-          node,
-          lastSlashIndex,
-          end - lastSlashIndex,
-        );
-
-      editorState.apply(transaction);
+    final selection = editorState.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
     }
+    final node = editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
+    final end = selection.start.offset;
+    final lastSlashIndex =
+        delta.toPlainText().substring(0, end).lastIndexOf('/');
+    // delete all the texts after '/' along with '/'
+    final transaction = editorState.transaction
+      ..deleteText(
+        node,
+        lastSlashIndex,
+        end - lastSlashIndex,
+      );
+
+    editorState.apply(transaction);
   }
 
   /// Creates a selection menu entry for inserting a [Node].
@@ -72,8 +75,8 @@ class SelectionMenuItem {
     required IconData iconData,
     required List<String> keywords,
     required Node Function(EditorState editorState) nodeBuilder,
-    bool Function(EditorState editorState, TextNode textNode)? insertBefore,
-    bool Function(EditorState editorState, TextNode textNode)? replace,
+    bool Function(EditorState editorState, Node node)? insertBefore,
+    bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
       EditorState editorState,
       Path insertPath,
@@ -93,31 +96,30 @@ class SelectionMenuItem {
       ),
       keywords: keywords,
       handler: (editorState, _, __) {
-        final selection =
-            editorState.service.selectionService.currentSelection.value;
-        final textNodes = editorState
-            .service.selectionService.currentSelectedNodes
-            .whereType<TextNode>();
-        if (textNodes.length != 1 || selection == null) {
+        final selection = editorState.selection;
+        if (selection == null || !selection.isCollapsed) {
           return;
         }
-        final textNode = textNodes.first;
-        final node = nodeBuilder(editorState);
+        final node = editorState.getNodeAtPath(selection.end.path);
+        final delta = node?.delta;
+        if (node == null || delta == null) {
+          return;
+        }
+        final newNode = nodeBuilder(editorState);
         final transaction = editorState.transaction;
-        final bReplace = replace?.call(editorState, textNode) ?? false;
-        final bInsertBefore =
-            insertBefore?.call(editorState, textNode) ?? false;
+        final bReplace = replace?.call(editorState, node) ?? false;
+        final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
 
         //default insert after
-        var path = textNode.path.next;
+        var path = node.path.next;
         if (bReplace) {
-          path = textNode.path;
+          path = node.path;
         } else if (bInsertBefore) {
-          path = textNode.path;
+          path = node.path;
         }
 
         transaction
-          ..insertNode(path, node)
+          ..insertNode(path, newNode)
           ..afterSelection = updateSelection?.call(
                 editorState,
                 path,
@@ -127,7 +129,7 @@ class SelectionMenuItem {
               selection;
 
         if (bReplace) {
-          transaction.deleteNode(textNode);
+          transaction.deleteNode(node);
         }
 
         editorState.apply(transaction);
@@ -367,35 +369,42 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   }
 
   void _deleteLastCharacters({int length = 1}) {
-    final selectionService = widget.editorState.service.selectionService;
-    final selection = selectionService.currentSelection.value;
-    final nodes = selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      widget.onSelectionUpdate();
-      final transaction = widget.editorState.transaction
-        ..deleteText(
-          nodes.first as TextNode,
-          selection.start.offset - length,
-          length,
-        );
-      widget.editorState.apply(transaction);
+    final selection = widget.editorState.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
     }
+    final node = widget.editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
+
+    widget.onSelectionUpdate();
+    final transaction = widget.editorState.transaction
+      ..deleteText(
+        node,
+        selection.start.offset - length,
+        length,
+      );
+    widget.editorState.apply(transaction);
   }
 
   void _insertText(String text) {
-    final selection =
-        widget.editorState.service.selectionService.currentSelection.value;
-    final nodes =
-        widget.editorState.service.selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      widget.onSelectionUpdate();
-      final transaction = widget.editorState.transaction
-        ..insertText(
-          nodes.first as TextNode,
-          selection.end.offset,
-          text,
-        );
-      widget.editorState.apply(transaction);
+    final selection = widget.editorState.selection;
+    if (selection == null || !selection.isSingle) {
+      return;
     }
+    final node = widget.editorState.getNodeAtPath(selection.end.path);
+    if (node == null) {
+      return;
+    }
+    widget.onSelectionUpdate();
+    final transaction = widget.editorState.transaction
+      ..insertText(
+        node,
+        selection.end.offset,
+        text,
+      );
+    widget.editorState.apply(transaction);
   }
 }
