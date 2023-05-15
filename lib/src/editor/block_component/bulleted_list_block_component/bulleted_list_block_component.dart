@@ -1,8 +1,13 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+class BulletedListBlockKeys {
+  BulletedListBlockKeys._();
+
+  static const String type = 'bulleted_list';
+}
 
 Node bulletedListNode({
   String? text,
@@ -11,7 +16,7 @@ Node bulletedListNode({
 }) {
   attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
   return Node(
-    type: 'bulleted_list',
+    type: BulletedListBlockKeys.type,
     attributes: {
       ...attributes,
     },
@@ -84,12 +89,15 @@ class _BulletedListBlockComponentWidgetState
   }
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return NestedListWidget(
-      children: editorState.renderer.buildList(
-        context,
-        widget.node.children,
+    return Container(
+      color: backgroundColor,
+      child: NestedListWidget(
+        children: editorState.renderer.buildList(
+          context,
+          widget.node.children,
+        ),
+        child: buildBulletListBlockComponent(context),
       ),
-      child: buildBulletListBlockComponent(context),
     );
   }
 

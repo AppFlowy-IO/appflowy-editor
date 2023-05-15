@@ -1,7 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+class QuoteBlockKeys {
+  const QuoteBlockKeys._();
+
+  static const String type = 'quote';
+}
 
 Node quoteNode({
   Attributes? attributes,
@@ -9,7 +14,7 @@ Node quoteNode({
 }) {
   attributes ??= {'delta': Delta().toJson()};
   return Node(
-    type: 'quote',
+    type: QuoteBlockKeys.type,
     attributes: {
       ...attributes,
     },
