@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
 List<ToolbarItem> headingItems = [1, 2, 3]
     .map((index) => _HeadingToolbarItem(index))
@@ -24,9 +23,13 @@ class _HeadingToolbarItem extends ToolbarItem {
               onPressed: () => editorState.formatNode(
                 selection,
                 (node) => node.copyWith(
-                  type: isHighlight ? 'paragraph' : 'heading',
+                  type: isHighlight
+                      ? ParagraphBlockKeys.type
+                      : HeadingBlockKeys.type,
                   attributes: {
-                    'level': level,
+                    HeadingBlockKeys.level: level,
+                    HeadingBlockKeys.backgroundColor:
+                        node.attributes[blockComponentBackgroundColor],
                     'delta': (node.delta ?? Delta()).toJson(),
                   },
                 ),
