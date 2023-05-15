@@ -196,6 +196,7 @@ void main() async {
   }
 }
 ''';
+
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });

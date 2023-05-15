@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "openLink": MessageLookupByLibrary.simpleMessage("open link"),
         "quote": MessageLookupByLibrary.simpleMessage("Quote"),
         "removeLink": MessageLookupByLibrary.simpleMessage("remove link"),
+        "resetToDefaultColor":
+            MessageLookupByLibrary.simpleMessage("reset to default color"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textColor": MessageLookupByLibrary.simpleMessage("text color"),
