@@ -22,6 +22,9 @@ abstract class BlockComponentBuilder {
   bool showActions(Node node) => true;
 
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
+
+  BlockComponentConfiguration get configuration =>
+      const BlockComponentConfiguration();
 }
 
 abstract class BlockComponentRendererService {
@@ -92,8 +95,9 @@ class BlockComponentRenderer extends BlockComponentRendererService {
     }
 
     return BlockComponentContainer(
-      showBlockComponentActions: builder.showActions(node),
       node: node,
+      configuration: builder.configuration,
+      showBlockComponentActions: builder.showActions(node),
       builder: (_) => builder.build(blockComponentContext),
       actionBuilder: (_, state) => builder.actionBuilder(
         blockComponentContext,
