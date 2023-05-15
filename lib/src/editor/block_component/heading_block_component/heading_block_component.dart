@@ -1,11 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
 class HeadingBlockKeys {
   const HeadingBlockKeys._();
+
+  static const String type = 'heading';
 
   /// The level data of a heading block.
   ///
@@ -19,7 +20,7 @@ Node headingNode({
 }) {
   attributes ??= {'delta': Delta().toJson()};
   return Node(
-    type: 'heading',
+    type: HeadingBlockKeys.type,
     attributes: {
       HeadingBlockKeys.level: level,
       ...attributes,

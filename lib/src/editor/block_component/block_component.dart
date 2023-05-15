@@ -23,6 +23,9 @@ export 'quote_block_component/quote_character_shortcut.dart';
 export 'heading_block_component/heading_block_component.dart';
 export 'heading_block_component/heading_character_shortcut.dart';
 
+// image
+export 'image_block_component/image_block_component.dart';
+
 // base
 export 'base_component/convert_to_paragraph_command.dart';
 export 'base_component/insert_newline_in_type_command.dart';

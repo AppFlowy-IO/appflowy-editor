@@ -1,11 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/background_color_mixin.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
   TodoListBlockKeys._();
+
+  static const String type = 'todo_list';
 
   /// The checked data of a todo list block.
   ///
@@ -21,7 +22,7 @@ Node todoListNode({
 }) {
   attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
   return Node(
-    type: 'todo_list',
+    type: TodoListBlockKeys.type,
     attributes: {
       TodoListBlockKeys.checked: checked,
       ...attributes,
@@ -108,18 +109,21 @@ class _TodoListBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return widget.node.children.isEmpty
+    return node.children.isEmpty
         ? buildTodoListBlockComponent(context)
         : buildTodoListBlockComponentWithChildren(context);
   }
 
   Widget buildTodoListBlockComponentWithChildren(BuildContext context) {
-    return NestedListWidget(
-      children: editorState.renderer.buildList(
-        context,
-        widget.node.children,
+    return Container(
+      color: backgroundColor,
+      child: NestedListWidget(
+        children: editorState.renderer.buildList(
+          context,
+          widget.node.children,
+        ),
+        child: buildTodoListBlockComponent(context),
       ),
-      child: buildTodoListBlockComponent(context),
     );
   }
 

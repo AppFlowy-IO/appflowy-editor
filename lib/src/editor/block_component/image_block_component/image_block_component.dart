@@ -7,6 +7,8 @@ import 'image_block_widget.dart';
 class ImageBlockKeys {
   ImageBlockKeys._();
 
+  static const String type = 'image';
+
   /// The align data of a image block.
   ///
   /// The value is a String.
@@ -37,7 +39,7 @@ Node imageNode({
   double? width,
 }) {
   return Node(
-    type: 'image',
+    type: ImageBlockKeys.type,
     attributes: {
       ImageBlockKeys.url: url,
       ImageBlockKeys.align: align,
