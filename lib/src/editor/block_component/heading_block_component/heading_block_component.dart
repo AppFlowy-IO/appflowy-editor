@@ -12,6 +12,8 @@ class HeadingBlockKeys {
   ///
   /// The value is a int.
   static const String level = 'level';
+
+  static const backgroundColor = blockComponentBackgroundColor;
 }
 
 Node headingNode({

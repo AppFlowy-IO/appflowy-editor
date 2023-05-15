@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
 final ToolbarItem paragraphItem = ToolbarItem(
   id: 'editor.paragraph',
@@ -15,9 +14,11 @@ final ToolbarItem paragraphItem = ToolbarItem(
       onPressed: () => editorState.formatNode(
         selection,
         (node) => node.copyWith(
-          type: 'paragraph',
+          type: ParagraphBlockKeys.type,
           attributes: {
             'delta': (node.delta ?? Delta()).toJson(),
+            ParagraphBlockKeys.backgroundColor:
+                node.attributes[blockComponentBackgroundColor],
           },
         ),
       ),

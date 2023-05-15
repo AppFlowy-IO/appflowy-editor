@@ -9,6 +9,8 @@ class ParagraphBlockKeys {
   static const String type = 'paragraph';
 
   static const String delta = 'delta';
+
+  static const String backgroundColor = blockComponentBackgroundColor;
 }
 
 Node paragraphNode({
@@ -96,7 +98,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
 
   Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
     return Container(
-      color: backgroundColor,
+      color: backgroundColor.withOpacity(0.5),
       child: NestedListWidget(
         children: editorState.renderer.buildList(
           context,
