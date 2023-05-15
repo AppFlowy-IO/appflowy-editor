@@ -18,7 +18,7 @@ class BlockComponentActionContainer extends StatelessWidget {
     return Container(
       alignment: Alignment.centerRight,
       width: 30,
-      height: 20, // TODO: magic number, change it to the height of the block
+      height: 25, // TODO: magic number, change it to the height of the block
       color: Colors
           .transparent, // have to set the color to transparent to make the MouseRegion work
       child: !showActions ? const SizedBox.shrink() : actionBuilder(context),

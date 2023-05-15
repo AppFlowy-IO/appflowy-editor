@@ -16,16 +16,20 @@ class BlockComponentContainer extends StatefulWidget {
   const BlockComponentContainer({
     super.key,
     this.showBlockComponentActions = false,
+    required this.configuration,
     required this.node,
     required this.builder,
     required this.actionBuilder,
   });
 
+  final Node node;
+  final BlockComponentConfiguration configuration;
+
   /// show block component actions or not
   ///
   /// + and option button
   final bool showBlockComponentActions;
-  final Node node;
+
   final WidgetBuilder builder;
   final Widget Function(
     BuildContext context,
@@ -70,6 +74,7 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
       return child;
     }
 
+    final padding = widget.configuration.padding(widget.node);
     return MouseRegion(
       onEnter: (_) => showActionsNotifier.value = true,
       onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
@@ -80,12 +85,18 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ValueListenableBuilder<bool>(
-            valueListenable: showActionsNotifier,
-            builder: (context, value, child) => BlockComponentActionContainer(
-              node: widget.node,
-              showActions: value,
-              actionBuilder: (context) => widget.actionBuilder(context, this),
+          Padding(
+            padding: EdgeInsets.only(
+              top: padding.top,
+              bottom: padding.bottom,
+            ),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: showActionsNotifier,
+              builder: (context, value, child) => BlockComponentActionContainer(
+                node: widget.node,
+                showActions: value,
+                actionBuilder: (context) => widget.actionBuilder(context, this),
+              ),
             ),
           ),
           Expanded(child: child),
