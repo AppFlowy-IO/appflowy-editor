@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 import 'package:appflowy_editor/src/editor/command/text_commands.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
@@ -75,6 +76,13 @@ class _ColorPickerState extends State<ColorPicker> {
               // if it is in hightlight color mode with a highlight color, show the clear highlight color button
               widget.isTextColor == false && widget.selectedColorHex != null
                   ? ClearHighlightColorButton(
+                      editorState: widget.editorState,
+                      dismissOverlay: widget.onDismiss,
+                    )
+                  : const SizedBox.shrink(),
+              // set text color back to null(default text color)
+              widget.isTextColor == true && widget.selectedColorHex != null
+                  ? ResetTextColorButton(
                       editorState: widget.editorState,
                       dismissOverlay: widget.onDismiss,
                     )
@@ -160,6 +168,57 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 }
 
+class ResetTextColorButton extends StatelessWidget {
+  const ResetTextColorButton({
+    super.key,
+    required this.editorState,
+    required this.dismissOverlay,
+  });
+
+  final EditorState editorState;
+  final Function() dismissOverlay;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 32,
+      child: TextButton.icon(
+        onPressed: () {
+          final selection = editorState.selection!;
+          editorState
+              .formatDelta(selection, {BuiltInAttributeKey.textColor: null});
+          dismissOverlay();
+        },
+        icon: FlowySvg(
+          name: 'reset_text_color',
+          width: 13,
+          height: 13,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        label: Text(
+          AppFlowyEditorLocalizations.current.resetToDefaultColor,
+          style: TextStyle(
+            color: Theme.of(context).hintColor,
+          ),
+          textAlign: TextAlign.left,
+        ),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered)) {
+                return Theme.of(context).hoverColor;
+              }
+              return Colors.transparent;
+            },
+          ),
+          alignment: Alignment.centerLeft,
+        ),
+      ),
+    );
+  }
+}
+
 class ClearHighlightColorButton extends StatelessWidget {
   const ClearHighlightColorButton({
     super.key,
@@ -178,11 +237,14 @@ class ClearHighlightColorButton extends StatelessWidget {
       child: TextButton.icon(
         onPressed: () {
           final selection = editorState.selection!;
-          editorState.formatDelta(selection, {'highlightColor': null});
+          editorState.formatDelta(
+            selection,
+            {BuiltInAttributeKey.highlightColor: null},
+          );
           dismissOverlay();
         },
         icon: FlowySvg(
-          name: 'toolbar/clear_highlight_color',
+          name: 'clear_highlight_color',
           width: 13,
           height: 13,
           color: Theme.of(context).iconTheme.color,

@@ -55,24 +55,11 @@ void _formatHighlightColor(EditorState editorState, String color) {
 
 void _formatFontColor(EditorState editorState, String color) {
   final selection = editorState.selection!;
-  //Since there is no additional color for the text, remove the 'textColor' attribute, so that the textColor item on the toolbar won't be highlighted
-  //'0xff000000' is the deault color when developer doesn't set.
-  if (color == editorState.editorStyle.textStyle?.color?.toHex() ||
-      color == '0xff000000') {
-    editorState.formatDelta(selection, {'textColor': null});
-  } else {
-    editorState.formatDelta(selection, {'textColor': color});
-  }
+  editorState.formatDelta(selection, {'textColor': color});
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
-  final defaultColor = editorState.editorStyle.textStyle?.color ??
-      Colors.black; // the deault text color when developer doesn't set
   return [
-    ColorOption(
-      colorHex: defaultColor.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorDefault,
-    ),
     ColorOption(
       colorHex: Colors.grey.toHex(),
       name: AppFlowyEditorLocalizations.current.fontColorGray,
@@ -109,13 +96,7 @@ List<ColorOption> _generateTextColorOptions(EditorState editorState) {
 }
 
 List<ColorOption> _generateHighlightColorOptions(EditorState editorState) {
-  final defaultBackgroundColorHex = editorState.editorStyle.highlightColorHex ??
-      '0x6000BCF0'; // the deault highlight color when developer doesn't set
   return [
-    ColorOption(
-      colorHex: defaultBackgroundColorHex,
-      name: AppFlowyEditorLocalizations.current.backgroundColorDefault,
-    ),
     ColorOption(
       colorHex: Colors.grey.withOpacity(0.3).toHex(),
       name: AppFlowyEditorLocalizations.current.backgroundColorGray,
