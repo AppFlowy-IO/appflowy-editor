@@ -31,10 +31,14 @@ Node headingNode({
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   HeadingBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.textStyleBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  /// The text style of the heading block.
+  final TextStyle Function(int level)? textStyleBuilder;
 
   @override
   Widget build(BlockComponentContext blockComponentContext) {
@@ -43,6 +47,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       node: node,
       configuration: configuration,
+      textStyleBuilder: textStyleBuilder,
     );
   }
 
