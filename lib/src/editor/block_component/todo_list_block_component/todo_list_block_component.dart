@@ -38,6 +38,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
     this.icon,
   });
 
+  @override
   final BlockComponentConfiguration configuration;
 
   /// The text style of the todo list block.
@@ -130,7 +131,6 @@ class _TodoListBlockComponentWidgetState
   Widget buildTodoListBlockComponent(BuildContext context) {
     return Container(
       color: backgroundColor,
-      padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

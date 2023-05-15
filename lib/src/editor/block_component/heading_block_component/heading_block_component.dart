@@ -33,6 +33,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
     this.configuration = const BlockComponentConfiguration(),
   });
 
+  @override
   final BlockComponentConfiguration configuration;
 
   @override
@@ -98,7 +99,6 @@ class _HeadingBlockComponentWidgetState
   Widget build(BuildContext context) {
     return Container(
       color: backgroundColor,
-      padding: padding,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,
