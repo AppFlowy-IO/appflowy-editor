@@ -33,6 +33,7 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
     this.configuration = const BlockComponentConfiguration(),
   });
 
+  @override
   final BlockComponentConfiguration configuration;
 
   @override
@@ -109,7 +110,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Container(
       color: node.children.isEmpty ? backgroundColor : null,
-      padding: padding,
+      // padding: padding,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,

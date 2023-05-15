@@ -28,6 +28,7 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
     this.configuration = const BlockComponentConfiguration(),
   });
 
+  @override
   final BlockComponentConfiguration configuration;
 
   @override
@@ -103,7 +104,6 @@ class _NumberedListBlockComponentWidgetState
   Widget buildBulletListBlockComponent(BuildContext context) {
     return Container(
       color: backgroundColor,
-      padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,

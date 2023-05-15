@@ -27,6 +27,7 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
     this.configuration = const BlockComponentConfiguration(),
   });
 
+  @override
   final BlockComponentConfiguration configuration;
 
   @override
@@ -82,7 +83,6 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   Widget build(BuildContext context) {
     return Container(
       color: backgroundColor,
-      padding: padding,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -57,7 +57,7 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
 
   @override
   Widget build(BuildContext context) {
-    final child = ChangeNotifierProvider<Node>.value(
+    Widget child = ChangeNotifierProvider<Node>.value(
       value: widget.node,
       child: Consumer<Node>(
         builder: (_, __, ___) {
@@ -70,27 +70,18 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
       ),
     );
 
-    if (!widget.showBlockComponentActions) {
-      return child;
-    }
-
-    final padding = widget.configuration.padding(widget.node);
-    return MouseRegion(
-      onEnter: (_) => showActionsNotifier.value = true,
-      onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
-      hitTestBehavior: HitTestBehavior.deferToChild,
-      opaque: false,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              top: padding.top,
-              bottom: padding.bottom,
-            ),
-            child: ValueListenableBuilder<bool>(
+    if (widget.showBlockComponentActions) {
+      child = MouseRegion(
+        onEnter: (_) => showActionsNotifier.value = true,
+        onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
+        hitTestBehavior: HitTestBehavior.deferToChild,
+        opaque: false,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder<bool>(
               valueListenable: showActionsNotifier,
               builder: (context, value, child) => BlockComponentActionContainer(
                 node: widget.node,
@@ -98,10 +89,16 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
                 actionBuilder: (context) => widget.actionBuilder(context, this),
               ),
             ),
-          ),
-          Expanded(child: child),
-        ],
-      ),
+            Expanded(child: child),
+          ],
+        ),
+      );
+    }
+
+    final padding = widget.configuration.padding(widget.node);
+    return Padding(
+      padding: padding,
+      child: child,
     );
   }
 }
