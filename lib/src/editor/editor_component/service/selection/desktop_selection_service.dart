@@ -153,7 +153,8 @@ class _DesktopSelectionServiceWidgetState
     final selection = editorState.selection;
     // TODO: why do we need to check this?
     if (currentSelection.value == selection &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
+        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
+        editorState.selectionType != SelectionType.block) {
       return;
     }
 
@@ -164,13 +165,17 @@ class _DesktopSelectionServiceWidgetState
       _clearSelection();
 
       if (selection != null) {
-        if (selection.isCollapsed) {
+        if (editorState.selectionType == SelectionType.block) {
+          // updates selection area.
+          Log.selection.debug('update block selection area, $selection');
+          _updateBlockSelectionAreas(selection);
+        } else if (selection.isCollapsed) {
           // updates cursor area.
           Log.selection.debug('update cursor area, $selection');
           _updateCursorAreas(selection.start);
         } else {
           // updates selection area.
-          Log.selection.debug('update cursor area, $selection');
+          Log.selection.debug('update selection area, $selection');
           _updateSelectionAreas(selection);
         }
       }
@@ -345,6 +350,26 @@ class _DesktopSelectionServiceWidgetState
 
   void _onPanEnd(DragEndDetails details) {
     // do nothing
+  }
+
+  void _updateBlockSelectionAreas(Selection selection) {
+    assert(editorState.selectionType == SelectionType.block);
+    final nodes = getNodesInSelection(selection).normalized;
+
+    currentSelectedNodes = nodes;
+
+    final node = nodes.first;
+    final rect = Offset.zero & node.rect.size;
+    final overlay = OverlayEntry(
+      builder: (context) => SelectionWidget(
+        color: widget.selectionColor,
+        layerLink: node.layerLink,
+        rect: rect,
+      ),
+    );
+    _selectionAreas.add(overlay);
+
+    Overlay.of(context)?.insertAll(_selectionAreas);
   }
 
   void _updateSelectionAreas(Selection selection) {
