@@ -18,7 +18,7 @@ void main() async {
     }
   });
 
-  group('formatGreaterToQuote', () {
+  group('formatDoubleQuoteToQuote', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
     // Before
     // >|Welcome to AppFlowy Editor 🔥!
@@ -26,7 +26,7 @@ void main() async {
     // [quote] Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the > but not dot', () async {
       testFormatCharacterShortcut(
-        formatGreaterToQuote,
+        formatDoubleQuoteToQuote,
         '>',
         1,
         (result, before, after) {
@@ -44,7 +44,7 @@ void main() async {
     // >W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
       testFormatCharacterShortcut(
-        formatGreaterToQuote,
+        formatDoubleQuoteToQuote,
         '>',
         2,
         (result, before, after) {
@@ -81,7 +81,7 @@ void main() async {
         Position(path: [1], offset: 1),
       );
       editorState.selection = selection;
-      final result = await formatGreaterToQuote.execute(editorState);
+      final result = await formatDoubleQuoteToQuote.execute(editorState);
       final after = editorState.getNodeAtPath([1])!;
 
       // the second line will be formatted as the bulleted list style

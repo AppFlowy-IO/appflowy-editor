@@ -51,7 +51,7 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
   formatNumberToNumberedList,
 
   // quote
-  formatGreaterToQuote,
+  formatDoubleQuoteToQuote,
 
   // heading
   formatSignToHeading,
