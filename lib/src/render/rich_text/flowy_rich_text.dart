@@ -16,7 +16,7 @@ class FlowyRichText extends StatefulWidget {
     Key? key,
     this.cursorHeight,
     this.cursorWidth = 1.5,
-    this.lineHeight = 1.0,
+    this.lineHeight,
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
@@ -28,7 +28,7 @@ class FlowyRichText extends StatefulWidget {
   final EditorState editorState;
   final double? cursorHeight;
   final double cursorWidth;
-  final double lineHeight;
+  final double? lineHeight;
   final FlowyTextSpanDecorator? textSpanDecorator;
   final String placeholderText;
   final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
