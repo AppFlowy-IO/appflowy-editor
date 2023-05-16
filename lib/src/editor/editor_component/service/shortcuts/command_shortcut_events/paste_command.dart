@@ -1,22 +1,23 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
-/// End key event.
+/// Paste.
 ///
 /// - support
 ///   - desktop
 ///   - web
 ///
-final CommandShortcutEvent copyCommand = CommandShortcutEvent(
-  key: 'copy the selected content',
-  command: 'ctrl+c',
-  macOSCommand: 'cmd+c',
-  handler: _copyCommandHandler,
+final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
+  key: 'paste the content',
+  command: 'ctrl+v',
+  macOSCommand: 'cmd+v',
+  handler: _pasteCommandHandler,
 );
 
-CommandShortcutEventHandler _copyCommandHandler = (editorState) {
+CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'copyCommand is not supported on mobile platform.');
+    assert(false, 'pasteCommand is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
 
@@ -25,6 +26,7 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  // delete the selection first.
   if (!selection.isCollapsed) {
     editorState.deleteSelection(selection);
   }
@@ -35,6 +37,17 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
     return KeyEventResult.skipRemainingHandlers;
   }
   assert(selection.isCollapsed);
+
+  // TODO: paste the rich text.
+  () async {
+    final data = await AppFlowyClipboard.getData();
+    if (data.html != null) {
+      // ...
+    }
+    if (data.text != null) {
+      handlePastePlainText(editorState, data.text!);
+    }
+  }();
 
   return KeyEventResult.handled;
 };

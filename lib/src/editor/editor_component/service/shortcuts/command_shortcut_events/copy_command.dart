@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
-/// End key event.
+/// Copy.
 ///
 /// - support
 ///   - desktop
@@ -30,6 +30,7 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   final text = editorState.getTextInSelection(selection).join('\n');
 
   // rich text.
+  // TODO: support rich text. the below code is not working.
   final nodes = editorState.getNodesInSelection(selection);
   final html = NodesToHTMLConverter(
     nodes: nodes,

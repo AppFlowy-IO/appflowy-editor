@@ -226,7 +226,7 @@ void _pastRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
     return;
   }
   if (data.text != null) {
-    _handlePastePlainText(editorState, data.text!);
+    handlePastePlainText(editorState, data.text!);
     return;
   }
 }
@@ -236,17 +236,15 @@ void _pasteSingleLine(
   Selection selection,
   String line,
 ) {
-  final node = editorState.document.nodeAtPath(selection.end.path)! as TextNode;
-  final beginOffset = selection.end.offset;
+  assert(selection.isCollapsed);
+  final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
-    ..updateText(
-      node,
-      Delta()
-        ..retain(beginOffset)
-        ..addAll(_lineContentToDelta(line)),
-    )
+    ..insertText(node, selection.startIndex, line)
     ..afterSelection = (Selection.collapsed(
-      Position(path: selection.end.path, offset: beginOffset + line.length),
+      Position(
+        path: selection.end.path,
+        offset: selection.startIndex + line.length,
+      ),
     ));
   editorState.apply(transaction);
 }
@@ -302,8 +300,8 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   editorState.apply(transaction);
 }
 
-void _handlePastePlainText(EditorState editorState, String plainText) {
-  final selection = editorState.cursorSelection?.normalized;
+void handlePastePlainText(EditorState editorState, String plainText) {
+  final selection = editorState.selection?.normalized;
   if (selection == null) {
     return;
   }
