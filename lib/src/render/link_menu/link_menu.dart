@@ -2,6 +2,7 @@ import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/render/style/editor_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
@@ -13,6 +14,7 @@ class LinkMenu extends StatefulWidget {
     required this.onCopyLink,
     required this.onRemoveLink,
     required this.onFocusChange,
+    required this.onDismiss,
   }) : super(key: key);
 
   final String? linkText;
@@ -21,6 +23,7 @@ class LinkMenu extends StatefulWidget {
   final VoidCallback onOpenLink;
   final VoidCallback onCopyLink;
   final VoidCallback onRemoveLink;
+  final VoidCallback onDismiss;
   final void Function(bool value) onFocusChange;
 
   @override
@@ -111,35 +114,44 @@ class _LinkMenuState extends State<LinkMenu> {
   }
 
   Widget _buildInput() {
-    return TextField(
-      focusNode: _focusNode,
-      style: TextStyle(
-        fontSize: style?.textStyle?.fontSize,
-      ),
-      textAlign: TextAlign.left,
-      controller: _textEditingController,
-      onSubmitted: widget.onSubmitted,
-      decoration: InputDecoration(
-        hintText: 'URL',
-        hintStyle: TextStyle(
+    return RawKeyboardListener(
+      focusNode: FocusNode(),
+      child: TextField(
+        focusNode: _focusNode,
+        style: TextStyle(
           fontSize: style?.textStyle?.fontSize,
         ),
-        contentPadding: const EdgeInsets.all(16.0),
-        isDense: true,
-        suffixIcon: IconButton(
-          padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
-            name: 'clear',
-            width: 24,
-            height: 24,
+        textAlign: TextAlign.left,
+        controller: _textEditingController,
+        onSubmitted: widget.onSubmitted,
+        decoration: InputDecoration(
+          hintText: 'URL',
+          hintStyle: TextStyle(
+            fontSize: style?.textStyle?.fontSize,
           ),
-          onPressed: _textEditingController.clear,
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          borderSide: BorderSide(color: Color(0xFFBDBDBD)),
+          contentPadding: const EdgeInsets.all(16.0),
+          isDense: true,
+          suffixIcon: IconButton(
+            padding: const EdgeInsets.all(4.0),
+            icon: const FlowySvg(
+              name: 'clear',
+              width: 24,
+              height: 24,
+            ),
+            onPressed: _textEditingController.clear,
+          ),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderSide: BorderSide(color: Color(0xFFBDBDBD)),
+          ),
         ),
       ),
+      onKey: (key) {
+        if (key is! RawKeyDownEvent) return;
+        if (key.logicalKey == LogicalKeyboardKey.escape) {
+          widget.onDismiss();
+        }
+      },
     );
   }
 

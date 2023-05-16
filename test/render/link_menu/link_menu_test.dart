@@ -21,6 +21,7 @@ void main() async {
         onSubmitted: (text) {
           submittedText = text;
         },
+        onDismiss: () {}
       );
       await tester.pumpWidget(
         MaterialApp(

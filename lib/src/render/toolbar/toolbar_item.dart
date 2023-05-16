@@ -451,6 +451,9 @@ void showLinkMenu(
                     .updateSelection(customSelection);
               }
             },
+            onDismiss: () {
+              _dismissOverlay();
+            },
           ),
         ),
       );
