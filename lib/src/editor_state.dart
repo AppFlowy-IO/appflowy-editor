@@ -304,6 +304,10 @@ class EditorState {
     return rects;
   }
 
+  void cancelSubscription() {
+    _observer.close();
+  }
+
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
     if (options.recordUndo) {
       final undoItem = undoManager.getUndoHistoryItem();
