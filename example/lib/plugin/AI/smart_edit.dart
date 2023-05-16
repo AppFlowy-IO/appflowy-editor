@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 ToolbarItem smartEditItem = ToolbarItem(
   id: 'appflowy.toolbar.smart_edit',
   type: 5,
+  group: 5,
   iconBuilder: (isHighlight) {
     return Icon(
       Icons.edit,
