@@ -365,6 +365,10 @@ class _DesktopSelectionServiceWidgetState
         color: widget.selectionColor,
         layerLink: node.layerLink,
         rect: rect,
+        decoration: BoxDecoration(
+          color: widget.selectionColor,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
       ),
     );
     _selectionAreas.add(overlay);
