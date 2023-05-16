@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 final ToolbarItem paragraphItem = ToolbarItem(
   id: 'editor.paragraph',
+  group: 1,
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
     final selection = editorState.selection!;

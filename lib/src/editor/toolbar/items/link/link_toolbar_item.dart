@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 final linkItem = ToolbarItem(
   id: 'editor.link',
+  group: 4,
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
     final selection = editorState.selection!;

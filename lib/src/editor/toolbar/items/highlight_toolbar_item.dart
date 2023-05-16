@@ -1,10 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/utils/tooltip_util.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
 // unused now.
 final highlightItem = ToolbarItem(
   id: 'editor.highlight',
+  group: 5,
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
     final selection = editorState.selection!;
