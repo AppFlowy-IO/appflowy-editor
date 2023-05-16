@@ -24,7 +24,8 @@ class FloatingToolbar extends StatefulWidget {
   State<FloatingToolbar> createState() => _FloatingToolbarState();
 }
 
-class _FloatingToolbarState extends State<FloatingToolbar> {
+class _FloatingToolbarState extends State<FloatingToolbar>
+    with WidgetsBindingObserver {
   OverlayEntry? _toolbarContainer;
   FloatingToolbarWidget? _toolbarWidget;
 
@@ -34,6 +35,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
     widget.scrollController.addListener(_onScrollPositionChanged);
   }
@@ -55,6 +57,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     widget.scrollController.removeListener(_onScrollPositionChanged);
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -65,6 +68,13 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
 
     _clear();
     _toolbarWidget = null;
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+
+    _showAfterDelay();
   }
 
   @override
