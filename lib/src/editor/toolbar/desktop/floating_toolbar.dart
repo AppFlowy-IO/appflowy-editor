@@ -117,8 +117,6 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   void _showToolbar() {
-    _cacheSelection = editorState.selection;
-
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;

@@ -17,7 +17,7 @@ class BlockComponentActionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
-      width: 30,
+      width: 50,
       height: 25, // TODO: magic number, change it to the height of the block
       color: Colors
           .transparent, // have to set the color to transparent to make the MouseRegion work
