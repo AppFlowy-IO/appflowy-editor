@@ -2,6 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+const floatingToolbarHeight = 32.0;
+
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -31,7 +33,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SizedBox(
-          height: 32.0,
+          height: floatingToolbarHeight,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
