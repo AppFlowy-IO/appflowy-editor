@@ -6,11 +6,13 @@ class SelectionWidget extends StatefulWidget {
     required this.layerLink,
     required this.rect,
     required this.color,
+    this.decoration,
   }) : super(key: key);
 
   final Color color;
   final Rect rect;
   final LayerLink layerLink;
+  final BoxDecoration? decoration;
 
   @override
   State<SelectionWidget> createState() => _SelectionWidgetState();
@@ -29,7 +31,8 @@ class _SelectionWidgetState extends State<SelectionWidget> {
         //  to solve the problem that selection areas cannot overlap.
         child: IgnorePointer(
           child: Container(
-            color: widget.color,
+            color: widget.decoration == null ? widget.color : null,
+            decoration: widget.decoration,
           ),
         ),
       ),

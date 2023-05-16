@@ -211,11 +211,12 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   }
 
   TextSpan get _placeholderTextSpan {
+    final style = widget.editorState.editorStyle.textStyleConfiguration;
     return TextSpan(
       children: [
         TextSpan(
           text: widget.placeholderText,
-          style: widget.editorState.editorStyle.textStyleConfiguration.text,
+          style: style.text.copyWith(height: widget.lineHeight),
         ),
       ],
     );
@@ -227,7 +228,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
-      var textStyle = style.text;
+      var textStyle = style.text.copyWith(height: widget.lineHeight);
       GestureRecognizer? recognizer;
       final attributes = textInsert.attributes;
       if (attributes != null) {
