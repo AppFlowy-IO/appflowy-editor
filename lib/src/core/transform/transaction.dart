@@ -58,10 +58,14 @@ class Transaction {
     if (nodes.isEmpty) {
       return;
     }
+    if (deepCopy) {
+      // add `toList()` to prevent the redundant copy of the nodes when looping
+      nodes = nodes.map((e) => e.copyWith()).toList();
+    }
     add(
       InsertOperation(
         path,
-        deepCopy ? nodes.map((e) => e.copyWith()) : nodes,
+        nodes,
       ),
     );
   }
