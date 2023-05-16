@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/utils/tooltip_util.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/icon_item_widget.dart';
 
 final List<ToolbarItem> markdownFormatItems = [
   _FormatToolbarItem(
@@ -42,6 +41,7 @@ class _FormatToolbarItem extends ToolbarItem {
     required String tooltip,
   }) : super(
           id: 'editor.$id',
+          group: 2,
           isActive: (editorState) {
             final selection = editorState.selection;
             if (selection == null) {

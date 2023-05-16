@@ -10,6 +10,7 @@ class _HeadingToolbarItem extends ToolbarItem {
   _HeadingToolbarItem(this.level)
       : super(
           id: 'editor.h$level',
+          group: 1,
           isActive: (editorState) => editorState.selection?.isSingle ?? false,
           builder: (context, editorState) {
             final selection = editorState.selection!;

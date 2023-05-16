@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
@@ -111,4 +110,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
 
   //
   selectAllCommand,
+
+  // copy and paste
+  copyCommand,
 ];

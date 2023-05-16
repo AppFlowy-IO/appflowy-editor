@@ -5,6 +5,7 @@ const placeholderItemId = 'editor.placeholder';
 
 final ToolbarItem placeholderItem = ToolbarItem(
   id: placeholderItemId,
+  group: -1,
   isActive: (editorState) => true,
   builder: (_, __) {
     return Padding(
