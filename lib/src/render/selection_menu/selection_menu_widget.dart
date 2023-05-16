@@ -19,9 +19,12 @@ class SelectionMenuItem {
     required SelectionMenuItemHandler handler,
   }) {
     this.handler = (editorState, menuService, context) {
-      _deleteSlash(editorState);
+      if (deleteSlash) {
+        _deleteSlash(editorState);
+      }
       // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handler(editorState, menuService, context);
+      onSelected?.call();
       // });
     };
   }
@@ -34,6 +37,10 @@ class SelectionMenuItem {
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
   late final SelectionMenuItemHandler handler;
+
+  VoidCallback? onSelected;
+
+  bool deleteSlash = true;
 
   void _deleteSlash(EditorState editorState) {
     final selection = editorState.selection;

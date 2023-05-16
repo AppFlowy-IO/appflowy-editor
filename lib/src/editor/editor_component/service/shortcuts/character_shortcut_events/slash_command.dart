@@ -15,7 +15,10 @@ final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   ),
 );
 
-CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
+CharacterShortcutEvent customSlashCommand(
+  List<SelectionMenuItem> items, {
+  shouldInsertSlash = true,
+}) {
   return CharacterShortcutEvent(
     key: 'show the slash menu',
     character: '/',
@@ -25,6 +28,7 @@ CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
         ...standardSelectionMenuItems,
         ...items,
       ],
+      shouldInsertSlash: shouldInsertSlash,
     ),
   );
 }
@@ -32,8 +36,9 @@ CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
   EditorState editorState,
-  List<SelectionMenuItem> items,
-) async {
+  List<SelectionMenuItem> items, {
+  shouldInsertSlash = true,
+}) async {
   if (PlatformExtension.isMobile) {
     return false;
   }
@@ -53,7 +58,9 @@ Future<bool> _showSlashMenu(
   }
 
   // insert the slash character
-  await editorState.insertTextAtPosition('/', position: selection.start);
+  if (shouldInsertSlash) {
+    await editorState.insertTextAtPosition('/', position: selection.start);
+  }
 
   // show the slash menu
   {
@@ -65,6 +72,7 @@ Future<bool> _showSlashMenu(
         context: context,
         editorState: editorState,
         selectionMenuItems: items,
+        deleteSlashByDefault: shouldInsertSlash,
       );
       _selectionMenuService?.show();
     }

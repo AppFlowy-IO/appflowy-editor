@@ -17,11 +17,13 @@ class SelectionMenu implements SelectionMenuService {
     required this.context,
     required this.editorState,
     required this.selectionMenuItems,
+    this.deleteSlashByDefault = true,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
+  final bool deleteSlashByDefault;
 
   OverlayEntry? _selectionMenuEntry;
   bool _selectionUpdateByInner = false;
@@ -106,7 +108,13 @@ class SelectionMenu implements SelectionMenuService {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
-                      items: selectionMenuItems,
+                      items: selectionMenuItems
+                        ..forEach((element) {
+                          element.deleteSlash = deleteSlashByDefault;
+                          element.onSelected = () {
+                            dismiss();
+                          };
+                        }),
                       maxItemInRow: 5,
                       editorState: editorState,
                       menuService: this,
