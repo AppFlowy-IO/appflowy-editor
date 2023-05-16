@@ -83,9 +83,6 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
       // uses debounce to avoid the computing the rects too frequently.
       _showAfterDelay(const Duration(milliseconds: 200));
     }
-
-    // clear the toolbar widget
-    _toolbarWidget = null;
   }
 
   void _onScrollPositionChanged() {
@@ -108,19 +105,20 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   void _showAfterDelay([Duration duration = Duration.zero]) {
-    _clear(); // clear the previous toolbar
-
     // uses debounce to avoid the computing the rects too frequently.
     Debounce.debounce(
       _debounceKey,
       duration,
       () {
+        _clear(); // clear the previous toolbar.
         _showToolbar();
       },
     );
   }
 
   void _showToolbar() {
+    _cacheSelection = editorState.selection;
+
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;
