@@ -127,7 +127,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
       builder: (context) {
         return Positioned(
           left: offset.dx,
-          top: max(0, offset.dy) - 30,
+          top: max(0, offset.dy) - floatingToolbarHeight,
           child: _buildToolbar(context),
         );
       },
@@ -146,12 +146,16 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   Offset _findSuitableOffset(Iterable<Offset> offsets) {
     assert(offsets.isNotEmpty);
 
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+
     // find the min offset with non-negative dy.
-    final offsetsWithNonNegativeDy =
-        offsets.where((element) => element.dy >= 30);
+    final offsetsWithNonNegativeDy = offsets.where(
+      (element) => element.dy >= editorOffset.dy,
+    );
     if (offsetsWithNonNegativeDy.isEmpty) {
       // if all the rects offset is negative, then the selection is not visible.
-      return offsets.last;
+      return Offset.zero;
     }
 
     final minOffset = offsetsWithNonNegativeDy.reduce((min, current) {

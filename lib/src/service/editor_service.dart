@@ -24,6 +24,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.scrollController,
     this.themeData,
     this.editorStyle = const EditorStyle.desktop(),
+    this.header,
   });
 
   const AppFlowyEditor.custom({
@@ -38,6 +39,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CharacterShortcutEvent> characterShortcutEvents = const [],
     List<CommandShortcutEvent> commandShortcutEvents = const [],
     List<SelectionMenuItem> selectionMenuItems = const [],
+    Widget? header,
   }) : this(
           key: key,
           editorState: editorState,
@@ -50,6 +52,7 @@ class AppFlowyEditor extends StatefulWidget {
           commandShortcutEvents: commandShortcutEvents,
           selectionMenuItems: selectionMenuItems,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
+          header: header,
         );
 
   AppFlowyEditor.standard({
@@ -60,6 +63,7 @@ class AppFlowyEditor extends StatefulWidget {
     bool autoFocus = false,
     Selection? focusedSelection,
     EditorStyle? editorStyle,
+    Widget? header,
   }) : this(
           key: key,
           editorState: editorState,
@@ -71,6 +75,7 @@ class AppFlowyEditor extends StatefulWidget {
           characterShortcutEvents: standardCharacterShortcutEvents,
           commandShortcutEvents: standardCommandShortcutEvents,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
+          header: header,
         );
 
   final EditorState editorState;
@@ -90,6 +95,11 @@ class AppFlowyEditor extends StatefulWidget {
   final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
+  final Positioned Function(
+    BuildContext context,
+    List<ActionMenuItem> items,
+  )? customActionMenuBuilder;
+
   /// Set the value to false to disable editing.
   final bool editable;
 
@@ -98,8 +108,7 @@ class AppFlowyEditor extends StatefulWidget {
 
   final Selection? focusedSelection;
 
-  final Positioned Function(BuildContext context, List<ActionMenuItem> items)?
-      customActionMenuBuilder;
+  final Widget? header;
 
   /// If false the Editor is inside an [AppFlowyScroll]
   final bool shrinkWrap;
@@ -175,20 +184,25 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
       scrollController: widget.scrollController,
-      child: Container(
-        padding: widget.editorStyle.padding,
-        child: SelectionServiceWidget(
-          key: editorState.service.selectionServiceKey,
-          cursorColor: widget.editorStyle.cursorColor,
-          selectionColor: widget.editorStyle.selectionColor,
-          child: KeyboardServiceWidget(
-            key: editorState.service.keyboardServiceKey,
-            characterShortcutEvents: widget.characterShortcutEvents,
-            commandShortcutEvents: widget.commandShortcutEvents,
-            child: editorState.renderer.build(
-              context,
-              editorState.document.root,
-            ),
+      child: SelectionServiceWidget(
+        key: editorState.service.selectionServiceKey,
+        cursorColor: widget.editorStyle.cursorColor,
+        selectionColor: widget.editorStyle.selectionColor,
+        child: KeyboardServiceWidget(
+          key: editorState.service.keyboardServiceKey,
+          characterShortcutEvents: widget.characterShortcutEvents,
+          commandShortcutEvents: widget.commandShortcutEvents,
+          child: Column(
+            children: [
+              widget.header ?? const SizedBox.shrink(),
+              Container(
+                padding: widget.editorStyle.padding,
+                child: editorState.renderer.build(
+                  context,
+                  editorState.document.root,
+                ),
+              ),
+            ],
           ),
         ),
       ),
