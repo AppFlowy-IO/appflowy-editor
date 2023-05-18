@@ -6,7 +6,7 @@ import 'divider_node_widget.dart';
 // ---
 ShortcutEvent insertDividerEvent = ShortcutEvent(
   key: 'Divider',
-  command: 'Minus,shift+digit 8',
+  character: '-',
   handler: _insertDividerHandler,
 );
 

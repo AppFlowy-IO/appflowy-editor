@@ -21,10 +21,10 @@ class DividerWidgetBuilder extends NodeWidgetBuilder<Node> {
 
 class _DividerWidget extends StatefulWidget {
   const _DividerWidget({
-    Key? key,
+    super.key,
     required this.node,
     required this.editorState,
-  }) : super(key: key);
+  });
 
   final Node node;
   final EditorState editorState;
