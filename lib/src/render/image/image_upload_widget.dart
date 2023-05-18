@@ -6,6 +6,8 @@ import 'package:appflowy_editor/src/render/style/editor_style.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/image_bloc.dart';
 
 OverlayEntry? _imageUploadMenu;
 EditorState? _editorState;
@@ -70,9 +72,9 @@ class ImageUploadMenu extends StatefulWidget {
 
 class _ImageUploadMenuState extends State<ImageUploadMenu>
     with TickerProviderStateMixin {
+  late final TabController _tabController;
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
-  String? _fileName;
   String? src;
   String? srcName;
   List<PlatformFile>? _paths;
@@ -83,6 +85,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+    _tabController = TabController(initialIndex: 1, length: 2, vsync: this);
   }
 
   @override
@@ -93,19 +96,13 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
 
   void _pickFiles() async {
     _resetState();
+    final imageFile = (await FilePicker.platform.pickFiles())?.files;
     try {
-      _paths = (await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        onFileLoading: (FilePickerStatus status) =>
-            _logException(status.toString()),
-        allowedExtensions: ['jpg', 'png', 'gif'],
-        allowMultiple: true,
-      ))
-          ?.files;
+      _paths = imageFile;
     } on PlatformException catch (e) {
-      _logException('Unsupported Operation  ${e.toString()}');
+      debugPrint('Unsupported Operation  ${e.toString()}');
     } catch (e) {
-      _logException(e.toString());
+      debugPrint(e.toString());
     }
     if (!mounted) return;
 
@@ -122,67 +119,67 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
   void _resetState() {
     if (!mounted) return;
     setState(() {
-      _fileName = null;
       _paths = null;
     });
   }
 
-  void _logException(String msg) {
-    debugPrint(msg);
-  }
-
   @override
   Widget build(BuildContext context) {
-    TabController tabController =
-        TabController(initialIndex: 1, length: 2, vsync: this);
-    return Container(
-      width: 300,
-      padding: const EdgeInsets.all(24.0),
-      decoration: BoxDecoration(
-        color: style?.selectionMenuBackgroundColor ?? Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 5,
-            spreadRadius: 1,
-            color: Colors.black.withOpacity(0.1),
-          ),
-        ],
-        // borderRadius: BorderRadius.circular(6.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TabBar(
-            controller: tabController,
-            tabs: [
-              _buildHeader(context, 'Upload Image'),
-              _buildHeader(context, 'URL Image'),
-            ],
-          ),
-          SizedBox(
-            height: 200.0,
-            child: TabBarView(
-              controller: tabController,
+    return BlocProvider(
+      create: (_) => ImageBloc(),
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          color: style?.selectionMenuBackgroundColor ?? Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 5,
+              spreadRadius: 1,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ],
+          // borderRadius: BorderRadius.circular(6.0),
+        ),
+        child: BlocBuilder<ImageBloc, ImageState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 16.0),
-                    _buildFileInput(context),
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    _buildHeader(context, 'Upload Image'),
+                    _buildHeader(context, 'URL Image'),
                   ],
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildURLInput(),
-                    const SizedBox(height: 18.0),
-                    _buildUploadButton(context),
-                  ],
+                SizedBox(
+                  height: 200.0,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 16.0),
+                          _buildFileInput(context),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildURLInput(),
+                          const SizedBox(height: 18.0),
+                          _buildUploadButton(context),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -234,12 +231,19 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
       height: 48,
       child: TextButton(
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)))),
-        onPressed: _pickFiles,
+          backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          //TODO: call the block then get image name
+          BlocProvider.of<ImageBloc>(context).add(ImageSelectedEvent());
+        },
         child: const Text(
+          //TODO: Don't forget to localize
           'Pick from computer',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
         ),

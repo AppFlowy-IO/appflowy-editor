@@ -142,7 +142,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
 
   Widget _buildResizableImage(BuildContext context) {
     Image? image;
-
+    final width = _imageWidth == null ? null : _imageWidth! - _distance;
     switch (widget.type) {
       case 'file':
         final imageFile = File(widget.src);
@@ -151,18 +151,16 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
         }
         image = Image.file(
           imageFile,
-          width: _imageWidth == null ? null : _imageWidth! - _distance,
+          width: width,
           gaplessPlayback: true,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildError(context);
-          },
+          errorBuilder: (context, _, __) => _buildError(context),
         );
         break;
 
       case 'network':
         image = Image.network(
           widget.src,
-          width: _imageWidth == null ? null : _imageWidth! - _distance,
+          width: width,
           gaplessPlayback: true,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null ||
@@ -173,7 +171,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
 
             return _buildLoading(context);
           },
-          errorBuilder: (context, error, stackTrace) => _buildError(context),
+          errorBuilder: (context, _, __) => _buildError(context),
         );
         break;
     }
