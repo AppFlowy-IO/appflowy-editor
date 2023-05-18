@@ -242,7 +242,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-        border: Border.all(width: 1, color: Colors.black),
+        border: Border.all(width: 1, color: Colors.grey),
       ),
       child: const Text('Could not load the image'),
     );

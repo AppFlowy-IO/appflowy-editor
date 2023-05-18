@@ -10,7 +10,7 @@ class TextNodeParser extends NodeParser {
   String get id => 'text';
 
   @override
-  String transform(Node node) {
+  String transform(Node node, {int level = 0}) {
     assert(node is TextNode);
     final textNode = node as TextNode;
     final markdown = DeltaMarkdownEncoder().convert(textNode.delta);
@@ -59,6 +59,20 @@ class TextNodeParser extends NodeParser {
         suffix = '';
       }
     }
+
+    final children = textNode.children;
+    for (final child in children) {
+      result +=
+          '\n${_indentationFromLevel(level + 1)}${transform(child, level: level + 1)}';
+    }
+
     return '$result$suffix';
+  }
+
+  String _indentationFromLevel(int level) {
+    const multiplier = 2;
+    final spaces = multiplier * level;
+
+    return ' ' * spaces;
   }
 }
