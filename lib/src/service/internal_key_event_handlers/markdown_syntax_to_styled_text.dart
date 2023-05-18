@@ -272,17 +272,13 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
   return KeyEventResult.handled;
 };
 
-ShortcutEventHandler singleUnderscoreToItalicHandler = (editorState, event) {
-  return singleCharacterToItalicHandler(editorState, event, '_');
-};
+ShortcutEventHandler singleCharacterToItalicHandler =
+    (EditorState editorState, RawKeyEvent? event) {
+  final character = event?.character;
+  if (character == null) {
+    return KeyEventResult.ignored;
+  }
 
-ShortcutEventHandler singleAsteriskToItalicHandler = (editorState, event) {
-  return singleCharacterToItalicHandler(editorState, event, '*');
-};
-
-KeyEventResult Function(EditorState, RawKeyEvent?, String)
-    singleCharacterToItalicHandler =
-    (EditorState editorState, RawKeyEvent? event, String character) {
   // Obtain the selection and selected nodes of the current document through the 'selectionService'
   // to determine whether the selection is collapsed and whether the selected node is a text node.
   final selectionService = editorState.service.selectionService;
@@ -327,7 +323,12 @@ KeyEventResult Function(EditorState, RawKeyEvent?, String)
   return KeyEventResult.handled;
 };
 
-ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
+ShortcutEventHandler doubleCharacterToBoldHandler = (editorState, event) {
+  final character = event?.character;
+  if (character == null) {
+    return KeyEventResult.ignored;
+  }
+
   final selectionService = editorState.service.selectionService;
   final selection = selectionService.currentSelection.value;
   final textNodes = selectionService.currentSelectedNodes.whereType<TextNode>();
@@ -339,99 +340,41 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
   final textNode = textNodes.first;
   final text = textNode.toPlainText();
 
-// make sure the last two characters are '**'
-  if (text.length < 2 || text[selection.end.offset - 1] != '*') {
+// make sure the last two characters are eg. '**'
+  if (text.length < 2 || text[selection.end.offset - 1] != character) {
     return KeyEventResult.ignored;
   }
 
-// find all the index of '*'
-  final asteriskIndexList = <int>[];
+// find all the index of eg. '*'
+  final characterIndexList = <int>[];
   for (var i = 0; i < text.length; i++) {
-    if (text[i] == '*') {
-      asteriskIndexList.add(i);
+    if (text[i] == character) {
+      characterIndexList.add(i);
     }
   }
 
-  if (asteriskIndexList.length < 3) return KeyEventResult.ignored;
+  if (characterIndexList.length < 3) return KeyEventResult.ignored;
 
-// make sure the second to last and third to last asterisk are connected
-  final thirdToLastAsteriskIndex =
-      asteriskIndexList[asteriskIndexList.length - 3];
-  final secondToLastAsteriskIndex =
-      asteriskIndexList[asteriskIndexList.length - 2];
-  final lastAsteriskIndex = asteriskIndexList[asteriskIndexList.length - 1];
-  if (secondToLastAsteriskIndex != thirdToLastAsteriskIndex + 1 ||
-      lastAsteriskIndex == secondToLastAsteriskIndex + 1) {
+// make sure the second to last and third to last character are connected
+  final thirdToLastCharacterIndex =
+      characterIndexList[characterIndexList.length - 3];
+  final secondToLastCharacterIndex =
+      characterIndexList[characterIndexList.length - 2];
+  final lastCharacterIndex = characterIndexList[characterIndexList.length - 1];
+
+  if (secondToLastCharacterIndex != thirdToLastCharacterIndex + 1 ||
+      lastCharacterIndex == secondToLastCharacterIndex + 1) {
     return KeyEventResult.ignored;
   }
 
-//delete the last three asterisks
-//update the style of the text surround by '** **' to bold
-//update the cursor position
+// delete the last three characters
+// update the style of the text surround by eg. '** **' to bold
+// update the cursor position
   final transaction = editorState.transaction
-    ..deleteText(textNode, lastAsteriskIndex, 1)
-    ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
-    ..formatText(textNode, thirdToLastAsteriskIndex,
-        selection.end.offset - thirdToLastAsteriskIndex - 2, {
-      BuiltInAttributeKey.bold: true,
-    })
-    ..afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: selection.end.offset - 3),
-    );
-
-  editorState.apply(transaction);
-
-  return KeyEventResult.handled;
-};
-
-//Implement in the same way as doubleAsteriskToBoldHanlder
-ShortcutEventHandler doubleUnderscoreToBoldHandler = (editorState, event) {
-  final selectionService = editorState.service.selectionService;
-  final selection = selectionService.currentSelection.value;
-  final textNodes = selectionService.currentSelectedNodes.whereType<TextNode>();
-
-  if (selection == null || !selection.isSingle || textNodes.length != 1) {
-    return KeyEventResult.ignored;
-  }
-
-  final textNode = textNodes.first;
-  final text = textNode.toPlainText();
-
-// make sure the last two characters are '__'
-  if (text.length < 2 || text[selection.end.offset - 1] != '_') {
-    return KeyEventResult.ignored;
-  }
-
-// find all the index of '_'
-  final underscoreIndexList = <int>[];
-  for (var i = 0; i < text.length; i++) {
-    if (text[i] == '_') {
-      underscoreIndexList.add(i);
-    }
-  }
-
-  if (underscoreIndexList.length < 3) return KeyEventResult.ignored;
-
-// make sure the second to last and third to last underscore are connected
-  final thirdToLastUnderscoreIndex =
-      underscoreIndexList[underscoreIndexList.length - 3];
-  final secondToLastUnderscoreIndex =
-      underscoreIndexList[underscoreIndexList.length - 2];
-  final lastUnderscoreIndex =
-      underscoreIndexList[underscoreIndexList.length - 1];
-  if (secondToLastUnderscoreIndex != thirdToLastUnderscoreIndex + 1 ||
-      lastUnderscoreIndex == secondToLastUnderscoreIndex + 1) {
-    return KeyEventResult.ignored;
-  }
-
-//delete the last three underscores
-//update the style of the text surround by '__ __' to bold
-//update the cursor position
-  final transaction = editorState.transaction
-    ..deleteText(textNode, lastUnderscoreIndex, 1)
-    ..deleteText(textNode, thirdToLastUnderscoreIndex, 2)
-    ..formatText(textNode, thirdToLastUnderscoreIndex,
-        selection.end.offset - thirdToLastUnderscoreIndex - 2, {
+    ..deleteText(textNode, lastCharacterIndex, 1)
+    ..deleteText(textNode, thirdToLastCharacterIndex, 2)
+    ..formatText(textNode, thirdToLastCharacterIndex,
+        selection.end.offset - thirdToLastCharacterIndex - 2, {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(

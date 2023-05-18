@@ -317,24 +317,14 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: exitEditingModeEventHandler,
   ),
   ShortcutEvent(
-    key: 'Underscore to italic',
-    character: '_',
-    handler: singleUnderscoreToItalicHandler,
+    key: 'Asterisk or underscore to italic',
+    character: '*, _',
+    handler: singleCharacterToItalicHandler,
   ),
   ShortcutEvent(
-    key: 'Asterisk to italic',
-    character: '*',
-    handler: singleAsteriskToItalicHandler,
-  ),
-  ShortcutEvent(
-    key: 'Double asterisk to bold',
-    character: '*',
-    handler: doubleAsteriskToBoldHandler,
-  ),
-  ShortcutEvent(
-    key: 'Double underscore to bold',
-    character: '_',
-    handler: doubleUnderscoreToBoldHandler,
+    key: 'Double asterisk or underscore to bold',
+    character: '*, _',
+    handler: doubleCharacterToBoldHandler,
   ),
   ShortcutEvent(
     key: 'Move cursor left one word',

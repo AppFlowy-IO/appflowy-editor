@@ -129,12 +129,10 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
     for (final shortcutEvent in widget.shortcutEvents) {
       if (shortcutEvent.canRespondToRawKeyEvent(event)) {
         final result = shortcutEvent.handler(widget.editorState, event);
-        if (result == KeyEventResult.handled) {
-          return KeyEventResult.handled;
-        } else if (result == KeyEventResult.skipRemainingHandlers) {
-          return KeyEventResult.skipRemainingHandlers;
+
+        if (result != KeyEventResult.ignored) {
+          return result;
         }
-        continue;
       }
     }
 
@@ -158,7 +156,18 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
 extension on ShortcutEvent {
   bool canRespondToRawKeyEvent(RawKeyEvent event) {
-    return ((character?.isNotEmpty ?? false) && character == event.character) ||
-        keybindings.containsKeyEvent(event);
+    if (character?.isNotEmpty ?? false) {
+      if (character!.length > 1) {
+        final characters = _charactersFromString(character!);
+        return characters.contains(event.character);
+      }
+
+      return event.character == character;
+    }
+
+    return keybindings.containsKeyEvent(event);
   }
+
+  List<String> _charactersFromString(String character) =>
+      character.split(',').map((c) => c.replaceAll(' ', '')).toList();
 }
