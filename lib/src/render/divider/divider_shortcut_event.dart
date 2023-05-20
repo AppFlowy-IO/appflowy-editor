@@ -21,10 +21,6 @@ ShortcutEventHandler _insertDividerHandler = (editorState, event) {
   if (textNode.toPlainText() != '--') {
     return KeyEventResult.ignored;
   }
-  // Chnages
-  else if (textNode.toPlainText() != '**') {
-    return KeyEventResult.ignored;
-  }
   final transaction = editorState.transaction
     ..deleteText(textNode, 0, 2) // remove the existing minuses.
     ..insertNode(textNode.path, Node(type: kDividerType)) // insert the divder
