@@ -247,27 +247,26 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   await editor.startTesting();
 
 // selection is collapsed
-  final emptySelection =
-      Selection.single(path: [0], startOffset: 7);
+  final emptySelection = Selection.single(
+    path: [0],
+    startOffset: 7,
+  );
   await editor.updateSelection(emptySelection);
 
   // Link dialog should not be visible when selection is null or collapsed
-  if(Platform.isWindows || Platform.isLinux){
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: !Platform.isMacOS,
+    isMetaPressed: Platform.isMacOS,
+  );
   expect(find.byType(LinkMenu), findsNothing);
 
 // selection is not null
-   final selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  final selection = Selection.single(
+    path: [1],
+    startOffset: 0,
+    endOffset: text.length,
+  );
   await editor.updateSelection(selection);
 
   // show toolbar
@@ -275,17 +274,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(find.byType(ToolbarWidget), findsOneWidget);
 
   // trigger the link menu
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: !Platform.isMacOS,
+    isMetaPressed: Platform.isMacOS,
+  );
+
   expect(find.byType(LinkMenu), findsOneWidget);
 
   await tester.enterText(find.byType(TextField), link);
@@ -305,17 +299,11 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   );
 
   await editor.updateSelection(selection);
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressLogicKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: !Platform.isMacOS,
+    isMetaPressed: Platform.isMacOS,
+  );
   expect(find.byType(LinkMenu), findsOneWidget);
   expect(
     find.text(link, findRichText: true, skipOffstage: false),
