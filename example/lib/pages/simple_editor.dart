@@ -63,7 +63,11 @@ class SimpleEditor extends StatelessWidget {
             return Column(
               children: [
                 Expanded(
-                  child: _buildEditor(context, editorState, scrollController),
+                  child: _buildMobileEditor(
+                    context,
+                    editorState,
+                    scrollController,
+                  ),
                 ),
                 if (Platform.isIOS || Platform.isAndroid)
                   _buildMobileToolbar(context, editorState),
@@ -76,6 +80,19 @@ class SimpleEditor extends StatelessWidget {
           );
         }
       },
+    );
+  }
+
+  Widget _buildMobileEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.custom(
+      editorStyle: const EditorStyle.mobile(),
+      editorState: editorState,
+      scrollController: scrollController,
+      blockComponentBuilders: standardBlockComponentBuilderMap,
     );
   }
 
