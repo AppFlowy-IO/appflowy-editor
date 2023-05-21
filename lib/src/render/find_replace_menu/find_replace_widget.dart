@@ -82,9 +82,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               onPressed: () {
                 widget.dismiss();
                 searchService.findAndHighlight(queriedPattern);
-                setState(() {
-                  queriedPattern = '';
-                });
+                setState(() => queriedPattern = '');
               },
               icon: const Icon(Icons.close),
               tooltip: 'Close',
@@ -131,9 +129,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
 
   void _searchPattern() {
     searchService.findAndHighlight(findController.text);
-    setState(() {
-      queriedPattern = findController.text;
-    });
+    setState(() => queriedPattern = findController.text);
   }
 
   void _replaceSelectedWord() {

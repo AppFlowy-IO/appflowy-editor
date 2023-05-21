@@ -9,7 +9,7 @@ void main() {
       searchAlgorithm = SearchAlgorithm();
     });
 
-    test('searchAlgorithm returns the index of the only found pattern', () {
+    test('returns the index of the only found pattern', () {
       const pattern = 'Appflowy';
       const text = 'Welcome to Appflowy 😁';
 
@@ -17,7 +17,7 @@ void main() {
       expect(result, [11]);
     });
 
-    test('searchAlgorithm returns the index of the multiple found patterns',
+    test('returns the index of the multiple found patterns',
         () {
       const pattern = 'Appflowy';
       const text = '''
@@ -33,7 +33,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [11, 24, 80, 196, 324, 371]);
     });
 
-    test('searchAlgorithm returns empty list if pattern is not found', () {
+    test('returns empty list if pattern is not found', () {
       const pattern = 'Flutter';
       const text = 'Welcome to Appflowy 😁';
 
@@ -42,7 +42,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, []);
     });
 
-    test('searchAlgorithm returns pattern index if pattern is non-ASCII', () {
+    test('returns pattern index if pattern is non-ASCII', () {
       const pattern = '😁';
       const text = 'Welcome to Appflowy 😁';
 
@@ -50,7 +50,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [20]);
     });
 
-    test('searchAlgorithm returns pattern index if pattern is not separate word', () {
+    test('returns pattern index if pattern is not separate word', () {
       const pattern = 'App';
       const text = 'Welcome to Appflowy 😁';
 
@@ -58,7 +58,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [11]);
     });
 
-    test('searchAlgorithm returns empty list bcz it is case sensitive', () {
+    test('returns empty list bcz it is case sensitive', () {
       const pattern = 'APPFLOWY';
       const text = 'Welcome to Appflowy 😁';
 
