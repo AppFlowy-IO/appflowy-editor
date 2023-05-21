@@ -103,7 +103,7 @@ class SearchService {
     //unhighlight the selected word before it is replaced
     formatHighlight(
       editorState,
-      editorState.editorStyle.highlightColorHex!,
+      '0x6000BCF0',
     );
     editorState.undoManager.forgetRecentUndo();
 
@@ -154,7 +154,7 @@ class SearchService {
 
       formatHighlight(
         editorState,
-        editorState.editorStyle.highlightColorHex!,
+        editorState.editorStyle.findHighlightColorHex!,
       );
       editorState.undoManager.forgetRecentUndo();
     }

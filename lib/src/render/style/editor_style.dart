@@ -42,6 +42,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final TextStyle? href;
   final TextStyle? code;
   final String? highlightColorHex;
+  final String? findHighlightColorHex;
 
   // Item's pop up menu styles
   final Color? popupMenuFGColor;
@@ -70,6 +71,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.href,
     required this.code,
     required this.highlightColorHex,
+    required this.findHighlightColorHex,
     required this.lineHeight,
     required this.popupMenuFGColor,
     required this.popupMenuHoverColor,
@@ -98,6 +100,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     TextStyle? href,
     TextStyle? code,
     String? highlightColorHex,
+    String? findHighlightColorHex,
     double? lineHeight,
     Color? popupMenuFGColor,
     Color? popupMenuHoverColor,
@@ -131,6 +134,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       href: href ?? this.href,
       code: code ?? this.code,
       highlightColorHex: highlightColorHex ?? this.highlightColorHex,
+      findHighlightColorHex:
+          findHighlightColorHex ?? this.findHighlightColorHex,
       lineHeight: lineHeight ?? this.lineHeight,
       popupMenuFGColor: popupMenuFGColor ?? this.popupMenuFGColor,
       popupMenuHoverColor: popupMenuHoverColor ?? this.popupMenuHoverColor,
@@ -193,6 +198,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       href: TextStyle.lerp(href, other.href, t),
       code: TextStyle.lerp(code, other.code, t),
       highlightColorHex: highlightColorHex,
+      findHighlightColorHex: findHighlightColorHex,
       lineHeight: lineHeight,
       popupMenuFGColor: Color.lerp(popupMenuFGColor, other.popupMenuFGColor, t),
       popupMenuHoverColor:
@@ -236,6 +242,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       backgroundColor: Color(0xFFE0F8FF),
     ),
     highlightColorHex: '0x6000BCF0',
+    findHighlightColorHex: '0x60F09E00',
     lineHeight: 1.5,
     popupMenuFGColor: const Color(0xFF333333),
     popupMenuHoverColor: const Color(0xFFE0F8FF),
