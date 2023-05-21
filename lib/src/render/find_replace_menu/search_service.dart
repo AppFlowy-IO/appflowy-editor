@@ -11,7 +11,7 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
-  BayerMooreAlgorithm searchAlgorithm = BayerMooreAlgorithm();
+  SearchAlgorithm searchAlgorithm = SearchAlgorithm();
   String queriedPattern = '';
   int selectedIndex = 0;
 

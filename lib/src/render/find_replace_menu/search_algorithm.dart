@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-class BayerMooreAlgorithm {
+class SearchAlgorithm {
   //This is a standard algorithm used for searching patterns in long text samples
   //It is more efficient than brute force searching because it is able to skip
   //characters that will never possibly match with required pattern.
