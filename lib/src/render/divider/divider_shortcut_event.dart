@@ -11,21 +11,28 @@ ShortcutEvent insertDividerEvent = ShortcutEvent(
 );
 
 ShortcutEventHandler _insertDividerHandler = (editorState, event) {
+  final character = event?.character;
+  if (character == null) {
+    return KeyEventResult.ignored;
+  }
+
   final selection = editorState.service.selectionService.currentSelection.value;
   final textNodes = editorState.service.selectionService.currentSelectedNodes
       .whereType<TextNode>();
   if (textNodes.length != 1 || selection == null) {
     return KeyEventResult.ignored;
   }
+
   final textNode = textNodes.first;
-  if (textNode.toPlainText() != '--') {
+  if (textNode.toPlainText() != (character * 2)) {
     return KeyEventResult.ignored;
   }
+
   final transaction = editorState.transaction
-    ..deleteText(textNode, 0, 2) // remove the existing minuses.
-    ..insertNode(textNode.path, Node(type: kDividerType)) // insert the divder
+    ..deleteText(textNode, 0, 2) // remove the existing characters.
+    ..insertNode(textNode.path, Node(type: kDividerType)) // insert the divider
     ..afterSelection = Selection.single(
-      // update selection to the next text node.
+      // update selection
       path: textNode.path.next,
       startOffset: 0,
     );
