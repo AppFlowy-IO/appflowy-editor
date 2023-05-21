@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/render/find_replace_menu/search_algorithm.dart';
 
 void main() {
-  group('SearchAlgorithm', () {
+  group('search_algorithm_test.dart', () {
     late SearchAlgorithm searchAlgorithm;
 
-    setUpAll(() {
+    setUp(() {
       searchAlgorithm = SearchAlgorithm();
     });
 
-    test('returns the index of the only found pattern', () {
+    test('search algorithm returns the index of the only found pattern', () {
       const pattern = 'Appflowy';
       const text = 'Welcome to Appflowy 😁';
 
@@ -17,7 +17,7 @@ void main() {
       expect(result, [11]);
     });
 
-    test('returns the index of the multiple found patterns',
+    test('search algorithm returns the index of the multiple found patterns',
         () {
       const pattern = 'Appflowy';
       const text = '''
@@ -33,7 +33,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [11, 24, 80, 196, 324, 371]);
     });
 
-    test('returns empty list if pattern is not found', () {
+    test('search algorithm returns empty list if pattern is not found', () {
       const pattern = 'Flutter';
       const text = 'Welcome to Appflowy 😁';
 
@@ -42,7 +42,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, []);
     });
 
-    test('returns pattern index if pattern is non-ASCII', () {
+    test('search algorithm returns pattern index if pattern is non-ASCII', () {
       const pattern = '😁';
       const text = 'Welcome to Appflowy 😁';
 
@@ -50,7 +50,9 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [20]);
     });
 
-    test('returns pattern index if pattern is not separate word', () {
+    test(
+        'search algorithm returns pattern index if pattern is not separate word',
+        () {
       const pattern = 'App';
       const text = 'Welcome to Appflowy 😁';
 
@@ -58,7 +60,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       expect(result, [11]);
     });
 
-    test('returns empty list bcz it is case sensitive', () {
+    test('search algorithm returns empty list bcz it is case sensitive', () {
       const pattern = 'APPFLOWY';
       const text = 'Welcome to Appflowy 😁';
 
