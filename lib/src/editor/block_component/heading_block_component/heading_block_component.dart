@@ -13,6 +13,8 @@ class HeadingBlockKeys {
   /// The value is a int.
   static const String level = 'level';
 
+  static const String delta = 'delta';
+
   static const backgroundColor = blockComponentBackgroundColor;
 }
 

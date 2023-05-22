@@ -2,6 +2,21 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class DocumentBlockKeys {
+  const DocumentBlockKeys._();
+
+  static const String type = 'document';
+}
+
+Node documentNode({
+  required Iterable<Node> children,
+}) {
+  return Node(
+    type: DocumentBlockKeys.type,
+    children: children,
+  );
+}
+
 class DocumentComponentBuilder extends BlockComponentBuilder {
   @override
   Widget build(BlockComponentContext blockComponentContext) {
