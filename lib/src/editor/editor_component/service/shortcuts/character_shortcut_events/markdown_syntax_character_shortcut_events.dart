@@ -1,9 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_double_character/format_bold.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_double_character/format_strikethrough.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_code.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_italic.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_by_wrapping_with_single_character/format_strikethrough.dart';
 
 // Include all the shortcut(formatting) events triggered by wrapping text with  double characters.
 // 1. double asterisk to bold -> **abc**

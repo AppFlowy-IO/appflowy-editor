@@ -64,7 +64,6 @@ class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
 
   @override
   Widget buildWithSingle(BuildContext context) {
-    final check = widget.textNode.attributes.check;
     return Padding(
       padding: padding,
       child: Row(

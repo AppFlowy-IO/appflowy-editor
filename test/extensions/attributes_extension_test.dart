@@ -144,7 +144,7 @@ void main() {
 
     test('color', () {
       final Attributes attribute = {
-        'color': '0xff212fff',
+        'textColor': '0xff212fff',
       };
       expect(attribute.color, const Color(0XFF212FFF));
     });
@@ -158,14 +158,14 @@ void main() {
 
     test('color - parse failure return white', () {
       final Attributes attribute = {
-        'color': 'hello123',
+        'textColor': 'hello123',
       };
       expect(attribute.color, const Color(0XFFFFFFFF));
     });
 
     test('backgroundColor', () {
       final Attributes attribute = {
-        'backgroundColor': '0xff678fff',
+        'highlightColor': '0xff678fff',
       };
       expect(attribute.backgroundColor, const Color(0XFF678FFF));
     });
@@ -179,7 +179,7 @@ void main() {
 
     test('backgroundColor - parse failure return white', () {
       final Attributes attribute = {
-        'backgroundColor': 'hello123',
+        'highlightColor': 'hello123',
       };
       expect(attribute.backgroundColor, const Color(0XFFFFFFFF));
     });

@@ -72,8 +72,8 @@ class EditorState {
   late EditorStyle editorStyle;
 
   /// The selection notifier of the editor.
-  final ValueNotifier<Selection?> selectionNotifier =
-      ValueNotifier<Selection?>(null);
+  final PropertyValueNotifier<Selection?> selectionNotifier =
+      PropertyValueNotifier<Selection?>(null);
 
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
@@ -216,8 +216,6 @@ class EditorState {
       _selectionUpdateReason = SelectionUpdateReason.transaction;
       selection = transaction.afterSelection;
       _selectionUpdateReason = SelectionUpdateReason.uiEvent;
-      // if the selection is not changed, we still need to notify the listeners.
-      selectionNotifier.notifyListeners();
     }
 
     // TODO: execute this line after the UI has been updated.
@@ -355,30 +353,6 @@ class EditorState {
       document.delete(op.path, op.nodes.length);
     } else if (op is UpdateTextOperation) {
       document.updateText(op.path, op.delta);
-    }
-  }
-
-  void _applyRules(int maximumRuleApplyLoop) {
-    // Set a maximum count to prevent a dead loop.
-    if (maximumRuleApplyLoop >= 5 || disableRules) {
-      return;
-    }
-
-    // Rules
-    _insureLastNodeEditable(transaction);
-
-    if (transaction.operations.isNotEmpty) {
-      apply(
-        transaction,
-        withUpdateSelection: false,
-      );
-    }
-  }
-
-  void _insureLastNodeEditable(Transaction tr) {
-    if (document.root.children.isEmpty ||
-        document.root.children.last.id != 'text') {
-      tr.insertNode([document.root.children.length], TextNode.empty());
     }
   }
 }

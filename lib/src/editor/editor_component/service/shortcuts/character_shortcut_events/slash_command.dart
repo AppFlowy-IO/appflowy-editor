@@ -63,7 +63,7 @@ Future<bool> _showSlashMenu(
   }
 
   // show the slash menu
-  {
+  () {
     // this code is copied from the the old editor.
     // TODO: refactor this code
     final context = editorState.getNodeAtPath(selection.start.path)?.context;
@@ -76,7 +76,7 @@ Future<bool> _showSlashMenu(
       );
       _selectionMenuService?.show();
     }
-  }
+  }();
 
   return true;
 }
