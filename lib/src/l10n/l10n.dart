@@ -651,6 +651,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `url`
+  String get urlHint {
+    return Intl.message(
+      'url',
+      name: 'urlHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `highlight color`
   String get highlightColor {
     return Intl.message(

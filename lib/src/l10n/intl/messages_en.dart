@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint7": MessageLookupByLibrary.simpleMessage("Tint 7"),
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
-        "underline": MessageLookupByLibrary.simpleMessage("Underline")
+        "underline": MessageLookupByLibrary.simpleMessage("Underline"),
+        "urlHint": MessageLookupByLibrary.simpleMessage("url")
       };
 }

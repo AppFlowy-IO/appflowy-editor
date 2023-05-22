@@ -97,6 +97,7 @@
   "openLink": "open link",
   "copyLink": "copy link",
   "removeLink": "remove link",
+  "urlHint": "url",
   "highlightColor": "highlight color",
   "clearHighlightColor": "clear highlight color",
   "customColor": "custom color",
