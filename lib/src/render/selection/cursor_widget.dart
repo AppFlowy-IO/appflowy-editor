@@ -44,12 +44,9 @@ class CursorWidgetState extends State<CursorWidget> {
 
   Timer _initTimer() {
     return Timer.periodic(
-        Duration(milliseconds: (widget.blinkingInterval * 1000).toInt()),
-        (timer) {
-      setState(() {
-        showCursor = !showCursor;
-      });
-    });
+      Duration(milliseconds: (widget.blinkingInterval * 1000).toInt()),
+      (timer) => setState(() => showCursor = !showCursor),
+    );
   }
 
   /// force the cursor widget to show for a while
