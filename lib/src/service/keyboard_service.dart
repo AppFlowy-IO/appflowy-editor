@@ -156,18 +156,12 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
 extension on ShortcutEvent {
   bool canRespondToRawKeyEvent(RawKeyEvent event) {
-    if (character?.isNotEmpty ?? false) {
-      if (character!.length > 1) {
-        final characters = _charactersFromString(character!);
-        return characters.contains(event.character);
-      }
-
-      return event.character == character;
+    final characters = this.characters;
+    if (characters != null && characters.isNotEmpty) {
+      final mappedCharacters = characters.split(',').map((c) => c.trim());
+      return mappedCharacters.contains(event.character);
     }
 
     return keybindings.containsKeyEvent(event);
   }
-
-  List<String> _charactersFromString(String character) =>
-      character.split(',').map((c) => c.replaceAll(' ', '')).toList();
 }

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 class ShortcutEvent {
   ShortcutEvent({
     required this.key,
-    this.character,
+    this.characters,
     this.command,
     required this.handler,
     String? windowsCommand,
@@ -17,7 +17,7 @@ class ShortcutEvent {
   }) {
     // character and command cannot be null at the same time
     assert(
-      !(character == null &&
+      !(characters == null &&
           command == null &&
           windowsCommand == null &&
           macOSCommand == null &&
@@ -25,7 +25,7 @@ class ShortcutEvent {
       'character and command cannot be null at the same time',
     );
     assert(
-      !(character != null &&
+      !(characters != null &&
           (command != null &&
               windowsCommand != null &&
               macOSCommand != null &&
@@ -64,7 +64,7 @@ class ShortcutEvent {
   ///
   String? command;
 
-  String? character;
+  String? characters;
 
   final ShortcutEventHandler handler;
 

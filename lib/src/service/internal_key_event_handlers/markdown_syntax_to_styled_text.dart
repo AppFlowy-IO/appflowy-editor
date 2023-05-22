@@ -346,8 +346,8 @@ ShortcutEventHandler doubleCharacterToBoldHandler = (editorState, event) {
   }
 
 // find all the index of eg. '*'
-  final characterIndexList = <int>[];
-  for (var i = 0; i < text.length; i++) {
+  final List<int> characterIndexList = [];
+  for (int i = 0; i < text.length; i++) {
     if (text[i] == character) {
       characterIndexList.add(i);
     }
@@ -367,14 +367,14 @@ ShortcutEventHandler doubleCharacterToBoldHandler = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
-// delete the last three characters
-// update the style of the text surround by eg. '** **' to bold
-// update the cursor position
+  // delete the last three characters
+  // update the style of the text surround by eg. '** **' to bold
+  // update the cursor position
   final transaction = editorState.transaction
     ..deleteText(textNode, lastCharacterIndex, 1)
     ..deleteText(textNode, thirdToLastCharacterIndex, 2)
     ..formatText(textNode, thirdToLastCharacterIndex,
-        selection.end.offset - thirdToLastCharacterIndex - 2, {
+        selection.end.offset - thirdToLastCharacterIndex - 3, {
       BuiltInAttributeKey.bold: true,
     })
     ..afterSelection = Selection.collapsed(

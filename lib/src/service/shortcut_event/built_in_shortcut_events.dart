@@ -256,7 +256,7 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'selection menu',
-    character: '/',
+    characters: '/',
     handler: slashShortcutHandler,
   ),
   ShortcutEvent(
@@ -303,7 +303,7 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'Double tilde to strikethrough',
-    character: '~',
+    characters: '~',
     handler: doubleTildeToStrikethrough,
   ),
   ShortcutEvent(
@@ -318,12 +318,12 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ),
   ShortcutEvent(
     key: 'Asterisk or underscore to italic',
-    character: '*, _',
+    characters: '*, _',
     handler: singleCharacterToItalicHandler,
   ),
   ShortcutEvent(
     key: 'Double asterisk or underscore to bold',
-    character: '*, _',
+    characters: '*, _',
     handler: doubleCharacterToBoldHandler,
   ),
   ShortcutEvent(
