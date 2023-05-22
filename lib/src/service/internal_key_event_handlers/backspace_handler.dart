@@ -36,7 +36,7 @@ ShortcutEventHandler backspaceEventHandler = (editorState, event) {
         transaction
           ..updateNode(textNode, {
             BuiltInAttributeKey.subtype: null,
-            textNode.subtype!: null,
+            textNode.subtype: null,
           })
           ..afterSelection = Selection.collapsed(
             Position(

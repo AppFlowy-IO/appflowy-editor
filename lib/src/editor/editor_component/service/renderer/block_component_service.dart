@@ -19,7 +19,7 @@ abstract class BlockComponentBuilder {
 
   Widget build(BlockComponentContext blockComponentContext);
 
-  bool showActions(Node node) => true;
+  bool showActions(Node node) => false;
 
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 

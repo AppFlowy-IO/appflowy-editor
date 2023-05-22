@@ -44,10 +44,6 @@ class _MobileSelectionServiceWidgetState
   @override
   List<Node> currentSelectedNodes = [];
 
-  /// Pan
-  Offset? _panStartOffset;
-  double? _panStartScrollDy;
-
   late EditorState editorState = Provider.of<EditorState>(
     context,
     listen: false,
@@ -230,9 +226,6 @@ class _MobileSelectionServiceWidgetState
 
     editorState.service.scrollService?.stopAutoScroll();
 
-    // clear old state.
-    _panStartOffset = null;
-
     final position = getPositionInOffset(details.globalPosition);
     if (position == null) {
       return;
@@ -287,44 +280,6 @@ class _MobileSelectionServiceWidgetState
     }
 
     _showContextMenu(details);
-  }
-
-  void _onPanStart(DragStartDetails details) {
-    clearSelection();
-
-    _panStartOffset = details.globalPosition.translate(-3.0, 0);
-    _panStartScrollDy = editorState.service.scrollService?.dy;
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    if (_panStartOffset == null || _panStartScrollDy == null) {
-      return;
-    }
-
-    final panEndOffset = details.globalPosition;
-    final dy = editorState.service.scrollService?.dy;
-    final panStartOffset = dy == null
-        ? _panStartOffset!
-        : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-
-    final first = getNodeInOffset(panStartOffset)?.selectable;
-    final last = getNodeInOffset(panEndOffset)?.selectable;
-
-    // compute the selection in range.
-    if (first != null && last != null) {
-      Log.selection.debug('first = $first, last = $last');
-      final start =
-          first.getSelectionInRange(panStartOffset, panEndOffset).start;
-      final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
-      final selection = Selection(start: start, end: end);
-      updateSelection(selection);
-    }
-
-    _showDebugLayerIfNeeded(offset: panEndOffset);
-  }
-
-  void _onPanEnd(DragEndDetails details) {
-    // do nothing
   }
 
   void _updateSelectionAreas(Selection selection) {

@@ -19,7 +19,7 @@ abstract class TextInputService {
       onNonTextUpdate;
   Future<void> Function(TextInputAction action) onPerformAction;
 
-  TextRange? composingTextRange;
+  TextRange? get composingTextRange;
   bool get attached;
 
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect);

@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
 import 'package:flutter/material.dart';
 
 void showImageMenu(

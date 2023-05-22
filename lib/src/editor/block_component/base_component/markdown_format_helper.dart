@@ -5,7 +5,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 /// For example,
 ///   bulleted list: '- '
 ///   numbered list: '1. '
-///   quote: '> '
+///   quote: '" '
 ///   ...
 Future<bool> formatMarkdownSymbol(
   EditorState editorState,

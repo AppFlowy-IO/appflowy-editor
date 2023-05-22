@@ -27,7 +27,7 @@ void main() async {
     test('mock inputting a ` ` after the > but not dot', () async {
       testFormatCharacterShortcut(
         formatDoubleQuoteToQuote,
-        '>',
+        '"',
         1,
         (result, before, after) {
           expect(result, true);
@@ -45,7 +45,7 @@ void main() async {
     test('mock inputting a ` ` in the middle of the node', () async {
       testFormatCharacterShortcut(
         formatDoubleQuoteToQuote,
-        '>',
+        '"',
         2,
         (result, before, after) {
           // nothing happens
@@ -71,7 +71,7 @@ void main() async {
             initialText: text,
           )
           .addParagraph(
-            initialText: '>$text',
+            initialText: '"$text',
           );
       final editorState = EditorState(document: document);
 

@@ -370,10 +370,12 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
       ),
     );
 
-    return Theme.of(context).copyWith(extensions: [
-      editorStyle,
-      ...darkPluginStyleExtension,
-      quote,
-    ],);
+    return Theme.of(context).copyWith(
+      extensions: [
+        editorStyle,
+        ...darkPluginStyleExtension,
+        quote,
+      ],
+    );
   }
 }

@@ -192,7 +192,7 @@ void main() async {
         Selection.single(path: [0], startOffset: 0),
       );
 
-      await editor.editorState.insertText(0, '>', node: node);
+      await editor.editorState.insertText(0, '"', node: node);
       await editor.pressKey(key: LogicalKeyboardKey.space);
       node = editor.nodeAtPath([0])!;
       expect(node.type, 'quote');
@@ -251,8 +251,8 @@ void main() async {
       await editor.dispose();
     });
 
-    group('convert geater to blockquote', () {
-      testWidgets('> AppFlowy to blockquote AppFlowy', (tester) async {
+    group('convert double quote to blockquote', () {
+      testWidgets('" AppFlowy to blockquote AppFlowy', (tester) async {
         const text = 'AppFlowy';
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
@@ -261,7 +261,7 @@ void main() async {
         );
 
         var node = editor.nodeAtPath([0])!;
-        await editor.editorState.insertText(0, '>', node: node);
+        await editor.editorState.insertText(0, '"', node: node);
         await editor.pressKey(key: LogicalKeyboardKey.space);
         node = editor.nodeAtPath([0])!;
         expect(node.type, 'quote');
@@ -293,7 +293,7 @@ void main() async {
         await editor.dispose();
       });
 
-      testWidgets('> in front of text to blockquote', (tester) async {
+      testWidgets('" in front of text to blockquote', (tester) async {
         const text = 'AppFlowy';
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
@@ -307,7 +307,7 @@ void main() async {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        await editor.editorState.insertText(0, '>', node: node);
+        await editor.editorState.insertText(0, '"', node: node);
         await editor.pressKey(key: LogicalKeyboardKey.space);
 
         node = editor.nodeAtPath([0])!;

@@ -12,6 +12,6 @@ extension ColorExtension on String {
 
 extension HexExtension on Color {
   String toHex() {
-    return '${value.toRadixString(16)}';
+    return value.toRadixString(16);
   }
 }
