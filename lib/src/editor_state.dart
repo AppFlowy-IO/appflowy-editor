@@ -215,6 +215,7 @@ class EditorState {
     if (withUpdateSelection) {
       _selectionUpdateReason = SelectionUpdateReason.transaction;
       selection = transaction.afterSelection;
+      _selectionUpdateReason = SelectionUpdateReason.uiEvent;
       // if the selection is not changed, we still need to notify the listeners.
       selectionNotifier.notifyListeners();
     }

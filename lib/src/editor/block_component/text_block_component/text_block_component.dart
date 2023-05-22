@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -92,27 +91,26 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Widget build(BuildContext context) {
     return node.children.isEmpty
-        ? buildBulletListBlockComponent(context)
-        : buildBulletListBlockComponentWithChildren(context);
+        ? buildParagraphBlockComponent(context)
+        : buildParagraphBlockComponentWithChildren(context);
   }
 
-  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
+  Widget buildParagraphBlockComponentWithChildren(BuildContext context) {
     return Container(
-      color: backgroundColor.withOpacity(0.5),
+      color: backgroundColor,
       child: NestedListWidget(
         children: editorState.renderer.buildList(
           context,
           widget.node.children,
         ),
-        child: buildBulletListBlockComponent(context),
+        child: buildParagraphBlockComponent(context),
       ),
     );
   }
 
-  Widget buildBulletListBlockComponent(BuildContext context) {
+  Widget buildParagraphBlockComponent(BuildContext context) {
     return Container(
-      color: node.children.isEmpty ? backgroundColor : null,
-      // padding: padding,
+      color: backgroundColor,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,
