@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_action_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,12 +32,17 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   final BlockComponentConfiguration configuration;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return NumberedListBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -44,15 +50,14 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) => node.delta != null;
 }
 
-class NumberedListBlockComponentWidget extends StatefulWidget {
+class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
   const NumberedListBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
-  final BlockComponentConfiguration configuration;
 
   @override
   State<NumberedListBlockComponentWidget> createState() =>
@@ -101,7 +106,7 @@ class _NumberedListBlockComponentWidgetState
   }
 
   Widget buildBulletListBlockComponent(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,6 +132,16 @@ class _NumberedListBlockComponentWidgetState
         ],
       ),
     );
+
+    if (widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   Widget defaultIcon() {

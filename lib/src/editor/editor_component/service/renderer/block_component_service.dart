@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 
 typedef BlockActionBuilder = Widget Function(
   BlockComponentContext blockComponentContext,
-  BlockComponentState state,
+  BlockComponentActionState state,
 );
+
+abstract class BlockComponentActionState {
+  set alwaysShowActions(bool alwaysShowActions);
+}
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
 abstract class BlockComponentBuilder {
@@ -17,7 +21,7 @@ abstract class BlockComponentBuilder {
   ///   and the node will be displayed as a PlaceHolder widget.
   bool validate(Node node) => true;
 
-  Widget build(BlockComponentContext blockComponentContext);
+  BlockComponentWidget build(BlockComponentContext blockComponentContext);
 
   bool Function(Node) showActions = (_) => false;
 

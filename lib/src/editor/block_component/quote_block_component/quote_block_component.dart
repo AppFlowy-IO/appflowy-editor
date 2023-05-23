@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_action_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,12 +32,17 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   final BlockComponentConfiguration configuration;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return QuoteBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -44,15 +50,14 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) => node.delta != null;
 }
 
-class QuoteBlockComponentWidget extends StatefulWidget {
+class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
   const QuoteBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
-  final BlockComponentConfiguration configuration;
 
   @override
   State<QuoteBlockComponentWidget> createState() =>
@@ -81,7 +86,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: IntrinsicHeight(
         child: Row(
@@ -109,6 +114,16 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         ),
       ),
     );
+
+    if (widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   // TODO: support custom icon.

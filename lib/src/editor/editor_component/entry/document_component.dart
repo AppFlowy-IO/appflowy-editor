@@ -21,7 +21,7 @@ Node documentNode({
 
 class DocumentComponentBuilder extends BlockComponentBuilder {
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     return DocumentComponent(
       key: blockComponentContext.node.key,
       node: blockComponentContext.node,
@@ -29,13 +29,14 @@ class DocumentComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class DocumentComponent extends StatelessWidget {
+class DocumentComponent extends BlockComponentStatelessWidget {
   const DocumentComponent({
     super.key,
-    required this.node,
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
 
   @override
   Widget build(BuildContext context) {
