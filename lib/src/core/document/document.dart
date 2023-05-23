@@ -45,6 +45,18 @@ class Document {
 
   final Node root;
 
+  /// first node of the document.
+  Node? get first => root.children.first;
+
+  /// last node of the document.
+  Node? get last {
+    var last = root.children.last;
+    while (last.children.isNotEmpty) {
+      last = last.children.last;
+    }
+    return last;
+  }
+
   /// Returns the node at the given [path].
   Node? nodeAtPath(Path path) {
     return root.childAtPath(path);
