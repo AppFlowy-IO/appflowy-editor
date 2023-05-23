@@ -6,7 +6,6 @@ final textColorItem = ToolbarItem(
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
   builder: (context, editorState) {
     String? textColorHex;
-
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
     final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
