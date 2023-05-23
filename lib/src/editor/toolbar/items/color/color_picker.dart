@@ -1,8 +1,4 @@
-import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
-import 'package:appflowy_editor/src/editor/command/text_commands.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
-import 'package:appflowy_editor/src/l10n/l10n.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +8,7 @@ class ColorOption {
     required this.name,
   });
 
+  // 0xFF000000
   final String colorHex;
   final String name;
 }
@@ -73,7 +70,7 @@ class _ColorPickerState extends State<ColorPicker> {
                       text: AppFlowyEditorLocalizations.current.highlightColor,
                     ),
               const SizedBox(height: 6),
-              // if it is in hightlight color mode with a highlight color, show the clear highlight color button
+              // if it is in highlight color mode with a highlight color, show the clear highlight color button
               widget.isTextColor == false && widget.selectedColorHex != null
                   ? ClearHighlightColorButton(
                       editorState: widget.editorState,
@@ -127,7 +124,7 @@ class _ColorPickerState extends State<ColorPicker> {
           dimension: 12,
           child: Container(
             decoration: BoxDecoration(
-              color: Color(int.tryParse(option.colorHex) ?? 0xFFFFFFFF),
+              color: option.colorHex.toColor(),
               shape: BoxShape.circle,
             ),
           ),
