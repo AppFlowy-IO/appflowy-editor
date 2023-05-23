@@ -53,10 +53,15 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder();
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return ImageBlockComponentWidget(
       node: node,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -67,13 +72,14 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
       node.attributes[ImageBlockKeys.url] is String;
 }
 
-class ImageBlockComponentWidget extends StatefulWidget {
+class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
   const ImageBlockComponentWidget({
     super.key,
-    required this.node,
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
 
   @override
   State<ImageBlockComponentWidget> createState() =>

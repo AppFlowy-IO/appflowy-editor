@@ -17,6 +17,7 @@ export '../toolbar/mobile_toolbar.dart';
 export '../toolbar/desktop/floating_toolbar.dart';
 
 // renderer
+export 'service/renderer/block_component_container.dart';
 export 'service/renderer/block_component_widget.dart';
 export 'service/renderer/block_component_service.dart';
 export 'service/renderer/block_component_context.dart';

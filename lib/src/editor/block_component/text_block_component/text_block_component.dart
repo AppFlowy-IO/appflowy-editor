@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_action_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,12 +39,17 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   final BlockComponentConfiguration configuration;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return TextBlockComponentWidget(
       node: node,
       key: node.key,
       configuration: configuration,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -53,15 +59,14 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class TextBlockComponentWidget extends StatefulWidget {
+class TextBlockComponentWidget extends BlockComponentStatefulWidget {
   const TextBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
-  final BlockComponentConfiguration configuration;
 
   @override
   State<TextBlockComponentWidget> createState() =>
@@ -109,7 +114,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   }
 
   Widget buildParagraphBlockComponent(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: FlowyRichText(
         key: forwardKey,
@@ -124,5 +129,13 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         ),
       ),
     );
+    if (widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+    return child;
   }
 }

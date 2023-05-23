@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_component_action_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +48,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   final Widget? Function(bool checked)? icon;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return TodoListBlockComponentWidget(
       key: node.key,
@@ -55,6 +56,11 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       textStyleBuilder: textStyleBuilder,
       icon: icon,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -65,17 +71,17 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class TodoListBlockComponentWidget extends StatefulWidget {
+class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
   const TodoListBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.icon,
   });
 
-  final Node node;
-  final BlockComponentConfiguration configuration;
   final TextStyle Function(bool checked)? textStyleBuilder;
   final Widget? Function(bool checked)? icon;
 
@@ -128,7 +134,7 @@ class _TodoListBlockComponentWidgetState
   }
 
   Widget buildTodoListBlockComponent(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,6 +165,16 @@ class _TodoListBlockComponentWidgetState
         ],
       ),
     );
+
+    if (widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   Future<void> checkOrUncheck() async {
