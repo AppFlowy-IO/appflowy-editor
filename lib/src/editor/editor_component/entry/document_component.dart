@@ -10,10 +10,12 @@ class DocumentBlockKeys {
 
 Node documentNode({
   required Iterable<Node> children,
+  Attributes attributes = const {},
 }) {
   return Node(
     type: DocumentBlockKeys.type,
     children: children,
+    attributes: attributes,
   );
 }
 

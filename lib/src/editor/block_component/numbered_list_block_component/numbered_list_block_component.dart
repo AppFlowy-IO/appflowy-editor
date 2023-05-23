@@ -129,14 +129,15 @@ class _NumberedListBlockComponentWidgetState
     );
   }
 
-  // TODO: support custom icon.
   Widget defaultIcon() {
+    final text = editorState.editorStyle.textStyleConfiguration.text;
     final level = _NumberedListIconBuilder(node: widget.node).level;
-    return FlowySvg(
+    return Container(
       width: 20,
-      height: 20,
       padding: const EdgeInsets.only(right: 5.0),
-      number: level,
+      child: Text.rich(
+        TextSpan(text: '$level.', style: text.combine(textStyle)),
+      ),
     );
   }
 }
