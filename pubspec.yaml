@@ -50,6 +50,7 @@ flutter:
     - assets/images/selection_menu/
     - assets/images/image_toolbar/
     - assets/images/
+    - assets/mobile/toolbar_icons/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages
