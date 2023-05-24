@@ -12,7 +12,7 @@ on:
       - "release/*"
 
 env:
-  FLUTTER_VERSION: "3.7.5"
+  FLUTTER_VERSION: "3.10.1"
 
 jobs:
   tests:
