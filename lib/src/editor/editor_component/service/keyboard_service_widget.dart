@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -105,17 +106,30 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.commandShortcutEvents.isNotEmpty) {
-      // the Focus widget is used to handle hardware keyboard.
-      return Focus(
-        focusNode: focusNode,
-        onKey: _onKey,
-        child: widget.child,
-      );
-    }
+    Widget child = widget.child;
     // if there is no command shortcut event, we don't need to handle hardware keyboard.
     // like in read-only mode.
-    return widget.child;
+    if (widget.commandShortcutEvents.isNotEmpty) {
+      // the Focus widget is used to handle hardware keyboard.
+      child = Focus(
+        focusNode: focusNode,
+        onKey: _onKey,
+        child: child,
+      );
+    }
+
+    // ignore the default behavior of the space key on web
+    if (kIsWeb) {
+      child = Shortcuts(
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.space):
+              const DoNothingAndStopPropagationIntent(),
+        },
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   /// handle hardware keyboard
@@ -211,5 +225,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     Log.editor.debug(
       'keyboard service - focus changed: ${focusNode.hasFocus}}',
     );
+
+    // clear the selection when the focus is lost.
+    if (!focusNode.hasFocus) {
+      editorState.selection = null;
+    }
   }
 }

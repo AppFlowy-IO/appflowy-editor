@@ -11,6 +11,17 @@ const _kRichTextDebugMode = false;
 
 typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
+class SelectableFlowyRichText extends StatelessWidget {
+  const SelectableFlowyRichText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [],
+    );
+  }
+}
+
 class FlowyRichText extends StatefulWidget {
   const FlowyRichText({
     Key? key,
