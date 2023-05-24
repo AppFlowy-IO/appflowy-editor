@@ -28,6 +28,9 @@ dependencies:
   markdown: ^7.0.1
   flutter_localizations:
     sdk: flutter
+  tuple: ^2.0.1
+  collection: ^1.17.0
+  nanoid: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +50,7 @@ flutter:
     - assets/images/selection_menu/
     - assets/images/image_toolbar/
     - assets/images/
+    - assets/mobile/toolbar_icons/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

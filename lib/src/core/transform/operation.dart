@@ -1,9 +1,5 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
-
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
 
 /// [Operation] represents a change to a [Document].
 abstract class Operation {
@@ -265,9 +261,17 @@ Operation transformOperation(Operation a, Operation b) {
     final newPath = transformPath(a.path, b.path, a.nodes.length);
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
+    if (b is DeleteOperation) {
+      if (a.path.isParentOf(b.path)) {
+        return b.copyWith(path: a.path);
+      } else if (b.path.isParentOf(a.path)) {
+        return a.copyWith(path: b.path);
+      }
+    }
     final newPath = transformPath(a.path, b.path, -1 * a.nodes.length);
     return b.copyWith(path: newPath);
   }
+
   // TODO: transform update and textedit
   return b;
 }

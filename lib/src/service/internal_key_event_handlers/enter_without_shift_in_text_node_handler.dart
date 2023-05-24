@@ -76,7 +76,7 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
   // If selection is collapsed and position.start.offset == 0,
   //  insert a empty text node before.
   if (selection.isCollapsed && selection.start.offset == 0) {
-    if (textNode.toPlainText().isEmpty && textNode.subtype != null) {
+    if (textNode.toPlainText().isEmpty) {
       final path =
           textNode.path.length > 1 ? [++textNode.path.first] : textNode.path;
 
@@ -94,7 +94,7 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
         transaction
           ..updateNode(textNode, {
             BuiltInAttributeKey.subtype: null,
-            textNode.subtype!: null,
+            textNode.subtype: null,
           })
           ..afterSelection = afterSelection;
       }
@@ -202,8 +202,7 @@ ShortcutEventHandler enterWithoutShiftInTextNodesHandler =
 Attributes _attributesFromPreviousLine(TextNode textNode) {
   final prevAttributes = textNode.attributes;
   final subType = textNode.subtype;
-  if (subType == null ||
-      subType == BuiltInAttributeKey.heading ||
+  if (subType == BuiltInAttributeKey.heading ||
       subType == BuiltInAttributeKey.quote) {
     return {};
   }

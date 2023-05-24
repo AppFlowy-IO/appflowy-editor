@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/commands/command_extension.dart';
 
 extension TextCommands on EditorState {
   /// Insert text at the given index of the given [TextNode] or the [Path].
@@ -95,18 +96,18 @@ extension TextCommands on EditorState {
     );
   }
 
-  Future<void> insertNewLine({
-    Path? path,
-  }) async {
-    final p = path ?? getSelection(null).start.path.next;
-    final transaction = this.transaction;
-    transaction.insertNode(p, TextNode.empty());
-    transaction.afterSelection = Selection.single(
-      path: p,
-      startOffset: 0,
-    );
-    return apply(transaction);
-  }
+  // Future<void> insertNewLine({
+  //   Path? path,
+  // }) async {
+  //   final p = path ?? getSelection(null).start.path.next;
+  //   final transaction = this.transaction;
+  //   transaction.insertNode(p, TextNode.empty());
+  //   transaction.afterSelection = Selection.single(
+  //     path: p,
+  //     startOffset: 0,
+  //   );
+  //   return apply(transaction);
+  // }
 
   Future<void> insertNewLineAtCurrentSelection() async {
     final selection = getSelection(null);

@@ -600,6 +600,116 @@ class AppFlowyEditorLocalizations {
       args: [],
     );
   }
+
+  /// `text color`
+  String get textColor {
+    return Intl.message(
+      'text color',
+      name: 'textColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `add your link`
+  String get addYourLink {
+    return Intl.message(
+      'add your link',
+      name: 'addYourLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `open link`
+  String get openLink {
+    return Intl.message(
+      'open link',
+      name: 'openLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `copy link`
+  String get copyLink {
+    return Intl.message(
+      'copy link',
+      name: 'copyLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `remove link`
+  String get removeLink {
+    return Intl.message(
+      'remove link',
+      name: 'removeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `highlight color`
+  String get highlightColor {
+    return Intl.message(
+      'highlight color',
+      name: 'highlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `clear highlight color`
+  String get clearHighlightColor {
+    return Intl.message(
+      'clear highlight color',
+      name: 'clearHighlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `custom color`
+  String get customColor {
+    return Intl.message(
+      'custom color',
+      name: 'customColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hex value`
+  String get hexValue {
+    return Intl.message(
+      'hex value',
+      name: 'hexValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `opacity`
+  String get opacity {
+    return Intl.message(
+      'opacity',
+      name: 'opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `reset to default color`
+  String get resetToDefaultColor {
+    return Intl.message(
+      'reset to default color',
+      name: 'resetToDefaultColor',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate

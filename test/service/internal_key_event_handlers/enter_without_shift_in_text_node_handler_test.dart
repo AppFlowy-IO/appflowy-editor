@@ -1,11 +1,22 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
+import '../../new/util/util.dart';
 
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    if (kDebugMode) {
+      activateLog();
+    }
+  });
+
+  tearDownAll(() {
+    if (kDebugMode) {
+      deactivateLog();
+    }
   });
 
   group('enter_without_shift_in_text_node_handler.dart', () {
@@ -18,22 +29,24 @@ void main() async {
       //
       // [Empty Line] * 10
       //
-      final editor = tester.editor..insertEmptyTextNode();
+      final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: 0),
       );
       // Pressing the enter key continuously.
       for (int i = 1; i <= 10; i++) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
+        await editor.pressKey(
+          character: '\n',
         );
-        expect(editor.documentLength, i + 1);
+        expect(editor.documentRootLen, i + 1);
         expect(
-          editor.documentSelection,
+          editor.selection,
           Selection.single(path: [i], startOffset: 0),
         );
       }
+
+      await editor.dispose();
     });
 
     testWidgets('Presses enter key in non-empty document', (tester) async {
@@ -54,36 +67,35 @@ void main() async {
       var lines = 3;
 
       final editor = tester.editor;
-      for (var i = 1; i <= lines; i++) {
-        editor.insertTextNode(text);
-      }
+      editor.addParagraphs(lines, initialText: text);
       await editor.startTesting();
 
-      expect(editor.documentLength, lines);
+      expect(editor.documentRootLen, lines);
 
       // Presses the enter key in last line.
       await editor.updateSelection(
         Selection.single(path: [lines - 1], startOffset: 0),
       );
-      await editor.pressLogicKey(
-        key: LogicalKeyboardKey.enter,
+      await editor.pressKey(
+        character: '\n',
       );
       lines += 1;
-      expect(editor.documentLength, lines);
+      expect(editor.documentRootLen, lines);
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [lines - 1], startOffset: 0),
       );
       var lastNode = editor.nodeAtPath([lines - 1]);
       expect(lastNode != null, true);
-      expect(lastNode is TextNode, true);
-      lastNode = lastNode as TextNode;
-      expect(lastNode.delta.toPlainText(), text);
-      expect((lastNode.previous as TextNode).delta.toPlainText(), '');
+      expect(lastNode?.type, 'paragraph');
+      expect(lastNode?.delta?.toPlainText(), text);
+      expect(lastNode?.previous?.delta?.toPlainText(), '');
       expect(
-        (lastNode.previous!.previous as TextNode).delta.toPlainText(),
+        lastNode?.previous?.previous?.delta?.toPlainText(),
         text,
       );
+
+      await editor.dispose();
     });
 
     // Before
@@ -100,27 +112,23 @@ void main() async {
     // [Style] Welcome to Appflowy 😁
     // [Style]
     testWidgets('Presses enter key in bulleted list', (tester) async {
-      await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.bulletedList);
+      await _testStyleNeedToBeCopy(tester, 'bulleted_list');
     });
 
     testWidgets('Presses enter key in numbered list', (tester) async {
-      await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.numberList);
+      await _testStyleNeedToBeCopy(tester, 'numbered_list');
     });
 
     testWidgets('Presses enter key in checkbox styled text', (tester) async {
-      await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.checkbox);
+      await _testStyleNeedToBeCopy(tester, 'todo_list');
     });
 
     testWidgets('Presses enter key in checkbox list indented', (tester) async {
-      await _testListOutdent(tester, BuiltInAttributeKey.checkbox);
+      await _testListOutdent(tester, 'todo_list');
     });
 
     testWidgets('Presses enter key in bulleted list indented', (tester) async {
-      await _testListOutdent(tester, BuiltInAttributeKey.bulletedList);
-    });
-
-    testWidgets('Presses enter key in quoted text', (tester) async {
-      await _testStyleNeedToBeCopy(tester, BuiltInAttributeKey.quote);
+      await _testListOutdent(tester, 'bulleted_list');
     });
 
     testWidgets('Presses enter key in multiple selection from top to bottom',
@@ -144,118 +152,135 @@ void main() async {
       // Welcome to Appflowy 😁
       //
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: 0),
       );
-      await editor.pressLogicKey(key: LogicalKeyboardKey.enter);
-      expect(editor.documentLength, 2);
-      expect((editor.nodeAtPath([1]) as TextNode).toPlainText(), text);
+      await editor.pressKey(character: '\n');
+      expect(editor.documentRootLen, 2);
+      expect(editor.nodeAtPath([1])?.delta?.toPlainText(), text);
+
+      await editor.dispose();
     });
   });
 }
 
 Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
   const text = 'Welcome to Appflowy 😁';
-  Attributes attributes = {
-    BuiltInAttributeKey.subtype: style,
+  final attributes = {
+    'delta': (Delta()..insert(text)).toJson(),
   };
-  if (style == BuiltInAttributeKey.checkbox) {
-    attributes[BuiltInAttributeKey.checkbox] = true;
-  } else if (style == BuiltInAttributeKey.numberList) {
-    attributes[BuiltInAttributeKey.number] = 1;
+  Node? node;
+  if (style == 'todo_list') {
+    node = todoListNode(checked: true, attributes: attributes);
+  } else if (style == 'numbered_list') {
+    node = numberedListNode(attributes: attributes);
+  } else if (style == 'bulleted_list') {
+    node = bulletedListNode(attributes: attributes);
+  } else if (style == 'quote') {
+    node = quoteNode(attributes: attributes);
+  }
+  if (node == null) {
+    throw Exception('Invalid style: $style');
   }
   final editor = tester.editor
-    ..insertTextNode(text)
-    ..insertTextNode(text, attributes: attributes)
-    ..insertTextNode(text, attributes: attributes);
+    ..addParagraph(initialText: text)
+    ..addNode(node)
+    ..addNode(node.copyWith());
 
   await editor.startTesting();
   await editor.updateSelection(
     Selection.single(path: [1], startOffset: 0),
   );
-  await editor.pressLogicKey(
-    key: LogicalKeyboardKey.enter,
+  await editor.pressKey(
+    character: '\n',
   );
-  expect(editor.documentSelection, Selection.single(path: [2], startOffset: 0));
+  expect(editor.selection, Selection.single(path: [2], startOffset: 0));
 
   await editor.updateSelection(
     Selection.single(path: [3], startOffset: text.length),
   );
-  await editor.pressLogicKey(
-    key: LogicalKeyboardKey.enter,
+  await editor.pressKey(
+    character: '\n',
   );
-  expect(editor.documentSelection, Selection.single(path: [4], startOffset: 0));
+  expect(editor.selection, Selection.single(path: [4], startOffset: 0));
 
-  if ([BuiltInAttributeKey.heading, BuiltInAttributeKey.quote]
-      .contains(style)) {
-    expect(editor.nodeAtPath([4])?.subtype, null);
+  expect(editor.nodeAtPath([4])?.type, style);
 
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.enter,
-    );
-    expect(
-      editor.documentSelection,
-      Selection.single(path: [5], startOffset: 0),
-    );
-    expect(editor.nodeAtPath([5])?.subtype, null);
-  } else {
-    expect(editor.nodeAtPath([4])?.subtype, style);
+  await editor.pressKey(
+    character: '\n',
+  );
+  expect(
+    editor.selection,
+    Selection.single(path: [4], startOffset: 0),
+  );
+  expect(editor.nodeAtPath([4])?.type, 'paragraph');
 
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.enter,
-    );
-    expect(
-      editor.documentSelection,
-      Selection.single(path: [4], startOffset: 0),
-    );
-    expect(editor.nodeAtPath([4])?.subtype, null);
-  }
+  await editor.dispose();
 }
 
 Future<void> _testListOutdent(WidgetTester tester, String style) async {
   const text = 'Welcome to Appflowy 😁';
-  final Attributes attributes = {
-    BuiltInAttributeKey.subtype: style,
-    style: true,
+  final attributes = {
+    'delta': (Delta()..insert(text)).toJson(),
   };
-
+  Node? node;
+  if (style == 'todo_list') {
+    node = todoListNode(checked: true, attributes: attributes);
+  } else if (style == 'numbered_list') {
+    node = numberedListNode(attributes: attributes);
+  } else if (style == 'bulleted_list') {
+    node = bulletedListNode(attributes: attributes);
+  }
+  if (node == null) {
+    throw Exception('Invalid style: $style');
+  }
   final editor = tester.editor
-    ..insertTextNode(text)
-    ..insertTextNode(text, attributes: attributes)
-    ..insertTextNode('', attributes: attributes);
+    ..addParagraph(initialText: text)
+    ..addNode(node)
+    ..addNode(
+      node.copyWith(
+        attributes: {
+          ...node.attributes,
+          'delta': Delta().toJson(),
+        },
+      ),
+    );
 
   await editor.startTesting();
   await editor.updateSelection(
     Selection.single(path: [2], startOffset: 0),
   );
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.tab,
   );
   expect(
-    editor.documentSelection,
+    editor.selection,
     Selection.single(path: [1, 0], startOffset: 0),
   );
 
-  await editor.pressLogicKey(
-    key: LogicalKeyboardKey.enter,
+  await editor.pressKey(
+    character: '\n',
+  );
+  // clear the style
+  expect(
+    editor.selection,
+    Selection.single(path: [1, 0], startOffset: 0),
+  );
+  expect(editor.nodeAtPath([1, 0])?.type, 'paragraph');
+
+  await editor.pressKey(
+    character: '\n',
   );
   expect(
-    editor.documentSelection,
-    Selection.single(path: [2], startOffset: 0),
-  );
-  expect(editor.nodeAtPath([2])?.subtype, style);
-
-  await editor.pressLogicKey(
-    key: LogicalKeyboardKey.enter,
-  );
-  expect(
-    editor.documentSelection,
-    Selection.single(path: [2], startOffset: 0),
+    editor.selection,
+    Selection.single(path: [1, 1], startOffset: 0),
   );
 
-  expect(editor.nodeAtPath([2])?.subtype, null);
+  expect(editor.nodeAtPath([1, 1])?.type, 'paragraph');
+
+  await editor.dispose();
 }
 
 Future<void> _testMultipleSelection(
@@ -278,9 +303,7 @@ Future<void> _testMultipleSelection(
   final editor = tester.editor;
   var lines = 4;
 
-  for (var i = 1; i <= lines; i++) {
-    editor.insertTextNode(text);
-  }
+  editor.addParagraphs(lines, initialText: text);
 
   await editor.startTesting();
   final start = Position(path: [0], offset: 7);
@@ -291,11 +314,13 @@ Future<void> _testMultipleSelection(
       end: isBackwardSelection ? end : start,
     ),
   );
-  await editor.pressLogicKey(
-    key: LogicalKeyboardKey.enter,
+  await editor.pressKey(
+    character: '\n',
   );
 
-  expect(editor.documentLength, 2);
-  expect((editor.nodeAtPath([0]) as TextNode).toPlainText(), 'Welcome');
-  expect((editor.nodeAtPath([1]) as TextNode).toPlainText(), 'to Appflowy 😁');
+  expect(editor.documentRootLen, 2);
+  expect(editor.nodeAtPath([0])?.delta?.toPlainText(), 'Welcome');
+  expect(editor.nodeAtPath([1])?.delta?.toPlainText(), 'to Appflowy 😁');
+
+  await editor.dispose();
 }
