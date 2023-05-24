@@ -10,18 +10,18 @@ platforms:
   web:
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
-  flutter: ">=3.10.1"
+  sdk: ">=2.19.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  rich_clipboard: ^1.0.0
+  rich_clipboard: ^1.0.1
   html: ^0.15.0
-  flutter_svg: ^2.0.2
-  provider: ^6.0.3
-  url_launcher: ^6.1.5
+  flutter_svg: ">=2.0.0 <4.0.0"
+  provider: ^6.0.5
+  url_launcher: ">=6.0.0 <7.0.0"
   logging: ^1.0.2
   intl_utils: ^2.7.0
   intl: any
