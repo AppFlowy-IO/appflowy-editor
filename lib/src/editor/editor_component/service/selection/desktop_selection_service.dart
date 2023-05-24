@@ -212,10 +212,8 @@ class _DesktopSelectionServiceWidgetState
       } else if (selection.isBackward) {
         editorState.service.scrollService?.scrollTo(dy + 10.0);
       }
-    } else if (rect.bottom <= topLimit) {
-      if (selection.isForward) {
-        editorState.service.scrollService?.scrollTo(dy - 10.0);
-      }
+    } else if (rect.bottom <= topLimit && selection.isForward) {
+      editorState.service.scrollService?.scrollTo(dy - 10.0);
     }
   }
 
