@@ -5,9 +5,11 @@ class MobileToolbar extends StatelessWidget {
   const MobileToolbar({
     super.key,
     required this.editorState,
+    required this.toolbarItems,
   });
 
   final EditorState editorState;
+  final List<Widget> toolbarItems;
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +22,14 @@ class MobileToolbar extends StatelessWidget {
         final width = MediaQuery.of(context).size.width;
         return SizedBox(
           width: width,
-          height: 30,
+          height: 50,
           child: Container(
-            color: Colors.grey.withOpacity(0.3),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    editorState.selectionService.updateSelection(null);
-                  },
-                  icon: const Icon(Icons.keyboard_hide),
-                ),
-                const Text('FIXME: Mobile Toolbar'),
-              ],
+            // TODO(yijing): expose background color in editor style
+            color: const Color(0xFFF1F1F4),
+            child: ListView.builder(
+              itemBuilder: (context, index) => toolbarItems[index],
+              itemCount: toolbarItems.length,
+              scrollDirection: Axis.horizontal,
             ),
           ),
         );

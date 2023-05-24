@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/infra/mobile/mobile.dart';
 
 class SimpleEditor extends StatelessWidget {
   const SimpleEditor({
@@ -108,6 +109,27 @@ class SimpleEditor extends StatelessWidget {
   }
 
   Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
-    return MobileToolbar(editorState: editorState);
+    return MobileToolbar(
+      editorState: editorState,
+      // TODO(yijing): Implement toolbar features later
+      toolbarItems: [
+        IconButton(
+          onPressed: () {
+            editorState.selectionService.updateSelection(null);
+          },
+          icon: const Icon(Icons.keyboard_hide),
+        ),
+        ...AFMobileIcons.values
+            .map(
+              (e) => IconButton(
+                onPressed: () {},
+                icon: AFMobileIcon(
+                  afMobileIcons: e,
+                ),
+              ),
+            )
+            .toList(),
+      ],
+    );
   }
 }
