@@ -132,7 +132,7 @@ class _HeadingBlockComponentWidgetState
       ),
     );
 
-    if (widget.actionBuilder != null) {
+    if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
