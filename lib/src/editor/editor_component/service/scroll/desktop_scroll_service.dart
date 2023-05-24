@@ -23,7 +23,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
   @override
   double get dy => widget.scrollController.position.pixels;
-
+  @override
+  bool get implecet => widget.scrollController.position.allowImplicitScrolling;
+  @override
+  double get offset => widget.scrollController.offset;
   @override
   double? get onePageHeight {
     final renderBox = context.findRenderObject() as RenderBox?;

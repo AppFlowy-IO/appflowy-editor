@@ -13,12 +13,14 @@ class ImageNodeWidget extends StatefulWidget {
     this.width,
     required this.alignment,
     required this.editable,
+    this.height,
     required this.onResize,
   }) : super(key: key);
 
   final Node node;
   final String src;
   final double? width;
+  final double? height;
   final Alignment alignment;
   final bool editable;
   final void Function(double width) onResize;
@@ -33,6 +35,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   final _imageKey = GlobalKey();
 
   double? _imageWidth;
+  double? _imageHeight;
   double _initial = 0;
   double _distance = 0;
 
@@ -47,6 +50,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     super.initState();
 
     _imageWidth = widget.width;
+    _imageHeight = widget.height;
     _imageStreamListener = ImageStreamListener(
       (image, _) {
         _imageWidth = _imageKey.currentContext
@@ -141,6 +145,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     final networkImage = Image.network(
       widget.src,
       width: _imageWidth == null ? null : _imageWidth! - _distance,
+      height: _imageHeight,
       gaplessPlayback: true,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null ||
@@ -213,13 +218,13 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
 
   Widget _buildError(BuildContext context) {
     return Container(
-      height: 100,
+      height: _imageHeight ?? 100,
       width: _imageWidth,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-        border: Border.all(width: 1, color: Colors.grey),
+        border: Border.all(width: 1, color: Colors.black),
       ),
       child: const Text('Could not load the image'),
     );

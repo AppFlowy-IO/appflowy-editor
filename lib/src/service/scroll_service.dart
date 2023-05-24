@@ -27,6 +27,10 @@ abstract class AppFlowyScrollService implements AutoScrollerService {
   /// scroll controller
   ScrollController get scrollController;
 
+  bool get implecet;
+  //get current offset of scroll controller
+  double get offset;
+
   /// Scrolls to the specified position.
   ///
   /// This function will filter illegal values.

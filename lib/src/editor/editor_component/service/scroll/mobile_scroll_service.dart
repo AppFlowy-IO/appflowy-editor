@@ -23,7 +23,10 @@ class _MobileScrollServiceState extends State<MobileScrollService>
     implements AppFlowyScrollService {
   @override
   double get dy => widget.scrollController.position.pixels;
-
+  @override
+  bool get implecet => widget.scrollController.position.allowImplicitScrolling;
+  @override
+  double get offset => widget.scrollController.offset;
   @override
   double? get onePageHeight {
     final renderBox = context.findRenderObject()?.unwrapOrNull<RenderBox>();

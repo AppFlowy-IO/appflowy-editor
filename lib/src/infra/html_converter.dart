@@ -326,9 +326,19 @@ class HTMLToNodesConverter {
 
   Node _handleImage(html.Element element) {
     final src = element.attributes["src"];
+    final alignment = element.attributes["align"] ?? "center";
+    final width = element.attributes["width"] != null
+        ? double.parse(element.attributes["width"].toString())
+        : 200;
+    final height = element.attributes["height"] != null
+        ? double.parse(element.attributes["height"].toString())
+        : 100;
     final attributes = <String, dynamic>{};
     if (src != null) {
       attributes["image_src"] = src;
+      attributes["align"] = alignment;
+      attributes["width"] = width;
+      attributes["height"] = height;
     }
     return Node(type: "image", attributes: attributes, children: LinkedList());
   }
@@ -448,10 +458,18 @@ class NodesToHTMLConverter {
         final textNode = node;
         final anchor = html.Element.tag(HTMLTag.image);
         anchor.attributes["src"] = textNode.attributes["image_src"];
+        anchor.attributes["align"] = textNode.attributes["align"];
+
+        anchor.attributes["width"] = textNode.attributes["width"] != null
+            ? textNode.attributes["width"].toString()
+            : "200";
+
+        anchor.attributes["height"] = textNode.attributes["height"] != null
+            ? textNode.attributes["height"].toString()
+            : "100";
 
         _result.add(anchor);
       }
-      // TODO: handle image and other blocks
     }
     if (_stashListContainer != null) {
       _result.add(_stashListContainer!);
