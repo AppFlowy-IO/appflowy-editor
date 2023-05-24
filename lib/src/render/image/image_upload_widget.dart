@@ -162,7 +162,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 16.0),
-                          _buildFileInput(context),
+                          _buildFileInput(context, state),
                         ],
                       ),
                       Column(
@@ -225,7 +225,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
     );
   }
 
-  Widget _buildFileInput(BuildContext context) {
+  Widget _buildFileInput(BuildContext context, ImageState imageState) {
     return SizedBox(
       width: 170,
       height: 48,
@@ -241,6 +241,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu>
         onPressed: () {
           //TODO: call the block then get image name
           BlocProvider.of<ImageBloc>(context).add(ImageSelectedEvent());
+          widget.onSubmitted(imageState.imageFile);
         },
         child: const Text(
           //TODO: Don't forget to localize
