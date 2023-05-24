@@ -344,6 +344,4 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   void performSelector(String selectorName) {
     // TODO: implement performSelector
   }
-
-  
 }
