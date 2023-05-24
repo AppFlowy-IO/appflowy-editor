@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -23,28 +23,22 @@ void main() async {
 
 Future<void> _testSelectAllHandler(WidgetTester tester, int lines) async {
   const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor;
-  for (var i = 0; i < lines; i++) {
-    editor.insertTextNode(text);
-  }
+  final editor = tester.editor..addParagraphs(lines, initialText: text);
   await editor.startTesting();
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyA,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressLogicKey(
-      key: LogicalKeyboardKey.keyA,
-      isMetaPressed: true,
-    );
-  }
+  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyA,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
 
   expect(
-    editor.documentSelection,
+    editor.selection,
     Selection(
       start: Position(path: [0], offset: 0),
       end: Position(path: [lines - 1], offset: text.length),
     ),
   );
+
+  await editor.dispose();
 }

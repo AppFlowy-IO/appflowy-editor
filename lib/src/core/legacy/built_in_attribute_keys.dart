@@ -2,7 +2,7 @@
 /// Supported partial rendering types:
 ///   bold, italic,
 ///   underline, strikethrough,
-///   color, font,
+///   textColor, highlightColor,
 ///   href
 ///
 /// Supported global rendering types:
@@ -16,9 +16,9 @@ class BuiltInAttributeKey {
   static String italic = 'italic';
   static String underline = 'underline';
   static String strikethrough = 'strikethrough';
-  static String color = 'color';
-  static String backgroundColor = 'backgroundColor';
-  static String font = 'font';
+  static String textColor = 'textColor';
+  static String highlightColor = 'highlightColor';
+  static String code = 'code';
   static String href = 'href';
 
   static String subtype = 'subtype';
@@ -30,12 +30,10 @@ class BuiltInAttributeKey {
   static String h5 = 'h5';
   static String h6 = 'h6';
 
+  static String checkbox = 'checkbox';
   static String bulletedList = 'bulleted-list';
   static String numberList = 'number-list';
-
   static String quote = 'quote';
-  static String checkbox = 'checkbox';
-  static String code = 'code';
   static String number = 'number';
 
   static List<String> partialStyleKeys = [
@@ -43,8 +41,8 @@ class BuiltInAttributeKey {
     BuiltInAttributeKey.italic,
     BuiltInAttributeKey.underline,
     BuiltInAttributeKey.strikethrough,
-    BuiltInAttributeKey.backgroundColor,
-    BuiltInAttributeKey.color,
+    BuiltInAttributeKey.highlightColor,
+    BuiltInAttributeKey.textColor,
     BuiltInAttributeKey.href,
     BuiltInAttributeKey.code,
   ];

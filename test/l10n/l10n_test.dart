@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../infra/test_editor.dart';
+import '../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -11,7 +11,7 @@ void main() async {
     for (final locale
         in AppFlowyEditorLocalizations.delegate.supportedLocales) {
       testWidgets('test localization', (tester) async {
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting(locale: locale);
       });
     }

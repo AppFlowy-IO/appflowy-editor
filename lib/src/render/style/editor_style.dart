@@ -1,6 +1,5 @@
-import 'dart:io';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Iterable<ThemeExtension<dynamic>> get lightEditorStyleExtension => [
@@ -14,44 +13,68 @@ Iterable<ThemeExtension<dynamic>> get darkEditorStyleExtension => [
 class EditorStyle extends ThemeExtension<EditorStyle> {
   // Editor styles
   final EdgeInsets? padding;
-  final Color? backgroundColor;
-  final Color? cursorColor;
-  final Color? selectionColor;
 
-  // Selection menu styles
-  final Color? selectionMenuBackgroundColor;
-  final Color? selectionMenuItemTextColor;
-  final Color? selectionMenuItemIconColor;
-  final Color? selectionMenuItemSelectedTextColor;
-  final Color? selectionMenuItemSelectedIconColor;
-  final Color? selectionMenuItemSelectedColor;
-  final Color? toolbarColor;
-  final double toolbarElevation;
+  final Color cursorColor;
+  final Color selectionColor;
+  final TextStyleConfiguration textStyleConfiguration;
+
+  // @Deprecated('customize the editor\'s background color directly')
+  final Color? backgroundColor;
 
   // Text styles
+  @Deprecated('customize the block component directly')
   final EdgeInsets? textPadding;
+  @Deprecated('customize the block component directly')
   final TextStyle? textStyle;
+  @Deprecated('customize the block component directly')
   final TextStyle? placeholderTextStyle;
+  @Deprecated('customize the block component directly')
   final double lineHeight;
 
   // Rich text styles
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? bold;
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? italic;
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? underline;
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? strikethrough;
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? href;
+  @Deprecated('customize the text style configuration directly')
   final TextStyle? code;
+  @Deprecated('customize the text style configuration directly')
   final String? highlightColorHex;
+
+  // Selection menu styles
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuBackgroundColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemTextColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemIconColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedTextColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedIconColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? selectionMenuItemSelectedColor;
+  @Deprecated('customize the selection menu directly')
+  final Color? toolbarColor;
+  @Deprecated('customize the selection menu directly')
+  final double toolbarElevation;
 
   // Item's pop up menu styles
   final Color? popupMenuFGColor;
   final Color? popupMenuHoverColor;
 
-  EditorStyle({
+  const EditorStyle({
     required this.padding,
-    required this.backgroundColor,
     required this.cursorColor,
     required this.selectionColor,
+    required this.textStyleConfiguration,
+    required this.backgroundColor,
     required this.selectionMenuBackgroundColor,
     required this.selectionMenuItemTextColor,
     required this.selectionMenuItemIconColor,
@@ -75,12 +98,91 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.popupMenuHoverColor,
   });
 
+  const EditorStyle.desktop({
+    EdgeInsets? padding,
+    Color? backgroundColor,
+    Color? cursorColor,
+    Color? selectionColor,
+    TextStyleConfiguration? textStyleConfiguration,
+  }) : this(
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 200),
+          backgroundColor: backgroundColor ?? Colors.white,
+          cursorColor: cursorColor ?? const Color(0xFF00BCF0),
+          selectionColor:
+              selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+          textStyleConfiguration: textStyleConfiguration ??
+              const TextStyleConfiguration(
+                text: TextStyle(fontSize: 16, color: Colors.black),
+              ),
+          selectionMenuBackgroundColor: null,
+          selectionMenuItemTextColor: null,
+          selectionMenuItemIconColor: null,
+          selectionMenuItemSelectedTextColor: null,
+          selectionMenuItemSelectedIconColor: null,
+          selectionMenuItemSelectedColor: null,
+          toolbarColor: null,
+          toolbarElevation: 0,
+          textPadding: null,
+          textStyle: null,
+          placeholderTextStyle: null,
+          bold: null,
+          italic: null,
+          underline: null,
+          strikethrough: null,
+          href: null,
+          code: null,
+          highlightColorHex: null,
+          lineHeight: 0,
+          popupMenuFGColor: null,
+          popupMenuHoverColor: null,
+        );
+
+  const EditorStyle.mobile({
+    EdgeInsets? padding,
+    Color? backgroundColor,
+    Color? cursorColor,
+    Color? selectionColor,
+    TextStyleConfiguration? textStyleConfiguration,
+  }) : this(
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
+          backgroundColor: backgroundColor ?? Colors.white,
+          cursorColor: cursorColor ?? const Color(0xFF00BCF0),
+          selectionColor:
+              selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+          textStyleConfiguration: textStyleConfiguration ??
+              const TextStyleConfiguration(
+                text: TextStyle(fontSize: 16, color: Colors.black),
+              ),
+          selectionMenuBackgroundColor: null,
+          selectionMenuItemTextColor: null,
+          selectionMenuItemIconColor: null,
+          selectionMenuItemSelectedTextColor: null,
+          selectionMenuItemSelectedIconColor: null,
+          selectionMenuItemSelectedColor: null,
+          toolbarColor: null,
+          toolbarElevation: 0,
+          textPadding: null,
+          textStyle: null,
+          placeholderTextStyle: null,
+          bold: null,
+          italic: null,
+          underline: null,
+          strikethrough: null,
+          href: null,
+          code: null,
+          highlightColorHex: null,
+          lineHeight: 0,
+          popupMenuFGColor: null,
+          popupMenuHoverColor: null,
+        );
+
   @override
   EditorStyle copyWith({
     EdgeInsets? padding,
     Color? backgroundColor,
     Color? cursorColor,
     Color? selectionColor,
+    TextStyleConfiguration? textStyleConfiguration,
     Color? selectionMenuBackgroundColor,
     Color? selectionMenuItemTextColor,
     Color? selectionMenuItemIconColor,
@@ -108,6 +210,8 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       backgroundColor: backgroundColor ?? this.backgroundColor,
       cursorColor: cursorColor ?? this.cursorColor,
       selectionColor: selectionColor ?? this.selectionColor,
+      textStyleConfiguration:
+          textStyleConfiguration ?? this.textStyleConfiguration,
       selectionMenuBackgroundColor:
           selectionMenuBackgroundColor ?? this.selectionMenuBackgroundColor,
       selectionMenuItemTextColor:
@@ -149,9 +253,10 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     return EditorStyle(
       padding: EdgeInsets.lerp(padding, other.padding, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
-      cursorColor: Color.lerp(cursorColor, other.cursorColor, t),
+      cursorColor: Color.lerp(cursorColor, other.cursorColor, t)!,
       textPadding: EdgeInsets.lerp(textPadding, other.textPadding, t),
-      selectionColor: Color.lerp(selectionColor, other.selectionColor, t),
+      textStyleConfiguration: other.textStyleConfiguration,
+      selectionColor: Color.lerp(selectionColor, other.selectionColor, t)!,
       selectionMenuBackgroundColor: Color.lerp(
         selectionMenuBackgroundColor,
         other.selectionMenuBackgroundColor,
@@ -206,11 +311,14 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   }
 
   static final light = EditorStyle(
-    padding: _isMobile
+    padding: PlatformExtension.isMobile
         ? const EdgeInsets.symmetric(horizontal: 20)
         : const EdgeInsets.symmetric(horizontal: 200),
     backgroundColor: Colors.white,
     cursorColor: const Color(0xFF00BCF0),
+    textStyleConfiguration: const TextStyleConfiguration(
+      text: TextStyle(fontSize: 16, color: Colors.black),
+    ),
     selectionColor: const Color.fromARGB(53, 111, 201, 231),
     selectionMenuBackgroundColor: const Color(0xFFFFFFFF),
     selectionMenuItemTextColor: const Color(0xFF333333),
@@ -260,16 +368,4 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     popupMenuFGColor: Colors.white,
     popupMenuHoverColor: const Color(0xFF00BCF0),
   );
-
-  static bool get _isMobile {
-    if (kIsWeb) {
-      return false;
-    }
-
-    if (Platform.isAndroid || Platform.isIOS) {
-      return true;
-    }
-
-    return false;
-  }
 }

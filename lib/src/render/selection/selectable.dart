@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 enum CursorStyle {
   verticalLine,
   borderLine,
+  cover,
 }
 
 /// [SelectableMixin] is used for the editor to calculate the position

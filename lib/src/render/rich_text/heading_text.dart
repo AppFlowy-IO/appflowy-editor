@@ -47,18 +47,11 @@ class HeadingTextNodeWidget extends BuiltInTextWidget {
 class _HeadingTextNodeWidgetState extends State<HeadingTextNodeWidget>
     with SelectableMixin, DefaultSelectable {
   @override
-  GlobalKey? get iconKey => null;
-
-  final _richTextKey = GlobalKey(debugLabel: 'heading_text');
+  final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
 
   @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return padding.topLeft;
-  }
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
 
   HeadingPluginStyle get style =>
       Theme.of(context).extensionOrNull<HeadingPluginStyle>() ??
@@ -79,13 +72,13 @@ class _HeadingTextNodeWidgetState extends State<HeadingTextNodeWidget>
     return Padding(
       padding: padding,
       child: FlowyRichText(
-        key: _richTextKey,
+        key: forwardKey,
         placeholderText: 'Heading',
         placeholderTextSpanDecorator: (textSpan) =>
             textSpan.updateTextStyle(textStyle),
         textSpanDecorator: (textSpan) => textSpan.updateTextStyle(textStyle),
         lineHeight: widget.editorState.editorStyle.lineHeight,
-        textNode: widget.textNode,
+        node: widget.textNode,
         editorState: widget.editorState,
       ),
     );

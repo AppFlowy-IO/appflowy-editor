@@ -47,19 +47,10 @@ class NumberListTextNodeWidget extends BuiltInTextWidget {
 class _NumberListTextNodeWidgetState extends State<NumberListTextNodeWidget>
     with SelectableMixin, DefaultSelectable {
   @override
-  final iconKey = GlobalKey();
-
-  final _richTextKey = GlobalKey(debugLabel: 'number_list_text');
-
+  final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
   @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return super.baseOffset.translate(0, padding.top);
-  }
-
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   NumberListPluginStyle get style =>
       Theme.of(context).extensionOrNull<NumberListPluginStyle>() ??
       NumberListPluginStyle.light;
@@ -87,14 +78,13 @@ class _NumberListTextNodeWidgetState extends State<NumberListTextNodeWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            key: iconKey,
             child: icon,
           ),
           Flexible(
             child: FlowyRichText(
-              key: _richTextKey,
+              key: forwardKey,
               placeholderText: 'List',
-              textNode: widget.textNode,
+              node: widget.textNode,
               editorState: widget.editorState,
               lineHeight: widget.editorState.editorStyle.lineHeight,
               placeholderTextSpanDecorator: (textSpan) =>

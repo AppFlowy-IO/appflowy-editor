@@ -47,19 +47,10 @@ class QuotedTextNodeWidget extends BuiltInTextWidget {
 class _QuotedTextNodeWidgetState extends State<QuotedTextNodeWidget>
     with SelectableMixin, DefaultSelectable {
   @override
-  final iconKey = GlobalKey();
-
-  final _richTextKey = GlobalKey(debugLabel: 'quoted_text');
-
+  final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
   @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return super.baseOffset.translate(0, padding.top);
-  }
-
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   QuotedTextPluginStyle get style =>
       Theme.of(context).extensionOrNull<QuotedTextPluginStyle>() ??
       QuotedTextPluginStyle.light;
@@ -88,14 +79,13 @@ class _QuotedTextNodeWidgetState extends State<QuotedTextNodeWidget>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              key: iconKey,
               child: icon,
             ),
             Flexible(
               child: FlowyRichText(
-                key: _richTextKey,
+                key: forwardKey,
                 placeholderText: 'Quote',
-                textNode: widget.textNode,
+                node: widget.textNode,
                 textSpanDecorator: (textSpan) =>
                     textSpan.updateTextStyle(textStyle),
                 placeholderTextSpanDecorator: (textSpan) =>

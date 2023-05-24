@@ -377,3 +377,120 @@ ShortcutEventHandler cursorRightWordSelect = (editorState, event) {
 
   return KeyEventResult.handled;
 };
+
+enum _SelectionRange {
+  character,
+  word,
+}
+
+extension on Position {
+  Position? goLeft(
+    EditorState editorState, {
+    _SelectionRange selectionRange = _SelectionRange.character,
+  }) {
+    final node = editorState.document.nodeAtPath(path);
+    if (node == null) {
+      return null;
+    }
+
+    if (offset == 0) {
+      final previousEnd = node.previous?.selectable?.end();
+      if (previousEnd != null) {
+        return previousEnd;
+      }
+      return null;
+    }
+
+    switch (selectionRange) {
+      case _SelectionRange.character:
+        if (node is TextNode) {
+          return Position(
+            path: path,
+            offset: node.delta.prevRunePosition(offset),
+          );
+        }
+
+        return Position(path: path, offset: offset);
+      case _SelectionRange.word:
+        if (node is TextNode) {
+          final result = node.selectable?.getWordBoundaryInPosition(
+            Position(
+              path: path,
+              offset: node.delta.prevRunePosition(offset),
+            ),
+          );
+          if (result != null) {
+            return result.start;
+          }
+        }
+
+        return Position(path: path, offset: offset);
+    }
+  }
+
+  Position? goRight(
+    EditorState editorState, {
+    _SelectionRange selectionRange = _SelectionRange.character,
+  }) {
+    final node = editorState.document.nodeAtPath(path);
+    if (node == null) {
+      return null;
+    }
+
+    final end = node.selectable?.end();
+    if (end != null && offset >= end.offset) {
+      return node.next?.selectable?.start();
+    }
+
+    switch (selectionRange) {
+      case _SelectionRange.character:
+        if (node is TextNode) {
+          return Position(
+            path: path,
+            offset: node.delta.nextRunePosition(offset),
+          );
+        }
+
+        return Position(path: path, offset: offset);
+      case _SelectionRange.word:
+        if (node is TextNode) {
+          final result = node.selectable?.getWordBoundaryInPosition(this);
+          if (result != null) {
+            return result.end;
+          }
+        }
+
+        return Position(path: path, offset: offset);
+    }
+  }
+}
+
+Position? _moveVertical(
+  EditorState editorState, {
+  bool upwards = true,
+}) {
+  final selection = editorState.service.selectionService.currentSelection.value;
+  final rects = editorState.service.selectionService.selectionRects;
+  if (rects.isEmpty || selection == null) {
+    return null;
+  }
+
+  Offset offset;
+  if (selection.isBackward) {
+    final rect = rects.reduce(
+      (current, next) => current.bottom >= next.bottom ? current : next,
+    );
+    offset = upwards
+        ? rect.topRight.translate(0, -rect.height)
+        : rect.bottomRight.translate(0, rect.height);
+  } else {
+    final rect = rects.reduce(
+      (current, next) => current.top <= next.top ? current : next,
+    );
+    offset = upwards
+        ? rect.topLeft.translate(0, -rect.height)
+        : rect.bottomLeft.translate(0, rect.height);
+  }
+
+  return editorState.service.selectionService.getPositionInOffset(offset);
+}

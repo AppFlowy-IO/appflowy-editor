@@ -30,6 +30,7 @@ ShortcutEventHandler tabHandler = (editorState, event) {
     start: selection.start.copyWith(path: path),
     end: selection.end.copyWith(path: path),
   );
+
   final transaction = editorState.transaction
     ..deleteNode(textNode)
     ..insertNode(path, textNode)

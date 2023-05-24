@@ -91,5 +91,16 @@
   "lightLightTint6": "Lime",
   "lightLightTint7": "Green",
   "lightLightTint8": "Aqua",
-  "lightLightTint9": "Blue"
+  "lightLightTint9": "Blue",
+  "textColor": "text color",
+  "addYourLink": "add your link",
+  "openLink": "open link",
+  "copyLink": "copy link",
+  "removeLink": "remove link",
+  "highlightColor": "highlight color",
+  "clearHighlightColor": "clear highlight color",
+  "customColor": "custom color",
+  "hexValue": "hex value",
+  "opacity": "opacity",
+  "resetToDefaultColor": "reset to default color"
 }

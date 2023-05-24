@@ -48,19 +48,10 @@ class BulletedListTextNodeWidget extends BuiltInTextWidget {
 class _BulletedListTextNodeWidgetState extends State<BulletedListTextNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
-  final iconKey = GlobalKey();
-
-  final _richTextKey = GlobalKey(debugLabel: 'bulleted_list_text');
-
+  final forwardKey = GlobalKey(debugLabel: 'bulleted_list_text');
   @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return super.baseOffset.translate(0, padding.top);
-  }
-
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   BulletedListPluginStyle get style =>
       Theme.of(context).extensionOrNull<BulletedListPluginStyle>() ??
       BulletedListPluginStyle.light;
@@ -88,19 +79,18 @@ class _BulletedListTextNodeWidgetState extends State<BulletedListTextNodeWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            key: iconKey,
             child: icon,
           ),
           Flexible(
             child: FlowyRichText(
-              key: _richTextKey,
+              key: forwardKey,
               placeholderText: 'List',
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle),
               lineHeight: widget.editorState.editorStyle.lineHeight,
-              textNode: widget.textNode,
+              node: widget.textNode,
               editorState: widget.editorState,
             ),
           )

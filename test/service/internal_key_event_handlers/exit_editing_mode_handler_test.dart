@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -12,13 +12,10 @@ void main() async {
     testWidgets('Exit editing mode', (tester) async {
       const text = 'Welcome to Appflowy 😁';
       const lines = 3;
-      final editor = tester.editor;
-      for (var i = 0; i < lines; i++) {
-        editor.insertTextNode(text);
-      }
+      final editor = tester.editor..addParagraphs(lines, initialText: text);
       await editor.startTesting();
 
-      // collaspsed selection
+      // collapsed selection
       await _testSelection(editor, Selection.single(path: [1], startOffset: 0));
 
       // single selection
@@ -42,11 +39,11 @@ void main() async {
 }
 
 Future<void> _testSelection(
-  EditorWidgetTester editor,
+  TestableEditor editor,
   Selection selection,
 ) async {
   await editor.updateSelection(selection);
-  expect(editor.documentSelection, selection);
-  await editor.pressLogicKey(key: LogicalKeyboardKey.escape);
-  expect(editor.documentSelection, null);
+  expect(editor.selection, selection);
+  await editor.pressKey(key: LogicalKeyboardKey.escape);
+  expect(editor.selection, null);
 }

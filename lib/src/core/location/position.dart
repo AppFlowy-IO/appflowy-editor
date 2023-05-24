@@ -9,6 +9,10 @@ class Position {
     this.offset = 0,
   });
 
+  Position.invalid()
+      : path = [-1],
+        offset = -1;
+
   factory Position.fromJson(Map<String, dynamic> json) {
     final path = Path.from(json['path'] as List);
     final offset = json['offset'];

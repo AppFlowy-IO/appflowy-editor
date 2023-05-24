@@ -20,9 +20,11 @@ import 'package:flutter/material.dart';
 ///
 abstract class AppFlowyKeyboardService {
   /// Processes shortcut key input.
+  @Deprecated('Not used anymore')
   KeyEventResult onKey(RawKeyEvent event);
 
   /// Gets the shortcut events
+  @Deprecated('Not used anymore')
   List<ShortcutEvent> get shortcutEvents;
 
   /// Enables shortcuts service.
@@ -72,6 +74,7 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
   @override
   Widget build(BuildContext context) {
+    return widget.child;
     return Focus(
       focusNode: _focusNode,
       onKey: _onKey,
@@ -158,7 +161,8 @@ class _AppFlowyKeyboardState extends State<AppFlowyKeyboard>
 
 extension on ShortcutEvent {
   bool canRespondToRawKeyEvent(RawKeyEvent event) {
-    return ((character?.isNotEmpty ?? false) && character == event.character) ||
-        keybindings.containsKeyEvent(event);
+    return false;
+    // return ((character?.isNotEmpty ?? false) && character == event.character) ||
+    //    keybindings.containsKeyEvent(event);
   }
 }

@@ -35,6 +35,24 @@ abstract class AppFlowyRenderPluginService {
   NodeWidgetBuilder? getBuilder(String name);
 
   Widget buildPluginWidget(NodeWidgetContext context);
+
+  List<Widget> buildPluginWidgets(
+    BuildContext context,
+    List<Node> nodes,
+    EditorState editorState,
+  ) {
+    return nodes
+        .map(
+          (child) => buildPluginWidget(
+            NodeWidgetContext<Node>(
+              context: context,
+              node: child,
+              editorState: editorState,
+            ),
+          ),
+        )
+        .toList(growable: false);
+  }
 }
 
 class NodeWidgetContext<T extends Node> {
@@ -80,7 +98,7 @@ class AppFlowyRenderPlugin extends AppFlowyRenderPluginService {
   Widget buildPluginWidget(NodeWidgetContext context) {
     final node = context.node;
     final name =
-        node.subtype == null ? node.type : '${node.type}/${node.subtype!}';
+        node.subtype == null ? node.type : '${node.type}/${node.subtype}';
     final builder = _builders[name];
     if (builder != null && builder.nodeValidator(node)) {
       return _autoUpdateNodeWidget(builder, context);

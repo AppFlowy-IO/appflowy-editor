@@ -244,11 +244,11 @@ List<ShortcutEvent> builtInShortcutEvents = [
     command: 'end',
     handler: cursorEnd,
   ),
-  ShortcutEvent(
-    key: 'Delete Text by backspace',
-    command: 'backspace',
-    handler: backspaceEventHandler,
-  ),
+  // ShortcutEvent(
+  //   key: 'Delete Text by backspace',
+  //   command: 'backspace',
+  //   handler: backspaceEventHandler,
+  // ),
   ShortcutEvent(
     key: 'Delete Text',
     command: 'delete',
