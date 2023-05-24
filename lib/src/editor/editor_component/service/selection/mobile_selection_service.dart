@@ -200,9 +200,8 @@ class _MobileSelectionServiceWidgetState
       editorState.service.scrollService!.maxScrollExtent,
     );
 
-    final double offsetDelta = targetOffset;
     return RevealedOffset(
-      rect: rect.shift(unitOffset * offsetDelta),
+      rect: rect.shift(unitOffset * targetOffset),
       offset: targetOffset,
     );
   }
