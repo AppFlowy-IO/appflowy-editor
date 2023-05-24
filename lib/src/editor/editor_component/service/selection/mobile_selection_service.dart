@@ -163,7 +163,7 @@ class _MobileSelectionServiceWidgetState
   }
 
   RevealedOffset _getOffsetToRevealCaret(Rect rect) {
-    if (!editorState.service.scrollService!.implecet) {
+    if (!editorState.service.scrollService!.implicit) {
       return RevealedOffset(
         offset: editorState.service.scrollService!.offset,
         rect: rect,
@@ -449,10 +449,9 @@ class _MobileSelectionServiceWidgetState
     final selectable = node.selectable;
     final cursorRect = selectable?.getCursorRectInPosition(position);
     if (selectable != null && cursorRect != null) {
-      Log.selection
-          .debug("reveal:${_getOffsetToRevealCaret(cursorRect).offset}");
+      final caretOffset = _getOffsetToRevealCaret(cursorRect).offset;
       editorState.service.scrollService?.scrollController.animateTo(
-        _getOffsetToRevealCaret(cursorRect).offset,
+        caretOffset,
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeIn,
       );

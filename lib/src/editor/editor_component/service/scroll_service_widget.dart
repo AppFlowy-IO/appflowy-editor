@@ -32,7 +32,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   late ScrollController scrollController;
   @override
-  bool get implecet => scrollController.position.allowImplicitScrolling;
+  bool get implicit => scrollController.position.allowImplicitScrolling;
   @override
   double get offset => scrollController.offset;
   @override

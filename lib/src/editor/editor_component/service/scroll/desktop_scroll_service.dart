@@ -24,7 +24,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   double get dy => widget.scrollController.position.pixels;
   @override
-  bool get implecet => widget.scrollController.position.allowImplicitScrolling;
+  bool get implicit => widget.scrollController.position.allowImplicitScrolling;
   @override
   double get offset => widget.scrollController.offset;
   @override
