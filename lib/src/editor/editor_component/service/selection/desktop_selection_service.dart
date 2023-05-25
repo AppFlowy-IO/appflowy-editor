@@ -509,12 +509,12 @@ class _DesktopSelectionServiceWidgetState
     final selectable = node.selectable;
     final cursorRect = selectable?.getCursorRectInPosition(position);
     if (selectable != null && cursorRect != null) {
-          editorState.service.scrollService?.scrollOnUpdate(
-      editorState,
-      context: context,
-      currentSelectedNodes: currentSelectedNodes,
-      currentSelection: currentSelection.value,
-    );
+      editorState.service.scrollService?.scrollOnUpdate(
+        editorState,
+        context: context,
+        currentSelectedNodes: currentSelectedNodes,
+        currentSelection: currentSelection.value,
+      );
       final cursorArea = OverlayEntry(
         builder: (context) => CursorWidget(
           key: _cursorKey,

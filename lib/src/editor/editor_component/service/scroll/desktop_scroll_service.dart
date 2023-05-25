@@ -129,6 +129,5 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
       currentSelectedNodes: currentSelectedNodes,
       currentSelection: currentSelection,
     );
-    // TODO: implement scrollOnUpdate
   }
 }

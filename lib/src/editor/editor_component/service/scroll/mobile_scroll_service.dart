@@ -121,6 +121,5 @@ class _MobileScrollServiceState extends State<MobileScrollService>
       currentSelectedNodes: currentSelectedNodes,
       currentSelection: currentSelection,
     );
-    // TODO: implement scrollOnUpdate
   }
 }
