@@ -106,4 +106,21 @@ class _MobileScrollServiceState extends State<MobileScrollService>
 
   @override
   ScrollController get scrollController => widget.scrollController;
+  @override
+  void scrollOnUpdate(
+    EditorState editorState, {
+    Rect? cursorRect,
+    BuildContext? context,
+    List<Node>? currentSelectedNodes,
+    Selection? currentSelection,
+  }) {
+    widget.autoScroller.scrollOnUpdate(
+      editorState,
+      cursorRect: cursorRect,
+      context: context,
+      currentSelectedNodes: currentSelectedNodes,
+      currentSelection: currentSelection,
+    );
+    // TODO: implement scrollOnUpdate
+  }
 }

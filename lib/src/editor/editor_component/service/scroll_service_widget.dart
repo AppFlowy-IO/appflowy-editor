@@ -138,4 +138,21 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   @override
   void goBallistic(double velocity) => forward.goBallistic(velocity);
+
+  @override
+  void scrollOnUpdate(
+    EditorState editorState, {
+    Rect? cursorRect,
+    BuildContext? context,
+    List<Node>? currentSelectedNodes,
+    Selection? currentSelection,
+  }) {
+    forward.scrollOnUpdate(
+      editorState,
+      cursorRect: cursorRect,
+      context: context,
+      currentSelectedNodes: currentSelectedNodes,
+      currentSelection: currentSelection,
+    );
+  }
 }

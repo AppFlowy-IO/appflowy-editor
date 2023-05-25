@@ -157,7 +157,7 @@ class _DesktopSelectionServiceWidgetState
         editorState.selectionType != SelectionType.block) {
       return;
     }
-    _scrollUpOrDownIfNeeded();
+
     currentSelection.value = selection;
 
     void updateSelection() {
@@ -187,33 +187,6 @@ class _DesktopSelectionServiceWidgetState
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         updateSelection();
       });
-    }
-  }
-
-  void _scrollUpOrDownIfNeeded() {
-    final dy = editorState.service.scrollService?.dy;
-    final selectNodes = currentSelectedNodes;
-    final selection = currentSelection.value;
-    if (dy == null || selection == null || selectNodes.isEmpty) {
-      return;
-    }
-
-    final rect = selectNodes.last.rect;
-
-    final size = MediaQuery.of(context).size.height;
-    final topLimit = size * 0.3;
-    final bottomLimit = size * 0.8;
-
-    // TODO: It is necessary to calculate the relative speed
-    //   according to the gap and move forward more gently.
-    if (rect.top >= bottomLimit) {
-      if (selection.isSingle) {
-        editorState.service.scrollService?.scrollTo(dy + size * 0.2);
-      } else if (selection.isBackward) {
-        editorState.service.scrollService?.scrollTo(dy + 10.0);
-      }
-    } else if (rect.bottom <= topLimit && selection.isForward) {
-      editorState.service.scrollService?.scrollTo(dy - 10.0);
     }
   }
 
@@ -536,6 +509,12 @@ class _DesktopSelectionServiceWidgetState
     final selectable = node.selectable;
     final cursorRect = selectable?.getCursorRectInPosition(position);
     if (selectable != null && cursorRect != null) {
+          editorState.service.scrollService?.scrollOnUpdate(
+      editorState,
+      context: context,
+      currentSelectedNodes: currentSelectedNodes,
+      currentSelection: currentSelection.value,
+    );
       final cursorArea = OverlayEntry(
         builder: (context) => CursorWidget(
           key: _cursorKey,

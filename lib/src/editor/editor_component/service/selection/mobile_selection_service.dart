@@ -1,5 +1,3 @@
-import 'dart:ui';
-import 'dart:math' as math;
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
@@ -9,7 +7,6 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class MobileSelectionServiceWidget extends StatefulWidget {
@@ -160,50 +157,6 @@ class _MobileSelectionServiceWidgetState
 
       currentSelection.value = selection;
     });
-  }
-
-  RevealedOffset _getOffsetToRevealCaret(Rect rect) {
-    if (!editorState.service.scrollService!.implicit) {
-      return RevealedOffset(
-        offset: editorState.service.scrollService!.offset,
-        rect: rect,
-      );
-    }
-
-    final Size editableSize = editorState.renderBox!.size;
-    final double additionalOffset;
-    final Offset unitOffset;
-
-    // The caret is vertically centered within the line. Expand the caret's
-    // height so that it spans the line because we're going to ensure that the
-    // entire expanded caret is scrolled into view.
-    final Rect expandedRect = Rect.fromCenter(
-      center: rect.center,
-      width: rect.width,
-      height: math.max(rect.height, 20),
-    );
-
-    additionalOffset = expandedRect.height >= editableSize.height
-        ? editableSize.height / 2 - expandedRect.center.dy
-        : clampDouble(
-            0.0,
-            expandedRect.bottom - editableSize.height,
-            expandedRect.top,
-          );
-    unitOffset = const Offset(0, 1);
-
-    // No overscrolling when encountering tall fonts/scripts that extend past
-    // the ascent.
-    final double targetOffset = clampDouble(
-      additionalOffset + rect.top + 200,
-      editorState.service.scrollService!.minScrollExtent,
-      editorState.service.scrollService!.maxScrollExtent,
-    );
-
-    return RevealedOffset(
-      rect: rect.shift(unitOffset * targetOffset),
-      offset: targetOffset,
-    );
   }
 
   @override
@@ -448,13 +401,8 @@ class _MobileSelectionServiceWidgetState
     final selectable = node.selectable;
     final cursorRect = selectable?.getCursorRectInPosition(position);
     if (selectable != null && cursorRect != null) {
-      final caretOffset = _getOffsetToRevealCaret(cursorRect).offset;
-      editorState.service.scrollService?.scrollController.animateTo(
-        caretOffset,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeIn,
-      );
-
+      editorState.service.scrollService
+          ?.scrollOnUpdate(editorState, cursorRect: cursorRect);
       final cursorArea = OverlayEntry(
         builder: (context) => CursorWidget(
           key: _cursorKey,
