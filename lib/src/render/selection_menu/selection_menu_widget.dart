@@ -89,8 +89,7 @@ class SelectionMenuItem {
       Path insertPath,
       bool replaced,
       bool insertedBefore,
-    )?
-        updateSelection,
+    )? updateSelection,
   }) {
     return SelectionMenuItem(
       name: name,
