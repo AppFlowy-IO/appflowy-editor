@@ -190,8 +190,7 @@ extension TextTransforms on EditorState {
     Selection? selection,
     Node Function(
       Node node,
-    )
-        nodeBuilder,
+    ) nodeBuilder,
   ) async {
     selection ??= this.selection;
     selection = selection?.normalized;

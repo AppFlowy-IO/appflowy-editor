@@ -344,4 +344,9 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   void performSelector(String selectorName) {
     // TODO: implement performSelector
   }
+
+  @override
+  void insertContent(KeyboardInsertedContent content) {
+    // TODO: implement insertContent
+  }
 }

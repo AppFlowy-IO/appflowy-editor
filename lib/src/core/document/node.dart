@@ -18,7 +18,7 @@ import 'package:nanoid/nanoid.dart';
 ///   'data': Map<String, Object>
 ///   'children': List<Node>,
 /// }
-class Node extends ChangeNotifier with LinkedListEntry<Node> {
+final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
     String? id,
@@ -231,7 +231,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 }
 
 @Deprecated('Use Paragraph instead')
-class TextNode extends Node {
+final class TextNode extends Node {
   TextNode({
     required Delta delta,
     Iterable<Node>? children,

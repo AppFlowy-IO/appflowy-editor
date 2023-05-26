@@ -32,9 +32,7 @@ mixin BuiltInTextWidgetMixin<T extends BuiltInTextWidget> on State<T>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // TODO: customize
-            const SizedBox(
-              width: 20,
-            ),
+            const SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
