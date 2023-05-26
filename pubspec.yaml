@@ -10,8 +10,8 @@ platforms:
   web:
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
-  flutter: ">=3.7.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -25,7 +25,7 @@ dependencies:
   logging: ^1.0.2
   intl_utils: ^2.7.0
   intl: any
-  markdown: ^7.0.1
+  markdown: ^7.1.0
   flutter_localizations:
     sdk: flutter
   tuple: ^2.0.1
@@ -37,7 +37,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.1
   network_image_mock: ^2.1.1
-  mockito: ^5.3.2
+  mockito: ^5.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

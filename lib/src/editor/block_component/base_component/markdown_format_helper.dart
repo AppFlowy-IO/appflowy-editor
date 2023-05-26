@@ -13,14 +13,12 @@ Future<bool> formatMarkdownSymbol(
   bool Function(
     String text,
     Selection selection,
-  )
-      predicate,
+  ) predicate,
   Node Function(
     String text,
     Node node,
     Delta delta,
-  )
-      nodeBuilder,
+  ) nodeBuilder,
 ) async {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
