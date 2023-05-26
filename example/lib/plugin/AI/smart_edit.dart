@@ -170,10 +170,10 @@ class _SmartEditWidgetState extends State<SmartEditWidget> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return const AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               CircularProgressIndicator(),
               SizedBox(height: 10),
               Text('Loading'),

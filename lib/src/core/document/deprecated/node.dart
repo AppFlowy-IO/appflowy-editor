@@ -14,7 +14,7 @@ import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 ///
 /// ONLY USE FOR MIGRATION.
 ///
-class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
+final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
   NodeV0({
     required this.type,
     Attributes? attributes,
@@ -226,7 +226,7 @@ class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
   }
 }
 
-class TextNodeV0 extends NodeV0 {
+final class TextNodeV0 extends NodeV0 {
   TextNodeV0({
     required Delta delta,
     LinkedList<NodeV0>? children,
