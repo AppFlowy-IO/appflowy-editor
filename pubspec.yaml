@@ -19,7 +19,7 @@ dependencies:
 
   rich_clipboard: ^1.0.1
   html: ^0.15.0
-  flutter_svg: ">=2.0.0 <3.0.0"
+  flutter_svg: ^2.0.6
   provider: ^6.0.5
   url_launcher: ^6.1.11
   logging: ^1.2.0
