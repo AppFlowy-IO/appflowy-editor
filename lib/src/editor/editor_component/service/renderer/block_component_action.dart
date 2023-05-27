@@ -15,14 +15,17 @@ class BlockComponentActionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      width: 50,
-      height: 25, // TODO: magic number, change it to the height of the block
-      color: Colors
-          .transparent, // have to set the color to transparent to make the MouseRegion work
-      child: !showActions ? const SizedBox.shrink() : actionBuilder(context),
-    );
+    return showActions
+        ? Container(
+            alignment: Alignment.centerRight,
+            width: 50,
+            height:
+                25, // TODO: magic number, change it to the height of the block
+            color: Colors
+                .transparent, // have to set the color to transparent to make the MouseRegion work
+            child: actionBuilder(context),
+          )
+        : const SizedBox.shrink();
   }
 }
 
