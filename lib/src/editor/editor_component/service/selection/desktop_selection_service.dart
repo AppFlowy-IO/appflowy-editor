@@ -137,6 +137,7 @@ class _DesktopSelectionServiceWidgetState
       if (selection.isCollapsed) {
         // updates cursor area.
         Log.selection.debug('update cursor area, $selection');
+        _forceShowCursor();
         _updateCursorAreas(selection.start);
       } else {
         // updates selection area.

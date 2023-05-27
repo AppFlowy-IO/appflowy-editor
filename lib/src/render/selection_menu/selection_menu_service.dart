@@ -18,12 +18,14 @@ class SelectionMenu implements SelectionMenuService {
     required this.editorState,
     required this.selectionMenuItems,
     this.deleteSlashByDefault = true,
+    this.style = SelectionMenuStyle.light,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final SelectionMenuStyle style;
 
   OverlayEntry? _selectionMenuEntry;
   bool _selectionUpdateByInner = false;
@@ -108,6 +110,7 @@ class SelectionMenu implements SelectionMenuService {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
+                      selectionMenuStyle: style,
                       items: selectionMenuItems
                         ..forEach((element) {
                           element.deleteSlash = deleteSlashByDefault;
@@ -179,8 +182,8 @@ class SelectionMenu implements SelectionMenuService {
 final List<SelectionMenuItem> standardSelectionMenuItems = [
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.text,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('text', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('text', editorState, onSelected, style),
     keywords: ['text'],
     handler: (editorState, _, __) {
       insertNodeAfterSelection(editorState, paragraphNode());
@@ -188,8 +191,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.heading1,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('h1', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('h1', editorState, onSelected, style),
     keywords: ['heading 1, h1'],
     handler: (editorState, _, __) {
       insertHeadingAfterSelection(editorState, 1);
@@ -197,8 +200,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.heading2,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('h2', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('h2', editorState, onSelected, style),
     keywords: ['heading 2, h2'],
     handler: (editorState, _, __) {
       insertHeadingAfterSelection(editorState, 2);
@@ -206,8 +209,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.heading3,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('h3', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('h3', editorState, onSelected, style),
     keywords: ['heading 3, h3'],
     handler: (editorState, _, __) {
       insertHeadingAfterSelection(editorState, 3);
@@ -215,8 +218,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.image,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('image', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('image', editorState, onSelected, style),
     keywords: ['image'],
     handler: (editorState, menuService, context) {
       final container = Overlay.of(context);
@@ -225,8 +228,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.bulletedList,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('bulleted_list', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('bulleted_list', editorState, onSelected, style),
     keywords: ['bulleted list', 'list', 'unordered list'],
     handler: (editorState, _, __) {
       insertBulletedListAfterSelection(editorState);
@@ -234,8 +237,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.numberedList,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('number', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('number', editorState, onSelected, style),
     keywords: ['numbered list', 'list', 'ordered list'],
     handler: (editorState, _, __) {
       insertNumberedListAfterSelection(editorState);
@@ -243,8 +246,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.checkbox,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('checkbox', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('checkbox', editorState, onSelected, style),
     keywords: ['todo list', 'list', 'checkbox list'],
     handler: (editorState, _, __) {
       insertCheckboxAfterSelection(editorState);
@@ -252,8 +255,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   SelectionMenuItem(
     name: AppFlowyEditorLocalizations.current.quote,
-    icon: (editorState, onSelected) =>
-        _selectionMenuIcon('quote', editorState, onSelected),
+    icon: (editorState, onSelected, style) =>
+        _selectionMenuIcon('quote', editorState, onSelected, style),
     keywords: ['quote', 'refer'],
     handler: (editorState, _, __) {
       insertQuoteAfterSelection(editorState);
@@ -265,12 +268,13 @@ Widget _selectionMenuIcon(
   String name,
   EditorState editorState,
   bool onSelected,
+  SelectionMenuStyle style,
 ) {
   return FlowySvg(
     name: 'selection_menu/$name',
     color: onSelected
-        ? editorState.editorStyle.selectionMenuItemSelectedIconColor
-        : editorState.editorStyle.selectionMenuItemIconColor,
+        ? style.selectionMenuItemSelectedIconColor
+        : style.selectionMenuItemIconColor,
     width: 18.0,
     height: 18.0,
   );

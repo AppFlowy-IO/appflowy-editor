@@ -151,7 +151,7 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 
           // Theme Demo
           _buildSeparator(context, 'Theme Demo'),
-          _buildListTile(context, 'Bulit In Dark Mode', () {
+          _buildListTile(context, 'Built In Dark Mode', () {
             _jsonString = Future<String>.value(
               jsonEncode(_editorState.document.toJson()).toString(),
             );

@@ -65,31 +65,6 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
       ),
     );
 
-    // if (widget.showBlockComponentActions) {
-    //   child = MouseRegion(
-    //     onEnter: (_) => showActionsNotifier.value = true,
-    //     onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
-    //     hitTestBehavior: HitTestBehavior.deferToChild,
-    //     opaque: false,
-    //     child: Row(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       mainAxisAlignment: MainAxisAlignment.start,
-    //       mainAxisSize: MainAxisSize.min,
-    //       children: [
-    //         ValueListenableBuilder<bool>(
-    //           valueListenable: showActionsNotifier,
-    //           builder: (context, value, child) => BlockComponentActionContainer(
-    //             node: widget.node,
-    //             showActions: value,
-    //             actionBuilder: (context) => widget.actionBuilder(context, this),
-    //           ),
-    //         ),
-    //         Expanded(child: child),
-    //       ],
-    //     ),
-    //   );
-    // }
-
     final padding = widget.configuration.padding(widget.node);
     return Padding(
       padding: padding,
