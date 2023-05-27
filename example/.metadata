@@ -4,8 +4,13 @@
 # This file should be version controlled.
 
 version:
+<<<<<<< HEAD
   revision: d3d8effc686d73e0114d71abdcccef63fa1f25d2
   channel: stable
+=======
+  revision: c07f7888888435fd9df505aa2efc38d3cf65681b
+  channel: unknown
+>>>>>>> upstream/main
 
 project_type: app
 
@@ -13,11 +18,19 @@ project_type: app
 migration:
   platforms:
     - platform: root
+<<<<<<< HEAD
       create_revision: d3d8effc686d73e0114d71abdcccef63fa1f25d2
       base_revision: d3d8effc686d73e0114d71abdcccef63fa1f25d2
     - platform: macos
       create_revision: d3d8effc686d73e0114d71abdcccef63fa1f25d2
       base_revision: d3d8effc686d73e0114d71abdcccef63fa1f25d2
+=======
+      create_revision: c07f7888888435fd9df505aa2efc38d3cf65681b
+      base_revision: c07f7888888435fd9df505aa2efc38d3cf65681b
+    - platform: web
+      create_revision: c07f7888888435fd9df505aa2efc38d3cf65681b
+      base_revision: c07f7888888435fd9df505aa2efc38d3cf65681b
+>>>>>>> upstream/main
 
   # User provided section
 

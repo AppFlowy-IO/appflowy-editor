@@ -25,6 +25,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.themeData,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
+    this.focusNode,
   });
 
   const AppFlowyEditor.custom({
@@ -40,6 +41,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CommandShortcutEvent> commandShortcutEvents = const [],
     List<SelectionMenuItem> selectionMenuItems = const [],
     Widget? header,
+    FocusNode? focusNode,
   }) : this(
           key: key,
           editorState: editorState,
@@ -53,6 +55,7 @@ class AppFlowyEditor extends StatefulWidget {
           selectionMenuItems: selectionMenuItems,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
+          focusNode: focusNode,
         );
 
   AppFlowyEditor.standard({
@@ -64,6 +67,7 @@ class AppFlowyEditor extends StatefulWidget {
     Selection? focusedSelection,
     EditorStyle? editorStyle,
     Widget? header,
+    FocusNode? focusNode,
   }) : this(
           key: key,
           editorState: editorState,
@@ -76,6 +80,7 @@ class AppFlowyEditor extends StatefulWidget {
           commandShortcutEvents: standardCommandShortcutEvents,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
+          focusNode: focusNode,
         );
 
   final EditorState editorState;
@@ -109,6 +114,8 @@ class AppFlowyEditor extends StatefulWidget {
   final Selection? focusedSelection;
 
   final Widget? header;
+
+  final FocusNode? focusNode;
 
   /// If false the Editor is inside an [AppFlowyScroll]
   final bool shrinkWrap;
@@ -192,6 +199,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           key: editorState.service.keyboardServiceKey,
           characterShortcutEvents: widget.characterShortcutEvents,
           commandShortcutEvents: widget.commandShortcutEvents,
+          focusNode: widget.focusNode,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

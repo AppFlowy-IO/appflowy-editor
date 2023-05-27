@@ -33,7 +33,7 @@ class SimpleEditor extends StatelessWidget {
           );
           editorState.logConfiguration
             ..handler = debugPrint
-            ..level = LogLevel.all;
+            ..level = LogLevel.off;
           onEditorStateChange(editorState);
           final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
@@ -41,13 +41,10 @@ class SimpleEditor extends StatelessWidget {
               items: [
                 paragraphItem,
                 ...headingItems,
-                placeholderItem,
                 ...markdownFormatItems,
-                placeholderItem,
                 quoteItem,
                 bulletedListItem,
                 numberedListItem,
-                placeholderItem,
                 linkItem,
                 textColorItem,
                 highlightColorItem
