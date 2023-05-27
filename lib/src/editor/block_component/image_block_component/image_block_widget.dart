@@ -35,7 +35,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   final _imageKey = GlobalKey();
 
   double? _imageWidth;
-    double? _imageHeight;
+  double? _imageHeight;
   double _initial = 0;
   double _distance = 0;
 
@@ -50,7 +50,7 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     super.initState();
 
     _imageWidth = widget.width;
-    _imageHeight=widget.height;
+    _imageHeight = widget.height;
     _imageStreamListener = ImageStreamListener(
       (image, _) {
         _imageWidth = _imageKey.currentContext
