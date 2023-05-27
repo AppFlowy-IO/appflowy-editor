@@ -335,7 +335,7 @@ class HTMLToNodesConverter {
         : 100;
     final attributes = <String, dynamic>{};
     if (src != null) {
-      attributes["image_src"] = src;
+      attributes["url"] = src;
       attributes["align"] = alignment;
       attributes["width"] = width;
       attributes["height"] = height;
@@ -457,7 +457,7 @@ class NodesToHTMLConverter {
       } else if (node.type == "image") {
         final textNode = node;
         final anchor = html.Element.tag(HTMLTag.image);
-        anchor.attributes["src"] = textNode.attributes["image_src"];
+        anchor.attributes["src"] = textNode.attributes["url"];
         anchor.attributes["align"] = textNode.attributes["align"];
 
         anchor.attributes["width"] = textNode.attributes["width"] != null

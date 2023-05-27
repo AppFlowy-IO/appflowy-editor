@@ -96,9 +96,11 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final src = attributes[ImageBlockKeys.url];
     final align = attributes[ImageBlockKeys.align] ?? 'center';
     final width = attributes[ImageBlockKeys.width]?.toDouble();
+     final height = attributes[ImageBlockKeys.height]?.toDouble();
 
     return ImageNodeWidget(
       key: node.key,
+      height: height,
       node: node,
       src: src,
       width: width,
