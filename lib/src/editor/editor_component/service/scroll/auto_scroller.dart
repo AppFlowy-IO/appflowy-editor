@@ -106,19 +106,28 @@ class AutoScroller extends EdgeDraggingAutoScroller
     Selection? currentSelection,
   }) {
     if (Platform.isAndroid || Platform.isIOS) {
+      if (cursorRect == null) {
+        return;
+      }
       final caretOffset =
-          _getOffsetToRevealCaret(cursorRect!, editorState: editorState).offset;
+          _getOffsetToRevealCaret(cursorRect, editorState: editorState).offset;
       editorState.service.scrollService?.scrollController.animateTo(
         caretOffset,
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeIn,
       );
     } else {
+      if (context == null ||
+          currentSelectedNodes == null ||
+          currentSelection == null) {
+        return;
+      }
+
       _scrollUpOrDownIfNeeded(
         editorState,
-        currentSelectedNodes: currentSelectedNodes!,
-        currentSelection: currentSelection!,
-        context: context!,
+        currentSelectedNodes: currentSelectedNodes,
+        currentSelection: currentSelection,
+        context: context,
       );
     }
   }
