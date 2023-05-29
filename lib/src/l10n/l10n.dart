@@ -64,7 +64,7 @@ class AppFlowyEditorLocalizations {
   /// `Bulleted List`
   String get bulletedList {
     return Intl.message(
-      'Bulleted List',
+      'Bulleted list',
       name: 'bulletedList',
       desc: '',
       args: [],
@@ -174,7 +174,7 @@ class AppFlowyEditorLocalizations {
   /// `Numbered List`
   String get numberedList {
     return Intl.message(
-      'Numbered List',
+      'Numbered list',
       name: 'numberedList',
       desc: '',
       args: [],
@@ -604,7 +604,7 @@ class AppFlowyEditorLocalizations {
   /// `text color`
   String get textColor {
     return Intl.message(
-      'text color',
+      'Text color',
       name: 'textColor',
       desc: '',
       args: [],
@@ -614,7 +614,7 @@ class AppFlowyEditorLocalizations {
   /// `add your link`
   String get addYourLink {
     return Intl.message(
-      'add your link',
+      'Add your link',
       name: 'addYourLink',
       desc: '',
       args: [],
@@ -624,7 +624,7 @@ class AppFlowyEditorLocalizations {
   /// `open link`
   String get openLink {
     return Intl.message(
-      'open link',
+      'Open link',
       name: 'openLink',
       desc: '',
       args: [],
@@ -634,7 +634,7 @@ class AppFlowyEditorLocalizations {
   /// `copy link`
   String get copyLink {
     return Intl.message(
-      'copy link',
+      'Copy link',
       name: 'copyLink',
       desc: '',
       args: [],
@@ -644,7 +644,7 @@ class AppFlowyEditorLocalizations {
   /// `remove link`
   String get removeLink {
     return Intl.message(
-      'remove link',
+      'Remove link',
       name: 'removeLink',
       desc: '',
       args: [],
@@ -654,7 +654,7 @@ class AppFlowyEditorLocalizations {
   /// `highlight color`
   String get highlightColor {
     return Intl.message(
-      'highlight color',
+      'Highlight color',
       name: 'highlightColor',
       desc: '',
       args: [],
