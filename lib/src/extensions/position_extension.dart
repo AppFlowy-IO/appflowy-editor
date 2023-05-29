@@ -80,14 +80,14 @@ extension PositionExtension on Position {
       );
       offset = upwards
           ? rect.topRight.translate(0, -rect.height)
-          : rect.bottomRight.translate(0, rect.height);
+          : rect.centerRight.translate(0, rect.height);
     } else {
       final rect = rects.reduce(
         (current, next) => current.top <= next.top ? current : next,
       );
       offset = upwards
           ? rect.topLeft.translate(0, -rect.height)
-          : rect.bottomLeft.translate(0, rect.height);
+          : rect.centerLeft.translate(0, rect.height);
     }
 
     return editorState.service.selectionService.getPositionInOffset(offset);
