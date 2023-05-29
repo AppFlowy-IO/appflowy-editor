@@ -68,7 +68,7 @@ extension PositionExtension on Position {
     bool upwards = true,
   }) {
     final selection = editorState.selection;
-    final rects = editorState.service.selectionService.selectionRects;
+    final rects = editorState.selectionRects();
     if (rects.isEmpty || selection == null) {
       return null;
     }

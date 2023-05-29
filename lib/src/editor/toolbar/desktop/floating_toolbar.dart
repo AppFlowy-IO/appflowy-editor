@@ -127,6 +127,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   void _showToolbar() {
+    if (editorState.selection?.isCollapsed ?? true) {
+      return;
+    }
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;

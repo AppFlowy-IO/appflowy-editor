@@ -166,13 +166,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (selection == null) {
       textInputService.close();
     } else {
+      // For the deletion, we should attach the text input service immediately.
+      _attachTextInputService(selection);
+
       // debounce the attachTextInputService function to avoid
       // the text input service being attached too frequently.
-      Debounce.debounce(
-        'attachTextInputService',
-        const Duration(milliseconds: 200),
-        () => _attachTextInputService(selection),
-      );
+      // Debounce.debounce(
+      //   'attachTextInputService',
+      //   const Duration(milliseconds: 200),
+      //   () => _attachTextInputService(selection),
+      // );
 
       if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         focusNode.requestFocus();
