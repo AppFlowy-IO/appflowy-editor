@@ -24,7 +24,7 @@ dependencies:
   url_launcher: ^6.1.11
   logging: ^1.2.0
   intl_utils: ^2.8.2
-  intl: any
+  intl: ^0.18.0
   markdown: ^7.1.0
   flutter_localizations:
     sdk: flutter

@@ -61,7 +61,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Bulleted List`
+  /// `Bulleted list`
   String get bulletedList {
     return Intl.message(
       'Bulleted list',
@@ -171,7 +171,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Numbered List`
+  /// `Numbered list`
   String get numberedList {
     return Intl.message(
       'Numbered list',
@@ -601,7 +601,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `text color`
+  /// `Text color`
   String get textColor {
     return Intl.message(
       'Text color',
@@ -611,7 +611,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `add your link`
+  /// `Add your link`
   String get addYourLink {
     return Intl.message(
       'Add your link',
@@ -621,7 +621,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `open link`
+  /// `Open link`
   String get openLink {
     return Intl.message(
       'Open link',
@@ -631,7 +631,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `copy link`
+  /// `Copy link`
   String get copyLink {
     return Intl.message(
       'Copy link',
@@ -641,7 +641,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `remove link`
+  /// `Remove link`
   String get removeLink {
     return Intl.message(
       'Remove link',
@@ -651,7 +651,7 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `highlight color`
+  /// `Highlight color`
   String get highlightColor {
     return Intl.message(
       'Highlight color',
