@@ -260,28 +260,39 @@ class EditorState {
   /// The current selection areas's rect in editor.
   List<Rect> selectionRects() {
     final selection = this.selection;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null) {
       return [];
     }
 
     final nodes = getNodesInSelection(selection);
     final rects = <Rect>[];
-    for (final node in nodes) {
-      final selectable = node.selectable;
-      if (selectable == null) {
-        continue;
+
+    if (selection.isCollapsed && nodes.length == 1) {
+      final selectable = nodes.first.selectable;
+      if (selectable != null) {
+        final rect = selectable.getCursorRectInPosition(selection.end);
+        if (rect != null) {
+          rects.add(selectable.transformRectToGlobal(rect));
+        }
       }
-      final nodeRects = selectable.getRectsInSelection(selection);
-      if (nodeRects.isEmpty) {
-        continue;
-      }
-      final renderBox = node.renderBox;
-      if (renderBox == null) {
-        continue;
-      }
-      for (final rect in nodeRects) {
-        final globalOffset = renderBox.localToGlobal(rect.topLeft);
-        rects.add(globalOffset & rect.size);
+    } else {
+      for (final node in nodes) {
+        final selectable = node.selectable;
+        if (selectable == null) {
+          continue;
+        }
+        final nodeRects = selectable.getRectsInSelection(selection);
+        if (nodeRects.isEmpty) {
+          continue;
+        }
+        final renderBox = node.renderBox;
+        if (renderBox == null) {
+          continue;
+        }
+        for (final rect in nodeRects) {
+          final globalOffset = renderBox.localToGlobal(rect.topLeft);
+          rects.add(globalOffset & rect.size);
+        }
       }
     }
 

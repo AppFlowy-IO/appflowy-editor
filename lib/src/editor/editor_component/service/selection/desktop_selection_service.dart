@@ -343,10 +343,6 @@ class _DesktopSelectionServiceWidgetState
     }
 
     _showDebugLayerIfNeeded(offset: panEndOffset);
-
-    editorState.service.scrollService?.startAutoScroll(
-      details.globalPosition,
-    );
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -443,7 +439,7 @@ class _DesktopSelectionServiceWidgetState
         const baseToolbarOffset = Offset(0, 35.0);
         final rects = selectable.getRectsInSelection(newSelection);
         for (final rect in rects) {
-          final selectionRect = _transformRectToGlobal(selectable, rect);
+          final selectionRect = selectable.transformRectToGlobal(rect);
           selectionRects.add(selectionRect);
 
           // TODO: Need to compute more precise location.
@@ -522,7 +518,7 @@ class _DesktopSelectionServiceWidgetState
       );
 
       _cursorAreas.add(cursorArea);
-      selectionRects.add(_transformRectToGlobal(selectable, cursorRect));
+      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
       Overlay.of(context)?.insertAll(_cursorAreas);
 
       _forceShowCursor();
@@ -589,11 +585,6 @@ class _DesktopSelectionServiceWidgetState
       );
     }
     return node;
-  }
-
-  Rect _transformRectToGlobal(SelectableMixin selectable, Rect r) {
-    final Offset topLeft = selectable.localToGlobal(Offset(r.left, r.top));
-    return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
   }
 
   void _showDebugLayerIfNeeded({Offset? offset}) {
