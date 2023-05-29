@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/infra/mobile/mobile.dart';
 
 class SimpleEditor extends StatelessWidget {
   const SimpleEditor({
@@ -31,20 +33,100 @@ class SimpleEditor extends StatelessWidget {
           );
           editorState.logConfiguration
             ..handler = debugPrint
-            ..level = LogLevel.all;
+            ..level = LogLevel.off;
           onEditorStateChange(editorState);
-
-          return AppFlowyEditor(
-            editorState: editorState,
-            themeData: themeData,
-            autoFocus: editorState.document.isEmpty,
-          );
+          final scrollController = ScrollController();
+          if (PlatformExtension.isDesktopOrWeb) {
+            return FloatingToolbar(
+              items: [
+                paragraphItem,
+                ...headingItems,
+                ...markdownFormatItems,
+                quoteItem,
+                bulletedListItem,
+                numberedListItem,
+                linkItem,
+                textColorItem,
+                highlightColorItem
+              ],
+              editorState: editorState,
+              scrollController: scrollController,
+              child: _buildEditor(
+                context,
+                editorState,
+                scrollController,
+              ),
+            );
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  child: _buildMobileEditor(
+                    context,
+                    editorState,
+                    scrollController,
+                  ),
+                ),
+                if (Platform.isIOS || Platform.isAndroid)
+                  _buildMobileToolbar(context, editorState),
+              ],
+            );
+          }
         } else {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
       },
+    );
+  }
+
+  Widget _buildMobileEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.custom(
+      editorStyle: const EditorStyle.mobile(),
+      editorState: editorState,
+      scrollController: scrollController,
+      blockComponentBuilders: standardBlockComponentBuilderMap,
+    );
+  }
+
+  Widget _buildEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.standard(
+      editorState: editorState,
+      scrollController: scrollController,
+    );
+  }
+
+  Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
+    return MobileToolbar(
+      editorState: editorState,
+      // TODO(yijing): Implement toolbar features later
+      toolbarItems: [
+        IconButton(
+          onPressed: () {
+            editorState.selectionService.updateSelection(null);
+          },
+          icon: const Icon(Icons.keyboard_hide),
+        ),
+        ...AFMobileIcons.values
+            .map(
+              (e) => IconButton(
+                onPressed: () {},
+                icon: AFMobileIcon(
+                  afMobileIcons: e,
+                ),
+              ),
+            )
+            .toList(),
+      ],
     );
   }
 }

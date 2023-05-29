@@ -61,10 +61,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Bulleted List`
+  /// `Bulleted list`
   String get bulletedList {
     return Intl.message(
-      'Bulleted List',
+      'Bulleted list',
       name: 'bulletedList',
       desc: '',
       args: [],
@@ -171,10 +171,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Numbered List`
+  /// `Numbered list`
   String get numberedList {
     return Intl.message(
-      'Numbered List',
+      'Numbered list',
       name: 'numberedList',
       desc: '',
       args: [],
@@ -596,6 +596,116 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Blue',
       name: 'lightLightTint9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text color`
+  String get textColor {
+    return Intl.message(
+      'Text color',
+      name: 'textColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your link`
+  String get addYourLink {
+    return Intl.message(
+      'Add your link',
+      name: 'addYourLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open link`
+  String get openLink {
+    return Intl.message(
+      'Open link',
+      name: 'openLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy link`
+  String get copyLink {
+    return Intl.message(
+      'Copy link',
+      name: 'copyLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove link`
+  String get removeLink {
+    return Intl.message(
+      'Remove link',
+      name: 'removeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Highlight color`
+  String get highlightColor {
+    return Intl.message(
+      'Highlight color',
+      name: 'highlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `clear highlight color`
+  String get clearHighlightColor {
+    return Intl.message(
+      'clear highlight color',
+      name: 'clearHighlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `custom color`
+  String get customColor {
+    return Intl.message(
+      'custom color',
+      name: 'customColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hex value`
+  String get hexValue {
+    return Intl.message(
+      'hex value',
+      name: 'hexValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `opacity`
+  String get opacity {
+    return Intl.message(
+      'opacity',
+      name: 'opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `reset to default color`
+  String get resetToDefaultColor {
+    return Intl.message(
+      'reset to default color',
+      name: 'resetToDefaultColor',
       desc: '',
       args: [],
     );

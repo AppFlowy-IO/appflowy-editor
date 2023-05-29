@@ -20,7 +20,7 @@ const _bulletedListSymbols = ['*', '-'];
 const _checkboxListSymbols = ['[x]', '-[x]'];
 const _unCheckboxListSymbols = ['[]', '-[]'];
 
-const _quoteSymbols = ['>'];
+const _quoteSymbols = ['"'];
 
 final _numberRegex = RegExp(r'^(\d+)\.');
 

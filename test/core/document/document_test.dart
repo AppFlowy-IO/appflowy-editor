@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('documemnt.dart', () {
     test('insert', () {
-      final document = Document.empty();
+      final document = Document.blank();
 
       expect(document.insert([-1], []), false);
       expect(document.insert([100], []), false);
@@ -64,10 +64,7 @@ void main() async {
         'document': {
           'type': 'editor',
           'children': [
-            {
-              'type': 'text',
-              'delta': [],
-            }
+            {'type': 'text'}
           ],
           'attributes': {'a': 'a'}
         }
@@ -81,11 +78,13 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'document',
             'children': [
               {
-                'type': 'text',
-                'delta': [],
+                'type': 'paragraph',
+                'attributes': {
+                  'delta': [],
+                }
               }
             ],
           }
@@ -96,7 +95,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'document',
             'children': [],
           }
         }).isEmpty,
@@ -106,13 +105,15 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'document',
             'children': [
               {
-                'type': 'text',
-                'delta': [
-                  {'insert': ''}
-                ],
+                'type': 'paragraph',
+                'attributes': {
+                  'delta': [
+                    {'insert': ''}
+                  ],
+                }
               }
             ],
           }
@@ -123,13 +124,15 @@ void main() async {
         false,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'document',
             'children': [
               {
-                'type': 'text',
-                'delta': [
-                  {'insert': 'Welcome to AppFlowy!'}
-                ],
+                'type': 'paragraph',
+                'attributes': {
+                  'delta': [
+                    {'insert': 'Welcome to AppFlowy!'}
+                  ],
+                }
               }
             ],
           }

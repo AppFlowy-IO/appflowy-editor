@@ -110,7 +110,7 @@ class _FlowyToolbarState extends State<FlowyToolbar>
   // and insert dividers between different types.
   List<ToolbarItem> _filterItems(List<ToolbarItem> items) {
     final filterItems = items
-        .where((item) => item.validator(widget.editorState))
+        .where((item) => item.validator?.call(widget.editorState) ?? false)
         .toList(growable: false)
       ..sort((a, b) => a.type.compareTo(b.type));
     if (filterItems.isEmpty) {

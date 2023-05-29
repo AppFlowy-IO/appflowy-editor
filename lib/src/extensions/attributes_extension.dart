@@ -1,5 +1,4 @@
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 extension NodeAttributesExtensions on Attributes {
@@ -66,22 +65,17 @@ extension DeltaAttributesExtensions on Attributes {
   static const whiteInt = 0XFFFFFFFF;
 
   Color? get color {
-    if (containsKey(BuiltInAttributeKey.color) &&
-        this[BuiltInAttributeKey.color] is String) {
-      return Color(
-        // If the parse fails returns white by default
-        int.tryParse(this[BuiltInAttributeKey.color]) ?? whiteInt,
-      );
+    final textColor = this[BuiltInAttributeKey.textColor] as String?;
+    if (textColor != null) {
+      return textColor.toColor();
     }
     return null;
   }
 
   Color? get backgroundColor {
-    if (containsKey(BuiltInAttributeKey.backgroundColor) &&
-        this[BuiltInAttributeKey.backgroundColor] is String) {
-      return Color(
-        int.tryParse(this[BuiltInAttributeKey.backgroundColor]) ?? whiteInt,
-      );
+    final highlightColor = this[BuiltInAttributeKey.highlightColor] as String?;
+    if (highlightColor != null) {
+      return highlightColor.toColor();
     }
     return null;
   }
