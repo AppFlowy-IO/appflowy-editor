@@ -7,6 +7,7 @@ import 'package:appflowy_editor/src/editor/editor_component/service/scroll/deskt
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
@@ -29,6 +30,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   AppFlowyScrollService get forward =>
       _forwardKey.currentState as AppFlowyScrollService;
 
+  late EditorState editorState = context.read<EditorState>();
+
   @override
   late ScrollController scrollController;
 
@@ -37,6 +40,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     super.initState();
 
     scrollController = widget.scrollController ?? ScrollController();
+    editorState.selectionNotifier.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void dispose() {
+    editorState.selectionNotifier.removeListener(_onSelectionChanged);
+    super.dispose();
   }
 
   @override
@@ -91,6 +101,26 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       autoScroller: autoScroller,
       child: widget.child,
     );
+  }
+
+  void _onSelectionChanged() {
+    // should auto scroll after the cursor or selection updated.
+    final selection = editorState.selection;
+    if (selection == null) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final selectionRect = editorState.service.selectionService.selectionRects;
+      if (selectionRect.isEmpty) {
+        return;
+      }
+      final endTouchPoint = selectionRect.last.centerRight;
+      if (selection.isCollapsed) {
+        startAutoScroll(endTouchPoint, edgeOffset: 50);
+      } else {
+        startAutoScroll(endTouchPoint);
+      }
+    });
   }
 
   @override

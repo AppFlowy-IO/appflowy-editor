@@ -167,6 +167,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   @override
   void performSelector(String selectorName) {}
 
+  @override
+  void insertContent(KeyboardInsertedContent content) {}
+
   void _updateComposing(TextEditingDelta delta) {
     if (delta is! TextEditingDeltaNonTextUpdate) {
       if (composingTextRange != null &&
@@ -180,11 +183,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
         composingTextRange = delta.composing;
       }
     }
-  }
-
-  @override
-  void insertContent(KeyboardInsertedContent content) {
-    // TODO: implement insertContent
   }
 }
 
