@@ -227,8 +227,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     );
 
     // clear the selection when the focus is lost.
-    if (!focusNode.hasFocus) {
-      editorState.selection = null;
-    }
+    // if (!focusNode.hasFocus) {
+    //   editorState.selection = null;
+    // }
   }
 }
