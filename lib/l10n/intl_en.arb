@@ -98,9 +98,9 @@
   "copyLink": "Copy link",
   "removeLink": "Remove link",
   "highlightColor": "Highlight color",
-  "clearHighlightColor": "clear highlight color",
-  "customColor": "custom color",
-  "hexValue": "hex value",
-  "opacity": "opacity",
-  "resetToDefaultColor": "reset to default color"
+  "clearHighlightColor": "Clear highlight color",
+  "customColor": "Custom color",
+  "hexValue": "Hex value",
+  "opacity": "Opacity",
+  "resetToDefaultColor": "Reset to default color"
 }
