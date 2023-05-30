@@ -661,50 +661,50 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `clear highlight color`
+  /// `Clear highlight color`
   String get clearHighlightColor {
     return Intl.message(
-      'clear highlight color',
+      'Clear highlight color',
       name: 'clearHighlightColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `custom color`
+  /// `Custom color`
   String get customColor {
     return Intl.message(
-      'custom color',
+      'Custom color',
       name: 'customColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `hex value`
+  /// `Hex value`
   String get hexValue {
     return Intl.message(
-      'hex value',
+      'Hex value',
       name: 'hexValue',
       desc: '',
       args: [],
     );
   }
 
-  /// `opacity`
+  /// `Opacity`
   String get opacity {
     return Intl.message(
-      'opacity',
+      'Opacity',
       name: 'opacity',
       desc: '',
       args: [],
     );
   }
 
-  /// `reset to default color`
+  /// `Reset to default color`
   String get resetToDefaultColor {
     return Intl.message(
-      'reset to default color',
+      'Reset to default color',
       name: 'resetToDefaultColor',
       desc: '',
       args: [],
