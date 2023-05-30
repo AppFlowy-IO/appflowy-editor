@@ -69,6 +69,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     widget.scrollController.removeListener(_onScrollPositionChanged);
     WidgetsBinding.instance.removeObserver(this);
 
+    _clear();
+    _toolbarWidget = null;
+
     super.dispose();
   }
 
