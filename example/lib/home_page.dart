@@ -99,7 +99,9 @@ class _HomePageState extends State<HomePage> {
           }),
           _buildListTile(context, 'With Empty Document', () {
             final jsonString = Future<String>.value(
-              jsonEncode(EditorState.empty().document.toJson()).toString(),
+              jsonEncode(
+                EditorState.blank(withInitialText: true).document.toJson(),
+              ).toString(),
             );
             _loadEditor(context, jsonString);
           }),
@@ -108,7 +110,9 @@ class _HomePageState extends State<HomePage> {
           _buildSeparator(context, 'Text Robot'),
           _buildListTile(context, 'Type Text Automatically', () async {
             final jsonString = Future<String>.value(
-              jsonEncode(EditorState.empty().document.toJson()).toString(),
+              jsonEncode(
+                EditorState.blank(withInitialText: true).document.toJson(),
+              ).toString(),
             );
             await _loadEditor(context, jsonString);
 
