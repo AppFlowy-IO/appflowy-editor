@@ -3,6 +3,14 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+class FloatingToolbarStyle {
+  const FloatingToolbarStyle({
+    this.backgroundColor = Colors.black,
+  });
+
+  final Color backgroundColor;
+}
+
 /// A floating toolbar that displays at the top of the editor when the selection
 ///   and will be hidden when the selection is collapsed.
 ///
@@ -13,12 +21,14 @@ class FloatingToolbar extends StatefulWidget {
     required this.editorState,
     required this.scrollController,
     required this.child,
+    this.style = const FloatingToolbarStyle(),
   });
 
   final List<ToolbarItem> items;
   final EditorState editorState;
   final ScrollController scrollController;
   final Widget child;
+  final FloatingToolbarStyle style;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -58,6 +68,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     widget.scrollController.removeListener(_onScrollPositionChanged);
     WidgetsBinding.instance.removeObserver(this);
+
+    _clear();
+    _toolbarWidget = null;
 
     super.dispose();
   }
@@ -152,6 +165,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     _toolbarWidget ??= FloatingToolbarWidget(
       items: widget.items,
       editorState: editorState,
+      backgroundColor: widget.style.backgroundColor,
     );
     return _toolbarWidget!;
   }
