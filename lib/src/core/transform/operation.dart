@@ -1,9 +1,5 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
-
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
 
 /// [Operation] represents a change to a [Document].
 abstract class Operation {
@@ -235,28 +231,25 @@ class UpdateTextOperation extends Operation {
 
 // TODO(Lucas.Xu): refactor this part
 Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
-  if (preInsertPath.length > b.length) {
+  if (preInsertPath.length > b.length || preInsertPath.isEmpty || b.isEmpty) {
     return b;
   }
-  if (preInsertPath.isEmpty || b.isEmpty) {
-    return b;
-  }
+
   // check the prefix
-  for (var i = 0; i < preInsertPath.length - 1; i++) {
+  for (int i = 0; i < preInsertPath.length - 1; i++) {
     if (preInsertPath[i] != b[i]) {
       return b;
     }
   }
+
   final prefix = preInsertPath.sublist(0, preInsertPath.length - 1);
   final suffix = b.sublist(preInsertPath.length);
   final preInsertLast = preInsertPath.last;
   final bAtIndex = b[preInsertPath.length - 1];
-  if (preInsertLast <= bAtIndex) {
-    prefix.add(bAtIndex + delta);
-  } else {
-    prefix.add(bAtIndex);
-  }
+
+  prefix.add(preInsertLast <= bAtIndex ? bAtIndex + delta : bAtIndex);
   prefix.addAll(suffix);
+
   return prefix;
 }
 
@@ -265,9 +258,17 @@ Operation transformOperation(Operation a, Operation b) {
     final newPath = transformPath(a.path, b.path, a.nodes.length);
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
+    if (b is DeleteOperation) {
+      if (a.path.isParentOf(b.path)) {
+        return b.copyWith(path: a.path);
+      } else if (b.path.isParentOf(a.path)) {
+        return a.copyWith(path: b.path);
+      }
+    }
     final newPath = transformPath(a.path, b.path, -1 * a.nodes.length);
     return b.copyWith(path: newPath);
   }
+
   // TODO: transform update and textedit
   return b;
 }

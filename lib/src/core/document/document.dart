@@ -1,11 +1,8 @@
 import 'dart:collection';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// [Document] reprensents a AppFlowy Editor document structure.
+/// [Document] represents a AppFlowy Editor document structure.
 ///
 /// It stores the root of the document.
 ///
@@ -24,9 +21,10 @@ class Document {
   }
 
   /// Creates a empty document with a single text node.
+  @Deprecated('use Document.blank() instead')
   factory Document.empty() {
     final root = Node(
-      type: 'editor',
+      type: 'document',
       children: LinkedList<Node>()..add(TextNode.empty()),
     );
     return Document(
@@ -34,7 +32,29 @@ class Document {
     );
   }
 
+  factory Document.blank({bool withInitialText = false}) {
+    final root = Node(
+      type: 'document',
+      children: withInitialText ? [paragraphNode()] : [],
+    );
+    return Document(
+      root: root,
+    );
+  }
+
   final Node root;
+
+  /// first node of the document.
+  Node? get first => root.children.first;
+
+  /// last node of the document.
+  Node? get last {
+    var last = root.children.last;
+    while (last.children.isNotEmpty) {
+      last = last.children.last;
+    }
+    return last;
+  }
 
   /// Returns the node at the given [path].
   Node? nodeAtPath(Path path) {
@@ -86,8 +106,10 @@ class Document {
 
   /// Updates the [Node] at the given [Path]
   bool update(Path path, Attributes attributes) {
+    // if the path is empty, it means the root node.
     if (path.isEmpty) {
-      return false;
+      root.updateAttributes(attributes);
+      return true;
     }
     final target = nodeAtPath(path);
     if (target == null) {
@@ -120,8 +142,8 @@ class Document {
     }
 
     final node = root.children.first;
-    if (node is TextNode &&
-        (node.delta.isEmpty || node.delta.toPlainText().isEmpty)) {
+    final delta = node.delta;
+    if (delta != null && (delta.isEmpty || delta.toPlainText().isEmpty)) {
       return true;
     }
 
