@@ -34,8 +34,8 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
         ..addParagraph(initialText: text)
-        ..addNode(bulletedListNode(text: text))
-        ..addNode(bulletedListNode(text: text));
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)));
       await editor.startTesting();
 
       final snapshotDocument = editor.document;
@@ -61,9 +61,9 @@ void main() async {
       (tester) async {
         const text = 'Welcome to Appflowy 😁';
         final editor = tester.editor
-          ..addNode(todoListNode(checked: false, text: text))
-          ..addNode(todoListNode(checked: false, text: text))
-          ..addNode(todoListNode(checked: false, text: text));
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)));
 
         await editor.startTesting();
 
@@ -139,9 +139,9 @@ void main() async {
       (tester) async {
         const text = 'Welcome to Appflowy 😁';
         final editor = tester.editor
-          ..addNode(bulletedListNode(text: text))
-          ..addNode(bulletedListNode(text: text))
-          ..addNode(bulletedListNode(text: text));
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)));
 
         await editor.startTesting();
 
