@@ -14,11 +14,12 @@ class ParagraphBlockKeys {
 
 Node paragraphNode({
   String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
   attributes ??= {
-    ParagraphBlockKeys.delta: (Delta()..insert(text ?? '')).toJson(),
+    ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? ''))).toJson(),
   };
   return Node(
     type: ParagraphBlockKeys.type,
