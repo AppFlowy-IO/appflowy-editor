@@ -78,7 +78,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',
@@ -95,7 +95,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [],
           }
         }).isEmpty,
@@ -105,7 +105,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',
@@ -124,7 +124,7 @@ void main() async {
         false,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',

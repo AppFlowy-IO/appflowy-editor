@@ -34,7 +34,7 @@ class Document {
 
   factory Document.blank({bool withInitialText = false}) {
     final root = Node(
-      type: 'document',
+      type: 'page',
       children: withInitialText ? [paragraphNode()] : [],
     );
     return Document(

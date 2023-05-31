@@ -23,7 +23,7 @@ void main() {
 
 const testDocument = '''{
   "document": {
-    "type": "document",
+    "type": "page",
     "children": [
       {
         "type": "heading",

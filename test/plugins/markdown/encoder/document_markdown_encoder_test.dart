@@ -9,7 +9,7 @@ void main() async {
     const example = '''
 {
   "document": {
-    "type": "document",
+    "type": "page",
     "children": [
       {
         "type": "heading",
