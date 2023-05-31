@@ -148,12 +148,14 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       return;
     }
 
-    final offset = _findSuitableOffset(rects.map((e) => e.topLeft));
+    final rect = _findSuitableRect(rects);
+    final (top, left, right) = calculateToolbarOffset(rect);
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
-          left: offset.dx,
-          top: max(0, offset.dy) - floatingToolbarHeight,
+          top: max(0, top) - floatingToolbarHeight,
+          left: left,
+          right: right,
           child: _buildToolbar(context),
         );
       },
@@ -196,5 +198,55 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     });
 
     return minOffset;
+  }
+
+  Rect _findSuitableRect(Iterable<Rect> rects) {
+    assert(rects.isNotEmpty);
+
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+
+    // find the min offset with non-negative dy.
+    final rectsWithNonNegativeDy = rects.where(
+      (element) => element.top >= editorOffset.dy,
+    );
+    if (rectsWithNonNegativeDy.isEmpty) {
+      // if all the rects offset is negative, then the selection is not visible.
+      return Rect.zero;
+    }
+
+    final minRect = rectsWithNonNegativeDy.reduce((min, current) {
+      if (min.top < current.top) {
+        return min;
+      } else if (min.top == current.top) {
+        return min.top < current.top ? min : current;
+      } else {
+        return current;
+      }
+    });
+
+    return minRect;
+  }
+
+  (double top, double? left, double? right) calculateToolbarOffset(Rect rect) {
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final editorSize = editorState.renderBox?.size ?? Size.zero;
+    final editorRect = editorOffset & editorSize;
+    final editorCenter = editorRect.center;
+    final left = (rect.left - editorCenter.dx).abs();
+    final right = (rect.right - editorCenter.dx).abs();
+    final width = editorSize.width;
+    final threshold = width / 3.0;
+    if (rect.left >= threshold && rect.right <= threshold * 2.0) {
+      // show in center
+      return (rect.top, threshold, null);
+    } else if (left >= right) {
+      // show in left
+      return (rect.top, rect.left, null);
+    } else {
+      // show in right
+      return (rect.top, null, editorRect.right - rect.right);
+    }
   }
 }
