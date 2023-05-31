@@ -172,34 +172,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     return _toolbarWidget!;
   }
 
-  Offset _findSuitableOffset(Iterable<Offset> offsets) {
-    assert(offsets.isNotEmpty);
-
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-
-    // find the min offset with non-negative dy.
-    final offsetsWithNonNegativeDy = offsets.where(
-      (element) => element.dy >= editorOffset.dy,
-    );
-    if (offsetsWithNonNegativeDy.isEmpty) {
-      // if all the rects offset is negative, then the selection is not visible.
-      return Offset.zero;
-    }
-
-    final minOffset = offsetsWithNonNegativeDy.reduce((min, current) {
-      if (min.dy < current.dy) {
-        return min;
-      } else if (min.dy == current.dy) {
-        return min.dx < current.dx ? min : current;
-      } else {
-        return current;
-      }
-    });
-
-    return minOffset;
-  }
-
   Rect _findSuitableRect(Iterable<Rect> rects) {
     assert(rects.isNotEmpty);
 
