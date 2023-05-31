@@ -41,10 +41,14 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   // TODO: paste the rich text.
   () async {
     final data = await AppFlowyClipboard.getData();
-    if (data.html != null) {
-      // ...
-    }
-    if (data.text != null) {
+    final text = data.text;
+    final html = data.html;
+    if (html != null) {
+      final nodes = htmlToDocument(html).root.children;
+      final transaction = editorState.transaction
+        ..insertNodes(selection!.end.path, nodes);
+      await editorState.apply(transaction);
+    } else if (text != null) {
       handlePastePlainText(editorState, data.text!);
     }
   }();
