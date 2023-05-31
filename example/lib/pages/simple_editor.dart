@@ -68,19 +68,7 @@ class SimpleEditor extends StatelessWidget {
                 MobileToolbar(
                   editorState: editorState,
                   toolbarItems: [
-                    ...AFMobileIcons.values
-                        .map(
-                          (e) => Material(
-                            color: Colors.transparent,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: AFMobileIcon(
-                                afMobileIcons: e,
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                    textDecorationMToolbarItem,
                   ],
                 ),
               ],
