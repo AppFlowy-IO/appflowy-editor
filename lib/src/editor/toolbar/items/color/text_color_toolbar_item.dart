@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/rich_text/flowy_rich_text_keys.dart';
 
 final textColorItem = ToolbarItem(
   id: 'editor.textColor',
@@ -10,10 +11,7 @@ final textColorItem = ToolbarItem(
     final nodes = editorState.getNodesInSelection(selection);
     final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) {
-          textColorHex = attributes['textColor'];
-          return (textColorHex != null);
-        },
+        (attributes) => attributes[FlowyRichTextKeys.textColor] != null,
       );
     });
     return IconItemWidget(

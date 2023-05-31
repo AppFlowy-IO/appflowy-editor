@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/render/rich_text/flowy_rich_text_keys.dart';
 import 'package:flutter/material.dart';
 
 void showColorMenu(
@@ -49,13 +50,17 @@ void showColorMenu(
 }
 
 void _formatHighlightColor(EditorState editorState, String color) {
-  final selection = editorState.selection!;
-  editorState.formatDelta(selection, {'highlightColor': color});
+  editorState.formatDelta(
+    editorState.selection,
+    {FlowyRichTextKeys.highlightColor: color},
+  );
 }
 
 void _formatFontColor(EditorState editorState, String color) {
-  final selection = editorState.selection!;
-  editorState.formatDelta(selection, {'textColor': color});
+  editorState.formatDelta(
+    editorState.selection,
+    {FlowyRichTextKeys.textColor: color},
+  );
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
