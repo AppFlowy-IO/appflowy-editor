@@ -1,3 +1,9 @@
+## 1.0.0-dev.0
+* feat: refactor the editor part for supporting the mobile platform by @LucasXu0 in ([#129](https://github.com/AppFlowy-IO/appflowy-editor/pull/129))
+* feat: upgrade flutter to 3.10.1 by @Xazin in ([#136](https://github.com/AppFlowy-IO/appflowy-editor/pull/136))
+* feat: support auto scroll after selection updated by @LucasXu0 in ([#140](https://github.com/AppFlowy-IO/appflowy-editor/pull/140))
+* fix: image placeholder border color by @nurmukhametdaniyar in ([#119](https://github.com/AppFlowy-IO/appflowy-editor/pull/119))
+
 ## 0.1.12
 * chore: minor updates to documentation.
 
