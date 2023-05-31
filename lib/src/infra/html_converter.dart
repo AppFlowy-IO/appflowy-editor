@@ -159,7 +159,7 @@ class HTMLToNodesConverter {
     return node;
   }
 
-  Node _handleDivider() => Node(type: 'divider');
+  Node _handleDivider() => paragraphNode(text: '---');
 
   Map<String, String> _cssStringToMap(String? cssString) {
     final result = <String, String>{};

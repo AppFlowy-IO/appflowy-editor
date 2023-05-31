@@ -97,6 +97,18 @@ class _HomePageState extends State<HomePage> {
             final jsonString = rootBundle.loadString('assets/example.json');
             _loadEditor(context, jsonString);
           }),
+          _buildListTile(context, 'With Example.html', () async {
+            final htmlString =
+                await rootBundle.loadString('assets/example.html');
+            final html = htmlToDocument(htmlString);
+            // final html = HTMLToNodesConverter(htmlString).toDocument();
+            final jsonString = Future<String>.value(
+              jsonEncode(
+                html.toJson(),
+              ).toString(),
+            );
+            _loadEditor(context, jsonString);
+          }),
           _buildListTile(context, 'With Empty Document', () {
             final jsonString = Future<String>.value(
               jsonEncode(
