@@ -20,9 +20,10 @@ class HeadingBlockKeys {
 
 Node headingNode({
   required int level,
+  Delta? delta,
   Attributes? attributes,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: HeadingBlockKeys.type,
     attributes: {
