@@ -39,7 +39,7 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
           icon: const AFMobileIcon(
             afMobileIcons: AFMobileIcons.bold,
           ),
-          label: const Text('Bold'),
+          label: AppFlowyEditorLocalizations.current.bold,
           isSelected: isBold,
           onPressed: () {
             editorState.toggleAttribute('bold');
@@ -49,7 +49,7 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
           icon: const AFMobileIcon(
             afMobileIcons: AFMobileIcons.italic,
           ),
-          label: const Text('Italic'),
+          label: AppFlowyEditorLocalizations.current.italic,
           isSelected: isItalic,
           onPressed: () {
             editorState.toggleAttribute('italic');
@@ -59,7 +59,7 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
           icon: const AFMobileIcon(
             afMobileIcons: AFMobileIcons.underline,
           ),
-          label: const Text('Underline'),
+          label: AppFlowyEditorLocalizations.current.underline,
           isSelected: isUnderline,
           onPressed: () {
             editorState.toggleAttribute('underline');
@@ -69,7 +69,7 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
           icon: const AFMobileIcon(
             afMobileIcons: AFMobileIcons.strikethrough,
           ),
-          label: const Text('Strikethrough'),
+          label: AppFlowyEditorLocalizations.current.strikethrough,
           isSelected: isStrikethrough,
           onPressed: () {
             editorState.toggleAttribute('strikethrough');

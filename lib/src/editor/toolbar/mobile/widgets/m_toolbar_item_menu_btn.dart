@@ -13,7 +13,7 @@ class MToolbarItemMenuBtn extends StatefulWidget {
 
   final Function() onPressed;
   final Widget icon;
-  final Widget label;
+  final String label;
   final bool? isSelected;
 
   @override
@@ -39,7 +39,7 @@ class _MToolbarItemMenuBtnState extends State<MToolbarItemMenuBtn> {
         });
       },
       icon: widget.icon,
-      label: widget.label,
+      label: Text(widget.label),
       style: ButtonStyle(
         alignment: Alignment.centerLeft,
         foregroundColor: MaterialStateProperty.all(MColors.toolbarTextColor),
