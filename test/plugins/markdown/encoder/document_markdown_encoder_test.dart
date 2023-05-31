@@ -13,7 +13,7 @@ void main() async {
     "children": [
       {
         "type": "heading",
-        "attributes": {
+        "data": {
           "level": 2,
           "delta": [
             {
@@ -41,13 +41,13 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "AppFlowy Editor is a "
@@ -72,7 +72,7 @@ void main() async {
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": true,
           "delta": [
             {
@@ -83,7 +83,7 @@ void main() async {
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": true,
           "delta": [
             {
@@ -94,7 +94,7 @@ void main() async {
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": false,
           "delta": [
             {
@@ -105,13 +105,13 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "quote",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "Here is an example you can give a try"
@@ -121,13 +121,13 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "You can also use "
@@ -147,13 +147,13 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "bulleted_list",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "Use / to insert blocks"
@@ -163,7 +163,7 @@ void main() async {
       },
       {
         "type": "bulleted_list",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "Select text to trigger to the toolbar to format your notes."
@@ -173,13 +173,13 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [
             {
               "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
@@ -189,7 +189,7 @@ void main() async {
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       }

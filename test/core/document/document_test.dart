@@ -66,7 +66,7 @@ void main() async {
           'children': [
             {'type': 'text'}
           ],
-          'attributes': {'a': 'a'}
+          'data': {'a': 'a'}
         }
       };
       final document = Document.fromJson(json);
@@ -82,7 +82,7 @@ void main() async {
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [],
                 }
               }
@@ -109,7 +109,7 @@ void main() async {
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [
                     {'insert': ''}
                   ],
@@ -128,7 +128,7 @@ void main() async {
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [
                     {'insert': 'Welcome to AppFlowy!'}
                   ],

@@ -12,7 +12,7 @@ void main() async {
       );
       expect(node.toJson(), {
         'type': 'example',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
       });
@@ -30,13 +30,13 @@ void main() async {
       );
       expect(nodeWithChildren.toJson(), {
         'type': 'example',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
         'children': [
           {
             'type': 'example',
-            'attributes': {
+            'data': {
               'example': 'example',
             },
           },
@@ -57,7 +57,7 @@ void main() async {
       );
       expect(textNode.toJson(), {
         'type': 'text',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
         'delta': [
@@ -78,7 +78,7 @@ void main() async {
       );
       expect(textNodeWithChildren.toJson(), {
         'type': 'text',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
         'delta': [
@@ -87,7 +87,7 @@ void main() async {
         'children': [
           {
             'type': 'text',
-            'attributes': {
+            'data': {
               'example': 'example',
             },
             'delta': [
@@ -185,7 +185,7 @@ void main() async {
         'children': [
           {
             'type': 'example',
-            'attributes': {
+            'data': {
               'example': 'example',
             },
           },

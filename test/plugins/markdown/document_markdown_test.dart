@@ -27,17 +27,17 @@ const testDocument = '''{
     "children": [
       {
         "type": "heading",
-        "attributes": {"level": 1, "delta": [{"insert": "Heading 1"}]}
+        "data": {"level": 1, "delta": [{"insert": "Heading 1"}]}
       },
       {
         "type": "heading",
-        "attributes": {"level": 2, "delta": [{"insert": "Heading 2"}]}
+        "data": {"level": 2, "delta": [{"insert": "Heading 2"}]}
       },
       {
         "type": "heading",
-        "attributes": {"level": 3, "delta": [{"insert": "Heading 3"}]}
+        "data": {"level": 3, "delta": [{"insert": "Heading 3"}]}
       },
-      {"type": "paragraph", "attributes":{"delta": []}},
+      {"type": "paragraph", "data":{"delta": []}},
       {"type": "divider"}
     ]
   }
