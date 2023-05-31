@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:appflowy_editor/src/infra/mobile/mobile.dart';
 
 class SimpleEditor extends StatelessWidget {
   const SimpleEditor({
@@ -57,7 +55,7 @@ class SimpleEditor extends StatelessWidget {
                 scrollController,
               ),
             );
-          } else {
+          } else if (PlatformExtension.isMobile) {
             return Column(
               children: [
                 Expanded(
@@ -67,16 +65,31 @@ class SimpleEditor extends StatelessWidget {
                     scrollController,
                   ),
                 ),
-                if (Platform.isIOS || Platform.isAndroid)
-                  _buildMobileToolbar(context, editorState),
+                MobileToolbar(
+                  editorState: editorState,
+                  toolbarItems: [
+                    ...AFMobileIcons.values
+                        .map(
+                          (e) => Material(
+                            color: Colors.transparent,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: AFMobileIcon(
+                                afMobileIcons: e,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ],
+                ),
               ],
             );
           }
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
         }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -101,31 +114,6 @@ class SimpleEditor extends StatelessWidget {
     return AppFlowyEditor.standard(
       editorState: editorState,
       scrollController: scrollController,
-    );
-  }
-
-  Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
-    return MobileToolbar(
-      editorState: editorState,
-      // TODO(yijing): Implement toolbar features later
-      toolbarItems: [
-        IconButton(
-          onPressed: () {
-            editorState.selectionService.updateSelection(null);
-          },
-          icon: const Icon(Icons.keyboard_hide),
-        ),
-        ...AFMobileIcons.values
-            .map(
-              (e) => IconButton(
-                onPressed: () {},
-                icon: AFMobileIcon(
-                  afMobileIcons: e,
-                ),
-              ),
-            )
-            .toList(),
-      ],
     );
   }
 }
