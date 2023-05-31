@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 enum AFMobileIcons {
+  textDecoration('toolbar_icons/text_decoration'),
   bold('toolbar_icons/bold'),
   italic('toolbar_icons/italic'),
   underline('toolbar_icons/underline'),
