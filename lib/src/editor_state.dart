@@ -58,9 +58,18 @@ class EditorState {
     undoManager.state = this;
   }
 
+  @Deprecated('use EditorState.blank() instead')
   EditorState.empty()
       : this(
           document: Document.blank(),
+        );
+
+  EditorState.blank({
+    bool withInitialText = true,
+  }) : this(
+          document: Document.blank(
+            withInitialText: withInitialText,
+          ),
         );
 
   final Document document;

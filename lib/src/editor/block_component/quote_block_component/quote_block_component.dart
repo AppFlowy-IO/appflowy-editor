@@ -9,10 +9,11 @@ class QuoteBlockKeys {
 }
 
 Node quoteNode({
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: QuoteBlockKeys.type,
     attributes: {

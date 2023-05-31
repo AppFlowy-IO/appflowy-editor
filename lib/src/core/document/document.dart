@@ -1,9 +1,6 @@
 import 'dart:collection';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// [Document] represents a AppFlowy Editor document structure.
 ///
@@ -24,6 +21,7 @@ class Document {
   }
 
   /// Creates a empty document with a single text node.
+  @Deprecated('use Document.blank() instead')
   factory Document.empty() {
     final root = Node(
       type: 'document',
@@ -34,9 +32,10 @@ class Document {
     );
   }
 
-  factory Document.blank() {
+  factory Document.blank({bool withInitialText = false}) {
     final root = Node(
       type: 'document',
+      children: withInitialText ? [paragraphNode()] : [],
     );
     return Document(
       root: root,

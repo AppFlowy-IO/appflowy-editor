@@ -9,11 +9,11 @@ class BulletedListBlockKeys {
 }
 
 Node bulletedListNode({
-  String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {

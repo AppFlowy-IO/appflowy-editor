@@ -15,11 +15,11 @@ class TodoListBlockKeys {
 
 Node todoListNode({
   required bool checked,
-  String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
