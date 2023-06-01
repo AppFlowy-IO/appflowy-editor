@@ -30,9 +30,15 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       if (domNode is dom.Element) {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
-          _parseFormattingElement(delta, domNode);
+          final attributes = _parserFormattingElementAttributes(domNode);
+          delta.insert(domNode.text, attributes: attributes);
         } else if (HTMLTags.specialElements.contains(localName)) {
-          nodes.addAll(_parseSpecialElements(domNode));
+          nodes.addAll(
+            _parseSpecialElements(
+              domNode,
+              type: ParagraphBlockKeys.type,
+            ),
+          );
         }
       } else if (domNode is dom.Text) {
         delta.insert(domNode.text);
@@ -46,7 +52,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     return nodes;
   }
 
-  Iterable<Node> _parseSpecialElements(dom.Element element) {
+  Iterable<Node> _parseSpecialElements(
+    dom.Element element, {
+    required String type,
+  }) {
     final localName = element.localName;
     switch (localName) {
       case HTMLTags.h1:
@@ -60,22 +69,21 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.list:
-        return _parseListElement(element);
+        return _parseListElement(element, type: type);
       case HTMLTags.paragraph:
         return [_parseParagraphElement(element)];
       case HTMLTags.blockQuote:
         return [_parseBlockQuoteElement(element)];
       case HTMLTags.image:
-        break;
+        return [_parseImageElement(element)];
       default:
         return [paragraphNode(text: element.text)];
     }
-    return [];
   }
 
-  void _parseFormattingElement(Delta delta, dom.Element element) {
+  Attributes _parserFormattingElementAttributes(dom.Element element) {
     final localName = element.localName;
-    Attributes? attributes;
+    Attributes attributes = {};
     switch (localName) {
       case HTMLTags.bold || HTMLTags.strong:
         attributes = {FlowyRichTextKeys.bold: true};
@@ -92,81 +100,93 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.code:
         attributes = {FlowyRichTextKeys.code: true};
       case HTMLTags.span:
-        attributes = _getDeltaAttributesFromHTMLAttributes(
-          element.attributes,
-        );
+        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
+              element.attributes,
+            ) ??
+            {};
+        attributes.addAll(deltaAttributes);
         break;
       case HTMLTags.anchor:
         final href = element.attributes['href'];
         if (href != null) {
-          attributes = {
-            FlowyRichTextKeys.href: href,
-          };
+          attributes = {FlowyRichTextKeys.href: href};
         }
         break;
       default:
         assert(false, 'Unknown formatting element: $element');
         break;
     }
-    delta.insert(element.text, attributes: attributes);
+    for (final child in element.children) {
+      attributes.addAll(_parserFormattingElementAttributes(child));
+    }
+    return attributes;
   }
 
   Node _parseHeadingElement(
     dom.Element element, {
     required int level,
-  }) =>
-      headingNode(
-        level: level,
-        delta: Delta()..insert(element.text),
-      );
+  }) {
+    final delta = _parseDeltaElement(element);
+    return headingNode(
+      level: level,
+      delta: delta,
+    );
+  }
 
   Node _parseBlockQuoteElement(dom.Element element) => quoteNode(
         delta: Delta()..insert(element.text),
       );
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
-    final children = element.nodes.toList().whereType<dom.Element>();
-    return children.map(
-      (e) => bulletedListNode(
-        delta: Delta()
-          ..insert(
-            e.text,
-          ),
-      ),
-    );
+    final result = <Node>[];
+    for (final child in element.children) {
+      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
+    }
+    return result;
   }
 
   Iterable<Node> _parseOrderListElement(dom.Element element) {
-    final children = element.nodes.toList().whereType<dom.Element>();
-    return children.map(
-      (e) => numberedListNode(
-        delta: Delta()
-          ..insert(
-            e.text,
-          ),
-      ),
-    );
+    final result = <Node>[];
+    for (final child in element.children) {
+      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
+    }
+    return result;
   }
 
-  Iterable<Node> _parseListElement(dom.Element element) {
-    final children = element.nodes.toList().whereType<dom.Element>();
-    return children
-        .map((e) => _parseSpecialElements(e))
-        .expand((element) => element);
+  Iterable<Node> _parseListElement(
+    dom.Element element, {
+    required String type,
+  }) {
+    final delta = _parseDeltaElement(element);
+    return [
+      Node(type: type, attributes: {ParagraphBlockKeys.delta: delta.toJson()})
+    ];
   }
 
   Node _parseParagraphElement(dom.Element element) {
-    // TODO: parse image and checkbox.
+    final delta = _parseDeltaElement(element);
+    return paragraphNode(delta: delta);
+  }
+
+  Node _parseImageElement(dom.Element element) {
+    final src = element.attributes['src'] ?? '';
+    return imageNode(
+      url: src,
+    );
+  }
+
+  Delta _parseDeltaElement(dom.Element element) {
     final delta = Delta();
     final children = element.nodes.toList();
     for (final child in children) {
       if (child is dom.Element) {
-        _parseFormattingElement(delta, child);
+        final attributes = _parserFormattingElementAttributes(child);
+        delta.insert(child.text, attributes: attributes);
       } else {
         delta.insert(child.text ?? '');
       }
     }
-    return paragraphNode(delta: delta);
+    return delta;
   }
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
