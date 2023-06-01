@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/rich_text/flowy_rich_text_keys.dart';
 
 final highlightColorItem = ToolbarItem(
   id: 'editor.highlightColor',
