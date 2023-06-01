@@ -36,15 +36,11 @@ const data = {
             {'insert': ' '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'href': 'appflowy.io'}
-            },
-            {
-              'insert': 'AppFlowy Editor',
-              'attributes': {'italic': true}
-            },
-            {
-              'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true}
+              'attributes': {
+                'bold': true,
+                'italic': true,
+                'href': 'appflowy.io'
+              }
             }
           ]
         }
@@ -159,11 +155,7 @@ const data = {
             {'insert': 'You can also use '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'italic': true}
-            },
-            {
-              'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true, 'italic': true}
             },
             {'insert': ' as a component to build your own app.'}
           ]

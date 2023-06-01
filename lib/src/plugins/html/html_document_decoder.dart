@@ -30,7 +30,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       if (domNode is dom.Element) {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
-          _parseFormattingElement(delta, domNode);
+          Attributes attributes = _getParserFormattingElement(domNode);
+          delta.insert(domNode.text, attributes: attributes);
         } else if (HTMLTags.specialElements.contains(localName)) {
           nodes.addAll(
             _parseSpecialElements(
@@ -75,7 +76,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     } else if (element.localName == HTMLTag.blockQuote) {
       return [_parseBlockQuoteElement(element)];
     } else if (delta != null) {
-      _parseFormattingElement(delta, element);
+      Attributes attributes = _getParserFormattingElement(element);
+      delta.insert(element.text, attributes: attributes);
       return [];
     } else {
       return [paragraphNode(delta: Delta()..insert(element.text))];
@@ -89,7 +91,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  void _parseFormattingElement(Delta delta, dom.Element element) {
+  Attributes _getParserFormattingElement(dom.Element element) {
     final localName = element.localName;
     Attributes attributes = {};
     switch (localName) {
@@ -127,10 +129,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         assert(false, 'Unknown formatting element: $element');
         break;
     }
-    for (var newelement in element.children) {
-      _parseFormattingElement(delta, newelement);
+    for (final newelement in element.children) {
+      attributes.addAll(_getParserFormattingElement(newelement));
     }
-    delta.insert(element.text, attributes: attributes);
+    return attributes;
   }
 
   Node _handleHeadingElement(
@@ -201,9 +203,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   Node _parseParagraphElement(dom.Element element) {
     final delta = Delta();
     final children = element.nodes.toList();
+
     for (final child in children) {
       if (child is dom.Element) {
-        _parseFormattingElement(delta, child);
+        Attributes attributes = _getParserFormattingElement(child);
+        delta.insert(child.text, attributes: attributes);
       } else {
         delta.insert(child.text ?? '');
       }
