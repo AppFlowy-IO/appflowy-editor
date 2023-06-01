@@ -112,6 +112,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes = {FlowyRichTextKeys.href: href};
         }
         break;
+      case HTMLTags.paragraph:
+        {
+          attributes = {};
+        }
+        break;
       default:
         assert(false, 'Unknown formatting element: $element');
         break;
@@ -278,6 +283,7 @@ class HTMLTags {
   static const underline = 'u';
   static const del = 'del';
   static const strong = 'strong';
+  static const checkbox = 'input';
   static const span = 'span';
   static const code = 'code';
   static const blockQuote = 'blockquote';
@@ -305,12 +311,14 @@ class HTMLTags {
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
+    HTMLTags.checkbox,
   ];
 
   static bool isTopLevel(String tag) {
     return tag == h1 ||
         tag == h2 ||
         tag == h3 ||
+        tag == checkbox ||
         tag == paragraph ||
         tag == div ||
         tag == blockQuote;
