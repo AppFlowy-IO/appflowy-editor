@@ -2,35 +2,35 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DocumentBlockKeys {
-  const DocumentBlockKeys._();
+class PageBlockKeys {
+  const PageBlockKeys._();
 
-  static const String type = 'document';
+  static const String type = 'page';
 }
 
-Node documentNode({
+Node pageNode({
   required Iterable<Node> children,
   Attributes attributes = const {},
 }) {
   return Node(
-    type: DocumentBlockKeys.type,
+    type: PageBlockKeys.type,
     children: children,
     attributes: attributes,
   );
 }
 
-class DocumentComponentBuilder extends BlockComponentBuilder {
+class PageBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
-    return DocumentComponent(
+    return PageBlockComponent(
       key: blockComponentContext.node.key,
       node: blockComponentContext.node,
     );
   }
 }
 
-class DocumentComponent extends BlockComponentStatelessWidget {
-  const DocumentComponent({
+class PageBlockComponent extends BlockComponentStatelessWidget {
+  const PageBlockComponent({
     super.key,
     required super.node,
     super.showActions,

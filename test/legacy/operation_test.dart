@@ -57,7 +57,7 @@ void main() {
     final item2 = Node(type: "node");
     final item3 = Node(type: "node");
     final root = Node(
-      type: 'document',
+      type: 'page',
       attributes: {},
       children: [
         item1,

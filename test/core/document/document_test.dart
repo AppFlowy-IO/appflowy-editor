@@ -66,7 +66,7 @@ void main() async {
           'children': [
             {'type': 'text'}
           ],
-          'attributes': {'a': 'a'}
+          'data': {'a': 'a'}
         }
       };
       final document = Document.fromJson(json);
@@ -78,11 +78,11 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [],
                 }
               }
@@ -95,7 +95,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [],
           }
         }).isEmpty,
@@ -105,11 +105,11 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [
                     {'insert': ''}
                   ],
@@ -124,11 +124,11 @@ void main() async {
         false,
         Document.fromJson({
           'document': {
-            'type': 'document',
+            'type': 'page',
             'children': [
               {
                 'type': 'paragraph',
-                'attributes': {
+                'data': {
                   'delta': [
                     {'insert': 'Welcome to AppFlowy!'}
                   ],

@@ -1,5 +1,5 @@
 // entry
-export 'entry/document_component.dart';
+export 'entry/page_block_component.dart';
 
 // ime
 export 'service/ime/delta_input_service.dart';

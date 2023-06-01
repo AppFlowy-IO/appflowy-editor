@@ -169,7 +169,7 @@ We'll use `network_image` in this case. And we add `network_image_src` to the `a
 ```JSON
 {
   "type": "network_image",
-  "attributes": {
+  "data": {
     "network_image_src": "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif"
   }
 }
