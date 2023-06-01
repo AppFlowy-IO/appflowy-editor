@@ -13,7 +13,6 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   String convert(Document input) {
     List<Node> documentNodes = input.root.children.toList();
     nodes.addAll(documentNodes);
-
     final elements = toHTMLNodes();
     final copyString = elements.fold<String>(
       '',
