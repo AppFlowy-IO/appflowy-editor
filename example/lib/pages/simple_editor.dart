@@ -70,6 +70,7 @@ class SimpleEditor extends StatelessWidget {
                   toolbarItems: [
                     textDecorationMToolbarItem,
                     codeMToolbarItem,
+                    linkMToolbarItem,
                   ],
                 ),
               ],
