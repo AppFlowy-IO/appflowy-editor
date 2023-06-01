@@ -12,22 +12,6 @@ Future<void> onDelete(
     return;
   }
 
-  // single line
-  if (selection.isSingle) {
-    final node = editorState.getNodeAtPath(selection.end.path);
-    final delta = node?.delta;
-    if (node == null || delta == null) {
-      return;
-    }
-
-    final transaction = editorState.transaction
-      ..deleteText(
-        node,
-        deletion.deletedRange.start,
-        deletion.textDeleted.length,
-      );
-    return editorState.apply(transaction);
-  } else {
-    throw UnimplementedError();
-  }
+  // use backspace command instead.
+  backspaceCommand.execute(editorState);
 }
