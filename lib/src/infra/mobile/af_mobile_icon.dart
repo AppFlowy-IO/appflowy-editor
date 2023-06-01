@@ -14,6 +14,7 @@ enum AFMobileIcons {
   h1('toolbar_icons/h1'),
   h2('toolbar_icons/h2'),
   h3('toolbar_icons/h3'),
+  list('toolbar_icons/list'),
   bulletedList('toolbar_icons/bulleted_list'),
   numberedList('toolbar_icons/numbered_list'),
   checkbox('toolbar_icons/checkbox'),

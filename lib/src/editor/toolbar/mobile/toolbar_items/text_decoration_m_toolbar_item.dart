@@ -82,8 +82,8 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
           ],
         ),
         // TODO(yijing): Add color after showColorMenu moved into desktop
-        Text(AppFlowyEditorLocalizations.current.textColor),
-        Text(AppFlowyEditorLocalizations.current.highlightColor),
+        // Text(AppFlowyEditorLocalizations.current.textColor),
+        // Text(AppFlowyEditorLocalizations.current.highlightColor),
       ],
     );
   },

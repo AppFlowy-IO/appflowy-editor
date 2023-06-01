@@ -110,7 +110,7 @@ class _MLinkMenuState extends State<MLinkMenu> {
             child: ElevatedButton(
               onPressed: () {
                 widget.onSubmitted.call(_textEditingController.text);
-                // close menu
+                //TODO(yijing): close menu
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
@@ -126,6 +126,7 @@ class _MLinkMenuState extends State<MLinkMenu> {
               child: const Text('Done'),
             ),
           )
+          // TODO(yijing): edit link?
         ],
       ),
     );

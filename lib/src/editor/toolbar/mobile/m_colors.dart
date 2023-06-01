@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// TODO(yijing): expose to editor style
+// TODO(yijing): expose to editor style later
 class MColors {
   static const toolbarBgColor = Colors.white;
   static const toolbarTextColor = Color(0xff676666);
