@@ -69,8 +69,12 @@ class SimpleEditor extends StatelessWidget {
                   editorState: editorState,
                   toolbarItems: [
                     textDecorationMToolbarItem,
+                    // headingMToolbarItem,
+                    // listMToolbarItem,
+                    // linkMToolbarItem,
+                    // quoteMToolbarItem,
                     codeMToolbarItem,
-                    linkMToolbarItem,
+                    // dividerMToolbarItem,
                   ],
                 ),
               ],
