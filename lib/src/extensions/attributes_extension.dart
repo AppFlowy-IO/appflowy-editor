@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 
 extension NodeAttributesExtensions on Attributes {
   String? get heading {
@@ -24,67 +23,11 @@ extension NodeAttributesExtensions on Attributes {
     return null;
   }
 
-  bool get code {
-    if (containsKey(BuiltInAttributeKey.code) &&
-        this[BuiltInAttributeKey.code] is bool) {
-      return this[BuiltInAttributeKey.code];
-    }
-    return false;
-  }
-
   bool get check {
     if (containsKey(BuiltInAttributeKey.checkbox) &&
         this[BuiltInAttributeKey.checkbox] is bool) {
       return this[BuiltInAttributeKey.checkbox];
     }
     return false;
-  }
-}
-
-extension DeltaAttributesExtensions on Attributes {
-  bool get bold {
-    return (containsKey(BuiltInAttributeKey.bold) &&
-        this[BuiltInAttributeKey.bold] == true);
-  }
-
-  bool get italic {
-    return (containsKey(BuiltInAttributeKey.italic) &&
-        this[BuiltInAttributeKey.italic] == true);
-  }
-
-  bool get underline {
-    return (containsKey(BuiltInAttributeKey.underline) &&
-        this[BuiltInAttributeKey.underline] == true);
-  }
-
-  bool get strikethrough {
-    return (containsKey(BuiltInAttributeKey.strikethrough) &&
-        this[BuiltInAttributeKey.strikethrough] == true);
-  }
-
-  static const whiteInt = 0XFFFFFFFF;
-
-  Color? get color {
-    final textColor = this[BuiltInAttributeKey.textColor] as String?;
-    if (textColor != null) {
-      return textColor.toColor();
-    }
-    return null;
-  }
-
-  Color? get backgroundColor {
-    final highlightColor = this[BuiltInAttributeKey.highlightColor] as String?;
-    if (highlightColor != null) {
-      return highlightColor.toColor();
-    }
-    return null;
-  }
-
-  String? get href {
-    if (containsKey(BuiltInAttributeKey.href) &&
-        this[BuiltInAttributeKey.href] is String) {
-      return this[BuiltInAttributeKey.href];
-    }
-    return null;
   }
 }

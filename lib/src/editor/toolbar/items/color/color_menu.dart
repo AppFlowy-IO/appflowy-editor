@@ -49,13 +49,17 @@ void showColorMenu(
 }
 
 void _formatHighlightColor(EditorState editorState, String color) {
-  final selection = editorState.selection!;
-  editorState.formatDelta(selection, {'highlightColor': color});
+  editorState.formatDelta(
+    editorState.selection,
+    {FlowyRichTextKeys.highlightColor: color},
+  );
 }
 
 void _formatFontColor(EditorState editorState, String color) {
-  final selection = editorState.selection!;
-  editorState.formatDelta(selection, {'textColor': color});
+  editorState.formatDelta(
+    editorState.selection,
+    {FlowyRichTextKeys.textColor: color},
+  );
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {

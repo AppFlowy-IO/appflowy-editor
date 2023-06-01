@@ -3,37 +3,37 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
-  'document': DocumentComponentBuilder(),
-  'paragraph': TextBlockComponentBuilder(
+  PageBlockKeys.type: PageBlockComponentBuilder(),
+  ParagraphBlockKeys.type: TextBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration,
   ),
-  'todo_list': TodoListBlockComponentBuilder(
+  TodoListBlockKeys.type: TodoListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'To-do',
     ),
   ),
-  'bulleted_list': BulletedListBlockComponentBuilder(
+  BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'List',
     ),
   ),
-  'numbered_list': NumberedListBlockComponentBuilder(
+  NumberedListBlockKeys.type: NumberedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'List',
     ),
   ),
-  'quote': QuoteBlockComponentBuilder(
+  QuoteBlockKeys.type: QuoteBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'Quote',
     ),
   ),
-  'heading': HeadingBlockComponentBuilder(
+  HeadingBlockKeys.type: HeadingBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (node) =>
           'Heading ${node.attributes[HeadingBlockKeys.level]}',
     ),
   ),
-  'image': ImageBlockComponentBuilder(),
+  ImageBlockKeys.type: ImageBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
