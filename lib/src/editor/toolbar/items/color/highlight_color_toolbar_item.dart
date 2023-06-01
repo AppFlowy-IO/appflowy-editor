@@ -11,10 +11,7 @@ final highlightColorItem = ToolbarItem(
     final nodes = editorState.getNodesInSelection(selection);
     final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) {
-          highlightColorHex = attributes['highlightColor'];
-          return (highlightColorHex != null);
-        },
+        (attributes) => attributes[FlowyRichTextKeys.highlightColor] != null,
       );
     });
     return IconItemWidget(

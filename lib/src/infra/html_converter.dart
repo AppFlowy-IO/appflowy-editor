@@ -60,7 +60,7 @@ class HTMLToNodesConverter {
     final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
     return Document.fromJson({
       'document': {
-        'type': 'document',
+        'type': 'page',
         'children': _handleContainer(childNodes).map((e) => e.toJson()).toList()
       }
     });

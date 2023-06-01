@@ -6,11 +6,11 @@ void main() async {
   group('document_html_decoder_test.dart', () {
     const example = {
       'document': {
-        'type': 'document',
+        'type': 'page',
         'children': [
           {
             'type': 'heading',
-            'attributes': {
+            'data': {
               'level': 1,
               'delta': [
                 {'insert': 'AppFlowyEditor'}
@@ -19,7 +19,7 @@ void main() async {
           },
           {
             'type': 'heading',
-            'attributes': {
+            'data': {
               'level': 2,
               'delta': [
                 {'insert': '👋 '},
@@ -41,7 +41,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': 'AppFlowy Editor is a '},
                 {
@@ -58,7 +58,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {
                   'insert': 'Here',
@@ -75,7 +75,7 @@ void main() async {
           },
           {
             'type': 'heading',
-            'attributes': {
+            'data': {
               'level': 3,
               'delta': [
                 {'insert': 'Features!'}
@@ -84,7 +84,7 @@ void main() async {
           },
           {
             'type': 'numbered_list',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': '[x] Customizable'}
               ]
@@ -92,7 +92,7 @@ void main() async {
           },
           {
             'type': 'numbered_list',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': '[x] Test-covered'}
               ]
@@ -100,7 +100,7 @@ void main() async {
           },
           {
             'type': 'numbered_list',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': '[ ] more to come!'}
               ]
@@ -108,7 +108,7 @@ void main() async {
           },
           {
             'type': 'numbered_list',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': 'First item'}
               ]
@@ -116,7 +116,7 @@ void main() async {
           },
           {
             'type': 'numbered_list',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': 'Second item'}
               ]
@@ -124,7 +124,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': 'List element'}
               ]
@@ -132,7 +132,7 @@ void main() async {
           },
           {
             'type': 'quote',
-            'attributes': {
+            'data': {
               'delta': [
                 {
                   'insert': '\n'
@@ -144,7 +144,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {'insert': 'You can also use '},
                 {
@@ -157,7 +157,7 @@ void main() async {
           },
           {
             'type': 'heading',
-            'attributes': {
+            'data': {
               'level': 3,
               'delta': [
                 {'insert': 'Awesome features'}
@@ -166,7 +166,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {
                   'insert':
@@ -177,7 +177,7 @@ void main() async {
           },
           {
             'type': 'paragraph',
-            'attributes': {
+            'data': {
               'delta': [
                 {
                   'insert': '\n'
@@ -210,7 +210,7 @@ void main() async {
                 },
                 {
                   'insert': 'Span element three',
-                  'attributes': {'bold': true, 'strike': true}
+                  'attributes': {'bold': true, 'strikethrough': true}
                 },
                 {
                   'insert': '\n'

@@ -12,11 +12,11 @@ void main() {
 
 const data = {
   'document': {
-    'type': 'document',
+    'type': 'page',
     'children': [
       {
         'type': 'heading',
-        'attributes': {
+        'data': {
           'level': 1,
           'delta': [
             {'insert': 'AppFlowyEditor'}
@@ -25,7 +25,7 @@ const data = {
       },
       {
         'type': 'heading',
-        'attributes': {
+        'data': {
           'level': 2,
           'delta': [
             {'insert': '👋 '},
@@ -47,7 +47,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': 'AppFlowy Editor is a '},
             {
@@ -64,7 +64,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {
               'insert': 'Here',
@@ -81,7 +81,7 @@ const data = {
       },
       {
         'type': 'heading',
-        'attributes': {
+        'data': {
           'level': 3,
           'delta': [
             {'insert': 'Features!'}
@@ -90,7 +90,7 @@ const data = {
       },
       {
         'type': 'numbered_list',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': '[x] Customizable'}
           ]
@@ -98,7 +98,7 @@ const data = {
       },
       {
         'type': 'numbered_list',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': '[x] Test-covered'}
           ]
@@ -106,7 +106,7 @@ const data = {
       },
       {
         'type': 'numbered_list',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': '[ ] more to come!'}
           ]
@@ -114,7 +114,7 @@ const data = {
       },
       {
         'type': 'numbered_list',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': 'First item'}
           ]
@@ -122,7 +122,7 @@ const data = {
       },
       {
         'type': 'numbered_list',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': 'Second item'}
           ]
@@ -130,7 +130,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': 'List element'}
           ]
@@ -138,7 +138,7 @@ const data = {
       },
       {
         'type': 'quote',
-        'attributes': {
+        'data': {
           'delta': [
             {
               'insert': '\n'
@@ -150,7 +150,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {'insert': 'You can also use '},
             {
@@ -163,7 +163,7 @@ const data = {
       },
       {
         'type': 'heading',
-        'attributes': {
+        'data': {
           'level': 3,
           'delta': [
             {'insert': 'Awesome features'}
@@ -172,7 +172,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {
               'insert':
@@ -183,7 +183,7 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'attributes': {
+        'data': {
           'delta': [
             {
               'insert': '\n'
@@ -216,7 +216,7 @@ const data = {
             },
             {
               'insert': 'Span element three',
-              'attributes': {'bold': true, 'strike': true}
+              'attributes': {'bold': true, 'strikethrough': true}
             },
             {
               'insert': '\n'
