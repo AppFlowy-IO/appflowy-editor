@@ -58,8 +58,10 @@ class _MobileToolbarState extends State<MobileToolbar> {
                                     _selectedToolbarItemIndex = index;
                                   });
                                 }
-                                //execute command
-                                // TODO(yijing): add MToolbarItem.action feature
+                                widget.toolbarItems[index].actionHandler!(
+                                  widget.editorState,
+                                  selection,
+                                );
                               },
                             ),
                           );
