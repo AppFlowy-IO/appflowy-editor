@@ -33,7 +33,7 @@ class _MobileToolbarState extends State<MobileToolbar> {
             children: [
               Container(
                 width: width,
-                height: 50,
+                height: MSize.rowHeight,
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(color: MColors.toolbarItemOutlineColor),
@@ -57,11 +57,12 @@ class _MobileToolbarState extends State<MobileToolbar> {
                                     _showItmeMenu = !_showItmeMenu;
                                     _selectedToolbarItemIndex = index;
                                   });
+                                } else {
+                                  widget.toolbarItems[index].actionHandler!(
+                                    widget.editorState,
+                                    selection,
+                                  );
                                 }
-                                widget.toolbarItems[index].actionHandler!(
-                                  widget.editorState,
-                                  selection,
-                                );
                               },
                             ),
                           );

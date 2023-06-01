@@ -7,6 +7,7 @@ class MToolbarItem {
       itemMenuBuilder;
 
   void Function(EditorState editorState, Selection selection)? actionHandler;
+  bool hasMenu = false;
 
   /// Tool bar item that implements attribute directly(without opening menu)
   MToolbarItem.action({
@@ -18,7 +19,5 @@ class MToolbarItem {
   MToolbarItem.withMenu({
     required this.itemIcon,
     required this.itemMenuBuilder,
-  });
-
-  bool get hasMenu => itemMenuBuilder != null;
+  }) : hasMenu = true;
 }
