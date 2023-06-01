@@ -1,3 +1,9 @@
+## 1.0.0-dev.1
+* feat: rename delta keys and document keys by @LucasXu0 in ([#153](https://github.com/AppFlowy-IO/appflowy-editor/pull/153))
+* fix: floating toolbar overflow by @LucasXu0 in ([#146](https://github.com/AppFlowy-IO/appflowy-editor/pull/146))
+* fix: missing format when converting html to document by @alihassan143 in ([#152](https://github.com/AppFlowy-IO/appflowy-editor/pull/152))
+* fix: unable to delete node on the mobile platform by @LucasXu0 in ([#154](https://github.com/AppFlowy-IO/appflowy-editor/pull/154))
+
 ## 1.0.0-dev.0
 * feat: refactor the editor part for supporting the mobile platform by @LucasXu0 in ([#129](https://github.com/AppFlowy-IO/appflowy-editor/pull/129))
 * feat: upgrade flutter to 3.10.1 by @Xazin in ([#136](https://github.com/AppFlowy-IO/appflowy-editor/pull/136))
