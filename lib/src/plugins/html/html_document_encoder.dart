@@ -13,12 +13,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   String convert(Document input) {
     List<Node> documentNodes = input.root.children.toList();
     nodes.addAll(documentNodes);
-    final elements = toHTMLNodes();
-    final copyString = elements.fold<String>(
-      '',
-      ((previousValue, element) => previousValue + stringify(element)),
-    );
-    return copyString;
+    return toHTMLString();
   }
 
   List<dom.Node> toHTMLNodes() {
@@ -140,22 +135,6 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
     });
   }
 
-  /// Convert the rich text to HTML
-  ///
-  /// Use `<b>` for bold only.
-  /// Use `<i>` for italic only.
-  /// Use `<del>` for strikethrough only.
-  /// Use `<u>` for underline only.
-  ///
-  /// If the text has multiple styles, use a `<span>`
-  /// to mix the styles.
-  ///
-  /// A CSS style string is used to describe the styles.
-  /// The HTML will be:
-  ///
-  /// ```html
-  /// <span style='...'>Text</span>
-  /// ```
   dom.Element _deltaToHtml(
     Delta delta, {
     required String type,
