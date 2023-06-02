@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class MobileToolbar extends StatefulWidget {
+class MobileToolbar extends StatelessWidget {
   const MobileToolbar({
     super.key,
     required this.editorState,
@@ -12,92 +12,120 @@ class MobileToolbar extends StatefulWidget {
   final List<MToolbarItem> toolbarItems;
 
   @override
-  State<MobileToolbar> createState() => _MobileToolbarState();
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Selection?>(
+      valueListenable: editorState.service.selectionService.currentSelection,
+      builder: (_, Selection? selection, __) {
+        if (selection == null) {
+          return const SizedBox.shrink();
+        }
+        return MToolbarWidget(
+          // Use selection as key to force rebuild toolbar widget when selection changed.
+          key: ValueKey(selection),
+          editorState: editorState,
+          selection: selection,
+          toolbarItems: toolbarItems,
+        );
+      },
+    );
+  }
 }
 
-class _MobileToolbarState extends State<MobileToolbar> {
-  bool _showItmeMenu = false;
+class MToolbarWidget extends StatefulWidget {
+  const MToolbarWidget({
+    super.key,
+    required this.editorState,
+    required this.toolbarItems,
+    required this.selection,
+  });
+
+  final EditorState editorState;
+  final List<MToolbarItem> toolbarItems;
+  final Selection selection;
+
+  @override
+  State<MToolbarWidget> createState() => _MToolbarWidgetState();
+}
+
+class _MToolbarWidgetState extends State<MToolbarWidget> {
+  late bool _showItmeMenu;
   int? _selectedToolbarItemIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _showItmeMenu = false;
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return ValueListenableBuilder<Selection?>(
-      valueListenable:
-          widget.editorState.service.selectionService.currentSelection,
-      builder: (_, Selection? selection, __) {
-        if (selection == null) {
-          return const SizedBox.shrink();
-        } else {
-          return Column(
+    return Column(
+      children: [
+        // toolbar
+        Container(
+          width: width,
+          height: MSize.rowHeight,
+          decoration: const BoxDecoration(
+            border: Border(
+              top: BorderSide(color: MColors.toolbarItemOutlineColor),
+              bottom: BorderSide(color: MColors.toolbarItemOutlineColor),
+            ),
+            color: MColors.toolbarBgColor,
+          ),
+          child: Row(
             children: [
-              Container(
-                width: width,
-                height: MSize.rowHeight,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: MColors.toolbarItemOutlineColor),
-                    bottom: BorderSide(color: MColors.toolbarItemOutlineColor),
-                  ),
-                  color: MColors.toolbarBgColor,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          final toobarItem = widget.toolbarItems[index];
-                          return Material(
-                            color: Colors.transparent,
-                            child: IconButton(
-                              icon: toobarItem.itemIcon,
-                              onPressed: () {
-                                if (toobarItem.hasMenu) {
-                                  setState(() {
-                                    _showItmeMenu = !_showItmeMenu;
-                                    _selectedToolbarItemIndex = index;
-                                  });
-                                } else {
-                                  widget.toolbarItems[index].actionHandler!(
-                                    widget.editorState,
-                                    selection,
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        },
-                        itemCount: widget.toolbarItems.length,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                    ),
-                    // close keyboard button
-                    Material(
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final toobarItem = widget.toolbarItems[index];
+                    return Material(
                       color: Colors.transparent,
                       child: IconButton(
+                        icon: toobarItem.itemIcon,
                         onPressed: () {
-                          // clear selection to close toolbar
-                          widget.editorState.selectionService
-                              .updateSelection(null);
+                          if (toobarItem.hasMenu) {
+                            setState(() {
+                              _showItmeMenu = !_showItmeMenu;
+                              _selectedToolbarItemIndex = index;
+                            });
+                          } else {
+                            widget.toolbarItems[index].actionHandler!(
+                              widget.editorState,
+                              widget.selection,
+                            );
+                          }
                         },
-                        icon: const Icon(Icons.keyboard_hide),
                       ),
-                    ),
-                  ],
+                    );
+                  },
+                  itemCount: widget.toolbarItems.length,
+                  scrollDirection: Axis.horizontal,
                 ),
               ),
-              // only for MToolbarItem.withMenu
-              _showItmeMenu
-                  ? MToolbarItemMenu(
-                      editorState: widget.editorState,
-                      itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
-                          .itemMenuBuilder!(widget.editorState, selection),
-                    )
-                  : const SizedBox.shrink(),
+              // close keyboard button
+              Material(
+                color: Colors.transparent,
+                child: IconButton(
+                  onPressed: () {
+                    // clear selection to close toolbar
+                    widget.editorState.selectionService.updateSelection(null);
+                  },
+                  icon: const Icon(Icons.keyboard_hide),
+                ),
+              ),
             ],
-          );
-        }
-      },
+          ),
+        ),
+        // only for MToolbarItem.withMenu
+        _showItmeMenu
+            ? MToolbarItemMenu(
+                editorState: widget.editorState,
+                itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
+                    .itemMenuBuilder!(widget.editorState, widget.selection),
+              )
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }
