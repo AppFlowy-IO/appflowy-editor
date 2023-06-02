@@ -18,6 +18,7 @@ final linkMToolbarItem = MToolbarItem.withMenu(
         await editorState.formatDelta(selection, {
           BuiltInAttributeKey.href: value,
         });
+        mToolbarItemMenuStateKey.currentState?.closeItemMenu();
       },
     );
   },
@@ -36,10 +37,10 @@ class MLinkMenu extends StatefulWidget {
   final void Function(String) onSubmitted;
 
   @override
-  State<MLinkMenu> createState() => _MLinkMenuState();
+  State<MLinkMenu> createState() => MLinkMenuState();
 }
 
-class _MLinkMenuState extends State<MLinkMenu> {
+class MLinkMenuState extends State<MLinkMenu> {
   late TextEditingController _textEditingController;
   late FocusNode _focusNode;
 
@@ -55,6 +56,7 @@ class _MLinkMenuState extends State<MLinkMenu> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -110,7 +112,7 @@ class _MLinkMenuState extends State<MLinkMenu> {
             child: ElevatedButton(
               onPressed: () {
                 widget.onSubmitted.call(_textEditingController.text);
-                //TODO(yijing): close menu
+                mToolbarItemMenuStateKey.currentState?.closeItemMenu();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(

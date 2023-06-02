@@ -120,6 +120,7 @@ class _MToolbarWidgetState extends State<MToolbarWidget> {
         // only for MToolbarItem.withMenu
         _showItmeMenu
             ? MToolbarItemMenu(
+                key: mToolbarItemMenuStateKey,
                 editorState: widget.editorState,
                 itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
                     .itemMenuBuilder!(widget.editorState, widget.selection),
