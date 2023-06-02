@@ -113,9 +113,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
         break;
       case HTMLTags.paragraph:
-        {
-          attributes = {};
-        }
+        attributes.addAll({});
         break;
       default:
         assert(false, 'Unknown formatting element: $element');
