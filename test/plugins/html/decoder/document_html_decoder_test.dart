@@ -83,7 +83,7 @@ void main() async {
             }
           },
           {
-            'type': 'numbered_list',
+            'type': 'bulleted_list',
             'data': {
               'delta': [
                 {'insert': '[x] Customizable'}
@@ -91,7 +91,7 @@ void main() async {
             }
           },
           {
-            'type': 'numbered_list',
+            'type': 'bulleted_list',
             'data': {
               'delta': [
                 {'insert': '[x] Test-covered'}
@@ -99,7 +99,7 @@ void main() async {
             }
           },
           {
-            'type': 'numbered_list',
+            'type': 'bulleted_list',
             'data': {
               'delta': [
                 {'insert': '[ ] more to come!'}

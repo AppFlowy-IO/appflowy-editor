@@ -145,7 +145,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
     final result = <Node>[];
     for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
+      result.addAll(_parseListElement(child, type: BulletedListBlockKeys.type));
     }
     return result;
   }

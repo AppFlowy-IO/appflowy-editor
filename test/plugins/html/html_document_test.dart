@@ -95,7 +95,7 @@ const data = {
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
             {'insert': '[x] Customizable'}
@@ -103,7 +103,7 @@ const data = {
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
             {'insert': '[x] Test-covered'}
@@ -111,7 +111,7 @@ const data = {
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
             {'insert': '[ ] more to come!'}
