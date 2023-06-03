@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -11,25 +11,19 @@ void main() async {
   group('outdent_handler.dart', () {
     testWidgets("press shift tab in plain text", (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(text)
-        ..insertTextNode(text);
-
+      final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();
 
       final snapshotDocument = editor.document;
 
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.tab,
         isShiftPressed: true,
       );
-
       // nothing happens
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [0], startOffset: 0),
       );
       expect(editor.document.toJson(), snapshotDocument.toJson());
@@ -39,38 +33,27 @@ void main() async {
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
-        ..insertTextNode(text)
-        ..insertTextNode(
-          text,
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList
-          },
-        )
-        ..insertTextNode(
-          text,
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList
-          },
-        );
-
+        ..addParagraph(initialText: text)
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)));
       await editor.startTesting();
 
       final snapshotDocument = editor.document;
 
-      var selection = Selection.single(path: [1], startOffset: 0);
+      final selection = Selection.single(path: [1], startOffset: 0);
       await editor.updateSelection(selection);
-
-      await editor.pressLogicKey(
+      await editor.pressKey(
         key: LogicalKeyboardKey.tab,
         isShiftPressed: true,
       );
-
       // nothing happens
       expect(
-        editor.documentSelection,
+        editor.selection,
         Selection.single(path: [1], startOffset: 0),
       );
       expect(editor.document.toJson(), snapshotDocument.toJson());
+
+      await editor.dispose();
     });
 
     testWidgets(
@@ -78,37 +61,18 @@ void main() async {
       (tester) async {
         const text = 'Welcome to Appflowy 😁';
         final editor = tester.editor
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-              BuiltInAttributeKey.checkbox: false,
-            },
-          )
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-              BuiltInAttributeKey.checkbox: false,
-            },
-          )
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-              BuiltInAttributeKey.checkbox: false,
-            },
-          );
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+          ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)));
+
         await editor.startTesting();
 
-        final selection = Selection.single(path: [1], startOffset: 0);
+        final selection = Selection.collapse([1], 0);
         await editor.updateSelection(selection);
-
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         await editor.updateSelection(selection);
-
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         // Before
         // [] Welcome to Appflowy 😁
@@ -116,54 +80,57 @@ void main() async {
         // [] Welcome to Appflowy 😁
         // After
         // [] Welcome to Appflowy 😁
-        //  [] Welcome to Appflowy 😁
-        //  [] Welcome to Appflowy 😁
+        //    [] Welcome to Appflowy 😁
+        //    [] Welcome to Appflowy 😁
 
         expect(
-          editor.documentSelection,
-          Selection.single(path: [0, 1], startOffset: 0),
+          editor.selection,
+          Selection.collapse([0, 1], 0),
         );
         expect(
-          editor.nodeAtPath([0])!.subtype,
-          BuiltInAttributeKey.checkbox,
+          editor.nodeAtPath([0])!.type,
+          'todo_list',
         );
         expect(editor.nodeAtPath([1]), null);
         expect(editor.nodeAtPath([2]), null);
         expect(
-          editor.nodeAtPath([0, 0])!.subtype,
-          BuiltInAttributeKey.checkbox,
+          editor.nodeAtPath([0, 0])!.type,
+          'todo_list',
         );
         expect(
-          editor.nodeAtPath([0, 1])!.subtype,
-          BuiltInAttributeKey.checkbox,
+          editor.nodeAtPath([0, 1])!.type,
+          'todo_list',
         );
 
-        await editor
-            .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
+        await editor.updateSelection(
+          Selection.single(path: [0, 1], startOffset: 0),
+        );
 
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.tab,
           isShiftPressed: true,
         );
 
         // Before
-        // * Welcome to Appflowy 😁
-        //  * Welcome to Appflowy 😁
-        //  * Welcome to Appflowy 😁
+        // [] Welcome to Appflowy 😁
+        //    [] Welcome to Appflowy 😁
+        //    [] Welcome to Appflowy 😁
         // After
-        // * Welcome to Appflowy 😁
-        //  * Welcome to Appflowy 😁
-        // * Welcome to Appflowy 😁
+        // [] Welcome to Appflowy 😁
+        //    [] Welcome to Appflowy 😁
+        // [] Welcome to Appflowy 😁
 
         expect(
-          editor.nodeAtPath([1])!.subtype,
-          BuiltInAttributeKey.checkbox,
+          editor.nodeAtPath([1])!.type,
+          'todo_list',
         );
         expect(
-          editor.nodeAtPath([0, 0])!.subtype,
-          BuiltInAttributeKey.checkbox,
+          editor.nodeAtPath([0, 0])!.type,
+          'todo_list',
         );
         expect(editor.nodeAtPath([0, 1]), null);
+
+        await editor.dispose();
       },
     );
 
@@ -172,30 +139,16 @@ void main() async {
       (tester) async {
         const text = 'Welcome to Appflowy 😁';
         final editor = tester.editor
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList
-            },
-          )
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList
-            },
-          )
-          ..insertTextNode(
-            text,
-            attributes: {
-              BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList
-            },
-          );
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+          ..addNode(bulletedListNode(delta: Delta()..insert(text)));
+
         await editor.startTesting();
 
         var selection = Selection.single(path: [1], startOffset: 0);
         await editor.updateSelection(selection);
 
-        await editor.pressLogicKey(key: LogicalKeyboardKey.tab);
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
 
         // Before
         // * Welcome to Appflowy 😁
@@ -207,27 +160,27 @@ void main() async {
         // * Welcome to Appflowy 😁
 
         expect(
-          editor.documentSelection,
+          editor.selection,
           Selection.single(path: [0, 0], startOffset: 0),
         );
         expect(
-          editor.nodeAtPath([0])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([0])!.type,
+          'bulleted_list',
         );
         expect(
-          editor.nodeAtPath([0, 0])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([0, 0])!.type,
+          'bulleted_list',
         );
         expect(
-          editor.nodeAtPath([1])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([1])!.type,
+          'bulleted_list',
         );
         expect(editor.nodeAtPath([2]), null);
 
         await editor
             .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
 
-        await editor.pressLogicKey(
+        await editor.pressKey(
           key: LogicalKeyboardKey.tab,
           isShiftPressed: true,
         );
@@ -242,18 +195,20 @@ void main() async {
         // * Welcome to Appflowy 😁
 
         expect(
-          editor.nodeAtPath([0])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([0])!.type,
+          'bulleted_list',
         );
         expect(
-          editor.nodeAtPath([1])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([1])!.type,
+          'bulleted_list',
         );
         expect(
-          editor.nodeAtPath([2])!.subtype,
-          BuiltInAttributeKey.bulletedList,
+          editor.nodeAtPath([2])!.type,
+          'bulleted_list',
         );
         expect(editor.nodeAtPath([0, 0]), null);
+
+        await editor.dispose();
       },
     );
   });

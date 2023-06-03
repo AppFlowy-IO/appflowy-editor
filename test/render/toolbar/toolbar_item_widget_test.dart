@@ -16,6 +16,7 @@ void main() async {
       final item = ToolbarItem(
         id: 'appflowy.toolbar.test',
         type: 1,
+        group: 0,
         iconBuilder: (isHighlight) {
           return Icon(
             key: iconKey,

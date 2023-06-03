@@ -88,12 +88,12 @@ class DeltaDocumentConvert {
     final color = attributes?['color'] as String?;
     final colorHex = _convertColorToHexString(color);
     if (colorHex != null) {
-      attrs[BuiltInAttributeKey.color] = colorHex;
+      attrs[BuiltInAttributeKey.textColor] = colorHex;
     }
     final backgroundColor = attributes?['background'] as String?;
     final backgroundHex = _convertColorToHexString(backgroundColor);
     if (backgroundHex != null) {
-      attrs[BuiltInAttributeKey.backgroundColor] = backgroundHex;
+      attrs[BuiltInAttributeKey.highlightColor] = backgroundHex;
     }
 
     textNode.delta.insert(text, attributes: attrs);
@@ -204,9 +204,9 @@ class DeltaDocumentConvert {
   }
 
   /*
-  // convert code-block to appflowy style code
+  // convert code_block to appflowy style code
   void _applyCodeBlock(TextNode textNode, Map? attributes) {
-    final codeBlock = attributes?['code-block'] as bool?;
+    final codeBlock = attributes?['code_block'] as bool?;
     if (codeBlock != null) {
       textNode.updateAttributes({
         BuiltInAttributeKey.subtype: 'code_block',

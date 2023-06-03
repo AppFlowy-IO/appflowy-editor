@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-extension ColorExtension on Color {
+extension ColorExtension2 on Color {
   /// Try to parse the `rgba(red, greed, blue, alpha)`
   /// from the string.
   static Color? tryFromRgbaString(String colorString) {
