@@ -8,12 +8,15 @@ void showImageMenu(
 ) {
   menuService.dismiss();
 
-  final topLeft = menuService.topLeft;
+  final (left, top, bottom) = menuService.getPosition(
+    MediaQuery.of(container.context).size.height * 2.0 / 3.0,
+  );
   final imageMenuEntry = FullScreenOverlayEntry(
-    top: topLeft.dy,
-    left: topLeft.dx,
+    left: left,
+    top: top,
+    bottom: bottom,
     builder: (context) => UploadImageMenu(
-      backgroundColor: Colors.white, // TODO: customize the color
+      backgroundColor: menuService.style.selectionMenuBackgroundColor,
       width: MediaQuery.of(context).size.width * 0.5,
       onSubmitted: editorState.insertImageNode,
       onUpload: editorState.insertImageNode,
