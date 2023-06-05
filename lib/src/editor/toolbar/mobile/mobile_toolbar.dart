@@ -62,7 +62,6 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
     final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        // toolbar
         Container(
           width: width,
           height: MSize.rowHeight,
@@ -76,44 +75,19 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
           child: Row(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    final toobarItem = widget.toolbarItems[index];
-                    return Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        icon: toobarItem.itemIcon,
-                        onPressed: () {
-                          if (toobarItem.hasMenu) {
-                            setState(() {
-                              _showItmeMenu = !_showItmeMenu;
-                              _selectedToolbarItemIndex = index;
-                            });
-                          } else {
-                            widget.toolbarItems[index].actionHandler!(
-                              widget.editorState,
-                              widget.selection,
-                            );
-                          }
-                        },
-                      ),
-                    );
+                child: _ToolbarItemListView(
+                  editorState: widget.editorState,
+                  selection: widget.selection,
+                  toolbarItems: widget.toolbarItems,
+                  itemOnPressed: (selectedItemIndex) {
+                    setState(() {
+                      _showItmeMenu = !_showItmeMenu;
+                      _selectedToolbarItemIndex = selectedItemIndex;
+                    });
                   },
-                  itemCount: widget.toolbarItems.length,
-                  scrollDirection: Axis.horizontal,
                 ),
               ),
-              // close keyboard button
-              Material(
-                color: Colors.transparent,
-                child: IconButton(
-                  onPressed: () {
-                    // clear selection to close toolbar
-                    widget.editorState.selectionService.updateSelection(null);
-                  },
-                  icon: const Icon(Icons.keyboard_hide),
-                ),
-              ),
+              _CloseKeyboardBtn(widget.editorState),
             ],
           ),
         ),
@@ -127,6 +101,69 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
               )
             : const SizedBox.shrink(),
       ],
+    );
+  }
+}
+
+class _CloseKeyboardBtn extends StatelessWidget {
+  const _CloseKeyboardBtn(this.editorState);
+
+  final EditorState editorState;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: IconButton(
+        onPressed: () {
+          // clear selection to close keyboard and toolbar
+          editorState.selectionService.updateSelection(null);
+        },
+        icon: const Icon(Icons.keyboard_hide),
+      ),
+    );
+  }
+}
+
+class _ToolbarItemListView extends StatelessWidget {
+  const _ToolbarItemListView({
+    Key? key,
+    required this.itemOnPressed,
+    required this.toolbarItems,
+    required this.editorState,
+    required this.selection,
+  }) : super(key: key);
+
+  final Function(int index) itemOnPressed;
+  final List<MobileToolbarItem> toolbarItems;
+  final EditorState editorState;
+  final Selection selection;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final toobarItem = toolbarItems[index];
+        return Material(
+          color: Colors.transparent,
+          child: IconButton(
+            icon: toobarItem.itemIcon,
+            onPressed: () {
+              if (toobarItem.hasMenu) {
+                // open /close current item menu through its parent widget(MobileToolbarWidget)
+                itemOnPressed.call(index);
+              } else {
+                toolbarItems[index].actionHandler!(
+                  editorState,
+                  selection,
+                );
+              }
+            },
+          ),
+        );
+      },
+      itemCount: toolbarItems.length,
+      scrollDirection: Axis.horizontal,
     );
   }
 }
