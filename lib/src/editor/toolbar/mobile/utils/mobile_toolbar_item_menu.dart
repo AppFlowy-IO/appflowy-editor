@@ -36,10 +36,11 @@ class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final style = MobileToolbarStyle.of(context);
     return _showMenu
         ? Container(
             width: size.width,
-            color: MColors.toolbarBgColor,
+            color: style.backgroundColor,
             padding: const EdgeInsets.all(8),
             child: widget.itemMenu,
           )

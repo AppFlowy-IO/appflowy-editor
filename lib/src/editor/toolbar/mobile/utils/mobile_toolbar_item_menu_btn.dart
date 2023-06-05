@@ -1,6 +1,5 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-
-import '../m_colors.dart';
 
 class MobileToolbarItemMenuBtn extends StatefulWidget {
   const MobileToolbarItemMenuBtn({
@@ -32,6 +31,7 @@ class _MobileToolbarItemMenuBtnState extends State<MobileToolbarItemMenuBtn> {
 
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarStyle.of(context);
     return OutlinedButton.icon(
       onPressed: () {
         setState(() {
@@ -43,16 +43,16 @@ class _MobileToolbarItemMenuBtnState extends State<MobileToolbarItemMenuBtn> {
       label: Text(widget.label),
       style: ButtonStyle(
         alignment: Alignment.centerLeft,
-        foregroundColor: MaterialStateProperty.all(MColors.toolbarTextColor),
+        foregroundColor: MaterialStateProperty.all(style.foregroundColor),
         splashFactory: NoSplash.splashFactory,
         side: MaterialStateProperty.resolveWith<BorderSide>((states) {
           if (_isSelected) {
-            return const BorderSide(
-              color: MColors.toolbarItemHightlightColor,
+            return BorderSide(
+              color: style.itemHighlightColor,
               width: 2,
             );
           }
-          return const BorderSide(color: MColors.toolbarItemOutlineColor);
+          return BorderSide(color: style.itemOutlineColor);
         }),
       ),
     );

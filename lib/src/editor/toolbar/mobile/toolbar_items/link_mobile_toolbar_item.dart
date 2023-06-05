@@ -62,8 +62,9 @@ class MLinkMenuState extends State<MLinkMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarStyle.of(context);
     return SizedBox(
-      height: MSize.rowHeight,
+      height: style.toolbarHeight,
       child: Row(
         children: [
           Expanded(
@@ -74,7 +75,7 @@ class MLinkMenuState extends State<MLinkMenu> {
                 controller: _textEditingController,
                 keyboardType: TextInputType.url,
                 onSubmitted: widget.onSubmitted,
-                cursorColor: MColors.toolbarTextColor,
+                cursorColor: style.foregroundColor,
                 decoration: InputDecoration(
                   hintText: 'URL',
                   contentPadding: const EdgeInsets.symmetric(
@@ -83,21 +84,21 @@ class MLinkMenuState extends State<MLinkMenu> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Theme.of(context).dividerColor,
+                      color: style.itemOutlineColor,
                     ),
-                    borderRadius: BorderRadius.circular(MSize.boarderRadius),
+                    borderRadius: BorderRadius.circular(style.borderRadius),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: MColors.toolbarItemOutlineColor,
+                    borderSide: BorderSide(
+                      color: style.itemOutlineColor,
                     ),
-                    borderRadius: BorderRadius.circular(MSize.boarderRadius),
+                    borderRadius: BorderRadius.circular(style.borderRadius),
                   ),
                   suffixIcon: IconButton(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.clear_rounded,
-                      color: MColors.toolbarTextColor,
+                      color: style.foregroundColor,
                     ),
                     onPressed: _textEditingController.clear,
                     splashRadius: 5,
@@ -116,12 +117,12 @@ class MLinkMenuState extends State<MLinkMenu> {
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
-                  MColors.toolbarItemHightlightColor,
+                  style.itemHighlightColor,
                 ),
                 elevation: MaterialStateProperty.all(0),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(MSize.boarderRadius),
+                    borderRadius: BorderRadius.circular(style.borderRadius),
                   ),
                 ),
               ),

@@ -1,4 +1,3 @@
-export 'mobile_toolbar_item.dart';
 export 'text_decoration_mobile_toolbar_item.dart';
 export 'code_mobile_toolbar_item.dart';
 export 'link_mobile_toolbar_item.dart';

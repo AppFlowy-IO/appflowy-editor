@@ -6,10 +6,24 @@ class MobileToolbar extends StatelessWidget {
     super.key,
     required this.editorState,
     required this.toolbarItems,
+    // default MobileToolbarStyle parameters
+    this.backgroundColor = Colors.white,
+    this.foregroundColor = const Color(0xff676666),
+    this.itemHighlightColor = const Color(0xff1F71AC),
+    this.itemOutlineColor = const Color(0xFFE3E3E3),
+    this.toolbarHeight = 50.0,
+    this.borderRadius = 6.0,
   });
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
+  // MobileToolbarStyle parameters
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color itemHighlightColor;
+  final Color itemOutlineColor;
+  final double toolbarHeight;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +33,20 @@ class MobileToolbar extends StatelessWidget {
         if (selection == null) {
           return const SizedBox.shrink();
         }
-        return MobileToolbarWidget(
-          // Use selection as key to force rebuild toolbar widget when selection changed.
-          key: ValueKey(selection),
-          editorState: editorState,
-          selection: selection,
-          toolbarItems: toolbarItems,
+        return MobileToolbarStyle(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          itemHighlightColor: itemHighlightColor,
+          itemOutlineColor: itemOutlineColor,
+          toolbarHeight: toolbarHeight,
+          borderRadius: borderRadius,
+          child: MobileToolbarWidget(
+            // Use selection as key to force rebuild toolbar widget when selection changed.
+            key: ValueKey(selection),
+            editorState: editorState,
+            selection: selection,
+            toolbarItems: toolbarItems,
+          ),
         );
       },
     );
@@ -60,17 +82,20 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final style = MobileToolbarStyle.of(context);
     return Column(
       children: [
         Container(
           width: width,
-          height: MSize.rowHeight,
-          decoration: const BoxDecoration(
+          height: style.toolbarHeight,
+          decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: MColors.toolbarItemOutlineColor),
-              bottom: BorderSide(color: MColors.toolbarItemOutlineColor),
+              top: BorderSide(
+                color: style.itemOutlineColor,
+              ),
+              bottom: BorderSide(color: style.itemOutlineColor),
             ),
-            color: MColors.toolbarBgColor,
+            color: style.backgroundColor,
           ),
           child: Row(
             children: [
