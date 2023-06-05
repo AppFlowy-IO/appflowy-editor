@@ -7,7 +7,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
   ),
   itemMenuBuilder: (editorState, selection) {
     final String? linkText = editorState.getDeltaAttributeValueInSelection(
-      BuiltInAttributeKey.href,
+      FlowyRichTextKeys.href,
       selection,
     );
 
@@ -16,7 +16,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
       linkText: linkText,
       onSubmitted: (value) async {
         await editorState.formatDelta(selection, {
-          BuiltInAttributeKey.href: value,
+          FlowyRichTextKeys.href: value,
         });
         mToolbarItemMenuStateKey.currentState?.closeItemMenu();
       },

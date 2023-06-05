@@ -8,22 +8,22 @@ final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
       {
         'icon': AFMobileIcons.bold,
         'label': AppFlowyEditorLocalizations.current.bold,
-        'name': 'bold',
+        'name': FlowyRichTextKeys.bold,
       },
       {
         'icon': AFMobileIcons.italic,
         'label': AppFlowyEditorLocalizations.current.italic,
-        'name': 'italic',
+        'name': FlowyRichTextKeys.italic,
       },
       {
         'icon': AFMobileIcons.underline,
         'label': AppFlowyEditorLocalizations.current.underline,
-        'name': 'underline',
+        'name': FlowyRichTextKeys.underline,
       },
       {
         'icon': AFMobileIcons.strikethrough,
         'label': AppFlowyEditorLocalizations.current.strikethrough,
-        'name': 'strikethrough',
+        'name': FlowyRichTextKeys.strikethrough,
       },
     ];
 
