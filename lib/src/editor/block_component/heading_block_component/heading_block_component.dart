@@ -43,7 +43,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   final BlockComponentConfiguration configuration;
 
   /// The text style of the heading block.
-  final TextStyle Function(int level)? textStyleBuilder;
+  final TextStyle Function(num level)? textStyleBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -65,7 +65,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) =>
       node.delta != null &&
       node.children.isEmpty &&
-      node.attributes[HeadingBlockKeys.level] is int;
+      node.attributes[HeadingBlockKeys.level] is num;
 }
 
 class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -79,7 +79,7 @@ class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
   });
 
   /// The text style of the heading block.
-  final TextStyle Function(int level)? textStyleBuilder;
+  final TextStyle Function(num level)? textStyleBuilder;
 
   @override
   State<HeadingBlockComponentWidget> createState() =>
@@ -107,7 +107,7 @@ class _HeadingBlockComponentWidgetState
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
-  int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
+  num get level => widget.node.attributes[HeadingBlockKeys.level] as num? ?? 1;
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +144,9 @@ class _HeadingBlockComponentWidgetState
     return child;
   }
 
-  TextStyle? defaultTextStyle(int level) {
+  TextStyle? defaultTextStyle(num level) {
     final fontSizes = [32.0, 28.0, 24.0, 18.0, 18.0, 18.0];
-    final fontSize = fontSizes.elementAtOrNull(level) ?? 18.0;
+    final fontSize = fontSizes.elementAtOrNull(level.toInt()) ?? 18.0;
     return TextStyle(
       fontSize: fontSize,
       fontWeight: FontWeight.bold,
