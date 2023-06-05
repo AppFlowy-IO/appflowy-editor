@@ -204,7 +204,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              widget.header ?? const SizedBox.shrink(),
+              if (widget.header != null) widget.header!,
               Container(
                 padding: widget.editorStyle.padding,
                 child: editorState.renderer.build(
