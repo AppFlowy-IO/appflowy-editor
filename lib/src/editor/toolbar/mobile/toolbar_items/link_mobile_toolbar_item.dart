@@ -18,7 +18,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
         await editorState.formatDelta(selection, {
           FlowyRichTextKeys.href: value,
         });
-        mToolbarItemMenuStateKey.currentState?.closeItemMenu();
+        mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
       },
     );
   },
@@ -112,7 +112,7 @@ class MLinkMenuState extends State<MLinkMenu> {
             child: ElevatedButton(
               onPressed: () {
                 widget.onSubmitted.call(_textEditingController.text);
-                mToolbarItemMenuStateKey.currentState?.closeItemMenu();
+                mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(

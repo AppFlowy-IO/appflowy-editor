@@ -19,7 +19,7 @@ class MobileToolbar extends StatelessWidget {
         if (selection == null) {
           return const SizedBox.shrink();
         }
-        return MToolbarWidget(
+        return MobileToolbarWidget(
           // Use selection as key to force rebuild toolbar widget when selection changed.
           key: ValueKey(selection),
           editorState: editorState,
@@ -31,8 +31,8 @@ class MobileToolbar extends StatelessWidget {
   }
 }
 
-class MToolbarWidget extends StatefulWidget {
-  const MToolbarWidget({
+class MobileToolbarWidget extends StatefulWidget {
+  const MobileToolbarWidget({
     super.key,
     required this.editorState,
     required this.toolbarItems,
@@ -44,10 +44,10 @@ class MToolbarWidget extends StatefulWidget {
   final Selection selection;
 
   @override
-  State<MToolbarWidget> createState() => _MToolbarWidgetState();
+  State<MobileToolbarWidget> createState() => _MobileToolbarWidgetState();
 }
 
-class _MToolbarWidgetState extends State<MToolbarWidget> {
+class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
   late bool _showItmeMenu;
   int? _selectedToolbarItemIndex;
 
@@ -120,7 +120,7 @@ class _MToolbarWidgetState extends State<MToolbarWidget> {
         // only for MobileToolbarItem.withMenu
         _showItmeMenu
             ? MobileToolbarItemMenu(
-                key: mToolbarItemMenuStateKey,
+                key: mobileToolbarItemMenuStateKey,
                 editorState: widget.editorState,
                 itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
                     .itemMenuBuilder!(widget.editorState, widget.selection),

@@ -1,7 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-GlobalKey<MobileToolbarItemMenuState> mToolbarItemMenuStateKey = GlobalKey();
+GlobalKey<MobileToolbarItemMenuState> mobileToolbarItemMenuStateKey =
+    GlobalKey();
 
 class MobileToolbarItemMenu extends StatefulWidget {
   const MobileToolbarItemMenu({
