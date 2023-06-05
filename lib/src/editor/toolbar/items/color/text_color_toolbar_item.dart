@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 final textColorItem = ToolbarItem(
   id: 'editor.textColor',
@@ -16,6 +17,7 @@ final textColorItem = ToolbarItem(
     return IconItemWidget(
       iconName: 'toolbar/text_color',
       isHighlight: isHighlight,
+      iconSize: const Size.square(14),
       tooltip: AppFlowyEditorLocalizations.current.textColor,
       onPressed: () {
         showColorMenu(
