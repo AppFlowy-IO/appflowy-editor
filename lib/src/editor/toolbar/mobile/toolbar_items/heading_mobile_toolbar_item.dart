@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-final headingMToolbarItem = MToolbarItem.withMenu(
+final headingMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.h1),
   itemMenuBuilder: (editorState, selection) {
     return GridView(

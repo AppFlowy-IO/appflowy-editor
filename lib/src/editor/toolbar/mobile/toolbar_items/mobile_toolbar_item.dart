@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class MToolbarItem {
+class MobileToolbarItem {
   Widget itemIcon;
   Widget Function(EditorState editorState, Selection selection)?
       itemMenuBuilder;
@@ -10,13 +10,13 @@ class MToolbarItem {
   bool hasMenu = false;
 
   /// Tool bar item that implements attribute directly(without opening menu)
-  MToolbarItem.action({
+  MobileToolbarItem.action({
     required this.itemIcon,
     required this.actionHandler,
   });
 
   /// Tool bar item that opens a menu to show options
-  MToolbarItem.withMenu({
+  MobileToolbarItem.withMenu({
     required this.itemIcon,
     required this.itemMenuBuilder,
   }) : hasMenu = true;

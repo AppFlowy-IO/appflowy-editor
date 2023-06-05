@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 // TODO(yijing): Implement the list toolbar item.
-final listMToolbarItem = MToolbarItem.withMenu(
+final listMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.list),
   itemMenuBuilder: (editorState, selection) {
     return GridView(

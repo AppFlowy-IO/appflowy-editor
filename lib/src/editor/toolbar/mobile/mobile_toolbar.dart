@@ -9,7 +9,7 @@ class MobileToolbar extends StatelessWidget {
   });
 
   final EditorState editorState;
-  final List<MToolbarItem> toolbarItems;
+  final List<MobileToolbarItem> toolbarItems;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class MToolbarWidget extends StatefulWidget {
   });
 
   final EditorState editorState;
-  final List<MToolbarItem> toolbarItems;
+  final List<MobileToolbarItem> toolbarItems;
   final Selection selection;
 
   @override
@@ -117,9 +117,9 @@ class _MToolbarWidgetState extends State<MToolbarWidget> {
             ],
           ),
         ),
-        // only for MToolbarItem.withMenu
+        // only for MobileToolbarItem.withMenu
         _showItmeMenu
-            ? MToolbarItemMenu(
+            ? MobileToolbarItemMenu(
                 key: mToolbarItemMenuStateKey,
                 editorState: widget.editorState,
                 itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]

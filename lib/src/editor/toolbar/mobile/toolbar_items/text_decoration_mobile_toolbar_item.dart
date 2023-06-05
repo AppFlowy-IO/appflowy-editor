@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-final textDecorationMToolbarItem = MToolbarItem.withMenu(
+final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.textDecoration),
   itemMenuBuilder: (editorState, selection) {
     final textDecorations = [
@@ -40,7 +40,7 @@ final textDecorationMToolbarItem = MToolbarItem.withMenu(
         );
       });
 
-      return MToolbarItemMenuBtn(
+      return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(
           afMobileIcons: icon,
         ),

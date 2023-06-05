@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../m_colors.dart';
 
-class MToolbarItemMenuBtn extends StatefulWidget {
-  const MToolbarItemMenuBtn({
+class MobileToolbarItemMenuBtn extends StatefulWidget {
+  const MobileToolbarItemMenuBtn({
     super.key,
     required this.onPressed,
     required this.icon,
@@ -17,10 +17,11 @@ class MToolbarItemMenuBtn extends StatefulWidget {
   final bool? isSelected;
 
   @override
-  State<MToolbarItemMenuBtn> createState() => _MToolbarItemMenuBtnState();
+  State<MobileToolbarItemMenuBtn> createState() =>
+      _MobileToolbarItemMenuBtnState();
 }
 
-class _MToolbarItemMenuBtnState extends State<MToolbarItemMenuBtn> {
+class _MobileToolbarItemMenuBtnState extends State<MobileToolbarItemMenuBtn> {
   late bool _isSelected;
 
   @override

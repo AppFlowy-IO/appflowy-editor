@@ -1,10 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-GlobalKey<MToolbarItemMenuState> mToolbarItemMenuStateKey = GlobalKey();
+GlobalKey<MobileToolbarItemMenuState> mToolbarItemMenuStateKey = GlobalKey();
 
-class MToolbarItemMenu extends StatefulWidget {
-  const MToolbarItemMenu({
+class MobileToolbarItemMenu extends StatefulWidget {
+  const MobileToolbarItemMenu({
     super.key,
     required this.editorState,
     required this.itemMenu,
@@ -14,10 +14,10 @@ class MToolbarItemMenu extends StatefulWidget {
   final Widget itemMenu;
 
   @override
-  State<MToolbarItemMenu> createState() => MToolbarItemMenuState();
+  State<MobileToolbarItemMenu> createState() => MobileToolbarItemMenuState();
 }
 
-class MToolbarItemMenuState extends State<MToolbarItemMenu> {
+class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
   late bool _showMenu;
 
   @override
