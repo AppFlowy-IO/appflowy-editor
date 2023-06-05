@@ -357,12 +357,14 @@ class _DesktopSelectionServiceWidgetState
     currentSelectedNodes = nodes;
 
     final node = nodes.first;
-    var rect = Offset.zero & node.rect.size;
-
+    var offset = Offset.zero;
+    var size = node.rect.size;
     final builder = editorState.renderer.blockComponentBuilder(node.type);
     if (builder != null && builder.showActions(node)) {
-      rect = rect.translate(blockComponentActionContainerWidth, 0);
+      offset = offset.translate(blockComponentActionContainerWidth, 0);
+      size = Size(size.width - blockComponentActionContainerWidth, size.height);
     }
+    final rect = offset & size;
 
     final overlay = OverlayEntry(
       builder: (context) => SelectionWidget(
