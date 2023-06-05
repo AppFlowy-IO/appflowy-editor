@@ -30,7 +30,7 @@ final List<ToolbarItem> markdownFormatItems = [
     id: 'editor.code',
     name: 'code',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.strikethrough}${shortcutTooltips('⌘ + E', 'CTRL + E', 'CTRL + E')}',
+        '${AppFlowyEditorLocalizations.current.embedCode}${shortcutTooltips('⌘ + E', 'CTRL + E', 'CTRL + E')}',
   ),
 ];
 
