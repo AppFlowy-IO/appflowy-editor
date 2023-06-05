@@ -7,12 +7,26 @@ abstract class SelectionMenuService {
   Offset get topLeft;
   Offset get offset;
   Alignment get alignment;
+  SelectionMenuStyle get style;
 
   void show();
   void dismiss();
+
+  (double left, double? top, double? bottom) getPosition(double threshold) {
+    final offset = this.offset;
+    final left = offset.dx;
+    double? top;
+    double? bottom;
+    if (topLeft.dy >= threshold) {
+      bottom = offset.dy;
+    } else {
+      top = offset.dy;
+    }
+    return (left, top, bottom);
+  }
 }
 
-class SelectionMenu implements SelectionMenuService {
+class SelectionMenu extends SelectionMenuService {
   SelectionMenu({
     required this.context,
     required this.editorState,
@@ -25,6 +39,7 @@ class SelectionMenu implements SelectionMenuService {
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  @override
   final SelectionMenuStyle style;
 
   OverlayEntry? _selectionMenuEntry;
