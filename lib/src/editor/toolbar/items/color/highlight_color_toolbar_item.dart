@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 final highlightColorItem = ToolbarItem(
   id: 'editor.highlightColor',
@@ -16,6 +17,7 @@ final highlightColorItem = ToolbarItem(
     });
     return IconItemWidget(
       iconName: 'toolbar/highlight_color',
+      iconSize: const Size.square(14),
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.highlightColor,
       onPressed: () {

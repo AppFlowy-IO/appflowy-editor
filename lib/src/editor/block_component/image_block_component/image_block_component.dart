@@ -50,7 +50,12 @@ Node imageNode({
 }
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
-  ImageBlockComponentBuilder();
+  ImageBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
+  });
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -58,6 +63,7 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
     return ImageBlockComponentWidget(
       node: node,
       showActions: showActions(node),
+      configuration: configuration,
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
         state,
@@ -97,7 +103,7 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final align = attributes[ImageBlockKeys.align] ?? 'center';
     final width = attributes[ImageBlockKeys.width]?.toDouble();
 
-    return ImageNodeWidget(
+    Widget child = ImageNodeWidget(
       key: node.key,
       node: node,
       src: src,
@@ -107,11 +113,21 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
       onResize: (width) {
         final transaction = editorState.transaction
           ..updateNode(node, {
-            'width': width,
+            ImageBlockKeys.width: width,
           });
         editorState.apply(transaction);
       },
     );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   Alignment _textToAlignment(String text) {
@@ -123,110 +139,3 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     return Alignment.center;
   }
 }
-
-// class ImageNodeBuilder extends NodeWidgetBuilder<Node>
-//     with ActionProvider<Node> {
-//   @override
-//   Widget build(NodeWidgetContext<Node> context) {
-//     final src = context.node.attributes['image_src'];
-//     final align = context.node.attributes['align'];
-//     double? width;
-//     if (context.node.attributes.containsKey('width')) {
-//       width = context.node.attributes['width'].toDouble();
-//     }
-//     return ImageNodeWidget(
-//       key: context.node.key,
-//       node: context.node,
-//       src: src,
-//       width: width,
-//       editable: context.editorState.editable,
-//       alignment: _textToAlignment(align),
-//       onResize: (width) {
-//         final transaction = context.editorState.transaction
-//           ..updateNode(context.node, {
-//             'width': width,
-//           });
-//         context.editorState.apply(transaction);
-//       },
-//     );
-//   }
-
-//   @override
-//   NodeValidator<Node> get nodeValidator => ((node) {
-//         return node.type == 'image' &&
-//             node.attributes.containsKey('image_src') &&
-//             node.attributes.containsKey('align');
-//       });
-
-//   @override
-//   List<ActionMenuItem> actions(NodeWidgetContext<Node> context) {
-//     return [
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_left',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.centerLeft;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.centerLeft),
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_center',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.center;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.center),
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_right',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.centerRight;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.centerRight),
-//       ),
-//       ActionMenuItem.separator(),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/copy',
-//         onPressed: () {
-//           final src = context.node.attributes['image_src'];
-//           AppFlowyClipboard.setData(text: src);
-//         },
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/delete',
-//         onPressed: () {
-//           final transaction = context.editorState.transaction
-//             ..deleteNode(context.node);
-//           context.editorState.apply(transaction);
-//         },
-//       ),
-//     ];
-//   }
-
-//   Alignment _textToAlignment(String text) {
-//     if (text == 'left') {
-//       return Alignment.centerLeft;
-//     } else if (text == 'right') {
-//       return Alignment.centerRight;
-//     }
-//     return Alignment.center;
-//   }
-
-//   String _alignmentToText(Alignment alignment) {
-//     if (alignment == Alignment.centerLeft) {
-//       return 'left';
-//     } else if (alignment == Alignment.centerRight) {
-//       return 'right';
-//     }
-//     return 'center';
-//   }
-
-//   void _onAlign(NodeWidgetContext context, Alignment alignment) {
-//     final transaction = context.editorState.transaction
-//       ..updateNode(context.node, {
-//         'align': _alignmentToText(alignment),
-//       });
-//     context.editorState.apply(transaction);
-//   }
-// }
