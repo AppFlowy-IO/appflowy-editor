@@ -87,10 +87,7 @@ class _LinkMenuState extends State<LinkMenu> {
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (key) {
-        if (key is! RawKeyDownEvent) {
-          return;
-        }
-        if (key.logicalKey == LogicalKeyboardKey.escape) {
+        if (key is RawKeyDownEvent && key.logicalKey == LogicalKeyboardKey.escape) {
           widget.onDismiss();
         }
       },
