@@ -12,7 +12,7 @@ final linkItem = ToolbarItem(
     final nodes = editorState.getNodesInSelection(selection);
     final isHref = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes['href'] != null,
+        (attributes) => attributes[FlowyRichTextKeys.href] != null,
       );
     });
 
@@ -39,9 +39,11 @@ void showLinkMenu(
 
   // get node, index and length for formatting text when the link is removed
   final node = editorState.getNodeAtPath(selection.end.path);
-  final index =
-      selection.isBackward ? selection.start.offset : selection.end.offset;
-  final length = (selection.start.offset - selection.end.offset).abs();
+  if (node == null) {
+    return;
+  }
+  final index = selection.normalized.startIndex;
+  final length = selection.length;
 
   // get link address if the selection is already a link
   String? linkText;
@@ -82,7 +84,7 @@ void showLinkMenu(
         onRemoveLink: () {
           final transaction = editorState.transaction
             ..formatText(
-              node!,
+              node,
               index,
               length,
               {BuiltInAttributeKey.href: null},

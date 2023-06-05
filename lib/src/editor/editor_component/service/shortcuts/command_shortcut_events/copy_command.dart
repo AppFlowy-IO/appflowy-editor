@@ -40,7 +40,7 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
 
   AppFlowyClipboard.setData(
     text: text,
-    html: html,
+    html: html.isEmpty ? null : html,
   );
 
   return KeyEventResult.handled;

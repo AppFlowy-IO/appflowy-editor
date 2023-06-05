@@ -5,6 +5,7 @@ import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated('This class is outdated and will be removed in the next release.')
 class DeltaDocumentConvert {
   DeltaDocumentConvert();
 
@@ -19,7 +20,7 @@ class DeltaDocumentConvert {
   Document convertFromDelta(Delta delta) {
     final iter = delta.iterator;
 
-    final document = Document.empty();
+    final document = Document.blank();
     TextNode textNode = TextNode(delta: Delta());
     int path = 0;
 
