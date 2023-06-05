@@ -17,7 +17,7 @@ ShortcutEventHandler spaceOnWebHandler = (editorState, event) {
   editorState.insertText(
     selection.startIndex,
     ' ',
-    textNode: textNodes.first,
+    node: textNodes.first,
   );
 
   return KeyEventResult.handled;

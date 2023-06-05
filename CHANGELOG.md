@@ -1,14 +1,40 @@
+## 1.0.0-dev.2
+* fix: toolbar item size by @LucasXu0 in ([#167](https://github.com/AppFlowy-IO/appflowy-editor/pull/167))
+* fix: scroll widget layout by @LucasXu0 in ([#167](https://github.com/AppFlowy-IO/appflowy-editor/pull/167))
+* fix: image align overflow by @LucasXu0 in ([#167](https://github.com/AppFlowy-IO/appflowy-editor/pull/167))
+* fix: editable parameter doesn't work by @LucasXu0 in ([#167](https://github.com/AppFlowy-IO/appflowy-editor/pull/167))
+* fix: fixed toolbar item tooltip description for embed code button by @Mukund-Tandon in in ([#163](https://github.com/AppFlowy-IO/appflowy-editor/pull/163))
+
+## 1.0.0-dev.1
+* feat: rename delta keys and document keys by @LucasXu0 in ([#153](https://github.com/AppFlowy-IO/appflowy-editor/pull/153))
+* fix: floating toolbar overflow by @LucasXu0 in ([#146](https://github.com/AppFlowy-IO/appflowy-editor/pull/146))
+* fix: missing format when converting html to document by @alihassan143 in ([#152](https://github.com/AppFlowy-IO/appflowy-editor/pull/152))
+* fix: unable to delete node on the mobile platform by @LucasXu0 in ([#154](https://github.com/AppFlowy-IO/appflowy-editor/pull/154))
+
+## 1.0.0-dev.0
+* feat: refactor the editor part for supporting the mobile platform by @LucasXu0 in ([#129](https://github.com/AppFlowy-IO/appflowy-editor/pull/129))
+* feat: upgrade flutter to 3.10.1 by @Xazin in ([#136](https://github.com/AppFlowy-IO/appflowy-editor/pull/136))
+* feat: support auto scroll after selection updated by @LucasXu0 in ([#140](https://github.com/AppFlowy-IO/appflowy-editor/pull/140))
+* fix: image placeholder border color by @nurmukhametdaniyar in ([#119](https://github.com/AppFlowy-IO/appflowy-editor/pull/119))
+
+## 0.1.12
+* chore: minor updates to documentation.
+
+## 0.1.11
+* feat: allow textPadding customization by @simonbengtsson in ([#108](https://github.com/AppFlowy-IO/appflowy-editor/pull/108))
+* fix: nested text node parser by @Xazin ([#115](https://github.com/AppFlowy-IO/appflowy-editor/pull/115))
+
 ## 0.1.10
-* feat: support single asterisk to italic by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/92
-* fix: remove platform check in theme on web by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/91
-* fix: improves cursor left word delete by @MayurSMahajan in https://github.com/AppFlowy-IO/appflowy-editor/pull/88
-* fix: one overlay entry for selection menu by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/82
-* fix: changing heading from one level to another from toolbar by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/96
+* feat: support single asterisk to italic by @Xazin in ([#92](https://github.com/AppFlowy-IO/appflowy-editor/pull/92))
+* fix: remove platform check in theme on web by @Xazin in ([#91](https://github.com/AppFlowy-IO/appflowy-editor/pull/91))
+* fix: improves cursor left word delete by @MayurSMahajan in ([#8](https://github.com/AppFlowy-IO/appflowy-editor/pull/88))
+* fix: one overlay entry for selection menu by @Xazin in ([#82](https://github.com/AppFlowy-IO/appflowy-editor/pull/82))
+* fix: changing heading from one level to another from toolbar by @LucasXu0 in ([#96](https://github.com/AppFlowy-IO/appflowy-editor/pull/96))
 
 ## 0.1.9
-* feat: dark mode improvement by @hyj1204 in https://github.com/AppFlowy-IO/appflowy-editor/pull/90
-* feat: shift+tab to outdent a indented bulletpoint or checkbox. by @MayurSMahajan in https://github.com/AppFlowy-IO/appflowy-editor/pull/63
-* fix: enter to outdent checkbox/bullet lists by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/84
+* feat: dark mode improvement by @hyj1204 in ([#90](https://github.com/AppFlowy-IO/appflowy-editor/pull/90))
+* feat: shift+tab to outdent a indented bulletpoint or checkbox. by @MayurSMahajan in ([#63](https://github.com/AppFlowy-IO/appflowy-editor/pull/63))
+* fix: enter to outdent checkbox/bullet lists by @Xazin in ([#84](https://github.com/AppFlowy-IO/appflowy-editor/pull/84))
 
 ## 0.1.8
 * chore: minor updates to documentation.
