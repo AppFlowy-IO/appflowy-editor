@@ -17,6 +17,7 @@ void showImageMenu(
     bottom: bottom,
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
+      headerColor: menuService.style.selectionMenuItemTextColor,
       width: MediaQuery.of(context).size.width * 0.5,
       onSubmitted: editorState.insertImageNode,
       onUpload: editorState.insertImageNode,
@@ -29,12 +30,14 @@ class UploadImageMenu extends StatefulWidget {
   const UploadImageMenu({
     Key? key,
     this.backgroundColor = Colors.white,
+    this.headerColor = Colors.black,
     this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
   }) : super(key: key);
 
   final Color backgroundColor;
+  final Color headerColor;
   final double width;
   final void Function(String text) onSubmitted;
   final void Function(String text) onUpload;
@@ -89,12 +92,12 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return const Text(
+    return Text(
       'URL Image',
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 14.0,
-        color: Colors.black,
+        color: widget.headerColor,
         fontWeight: FontWeight.w500,
       ),
     );

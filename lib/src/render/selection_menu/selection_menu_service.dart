@@ -12,18 +12,7 @@ abstract class SelectionMenuService {
   void show();
   void dismiss();
 
-  (double left, double? top, double? bottom) getPosition(double threshold) {
-    final offset = this.offset;
-    final left = offset.dx;
-    double? top;
-    double? bottom;
-    if (topLeft.dy >= threshold) {
-      bottom = offset.dy;
-    } else {
-      top = offset.dy;
-    }
-    return (left, top, bottom);
-  }
+  (double left, double? top, double? bottom) getPosition(double threshold);
 }
 
 class SelectionMenu extends SelectionMenuService {
@@ -157,6 +146,19 @@ class SelectionMenu extends SelectionMenuService {
     editorState.service.keyboardService?.disable(showCursor: true);
     editorState.service.scrollService?.disable();
     selectionService.currentSelection.addListener(_onSelectionChange);
+  }
+
+  @override
+  (double, double?, double?) getPosition(double threshold) {
+    final left = _offset.dx;
+    double? top;
+    double? bottom;
+    if (topLeft.dy >= threshold) {
+      bottom = _offset.dy;
+    } else {
+      top = _offset.dy;
+    }
+    return (left, top, bottom);
   }
 
   @override
