@@ -53,7 +53,6 @@ enum SelectionType {
 class EditorState {
   EditorState({
     required this.document,
-    this.editable = true,
   }) {
     undoManager.state = this;
   }
@@ -75,7 +74,7 @@ class EditorState {
   final Document document;
 
   /// Whether the editor is editable.
-  final bool editable;
+  bool editable = true;
 
   /// The style of the editor.
   late EditorStyle editorStyle;
