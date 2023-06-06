@@ -106,7 +106,13 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                   toolbarItems: widget.toolbarItems,
                   itemOnPressed: (selectedItemIndex) {
                     setState(() {
-                      _showItmeMenu = !_showItmeMenu;
+                      // If last selected item is selected again, toggle item menu
+                      if (_selectedToolbarItemIndex == selectedItemIndex) {
+                        _showItmeMenu = !_showItmeMenu;
+                      } else {
+                        // If not, show item menu
+                        _showItmeMenu = true;
+                      }
                       _selectedToolbarItemIndex = selectedItemIndex;
                     });
                   },
