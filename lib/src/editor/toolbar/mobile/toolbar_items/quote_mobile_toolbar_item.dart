@@ -1,7 +1,18 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-// TODO(yijing): Implement the quote toolbar item.
 final quoteMobileToolbarItem = MobileToolbarItem.action(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.quote),
-  actionHandler: ((editorState, selection) {}),
+  actionHandler: ((editorState, selection) {
+    final node = editorState.getNodeAtPath(selection.start.path)!;
+    final isQuote = node.type == 'quote';
+    editorState.formatNode(
+      selection,
+      (node) => node.copyWith(
+        type: isQuote ? 'paragraph' : 'quote',
+        attributes: {
+          'delta': (node.delta ?? Delta()).toJson(),
+        },
+      ),
+    );
+  }),
 );

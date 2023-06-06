@@ -73,7 +73,7 @@ class SimpleEditor extends StatelessWidget {
                     todoListMobileToolbarItem,
                     listMobileToolbarItem,
                     linkMobileToolbarItem,
-                    // quoteMobileToolbarItem,
+                    quoteMobileToolbarItem,
                     codeMobileToolbarItem,
                     // dividerMobileToolbarItem,
                   ],
