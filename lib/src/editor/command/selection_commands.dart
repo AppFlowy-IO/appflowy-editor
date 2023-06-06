@@ -83,11 +83,19 @@ extension SelectionTransform on EditorState {
             final last = nodes.last;
 
             if (last.children.isNotEmpty) {
-              transaction.insertNodes(
-                node.path + [0],
-                last.children,
-                deepCopy: true,
-              );
+              if (indentableBlockTypes.contains(node.type)) {
+                transaction.insertNodes(
+                  node.path + [0],
+                  last.children,
+                  deepCopy: true,
+                );
+              } else {
+                transaction.insertNodes(
+                  node.path.next,
+                  last.children,
+                  deepCopy: true,
+                );
+              }
             }
           }
 

@@ -312,5 +312,101 @@ void main() async {
 
       await editor.dispose();
     });
+
+    // Before
+    // # Welcome to |AppFlowy Editor 🔥!
+    // * Welcome to |AppFlowy Editor 🔥!
+    //  * Welcome to AppFlowy Editor 🔥!
+    // After
+    // # Welcome to AppFlowy Editor 🔥!
+    // * Welcome to AppFlowy Editor 🔥!
+    testWidgets(
+        'Delete the collapsed selection and the first node can\'t have children',
+        (tester) async {
+      final delta = Delta()..insert(text);
+      final editor = tester.editor
+        ..addNode(headingNode(level: 1, delta: delta))
+        ..addNode(bulletedListNode(
+          delta: delta,
+          children: [bulletedListNode(delta: delta)],
+        ));
+
+      await editor.startTesting();
+
+      const welcome = 'Welcome to ';
+      final selection = Selection(
+        start: Position(
+          path: [0],
+          offset: welcome.length,
+        ),
+        end: Position(
+          path: [1],
+          offset: welcome.length,
+        ),
+      );
+      await editor.updateSelection(selection);
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
+
+      expect(
+        editor.nodeAtPath([0])?.delta?.toPlainText(),
+        text,
+      );
+
+      final bulletedNode = editor.nodeAtPath([1])!;
+      expect(bulletedNode.type, BulletedListBlockKeys.type);
+      expect(bulletedNode.delta!.toPlainText(), text);
+
+      await editor.dispose();
+    });
+
+    // Before
+    // * Welcome to |AppFlowy Editor 🔥!
+    // * Welcome to |AppFlowy Editor 🔥!
+    //  * Welcome to AppFlowy Editor 🔥!
+    // After
+    // # Welcome to AppFlowy Editor 🔥!
+    // * Welcome to AppFlowy Editor 🔥!
+    testWidgets(
+        'Delete the collapsed selection and the first node can have children',
+        (tester) async {
+      final delta = Delta()..insert(text);
+      final editor = tester.editor
+        ..addNode(bulletedListNode(delta: delta))
+        ..addNode(bulletedListNode(
+          delta: delta,
+          children: [bulletedListNode(delta: delta)],
+        ));
+
+      await editor.startTesting();
+
+      const welcome = 'Welcome to ';
+      final selection = Selection(
+        start: Position(
+          path: [0],
+          offset: welcome.length,
+        ),
+        end: Position(
+          path: [1],
+          offset: welcome.length,
+        ),
+      );
+      await editor.updateSelection(selection);
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
+
+      expect(
+        editor.nodeAtPath([0])?.delta?.toPlainText(),
+        text,
+      );
+
+      final bulletedNode = editor.nodeAtPath([0, 0])!;
+      expect(bulletedNode.type, BulletedListBlockKeys.type);
+      expect(bulletedNode.delta!.toPlainText(), text);
+
+      await editor.dispose();
+    });
   });
 }
