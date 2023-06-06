@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
@@ -38,7 +37,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           nodes.addAll(
             _parseSpecialElements(
               domNode,
-              type: BulletedListBlockKeys.type,
+              type: ParagraphBlockKeys.type,
             ),
           );
         }
@@ -71,7 +70,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.list:
-        return _parseListElement(element, type: type);
+        //if list than default type will be blulleted because paragraph node will not be the part of the list
+        return _parseListElement(
+          element,
+          type: type != ParagraphBlockKeys.type
+              ? type
+              : BulletedListBlockKeys.type,
+        );
       case HTMLTags.paragraph:
         return [_parseParagraphElement(element)];
       case HTMLTags.blockQuote:
