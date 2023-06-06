@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final headingMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.h1),
+  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.heading),
   itemMenuBuilder: (editorState, selection) {
     return _HeadingMenu(
       selection,
