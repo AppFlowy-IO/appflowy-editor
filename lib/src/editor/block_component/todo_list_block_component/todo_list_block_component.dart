@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
   TodoListBlockKeys._();
@@ -95,7 +94,8 @@ class _TodoListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -108,31 +108,10 @@ class _TodoListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
   @override
-  Widget build(BuildContext context) {
-    return node.children.isEmpty
-        ? buildTodoListBlockComponent(context)
-        : buildTodoListBlockComponentWithChildren(context);
-  }
-
-  Widget buildTodoListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildTodoListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildTodoListBlockComponent(BuildContext context) {
+  Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
       child: Row(
