@@ -61,6 +61,7 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return ImageBlockComponentWidget(
+      key: node.key,
       node: node,
       showActions: showActions(node),
       configuration: configuration,
@@ -104,7 +105,6 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final width = attributes[ImageBlockKeys.width]?.toDouble();
 
     Widget child = ImageNodeWidget(
-      key: node.key,
       node: node,
       src: src,
       width: width,
