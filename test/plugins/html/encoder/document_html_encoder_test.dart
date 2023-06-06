@@ -4,27 +4,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 void main() async {
   group('document_html_encoder_test.dart', () {
-    const example = """<h2>👋 <strong>Welcome to</strong>\n'
-            '   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span>\n'
-            ' </h2><p></p><p>AppFlowy Editor is a <strong>highly customizable</strong>\n'
-            '   <i>rich-text editor</i> for <u>Flutter</u>\n'
-            ' </p><p></p><blockquote><p>\n'
-            '   Here is an example you can give a try\n'
-            ' </p></blockquote><p></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><p></p><ol><li><p>\n'
-            '     Use / to insert blocks\n'
-            '   </p></li><li><p>\n'
-            '     Select text to trigger to the toolbar to format your notes.\n'
-            '   </p></li></ol><p></p><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p>\n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' \n'
-            ' </p>""";
+    const example =
+        '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li><p>      [x] Customizable   </p></li><li><p>      [x] Test-covered   </p></li><li><p>      [ ] more to come!   </p></li><li><p>      First item   </p></li><li><p>      Second item   </p></li><li><p>      List element   </p></li></ul><blockquote><p>This is a quote!</p></blockquote><p>   <code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
 
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +19,15 @@ void main() async {
             {
               'type': 'heading',
               'data': {
+                'level': 1,
+                'delta': [
+                  {'insert': 'AppFlowyEditor'}
+                ]
+              }
+            },
+            {
+              'type': 'heading',
+              'data': {
                 'level': 2,
                 'delta': [
                   {'insert': '👋 '},
@@ -45,26 +35,13 @@ void main() async {
                     'insert': 'Welcome to',
                     'attributes': {'bold': true}
                   },
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \'   '
-                  },
+                  {'insert': '   '},
                   {
                     'insert': 'AppFlowy Editor',
                     'attributes': {'bold': true, 'italic': true}
-                  },
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \' '
                   }
                 ]
               }
-            },
-            {
-              'type': 'paragraph',
-              'data': {'delta': []}
             },
             {
               'type': 'paragraph',
@@ -75,49 +52,192 @@ void main() async {
                     'insert': 'highly customizable',
                     'attributes': {'bold': true}
                   },
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \'   '
-                  },
+                  {'insert': '   '},
                   {
                     'insert': 'rich-text editor',
                     'attributes': {'italic': true}
-                  },
-                  {'insert': ' for '},
-                  {
-                    'insert': 'Flutter',
-                    'attributes': {'underline': true}
-                  },
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \' '
                   }
                 ]
               }
             },
             {
               'type': 'paragraph',
-              'data': {'delta': []}
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Here',
+                    'attributes': {'underline': true}
+                  },
+                  {'insert': ' is an example '},
+                  {
+                    'insert': 'your',
+                    'attributes': {'strikethrough': true}
+                  },
+                  {'insert': ' you can give a try'}
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Span element',
+                    'attributes': {'bold': true, 'italic': true}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Span element two',
+                    'attributes': {'underline': true}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Span element three',
+                    'attributes': {'bold': true, 'strikethrough': true}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'This is an anchor tag!',
+                    'attributes': {'href': 'https://appflowy.io'}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'heading',
+              'data': {
+                'level': 3,
+                'delta': [
+                  {'insert': 'Features!'}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      [x] Customizable   '}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      [x] Test-covered   '}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      [ ] more to come!   '}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      First item   '}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      Second item   '}
+                ]
+              }
+            },
+            {
+              'type': 'bulleted_list',
+              'data': {
+                'delta': [
+                  {'insert': '      List element   '}
+                ]
+              }
             },
             {
               'type': 'quote',
               'data': {
                 'delta': [
+                  {'insert': 'This is a quote!'}
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
                   {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \'   Here is an example you can give a try\n'
-                        '\'\n'
-                        '            \' '
+                    'insert': ' Code block',
+                    'attributes': {'code': true}
                   }
                 ]
               }
             },
             {
               'type': 'paragraph',
-              'data': {'delta': []}
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Italic one',
+                    'attributes': {'italic': true}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Italic two',
+                    'attributes': {'italic': true}
+                  }
+                ]
+              }
+            },
+            {
+              'type': 'paragraph',
+              'data': {
+                'delta': [
+                  {'insert': '   '},
+                  {
+                    'insert': 'Bold tag',
+                    'attributes': {'bold': true}
+                  }
+                ]
+              }
             },
             {
               'type': 'paragraph',
@@ -133,40 +253,13 @@ void main() async {
               }
             },
             {
-              'type': 'paragraph',
-              'data': {'delta': []}
-            },
-            {
-              'type': 'numbered_list',
+              'type': 'heading',
               'data': {
+                'level': 3,
                 'delta': [
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \'     Use / to insert blocks\n'
-                        '\'\n'
-                        '            \'   '
-                  }
+                  {'insert': 'Awesome features'}
                 ]
               }
-            },
-            {
-              'type': 'numbered_list',
-              'data': {
-                'delta': [
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \'     Select text to trigger to the toolbar to format your notes.\n'
-                        '\'\n'
-                        '            \'   '
-                  }
-                ]
-              }
-            },
-            {
-              'type': 'paragraph',
-              'data': {'delta': []}
             },
             {
               'type': 'paragraph',
@@ -181,33 +274,11 @@ void main() async {
             },
             {
               'type': 'paragraph',
-              'data': {
-                'delta': [
-                  {
-                    'insert': '\n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' \n'
-                        '\'\n'
-                        '            \' '
-                  }
-                ]
-              }
+              'data': {'delta': []}
+            },
+            {
+              'type': 'paragraph',
+              'data': {'delta': []}
             }
           ]
         }

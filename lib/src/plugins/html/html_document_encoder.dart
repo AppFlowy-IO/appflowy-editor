@@ -68,7 +68,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       '',
       ((previousValue, element) => previousValue + stringify(element)),
     );
-    return copyString;
+    return copyString.replaceAll("\n", "");
   }
 
   dom.Element _textNodeToHtml(
@@ -223,8 +223,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       final blockQuote = dom.Element.tag(tagName);
       blockQuote.append(p);
       return blockQuote;
-    }
-    if (tagName == HTMLTags.checkbox) {
+    } else if (tagName == HTMLTags.checkbox) {
       final p = dom.Element.tag(HTMLTags.div);
       for (final node in childNodes) {
         p.append(node);

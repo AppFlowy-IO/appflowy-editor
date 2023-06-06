@@ -31,12 +31,14 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          delta.insert(domNode.text, attributes: attributes);
+          final deltaNode = Delta();
+          deltaNode.insert(domNode.text, attributes: attributes);
+          nodes.add(paragraphNode(delta: deltaNode));
         } else if (HTMLTags.specialElements.contains(localName)) {
           nodes.addAll(
             _parseSpecialElements(
               domNode,
-              type: ParagraphBlockKeys.type,
+              type: BulletedListBlockKeys.type,
             ),
           );
         }
@@ -73,7 +75,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.paragraph:
         return [_parseParagraphElement(element)];
       case HTMLTags.blockQuote:
-        return [_parseBlockQuoteElement(element)];
+        return _parseBlockQuoteElement(element);
       case HTMLTags.image:
         return [_parseImageElement(element)];
       default:
@@ -136,9 +138,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  Node _parseBlockQuoteElement(dom.Element element) => quoteNode(
-        delta: Delta()..insert(element.text),
-      );
+  List<Node> _parseBlockQuoteElement(dom.Element element) {
+    final result = <Node>[];
+    for (final child in element.children) {
+      result.addAll(_parseListElement(child, type: QuoteBlockKeys.type));
+    }
+    return result;
+  }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
     final result = <Node>[];
@@ -186,6 +192,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final attributes = _parserFormattingElementAttributes(child);
         delta.insert(child.text, attributes: attributes);
       } else {
+        print(child.text);
         delta.insert(child.text ?? '');
       }
     }
