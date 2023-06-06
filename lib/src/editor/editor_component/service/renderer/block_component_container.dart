@@ -65,6 +65,7 @@ class BlockComponentContainerState extends State<BlockComponentContainer>
       ),
     );
 
+    // TODO: move the padding to each block component.
     final padding = widget.configuration.padding(widget.node);
     return Padding(
       padding: padding,

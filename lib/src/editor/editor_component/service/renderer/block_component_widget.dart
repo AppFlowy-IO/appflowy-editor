@@ -1,5 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 mixin BlockComponentWidget on Widget {
   Node get node;
@@ -63,4 +65,40 @@ class _BlockComponentStatefulWidgetState
   Widget build(BuildContext context) {
     throw UnimplementedError();
   }
+}
+
+mixin NestedBlockComponentStatefulWidgetMixin<
+    T extends BlockComponentStatefulWidget> on State<T>, BackgroundColorMixin {
+  late final editorState = Provider.of<EditorState>(context, listen: false);
+  bool get showActions => widget.showActions && widget.actionBuilder != null;
+
+  @override
+  Widget build(BuildContext context) {
+    return node.children.isEmpty
+        ? buildComponent(context)
+        : buildComponentWithChildren(context);
+  }
+
+  Widget buildComponentWithChildren(BuildContext context) {
+    final left = showActions ? blockComponentActionContainerWidth : 0.0;
+    return Stack(
+      children: [
+        Positioned.fill(
+          left: left,
+          child: Container(
+            color: backgroundColor,
+          ),
+        ),
+        NestedListWidget(
+          child: buildComponent(context),
+          children: editorState.renderer.buildList(
+            context,
+            widget.node.children,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildComponent(BuildContext context);
 }

@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class NumberedListBlockKeys {
   const NumberedListBlockKeys._();
@@ -70,7 +69,8 @@ class _NumberedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -83,29 +83,8 @@ class _NumberedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   @override
-  Widget build(BuildContext context) {
-    return widget.node.children.isEmpty
-        ? buildBulletListBlockComponent(context)
-        : buildBulletListBlockComponentWithChildren(context);
-  }
-
-  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildBulletListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildBulletListBlockComponent(BuildContext context) {
+  Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
       child: Row(
