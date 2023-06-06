@@ -36,19 +36,19 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   }
 
   void _addTextNode(
-    Node textNode,
+    Node documentNode,
   ) {
     _addElement(
-      textNode,
+      documentNode,
       _textNodeToHtml(
-        textNode,
+        documentNode,
       ),
     );
   }
 
-  void _addElement(Node textNode, dom.Element element) {
+  void _addElement(Node documentNode, dom.Element element) {
     if (element.localName == HTMLTags.list) {
-      final isNumbered = textNode.type == NumberedListBlockKeys.type;
+      final isNumbered = documentNode.type == NumberedListBlockKeys.type;
       _stashListContainer ??= dom.Element.tag(
         isNumbered ? HTMLTags.orderedList : HTMLTags.unorderedList,
       );
@@ -72,14 +72,14 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   }
 
   dom.Element _textNodeToHtml(
-    Node textNode,
+    Node documentNode,
   ) {
-    String type = textNode.type;
+    String type = documentNode.type;
 
     return _deltaToHtml(
-      Delta.fromJson(textNode.attributes[ParagraphBlockKeys.delta]),
+      Delta.fromJson(documentNode.attributes[ParagraphBlockKeys.delta]),
       type: type,
-      attributes: textNode.attributes,
+      attributes: documentNode.attributes,
     );
   }
 
