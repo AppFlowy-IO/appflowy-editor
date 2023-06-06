@@ -214,7 +214,7 @@ class SelectionMenuWidget extends StatefulWidget {
 class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   final _focusNode = FocusNode(debugLabel: 'popup_list_widget');
 
-  int _selectedIndex = -1;
+  int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
 
   String _keyword = '';
