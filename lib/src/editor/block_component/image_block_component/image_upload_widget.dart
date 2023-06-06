@@ -8,10 +8,17 @@ void showImageMenu(
 ) {
   menuService.dismiss();
 
-  final (left, top, bottom) = menuService.getPosition(
-    MediaQuery.of(container.context).size.height * 2.0 / 3.0,
-  );
-  final imageMenuEntry = FullScreenOverlayEntry(
+  final (left, top, bottom) = menuService.getPosition();
+
+  late final OverlayEntry imageMenuEntry;
+
+  void insertImage(String text) {
+    editorState.insertImageNode(text);
+    menuService.dismiss();
+    imageMenuEntry.remove();
+  }
+
+  imageMenuEntry = FullScreenOverlayEntry(
     left: left,
     top: top,
     bottom: bottom,
@@ -19,8 +26,8 @@ void showImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
       width: MediaQuery.of(context).size.width * 0.5,
-      onSubmitted: editorState.insertImageNode,
-      onUpload: editorState.insertImageNode,
+      onSubmitted: insertImage,
+      onUpload: insertImage,
     ),
   ).build();
   container.insert(imageMenuEntry);
