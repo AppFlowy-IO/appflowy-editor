@@ -150,6 +150,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.editorStyle = widget.editorStyle;
     editorState.selectionMenuItems = widget.selectionMenuItems;
     editorState.renderer = _renderer;
+    editorState.editable = widget.editable;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -162,6 +163,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     super.didUpdateWidget(oldWidget);
 
     editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
@@ -188,10 +190,22 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   }
 
   Widget _buildServices(BuildContext context) {
-    return ScrollServiceWidget(
-      key: editorState.service.scrollServiceKey,
-      scrollController: widget.scrollController,
-      child: SelectionServiceWidget(
+    Widget child = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.header != null) widget.header!,
+        Container(
+          padding: widget.editorStyle.padding,
+          child: editorState.renderer.build(
+            context,
+            editorState.document.root,
+          ),
+        ),
+      ],
+    );
+    if (widget.editable) {
+      child = SelectionServiceWidget(
         key: editorState.service.selectionServiceKey,
         cursorColor: widget.editorStyle.cursorColor,
         selectionColor: widget.editorStyle.selectionColor,
@@ -200,22 +214,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           characterShortcutEvents: widget.characterShortcutEvents,
           commandShortcutEvents: widget.commandShortcutEvents,
           focusNode: widget.focusNode,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              widget.header ?? const SizedBox.shrink(),
-              Container(
-                padding: widget.editorStyle.padding,
-                child: editorState.renderer.build(
-                  context,
-                  editorState.document.root,
-                ),
-              ),
-            ],
-          ),
+          child: child,
         ),
-      ),
+      );
+    }
+    return ScrollServiceWidget(
+      key: editorState.service.scrollServiceKey,
+      scrollController: widget.scrollController,
+      child: child,
     );
   }
 

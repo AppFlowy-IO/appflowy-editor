@@ -20,7 +20,7 @@ void showColorMenu(
 
   overlay = FullScreenOverlayEntry(
     top: rect.bottom + 5,
-    left: rect.left + 10,
+    left: rect.left,
     builder: (context) {
       return ColorPicker(
         isTextColor: isTextColor,

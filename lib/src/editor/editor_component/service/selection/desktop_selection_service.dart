@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
@@ -356,7 +357,15 @@ class _DesktopSelectionServiceWidgetState
     currentSelectedNodes = nodes;
 
     final node = nodes.first;
-    final rect = Offset.zero & node.rect.size;
+    var offset = Offset.zero;
+    var size = node.rect.size;
+    final builder = editorState.renderer.blockComponentBuilder(node.type);
+    if (builder != null && builder.showActions(node)) {
+      offset = offset.translate(blockComponentActionContainerWidth, 0);
+      size = Size(size.width - blockComponentActionContainerWidth, size.height);
+    }
+    final rect = offset & size;
+
     final overlay = OverlayEntry(
       builder: (context) => SelectionWidget(
         color: widget.selectionColor,
