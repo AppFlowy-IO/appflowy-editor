@@ -192,7 +192,6 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final attributes = _parserFormattingElementAttributes(child);
         delta.insert(child.text, attributes: attributes);
       } else {
-        print(child.text);
         delta.insert(child.text ?? '');
       }
     }
