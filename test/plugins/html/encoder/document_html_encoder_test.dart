@@ -6,11 +6,9 @@ void main() async {
   group('document_html_encoder_test.dart', () {
     const example =
         '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li><p>      [x] Customizable   </p></li><li><p>      [x] Test-covered   </p></li><li><p>      [ ] more to come!   </p></li><li><p>      First item   </p></li><li><p>      Second item   </p></li><li><p>      List element   </p></li></ul><blockquote><p>This is a quote!</p></blockquote><p>   <code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
-
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
-
     test('parser document', () async {
       const delta = {
         'document': {
