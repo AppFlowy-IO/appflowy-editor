@@ -4,6 +4,7 @@ import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/extensions/object_extensions.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
+import './image_helpers.dart';
 
 class ImageNodeWidget extends StatefulWidget {
   const ImageNodeWidget({
@@ -33,8 +34,8 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   final _imageKey = GlobalKey();
 
   double? _imageWidth;
-  double _initial = 0;
-  double _distance = 0;
+  final double _initial = 0;
+  final double _distance = 0;
 
   @visibleForTesting
   bool onFocus = false;
@@ -67,10 +68,23 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   @override
   Widget build(BuildContext context) {
     // only support network image.
+    //NOTE: NetworkImageNode, BuildResizableImage are roughly the same
     return Container(
       key: _imageKey,
       padding: const EdgeInsets.only(top: 8, bottom: 8),
-      child: _buildNetworkImage(context),
+      child: NetworkImageNode(
+        context: context,
+        src: widget.src,
+        editable: widget.editable,
+        imageWidth: _imageWidth,
+        distance: _distance,
+        imageStream: _imageStream,
+        imageStreamListener: _imageStreamListener,
+        alignment: widget.alignment,
+        onFocus: onFocus,
+        initial: _initial,
+        onResize: widget.onResize,
+      ),
     );
   }
 
@@ -120,159 +134,5 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   Offset localToGlobal(Offset offset) {
     final renderBox = context.findRenderObject() as RenderBox;
     return renderBox.localToGlobal(offset);
-  }
-
-  Widget _buildNetworkImage(BuildContext context) {
-    return Align(
-      alignment: widget.alignment,
-      child: MouseRegion(
-        onEnter: (event) => setState(() {
-          onFocus = true;
-        }),
-        onExit: (event) => setState(() {
-          onFocus = false;
-        }),
-        child: _buildResizableImage(context),
-      ),
-    );
-  }
-
-  Widget _buildResizableImage(BuildContext context) {
-    final networkImage = Image.network(
-      widget.src,
-      width: _imageWidth == null ? null : _imageWidth! - _distance,
-      gaplessPlayback: true,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null ||
-            loadingProgress.cumulativeBytesLoaded ==
-                loadingProgress.expectedTotalBytes) {
-          return child;
-        }
-
-        return _buildLoading(context);
-      },
-      errorBuilder: (context, error, stackTrace) => _buildError(context),
-    );
-
-    if (_imageWidth == null) {
-      _imageStream = networkImage.image.resolve(const ImageConfiguration())
-        ..addListener(_imageStreamListener);
-    }
-
-    return Stack(
-      children: [
-        networkImage,
-        if (widget.editable) ...[
-          _buildEdgeGesture(
-            context,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            width: 5,
-            onUpdate: (distance) {
-              setState(() {
-                _distance = distance;
-              });
-            },
-          ),
-          _buildEdgeGesture(
-            context,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: 5,
-            onUpdate: (distance) {
-              setState(() {
-                _distance = -distance;
-              });
-            },
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildLoading(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox.fromSize(
-            size: const Size(18, 18),
-            child: const CircularProgressIndicator(),
-          ),
-          SizedBox.fromSize(
-            size: const Size(10, 10),
-          ),
-          const Text('Loading'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildError(BuildContext context) {
-    return Container(
-      height: 100,
-      width: _imageWidth,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-        border: Border.all(width: 1, color: Colors.black),
-      ),
-      child: const Text('Could not load the image'),
-    );
-  }
-
-  Widget _buildEdgeGesture(
-    BuildContext context, {
-    double? top,
-    double? left,
-    double? right,
-    double? bottom,
-    double? width,
-    void Function(double distance)? onUpdate,
-  }) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      bottom: bottom,
-      width: width,
-      child: GestureDetector(
-        onHorizontalDragStart: (details) {
-          _initial = details.globalPosition.dx;
-        },
-        onHorizontalDragUpdate: (details) {
-          if (onUpdate != null) {
-            onUpdate(details.globalPosition.dx - _initial);
-          }
-        },
-        onHorizontalDragEnd: (details) {
-          _imageWidth = _imageWidth! - _distance;
-          _initial = 0;
-          _distance = 0;
-
-          widget.onResize(_imageWidth!);
-        },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.resizeLeftRight,
-          child: onFocus
-              ? Center(
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                    ),
-                  ),
-                )
-              : null,
-        ),
-      ),
-    );
   }
 }
