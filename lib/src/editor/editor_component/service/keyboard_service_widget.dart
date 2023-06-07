@@ -214,8 +214,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       return TextEditingValue(
         text: text,
         selection: TextSelection(
-          baseOffset: selection.start.offset,
-          extentOffset: selection.end.offset,
+          baseOffset: selection.startIndex,
+          extentOffset: selection.endIndex,
         ),
         composing:
             composingTextRange ?? TextRange.collapsed(selection.start.offset),

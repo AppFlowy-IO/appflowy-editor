@@ -28,14 +28,14 @@ Future<void> onReplace(
 extension on TextEditingDeltaReplacement {
   TextEditingDeltaInsertion toInsertion() {
     final text = oldText.replaceRange(
-      selection.start,
-      selection.end,
+      replacedRange.start,
+      replacedRange.end,
       '',
     );
     return TextEditingDeltaInsertion(
       oldText: text,
       textInserted: replacementText,
-      insertionOffset: selection.start,
+      insertionOffset: replacedRange.start,
       selection: selection,
       composing: composing,
     );
