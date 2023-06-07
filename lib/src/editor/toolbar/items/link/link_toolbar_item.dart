@@ -37,6 +37,22 @@ void showLinkMenu(
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
   final rect = editorState.selectionRects().first;
 
+  // should abstract this logic to a method
+  // ----
+  final left = rect.left + 10;
+  double? top;
+  double? bottom;
+  final offset = rect.center;
+  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
+  final editorHeight = editorState.renderBox!.size.height;
+  final threshold = editorOffset.dy + editorHeight - 150;
+  if (offset.dy > threshold) {
+    bottom = editorOffset.dy + editorHeight - rect.top - 5;
+  } else {
+    top = rect.bottom + 5;
+  }
+  // ----
+
   // get node, index and length for formatting text when the link is removed
   final node = editorState.getNodeAtPath(selection.end.path);
   if (node == null) {
@@ -62,8 +78,9 @@ void showLinkMenu(
   }
 
   overlay = FullScreenOverlayEntry(
-    top: rect.bottom + 5,
-    left: rect.left + 10,
+    top: top,
+    bottom: bottom,
+    left: left,
     builder: (context) {
       return LinkMenu(
         linkText: linkText,
