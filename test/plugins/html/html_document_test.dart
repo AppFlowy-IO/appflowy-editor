@@ -8,6 +8,12 @@ void main() {
       expect(document.toJson(), data);
     });
   });
+  group('document_html_test.dart tests', () {
+    test('documentToHtml()', () {
+      final document = documentToHTML(Document.fromJson(data));
+      expect(document, rawHTML);
+    });
+  });
 }
 
 const data = {
@@ -33,14 +39,10 @@ const data = {
               'insert': 'Welcome to',
               'attributes': {'bold': true}
             },
-            {'insert': ' '},
+            {'insert': '   '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {
-                'bold': true,
-                'italic': true,
-                'href': 'appflowy.io'
-              }
+              'attributes': {'bold': true, 'italic': true}
             }
           ]
         }
@@ -54,7 +56,7 @@ const data = {
               'insert': 'highly customizable',
               'attributes': {'bold': true}
             },
-            {'insert': ' '},
+            {'insert': '   '},
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true}
@@ -66,6 +68,7 @@ const data = {
         'type': 'paragraph',
         'data': {
           'delta': [
+            {'insert': '   '},
             {
               'insert': 'Here',
               'attributes': {'underline': true}
@@ -80,6 +83,54 @@ const data = {
         }
       },
       {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Span element',
+              'attributes': {'bold': true, 'italic': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Span element two',
+              'attributes': {'underline': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Span element three',
+              'attributes': {'bold': true, 'strikethrough': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'This is an anchor tag!',
+              'attributes': {'href': 'https://appflowy.io'}
+            }
+          ]
+        }
+      },
+      {
         'type': 'heading',
         'data': {
           'level': 3,
@@ -89,50 +140,50 @@ const data = {
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Customizable'}
+            {'insert': '      [x] Customizable   '}
           ]
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Test-covered'}
+            {'insert': '      [x] Test-covered   '}
           ]
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[ ] more to come!'}
+            {'insert': '      [ ] more to come!   '}
           ]
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'First item'}
+            {'insert': '      First item   '}
           ]
         }
       },
       {
-        'type': 'numbered_list',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'Second item'}
+            {'insert': '      Second item   '}
           ]
         }
       },
       {
-        'type': 'paragraph',
+        'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'List element'}
+            {'insert': '      List element   '}
           ]
         }
       },
@@ -140,10 +191,54 @@ const data = {
         'type': 'quote',
         'data': {
           'delta': [
+            {'insert': 'This is a quote!'}
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
             {
-              'insert': '\n'
-                  '  This is a quote!\n'
-                  ''
+              'insert': ' Code block',
+              'attributes': {'code': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Italic one',
+              'attributes': {'italic': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Italic two',
+              'attributes': {'italic': true}
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': '   '},
+            {
+              'insert': 'Bold tag',
+              'attributes': {'bold': true}
             }
           ]
         }
@@ -157,7 +252,7 @@ const data = {
               'insert': 'AppFlowy Editor',
               'attributes': {'bold': true, 'italic': true}
             },
-            {'insert': ' as a component to build your own app.'}
+            {'insert': ' as a component to build your own app. '}
           ]
         }
       },
@@ -183,156 +278,14 @@ const data = {
       },
       {
         'type': 'paragraph',
-        'data': {
-          'delta': [
-            {
-              'insert': '\n'
-                  '\n'
-                  '  \n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'Span element',
-              'attributes': {'bold': true, 'italic': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'Span element two',
-              'attributes': {'underline': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'Span element three',
-              'attributes': {'bold': true, 'strikethrough': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'This is an anchor tag!',
-              'attributes': {'href': 'https://appflowy.io'}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': '\n'
-                  '  Code block\n'
-                  '',
-              'attributes': {'code': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'Italic one',
-              'attributes': {'italic': true}
-            },
-            {'insert': ' '},
-            {
-              'insert': 'Italic two',
-              'attributes': {'italic': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  ''
-            },
-            {
-              'insert': 'Bold tag',
-              'attributes': {'bold': true}
-            },
-            {
-              'insert': '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  '\n'
-                  ''
-            }
-          ]
-        }
+        'data': {'delta': []}
+      },
+      {
+        'type': 'paragraph',
+        'data': {'delta': []}
       }
     ]
   }
 };
-const rawHTML = """<h1>AppFlowyEditor</h1>
-<h2>👋 <strong>Welcome to</strong> <strong><em><a href="appflowy.io">AppFlowy Editor</a></em></strong></h2>
-  <p>AppFlowy Editor is a <strong>highly customizable</strong> <em>rich-text editor</em></p>
-
-<hr />
-
-<p><u>Here</u> is an example <del>your</del> you can give a try</p>
-
-<span style="font-weight: bold;background-color: #cccccc;font-style: italic;">Span element</span>
-
-<span style="font-weight: medium;text-decoration: underline;">Span element two</span>
-
-<span style="font-weight: 900;text-decoration: line-through;">Span element three</span>
-
-<a href="https://appflowy.io">This is an anchor tag!</a>
-
-<img src="https://images.squarespace-cdn.com/content/v1/617f6f16b877c06711e87373/c3f23723-37f4-44d7-9c5d-6e2a53064ae7/Asset+10.png?format=1500w" />
-
-<h3>Features!</h3>
-
-<ul>
-  <li>[x] Customizable</li>
-  <li>[x] Test-covered</li>
-  <li>[ ] more to come!</li>
-</ul>
-
-<ol>
-  <li>First item</li>
-  <li>Second item</li>
-</ol>
-
-<li>List element</li>
-
-<blockquote>
-  <p>This is a quote!</p>
-</blockquote>
-
-<code>
-  Code block
-</code>
-
-<em>Italic one</em> <i>Italic two</i>
-
-<b>Bold tag</b>
-<img src="http://appflowy.io" alt="AppFlowy">
-<p>You can also use <strong><em>AppFlowy Editor</em></strong> as a component to build your own app.</p>
-<h3>Awesome features</h3>
-<p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p>
-<hr>""";
+const rawHTML =
+    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li><p>      [x] Customizable   </p></li><li><p>      [x] Test-covered   </p></li><li><p>      [ ] more to come!   </p></li><li><p>      First item   </p></li><li><p>      Second item   </p></li><li><p>      List element   </p></li></ul><blockquote><p>This is a quote!</p></blockquote><p>   <code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
