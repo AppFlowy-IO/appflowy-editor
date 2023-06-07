@@ -168,6 +168,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     } else {
       // For the deletion, we should attach the text input service immediately.
       _attachTextInputService(selection);
+      _updateCaretPosition(selection);
 
       // debounce the attachTextInputService function to avoid
       // the text input service being attached too frequently.
@@ -233,5 +234,26 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // if (!focusNode.hasFocus) {
     //   editorState.selection = null;
     // }
+  }
+
+  // only verify on macOS.
+  void _updateCaretPosition(Selection? selection) {
+    if (selection == null || !selection.isCollapsed) {
+      return;
+    }
+    final node = editorState.getNodeAtPath(selection.start.path);
+    if (node == null) {
+      return;
+    }
+    final renderBox = node.renderBox;
+    final selectable = node.selectable;
+    if (renderBox != null && selectable != null) {
+      final size = renderBox.size;
+      final transform = renderBox.getTransformTo(null);
+      final rect = selectable.getCursorRectInPosition(selection.end);
+      if (rect != null) {
+        textInputService.updateCaretPosition(size, transform, rect);
+      }
+    }
   }
 }
