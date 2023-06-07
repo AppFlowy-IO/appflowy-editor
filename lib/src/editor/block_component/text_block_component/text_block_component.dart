@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ParagraphBlockKeys {
   ParagraphBlockKeys._();
@@ -78,7 +77,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -91,29 +91,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   @override
-  Widget build(BuildContext context) {
-    return node.children.isEmpty
-        ? buildParagraphBlockComponent(context)
-        : buildParagraphBlockComponentWithChildren(context);
-  }
-
-  Widget buildParagraphBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildParagraphBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildParagraphBlockComponent(BuildContext context) {
+  Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
       child: FlowyRichText(
@@ -129,7 +108,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         ),
       ),
     );
-    if (widget.showActions && widget.actionBuilder != null) {
+    if (showActions) {
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
