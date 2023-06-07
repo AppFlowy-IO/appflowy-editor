@@ -30,9 +30,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          final deltaNode = Delta();
-          deltaNode.insert(domNode.text, attributes: attributes);
-          nodes.add(paragraphNode(delta: deltaNode));
+          nodes.add(
+            paragraphNode(
+              delta: Delta()..insert(domNode.text, attributes: attributes),
+            ),
+          );
         } else if (HTMLTags.specialElements.contains(localName)) {
           nodes.addAll(
             _parseSpecialElements(
@@ -70,7 +72,6 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.list:
-        //if list than default type will be blulleted because paragraph node will not be the part of the list
         return _parseListElement(
           element,
           type: type != ParagraphBlockKeys.type
@@ -119,11 +120,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes = {FlowyRichTextKeys.href: href};
         }
         break;
-      case HTMLTags.paragraph:
-        attributes.addAll({});
-        break;
       default:
-        assert(false, 'Unknown formatting element: $element');
         break;
     }
     for (final child in element.children) {

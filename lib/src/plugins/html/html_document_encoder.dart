@@ -8,7 +8,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
 
   dom.Element? _stashListContainer;
   final List<dom.Node> _result = [];
-  List<Node> nodes = [];
+  final List<Node> nodes = [];
   @override
   String convert(Document input) {
     List<Node> documentNodes = input.root.children.toList();
@@ -64,7 +64,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
     final elements = toHTMLNodes();
     final copyString = elements.fold<String>(
       '',
-      ((previousValue, element) => previousValue + stringify(element)),
+      (previousValue, element) => previousValue + stringify(element),
     );
     return copyString.replaceAll("\n", "");
   }
@@ -72,17 +72,15 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   dom.Element _textNodeToHtml(
     Node documentNode,
   ) {
-    String type = documentNode.type;
-
     return _deltaToHtml(
       Delta.fromJson(documentNode.attributes[ParagraphBlockKeys.delta]),
-      type: type,
+      type: documentNode.type,
       attributes: documentNode.attributes,
     );
   }
 
   String _textDecorationsFromAttributes(Attributes attributes) {
-    var textDecoration = <String>[];
+    final List<String> textDecoration = [];
     if (attributes[BuiltInAttributeKey.strikethrough] == true) {
       textDecoration.add('line-through');
     }
@@ -124,13 +122,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   }
 
   String _cssMapToCssStyle(Map<String, String> cssMap) {
-    return cssMap.entries.fold('', (previousValue, element) {
-      final kv = '${element.key}: ${element.value}';
-      if (previousValue.isEmpty) {
-        return kv;
-      }
-      return '$previousValue; $kv';
-    });
+    return cssMap.entries.map((e) => '${e.key}: ${e.value}').join('; ');
   }
 
   dom.Element _deltaToHtml(
@@ -151,7 +143,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
           attributes[TodoListBlockKeys.checked].toString();
       tagName = HTMLTags.checkbox;
       childNodes.add(node);
-    } else if (type == BuiltInAttributeKey.heading) {
+    } else if (type == HeadingBlockKeys.type) {
       if (attributes[HeadingBlockKeys.level] == 1) {
         tagName = HTMLTags.h1;
       } else if (attributes[HeadingBlockKeys.level] == 2) {
@@ -159,7 +151,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       } else if (attributes[HeadingBlockKeys.level] == 3) {
         tagName = HTMLTags.h3;
       }
-    } else if (type == BuiltInAttributeKey.quote) {
+    } else if (type == QuoteBlockKeys.type) {
       tagName = HTMLTags.blockQuote;
     }
 
@@ -167,37 +159,9 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       if (op is TextInsert) {
         final attributes = op.attributes;
         if (attributes != null) {
-          if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.bold] == true) {
-            final strong = dom.Element.tag(HTMLTags.strong);
-            strong.append(dom.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.underline] == true) {
-            final strong = dom.Element.tag(HTMLTags.underline);
-            strong.append(dom.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.italic] == true) {
-            final strong = dom.Element.tag(HTMLTags.italic);
-            strong.append(dom.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.strikethrough] == true) {
-            final strong = dom.Element.tag(HTMLTags.del);
-            strong.append(dom.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.code] == true) {
-            final code = dom.Element.tag(HTMLTags.code);
-            code.append(dom.Text(op.text));
-            childNodes.add(code);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.href] != null) {
-            final anchor = dom.Element.tag(HTMLTags.anchor);
-            anchor.attributes['href'] = attributes[BuiltInAttributeKey.href];
-            anchor.append(dom.Text(op.text));
-            childNodes.add(anchor);
+          if (attributes.length == 1) {
+            final element = _applyAttributes(attributes, text: op.text);
+            childNodes.add(element);
           } else {
             final span = dom.Element.tag(HTMLTags.span);
             final cssString = _attributesToCssStyle(attributes);
@@ -214,34 +178,62 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
     }
 
     if (tagName == HTMLTags.blockQuote) {
-      final p = dom.Element.tag(HTMLTags.paragraph);
-      for (final node in childNodes) {
-        p.append(node);
-      }
       final blockQuote = dom.Element.tag(tagName);
-      blockQuote.append(p);
+      blockQuote.append(_insertText(HTMLTag.paragraph, childNodes: childNodes));
       return blockQuote;
     } else if (tagName == HTMLTags.checkbox) {
-      final p = dom.Element.tag(HTMLTags.div);
-      for (final node in childNodes) {
-        p.append(node);
-      }
-
-      return p;
+      return _insertText(HTMLTag.div, childNodes: childNodes);
     } else if (!HTMLTags.isTopLevel(tagName)) {
-      final p = dom.Element.tag(HTMLTags.paragraph);
-      for (final node in childNodes) {
-        p.append(node);
-      }
       final result = dom.Element.tag(HTMLTags.list);
-      result.append(p);
+      result.append(_insertText(HTMLTag.paragraph, childNodes: childNodes));
       return result;
     } else {
-      final p = dom.Element.tag(tagName);
-      for (final node in childNodes) {
-        p.append(node);
-      }
-      return p;
+      return _insertText(tagName, childNodes: childNodes);
     }
+  }
+
+  dom.Element _applyAttributes(Attributes attributes, {required String text}) {
+    if (attributes[FlowyRichTextKeys.bold] == true) {
+      final strong = dom.Element.tag(HTMLTags.strong);
+      strong.append(dom.Text(text));
+      return strong;
+    } else if (attributes[FlowyRichTextKeys.underline] == true) {
+      final strong = dom.Element.tag(HTMLTags.underline);
+      strong.append(dom.Text(text));
+      return strong;
+    } else if (attributes[FlowyRichTextKeys.italic] == true) {
+      final strong = dom.Element.tag(HTMLTags.italic);
+      strong.append(dom.Text(text));
+      return strong;
+    } else if (attributes[FlowyRichTextKeys.strikethrough] == true) {
+      final strong = dom.Element.tag(HTMLTags.del);
+      strong.append(dom.Text(text));
+      return strong;
+    } else if (attributes[FlowyRichTextKeys.code] == true) {
+      final code = dom.Element.tag(HTMLTags.code);
+      code.append(dom.Text(text));
+      return code;
+    } else if (attributes[FlowyRichTextKeys.href] != null) {
+      final anchor = dom.Element.tag(HTMLTags.anchor);
+      anchor.attributes['href'] = attributes[FlowyRichTextKeys.href];
+      anchor.append(dom.Text(text));
+      return anchor;
+    } else {
+      final paragraph = dom.Element.tag(HTMLTags.paragraph);
+
+      paragraph.append(dom.Text(text));
+      return paragraph;
+    }
+  }
+
+  dom.Element _insertText(
+    String tagName, {
+    required List<dom.Node> childNodes,
+  }) {
+    final p = dom.Element.tag(tagName);
+    for (final node in childNodes) {
+      p.append(node);
+    }
+    return p;
   }
 }
