@@ -1,3 +1,6 @@
+## 1.0.0
+* chore: release 1.0.0
+
 ## 1.0.0-dev.4
 * fix: the background color of nested block component overflow by @LucasXu0 in ([#172](https://github.com/AppFlowy-IO/appflowy-editor/pull/172))
 * fix: upload image menu overflow by @LucasXu0 in ([#172](https://github.com/AppFlowy-IO/appflowy-editor/pull/172))
