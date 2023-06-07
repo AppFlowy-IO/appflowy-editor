@@ -14,7 +14,18 @@ Future<void> onReplace(
   if (selection == null) {
     return;
   }
-  await editorState.deleteSelection(selection);
+
+  if (selection.isSingle) {
+    await editorState.deleteSelection(
+      Selection.single(
+        path: selection.start.path,
+        startOffset: replacement.replacedRange.start,
+        endOffset: replacement.replacedRange.end,
+      ),
+    );
+  } else {
+    await editorState.deleteSelection(selection);
+  }
 
   // insert the replacement
   final insertion = replacement.toInsertion();
