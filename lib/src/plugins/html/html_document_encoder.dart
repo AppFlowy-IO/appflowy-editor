@@ -22,9 +22,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
         _addTextNode(documentNode);
       } else {
         final anchor = dom.Element.tag(HTMLTags.image);
-        anchor.attributes[HTMLTags.image] =
-            documentNode.attributes[ImageBlockKeys.url];
-
+        anchor.attributes["src"] = documentNode.attributes[ImageBlockKeys.url];
         _result.add(anchor);
       }
     }
