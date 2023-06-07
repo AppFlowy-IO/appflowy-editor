@@ -317,10 +317,12 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
+    HTMLTag.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
+    HTMLTag.image
   ];
 
   static bool isTopLevel(String tag) {
