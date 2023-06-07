@@ -72,12 +72,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.list:
-        return _parseListElement(
-          element,
-          type: type != ParagraphBlockKeys.type
-              ? type
-              : BulletedListBlockKeys.type,
-        );
+        return [
+          _parseListElement(
+            element,
+            type: type,
+          )
+        ];
       case HTMLTags.paragraph:
         return [_parseParagraphElement(element)];
       case HTMLTags.blockQuote:
@@ -140,38 +140,37 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  List<Node> _parseBlockQuoteElement(dom.Element element) {
-    final result = <Node>[];
-    for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: QuoteBlockKeys.type));
-    }
-    return result;
+  Iterable<Node> _parseBlockQuoteElement(dom.Element element) {
+    return element.children
+        .map((child) => _parseListElement(child, type: QuoteBlockKeys.type))
+        .toList();
   }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
-    final result = <Node>[];
-    for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: BulletedListBlockKeys.type));
-    }
-    return result;
+    return element.children
+        .map(
+          (child) => _parseListElement(child, type: BulletedListBlockKeys.type),
+        )
+        .toList();
   }
 
   Iterable<Node> _parseOrderListElement(dom.Element element) {
-    final result = <Node>[];
-    for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
-    }
-    return result;
+    return element.children
+        .map(
+          (child) => _parseListElement(child, type: NumberedListBlockKeys.type),
+        )
+        .toList();
   }
 
-  Iterable<Node> _parseListElement(
+  Node _parseListElement(
     dom.Element element, {
     required String type,
   }) {
     final delta = _parseDeltaElement(element);
-    return [
-      Node(type: type, attributes: {ParagraphBlockKeys.delta: delta.toJson()})
-    ];
+    return Node(
+      type: type != ParagraphBlockKeys.type ? type : BulletedListBlockKeys.type,
+      attributes: {ParagraphBlockKeys.delta: delta.toJson()},
+    );
   }
 
   Node _parseParagraphElement(dom.Element element) {
