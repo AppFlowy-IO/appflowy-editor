@@ -12,7 +12,7 @@ abstract class SelectionMenuService {
   void show();
   void dismiss();
 
-  (double left, double? top, double? bottom) getPosition(double threshold);
+  (double left, double? top, double? bottom) getPosition();
 }
 
 class SelectionMenu extends SelectionMenuService {
@@ -36,6 +36,7 @@ class SelectionMenu extends SelectionMenuService {
   Offset? _topLeft;
   Offset _offset = Offset.zero;
   Alignment _alignment = Alignment.topLeft;
+  bool showBelow = true;
 
   @override
   void dismiss() {
@@ -76,7 +77,7 @@ class SelectionMenu extends SelectionMenuService {
     final editorWidth = editorState.renderBox!.size.width;
 
     // show below default
-    var showBelow = true;
+    showBelow = true;
     _alignment = Alignment.bottomLeft;
     final bottomRight = selectionRects.first.bottomRight;
     final topRight = selectionRects.first.topRight;
@@ -149,11 +150,11 @@ class SelectionMenu extends SelectionMenuService {
   }
 
   @override
-  (double, double?, double?) getPosition(double threshold) {
+  (double, double?, double?) getPosition() {
     final left = _offset.dx;
     double? top;
     double? bottom;
-    if (topLeft.dy >= threshold) {
+    if (!showBelow) {
       bottom = _offset.dy;
     } else {
       top = _offset.dy;
