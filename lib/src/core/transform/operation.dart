@@ -253,14 +253,14 @@ Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
   return prefix;
 }
 
-Operation transformOperation(Operation a, Operation b) {
+Operation? transformOperation(Operation a, Operation b) {
   if (a is InsertOperation) {
     final newPath = transformPath(a.path, b.path, a.nodes.length);
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
     if (b is DeleteOperation) {
       if (a.path.isParentOf(b.path)) {
-        return b.copyWith(path: a.path);
+        return null; // a is parent of b, we can just delete a and ignore b.
       } else if (b.path.isParentOf(a.path)) {
         return a.copyWith(path: b.path);
       }
