@@ -3,7 +3,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// Used in testing mobile app with toolbar
 class MobileToolbarStyleTestWidget extends StatelessWidget {
-  MobileToolbarStyleTestWidget({
+  const MobileToolbarStyleTestWidget({
     required this.child,
     super.key,
     this.backgroundColor = Colors.white,
@@ -32,7 +32,7 @@ class MobileToolbarStyleTestWidget extends StatelessWidget {
           itemOutlineColor: itemOutlineColor,
           toolbarHeight: toolbarHeight,
           borderRadius: borderRadius,
-          child: child),
+          child: child,),
     );
   }
 }

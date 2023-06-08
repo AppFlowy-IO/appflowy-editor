@@ -3,7 +3,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// Used in testing mobile app with toolbar
 class MobileAppWithToolbarWidget extends StatelessWidget {
-  MobileAppWithToolbarWidget({
+  const MobileAppWithToolbarWidget({
     required this.editorState,
     this.toolbarItems,
     super.key,
@@ -14,7 +14,7 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
-    final _toolbarItems = toolbarItems ??
+    final localToolbarItems = toolbarItems ??
         [
           textDecorationMobileToolbarItem,
           headingMobileToolbarItem,
@@ -36,7 +36,7 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
           ),
           MobileToolbar(
             editorState: editorState,
-            toolbarItems: _toolbarItems,
+            toolbarItems: localToolbarItems,
           ),
         ],
       ),

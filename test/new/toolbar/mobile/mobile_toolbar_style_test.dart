@@ -13,14 +13,14 @@ void main() {
     const borderRadius = 10.0;
 
     await tester.pumpWidget(
-      MobileToolbarStyle(
+      const MobileToolbarStyle(
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
         itemHighlightColor: itemHighlightColor,
         itemOutlineColor: itemOutlineColor,
         toolbarHeight: toolbarHeight,
         borderRadius: borderRadius,
-        child: const SizedBox(),
+        child: SizedBox(),
       ),
     );
 
