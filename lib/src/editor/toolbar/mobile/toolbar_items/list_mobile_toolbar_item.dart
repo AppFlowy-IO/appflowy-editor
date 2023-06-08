@@ -26,7 +26,7 @@ class _ListMenuState extends State<_ListMenu> {
   final lists = [
     {
       'icon': AFMobileIcons.bulletedList,
-      'label': 'Bullet List',
+      'label': 'Bulleted List',
       'name': 'bulleted_list',
     },
     {
