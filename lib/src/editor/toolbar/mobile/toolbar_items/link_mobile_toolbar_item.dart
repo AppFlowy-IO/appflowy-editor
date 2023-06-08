@@ -11,7 +11,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
       selection,
     );
 
-    return MLinkMenu(
+    return _MobileLinkMenu(
       editorState: editorState,
       linkText: linkText,
       onSubmitted: (value) async {
@@ -24,9 +24,8 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
   },
 );
 
-class MLinkMenu extends StatefulWidget {
-  const MLinkMenu({
-    super.key,
+class _MobileLinkMenu extends StatefulWidget {
+  const _MobileLinkMenu({
     required this.editorState,
     this.linkText,
     required this.onSubmitted,
@@ -37,10 +36,10 @@ class MLinkMenu extends StatefulWidget {
   final void Function(String) onSubmitted;
 
   @override
-  State<MLinkMenu> createState() => MLinkMenuState();
+  State<_MobileLinkMenu> createState() => _MobileLinkMenuState();
 }
 
-class MLinkMenuState extends State<MLinkMenu> {
+class _MobileLinkMenuState extends State<_MobileLinkMenu> {
   late TextEditingController _textEditingController;
   late FocusNode _focusNode;
 
@@ -63,74 +62,80 @@ class MLinkMenuState extends State<MLinkMenu> {
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarStyle.of(context);
-    return SizedBox(
-      height: style.toolbarHeight,
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 42,
-              child: TextField(
-                focusNode: _focusNode,
-                controller: _textEditingController,
-                keyboardType: TextInputType.url,
-                onSubmitted: widget.onSubmitted,
-                cursorColor: style.foregroundColor,
-                decoration: InputDecoration(
-                  hintText: 'URL',
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 8,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: style.itemOutlineColor,
+    return Material(
+      // TextField widget needs to be wrapped in a Material widget to provide a visual appearance
+      color: style.backgroundColor,
+      child: SizedBox(
+        height: style.toolbarHeight,
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 42,
+                child: TextField(
+                  focusNode: _focusNode,
+                  controller: _textEditingController,
+                  keyboardType: TextInputType.url,
+                  onSubmitted: widget.onSubmitted,
+                  cursorColor: style.foregroundColor,
+                  decoration: InputDecoration(
+                    hintText: 'URL',
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 8,
                     ),
-                    borderRadius: BorderRadius.circular(style.borderRadius),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: style.itemOutlineColor,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: style.itemOutlineColor,
+                      ),
+                      borderRadius: BorderRadius.circular(style.borderRadius),
                     ),
-                    borderRadius: BorderRadius.circular(style.borderRadius),
-                  ),
-                  suffixIcon: IconButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    icon: Icon(
-                      Icons.clear_rounded,
-                      color: style.foregroundColor,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: style.itemOutlineColor,
+                      ),
+                      borderRadius: BorderRadius.circular(style.borderRadius),
                     ),
-                    onPressed: _textEditingController.clear,
-                    splashRadius: 5,
+                    suffixIcon: IconButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      icon: Icon(
+                        Icons.clear_rounded,
+                        color: style.foregroundColor,
+                      ),
+                      onPressed: _textEditingController.clear,
+                      splashRadius: 5,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            height: 40,
-            child: ElevatedButton(
-              onPressed: () {
-                widget.onSubmitted.call(_textEditingController.text);
-                mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  style.itemHighlightColor,
-                ),
-                elevation: MaterialStateProperty.all(0),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(style.borderRadius),
+            const SizedBox(width: 8),
+            SizedBox(
+              height: 40,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_textEditingController.text.isNotEmpty) {
+                    widget.onSubmitted.call(_textEditingController.text);
+                  }
+                  mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    style.itemHighlightColor,
+                  ),
+                  elevation: MaterialStateProperty.all(0),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(style.borderRadius),
+                    ),
                   ),
                 ),
+                child: const Text('Done'),
               ),
-              child: const Text('Done'),
-            ),
-          )
-          // TODO(yijing): edit link?
-        ],
+            )
+            // TODO(yijing): edit link?
+          ],
+        ),
       ),
     );
   }
