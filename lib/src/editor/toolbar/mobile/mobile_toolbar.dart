@@ -28,7 +28,7 @@ class MobileToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Selection?>(
-      valueListenable: editorState.service.selectionService.currentSelection,
+      valueListenable: editorState.selectionNotifier,
       builder: (_, Selection? selection, __) {
         if (selection == null) {
           return const SizedBox.shrink();
