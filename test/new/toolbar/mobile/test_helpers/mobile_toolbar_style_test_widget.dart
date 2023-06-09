@@ -26,13 +26,14 @@ class MobileToolbarStyleTestWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MobileToolbarStyle(
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-          itemHighlightColor: itemHighlightColor,
-          itemOutlineColor: itemOutlineColor,
-          toolbarHeight: toolbarHeight,
-          borderRadius: borderRadius,
-          child: child,),
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+        itemHighlightColor: itemHighlightColor,
+        itemOutlineColor: itemOutlineColor,
+        toolbarHeight: toolbarHeight,
+        borderRadius: borderRadius,
+        child: child,
+      ),
     );
   }
 }

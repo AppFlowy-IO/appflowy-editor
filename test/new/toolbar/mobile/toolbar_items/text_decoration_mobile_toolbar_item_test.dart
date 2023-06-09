@@ -44,7 +44,8 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[FlowyRichTextKeys.bold] == true,);
+              (element) => element.attributes?[FlowyRichTextKeys.bold] == true,
+            );
       }),
       true,
     );
@@ -55,7 +56,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[FlowyRichTextKeys.italic] == true,);
+              (element) =>
+                  element.attributes?[FlowyRichTextKeys.italic] == true,
+            );
       }),
       true,
     );
@@ -66,8 +69,10 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
-        return delta.whereType<TextInsert>().every((element) =>
-            element.attributes?[FlowyRichTextKeys.underline] == true,);
+        return delta.whereType<TextInsert>().every(
+              (element) =>
+                  element.attributes?[FlowyRichTextKeys.underline] == true,
+            );
       }),
       true,
     );
@@ -78,8 +83,10 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
-        return delta.whereType<TextInsert>().every((element) =>
-            element.attributes?[FlowyRichTextKeys.strikethrough] == true,);
+        return delta.whereType<TextInsert>().every(
+              (element) =>
+                  element.attributes?[FlowyRichTextKeys.strikethrough] == true,
+            );
       }),
       true,
     );

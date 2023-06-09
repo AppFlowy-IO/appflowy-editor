@@ -44,7 +44,8 @@ void main() {
       await editor.updateSelection(selection);
 
       await tester.pumpWidget(
-          MobileAppWithToolbarWidget(editorState: editor.editorState),);
+        MobileAppWithToolbarWidget(editorState: editor.editorState),
+      );
 
       expect(find.byType(MobileToolbarWidget), findsOneWidget);
     });
