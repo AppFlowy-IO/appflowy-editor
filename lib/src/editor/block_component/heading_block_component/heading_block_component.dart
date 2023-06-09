@@ -22,10 +22,12 @@ Node headingNode({
   required int level,
   Delta? delta,
   Attributes? attributes,
+  Iterable<Node>? children,
 }) {
   attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: HeadingBlockKeys.type,
+    children: children ?? [],
     attributes: {
       HeadingBlockKeys.level: level,
       ...attributes,

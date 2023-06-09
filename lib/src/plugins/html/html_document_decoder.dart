@@ -79,18 +79,21 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           )
         ];
       case HTMLTags.paragraph:
-        return [_parseParagraphElement(element)];
+        return _parseParagraphElement(element);
       case HTMLTags.blockQuote:
         return _parseBlockQuoteElement(element);
       case HTMLTags.image:
         return [_parseImageElement(element)];
       default:
-        return [paragraphNode(text: element.text)];
+        return _parseParagraphElement(element);
     }
   }
 
-  Attributes _parserFormattingElementAttributes(dom.Element element) {
+  Attributes _parserFormattingElementAttributes(
+    dom.Element element,
+  ) {
     final localName = element.localName;
+
     Attributes attributes = {};
     switch (localName) {
       case HTMLTags.bold || HTMLTags.strong:
@@ -133,17 +136,23 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     dom.Element element, {
     required int level,
   }) {
-    final delta = _parseDeltaElement(element);
+    final (delta, specialNodes) = _parseDeltaElement(element);
     return headingNode(
       level: level,
+      children: specialNodes,
       delta: delta,
     );
   }
 
   Iterable<Node> _parseBlockQuoteElement(dom.Element element) {
-    return element.children
-        .map((child) => _parseListElement(child, type: QuoteBlockKeys.type))
-        .toList();
+    final (delta, nodes) = _parseDeltaElement(element);
+    return [
+      Node(
+        type: QuoteBlockKeys.type,
+        children: nodes,
+        attributes: {ParagraphBlockKeys.delta: delta.toJson()},
+      )
+    ];
   }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
@@ -166,16 +175,17 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     dom.Element element, {
     required String type,
   }) {
-    final delta = _parseDeltaElement(element);
+    final (delta, node) = _parseDeltaElement(element);
     return Node(
       type: type != ParagraphBlockKeys.type ? type : BulletedListBlockKeys.type,
+      children: node,
       attributes: {ParagraphBlockKeys.delta: delta.toJson()},
     );
   }
 
-  Node _parseParagraphElement(dom.Element element) {
-    final delta = _parseDeltaElement(element);
-    return paragraphNode(delta: delta);
+  Iterable<Node> _parseParagraphElement(dom.Element element) {
+    final (delta, specialNodes) = _parseDeltaElement(element);
+    return [paragraphNode(delta: delta), ...specialNodes];
   }
 
   Node _parseImageElement(dom.Element element) {
@@ -185,18 +195,30 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  Delta _parseDeltaElement(dom.Element element) {
+  (Delta, Iterable<Node>) _parseDeltaElement(dom.Element element) {
     final delta = Delta();
+    final nodes = <Node>[];
     final children = element.nodes.toList();
     for (final child in children) {
       if (child is dom.Element) {
-        final attributes = _parserFormattingElementAttributes(child);
-        delta.insert(child.text, attributes: attributes);
+        if (child.children.isNotEmpty) {
+          for (final seocondChild in child.children) {
+            nodes.addAll(
+              _parseSpecialElements(
+                seocondChild,
+                type: ParagraphBlockKeys.type,
+              ),
+            );
+          }
+        } else {
+          final attributes = _parserFormattingElementAttributes(child);
+          delta.insert(child.text, attributes: attributes);
+        }
       } else {
         delta.insert(child.text ?? '');
       }
     }
-    return delta;
+    return (delta, nodes);
   }
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
