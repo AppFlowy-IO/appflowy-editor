@@ -64,4 +64,5 @@ export 'src/core/document/deprecated/node.dart';
 export 'src/core/document/deprecated/document.dart';
 
 export 'src/plugins/html/html_document_decoder.dart';
+export 'src/plugins/html/html_document_encoder.dart';
 export 'src/plugins/html/html_document.dart';
