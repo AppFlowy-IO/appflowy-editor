@@ -28,7 +28,7 @@ void main() {
 
     // Tap code toolbar item
     final codeBtn = find.byType(IconButton).first;
-    await tester.tap(find.byType(IconButton).first);
+    await tester.tap(codeBtn);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     // Check if the text becomes code format
     final node = editor.editorState.getNodeAtPath([1]);

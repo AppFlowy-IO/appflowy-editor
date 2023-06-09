@@ -28,7 +28,7 @@ void main() {
 
     // Tap quote toolbar item
     final quoteBtn = find.byType(IconButton).first;
-    await tester.tap(find.byType(IconButton).first);
+    await tester.tap(quoteBtn);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     // Check if the text becomes quote node
     final node = editor.editorState.getNodeAtPath([1]);

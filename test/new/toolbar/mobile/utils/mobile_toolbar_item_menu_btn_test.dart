@@ -6,20 +6,18 @@ import '../test_helpers/mobile_toolbar_style_test_widget.dart';
 void main() {
   testWidgets('MobileToolbarItemMenuBtn should display label and icon',
       (WidgetTester tester) async {
-    onPressed() {}
     const icon = Icon(Icons.add);
     const label = 'Add';
-    final widget = MobileToolbarItemMenuBtn(
-      onPressed: onPressed,
-      icon: icon,
-      label: label,
+
+    await tester.pumpWidget(
+      MobileToolbarStyleTestWidget(
+        child: MobileToolbarItemMenuBtn(
+          onPressed: () {},
+          icon: icon,
+          label: label,
+        ),
+      ),
     );
-
-    await tester.pumpWidget(MobileToolbarStyleTestWidget(
-      child: widget,
-    ),);
-
-    expect(find.byWidget(widget), findsOneWidget);
     expect(find.byIcon(Icons.add), findsOneWidget);
     expect(find.text('Add'), findsOneWidget);
   });
