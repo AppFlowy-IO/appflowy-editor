@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
@@ -31,7 +30,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          delta.insert(domNode.text, attributes: attributes);
+          nodes.add(
+            paragraphNode(
+              delta: Delta()..insert(domNode.text, attributes: attributes),
+            ),
+          );
         } else if (HTMLTags.specialElements.contains(localName)) {
           nodes.addAll(
             _parseSpecialElements(
@@ -69,11 +72,16 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.list:
-        return _parseListElement(element, type: type);
+        return [
+          _parseListElement(
+            element,
+            type: type,
+          )
+        ];
       case HTMLTags.paragraph:
         return [_parseParagraphElement(element)];
       case HTMLTags.blockQuote:
-        return [_parseBlockQuoteElement(element)];
+        return _parseBlockQuoteElement(element);
       case HTMLTags.image:
         return [_parseImageElement(element)];
       default:
@@ -113,7 +121,6 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
         break;
       default:
-        assert(false, 'Unknown formatting element: $element');
         break;
     }
     for (final child in element.children) {
@@ -133,34 +140,37 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  Node _parseBlockQuoteElement(dom.Element element) => quoteNode(
-        delta: Delta()..insert(element.text),
-      );
+  Iterable<Node> _parseBlockQuoteElement(dom.Element element) {
+    return element.children
+        .map((child) => _parseListElement(child, type: QuoteBlockKeys.type))
+        .toList();
+  }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
-    final result = <Node>[];
-    for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
-    }
-    return result;
+    return element.children
+        .map(
+          (child) => _parseListElement(child, type: BulletedListBlockKeys.type),
+        )
+        .toList();
   }
 
   Iterable<Node> _parseOrderListElement(dom.Element element) {
-    final result = <Node>[];
-    for (final child in element.children) {
-      result.addAll(_parseListElement(child, type: NumberedListBlockKeys.type));
-    }
-    return result;
+    return element.children
+        .map(
+          (child) => _parseListElement(child, type: NumberedListBlockKeys.type),
+        )
+        .toList();
   }
 
-  Iterable<Node> _parseListElement(
+  Node _parseListElement(
     dom.Element element, {
     required String type,
   }) {
     final delta = _parseDeltaElement(element);
-    return [
-      Node(type: type, attributes: {ParagraphBlockKeys.delta: delta.toJson()})
-    ];
+    return Node(
+      type: type != ParagraphBlockKeys.type ? type : BulletedListBlockKeys.type,
+      attributes: {ParagraphBlockKeys.delta: delta.toJson()},
+    );
   }
 
   Node _parseParagraphElement(dom.Element element) {
@@ -278,6 +288,7 @@ class HTMLTags {
   static const underline = 'u';
   static const del = 'del';
   static const strong = 'strong';
+  static const checkbox = 'input';
   static const span = 'span';
   static const code = 'code';
   static const blockQuote = 'blockquote';
@@ -302,15 +313,19 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
+    HTMLTag.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
+    HTMLTags.checkbox,
+    HTMLTag.image
   ];
 
   static bool isTopLevel(String tag) {
     return tag == h1 ||
         tag == h2 ||
         tag == h3 ||
+        tag == checkbox ||
         tag == paragraph ||
         tag == div ||
         tag == blockQuote;
