@@ -198,17 +198,17 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       strong.append(dom.Text(text));
       return strong;
     } else if (attributes[FlowyRichTextKeys.underline] == true) {
-      final strong = dom.Element.tag(HTMLTags.underline);
-      strong.append(dom.Text(text));
-      return strong;
+      final underline = dom.Element.tag(HTMLTags.underline);
+      underline.append(dom.Text(text));
+      return underline;
     } else if (attributes[FlowyRichTextKeys.italic] == true) {
-      final strong = dom.Element.tag(HTMLTags.italic);
-      strong.append(dom.Text(text));
-      return strong;
+      final italic = dom.Element.tag(HTMLTags.italic);
+      italic.append(dom.Text(text));
+      return italic;
     } else if (attributes[FlowyRichTextKeys.strikethrough] == true) {
-      final strong = dom.Element.tag(HTMLTags.del);
-      strong.append(dom.Text(text));
-      return strong;
+      final del = dom.Element.tag(HTMLTags.del);
+      del.append(dom.Text(text));
+      return del;
     } else if (attributes[FlowyRichTextKeys.code] == true) {
       final code = dom.Element.tag(HTMLTags.code);
       code.append(dom.Text(text));
