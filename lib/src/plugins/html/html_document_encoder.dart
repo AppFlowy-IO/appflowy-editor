@@ -75,6 +75,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
     return _deltaToHtml(
       Delta.fromJson(documentNode.attributes[ParagraphBlockKeys.delta]),
       type: documentNode.type,
+      children: documentNode.children,
       attributes: documentNode.attributes,
     );
   }
@@ -129,8 +130,10 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
     Delta delta, {
     required String type,
     required Attributes attributes,
+    required Iterable<Node> children,
   }) {
     final childNodes = <dom.Node>[];
+
     String tagName = HTMLTags.paragraph;
 
     if (type == BulletedListBlockKeys.type ||
@@ -176,17 +179,32 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
         }
       }
     }
+    if (children.isNotEmpty) {
+      for (var node in children) {
+        if (node.type != ImageBlockKeys.type) {
+          childNodes.add(
+            _deltaToHtml(
+              node.attributes[ParagraphBlockKeys.delta],
+              type: node.type,
+              attributes: node.attributes,
+              children: node.children,
+            ),
+          );
+        } else {
+          final anchor = dom.Element.tag(HTMLTags.image);
+          anchor.attributes["src"] = node.attributes[ImageBlockKeys.url];
+
+          childNodes.add(_insertText(HTMLTag.span, childNodes: [anchor]));
+        }
+      }
+    }
 
     if (tagName == HTMLTags.blockQuote) {
-      final blockQuote = dom.Element.tag(tagName);
-      blockQuote.append(_insertText(HTMLTag.paragraph, childNodes: childNodes));
-      return blockQuote;
+      return _insertText(HTMLTag.blockQuote, childNodes: childNodes);
     } else if (tagName == HTMLTags.checkbox) {
       return _insertText(HTMLTag.div, childNodes: childNodes);
     } else if (!HTMLTags.isTopLevel(tagName)) {
-      final result = dom.Element.tag(HTMLTags.list);
-      result.append(_insertText(HTMLTag.paragraph, childNodes: childNodes));
-      return result;
+      return _insertText(HTMLTag.list, childNodes: childNodes);
     } else {
       return _insertText(tagName, childNodes: childNodes);
     }
