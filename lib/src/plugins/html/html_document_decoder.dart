@@ -148,10 +148,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
 
   Node _parseBlockQuoteElement(dom.Element element) {
     final (delta, nodes) = _parseDeltaElement(element);
-    return Node(
-      type: QuoteBlockKeys.type,
+    return quoteNode(
+      delta: delta,
       children: nodes,
-      attributes: {ParagraphBlockKeys.delta: delta.toJson()},
     );
   }
 
