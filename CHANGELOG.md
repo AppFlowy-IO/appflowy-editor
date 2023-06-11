@@ -1,3 +1,9 @@
+## 1.0.1
+* feat: support inserting divider through `***` by @glunkad in ([#118](https://github.com/AppFlowy-IO/appflowy-editor/pull/118))
+* feat: document to html encoder added by @alihassan143 in ([#175](https://github.com/AppFlowy-IO/appflowy-editor/pull/175))
+* fix: v0.1.0 bugs by @LucasXu0 in ([#176](https://github.com/AppFlowy-IO/appflowy-editor/pull/176))
+* fix: nested elements getting ignored by @alihassan143 in ([#178](https://github.com/AppFlowy-IO/appflowy-editor/pull/178))
+
 ## 1.0.0
 * chore: release 1.0.0
 
