@@ -10,46 +10,22 @@ import 'package:provider/provider.dart';
 class BlockComponentContainer extends StatefulWidget {
   const BlockComponentContainer({
     super.key,
-    this.showBlockComponentActions = false,
     required this.configuration,
     required this.node,
     required this.builder,
-    required this.actionBuilder,
   });
 
   final Node node;
   final BlockComponentConfiguration configuration;
 
-  /// show block component actions or not
-  ///
-  /// + and option button
-  final bool showBlockComponentActions;
-
   final WidgetBuilder builder;
-  final Widget Function(
-    BuildContext context,
-    BlockComponentActionState state,
-  ) actionBuilder;
 
   @override
   State<BlockComponentContainer> createState() =>
       BlockComponentContainerState();
 }
 
-class BlockComponentContainerState extends State<BlockComponentContainer>
-    implements BlockComponentActionState {
-  final showActionsNotifier = ValueNotifier<bool>(false);
-
-  bool _alwaysShowActions = false;
-  bool get alwaysShowActions => _alwaysShowActions;
-  @override
-  set alwaysShowActions(bool alwaysShowActions) {
-    _alwaysShowActions = alwaysShowActions;
-    if (_alwaysShowActions == false && showActionsNotifier.value == true) {
-      showActionsNotifier.value = false;
-    }
-  }
-
+class BlockComponentContainerState extends State<BlockComponentContainer> {
   @override
   Widget build(BuildContext context) {
     Widget child = ChangeNotifierProvider<Node>.value(

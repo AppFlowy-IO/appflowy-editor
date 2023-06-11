@@ -101,12 +101,7 @@ class BlockComponentRenderer extends BlockComponentRendererService {
     return BlockComponentContainer(
       node: node,
       configuration: builder.configuration,
-      showBlockComponentActions: builder.showActions(node),
       builder: (_) => builder.build(blockComponentContext),
-      actionBuilder: (_, state) => builder.actionBuilder(
-        blockComponentContext,
-        state,
-      ),
     );
   }
 
