@@ -62,11 +62,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final localName = element.localName;
     switch (localName) {
       case HTMLTags.h1:
-        return [_parseHeadingElement(element, level: 1)];
+        return _parseHeadingElement(element, level: 1);
       case HTMLTags.h2:
-        return [_parseHeadingElement(element, level: 2)];
+        return _parseHeadingElement(element, level: 2);
       case HTMLTags.h3:
-        return [_parseHeadingElement(element, level: 3)];
+        return _parseHeadingElement(element, level: 3);
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
@@ -81,7 +81,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
       case HTMLTags.blockQuote:
-        return _parseBlockQuoteElement(element);
+        return [_parseBlockQuoteElement(element)];
       case HTMLTags.image:
         return [_parseImageElement(element)];
       default:
@@ -132,27 +132,27 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     return attributes;
   }
 
-  Node _parseHeadingElement(
+  Iterable<Node> _parseHeadingElement(
     dom.Element element, {
     required int level,
   }) {
     final (delta, specialNodes) = _parseDeltaElement(element);
-    return headingNode(
-      level: level,
-      children: specialNodes,
-      delta: delta,
-    );
+    return [
+      headingNode(
+        level: level,
+        delta: delta,
+      ),
+      ...specialNodes
+    ];
   }
 
-  Iterable<Node> _parseBlockQuoteElement(dom.Element element) {
+  Node _parseBlockQuoteElement(dom.Element element) {
     final (delta, nodes) = _parseDeltaElement(element);
-    return [
-      Node(
-        type: QuoteBlockKeys.type,
-        children: nodes,
-        attributes: {ParagraphBlockKeys.delta: delta.toJson()},
-      )
-    ];
+    return Node(
+      type: QuoteBlockKeys.type,
+      children: nodes,
+      attributes: {ParagraphBlockKeys.delta: delta.toJson()},
+    );
   }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
