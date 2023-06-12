@@ -19,13 +19,7 @@ class MobileToolbarItemMenu extends StatefulWidget {
 }
 
 class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
-  late bool _showMenu;
-
-  @override
-  void initState() {
-    super.initState();
-    _showMenu = true;
-  }
+  bool _showMenu = false;
 
   void closeItemMenu() {
     setState(() {

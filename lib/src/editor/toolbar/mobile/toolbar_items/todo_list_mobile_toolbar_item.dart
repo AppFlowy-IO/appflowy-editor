@@ -4,15 +4,15 @@ final todoListMobileToolbarItem = MobileToolbarItem.action(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.checkbox),
   actionHandler: (editorState, selection) async {
     final node = editorState.getNodeAtPath(selection.start.path)!;
-    final isTodoList = node.type == 'todo_list';
+    final isTodoList = node.type == TodoListBlockKeys.type;
 
     editorState.formatNode(
       selection,
       (node) => node.copyWith(
-        type: isTodoList ? 'paragraph' : 'todo_list',
+        type: isTodoList ? ParagraphBlockKeys.type : TodoListBlockKeys.type,
         attributes: {
-          'checked': false,
-          'delta': (node.delta ?? Delta()).toJson(),
+          TodoListBlockKeys.checked: false,
+          ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
         },
       ),
     );

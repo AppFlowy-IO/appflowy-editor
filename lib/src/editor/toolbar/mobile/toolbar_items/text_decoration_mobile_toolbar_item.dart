@@ -24,54 +24,50 @@ class _TextDecorationMenu extends StatefulWidget {
 
 class _TextDecorationMenuState extends State<_TextDecorationMenu> {
   final textDecorations = [
-    {
-      'icon': AFMobileIcons.bold,
-      'label': AppFlowyEditorLocalizations.current.bold,
-      'name': FlowyRichTextKeys.bold,
-    },
-    {
-      'icon': AFMobileIcons.italic,
-      'label': AppFlowyEditorLocalizations.current.italic,
-      'name': FlowyRichTextKeys.italic,
-    },
-    {
-      'icon': AFMobileIcons.underline,
-      'label': AppFlowyEditorLocalizations.current.underline,
-      'name': FlowyRichTextKeys.underline,
-    },
-    {
-      'icon': AFMobileIcons.strikethrough,
-      'label': AppFlowyEditorLocalizations.current.strikethrough,
-      'name': FlowyRichTextKeys.strikethrough,
-    },
+    TextDecorationUnit(
+      icon: AFMobileIcons.bold,
+      label: AppFlowyEditorLocalizations.current.bold,
+      name: FlowyRichTextKeys.bold,
+    ),
+    TextDecorationUnit(
+      icon: AFMobileIcons.italic,
+      label: AppFlowyEditorLocalizations.current.italic,
+      name: FlowyRichTextKeys.italic,
+    ),
+    TextDecorationUnit(
+      icon: AFMobileIcons.underline,
+      label: AppFlowyEditorLocalizations.current.underline,
+      name: FlowyRichTextKeys.underline,
+    ),
+    TextDecorationUnit(
+      icon: AFMobileIcons.strikethrough,
+      label: AppFlowyEditorLocalizations.current.strikethrough,
+      name: FlowyRichTextKeys.strikethrough,
+    ),
   ];
   @override
   Widget build(BuildContext context) {
-    final btnList = textDecorations.map((e) {
-      final icon = e['icon'] as AFMobileIcons;
-      final label = e['label'] as String;
-      final name = e['name'] as String;
-
+    final btnList = textDecorations.map((currentDecoration) {
       // Check current decoration is active or not
       final nodes = widget.editorState.getNodesInSelection(widget.selection);
       final isSelected = nodes.allSatisfyInSelection(widget.selection, (delta) {
         return delta.everyAttributes(
-          (attributes) => attributes[name] == true,
+          (attributes) => attributes[currentDecoration.name] == true,
         );
       });
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(
-          afMobileIcons: icon,
+          afMobileIcons: currentDecoration.icon,
         ),
-        label: label,
+        label: currentDecoration.label,
         isSelected: isSelected,
         onPressed: () {
           if (widget.selection.isCollapsed) {
             // TODO(yijing): handle collapsed selection
           } else {
             setState(() {
-              widget.editorState.toggleAttribute(name);
+              widget.editorState.toggleAttribute(currentDecoration.name);
             });
           }
         },
@@ -90,7 +86,7 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
             crossAxisSpacing: 8,
             childAspectRatio: 5,
           ),
-          children: [...btnList],
+          children: btnList,
         ),
         // TODO(yijing): Add color after showColorMenu moved into desktop
         // Text(AppFlowyEditorLocalizations.current.textColor),
@@ -98,4 +94,16 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
       ],
     );
   }
+}
+
+class TextDecorationUnit {
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
+
+  TextDecorationUnit({
+    required this.icon,
+    required this.label,
+    required this.name,
+  });
 }

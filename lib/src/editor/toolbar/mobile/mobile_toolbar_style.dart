@@ -16,7 +16,7 @@ class MobileToolbarStyle extends InheritedWidget {
   final double borderRadius;
 
   const MobileToolbarStyle({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.foregroundColor,
     required this.itemHighlightColor,
@@ -24,13 +24,10 @@ class MobileToolbarStyle extends InheritedWidget {
     required this.toolbarHeight,
     required this.borderRadius,
     required Widget child,
-  }) : super(key: key, child: child);
+  }) : super(child: child);
 
   static MobileToolbarStyle of(BuildContext context) {
-    final MobileToolbarStyle? result =
-        context.dependOnInheritedWidgetOfExactType<MobileToolbarStyle>();
-    assert(result != null, 'No MobileToolbarStyle found in context');
-    return result!;
+    return context.dependOnInheritedWidgetOfExactType<MobileToolbarStyle>()!;
   }
 
   @override

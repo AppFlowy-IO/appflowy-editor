@@ -27,39 +27,35 @@ class _HeadingMenu extends StatefulWidget {
 
 class _HeadingMenuState extends State<_HeadingMenu> {
   final headings = [
-    {
-      'icon': AFMobileIcons.h1,
-      'label': 'Heading 1',
-      'level': 1,
-    },
-    {
-      'icon': AFMobileIcons.h2,
-      'label': 'Heading 2',
-      'level': 2,
-    },
-    {
-      'icon': AFMobileIcons.h3,
-      'label': 'Heading 3',
-      'level': 3,
-    },
+    HeadingUnit(
+      icon: AFMobileIcons.h1,
+      label: 'Heading 1',
+      level: 1,
+    ),
+    HeadingUnit(
+      icon: AFMobileIcons.h2,
+      label: 'Heading 2',
+      level: 2,
+    ),
+    HeadingUnit(
+      icon: AFMobileIcons.h3,
+      label: 'Heading 3',
+      level: 3,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final btnList = headings.map((e) {
-      final icon = e['icon'] as AFMobileIcons;
-      final label = e['label'] as String;
-      final level = e['level'] as int;
-
+    final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
       final node =
           widget.editorState.getNodeAtPath(widget.selection.start.path)!;
-      final isSelected =
-          node.type == 'heading' && node.attributes['level'] == level;
+      final isSelected = node.type == HeadingBlockKeys.type &&
+          node.attributes[HeadingBlockKeys.level] == currentHeading.level;
 
       return MobileToolbarItemMenuBtn(
-        icon: AFMobileIcon(afMobileIcons: icon),
-        label: label,
+        icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
+        label: currentHeading.label,
         isSelected: isSelected,
         onPressed: () {
           setState(() {
@@ -70,10 +66,10 @@ class _HeadingMenuState extends State<_HeadingMenu> {
                     ? ParagraphBlockKeys.type
                     : HeadingBlockKeys.type,
                 attributes: {
-                  HeadingBlockKeys.level: level,
+                  HeadingBlockKeys.level: currentHeading.level,
                   HeadingBlockKeys.backgroundColor:
                       node.attributes[blockComponentBackgroundColor],
-                  'delta': (node.delta ?? Delta()).toJson(),
+                  ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
                 },
               ),
             );
@@ -84,9 +80,19 @@ class _HeadingMenuState extends State<_HeadingMenu> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ...btnList,
-      ],
+      children: btnList,
     );
   }
+}
+
+class HeadingUnit {
+  final AFMobileIcons icon;
+  final String label;
+  final int level;
+
+  HeadingUnit({
+    required this.icon,
+    required this.label,
+    required this.level,
+  });
 }

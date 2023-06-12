@@ -46,10 +46,8 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
-    _textEditingController.text = widget.linkText ?? '';
-    _focusNode = FocusNode();
-    _focusNode.requestFocus();
+    _textEditingController = TextEditingController(text: widget.linkText ?? '');
+    _focusNode = FocusNode()..requestFocus();
   }
 
   @override

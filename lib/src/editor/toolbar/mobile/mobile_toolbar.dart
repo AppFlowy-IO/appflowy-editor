@@ -70,14 +70,8 @@ class MobileToolbarWidget extends StatefulWidget {
 }
 
 class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
-  late bool _showItmeMenu;
+  bool _showItemMenu = false;
   int? _selectedToolbarItemIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _showItmeMenu = false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +102,10 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                     setState(() {
                       // If last selected item is selected again, toggle item menu
                       if (_selectedToolbarItemIndex == selectedItemIndex) {
-                        _showItmeMenu = !_showItmeMenu;
+                        _showItemMenu = !_showItemMenu;
                       } else {
                         // If not, show item menu
-                        _showItmeMenu = true;
+                        _showItemMenu = true;
                       }
                       _selectedToolbarItemIndex = selectedItemIndex;
                     });
@@ -123,14 +117,13 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
           ),
         ),
         // only for MobileToolbarItem.withMenu
-        _showItmeMenu
-            ? MobileToolbarItemMenu(
-                key: mobileToolbarItemMenuStateKey,
-                editorState: widget.editorState,
-                itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
-                    .itemMenuBuilder!(widget.editorState, widget.selection),
-              )
-            : const SizedBox.shrink(),
+        if (_showItemMenu)
+          MobileToolbarItemMenu(
+            key: mobileToolbarItemMenuStateKey,
+            editorState: widget.editorState,
+            itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
+                .itemMenuBuilder!(widget.editorState, widget.selection),
+          )
       ],
     );
   }
@@ -184,10 +177,10 @@ class _ToolbarItemListView extends StatelessWidget {
                 // open /close current item menu through its parent widget(MobileToolbarWidget)
                 itemOnPressed.call(index);
               } else {
-                toolbarItems[index].actionHandler!(
-                  editorState,
-                  selection,
-                );
+                toolbarItems[index].actionHandler?.call(
+                      editorState,
+                      selection,
+                    );
               }
             },
           ),

@@ -7,13 +7,13 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
     required this.onPressed,
     required this.icon,
     required this.label,
-    this.isSelected,
+    required this.isSelected,
   });
 
   final Function() onPressed;
   final Widget icon;
   final String label;
-  final bool? isSelected;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {

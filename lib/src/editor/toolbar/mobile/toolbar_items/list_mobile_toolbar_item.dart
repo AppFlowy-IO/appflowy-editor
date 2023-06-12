@@ -24,41 +24,37 @@ class _ListMenu extends StatefulWidget {
 
 class _ListMenuState extends State<_ListMenu> {
   final lists = [
-    {
-      'icon': AFMobileIcons.bulletedList,
-      'label': 'Bulleted List',
-      'name': 'bulleted_list',
-    },
-    {
-      'icon': AFMobileIcons.numberedList,
-      'label': 'Numbered List',
-      'name': 'numbered_list',
-    },
+    ListUnit(
+      icon: AFMobileIcons.bulletedList,
+      label: 'Bulleted List',
+      name: 'bulleted_list',
+    ),
+    ListUnit(
+      icon: AFMobileIcons.numberedList,
+      label: 'Numbered List',
+      name: 'numbered_list',
+    ),
   ];
   @override
   Widget build(BuildContext context) {
-    final btnList = lists.map((e) {
-      final icon = e['icon'] as AFMobileIcons;
-      final label = e['label'] as String;
-      final name = e['name'] as String;
-
+    final btnList = lists.map((currentList) {
       // Check if current node is list and its type
       final node =
           widget.editorState.getNodeAtPath(widget.selection.start.path)!;
-      final isSelected = node.type == name;
+      final isSelected = node.type == currentList.name;
 
       return MobileToolbarItemMenuBtn(
-        icon: AFMobileIcon(afMobileIcons: icon),
-        label: label,
+        icon: AFMobileIcon(afMobileIcons: currentList.icon),
+        label: currentList.label,
         isSelected: isSelected,
         onPressed: () {
           setState(() {
             widget.editorState.formatNode(
               widget.selection,
               (node) => node.copyWith(
-                type: isSelected ? 'paragraph' : name,
+                type: isSelected ? ParagraphBlockKeys.type : currentList.name,
                 attributes: {
-                  'delta': (node.delta ?? Delta()).toJson(),
+                  ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
                 },
               ),
             );
@@ -75,9 +71,19 @@ class _ListMenuState extends State<_ListMenu> {
         crossAxisSpacing: 8,
         childAspectRatio: 5,
       ),
-      children: [
-        ...btnList,
-      ],
+      children: btnList,
     );
   }
+}
+
+class ListUnit {
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
+
+  ListUnit({
+    required this.icon,
+    required this.label,
+    required this.name,
+  });
 }
