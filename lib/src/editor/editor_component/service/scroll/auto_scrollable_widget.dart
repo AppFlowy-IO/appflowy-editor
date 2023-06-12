@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 class AutoScrollableWidget extends StatefulWidget {
   const AutoScrollableWidget({
-    Key? key,
+    super.key,
+    this.shrinkWrap = false,
     required this.scrollController,
     required this.builder,
-  }) : super(key: key);
+  });
 
+  final bool shrinkWrap;
   final ScrollController scrollController;
   final Widget Function(
     BuildContext context,
@@ -24,23 +26,24 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, viewportConstraints) => SingleChildScrollView(
+    Widget builder(context) {
+      _scrollableState = Scrollable.of(context);
+      _initAutoScroller();
+      return widget.builder(context, _autoScroller);
+    }
+
+    if (widget.shrinkWrap) {
+      return Builder(
+        builder: builder,
+      );
+    } else {
+      return SingleChildScrollView(
         controller: widget.scrollController,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: viewportConstraints.maxHeight,
-          ),
-          child: Builder(
-            builder: (context) {
-              _scrollableState = Scrollable.of(context);
-              _initAutoScroller();
-              return widget.builder(context, _autoScroller);
-            },
-          ),
+        child: Builder(
+          builder: builder,
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _initAutoScroller() {
