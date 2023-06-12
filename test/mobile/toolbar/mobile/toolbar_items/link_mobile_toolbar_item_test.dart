@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import '../../../infra/testable_editor.dart';
+import '../../../../new/infra/testable_editor.dart';
 import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
-  testWidgets('listMobileToolbarItem', (WidgetTester tester) async {
+  testWidgets('linkMobileToolbarItem', (WidgetTester tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
     await editor.startTesting();
@@ -21,38 +21,34 @@ void main() {
       MobileAppWithToolbarWidget(
         editorState: editor.editorState,
         toolbarItems: [
-          listMobileToolbarItem,
+          linkMobileToolbarItem,
         ],
       ),
     );
 
-    // Tap text decoration toolbar item
+    // Tap link toolbar item
     await tester.tap(find.byType(IconButton).first);
-    await tester.pumpAndSettle(const Duration(milliseconds: 500));
-
-    // Show its menu and it has 2 buttons
+    await tester.pumpAndSettle();
+    // Show its menu
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text('Bulleted List'), findsOneWidget);
-    expect(find.text('Numbered List'), findsOneWidget);
 
-    // Test Bulleted List button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Bulleted List'));
-    var node = editor.editorState.getNodeAtPath([1]);
+    // Enter link address
+    const linkAddress = 'www.google.com';
+    final textField = find.byType(TextField);
+    await tester.enterText(textField, linkAddress);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
-    expect(
-      node?.type == 'bulleted_list',
-      true,
-    );
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-    // Test Numbered List button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Numbered List'));
-    await tester.pumpAndSettle(const Duration(milliseconds: 500));
-    //Get updated node
-    node = editor.editorState.getNodeAtPath([1]);
+    // Check if the text becomes a link
+    final node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'numbered_list',
+      node?.allSatisfyInSelection(selection, (delta) {
+        return delta.whereType<TextInsert>().every(
+              (element) =>
+                  element.attributes?[FlowyRichTextKeys.href] == linkAddress,
+            );
+      }),
       true,
     );
   });

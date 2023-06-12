@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import '../../../infra/testable_editor.dart';
+import '../../../../new/infra/testable_editor.dart';
 import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
-  testWidgets('codeMobileToolbarItem', (WidgetTester tester) async {
+  testWidgets('quoteMobileToolbarItem', (WidgetTester tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
     await editor.startTesting();
@@ -21,23 +21,19 @@ void main() {
       MobileAppWithToolbarWidget(
         editorState: editor.editorState,
         toolbarItems: [
-          codeMobileToolbarItem,
+          quoteMobileToolbarItem,
         ],
       ),
     );
 
-    // Tap code toolbar item
-    final codeBtn = find.byType(IconButton).first;
-    await tester.tap(codeBtn);
+    // Tap quote toolbar item
+    final quoteBtn = find.byType(IconButton).first;
+    await tester.tap(quoteBtn);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
-    // Check if the text becomes code format
+    // Check if the text becomes quote node
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.allSatisfyInSelection(selection, (delta) {
-        return delta.whereType<TextInsert>().every(
-              (element) => element.attributes?[FlowyRichTextKeys.code] == true,
-            );
-      }),
+      node?.type == 'quote',
       true,
     );
   });

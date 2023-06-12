@@ -15,6 +15,7 @@ void main() {
           onPressed: () {},
           icon: icon,
           label: label,
+          isSelected: false,
         ),
       ),
     );
