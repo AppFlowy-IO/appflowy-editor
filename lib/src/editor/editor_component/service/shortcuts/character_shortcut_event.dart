@@ -19,12 +19,33 @@ class CharacterShortcutEvent {
   /// Usually, uses the description as the key.
   final String key;
 
+  /// The character to trigger the shortcut event.
+  ///
+  /// It mus tbe a single character.
   String character;
 
+  //// The handler to handle the shortcut event.
   final CharacterShortcutEventHandler handler;
+
+  void updateCharacter(String newCharacter) {
+    assert(newCharacter.length == 1);
+    character = newCharacter;
+  }
 
   Future<bool> execute(EditorState editorState) async {
     return handler(editorState);
+  }
+
+  CharacterShortcutEvent copyWith({
+    String? key,
+    String? character,
+    CharacterShortcutEventHandler? handler,
+  }) {
+    return CharacterShortcutEvent(
+      key: key ?? this.key,
+      character: character ?? this.character,
+      handler: handler ?? this.handler,
+    );
   }
 
   @override
