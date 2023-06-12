@@ -17,7 +17,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =
                 node.type == 'heading' && node.attributes['level'] == level;
-            return IconItemWidget(
+            return SVGIconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
               tooltip: AppFlowyEditorLocalizations.current.heading1,

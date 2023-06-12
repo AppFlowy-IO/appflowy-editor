@@ -87,10 +87,14 @@ class _NumberedListBlockComponentWidgetState
   Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
+            ? TextDirection.rtl
+            : TextDirection.ltr,
         children: [
           defaultIcon(),
           Flexible(

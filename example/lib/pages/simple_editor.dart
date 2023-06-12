@@ -47,7 +47,8 @@ class SimpleEditor extends StatelessWidget {
                 numberedListItem,
                 linkItem,
                 textColorItem,
-                highlightColorItem
+                highlightColorItem,
+                ...textDirectionItems
               ],
               editorState: editorState,
               scrollController: scrollController,

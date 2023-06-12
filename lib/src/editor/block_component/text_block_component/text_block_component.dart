@@ -95,6 +95,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,

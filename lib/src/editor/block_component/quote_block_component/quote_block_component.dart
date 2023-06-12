@@ -88,11 +88,15 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   Widget build(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
+          textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
+              ? TextDirection.rtl
+              : TextDirection.ltr,
           children: [
             defaultIcon(),
             Flexible(

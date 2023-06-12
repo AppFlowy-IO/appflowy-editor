@@ -114,10 +114,14 @@ class _TodoListBlockComponentWidgetState
   Widget buildComponent(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
+            ? TextDirection.rtl
+            : TextDirection.ltr,
         children: [
           _TodoListIcon(
             icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),

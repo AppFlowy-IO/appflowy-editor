@@ -204,6 +204,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
+      textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
+          ? TextDirection.rtl
+          : TextDirection.ltr,
     );
   }
 
@@ -218,6 +221,9 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.textSpanDecorator != null
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
+      textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
+          ? TextDirection.rtl
+          : TextDirection.ltr,
     );
   }
 

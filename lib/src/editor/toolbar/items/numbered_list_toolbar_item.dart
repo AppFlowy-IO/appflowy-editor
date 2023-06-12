@@ -8,7 +8,7 @@ final ToolbarItem numberedListItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'numbered_list';
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/numbered_list',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.numberedList,

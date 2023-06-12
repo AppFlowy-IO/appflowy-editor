@@ -113,6 +113,7 @@ class _HeadingBlockComponentWidgetState
   Widget build(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,

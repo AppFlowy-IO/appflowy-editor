@@ -8,7 +8,7 @@ final ToolbarItem paragraphItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'paragraph';
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/text',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.text,

@@ -15,7 +15,7 @@ final highlightColorItem = ToolbarItem(
         (attributes) => attributes[FlowyRichTextKeys.highlightColor] != null,
       );
     });
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/highlight_color',
       iconSize: const Size.square(14),
       isHighlight: isHighlight,
