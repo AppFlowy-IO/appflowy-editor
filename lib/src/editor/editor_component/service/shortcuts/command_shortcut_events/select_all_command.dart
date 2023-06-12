@@ -38,6 +38,7 @@ CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
   }
   editorState.updateSelectionWithReason(
     Selection(start: firstSelectable.start(), end: lastSelectable.end()),
+    reason: SelectionUpdateReason.selectAll,
   );
   return KeyEventResult.handled;
 };

@@ -26,6 +26,7 @@ enum CursorUpdateReason {
 enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
+  selectAll,
 }
 
 enum SelectionType {
