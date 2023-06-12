@@ -33,11 +33,16 @@ class TestableEditor {
     Locale locale = const Locale('en'),
     bool autoFocus = false,
     bool editable = true,
+    bool shrinkWrap = false,
+    ScrollController? scrollController,
+    Widget Function(Widget child)? wrapper,
   }) async {
     final editor = AppFlowyEditor.standard(
       editorState: editorState,
       editable: editable,
       autoFocus: autoFocus,
+      shrinkWrap: shrinkWrap,
+      scrollController: scrollController,
     );
     await tester.pumpWidget(
       MaterialApp(
@@ -50,7 +55,11 @@ class TestableEditor {
         supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
         locale: locale,
         home: Scaffold(
-          body: editor,
+          body: wrapper == null
+              ? editor
+              : wrapper!(
+                  editor,
+                ),
         ),
       ),
     );

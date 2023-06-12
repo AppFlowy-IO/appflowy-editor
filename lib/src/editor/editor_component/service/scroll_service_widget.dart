@@ -5,18 +5,19 @@ import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
     Key? key,
+    this.shrinkWrap = false,
     this.scrollController,
     required this.child,
   }) : super(key: key);
 
   final ScrollController? scrollController;
+  final bool shrinkWrap;
   final Widget child;
 
   @override
@@ -64,12 +65,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   Widget build(BuildContext context) {
     return AutoScrollableWidget(
+      shrinkWrap: widget.shrinkWrap,
       scrollController: scrollController,
       builder: ((context, autoScroller) {
-        if (kIsWeb ||
-            Platform.isLinux ||
-            Platform.isMacOS ||
-            Platform.isWindows) {
+        if (PlatformExtension.isDesktopOrWeb) {
           return _buildDesktopScrollService(context, autoScroller);
         } else if (Platform.isIOS || Platform.isAndroid) {
           return _buildMobileScrollService(context, autoScroller);
@@ -106,11 +105,12 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void _onSelectionChanged() {
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
-    if (selection == null) {
+    if (selection == null ||
+        editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final selectionRect = editorState.service.selectionService.selectionRects;
+      final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
         return;
       }
