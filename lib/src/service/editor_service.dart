@@ -19,7 +19,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-    this.showDefaultToolbar = true,
     this.shrinkWrap = false,
     this.scrollController,
     this.themeData,
@@ -97,9 +96,6 @@ class AppFlowyEditor extends StatefulWidget {
 
   final ScrollController? scrollController;
 
-  final bool showDefaultToolbar;
-  final List<SelectionMenuItem> selectionMenuItems;
-
   final Positioned Function(
     BuildContext context,
     List<ActionMenuItem> items,
@@ -133,6 +129,9 @@ class AppFlowyEditor extends StatefulWidget {
 
   @Deprecated('Customize the style that block component provides instead.')
   final ThemeData? themeData;
+
+  @Deprecated('Use customSlashCommand instead')
+  final List<SelectionMenuItem> selectionMenuItems;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
