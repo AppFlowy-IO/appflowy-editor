@@ -19,7 +19,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-    this.showDefaultToolbar = true,
     this.shrinkWrap = false,
     this.scrollController,
     this.themeData,
@@ -42,6 +41,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<SelectionMenuItem> selectionMenuItems = const [],
     Widget? header,
     FocusNode? focusNode,
+    bool shrinkWrap = false,
   }) : this(
           key: key,
           editorState: editorState,
@@ -56,6 +56,7 @@ class AppFlowyEditor extends StatefulWidget {
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
           focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
         );
 
   AppFlowyEditor.standard({
@@ -68,6 +69,7 @@ class AppFlowyEditor extends StatefulWidget {
     EditorStyle? editorStyle,
     Widget? header,
     FocusNode? focusNode,
+    bool shrinkWrap = false,
   }) : this(
           key: key,
           editorState: editorState,
@@ -81,6 +83,7 @@ class AppFlowyEditor extends StatefulWidget {
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
           focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
         );
 
   final EditorState editorState;
@@ -97,7 +100,6 @@ class AppFlowyEditor extends StatefulWidget {
 
   final ScrollController? scrollController;
 
-  final bool showDefaultToolbar;
   final List<SelectionMenuItem> selectionMenuItems;
 
   final Positioned Function(
@@ -117,7 +119,7 @@ class AppFlowyEditor extends StatefulWidget {
 
   final FocusNode? focusNode;
 
-  /// If false the Editor is inside an [AppFlowyScroll]
+  /// if true, the editor will be sized to its contents.
   final bool shrinkWrap;
 
   /// Render plugins.
@@ -220,6 +222,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     }
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
+      shrinkWrap: widget.shrinkWrap,
       scrollController: widget.scrollController,
       child: child,
     );

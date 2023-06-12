@@ -12,11 +12,13 @@ import 'package:provider/provider.dart';
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
     Key? key,
+    this.shrinkWrap = false,
     this.scrollController,
     required this.child,
   }) : super(key: key);
 
   final ScrollController? scrollController;
+  final bool shrinkWrap;
   final Widget child;
 
   @override
@@ -64,6 +66,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   Widget build(BuildContext context) {
     return AutoScrollableWidget(
+      shrinkWrap: widget.shrinkWrap,
       scrollController: scrollController,
       builder: ((context, autoScroller) {
         if (kIsWeb ||
@@ -110,7 +113,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final selectionRect = editorState.service.selectionService.selectionRects;
+      final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
         return;
       }
