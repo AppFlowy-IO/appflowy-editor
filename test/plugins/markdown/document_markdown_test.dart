@@ -23,26 +23,22 @@ void main() {
 
 const testDocument = '''{
   "document": {
-    "type": "editor",
+    "type": "page",
     "children": [
       {
-        "type": "text",
-        "attributes": {"subtype": "heading", "heading": "h1"},
-        "delta": [{"insert": "Heading 1"}]
+        "type": "heading",
+        "data": {"level": 1, "delta": [{"insert": "Heading 1"}]}
       },
       {
-        "type": "text",
-        "attributes": {"subtype": "heading", "heading": "h2"},
-        "delta": [{"insert": "Heading 2"}]
+        "type": "heading",
+        "data": {"level": 2, "delta": [{"insert": "Heading 2"}]}
       },
       {
-        "type": "text",
-        "attributes": {"subtype": "heading", "heading": "h3"},
-        "delta": [{"insert": "Heading 3"}]
+        "type": "heading",
+        "data": {"level": 3, "delta": [{"insert": "Heading 3"}]}
       },
-      {"type": "text", "delta": []},
-      {"type": "divider"},
-      {"type": "text", "delta": [{"insert": ""}]}
+      {"type": "paragraph", "data":{"delta": []}},
+      {"type": "divider"}
     ]
   }
 }''';

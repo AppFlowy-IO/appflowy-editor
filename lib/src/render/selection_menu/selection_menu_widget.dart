@@ -19,15 +19,22 @@ class SelectionMenuItem {
     required SelectionMenuItemHandler handler,
   }) {
     this.handler = (editorState, menuService, context) {
-      _deleteSlash(editorState);
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        handler(editorState, menuService, context);
-      });
+      if (deleteSlash) {
+        _deleteSlash(editorState);
+      }
+      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      handler(editorState, menuService, context);
+      onSelected?.call();
+      // });
     };
   }
 
   final String name;
-  final Widget Function(EditorState editorState, bool onSelected) icon;
+  final Widget Function(
+    EditorState editorState,
+    bool onSelected,
+    SelectionMenuStyle style,
+  ) icon;
 
   /// Customizes keywords for item.
   ///
@@ -35,25 +42,32 @@ class SelectionMenuItem {
   final List<String> keywords;
   late final SelectionMenuItemHandler handler;
 
-  void _deleteSlash(EditorState editorState) {
-    final selectionService = editorState.service.selectionService;
-    final selection = selectionService.currentSelection.value;
-    final nodes = selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      final node = nodes.first as TextNode;
-      final end = selection.start.offset;
-      final lastSlashIndex =
-          node.toPlainText().substring(0, end).lastIndexOf('/');
-      // delete all the texts after '/' along with '/'
-      final transaction = editorState.transaction
-        ..deleteText(
-          node,
-          lastSlashIndex,
-          end - lastSlashIndex,
-        );
+  VoidCallback? onSelected;
 
-      editorState.apply(transaction);
+  bool deleteSlash = true;
+
+  void _deleteSlash(EditorState editorState) {
+    final selection = editorState.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
     }
+    final node = editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
+    final end = selection.start.offset;
+    final lastSlashIndex =
+        delta.toPlainText().substring(0, end).lastIndexOf('/');
+    // delete all the texts after '/' along with '/'
+    final transaction = editorState.transaction
+      ..deleteText(
+        node,
+        lastSlashIndex,
+        end - lastSlashIndex,
+      );
+
+    editorState.apply(transaction);
   }
 
   /// Creates a selection menu entry for inserting a [Node].
@@ -72,52 +86,50 @@ class SelectionMenuItem {
     required IconData iconData,
     required List<String> keywords,
     required Node Function(EditorState editorState) nodeBuilder,
-    bool Function(EditorState editorState, TextNode textNode)? insertBefore,
-    bool Function(EditorState editorState, TextNode textNode)? replace,
+    bool Function(EditorState editorState, Node node)? insertBefore,
+    bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
       EditorState editorState,
       Path insertPath,
       bool replaced,
       bool insertedBefore,
-    )?
-        updateSelection,
+    )? updateSelection,
   }) {
     return SelectionMenuItem(
       name: name,
-      icon: (editorState, onSelected) => Icon(
+      icon: (editorState, onSelected, style) => Icon(
         iconData,
         color: onSelected
-            ? editorState.editorStyle.selectionMenuItemSelectedIconColor
-            : editorState.editorStyle.selectionMenuItemIconColor,
+            ? style.selectionMenuItemSelectedIconColor
+            : style.selectionMenuItemIconColor,
         size: 18.0,
       ),
       keywords: keywords,
       handler: (editorState, _, __) {
-        final selection =
-            editorState.service.selectionService.currentSelection.value;
-        final textNodes = editorState
-            .service.selectionService.currentSelectedNodes
-            .whereType<TextNode>();
-        if (textNodes.length != 1 || selection == null) {
+        final selection = editorState.selection;
+        if (selection == null || !selection.isCollapsed) {
           return;
         }
-        final textNode = textNodes.first;
-        final node = nodeBuilder(editorState);
+        final node = editorState.getNodeAtPath(selection.end.path);
+        final delta = node?.delta;
+        if (node == null || delta == null) {
+          return;
+        }
+        final newNode = nodeBuilder(editorState);
         final transaction = editorState.transaction;
-        final bReplace = replace?.call(editorState, textNode) ?? false;
-        final bInsertBefore =
-            insertBefore?.call(editorState, textNode) ?? false;
+        final bReplace = replace?.call(editorState, node) ?? false;
+        final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
 
         //default insert after
-        var path = textNode.path.next;
+        var path = node.path.next;
         if (bReplace) {
-          path = textNode.path;
+          path = node.path;
         } else if (bInsertBefore) {
-          path = textNode.path;
+          path = node.path;
         }
 
         transaction
-          ..insertNode(path, node)
+          ..insertNode(path, newNode)
           ..afterSelection = updateSelection?.call(
                 editorState,
                 path,
@@ -127,13 +139,49 @@ class SelectionMenuItem {
               selection;
 
         if (bReplace) {
-          transaction.deleteNode(textNode);
+          transaction.deleteNode(node);
         }
 
         editorState.apply(transaction);
       },
     );
   }
+}
+
+class SelectionMenuStyle {
+  const SelectionMenuStyle({
+    required this.selectionMenuBackgroundColor,
+    required this.selectionMenuItemTextColor,
+    required this.selectionMenuItemIconColor,
+    required this.selectionMenuItemSelectedTextColor,
+    required this.selectionMenuItemSelectedIconColor,
+    required this.selectionMenuItemSelectedColor,
+  });
+
+  static const light = SelectionMenuStyle(
+    selectionMenuBackgroundColor: Color(0xFFFFFFFF),
+    selectionMenuItemTextColor: Color(0xFF333333),
+    selectionMenuItemIconColor: Color(0xFF333333),
+    selectionMenuItemSelectedTextColor: Color.fromARGB(255, 56, 91, 247),
+    selectionMenuItemSelectedIconColor: Color.fromARGB(255, 56, 91, 247),
+    selectionMenuItemSelectedColor: Color(0xFFE0F8FF),
+  );
+
+  static const dark = SelectionMenuStyle(
+    selectionMenuBackgroundColor: Color(0xFF282E3A),
+    selectionMenuItemTextColor: Color(0xFFBBC3CD),
+    selectionMenuItemIconColor: Color(0xFFBBC3CD),
+    selectionMenuItemSelectedTextColor: Color(0xFF131720),
+    selectionMenuItemSelectedIconColor: Color(0xFF131720),
+    selectionMenuItemSelectedColor: Color(0xFF00BCF0),
+  );
+
+  final Color selectionMenuBackgroundColor;
+  final Color selectionMenuItemTextColor;
+  final Color selectionMenuItemIconColor;
+  final Color selectionMenuItemSelectedTextColor;
+  final Color selectionMenuItemSelectedIconColor;
+  final Color selectionMenuItemSelectedColor;
 }
 
 class SelectionMenuWidget extends StatefulWidget {
@@ -145,6 +193,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.menuService,
     required this.onExit,
     required this.onSelectionUpdate,
+    required this.selectionMenuStyle,
   }) : super(key: key);
 
   final List<SelectionMenuItem> items;
@@ -155,6 +204,8 @@ class SelectionMenuWidget extends StatefulWidget {
 
   final VoidCallback onSelectionUpdate;
   final VoidCallback onExit;
+
+  final SelectionMenuStyle selectionMenuStyle;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
@@ -222,7 +273,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       onKey: _onKey,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: widget.editorState.editorStyle.selectionMenuBackgroundColor,
+          color: widget.selectionMenuStyle.selectionMenuBackgroundColor,
           boxShadow: [
             BoxShadow(
               blurRadius: 5,
@@ -266,6 +317,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
           isSelected: selectedIndex == i,
           editorState: widget.editorState,
           menuService: widget.menuService,
+          selectionMenuStyle: widget.selectionMenuStyle,
         ),
       );
     }
@@ -367,35 +419,42 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   }
 
   void _deleteLastCharacters({int length = 1}) {
-    final selectionService = widget.editorState.service.selectionService;
-    final selection = selectionService.currentSelection.value;
-    final nodes = selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      widget.onSelectionUpdate();
-      final transaction = widget.editorState.transaction
-        ..deleteText(
-          nodes.first as TextNode,
-          selection.start.offset - length,
-          length,
-        );
-      widget.editorState.apply(transaction);
+    final selection = widget.editorState.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
     }
+    final node = widget.editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
+
+    widget.onSelectionUpdate();
+    final transaction = widget.editorState.transaction
+      ..deleteText(
+        node,
+        selection.start.offset - length,
+        length,
+      );
+    widget.editorState.apply(transaction);
   }
 
   void _insertText(String text) {
-    final selection =
-        widget.editorState.service.selectionService.currentSelection.value;
-    final nodes =
-        widget.editorState.service.selectionService.currentSelectedNodes;
-    if (selection != null && nodes.length == 1) {
-      widget.onSelectionUpdate();
-      final transaction = widget.editorState.transaction
-        ..insertText(
-          nodes.first as TextNode,
-          selection.end.offset,
-          text,
-        );
-      widget.editorState.apply(transaction);
+    final selection = widget.editorState.selection;
+    if (selection == null || !selection.isSingle) {
+      return;
     }
+    final node = widget.editorState.getNodeAtPath(selection.end.path);
+    if (node == null) {
+      return;
+    }
+    widget.onSelectionUpdate();
+    final transaction = widget.editorState.transaction
+      ..insertText(
+        node,
+        selection.end.offset,
+        text,
+      );
+    widget.editorState.apply(transaction);
   }
 }

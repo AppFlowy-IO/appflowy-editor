@@ -29,6 +29,7 @@ export 'src/service/shortcut_event/shortcut_event.dart';
 export 'src/service/shortcut_event/shortcut_event_handler.dart';
 export 'src/render/rich_text/default_selectable.dart';
 export 'src/render/rich_text/flowy_rich_text.dart';
+export 'src/render/rich_text/flowy_rich_text_keys.dart';
 export 'src/render/selection_menu/selection_menu_widget.dart';
 export 'src/render/selection_menu/selection_menu_item_widget.dart';
 export 'src/l10n/l10n.dart';
@@ -41,8 +42,6 @@ export 'src/plugins/markdown/encoder/parser/image_node_parser.dart';
 export 'src/plugins/markdown/decoder/delta_markdown_decoder.dart';
 export 'src/plugins/markdown/document_markdown.dart';
 export 'src/plugins/quill_delta/delta_document_encoder.dart';
-export 'src/commands/text/text_commands.dart';
-export 'src/commands/command_extension.dart';
 export 'src/render/toolbar/toolbar_item.dart';
 export 'src/render/action_menu/action_menu.dart';
 export 'src/render/action_menu/action_menu_item.dart';
@@ -52,3 +51,18 @@ export 'src/extensions/extensions.dart';
 export 'src/service/default_text_operations/format_rich_text_style.dart';
 export 'src/infra/html_converter.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
+
+export 'src/editor/block_component/block_component.dart';
+export 'src/editor/editor_component/editor_component.dart';
+export 'src/editor/command/transform.dart';
+export 'src/editor/util/util.dart';
+export 'src/editor/toolbar/toolbar.dart';
+export 'src/extensions/node_extensions.dart';
+export 'src/service/standard_block_components.dart';
+
+export 'src/core/document/deprecated/node.dart';
+export 'src/core/document/deprecated/document.dart';
+
+export 'src/plugins/html/html_document_decoder.dart';
+export 'src/plugins/html/html_document_encoder.dart';
+export 'src/plugins/html/html_document.dart';

@@ -97,9 +97,23 @@ class _HomePageState extends State<HomePage> {
             final jsonString = rootBundle.loadString('assets/example.json');
             _loadEditor(context, jsonString);
           }),
+          _buildListTile(context, 'With Example.html', () async {
+            final htmlString =
+                await rootBundle.loadString('assets/example.html');
+            final html = htmlToDocument(htmlString);
+            // final html = HTMLToNodesConverter(htmlString).toDocument();
+            final jsonString = Future<String>.value(
+              jsonEncode(
+                html.toJson(),
+              ).toString(),
+            );
+            _loadEditor(context, jsonString);
+          }),
           _buildListTile(context, 'With Empty Document', () {
             final jsonString = Future<String>.value(
-              jsonEncode(EditorState.empty().document.toJson()).toString(),
+              jsonEncode(
+                EditorState.blank(withInitialText: true).document.toJson(),
+              ).toString(),
             );
             _loadEditor(context, jsonString);
           }),
@@ -108,7 +122,9 @@ class _HomePageState extends State<HomePage> {
           _buildSeparator(context, 'Text Robot'),
           _buildListTile(context, 'Type Text Automatically', () async {
             final jsonString = Future<String>.value(
-              jsonEncode(EditorState.empty().document.toJson()).toString(),
+              jsonEncode(
+                EditorState.blank(withInitialText: true).document.toJson(),
+              ).toString(),
             );
             await _loadEditor(context, jsonString);
 
@@ -117,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                 editorState: _editorState,
               );
               textRobot.insertText(
-                r'''
+                '''
 Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
 
@@ -151,7 +167,7 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 
           // Theme Demo
           _buildSeparator(context, 'Theme Demo'),
-          _buildListTile(context, 'Bulit In Dark Mode', () {
+          _buildListTile(context, 'Built In Dark Mode', () {
             _jsonString = Future<String>.value(
               jsonEncode(_editorState.document.toJson()).toString(),
             );
@@ -370,10 +386,12 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
       ),
     );
 
-    return Theme.of(context).copyWith(extensions: [
-      editorStyle,
-      ...darkPluginStyleExtension,
-      quote,
-    ]);
+    return Theme.of(context).copyWith(
+      extensions: [
+        editorStyle,
+        ...darkPluginStyleExtension,
+        quote,
+      ],
+    );
   }
 }
