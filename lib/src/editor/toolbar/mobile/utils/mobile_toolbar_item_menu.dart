@@ -19,7 +19,7 @@ class MobileToolbarItemMenu extends StatefulWidget {
 }
 
 class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
-  bool _showMenu = false;
+  bool _showMenu = true;
 
   void closeItemMenu() {
     setState(() {
