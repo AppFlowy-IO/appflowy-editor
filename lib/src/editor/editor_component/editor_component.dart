@@ -13,7 +13,7 @@ export 'service/scroll_service_widget.dart';
 export 'service/selection_service_widget.dart';
 
 // toolbar
-export '../toolbar/mobile_toolbar.dart';
+export '../toolbar/mobile/mobile.dart';
 export '../toolbar/desktop/floating_toolbar.dart';
 
 // renderer

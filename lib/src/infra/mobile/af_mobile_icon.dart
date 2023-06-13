@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 enum AFMobileIcons {
+  textDecoration('toolbar_icons/text_decoration'),
   bold('toolbar_icons/bold'),
   italic('toolbar_icons/italic'),
   underline('toolbar_icons/underline'),
@@ -10,9 +11,11 @@ enum AFMobileIcons {
   textColor('toolbar_icons/text_color'),
   highlightColor('toolbar_icons/highlight_color'),
   link('toolbar_icons/link'),
+  heading('toolbar_icons/heading'),
   h1('toolbar_icons/h1'),
   h2('toolbar_icons/h2'),
   h3('toolbar_icons/h3'),
+  list('toolbar_icons/list'),
   bulletedList('toolbar_icons/bulleted_list'),
   numberedList('toolbar_icons/numbered_list'),
   checkbox('toolbar_icons/checkbox'),

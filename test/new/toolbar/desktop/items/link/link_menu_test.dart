@@ -1,9 +1,8 @@
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/link/link_menu.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../infra/testable_editor.dart';
+import '../../../../infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -12,26 +11,26 @@ void main() async {
 
   group('link_menu.dart', () {
     testWidgets('test empty link menu actions', (tester) async {
-      // TODO: @hyj this test is not working
-      // const link = 'appflowy.io';
-      // var submittedText = '';
-      // final linkMenu = LinkMenu(
-      //   onOpenLink: () {},
-      //   onCopyLink: () {},
-      //   onRemoveLink: () {},
-      //   onSubmitted: (text) {
-      //     submittedText = text;
-      //   },
-      // );
-      // await tester.pumpWidget(
-      //   MaterialApp(
-      //     home: Material(
-      //       child: linkMenu,
-      //     ),
-      //   ),
-      // );
-
-      /*
+      const link = 'appflowy.io';
+      var submittedText = '';
+      final linkMenu = LinkMenu(
+        onOpenLink: () {},
+        onCopyLink: () {},
+        onRemoveLink: () {},
+        onSubmitted: (text) {
+          submittedText = text;
+        },
+      );
+      final editor = tester.editor;
+      await editor.startTesting();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: linkMenu,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
       expect(find.byType(TextButton), findsNothing);
       expect(find.byType(TextField), findsOneWidget);
 
@@ -39,10 +38,9 @@ void main() async {
       await tester.enterText(find.byType(TextField), link);
       await tester.pumpAndSettle();
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Duration(milliseconds: 500));
 
       expect(submittedText, link);
-      */
     });
 
     testWidgets('test tap linked text', (tester) async {

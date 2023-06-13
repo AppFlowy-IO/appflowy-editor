@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/link/link_menu.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +15,7 @@ void main() async {
 
   group('show_link_menu_command.dart', () {
     testWidgets('Presses Command + K to trigger link menu', (tester) async {
-      // await _testLinkMenuInSingleTextSelection(tester);
+      await _testLinkMenuInSingleTextSelection(tester);
     });
   });
 }

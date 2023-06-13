@@ -2,7 +2,7 @@ import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:appflowy_editor/src/editor/toolbar/items/utils/overlay_util.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
