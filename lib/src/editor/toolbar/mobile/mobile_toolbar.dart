@@ -118,13 +118,14 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
         ),
         // only for MobileToolbarItem.withMenu
         if (_showItemMenu && _selectedToolbarItemIndex != null)
+          // MobileToolbarItemMenuState implements MobileToolbarItemMenuService
           MobileToolbarItemMenu(
             editorState: widget.editorState,
-            itemMenuBuilder: (state) => widget
+            itemMenuBuilder: (mobileToolbarItemMenuState) => widget
                 .toolbarItems[_selectedToolbarItemIndex!].itemMenuBuilder!(
               widget.editorState,
               widget.selection,
-              state,
+              mobileToolbarItemMenuState,
             ),
           )
       ],
