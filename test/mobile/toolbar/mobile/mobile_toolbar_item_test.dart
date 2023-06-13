@@ -16,7 +16,7 @@ void main() {
     test('menu item should have a menu', () {
       final item = MobileToolbarItem.withMenu(
         itemIcon: const Icon(Icons.format_color_text),
-        itemMenuBuilder: (editorState, selection) {
+        itemMenuBuilder: (editorState, selection, _) {
           return Container();
         },
       );
