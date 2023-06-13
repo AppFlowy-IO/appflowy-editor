@@ -117,12 +117,15 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
           ),
         ),
         // only for MobileToolbarItem.withMenu
-        if (_showItemMenu)
+        if (_showItemMenu && _selectedToolbarItemIndex != null)
           MobileToolbarItemMenu(
-            key: mobileToolbarItemMenuStateKey,
             editorState: widget.editorState,
-            itemMenu: widget.toolbarItems[_selectedToolbarItemIndex!]
-                .itemMenuBuilder!(widget.editorState, widget.selection),
+            itemMenuBuilder: (state) => widget
+                .toolbarItems[_selectedToolbarItemIndex!].itemMenuBuilder!(
+              widget.editorState,
+              widget.selection,
+              state,
+            ),
           )
       ],
     );

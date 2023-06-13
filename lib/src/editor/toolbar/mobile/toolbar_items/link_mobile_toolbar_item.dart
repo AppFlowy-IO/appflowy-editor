@@ -5,7 +5,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(
     afMobileIcons: AFMobileIcons.link,
   ),
-  itemMenuBuilder: (editorState, selection) {
+  itemMenuBuilder: (editorState, selection, service) {
     final String? linkText = editorState.getDeltaAttributeValueInSelection(
       FlowyRichTextKeys.href,
       selection,
@@ -15,10 +15,12 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
       editorState: editorState,
       linkText: linkText,
       onSubmitted: (value) async {
-        await editorState.formatDelta(selection, {
-          FlowyRichTextKeys.href: value,
-        });
-        mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
+        if (value.isNotEmpty) {
+          await editorState.formatDelta(selection, {
+            FlowyRichTextKeys.href: value,
+          });
+        }
+        service.closeItemMenu();
       },
     );
   },
@@ -26,13 +28,13 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
 
 class _MobileLinkMenu extends StatefulWidget {
   const _MobileLinkMenu({
-    required this.editorState,
     this.linkText,
+    required this.editorState,
     required this.onSubmitted,
   });
 
-  final EditorState editorState;
   final String? linkText;
+  final EditorState editorState;
   final void Function(String) onSubmitted;
 
   @override
@@ -112,10 +114,7 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
               height: 40,
               child: ElevatedButton(
                 onPressed: () {
-                  if (_textEditingController.text.isNotEmpty) {
-                    widget.onSubmitted.call(_textEditingController.text);
-                  }
-                  mobileToolbarItemMenuStateKey.currentState?.closeItemMenu();
+                  widget.onSubmitted.call(_textEditingController.text);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(

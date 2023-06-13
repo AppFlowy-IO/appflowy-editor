@@ -1,31 +1,27 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-GlobalKey<MobileToolbarItemMenuState> mobileToolbarItemMenuStateKey =
-    GlobalKey();
+abstract class MobileToolbarItemMenuService {
+  void closeItemMenu();
+}
 
 class MobileToolbarItemMenu extends StatefulWidget {
   const MobileToolbarItemMenu({
     super.key,
     required this.editorState,
-    required this.itemMenu,
+    required this.itemMenuBuilder,
   });
 
   final EditorState editorState;
-  final Widget itemMenu;
+  final Widget Function(MobileToolbarItemMenuState state) itemMenuBuilder;
 
   @override
   State<MobileToolbarItemMenu> createState() => MobileToolbarItemMenuState();
 }
 
-class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
+class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu>
+    implements MobileToolbarItemMenuService {
   bool _showMenu = true;
-
-  void closeItemMenu() {
-    setState(() {
-      _showMenu = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +32,15 @@ class MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
             width: size.width,
             color: style.backgroundColor,
             padding: const EdgeInsets.all(8),
-            child: widget.itemMenu,
+            child: widget.itemMenuBuilder(this),
           )
         : const SizedBox.shrink();
+  }
+
+  @override
+  void closeItemMenu() {
+    setState(() {
+      _showMenu = false;
+    });
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 final listMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.list),
-  itemMenuBuilder: (editorState, selection) {
+  itemMenuBuilder: (editorState, selection, _) {
     return _ListMenu(editorState, selection);
   },
 );

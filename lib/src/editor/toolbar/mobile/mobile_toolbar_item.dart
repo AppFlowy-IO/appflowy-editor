@@ -1,6 +1,17 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+typedef MobileToolbarItemMenuBuilder = Widget Function(
+  EditorState editorState,
+  Selection selection,
+  MobileToolbarItemMenuService service,
+);
+
+typedef MobileToolbarItemActionHandler = void Function(
+  EditorState editorState,
+  Selection selection,
+);
+
 class MobileToolbarItem {
   /// Tool bar item that implements attribute directly(without opening menu)
   const MobileToolbarItem.action({
@@ -15,10 +26,9 @@ class MobileToolbarItem {
     required this.itemMenuBuilder,
   })  : hasMenu = true,
         actionHandler = null;
-  final Widget itemIcon;
-  final Widget Function(EditorState editorState, Selection selection)?
-      itemMenuBuilder;
-  final void Function(EditorState editorState, Selection selection)?
-      actionHandler;
+
   final bool hasMenu;
+  final Widget itemIcon;
+  final MobileToolbarItemMenuBuilder? itemMenuBuilder;
+  final MobileToolbarItemActionHandler? actionHandler;
 }

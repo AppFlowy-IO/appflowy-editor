@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 final headingMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.heading),
-  itemMenuBuilder: (editorState, selection) {
+  itemMenuBuilder: (editorState, selection, _) {
     return _HeadingMenu(
       selection,
       editorState,

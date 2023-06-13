@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.textDecoration),
-  itemMenuBuilder: (editorState, selection) {
+  itemMenuBuilder: (editorState, selection, _) {
     return _TextDecorationMenu(editorState, selection);
   },
 );
