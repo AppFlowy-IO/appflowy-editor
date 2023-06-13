@@ -74,6 +74,9 @@ class _HomePageState extends State<HomePage> {
       drawer: _buildDrawer(context),
       body: SafeArea(child: _buildBody(context)),
       floatingActionButton: _buildFloatingActionButton(context),
+      floatingActionButtonLocation: PlatformExtension.isMobile
+          ? FloatingActionButtonLocation.startTop
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 

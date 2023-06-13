@@ -66,3 +66,4 @@ export 'src/core/document/deprecated/document.dart';
 export 'src/plugins/html/html_document_decoder.dart';
 export 'src/plugins/html/html_document_encoder.dart';
 export 'src/plugins/html/html_document.dart';
+export 'src/infra/mobile/mobile.dart';
