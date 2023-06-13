@@ -1,18 +1,17 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:flutter/material.dart';
 
-class DocumentHTMLEncoder extends Converter<Document, String> {
-  DocumentHTMLEncoder();
+class NodeHTMLEncoder extends Converter<List<Node>, String> {
+  NodeHTMLEncoder();
 
   dom.Element? _stashListContainer;
   final List<dom.Node> _result = [];
   final List<Node> nodes = [];
   @override
-  String convert(Document input) {
-    List<Node> documentNodes = input.root.children.toList();
-    nodes.addAll(documentNodes);
+  String convert(List<Node> input) {
+    nodes.addAll(input);
     return toHTMLString();
   }
 
@@ -194,17 +193,17 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
           final anchor = dom.Element.tag(HTMLTags.image);
           anchor.attributes["src"] = node.attributes[ImageBlockKeys.url];
 
-          childNodes.add(_insertText(HTMLTag.span, childNodes: [anchor]));
+          childNodes.add(_insertText(HTMLTags.span, childNodes: [anchor]));
         }
       }
     }
 
     if (tagName == HTMLTags.blockQuote) {
-      return _insertText(HTMLTag.blockQuote, childNodes: childNodes);
+      return _insertText(HTMLTags.blockQuote, childNodes: childNodes);
     } else if (tagName == HTMLTags.checkbox) {
-      return _insertText(HTMLTag.div, childNodes: childNodes);
+      return _insertText(HTMLTags.div, childNodes: childNodes);
     } else if (!HTMLTags.isTopLevel(tagName)) {
-      return _insertText(HTMLTag.list, childNodes: childNodes);
+      return _insertText(HTMLTags.list, childNodes: childNodes);
     } else {
       return _insertText(tagName, childNodes: childNodes);
     }
@@ -253,5 +252,17 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       p.append(node);
     }
     return p;
+  }
+
+  String stringify(dom.Node node) {
+    if (node is dom.Element) {
+      return node.outerHtml;
+    }
+
+    if (node is dom.Text) {
+      return node.text;
+    }
+
+    return '';
   }
 }

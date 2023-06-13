@@ -3,28 +3,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 void main() async {
-  group('document_html_decoder_test.dart', () {
+  group('html_nodes_encoder_test.dart', () {
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
-
     test('parser document', () async {
-      final result = DocumentHTMLDecoder().convert(rawHTML);
+      final result = NodeHTMLEncoder()
+          .convert(Document.fromJson(delta).root.children.toList());
 
-      expect(result.toJson(), example);
+      expect(result, example);
     });
     test('nested parser document', () async {
-      final result = DocumentHTMLDecoder().convert(nestedhtml);
+      final result = NodeHTMLEncoder()
+          .convert(Document.fromJson(nestedDelta).root.children.toList());
 
-      expect(result.toJson(), nestedDelta);
+      expect(result, nestedhtml);
     });
   });
 }
 
-const rawHTML =
+const example =
     '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
 
-const example = {
+const delta = {
   'document': {
     'type': 'page',
     'children': [
