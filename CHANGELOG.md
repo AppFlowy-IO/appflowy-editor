@@ -1,3 +1,9 @@
+## 1.0.2
+* feat: support mobile toolbar by @hyj1204 in ([#161](https://github.com/AppFlowy-IO/appflowy-editor/pull/161))
+* feat: support shrinkWrap by @LucasXu0 in ([#186](https://github.com/AppFlowy-IO/appflowy-editor/pull/186))
+* feat: support updating the character of shortcut event by @LucasXu0 in ([#187](https://github.com/AppFlowy-IO/appflowy-editor/pull/187))
+* chore: mark selectionMenuItems as deprecated ignored by @LucasXu0 in ([#182](https://github.com/AppFlowy-IO/appflowy-editor/pull/182))
+
 ## 1.0.1
 * feat: support inserting divider through `***` by @glunkad in ([#118](https://github.com/AppFlowy-IO/appflowy-editor/pull/118))
 * feat: document to html encoder added by @alihassan143 in ([#175](https://github.com/AppFlowy-IO/appflowy-editor/pull/175))
