@@ -187,6 +187,17 @@ void main() async {
         }
       },
       {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "void main(){print('hello world');}"
+            }
+          ],
+          "language": "dart"
+        }
+      },
+      {
         "type": "paragraph",
         "data": {
           "delta": []
@@ -218,9 +229,14 @@ You can also use ***AppFlowy Editor*** as a component to build your own app.
 * Select text to trigger to the toolbar to format your notes.
 
 If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!
+```dart
+void main(){
+print('hello world');
+}
+```
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
-      final data = Map<String, Object>.from(json.decode(example));
+      final data = jsonDecode(example);
       expect(result.toJson(), data);
     });
   });
