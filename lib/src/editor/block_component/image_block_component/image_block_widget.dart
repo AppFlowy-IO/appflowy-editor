@@ -69,21 +69,28 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   Widget build(BuildContext context) {
     // only support network image.
     //NOTE: NetworkImageNode, BuildResizableImage are roughly the same
+    //NOTE: only just removed NetworkImage since it only had alignment
     return Container(
       key: _imageKey,
       padding: const EdgeInsets.only(top: 8, bottom: 8),
-      child: NetworkImageNode(
-        context: context,
-        src: widget.src,
-        editable: widget.editable,
-        imageWidth: _imageWidth,
-        distance: _distance,
-        imageStream: _imageStream,
-        imageStreamListener: _imageStreamListener,
+      child: Align(
         alignment: widget.alignment,
-        onFocus: onFocus,
-        initial: _initial,
-        onResize: widget.onResize,
+        child: MouseRegion(
+          onEnter: (event) => setState(() => onFocus = true),
+          onExit: (event) => setState(() => onFocus = false),
+          child: BuildResizableImage(
+            context: context,
+            src: widget.src,
+            editable: widget.editable,
+            imageWidth: _imageWidth,
+            distance: _distance,
+            imageStream: _imageStream,
+            imageStreamListener: _imageStreamListener,
+            onFocus: onFocus,
+            initial: _initial,
+            onResize: widget.onResize,
+          ),
+        ),
       ),
     );
   }

@@ -1,77 +1,14 @@
 import 'package:flutter/material.dart';
 
-class NetworkImageNode extends StatefulWidget {
-  NetworkImageNode({
-    Key? key,
-    required BuildContext context,
-    required this.alignment,
-    required this.onFocus,
-    required this.src,
-    required this.editable,
-    this.imageWidth,
-    required this.distance,
-    this.imageStream,
-    required this.imageStreamListener,
-    required this.initial,
-    required this.onResize,
-  }) : super(key: key);
-  final String src;
-  final bool editable;
-  final double initial;
-  final double? imageWidth;
-  final double distance;
-  final ImageStream? imageStream;
-  final ImageStreamListener imageStreamListener;
-
-  final void Function(double width) onResize;
-
-  final Alignment alignment;
-  bool
-      onFocus; //NOTE: Throws immutable warning since its note final & constructor isnt cons
-
-  @override
-  State<NetworkImageNode> createState() => _NetworkImageNodeState();
-}
-
-class _NetworkImageNodeState extends State<NetworkImageNode> {
-  @override
-  Widget build(buildContext) {
-    print('ImageWidth From NetworkImage: ${widget.imageWidth}');
-    return Align(
-      alignment: widget.alignment,
-      child: MouseRegion(
-        onEnter: (event) => setState(() {
-          widget.onFocus = true;
-        }),
-        onExit: (event) => setState(() {
-          widget.onFocus = false;
-        }),
-        child: BuildResizableImage(
-          context: context,
-          src: widget.src,
-          editable: widget.editable,
-          imageWidth: widget.imageWidth,
-          distance: widget.distance,
-          imageStream: widget.imageStream,
-          imageStreamListener: widget.imageStreamListener,
-          initial: widget.initial,
-          onResize: widget.onResize,
-          onFocus: widget.onFocus,
-        ),
-      ),
-    );
-  }
-}
-
 class BuildResizableImage extends StatefulWidget {
   BuildResizableImage({
     Key? key,
     required BuildContext context,
     required this.src,
     required this.editable,
-    this.imageWidth,
+    required this.imageWidth,
     required this.distance,
-    this.imageStream,
+    required this.imageStream,
     required this.imageStreamListener,
     required this.onFocus,
     required this.onResize,
@@ -94,7 +31,6 @@ class BuildResizableImage extends StatefulWidget {
 class _BuildResizableImageState extends State<BuildResizableImage> {
   @override
   Widget build(context) {
-    print('ImageWidth From Resize: ${widget.imageWidth}');
     //NOTE: Created a class in order to handle local image files later
     final networkImage = ImageFileType()
         .networkImage(widget.src, widget.distance, widget.imageWidth);
@@ -248,8 +184,6 @@ class BuildEdgeGestures extends StatefulWidget {
 class _BuildEdgeGesturesState extends State<BuildEdgeGestures> {
   @override
   Widget build(BuildContext context) {
-    print(widget.width);
-    print(widget.imageWidth);
     return Positioned(
       top: widget.top,
       left: widget.left,
@@ -292,4 +226,3 @@ class _BuildEdgeGesturesState extends State<BuildEdgeGestures> {
     );
   }
 }
-
