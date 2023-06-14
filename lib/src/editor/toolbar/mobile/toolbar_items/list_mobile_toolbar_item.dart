@@ -45,7 +45,7 @@ class _ListMenuState extends State<_ListMenu> {
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(afMobileIcons: currentList.icon),
-        label: currentList.label,
+        label: Text(currentList.label),
         isSelected: isSelected,
         onPressed: () {
           setState(() {

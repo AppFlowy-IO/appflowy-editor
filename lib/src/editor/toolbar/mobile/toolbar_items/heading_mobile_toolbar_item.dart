@@ -55,7 +55,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
-        label: currentHeading.label,
+        label: Text(currentHeading.label),
         isSelected: isSelected,
         onPressed: () {
           setState(() {

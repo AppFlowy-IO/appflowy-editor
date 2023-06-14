@@ -60,7 +60,7 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
         icon: AFMobileIcon(
           afMobileIcons: currentDecoration.icon,
         ),
-        label: currentDecoration.label,
+        label: Text(currentDecoration.label),
         isSelected: isSelected,
         onPressed: () {
           if (widget.selection.isCollapsed) {

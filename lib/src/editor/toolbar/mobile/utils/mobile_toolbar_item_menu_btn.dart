@@ -5,14 +5,14 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
   const MobileToolbarItemMenuBtn({
     super.key,
     required this.onPressed,
-    required this.icon,
+    this.icon,
     required this.label,
     required this.isSelected,
   });
 
   final Function() onPressed;
-  final Widget icon;
-  final String label;
+  final Widget? icon;
+  final Widget label;
   final bool isSelected;
 
   @override
@@ -20,8 +20,8 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
     final style = MobileToolbarStyle.of(context);
     return OutlinedButton.icon(
       onPressed: onPressed,
-      icon: icon,
-      label: Text(label),
+      icon: icon ?? const SizedBox.shrink(),
+      label: label,
       style: ButtonStyle(
         alignment: Alignment.centerLeft,
         foregroundColor: MaterialStateProperty.all(style.foregroundColor),
