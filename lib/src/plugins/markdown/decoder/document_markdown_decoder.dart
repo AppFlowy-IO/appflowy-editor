@@ -106,17 +106,17 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   }
 
   Node _codeBlockNodeFromMarkdown(
-      String markdown, DeltaMarkdownDecoder decoder) {
+      String markdown, DeltaMarkdownDecoder decoder,) {
     String codeStartMarker = "```";
     String codeEndMarker = "```";
     String language = "";
     String codeContent = "";
     int codeStartIndex = markdown.indexOf(codeStartMarker);
     int codeEndIndex = markdown.indexOf(
-        codeEndMarker, codeStartIndex + codeStartMarker.length);
+        codeEndMarker, codeStartIndex + codeStartMarker.length,);
 
     String codeBlock = markdown.substring(
-        codeStartIndex + codeStartMarker.length, codeEndIndex);
+        codeStartIndex + codeStartMarker.length, codeEndIndex,);
     List<String> codeLines = codeBlock.trim().split('\n');
 
     language = codeLines[0].trim();
@@ -126,6 +126,6 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return Node(type: 'code', attributes: {
       'delta': decoder.convert(codeContent).toJson(),
       'language': language
-    });
+    },);
   }
 }
