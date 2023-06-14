@@ -6,6 +6,10 @@ import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
   testWidgets('linkMobileToolbarItem', (WidgetTester tester) async {
+    if (PlatformExtension.isDesktopOrWeb) {
+      return;
+    }
+
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
     await editor.startTesting();
