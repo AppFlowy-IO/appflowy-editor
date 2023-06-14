@@ -28,7 +28,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         int tempLinePointer = i;
         i++;
         while (!lines[i].endsWith("```") && i < lines.length) {
-          codeBlock += lines[i];
+          codeBlock += "${lines[i]}\n";
           i++;
         }
 
