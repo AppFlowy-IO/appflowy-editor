@@ -59,7 +59,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
   @override
-  TextEditingValue? get currentTextEditingValue => throw UnimplementedError();
+  TextEditingValue? currentTextEditingValue;
 
   TextInputConnection? _textInputConnection;
 
@@ -100,6 +100,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
+    currentTextEditingValue = formattedValue;
 
     Log.input.debug(
       'attach text editing value: $textEditingValue',
