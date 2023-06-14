@@ -188,12 +188,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     return Provider.value(
       value: editorState,
-      child: Overlay(
-        initialEntries: [
-          OverlayEntry(
-            builder: (context) => services!,
-          ),
-        ],
+      child: FocusScope(
+        child: Overlay(
+          initialEntries: [
+            OverlayEntry(
+              builder: (context) => services!,
+            ),
+          ],
+        ),
       ),
     );
   }
