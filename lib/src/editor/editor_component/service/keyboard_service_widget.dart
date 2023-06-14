@@ -231,9 +231,13 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     );
 
     // clear the selection when the focus is lost.
-    // if (!focusNode.hasFocus) {
-    //   editorState.selection = null;
-    // }
+    if (PlatformExtension.isDesktop && !focusNode.hasFocus) {
+      final children =
+          WidgetsBinding.instance.focusManager.primaryFocus?.children;
+      if (children != null && !children.contains(focusNode)) {
+        editorState.selection = null;
+      }
+    }
   }
 
   // only verify on macOS.
