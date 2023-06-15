@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_upload_widget.dart';
 import '../../new/infra/testable_editor.dart';
 
 void main() {
@@ -9,9 +10,8 @@ void main() {
         ..addParagraph(initialText: 'Welcome to AppFlowy');
       await editor.startTesting();
 
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 19),
-      );
+      final selection = Selection.single(path: [0], startOffset: 19);
+      await editor.updateSelection(selection);
 
       await editor.pressKey(character: '/');
       await tester.pumpAndSettle();
@@ -23,6 +23,14 @@ void main() {
 
       await tester.tap(imageMenuItemFinder);
       await tester.pumpAndSettle();
+      expect(find.byType(UploadImageMenu), findsOneWidget);
+
+      expect(editor.selection, selection);
+
+      await tester.tapAt(Offset.zero);
+      await tester.pumpAndSettle();
+      expect(find.byType(UploadImageMenu), findsNothing);
+      expect(editor.selection, selection);
 
       await editor.dispose();
     });
