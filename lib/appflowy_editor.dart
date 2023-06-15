@@ -68,3 +68,4 @@ export 'src/plugins/html/encoder/html_nodes_encoder.dart';
 export 'src/plugins/html/html_document.dart';
 export 'src/plugins/html/html_nodes.dart';
 export 'src/infra/mobile/mobile.dart';
+export 'src/infra/clipboard.dart';
