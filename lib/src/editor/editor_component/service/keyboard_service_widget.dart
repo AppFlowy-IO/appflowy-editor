@@ -73,6 +73,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
     focusNode.addListener(_onFocusChanged);
+
+    keepEditorFocusNotifier.addListener(_onKeepEditorFocusChanged);
   }
 
   @override
@@ -85,6 +87,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (widget.focusNode == null) {
       focusNode.dispose();
     }
+    keepEditorFocusNotifier.removeListener(_onKeepEditorFocusChanged);
     super.dispose();
   }
 
@@ -232,11 +235,24 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     // clear the selection when the focus is lost.
     if (PlatformExtension.isDesktop && !focusNode.hasFocus) {
+      if (keepEditorFocusNotifier.value > 0) {
+        return;
+      }
       final children =
           WidgetsBinding.instance.focusManager.primaryFocus?.children;
       if (children != null && !children.contains(focusNode)) {
         editorState.selection = null;
       }
+    }
+  }
+
+  void _onKeepEditorFocusChanged() {
+    Log.editor.debug(
+      'keyboard service - on keep editor focus changed: ${keepEditorFocusNotifier.value}}',
+    );
+
+    if (keepEditorFocusNotifier.value == 0) {
+      focusNode.requestFocus();
     }
   }
 
