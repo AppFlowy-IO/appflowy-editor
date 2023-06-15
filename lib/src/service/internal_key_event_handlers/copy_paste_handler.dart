@@ -37,12 +37,12 @@ void _handleCopy(EditorState editorState) async {
     final htmlString = nodesToHTML([textNode]);
     String textString = "";
     final Delta? delta = textNode.delta;
-    final childrens = textNode.children;
-    final deltaStrin = delta != null ? delta.toPlainText() : "";
-    if (childrens == null) {
-      textString = deltaStrin;
+    final children = textNode.children;
+    final plainText = delta != null ? delta.toPlainText() : "";
+    if (children == null) {
+      textString = plainText;
     } else {
-      final String chilrenString = childrens.fold('', (previousValue, node) {
+      final String chilrenString = children.fold('', (previousValue, node) {
         final delta = node.delta;
         if (delta != null) {
           return previousValue + '\n' + delta.toPlainText();
@@ -50,7 +50,7 @@ void _handleCopy(EditorState editorState) async {
 
         return previousValue;
       });
-      textString = "$deltaStrin $chilrenString";
+      textString = "$plainText $chilrenString";
     }
     Log.keyboard.debug('copy html: $htmlString');
     AppFlowyClipboard.setData(
@@ -76,11 +76,11 @@ void _handleCopy(EditorState editorState) async {
     String textString = "";
     final Delta? delta = node.delta;
     final childrens = node.children;
-    final deltaString = delta != null ? delta.toPlainText() : "";
+    final plainText = delta != null ? delta.toPlainText() : "";
     if (childrens == null) {
-      textString = deltaString;
+      textString = plainText;
     } else {
-      final String chilrenString =
+      final String childrenString =
           childrens.fold('', (previousValue, stringnode) {
         final delta = node.delta;
         if (delta != null) {
@@ -89,7 +89,7 @@ void _handleCopy(EditorState editorState) async {
 
         return previousValue;
       });
-      textString = "$deltaString $chilrenString";
+      textString = "$plainText $childrenString";
     }
     text = text + textString + '\n';
   }
