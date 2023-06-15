@@ -82,6 +82,10 @@ void _formatFontColor(EditorState editorState, String color) {
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
   return [
     ColorOption(
+      colorHex: Colors.black.toHex(),
+      name: AppFlowyEditorLocalizations.current.fontColorDefault,
+    ),
+    ColorOption(
       colorHex: Colors.grey.toHex(),
       name: AppFlowyEditorLocalizations.current.fontColorGray,
     ),
@@ -118,6 +122,10 @@ List<ColorOption> _generateTextColorOptions(EditorState editorState) {
 
 List<ColorOption> _generateHighlightColorOptions(EditorState editorState) {
   return [
+    ColorOption(
+      colorHex: Colors.white.withOpacity(0.3).toHex(),
+      name: AppFlowyEditorLocalizations.current.backgroundColorDefault,
+    ),
     ColorOption(
       colorHex: Colors.grey.withOpacity(0.3).toHex(),
       name: AppFlowyEditorLocalizations.current.backgroundColorGray,
