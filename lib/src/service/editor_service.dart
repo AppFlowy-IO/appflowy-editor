@@ -3,6 +3,15 @@ import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
+// workaround for the issue:
+// the popover will grab the focus even if it's inside the editor
+// setup a global value to indicate whether the focus should be grabbed
+// increase the value when the popover is opened
+// decrease the value when the popover is closed
+// only grab the focus when the value is 0
+// the operation must be paired
+ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
+
 class AppFlowyEditor extends StatefulWidget {
   @Deprecated('Use AppFlowyEditor.custom or AppFlowyEditor.standard instead')
   const AppFlowyEditor({

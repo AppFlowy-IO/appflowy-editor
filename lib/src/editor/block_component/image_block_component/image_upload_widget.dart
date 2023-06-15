@@ -16,12 +16,15 @@ void showImageMenu(
     editorState.insertImageNode(text);
     menuService.dismiss();
     imageMenuEntry.remove();
+    keepEditorFocusNotifier.value -= 1;
   }
 
+  keepEditorFocusNotifier.value += 1;
   imageMenuEntry = FullScreenOverlayEntry(
     left: left,
     top: top,
     bottom: bottom,
+    dismissCallback: () => keepEditorFocusNotifier.value -= 1,
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
