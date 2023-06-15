@@ -21,7 +21,7 @@ class CharacterShortcutEvent {
 
   /// The character to trigger the shortcut event.
   ///
-  /// It mus tbe a single character.
+  /// It must be a single character.
   String character;
 
   //// The handler to handle the shortcut event.
