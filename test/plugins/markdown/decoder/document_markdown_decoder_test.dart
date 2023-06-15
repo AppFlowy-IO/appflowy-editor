@@ -191,7 +191,7 @@ void main() async {
         "data": {
           "delta": [
             {
-              "insert": "void main(){print('hello world');}"
+              "insert": "void main(){\\nprint('hello world');\\n}"
             }
           ],
           "language": "dart"
