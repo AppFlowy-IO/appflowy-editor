@@ -89,7 +89,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       );
     } else if (line.isNotEmpty && RegExp('^-*').stringMatch(line) == line) {
       return Node(type: 'divider');
-    } else if (line.startsWith('```') && line.endsWith('```')){
+    } else if (line.startsWith('```') && line.endsWith('```')) {
       return _codeBlockNodeFromMarkdown(line, decoder);
     }
 
@@ -99,33 +99,41 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       );
     }
 
-
     return paragraphNode(
       attributes: {'delta': Delta().toJson()},
     );
   }
 
   Node _codeBlockNodeFromMarkdown(
-      String markdown, DeltaMarkdownDecoder decoder,) {
+    String markdown,
+    DeltaMarkdownDecoder decoder,
+  ) {
     String codeStartMarker = "```";
     String codeEndMarker = "```";
     String language = "";
     String codeContent = "";
     int codeStartIndex = markdown.indexOf(codeStartMarker);
     int codeEndIndex = markdown.indexOf(
-        codeEndMarker, codeStartIndex + codeStartMarker.length,);
+      codeEndMarker,
+      codeStartIndex + codeStartMarker.length,
+    );
 
     String codeBlock = markdown.substring(
-        codeStartIndex + codeStartMarker.length, codeEndIndex,);
+      codeStartIndex + codeStartMarker.length,
+      codeEndIndex,
+    );
     List<String> codeLines = codeBlock.trim().split('\n');
 
     language = codeLines[0].trim();
     List<String> codeContentLines = codeLines.sublist(1);
     codeContent = codeContentLines.join('\n');
 
-    return Node(type: 'code', attributes: {
-      'delta': decoder.convert(codeContent).toJson(),
-      'language': language
-    },);
+    return Node(
+      type: 'code',
+      attributes: {
+        'delta': decoder.convert(codeContent).toJson(),
+        'language': language
+      },
+    );
   }
 }
