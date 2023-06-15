@@ -75,13 +75,13 @@ void _handleCopy(EditorState editorState) async {
   for (final node in nodes) {
     String textString = "";
     final Delta? delta = node.delta;
-    final childrens = node.children;
+    final children = node.children;
     final plainText = delta != null ? delta.toPlainText() : "";
-    if (childrens == null) {
+    if (children == null) {
       textString = plainText;
     } else {
       final String childrenString =
-          childrens.fold('', (previousValue, stringnode) {
+          children.fold('', (previousValue, stringnode) {
         final delta = node.delta;
         if (delta != null) {
           return previousValue + '\n' + delta.toPlainText();
