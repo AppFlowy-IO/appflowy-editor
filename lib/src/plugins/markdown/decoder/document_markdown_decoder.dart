@@ -7,20 +7,15 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   Document convert(String input) {
     final lines = input.split('\n');
     final document = Document.blank();
-    //previously
-    // for (var i = 0; i < lines.length; i++) {
-    //   document.insert([i], [_convertLineToNode(lines[i])]);
-    // }
-    int i = 0;
-    //In the below while loop we iterate through each line of the input markdown
-    //if the line starts with ``` it means there are chances it may be a code block
+    // In the below while loop we iterate through each line of the input markdown
+    // if the line starts with ``` it means there are chances it may be a code block
     // so it iterates through all the lines(using another while loop) storing them in a
-    //string variable codeblock until it fing another ``` which marks the end of code
+    // string variable codeblock until it finds another ``` which marks the end of code
     // block it then sends this to convert _convertLineToNode function .
-    // If we reach the end of lines and we still haven't found ``` thenwe will treat the
+    // If we reach the end of lines and we still haven't found ``` then we will treat the
     // line starting with ``` as a regular paragraph and continue the main while loop from
     // a temporary pointer which stored the line number of the line with starting ```
-
+    int i = 0;
     while (i < lines.length) {
       if (lines[i].startsWith("```")) {
         String codeBlock = "";
@@ -104,29 +99,29 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     );
   }
 
-  Node _codeBlockNodeFromMarkdown(
+  Node? _codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
   ) {
-    String codeStartMarker = "```";
-    String codeEndMarker = "```";
-    String language = "";
-    String codeContent = "";
-    int codeStartIndex = markdown.indexOf(codeStartMarker);
+    const codeMarker = '````';
+    int codeStartIndex = markdown.indexOf(codeMarker);
     int codeEndIndex = markdown.indexOf(
-      codeEndMarker,
-      codeStartIndex + codeStartMarker.length,
+      codeMarker,
+      codeStartIndex + codeMarker.length,
     );
 
     String codeBlock = markdown.substring(
-      codeStartIndex + codeStartMarker.length,
+      codeStartIndex + codeMarker.length,
       codeEndIndex,
     );
     List<String> codeLines = codeBlock.trim().split('\n');
 
-    language = codeLines[0].trim();
-    List<String> codeContentLines = codeLines.sublist(1);
-    codeContent = codeContentLines.join('\n');
+    if (codeLines.isEmpty) {
+      // handle error
+      return null;
+    }
+    final language = codeLines[0].trim();
+    final codeContent = codeLines.sublist(1).join('\n');
 
     return Node(
       type: 'code',
