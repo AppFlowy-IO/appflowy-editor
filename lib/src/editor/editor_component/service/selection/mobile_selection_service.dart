@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
+import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -49,6 +50,12 @@ class _MobileSelectionServiceWidgetState
     listen: false,
   );
 
+
+  
+  /// Pan
+  Offset? _panStartOffset;
+  double? _panStartScrollDy;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +93,9 @@ class _MobileSelectionServiceWidgetState
       onTapDown: _onTapDown,
       onSecondaryTapDown: _onSecondaryTapDown,
       onDoubleTapDown: _onDoubleTapDown,
+      onPanEnd: _onPanEnd,
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
       onTripleTapDown: _onTripleTapDown,
       child: widget.child,
     );
@@ -365,8 +375,11 @@ class _MobileSelectionServiceWidgetState
         layerLink ??= node.layerLink;
 
         final overlay = OverlayEntry(
-          builder: (context) => SelectionWidget(
+          builder: (context) => MobileSelectionWidget(
             color: widget.selectionColor,
+            cursorColor: widget.cursorColor,
+            showEndCursor:rect==rects.last && i==backwardNodes.length-1,
+            showStartCursor: rect==rects.first && i==0,
             layerLink: node.layerLink,
             rect: rect,
           ),
@@ -511,6 +524,46 @@ class _MobileSelectionServiceWidgetState
     //     _debugOverlay = null;
     //   }
     // }
+  }
+
+  // handle panning
+
+    void _onPanStart(DragStartDetails details) {
+    clearSelection();
+
+    _panStartOffset = details.globalPosition.translate(-3.0, 0);
+    _panStartScrollDy = editorState.service.scrollService?.dy;
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    if (_panStartOffset == null || _panStartScrollDy == null) {
+      return;
+    }
+
+    final panEndOffset = details.globalPosition;
+    final dy = editorState.service.scrollService?.dy;
+    final panStartOffset = dy == null
+        ? _panStartOffset!
+        : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
+
+    final first = getNodeInOffset(panStartOffset)?.selectable;
+    final last = getNodeInOffset(panEndOffset)?.selectable;
+
+    // compute the selection in range.
+    if (first != null && last != null) {
+      // Log.selection.debug('first = $first, last = $last');
+      final start =
+          first.getSelectionInRange(panStartOffset, panEndOffset).start;
+      final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
+      final selection = Selection(start: start, end: end);
+      updateSelection(selection);
+    }
+
+    _showDebugLayerIfNeeded(offset: panEndOffset);
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    // do nothing
   }
 
   final List<SelectionGestureInterceptor> _interceptors = [];
