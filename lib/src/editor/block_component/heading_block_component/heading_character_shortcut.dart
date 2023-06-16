@@ -16,7 +16,9 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     (text, selection) {
       final characters = text.split('');
       // only supports heading1 to heading6 levels
-      return characters.every((element) => element == '#') &&
+      // if the characters is empty, the every function will return true directly
+      return characters.isNotEmpty &&
+          characters.every((element) => element == '#') &&
           characters.length < 7;
     },
     (text, node, delta) {
