@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 ///   - web
 ///
 final CommandShortcutEvent outdentCommand = CommandShortcutEvent(
-  key: 'indent',
+  key: 'outdent',
   command: 'shift+tab',
   handler: _outdentCommandHandler,
 );
