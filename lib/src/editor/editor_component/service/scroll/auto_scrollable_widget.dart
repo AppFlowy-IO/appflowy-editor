@@ -49,8 +49,10 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   void _initAutoScroller() {
     _autoScroller = AutoScroller(
       _scrollableState,
-      velocityScalar: 30,
-      onScrollViewScrolled: () {},
+      velocityScalar: 15,
+      onScrollViewScrolled: () {
+        _autoScroller.continueToAutoScroll();
+      },
     );
   }
 }

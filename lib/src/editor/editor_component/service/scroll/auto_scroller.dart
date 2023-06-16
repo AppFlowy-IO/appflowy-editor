@@ -6,6 +6,7 @@ abstract class AutoScrollerService {
     double edgeOffset = 200,
     AxisDirection? direction,
   });
+
   void stopAutoScroll();
 }
 
@@ -18,6 +19,8 @@ class AutoScroller extends EdgeDraggingAutoScroller
   });
 
   static const double _kDefaultAutoScrollVelocityScalar = 7;
+
+  Offset? lastOffset;
 
   @override
   void startAutoScroll(
@@ -32,9 +35,25 @@ class AutoScroller extends EdgeDraggingAutoScroller
         );
       }
     } else {
-      startAutoScrollIfNecessary(
-        offset.translate(0, -edgeOffset) & Size(1, 2 * edgeOffset),
+      lastOffset = offset;
+      final dragTarget = Rect.fromCenter(
+        center: offset,
+        width: edgeOffset,
+        height: edgeOffset,
       );
+      startAutoScrollIfNecessary(dragTarget);
+    }
+  }
+
+  @override
+  void stopAutoScroll() {
+    lastOffset = null;
+    super.stopAutoScroll();
+  }
+
+  void continueToAutoScroll() {
+    if (lastOffset != null) {
+      startAutoScroll(lastOffset!);
     }
   }
 }
