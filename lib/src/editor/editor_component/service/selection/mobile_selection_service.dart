@@ -78,20 +78,6 @@ class _MobileSelectionServiceWidgetState
   }
 
   @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-
-    // Need to refresh the selection when the metrics changed.
-    if (currentSelection.value != null) {
-      Debounce.debounce(
-        'didChangeMetrics - update selection ',
-        const Duration(milliseconds: 100),
-        () => updateSelection(currentSelection.value!),
-      );
-    }
-  }
-
-  @override
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
@@ -542,7 +528,7 @@ class _MobileSelectionServiceWidgetState
       return false;
     }
 
-    const extend = 30.0;
+    const extend = 40.0;
     switch (type) {
       case MobileSelectionHandlerType.leftHandler:
       case MobileSelectionHandlerType.cursorHandler:

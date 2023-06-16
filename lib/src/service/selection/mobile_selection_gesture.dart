@@ -45,14 +45,15 @@ class MobileSelectionGestureDetectorState
   @override
   Widget build(BuildContext context) {
     return RawGestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       gestures: {
-        VerticalDragGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(
-          () => VerticalDragGestureRecognizer(
+        PanGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+          () => PanGestureRecognizer(
             supportedDevices: {
-              // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
-              PointerDeviceKind.trackpad, PointerDeviceKind.touch,
+              //   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
+              //   PointerDeviceKind.trackpad,
+              PointerDeviceKind.touch,
               PointerDeviceKind.mouse,
               PointerDeviceKind.stylus,
               PointerDeviceKind.invertedStylus,
