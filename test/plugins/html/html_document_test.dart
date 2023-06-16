@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'dart:developer';
 
 void main() {
   group('html_document_test.dart tests', () {
