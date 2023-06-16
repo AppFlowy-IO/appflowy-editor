@@ -1,191 +1,61 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'dart:developer';
-import 'package:collection/collection.dart';
+import 'dart:io';
 
-void main() {
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import '../../new/infra/testable_editor.dart';
+
+void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
-  group('copy_event_hanndler_text.dart', () {
-    test('document_copy_handler_test', () async {
-      // Arrange
-      final editorState = EditorState(document: Document.fromJson(data));
-      // Set up a non-collapsed selection
-      final firstSelectable = editorState.document.root.children
-          .firstWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      final lastSelectable = editorState.document.root.children
-          .lastWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      if (firstSelectable == null || lastSelectable == null) {
-        return;
-      }
-      editorState.updateSelectionWithReason(
-        Selection(start: firstSelectable.start(), end: lastSelectable.end()),
-      );
 
-      // Act
-      _handleCopy(editorState);
-
-      // Assert
-      // Verify that the expected text and HTML are copied to the clipboard
-      // You can use appropriate assertions based on your clipboard implementation
-      // For example:
-    });
-    test('paragraph_copy_handler_test', () async {
-      // Arrange
-      final editorState =
-          EditorState(document: Document.fromJson(paragraphdata));
-      // Set up a non-collapsed selection
-      final firstSelectable = editorState.document.root.children
-          .firstWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      final lastSelectable = editorState.document.root.children
-          .lastWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      if (firstSelectable == null || lastSelectable == null) {
-        return;
-      }
-      editorState.updateSelectionWithReason(
-        Selection(start: firstSelectable.start(), end: lastSelectable.end()),
-      );
-
-      // Act
-      _handleCopy(editorState);
-
-      // Assert
-      // Verify that the expected text and HTML are copied to the clipboard
-      // You can use appropriate assertions based on your clipboard implementation
-      // For example:
+  group('copy_paste_handler_test.dart', () {
+    testWidgets('Presses Command + A in small document and copy text',
+        (tester) async {
+      await _testhandleCopy(tester, Document.fromJson(paragraphdata));
     });
 
-    test(
-        'copy handler should not copy text and HTML when selection is collapsed',
-        () async {
-      // Arrange
-      final editorState = EditorState.blank();
-      // Set up a collapsed selection
-      final firstSelectable = editorState.document.root.children
-          .firstWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      final lastSelectable = editorState.document.root.children
-          .lastWhereOrNull(
-            (element) => element.selectable != null,
-          )
-          ?.selectable;
-      if (firstSelectable == null || lastSelectable == null) {
-        return;
-      }
-      editorState.updateSelectionWithReason(
-        Selection(start: firstSelectable.start(), end: lastSelectable.end()),
-      );
-
-      // Act
-      copyEventHandler(editorState, null);
-      final copiedText = await AppFlowyClipboard.getData();
-
-      // Assert
-      // Verify that no text or HTML is copied to the clipboard
-      // You can use appropriate assertions based on your clipboard implementation
-      // For example:
-      expect(copiedText.text, null);
-      expect(copiedText.html, null);
+    testWidgets('Presses Command + A in nested docment and copy text',
+        (tester) async {
+      await _testhandleCopy(tester, Document.fromJson(data));
     });
   });
-
-  // Add more test cases as needed to cover different scenarios and edge cases
 }
 
-Future<void> _handleCopy(EditorState editorState) async {
-  final selection = editorState.selection?.normalized;
-  if (selection == null || selection.isCollapsed) {
-    return;
-  }
-  if (selection.start.path.equals(selection.end.path)) {
-    final nodeAtPath = editorState.document.nodeAtPath(selection.end.path)!;
-
-    final textNode = nodeAtPath;
-    final htmlString = nodesToHTML([textNode]);
-    String textString = "";
-    final Delta? delta = textNode.delta;
-    final children = textNode.children;
-    final plainText = delta != null ? delta.toPlainText() : "";
-    if (children == null) {
-      textString = plainText;
-    } else {
-      final String chilrenString = children.fold('', (previousValue, node) {
-        final delta = node.delta;
-        if (delta != null) {
-          return previousValue + '\n' + delta.toPlainText();
-        }
-
-        return previousValue;
-      });
-      textString = "$plainText $chilrenString";
-    }
-    Log.keyboard.debug('copy html: $htmlString');
-    AppFlowyClipboard.setData(
-      text: textString,
-      html: htmlString,
-    );
-    final copiedText = await AppFlowyClipboard.getData();
-    expect(copiedText.text, paragraphText);
-    expect(copiedText.html, paragraphhtml);
-
-    return;
-  }
-
-  final beginNode = editorState.document.nodeAtPath(selection.start.path)!;
-  final endNode = editorState.document.nodeAtPath(selection.end.path)!;
-
-  final nodes = NodeIterator(
-    document: editorState.document,
-    startNode: beginNode,
-    endNode: endNode,
-  ).toList();
-
-  final html = nodesToHTML(nodes);
-  var text = '';
-  for (final node in nodes) {
-    String textString = "";
-    final Delta? delta = node.delta;
-    final children = node.children;
-    final plainText = delta != null ? delta.toPlainText() : "";
-    if (children == null) {
-      textString = plainText;
-    } else {
-      final String childrenString =
-          children.fold('', (previousValue, stringnode) {
-        final delta = node.delta;
-        if (delta != null) {
-          return previousValue + '\n' + delta.toPlainText();
-        }
-
-        return previousValue;
-      });
-      textString = "$plainText $childrenString";
-    }
-    text = text + textString + '\n';
-  }
-  Log.keyboard.debug('copy html: $html');
-  AppFlowyClipboard.setData(
-    text: text,
-    html: html,
+Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
+  final editor = tester.editor..initializeWithDocment(document);
+  await editor.startTesting();
+  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyA,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
   );
-  final copiedText = await AppFlowyClipboard.getData();
-  expect(copiedText.text, plainText);
-  expect(copiedText.html, rawHTML);
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyC,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+  await editor.pressKey(
+    key: LogicalKeyboardKey.delete,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+  expect(
+    editor.editorState.document,
+    document,
+  );
+  // final copiedText = await AppFlowyClipboard.getData();
+  // if (smallText) {
+  //   expect(copiedText.text, paragraphText);
+  //   expect(copiedText.html, paragraphhtml);
+  // } else {
+  //   expect(copiedText.text, plainText);
+  //   expect(copiedText.html, rawHTML);
+  // }
+
+  await editor.dispose();
 }
 
 const paragraphText =

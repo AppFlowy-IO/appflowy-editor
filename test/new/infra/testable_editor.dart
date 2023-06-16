@@ -73,6 +73,12 @@ class TestableEditor {
     );
   }
 
+  void initializeWithDocment(Document document) {
+    _editorState = EditorState(
+      document: document,
+    );
+  }
+
   Future<void> dispose() async {
     _ime = null;
     // Workaround: to wait all the debounce calls expire.
