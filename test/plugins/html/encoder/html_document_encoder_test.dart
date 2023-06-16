@@ -18,15 +18,167 @@ void main() async {
 
       expect(result, nestedhtml);
     });
-    test('quote parser document', () async {
+    test('checkBox parser document', () async {
       final result =
-          DocumentHTMLEncoder().convert(Document.fromJson(quoteExample));
-
-      expect(result, rawHtmlWithQuote);
+          DocumentHTMLEncoder().convert(Document.fromJson(checkBoxExample));
+      expect(result, checkBoxHtml);
     });
   });
 }
 
+const checkBoxExample = {
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "level": 2,
+          "delta": [
+            {"insert": "👋 "},
+            {
+              "insert": "Welcome to",
+              "data": {"bold": true}
+            },
+            {"insert": " "},
+            {
+              "insert": "AppFlowy Editor",
+              "data": {"href": "appflowy.io", "italic": true, "bold": true}
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "AppFlowy Editor is a"},
+            {"insert": " "},
+            {
+              "insert": "highly customizable",
+              "data": {"bold": true}
+            },
+            {"insert": " "},
+            {
+              "insert": "rich-text editor",
+              "data": {"italic": true}
+            },
+            {"insert": " for "},
+            {
+              "insert": "Flutter",
+              "data": {"underline": true}
+            }
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "Customizable"}
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "Test-covered"}
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "more to come!"}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "quote",
+        "data": {
+          "delta": [
+            {"insert": "Here is an example you can give a try"}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "You can also use "},
+            {
+              "insert": "AppFlowy Editor",
+              "data": {
+                "italic": true,
+                "bold": true,
+                "textColor": "0xffD70040",
+                "highlightColor": "0x6000BCF0"
+              }
+            },
+            {"insert": " as a component to build your own app."}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {"insert": "Use / to insert blocks"}
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "Select text to trigger to the toolbar to format your notes."
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+            }
+          ]
+        }
+      }
+    ]
+  }
+};
+const checkBoxHtml =
+    '''<h2>👋 Welcome to AppFlowy Editor</h2><p></p><p>AppFlowy Editor is a highly customizable rich-text editor for Flutter</p><div><input type="checkbox" checked="true">Customizable</div><div><input type="checkbox" checked="true">Test-covered</div><div><input type="checkbox" checked="true">more to come!</div><p></p><blockquote>Here is an example you can give a try</blockquote><p></p><p>You can also use AppFlowy Editor as a component to build your own app.</p><p></p><ul><li>Use / to insert blocks</li><li>Select text to trigger to the toolbar to format your notes.</li></ul><p></p><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p>''';
 const rawHtmlWithQuote =
     '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</p>''';
 const quoteExample = {
