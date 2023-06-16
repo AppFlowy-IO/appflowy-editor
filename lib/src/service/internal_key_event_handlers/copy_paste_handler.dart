@@ -101,7 +101,7 @@ void _handleCopy(EditorState editorState) async {
 }
 
 void _pasteHTML(EditorState editorState, String html) {
-  final selection = editorState.cursorSelection?.normalized;
+  final selection = editorState.selection?.normalized;
   if (selection == null) {
     return;
   }

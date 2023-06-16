@@ -36,21 +36,13 @@ Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyC,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  copyEventHandler(editor.editorState, null);
   await editor.pressKey(
     key: LogicalKeyboardKey.backspace,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyV,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  pasteEventHandler(editor.editorState, null);
   expect(
     editor.editorState.document.toJson(),
     document.toJson(),
@@ -63,11 +55,7 @@ Future<void> _testhandleCopyCollapsed(
     WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocment(document);
   await editor.startTesting();
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyC,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  copyEventHandler(editor.editorState, null);
 
   expect(
     editor.editorState.selection,
