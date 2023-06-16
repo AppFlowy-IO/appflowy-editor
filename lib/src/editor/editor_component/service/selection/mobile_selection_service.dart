@@ -14,9 +14,12 @@ enum MobileSelectionDragMode {
   leftSelectionHandler,
   rightSelectionHandler,
   cursor;
+}
 
-  bool get isSelectionMode =>
-      this == leftSelectionHandler || this == rightSelectionHandler;
+enum MobileSelectionHandlerType {
+  leftHandler,
+  rightHandler,
+  cursorHandler,
 }
 
 class MobileSelectionServiceWidget extends StatefulWidget {
@@ -283,22 +286,28 @@ class _MobileSelectionServiceWidgetState
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
+    final position = details.globalPosition;
     final selection = editorState.selection;
     if (selection == null) {
       dragMode = MobileSelectionDragMode.none;
-    } else if (selection.isCollapsed) {
+    } else if (selection.isCollapsed &&
+        _isOverlayOnHandler(
+          position,
+          MobileSelectionHandlerType.cursorHandler,
+        )) {
       dragMode = MobileSelectionDragMode.cursor;
+    } else if (_isOverlayOnHandler(
+      position,
+      MobileSelectionHandlerType.leftHandler,
+    )) {
+      dragMode = MobileSelectionDragMode.leftSelectionHandler;
+    } else if (_isOverlayOnHandler(
+      position,
+      MobileSelectionHandlerType.rightHandler,
+    )) {
+      dragMode = MobileSelectionDragMode.rightSelectionHandler;
     } else {
-      final (isOverlayLeft, isOverlayRight) = _isOverlayOnHandler(
-        details.globalPosition,
-      );
-      if (isOverlayLeft) {
-        dragMode = MobileSelectionDragMode.leftSelectionHandler;
-      } else if (isOverlayRight) {
-        dragMode = MobileSelectionDragMode.rightSelectionHandler;
-      } else {
-        dragMode = MobileSelectionDragMode.none;
-      }
+      dragMode = MobileSelectionDragMode.none;
     }
   }
 
@@ -309,7 +318,7 @@ class _MobileSelectionServiceWidgetState
 
     // only support selection mode now.
     final selection = editorState.selection;
-    if (!dragMode.isSelectionMode || selection == null) {
+    if (selection == null || dragMode == MobileSelectionDragMode.none) {
       return;
     }
 
@@ -319,42 +328,26 @@ class _MobileSelectionServiceWidgetState
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
+    final end = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getSelectionInRange(panStartOffset, panEndOffset)
+        .end;
 
-    if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
-      // keep the end position
-      final end = getNodeInOffset(panEndOffset)
-          ?.selectable
-          ?.getSelectionInRange(panStartOffset, panEndOffset)
-          .end;
-      if (end != null) {
+    if (end != null) {
+      if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
         updateSelection(
           selection.copyWith(start: end),
         );
-      }
-    } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
-      // keep the start position
-      final end = getNodeInOffset(panEndOffset)
-          ?.selectable
-          ?.getSelectionInRange(panStartOffset, panEndOffset)
-          .end;
-      if (end != null) {
+      } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
         updateSelection(
           selection.copyWith(end: end),
         );
+      } else if (dragMode == MobileSelectionDragMode.cursor) {
+        updateSelection(
+          Selection.collapsed(end),
+        );
       }
     }
-
-    // final first = getNodeInOffset(panStartOffset)?.selectable;
-    // final last = getNodeInOffset(panEndOffset)?.selectable;
-
-    // // compute the selection in range.
-    // if (first != null && last != null) {
-    //   final start =
-    //       first.getSelectionInRange(panStartOffset, panEndOffset).start;
-    //   final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
-    //   final selection = Selection(start: start, end: end);
-    //   updateSelection(selection);
-    // }
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -452,7 +445,6 @@ class _MobileSelectionServiceWidgetState
         for (final (j, rect) in rects.indexed) {
           final selectionRect = selectable.transformRectToGlobal(rect);
           selectionRects.add(selectionRect);
-          print('i = $i, i = $j rect = $rect, selectionRect = $selectionRect');
           final overlay = OverlayEntry(
             builder: (context) => MobileSelectionWidget(
               color: widget.selectionColor,
@@ -545,28 +537,33 @@ class _MobileSelectionServiceWidgetState
     return node;
   }
 
-  (bool isLeftOverlay, bool isRightOverlay) _isOverlayOnHandler(Offset point) {
+  bool _isOverlayOnHandler(Offset point, MobileSelectionHandlerType type) {
     if (selectionRects.isEmpty) {
-      return (false, false);
+      return false;
     }
 
-    final first = selectionRects.first;
-    final last = selectionRects.last;
-    // basically, the width of the handler is too small to touch, so we extend the touch area
-    //  for better user-experience.
     const extend = 30.0;
-    final leftHandlerRect = Rect.fromLTWH(
-      first.left - extend,
-      first.top - extend,
-      extend * 2,
-      first.height + 2 * extend,
-    );
-    final rightHandlerRect = Rect.fromLTWH(
-      last.right - extend,
-      last.top - extend,
-      extend * 2,
-      last.height + 2 * extend,
-    );
-    return (leftHandlerRect.contains(point), rightHandlerRect.contains(point));
+    switch (type) {
+      case MobileSelectionHandlerType.leftHandler:
+      case MobileSelectionHandlerType.cursorHandler:
+        final first = selectionRects.first;
+        final handlerRect = Rect.fromLTWH(
+          first.left - extend,
+          first.top - extend,
+          extend * 2,
+          first.height + 2 * extend,
+        );
+        return handlerRect.contains(point);
+
+      case MobileSelectionHandlerType.rightHandler:
+        final last = selectionRects.last;
+        final rightHandlerRect = Rect.fromLTWH(
+          last.right - extend,
+          last.top - extend,
+          extend * 2,
+          last.height + 2 * extend,
+        );
+        return rightHandlerRect.contains(point);
+    }
   }
 }
