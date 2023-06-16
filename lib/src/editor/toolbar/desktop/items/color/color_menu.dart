@@ -80,7 +80,8 @@ void _formatFontColor(EditorState editorState, String color) {
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
-  final defaultColor = editorState.editorStyle.textStyleConfiguration.text.color ??
+  final defaultColor = editorState
+          .editorStyle.textStyleConfiguration.text.color ??
       Colors.black; // color is black if text.color is not set by the developer
 
   return [
