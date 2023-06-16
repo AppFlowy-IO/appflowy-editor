@@ -300,8 +300,6 @@ class _MobileSelectionServiceWidgetState
         dragMode = MobileSelectionDragMode.none;
       }
     }
-
-    Log.selection.debug('current drag mode = $dragMode');
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
