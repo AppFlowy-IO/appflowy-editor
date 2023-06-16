@@ -20,6 +20,10 @@ void main() async {
         (tester) async {
       await _testhandleCopy(tester, Document.fromJson(data));
     });
+
+    testWidgets('Presses Command + A in collapsed state', (tester) async {
+      await _testhandleCopyCollapsed(tester, Document.fromJson(data));
+    });
   });
 }
 
@@ -38,22 +42,37 @@ Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
     isMetaPressed: Platform.isMacOS,
   );
   await editor.pressKey(
-    key: LogicalKeyboardKey.delete,
+    key: LogicalKeyboardKey.backspace,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyV,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
   expect(
-    editor.editorState.document,
-    document,
+    editor.editorState.document.toJson(),
+    document.toJson(),
   );
-  // final copiedText = await AppFlowyClipboard.getData();
-  // if (smallText) {
-  //   expect(copiedText.text, paragraphText);
-  //   expect(copiedText.html, paragraphhtml);
-  // } else {
-  //   expect(copiedText.text, plainText);
-  //   expect(copiedText.html, rawHTML);
-  // }
+
+  await editor.dispose();
+}
+
+Future<void> _testhandleCopyCollapsed(
+    WidgetTester tester, Document document) async {
+  final editor = tester.editor..initializeWithDocment(document);
+  await editor.startTesting();
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyC,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
+  expect(
+    editor.editorState.selection,
+    null,
+  );
 
   await editor.dispose();
 }
