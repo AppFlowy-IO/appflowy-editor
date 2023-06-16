@@ -56,10 +56,10 @@ Future<void> _testhandleCopyCollapsed(
   final editor = tester.editor..initializeWithDocment(document);
   await editor.startTesting();
   copyEventHandler(editor.editorState, null);
-
+  pasteEventHandler(editor.editorState, null);
   expect(
-    editor.editorState.selection,
-    null,
+    editor.editorState.document.toJson(),
+    document.toJson(),
   );
 
   await editor.dispose();
