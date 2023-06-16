@@ -18,9 +18,67 @@ void main() async {
 
       expect(result, nestedhtml);
     });
+    test('quote parser document', () async {
+      final result =
+          DocumentHTMLEncoder().convert(Document.fromJson(quoteExample));
+
+      expect(result, rawHtmlWithQuote);
+    });
   });
 }
 
+const rawHtmlWithQuote =
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</p>''';
+const quoteExample = {
+  'document': {
+    'type': 'page',
+    'children': [
+      {
+        'type': 'heading',
+        'data': {
+          'level': 1,
+          'delta': [
+            {'insert': 'Welcome to the playground'}
+          ]
+        }
+      },
+      {
+        'type': 'quote',
+        'data': {
+          'delta': [
+            {
+              'insert':
+                  'In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.'
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': 'The playground is a demo environment built with '},
+            {
+              'insert': '@lexical/react',
+              'attributes': {'code': true}
+            },
+            {'insert': '. Try typing in '},
+            {
+              'insert': 'some text',
+              'attributes': {'bold': true}
+            },
+            {'insert': ' with '},
+            {
+              'insert': 'different',
+              'attributes': {'italic': true}
+            },
+            {'insert': ' formats.'}
+          ]
+        }
+      }
+    ]
+  }
+};
 const example =
     '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
 

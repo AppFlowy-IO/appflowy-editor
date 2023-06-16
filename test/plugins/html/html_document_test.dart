@@ -24,9 +24,66 @@ void main() {
 
       expect(document, nestedhtml);
     });
+    test('quote documentToHtml()', () {
+      final document = documentToHTML(Document.fromJson(quoteExample));
+
+      expect(document, rawHtmlWithQuote);
+    });
   });
 }
 
+const rawHtmlWithQuote =
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</p>''';
+const quoteExample = {
+  'document': {
+    'type': 'page',
+    'children': [
+      {
+        'type': 'heading',
+        'data': {
+          'level': 1,
+          'delta': [
+            {'insert': 'Welcome to the playground'}
+          ]
+        }
+      },
+      {
+        'type': 'quote',
+        'data': {
+          'delta': [
+            {
+              'insert':
+                  'In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.'
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': 'The playground is a demo environment built with '},
+            {
+              'insert': '@lexical/react',
+              'attributes': {'code': true}
+            },
+            {'insert': '. Try typing in '},
+            {
+              'insert': 'some text',
+              'attributes': {'bold': true}
+            },
+            {'insert': ' with '},
+            {
+              'insert': 'different',
+              'attributes': {'italic': true}
+            },
+            {'insert': ' formats.'}
+          ]
+        }
+      }
+    ]
+  }
+};
 const data = {
   'document': {
     'type': 'page',
