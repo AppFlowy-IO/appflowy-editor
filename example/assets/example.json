@@ -91,7 +91,7 @@
       {
         "type": "todo_list",
         "data": {
-          "checked": true,
+          "checked": false,
           "delta": [{
             "insert": "more to come!"
           }]
