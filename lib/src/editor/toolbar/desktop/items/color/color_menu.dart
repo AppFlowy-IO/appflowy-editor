@@ -80,9 +80,12 @@ void _formatFontColor(EditorState editorState, String color) {
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
+  final defaultColor = editorState.editorStyle.textStyleConfiguration.text.color ??
+      Colors.black; // color is black if text.color is not set by the developer
+
   return [
     ColorOption(
-      colorHex: editorState.editorStyle.textStyleConfiguration.text.color?.toHex() ?? Colors.black.toHex(),
+      colorHex: defaultColor.toHex(),
       name: AppFlowyEditorLocalizations.current.fontColorDefault,
     ),
     ColorOption(
