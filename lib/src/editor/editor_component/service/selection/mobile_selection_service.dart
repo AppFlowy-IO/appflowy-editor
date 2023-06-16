@@ -2,17 +2,21 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
+import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
-import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:provider/provider.dart';
 
 enum MobileSelectionDragMode {
   none,
-  selection,
-  cursor,
+  leftSelectionHandler,
+  rightSelectionHandler,
+  cursor;
+
+  bool get isSelectionMode =>
+      this == leftSelectionHandler || this == rightSelectionHandler;
 }
 
 class MobileSelectionServiceWidget extends StatefulWidget {
@@ -95,7 +99,7 @@ class _MobileSelectionServiceWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return SelectionGestureDetector(
+    return MobileSelectionGestureDetector(
       onPanStart: _onPanStart,
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
@@ -276,21 +280,28 @@ class _MobileSelectionServiceWidgetState
   }
 
   void _onPanStart(DragStartDetails details) {
-    clearSelection();
-
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
     final selection = editorState.selection;
     if (selection == null) {
       dragMode = MobileSelectionDragMode.none;
+    } else if (selection.isCollapsed) {
+      dragMode = MobileSelectionDragMode.cursor;
     } else {
-      if (selection.isCollapsed) {
-        dragMode = MobileSelectionDragMode.cursor;
+      final (isOverlayLeft, isOverlayRight) = _isOverlayOnHandler(
+        details.globalPosition,
+      );
+      if (isOverlayLeft) {
+        dragMode = MobileSelectionDragMode.leftSelectionHandler;
+      } else if (isOverlayRight) {
+        dragMode = MobileSelectionDragMode.rightSelectionHandler;
       } else {
-        dragMode = MobileSelectionDragMode.selection;
+        dragMode = MobileSelectionDragMode.none;
       }
     }
+
+    Log.selection.debug('current drag mode = $dragMode');
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -299,30 +310,53 @@ class _MobileSelectionServiceWidgetState
     }
 
     // only support selection mode now.
-    if (dragMode != MobileSelectionDragMode.selection) {
+    final selection = editorState.selection;
+    if (!dragMode.isSelectionMode || selection == null) {
       return;
     }
 
-    // check if the offset of details is over the handler of the selection area.
-
     final panEndOffset = details.globalPosition;
+
     final dy = editorState.service.scrollService?.dy;
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
 
-    final first = getNodeInOffset(panStartOffset)?.selectable;
-    final last = getNodeInOffset(panEndOffset)?.selectable;
-
-    // compute the selection in range.
-    if (first != null && last != null) {
-      // Log.selection.debug('first = $first, last = $last');
-      final start =
-          first.getSelectionInRange(panStartOffset, panEndOffset).start;
-      final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
-      final selection = Selection(start: start, end: end);
-      updateSelection(selection);
+    if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
+      // keep the end position
+      final end = getNodeInOffset(panEndOffset)
+          ?.selectable
+          ?.getSelectionInRange(panStartOffset, panEndOffset)
+          .end;
+      if (end != null) {
+        updateSelection(
+          selection.copyWith(start: end),
+        );
+      }
+    } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
+      // keep the start position
+      final end = getNodeInOffset(panEndOffset)
+          ?.selectable
+          ?.getSelectionInRange(panStartOffset, panEndOffset)
+          .end;
+      if (end != null) {
+        updateSelection(
+          selection.copyWith(end: end),
+        );
+      }
     }
+
+    // final first = getNodeInOffset(panStartOffset)?.selectable;
+    // final last = getNodeInOffset(panEndOffset)?.selectable;
+
+    // // compute the selection in range.
+    // if (first != null && last != null) {
+    //   final start =
+    //       first.getSelectionInRange(panStartOffset, panEndOffset).start;
+    //   final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
+    //   final selection = Selection(start: start, end: end);
+    //   updateSelection(selection);
+    // }
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -511,5 +545,30 @@ class _MobileSelectionServiceWidgetState
       );
     }
     return node;
+  }
+
+  (bool isLeftOverlay, bool isRightOverlay) _isOverlayOnHandler(Offset point) {
+    if (selectionRects.isEmpty) {
+      return (false, false);
+    }
+
+    final first = selectionRects.first;
+    final last = selectionRects.last;
+    // basically, the width of the handler is too small to touch, so we extend the touch area
+    //  for better user-experience.
+    const extend = 30.0;
+    final leftHandlerRect = Rect.fromLTWH(
+      first.left - extend,
+      first.top - extend,
+      extend * 2,
+      first.height + 2 * extend,
+    );
+    final rightHandlerRect = Rect.fromLTWH(
+      last.right - extend,
+      last.top - extend,
+      extend * 2,
+      last.height + 2 * extend,
+    );
+    return (leftHandlerRect.contains(point), rightHandlerRect.contains(point));
   }
 }
