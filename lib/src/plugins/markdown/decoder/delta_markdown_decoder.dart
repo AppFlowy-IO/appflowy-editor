@@ -12,7 +12,6 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
 
   @override
   Delta convert(String input) {
-    final document =
     final document = md.Document(
       extensionSet: md.ExtensionSet.gitHubWeb,
       encodeHtml: false,
