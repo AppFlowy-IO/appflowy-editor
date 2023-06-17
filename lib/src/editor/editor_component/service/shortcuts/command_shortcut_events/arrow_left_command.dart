@@ -38,7 +38,7 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
 // move the cursor to the beginning of the block
 final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
   key: 'move the cursor at the start of line',
-  command: 'home',
+  command: 'ctrl+arrow left,home',
   macOSCommand: 'cmd+arrow left',
   handler: _moveCursorToBeginCommandHandler,
 );
