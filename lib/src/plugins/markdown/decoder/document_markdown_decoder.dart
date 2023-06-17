@@ -17,19 +17,24 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // a temporary pointer which stored the line number of the line with starting ```
     int i = 0;
     while (i < lines.length) {
-      if (lines[i].startsWith("```")) {
+      if (lines[i].startsWith('```') &&
+          lines[i].endsWith('```') &&
+          lines[i].length > 3) {
+        document.insert([i], [_convertLineToNode(lines[i])]);
+        i++;
+      } else if (lines[i].startsWith("```")) {
         String codeBlock = "";
         codeBlock += "${lines[i]}\n";
         int tempLinePointer = i;
         i++;
-        while (!lines[i].endsWith("```") && i < lines.length) {
+        while (i < lines.length && !lines[i].endsWith("```")) {
           codeBlock += "${lines[i]}\n";
           i++;
         }
 
         if (i == lines.length) {
-          document.insert([i], [_convertLineToNode(lines[i])]);
           i = tempLinePointer;
+          document.insert([i], [_convertLineToNode(lines[i])]);
           i++;
         } else {
           codeBlock += lines[i];
@@ -99,26 +104,48 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     );
   }
 
-  Node? _codeBlockNodeFromMarkdown(
+  Node _codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
   ) {
-    const codeMarker = '````';
+    // This if conditions checks for cases like - ````` where we can see
+    // it starts with ``` as well as end with ``` but is not a valid code block
+    // so this is treated like a normal paragraph
+    if (!markdown.contains('\n') &&
+        markdown.split('`').length - 1 == markdown.length) {
+      return paragraphNode(
+        attributes: {'delta': decoder.convert(markdown).toJson()},
+      );
+    }
+    const codeMarker = '```';
     int codeStartIndex = markdown.indexOf(codeMarker);
     int codeEndIndex = markdown.indexOf(
       codeMarker,
       codeStartIndex + codeMarker.length,
     );
-
+    // This if condition is for handling cases like ```\n`
+    // In this case codeStartIndex = 0 and codeEndIndex = -1
+    if (codeEndIndex < codeStartIndex) {
+      return paragraphNode(
+        attributes: {'delta': decoder.convert(markdown).toJson()},
+      );
+    }
     String codeBlock = markdown.substring(
       codeStartIndex + codeMarker.length,
       codeEndIndex,
     );
     List<String> codeLines = codeBlock.trim().split('\n');
 
-    if (codeLines.isEmpty) {
-      // handle error
-      return null;
+    // This if condition will handle cases like ```hello world```
+    // this would be treated as a code block with hello world as its content
+    if (codeLines[0].split(' ').length > 1) {
+      return Node(
+        type: 'code',
+        attributes: {
+          'delta': decoder.convert(codeBlock).toJson(),
+          'language': null
+        },
+      );
     }
     final language = codeLines[0].trim();
     final codeContent = codeLines.sublist(1).join('\n');
@@ -127,7 +154,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       type: 'code',
       attributes: {
         'delta': decoder.convert(codeContent).toJson(),
-        'language': language
+        'language': language.isEmpty ? null : language
       },
     );
   }
