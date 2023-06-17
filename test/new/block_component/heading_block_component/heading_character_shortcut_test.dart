@@ -20,11 +20,26 @@ void main() async {
 
   group('formate', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
+
+    // Before
+    // ''
+    // After
+    // ' '
+    test('mock inputting a ` ` after the >', () async {
+      testFormatCharacterShortcut(formatSignToHeading, '', 0,
+          (result, before, after) {
+        expect(result, false);
+        expect(before.delta!.toPlainText(), '');
+        expect(after.delta!.toPlainText(), '');
+        expect(after.type != HeadingBlockKeys.type, true);
+      }, text: '');
+    });
+
     // Before
     // #|Welcome to AppFlowy Editor 🔥!
     // After
     // [heading] Welcome to AppFlowy Editor 🔥!
-    test('mock inputting a ` ` after the >', () async {
+    test('mock inputting a ` ` after the #', () async {
       for (var i = 1; i <= 6; i++) {
         testFormatCharacterShortcut(
           formatSignToHeading,
@@ -44,7 +59,7 @@ void main() async {
     // #######|Welcome to AppFlowy Editor 🔥!
     // After
     // #######|Welcome to AppFlowy Editor 🔥!
-    test('mock inputting a ` ` after the >', () async {
+    test('mock inputting a ` ` after the #', () async {
       testFormatCharacterShortcut(
         formatSignToHeading,
         '#' * 7,
