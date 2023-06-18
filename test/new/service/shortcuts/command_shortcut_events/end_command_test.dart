@@ -44,47 +44,43 @@ void main() async {
 
       await simulateKeyDownEvent(LogicalKeyboardKey.end);
 
-      // End key on MacOS scrolls to the end of the page, since we only have one
-      // paragraph in our page, the cursor is expected to move to the end
-      // of line.
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: text.length),
-      );
+      if (Platform.isWindows || Platform.isLinux) {
+        expect(
+          editor.selection,
+          Selection.single(path: [0], startOffset: text.length),
+        );
+      }
+      //On Mac OS, the document will scroll to the bottom but the selection
+      //will not be updated.
+
       await editor.dispose();
     });
 
-    testWidgets('press the end key to go to the end of page in macOs',
+    testWidgets('press the home key to go to the start of selected line',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+      final editor = tester.editor..addParagraphs(10, initialText: text);
 
-      editor.addParagraphs(10, initialText: text);
       await editor.startTesting();
 
-      expect(editor.documentRootLen, 11);
+      expect(editor.documentRootLen, 10);
 
       final selection = Selection.collapse(
-        [0],
+        [5],
         0,
       );
       await editor.updateSelection(selection);
 
       await simulateKeyDownEvent(LogicalKeyboardKey.end);
 
-      if (Platform.isMacOS) {
+      if (Platform.isWindows || Platform.isLinux) {
         expect(
           editor.selection,
-          Selection.single(path: [10], startOffset: text.length),
-        );
-      } else {
-        expect(
-          editor.selection,
-          Selection.single(path: [0], startOffset: text.length),
+          Selection.single(path: [5], startOffset: text.length),
         );
       }
+      //On Mac OS, the document will scroll to the bottom but the selection
+      //will not be updated.
+
       await editor.dispose();
     });
   });

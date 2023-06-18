@@ -45,47 +45,43 @@ void main() async {
 
       await simulateKeyDownEvent(LogicalKeyboardKey.home);
 
-      // Home key on MacOS goes to the top of the page, since we only have one
-      // paragraph in our page, the cursor is expected to move to the start
-      // of line.
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      if (Platform.isWindows || Platform.isLinux) {
+        expect(
+          editor.selection,
+          Selection.single(path: [0], startOffset: 0),
+        );
+      }
+      //On Mac OS, the document will scroll to the top but the selection
+      //will not be updated.
+
       await editor.dispose();
     });
 
-    testWidgets('press the home key to go to the start of page in macOs',
+    testWidgets('press the home key to go to the start of selected line',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+      final editor = tester.editor..addParagraphs(10, initialText: text);
 
-      editor.addParagraphs(10, initialText: text);
       await editor.startTesting();
 
-      expect(editor.documentRootLen, 11);
+      expect(editor.documentRootLen, 10);
 
       final selection = Selection.collapse(
-        [10],
+        [5],
         text.length,
       );
       await editor.updateSelection(selection);
 
       await simulateKeyDownEvent(LogicalKeyboardKey.home);
 
-      if (Platform.isMacOS) {
+      if (Platform.isWindows || Platform.isLinux) {
         expect(
           editor.selection,
-          Selection.single(path: [0], startOffset: 0),
-        );
-      } else {
-        expect(
-          editor.selection,
-          Selection.single(path: [10], startOffset: 0),
+          Selection.single(path: [5], startOffset: 0),
         );
       }
+      //On Mac OS, the document will scroll to the top but the selection
+      //will not be updated.
+
       await editor.dispose();
     });
   });
