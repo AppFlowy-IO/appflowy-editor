@@ -266,13 +266,6 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: enterWithoutShiftInTextNodesHandler,
   ),
   ShortcutEvent(
-    key: 'open link',
-    command: 'alt+enter',
-    windowsCommand: 'alt+enter',
-    linuxCommand: 'alt+enter',
-    handler: linkOpenHandler,
-  ),
-  ShortcutEvent(
     key: 'markdown',
     command: 'space',
     handler: whiteSpaceHandler,
