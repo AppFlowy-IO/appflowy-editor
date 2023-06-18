@@ -109,8 +109,20 @@ class _HeadingBlockComponentWidgetState
 
   int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget build(BuildContext context) {
+    final (textDirection, startText) = getTextDirection(
+      widget.node.attributes.direction,
+      node.delta?.toPlainText(),
+      lastStartText,
+      lastDirection,
+    );
+    lastStartText = startText;
+    lastDirection = textDirection;
+
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
@@ -131,6 +143,7 @@ class _HeadingBlockComponentWidgetState
             .updateTextStyle(
               widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
             ),
+        textDirection: textDirection,
       ),
     );
 

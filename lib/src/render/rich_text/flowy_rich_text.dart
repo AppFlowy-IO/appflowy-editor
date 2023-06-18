@@ -22,6 +22,12 @@ const _kRichTextDebugMode = false;
 
 typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
+enum FlowyTextDirection {
+  rtl,
+  ltr,
+  auto,
+}
+
 class FlowyRichText extends StatefulWidget {
   const FlowyRichText({
     Key? key,
@@ -31,6 +37,7 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
+    this.textDirection,
     required this.node,
     required this.editorState,
   }) : super(key: key);
@@ -43,6 +50,7 @@ class FlowyRichText extends StatefulWidget {
   final FlowyTextSpanDecorator? textSpanDecorator;
   final String placeholderText;
   final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
+  final TextDirection? textDirection;
 
   @override
   State<FlowyRichText> createState() => _FlowyRichTextState();
@@ -204,9 +212,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
-      textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
-          ? TextDirection.rtl
-          : TextDirection.ltr,
+      textDirection: widget.textDirection,
     );
   }
 
@@ -221,9 +227,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.textSpanDecorator != null
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
-      textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
-          ? TextDirection.rtl
-          : TextDirection.ltr,
+      textDirection: widget.textDirection,
     );
   }
 
@@ -421,6 +425,18 @@ extension FlowyRichTextAttributes on Attributes {
   String? get href {
     if (this[FlowyRichTextKeys.href] is String) {
       return this[FlowyRichTextKeys.href];
+    }
+    return null;
+  }
+
+  FlowyTextDirection? get direction {
+    switch (this[FlowyRichTextKeys.dir]) {
+      case "rtl":
+        return FlowyTextDirection.rtl;
+      case "ltr":
+        return FlowyTextDirection.ltr;
+      case "auto":
+        return FlowyTextDirection.auto;
     }
     return null;
   }

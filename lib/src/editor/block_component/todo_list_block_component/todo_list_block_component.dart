@@ -110,8 +110,20 @@ class _TodoListBlockComponentWidgetState
 
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget buildComponent(BuildContext context) {
+    final (textDirection, startText) = getTextDirection(
+      widget.node.attributes.direction,
+      node.delta?.toPlainText(),
+      lastStartText,
+      lastDirection,
+    );
+    lastStartText = startText;
+    lastDirection = textDirection;
+
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
@@ -119,9 +131,7 @@ class _TodoListBlockComponentWidgetState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
-            ? TextDirection.rtl
-            : TextDirection.ltr,
+        textDirection: textDirection,
         children: [
           _TodoListIcon(
             icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),
@@ -142,6 +152,7 @@ class _TodoListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              textDirection: textDirection,
             ),
           ),
         ],

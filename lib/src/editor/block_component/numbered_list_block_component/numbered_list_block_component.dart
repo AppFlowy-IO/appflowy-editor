@@ -83,8 +83,20 @@ class _NumberedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget buildComponent(BuildContext context) {
+    final (textDirection, startText) = getTextDirection(
+      widget.node.attributes.direction,
+      node.delta?.toPlainText(),
+      lastStartText,
+      lastDirection,
+    );
+    lastStartText = startText;
+    lastDirection = textDirection;
+
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
@@ -92,9 +104,7 @@ class _NumberedListBlockComponentWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
-            ? TextDirection.rtl
-            : TextDirection.ltr,
+        textDirection: textDirection,
         children: [
           defaultIcon(),
           Flexible(
@@ -110,6 +120,7 @@ class _NumberedListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              textDirection: textDirection,
             ),
           ),
         ],

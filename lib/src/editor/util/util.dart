@@ -4,3 +4,4 @@ export 'platform_extension.dart';
 export 'delta_util.dart';
 export 'color_util.dart';
 export 'property_notifier.dart';
+export 'rich_text.dart';

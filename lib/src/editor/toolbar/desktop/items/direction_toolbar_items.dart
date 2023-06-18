@@ -2,23 +2,25 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final List<ToolbarItem> textDirectionItems = [
-  //_FormatToolbarItem(
-  //  id: 'ltr',
-  //  name: 'ltr',
-  //  tooltip: AppFlowyEditorLocalizations.current.ltr,
-  //  icon: Icons.format_textdirection_l_to_r,
-  //),
+  _FormatToolbarItem(
+    id: 'auto',
+    name: 'auto',
+    tooltip: AppFlowyEditorLocalizations.current.auto,
+    // TODO: auto direction icon
+    icon: Icons.format_textdirection_l_to_r,
+  ),
+  _FormatToolbarItem(
+    id: 'ltr',
+    name: 'ltr',
+    tooltip: AppFlowyEditorLocalizations.current.ltr,
+    icon: Icons.format_textdirection_l_to_r,
+  ),
   _FormatToolbarItem(
     id: 'rtl',
     name: 'rtl',
     tooltip: AppFlowyEditorLocalizations.current.rtl,
     icon: Icons.format_textdirection_r_to_l,
   ),
-  //_FormatToolbarItem(
-  //  id: 'auto',
-  //  name: 'auto',
-  //  tooltip: AppFlowyEditorLocalizations.current.auto,
-  //),
 ];
 
 class _FormatToolbarItem extends ToolbarItem {

@@ -91,8 +91,20 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget buildComponent(BuildContext context) {
+    final (textDirection, startText) = getTextDirection(
+      widget.node.attributes.direction,
+      node.delta?.toPlainText(),
+      lastStartText,
+      lastDirection,
+    );
+    lastStartText = startText;
+    lastDirection = textDirection;
+
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
@@ -107,6 +119,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         placeholderTextSpanDecorator: (textSpan) => textSpan.updateTextStyle(
           placeholderTextStyle,
         ),
+        textDirection: textDirection,
       ),
     );
     if (showActions) {

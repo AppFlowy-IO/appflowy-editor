@@ -84,8 +84,20 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget build(BuildContext context) {
+    final (textDirection, startText) = getTextDirection(
+      widget.node.attributes.direction,
+      node.delta?.toPlainText(),
+      lastStartText,
+      lastDirection,
+    );
+    lastStartText = startText;
+    lastDirection = textDirection;
+
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
@@ -94,9 +106,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          textDirection: widget.node.attributes[FlowyRichTextKeys.dir] == 'rtl'
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          textDirection: textDirection,
           children: [
             defaultIcon(),
             Flexible(
@@ -112,6 +122,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                     textSpan.updateTextStyle(
                   placeholderTextStyle,
                 ),
+                textDirection: textDirection,
               ),
             ),
           ],
