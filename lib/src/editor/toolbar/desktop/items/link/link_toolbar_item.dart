@@ -72,15 +72,17 @@ void showLinkMenu(
   OverlayEntry? overlay;
 
   void dismissOverlay() {
+    keepEditorFocusNotifier.value -= 1;
     overlay?.remove();
     overlay = null;
-    editorState.service.keyboardService?.enable();
   }
 
+  keepEditorFocusNotifier.value += 1;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
     left: left,
+    dismissCallback: () => keepEditorFocusNotifier.value -= 1,
     builder: (context) {
       return LinkMenu(
         linkText: linkText,
@@ -114,5 +116,4 @@ void showLinkMenu(
   ).build();
 
   Overlay.of(context).insert(overlay!);
-  editorState.service.keyboardService?.disable();
 }
