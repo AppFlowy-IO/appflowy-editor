@@ -37,7 +37,7 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
-    this.textDirection,
+    required this.textDirection,
     required this.node,
     required this.editorState,
   }) : super(key: key);
@@ -50,7 +50,7 @@ class FlowyRichText extends StatefulWidget {
   final FlowyTextSpanDecorator? textSpanDecorator;
   final String placeholderText;
   final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
-  final TextDirection? textDirection;
+  final TextDirection textDirection;
 
   @override
   State<FlowyRichText> createState() => _FlowyRichTextState();
@@ -185,6 +185,11 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   @override
   Offset localToGlobal(Offset offset) {
     return _renderParagraph.localToGlobal(offset);
+  }
+
+  @override
+  TextDirection textDirection() {
+    return widget.textDirection;
   }
 
   Widget _buildRichText(BuildContext context) {

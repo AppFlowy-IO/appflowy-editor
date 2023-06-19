@@ -45,4 +45,6 @@ mixin DefaultSelectable {
   Position start() => forward.start();
 
   Position end() => forward.end();
+
+  TextDirection textDirection() => forward.textDirection();
 }

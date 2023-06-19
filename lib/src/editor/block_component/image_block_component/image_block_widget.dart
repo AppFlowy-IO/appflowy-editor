@@ -122,6 +122,11 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     return renderBox.localToGlobal(offset);
   }
 
+  @override
+  TextDirection textDirection() {
+    return TextDirection.ltr;
+  }
+
   Widget _buildNetworkImage(BuildContext context) {
     return Align(
       alignment: widget.alignment,
