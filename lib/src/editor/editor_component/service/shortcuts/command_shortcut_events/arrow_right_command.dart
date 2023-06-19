@@ -37,8 +37,8 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
 // arrow right key + ctrl or command
 // move the cursor to the end of the block
 final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
-  key: 'move the cursor backward one character',
-  command: 'ctrl+arrow right',
+  key: 'move the cursor to the end of line',
+  command: 'ctrl+arrow right,end',
   macOSCommand: 'cmd+arrow right',
   handler: _moveCursorToEndCommandHandler,
 );

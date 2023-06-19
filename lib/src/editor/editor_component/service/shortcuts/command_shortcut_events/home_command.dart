@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent homeCommand = CommandShortcutEvent(
   key: 'scroll to the top of the document',
-  command: 'home',
+  command: 'ctrl+home',
+  macOSCommand: 'home',
   handler: _homeCommandHandler,
 );
 
