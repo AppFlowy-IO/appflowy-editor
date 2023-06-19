@@ -196,7 +196,125 @@ void main() async {
   }
 }
 ''';
-
+    const example2 = '''
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "level": 1,
+          "delta": [
+            {
+              "insert": "Welcome to AppFlowy"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "void main(){\\nprint(\\"hello world\\");\\n}"
+            }
+          ],
+          "language": "dart"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "void main(){\\n  print(\\"Welcome to AppFlowy\\");\\n}"
+            }
+          ],
+          "language": "dart"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "``````"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [],
+          "language": "dart"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [],
+          "language": null
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "hello world"
+            }
+          ],
+          "language": null
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      }
+    ]
+  }
+}
+''';
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
@@ -220,7 +338,37 @@ You can also use ***AppFlowy Editor*** as a component to build your own app.
 If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
-      final data = Map<String, Object>.from(json.decode(example));
+      final data = jsonDecode(example);
+      expect(result.toJson(), data);
+    });
+    test('test code block', () async {
+      const markdown = '''
+# Welcome to AppFlowy
+
+```dart
+void main(){
+print("hello world");
+}
+```
+
+```dart
+void main(){
+  print("Welcome to AppFlowy");
+}
+```
+
+``````
+
+```dart
+```
+
+```
+```
+
+```hello world```
+''';
+      final result = DocumentMarkdownDecoder().convert(markdown);
+      final data = jsonDecode(example2);
       expect(result.toJson(), data);
     });
   });
