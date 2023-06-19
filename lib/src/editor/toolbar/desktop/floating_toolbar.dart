@@ -149,7 +149,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     }
 
     final rect = _findSuitableRect(rects);
+    print(rect);
     final (top, left, right) = calculateToolbarOffset(rect);
+    print((top, left, right));
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
@@ -210,15 +212,18 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     final right = (rect.right - editorCenter.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
+    final top = rect.top < floatingToolbarHeight
+        ? rect.bottom + floatingToolbarHeight
+        : rect.top;
     if (rect.left >= threshold && rect.right <= threshold * 2.0) {
       // show in center
-      return (rect.top, threshold, null);
+      return (top, threshold, null);
     } else if (left >= right) {
       // show in left
-      return (rect.top, rect.left, null);
+      return (top, rect.left, null);
     } else {
       // show in right
-      return (rect.top, null, editorRect.right - rect.right);
+      return (top, null, editorRect.right - rect.right);
     }
   }
 }
