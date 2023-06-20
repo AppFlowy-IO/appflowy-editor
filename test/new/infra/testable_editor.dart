@@ -34,16 +34,40 @@ class TestableEditor {
     bool autoFocus = false,
     bool editable = true,
     bool shrinkWrap = false,
+    bool withFloatingToolbar = false,
     ScrollController? scrollController,
     Widget Function(Widget child)? wrapper,
   }) async {
-    final editor = AppFlowyEditor.standard(
+    await AppFlowyEditorLocalizations.load(locale);
+
+    if (withFloatingToolbar) {
+      scrollController ??= ScrollController();
+    }
+    Widget editor = AppFlowyEditor.standard(
       editorState: editorState,
       editable: editable,
       autoFocus: autoFocus,
       shrinkWrap: shrinkWrap,
       scrollController: scrollController,
     );
+    if (withFloatingToolbar) {
+      editor = FloatingToolbar(
+        items: [
+          paragraphItem,
+          ...headingItems,
+          ...markdownFormatItems,
+          quoteItem,
+          bulletedListItem,
+          numberedListItem,
+          linkItem,
+          textColorItem,
+          highlightColorItem
+        ],
+        editorState: editorState,
+        scrollController: scrollController!,
+        child: editor,
+      );
+    }
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [

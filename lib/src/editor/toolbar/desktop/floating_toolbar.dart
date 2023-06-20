@@ -149,9 +149,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     }
 
     final rect = _findSuitableRect(rects);
-    print(rect);
     final (top, left, right) = calculateToolbarOffset(rect);
-    print((top, left, right));
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
