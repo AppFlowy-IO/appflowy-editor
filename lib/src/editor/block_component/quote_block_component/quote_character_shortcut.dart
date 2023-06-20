@@ -15,7 +15,7 @@ CharacterShortcutEvent formatDoubleQuoteToQuote = CharacterShortcutEvent(
   handler: (editorState) async => await formatMarkdownSymbol(
     editorState,
     (node) => node.type != QuoteBlockKeys.type,
-    (text, _) => text == _doubleQuote,
+    (_, text, __) => text == _doubleQuote,
     (_, node, delta) => Node(
       type: 'quote',
       attributes: {

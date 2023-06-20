@@ -104,7 +104,7 @@ Future<bool> _formatSymbolToUncheckedBox({
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'todo_list',
-    (text, _) => text == symbol,
+    (_, text, __) => text == symbol,
     (_, node, delta) => Node(
       type: 'todo_list',
       attributes: {
@@ -124,7 +124,7 @@ Future<bool> _formatSymbolToCheckedBox({
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'todo_list',
-    (text, _) => text == symbol,
+    (_, text, __) => text == symbol,
     (_, node, delta) => Node(
       type: 'todo_list',
       attributes: {

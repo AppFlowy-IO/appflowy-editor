@@ -5,14 +5,20 @@ class NumberedListBlockKeys {
   const NumberedListBlockKeys._();
 
   static const String type = 'numbered_list';
+
+  static const String number = 'number';
 }
 
 Node numberedListNode({
-  Attributes? attributes,
   Delta? delta,
+  Attributes? attributes,
+  int? number,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
+  attributes ??= {
+    'delta': (delta ?? Delta()).toJson(),
+    NumberedListBlockKeys.number: number,
+  };
   return Node(
     type: NumberedListBlockKeys.type,
     attributes: {
@@ -147,15 +153,22 @@ class _NumberedListIconBuilder {
   final Node node;
 
   int get level {
-    var level = 1;
-    var previous = node.previous;
-    while (previous != null) {
-      if (previous.type == 'numbered_list') {
-        level++;
-      } else {
-        break;
-      }
+    int level = 1;
+    Node? previous = node.previous;
+
+    // if the previous one is not a numbered list, then it is the first one
+    if (previous == null || previous.type != NumberedListBlockKeys.type) {
+      return node.attributes[NumberedListBlockKeys.number] ?? level;
+    }
+
+    int? startNumber;
+    while (previous != null && previous.type == NumberedListBlockKeys.type) {
+      startNumber = previous.attributes[NumberedListBlockKeys.number] as int?;
+      level++;
       previous = previous.previous;
+    }
+    if (startNumber != null) {
+      return startNumber + level - 1;
     }
     return level;
   }

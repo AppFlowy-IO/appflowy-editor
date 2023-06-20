@@ -57,7 +57,7 @@ Future<bool> _formatSymbolToBulletedList(
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'bulleted_list',
-    (text, _) => text == symbol,
+    (_, text, __) => text == symbol,
     (_, node, delta) => Node(
       type: 'bulleted_list',
       attributes: {

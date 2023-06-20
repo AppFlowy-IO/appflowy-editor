@@ -11,6 +11,7 @@ Future<bool> formatMarkdownSymbol(
   EditorState editorState,
   bool Function(Node node) shouldFormat,
   bool Function(
+    Node node,
     String text,
     Selection selection,
   ) predicate,
@@ -41,7 +42,7 @@ Future<bool> formatMarkdownSymbol(
 
   // If the text doesn't match the predicate, then we don't want to
   // format it.
-  if (!predicate(text, selection)) {
+  if (!predicate(node, text, selection)) {
     return false;
   }
 
