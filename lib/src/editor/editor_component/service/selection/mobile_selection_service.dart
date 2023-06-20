@@ -61,6 +61,7 @@ class _MobileSelectionServiceWidgetState
   /// Pan
   Offset? _panStartOffset;
   double? _panStartScrollDy;
+  Selection? _panStartSelection;
 
   MobileSelectionDragMode dragMode = MobileSelectionDragMode.none;
 
@@ -274,6 +275,7 @@ class _MobileSelectionServiceWidgetState
 
     final position = details.globalPosition;
     final selection = editorState.selection;
+    _panStartSelection = selection;
     if (selection == null) {
       dragMode = MobileSelectionDragMode.none;
     } else if (selection.isCollapsed &&
@@ -322,7 +324,10 @@ class _MobileSelectionServiceWidgetState
     if (end != null) {
       if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
         updateSelection(
-          selection.copyWith(start: end),
+          selection.copyWith(
+            end: end,
+            start: _panStartSelection?.normalized.end,
+          ),
         );
       } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
         updateSelection(
