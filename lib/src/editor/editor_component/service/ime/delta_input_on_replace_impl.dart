@@ -16,24 +16,22 @@ Future<void> onReplace(
   }
 
   if (selection.isSingle) {
-    await editorState.deleteSelection(
-      Selection.single(
-        path: selection.start.path,
-        startOffset: replacement.replacedRange.start,
-        endOffset: replacement.replacedRange.end,
-      ),
-    );
+    final node = editorState.getNodesInSelection(selection).first;
+    final transaction = editorState.transaction;
+    final start = replacement.replacedRange.start;
+    final length = replacement.replacedRange.end - start;
+    transaction.replaceText(node, start, length, replacement.replacementText);
+    await editorState.apply(transaction);
   } else {
     await editorState.deleteSelection(selection);
+    // insert the replacement
+    final insertion = replacement.toInsertion();
+    await onInsert(
+      insertion,
+      editorState,
+      characterShortcutEvents,
+    );
   }
-
-  // insert the replacement
-  final insertion = replacement.toInsertion();
-  await onInsert(
-    insertion,
-    editorState,
-    characterShortcutEvents,
-  );
 }
 
 extension on TextEditingDeltaReplacement {
