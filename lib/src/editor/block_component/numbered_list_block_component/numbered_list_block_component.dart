@@ -10,11 +10,15 @@ class NumberedListBlockKeys {
 }
 
 Node numberedListNode({
-  Attributes? attributes,
   Delta? delta,
+  Attributes? attributes,
+  int? number,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
+  attributes ??= {
+    'delta': (delta ?? Delta()).toJson(),
+    NumberedListBlockKeys.number: number,
+  };
   return Node(
     type: NumberedListBlockKeys.type,
     attributes: {
