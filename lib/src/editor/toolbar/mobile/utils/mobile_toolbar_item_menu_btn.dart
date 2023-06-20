@@ -26,15 +26,17 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
         alignment: Alignment.centerLeft,
         foregroundColor: MaterialStateProperty.all(style.foregroundColor),
         splashFactory: NoSplash.splashFactory,
-        side: MaterialStateProperty.resolveWith<BorderSide>((states) {
-          if (isSelected == true) {
-            return BorderSide(
-              color: style.itemHighlightColor,
-              width: 2,
-            );
-          }
-          return BorderSide(color: style.itemOutlineColor);
-        }),
+        side: MaterialStateProperty.resolveWith<BorderSide>(
+          (states) {
+            if (isSelected == true) {
+              return BorderSide(
+                color: style.itemHighlightColor,
+                width: style.buttonBorderWidth,
+              );
+            }
+            return BorderSide(color: style.itemOutlineColor);
+          },
+        ),
       ),
     );
   }
