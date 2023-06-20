@@ -240,9 +240,9 @@ class MockIMEInput {
     // if the selection is collapsed, do insertion.
     //  else if the selection is not collapsed, do replacement.
     if (selection.isCollapsed) {
-      return insertText(text);
+      await insertText(text);
     } else {
-      return replaceText(text);
+      await replaceText(text);
     }
   }
 
@@ -256,7 +256,7 @@ class MockIMEInput {
     if (delta == null) {
       return;
     }
-    return imeInput.apply([
+    await imeInput.apply([
       TextEditingDeltaInsertion(
         oldText: ' ${delta.toPlainText()}', // TODO: fix this workaround
         textInserted: text,
@@ -267,6 +267,7 @@ class MockIMEInput {
         composing: TextRange.empty,
       )
     ]);
+    await tester.pumpAndSettle();
   }
 
   Future<void> replaceText(String text) async {
@@ -275,7 +276,7 @@ class MockIMEInput {
       return;
     }
     final texts = editorState.getTextInSelection(selection).join('\n');
-    return imeInput.apply([
+    await imeInput.apply([
       TextEditingDeltaReplacement(
         oldText: ' $texts',
         replacementText: text,
@@ -289,5 +290,6 @@ class MockIMEInput {
         composing: TextRange.empty,
       )
     ]);
+    await tester.pumpAndSettle();
   }
 }
