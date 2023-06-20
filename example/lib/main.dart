@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -24,6 +24,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: [Locale('en', 'US')],
       debugShowCheckedModeBanner: false,
       home: MyHomePage(title: 'AppFlowyEditor Example'),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
     );
   }
 }
