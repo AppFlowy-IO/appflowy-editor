@@ -109,14 +109,22 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
       return;
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
         return;
       }
       final endTouchPoint = selectionRect.last.centerRight;
       if (selection.isCollapsed) {
-        startAutoScroll(endTouchPoint, edgeOffset: 50);
+        if (PlatformExtension.isMobile) {
+          // soft keyboard
+          // workaround: wait for the soft keyboard to show up
+          Future.delayed(const Duration(milliseconds: 300), () {
+            startAutoScroll(endTouchPoint, edgeOffset: 50);
+          });
+        } else {
+          startAutoScroll(endTouchPoint, edgeOffset: 50);
+        }
       } else {
         startAutoScroll(endTouchPoint);
       }
