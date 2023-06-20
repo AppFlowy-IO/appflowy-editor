@@ -77,6 +77,7 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
   // divider
   convertMinusesToDivider,
   convertStarsToDivider,
+  convertUnderscoreToDivider,
 
   // markdown syntax
   ...markdownSyntaxShortcutEvents,

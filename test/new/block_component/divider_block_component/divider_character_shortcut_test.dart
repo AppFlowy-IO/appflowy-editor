@@ -60,6 +60,25 @@ void main() async {
           text: text,
         );
       });
+
+      // Before
+      //  __
+      // After
+      // [divider]
+      test('___ to divider', () async {
+        const text = '';
+        testFormatCharacterShortcut(
+          convertUnderscoreToDivider,
+          '__',
+          2,
+          (result, before, after) {
+            expect(result, true);
+            expect(after.delta, null);
+            expect(after.type, DividerBlockKeys.type);
+          },
+          text: text,
+        );
+      });
     },
   );
 }
