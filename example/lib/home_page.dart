@@ -70,13 +70,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
       drawer: _buildDrawer(context),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('AppFlowy Editor'),
+      ),
       body: SafeArea(child: _buildBody(context)),
-      floatingActionButton: _buildFloatingActionButton(context),
-      floatingActionButtonLocation: PlatformExtension.isMobile
-          ? FloatingActionButtonLocation.startTop
-          : FloatingActionButtonLocation.endFloat,
+      floatingActionButton: PlatformExtension.isDesktopOrWeb
+          ? _buildFloatingActionButton(context)
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

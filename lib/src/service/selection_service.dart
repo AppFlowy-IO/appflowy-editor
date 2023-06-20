@@ -65,9 +65,6 @@ abstract class AppFlowySelectionService {
   /// Clears the cursor area.
   void clearCursor();
 
-  /// Returns the [Node]s in [Selection].
-  List<Node> getNodesInSelection(Selection selection);
-
   /// Returns the [Node] containing to the [offset].
   ///
   /// [offset] must be under the global coordinate system.

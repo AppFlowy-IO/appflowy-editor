@@ -1,0 +1,125 @@
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+/// Because the flutter's [DoubleTapGestureRecognizer] will block the [TapGestureRecognizer]
+/// for a while. So we need to implement our own GestureDetector.
+class MobileSelectionGestureDetector extends StatefulWidget {
+  const MobileSelectionGestureDetector({
+    Key? key,
+    this.child,
+    this.onTapDown,
+    this.onDoubleTapDown,
+    this.onTripleTapDown,
+    this.onSecondaryTapDown,
+    this.onPanStart,
+    this.onPanUpdate,
+    this.onPanEnd,
+  }) : super(key: key);
+
+  @override
+  State<MobileSelectionGestureDetector> createState() =>
+      MobileSelectionGestureDetectorState();
+
+  final Widget? child;
+
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapDownCallback? onDoubleTapDown;
+  final GestureTapDownCallback? onTripleTapDown;
+  final GestureTapDownCallback? onSecondaryTapDown;
+  final GestureDragStartCallback? onPanStart;
+  final GestureDragUpdateCallback? onPanUpdate;
+  final GestureDragEndCallback? onPanEnd;
+}
+
+class MobileSelectionGestureDetectorState
+    extends State<MobileSelectionGestureDetector> {
+  bool _isDoubleTap = false;
+  Timer? _doubleTapTimer;
+  int _tripleTabCount = 0;
+  Timer? _tripleTabTimer;
+
+  final kTripleTapTimeout = const Duration(milliseconds: 500);
+
+  @override
+  Widget build(BuildContext context) {
+    return RawGestureDetector(
+      behavior: HitTestBehavior.opaque,
+      gestures: {
+        PanGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+          () => PanGestureRecognizer(
+            supportedDevices: {
+              //   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
+              //   PointerDeviceKind.trackpad,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.invertedStylus,
+            },
+          ),
+          (recognizer) {
+            recognizer
+              ..onStart = widget.onPanStart
+              ..onUpdate = widget.onPanUpdate
+              ..onEnd = widget.onPanEnd;
+          },
+        ),
+        TapGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+          () => TapGestureRecognizer(),
+          (recognizer) {
+            recognizer.onTapDown = _tapDownDelegate;
+            recognizer.onSecondaryTapDown = widget.onSecondaryTapDown;
+          },
+        ),
+      },
+      child: widget.child,
+    );
+  }
+
+  void _tapDownDelegate(TapDownDetails tapDownDetails) {
+    if (_tripleTabCount == 2) {
+      _tripleTabCount = 0;
+      _tripleTabTimer?.cancel();
+      _tripleTabTimer = null;
+      if (widget.onTripleTapDown != null) {
+        widget.onTripleTapDown!(tapDownDetails);
+      }
+    } else if (_isDoubleTap) {
+      _isDoubleTap = false;
+      _doubleTapTimer?.cancel();
+      _doubleTapTimer = null;
+      if (widget.onDoubleTapDown != null) {
+        widget.onDoubleTapDown!(tapDownDetails);
+      }
+      _tripleTabCount++;
+    } else {
+      if (widget.onTapDown != null) {
+        widget.onTapDown!(tapDownDetails);
+      }
+
+      _isDoubleTap = true;
+      _doubleTapTimer?.cancel();
+      _doubleTapTimer = Timer(kDoubleTapTimeout, () {
+        _isDoubleTap = false;
+        _doubleTapTimer = null;
+      });
+
+      _tripleTabCount = 1;
+      _tripleTabTimer?.cancel();
+      _tripleTabTimer = Timer(kTripleTapTimeout, () {
+        _tripleTabCount = 0;
+        _tripleTabTimer = null;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _doubleTapTimer?.cancel();
+    _tripleTabTimer?.cancel();
+    super.dispose();
+  }
+}
