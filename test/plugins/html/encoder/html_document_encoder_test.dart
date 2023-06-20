@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 void main() async {
-  group('document_html_encoder_test.dart', () {
+  group('html_document_encoder_test.dart', () {
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
@@ -18,9 +18,219 @@ void main() async {
 
       expect(result, nestedhtml);
     });
+    test('checkBox parser document', () async {
+      final result =
+          DocumentHTMLEncoder().convert(Document.fromJson(checkBoxExample));
+      expect(result, checkBoxHtml);
+    });
   });
 }
 
+const checkBoxExample = {
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "level": 2,
+          "delta": [
+            {"insert": "👋 "},
+            {
+              "insert": "Welcome to",
+              "data": {"bold": true}
+            },
+            {"insert": " "},
+            {
+              "insert": "AppFlowy Editor",
+              "data": {"href": "appflowy.io", "italic": true, "bold": true}
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "AppFlowy Editor is a"},
+            {"insert": " "},
+            {
+              "insert": "highly customizable",
+              "data": {"bold": true}
+            },
+            {"insert": " "},
+            {
+              "insert": "rich-text editor",
+              "data": {"italic": true}
+            },
+            {"insert": " for "},
+            {
+              "insert": "Flutter",
+              "data": {"underline": true}
+            }
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "Customizable"}
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "Test-covered"}
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {"insert": "more to come!"}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "quote",
+        "data": {
+          "delta": [
+            {"insert": "Here is an example you can give a try"}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "You can also use "},
+            {
+              "insert": "AppFlowy Editor",
+              "data": {
+                "italic": true,
+                "bold": true,
+                "textColor": "0xffD70040",
+                "highlightColor": "0x6000BCF0"
+              }
+            },
+            {"insert": " as a component to build your own app."}
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {"insert": "Use / to insert blocks"}
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "Select text to trigger to the toolbar to format your notes."
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+            }
+          ]
+        }
+      }
+    ]
+  }
+};
+const checkBoxHtml =
+    '''<h2>👋 Welcome to AppFlowy Editor</h2><p></p><p>AppFlowy Editor is a highly customizable rich-text editor for Flutter</p><div><input type="checkbox" checked="true">Customizable</div><div><input type="checkbox" checked="true">Test-covered</div><div><input type="checkbox" checked="true">more to come!</div><p></p><blockquote>Here is an example you can give a try</blockquote><p></p><p>You can also use AppFlowy Editor as a component to build your own app.</p><p></p><ul><li>Use / to insert blocks</li><li>Select text to trigger to the toolbar to format your notes.</li></ul><p></p><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p>''';
+const rawHtmlWithQuote =
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</p>''';
+const quoteExample = {
+  'document': {
+    'type': 'page',
+    'children': [
+      {
+        'type': 'heading',
+        'data': {
+          'level': 1,
+          'delta': [
+            {'insert': 'Welcome to the playground'}
+          ]
+        }
+      },
+      {
+        'type': 'quote',
+        'data': {
+          'delta': [
+            {
+              'insert':
+                  'In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.'
+            }
+          ]
+        }
+      },
+      {
+        'type': 'paragraph',
+        'data': {
+          'delta': [
+            {'insert': 'The playground is a demo environment built with '},
+            {
+              'insert': '@lexical/react',
+              'attributes': {'code': true}
+            },
+            {'insert': '. Try typing in '},
+            {
+              'insert': 'some text',
+              'attributes': {'bold': true}
+            },
+            {'insert': ' with '},
+            {
+              'insert': 'different',
+              'attributes': {'italic': true}
+            },
+            {'insert': ' formats.'}
+          ]
+        }
+      }
+    ]
+  }
+};
 const example =
     '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
 

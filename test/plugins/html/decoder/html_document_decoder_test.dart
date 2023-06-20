@@ -1,197 +1,33 @@
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-void main() {
-  group('html_document_test.dart tests', () {
-    test('htmlToDocument()', () {
-      final document = htmlToDocument(rawHTML);
-      expect(document.toJson(), data);
+void main() async {
+  group('html_document_decoder_test.dart', () {
+    setUpAll(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
     });
-    test('nestedhtmlToDocument()', () {
-      final document = htmlToDocument(nestedhtml);
-      expect(document.toJson(), nestedDelta);
-    });
-  });
-  group('document_html_test.dart tests', () {
-    test('documentToHtml()', () {
-      final document = documentToHTML(Document.fromJson(data));
 
-      expect(document, rawHTML);
-    });
-    test('nesteddocumentToHtml()', () {
-      final document = documentToHTML(Document.fromJson(nestedDelta));
+    test('parser document', () async {
+      final result = DocumentHTMLDecoder().convert(rawHTML);
 
-      expect(document, nestedhtml);
+      expect(result.toJson(), example);
     });
-    test('quote documentToHtml()', () {
-      final document = documentToHTML(Document.fromJson(quoteExample));
+    test('document with quote', () async {
+      final result = DocumentHTMLDecoder().convert(rawHtmlWithQuote);
 
-      expect(document, rawHtmlWithQuote);
+      expect(result.toJson(), quoteExample);
     });
-    test('checkBox parser document', () async {
-      final document = documentToHTML(Document.fromJson(checkBoxExample));
+    test('nested parser document', () async {
+      final result = DocumentHTMLDecoder().convert(nestedhtml);
 
-      expect(document, checkBoxHtml);
+      expect(result.toJson(), nestedDelta);
     });
   });
 }
 
-const checkBoxExample = {
-  "document": {
-    "type": "page",
-    "children": [
-      {
-        "type": "heading",
-        "data": {
-          "level": 2,
-          "delta": [
-            {"insert": "👋 "},
-            {
-              "insert": "Welcome to",
-              "data": {"bold": true}
-            },
-            {"insert": " "},
-            {
-              "insert": "AppFlowy Editor",
-              "data": {"href": "appflowy.io", "italic": true, "bold": true}
-            }
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [
-            {"insert": "AppFlowy Editor is a"},
-            {"insert": " "},
-            {
-              "insert": "highly customizable",
-              "data": {"bold": true}
-            },
-            {"insert": " "},
-            {
-              "insert": "rich-text editor",
-              "data": {"italic": true}
-            },
-            {"insert": " for "},
-            {
-              "insert": "Flutter",
-              "data": {"underline": true}
-            }
-          ]
-        }
-      },
-      {
-        "type": "todo_list",
-        "data": {
-          "checked": true,
-          "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
-      },
-      {
-        "type": "todo_list",
-        "data": {
-          "checked": true,
-          "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
-      },
-      {
-        "type": "todo_list",
-        "data": {
-          "checked": true,
-          "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "quote",
-        "data": {
-          "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [
-            {"insert": "You can also use "},
-            {
-              "insert": "AppFlowy Editor",
-              "data": {
-                "italic": true,
-                "bold": true,
-                "textColor": "0xffD70040",
-                "highlightColor": "0x6000BCF0"
-              }
-            },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "bulleted_list",
-        "data": {
-          "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
-      },
-      {
-        "type": "bulleted_list",
-        "data": {
-          "delta": [
-            {
-              "insert":
-                  "Select text to trigger to the toolbar to format your notes."
-            }
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [
-            {
-              "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-            }
-          ]
-        }
-      }
-    ]
-  }
-};
-const checkBoxHtml =
-    '''<h2>👋 Welcome to AppFlowy Editor</h2><p></p><p>AppFlowy Editor is a highly customizable rich-text editor for Flutter</p><div><input type="checkbox" checked="true">Customizable</div><div><input type="checkbox" checked="true">Test-covered</div><div><input type="checkbox" checked="true">more to come!</div><p></p><blockquote>Here is an example you can give a try</blockquote><p></p><p>You can also use AppFlowy Editor as a component to build your own app.</p><p></p><ul><li>Use / to insert blocks</li><li>Select text to trigger to the toolbar to format your notes.</li></ul><p></p><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p>''';
-
 const rawHtmlWithQuote =
-    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</p>''';
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.</blockquote><p>The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <em>different</em> formats.</p>''';
 const quoteExample = {
   'document': {
     'type': 'page',
@@ -242,7 +78,10 @@ const quoteExample = {
     ]
   }
 };
-const data = {
+const rawHTML =
+    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
+
+const example = {
   'document': {
     'type': 'page',
     'children': [
@@ -512,9 +351,6 @@ const data = {
     ]
   }
 };
-const rawHTML =
-    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
-
 const nestedhtml =
     '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</blockquote><p>\t</p><img src="https://richtexteditor.com/images/editor-image.png"><p>Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!</p><p></p><p>If you\'d like to find out more about Lexical, you can:</p><ul><li>Visit the <a href="https://lexical.dev/">Lexical website</a> for documentation and more information.</li><li>\t<span><img src="https://richtexteditor.com/images/editor-image.png"></span></li><li>Check out the code on our <a href="https://github.com/facebook/lexical">GitHub repository</a>.</li><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li><li>Join our <a href="https://discord.com/invite/KmG4wQnnD9">Discord Server</a> and chat with the team.</li><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><p>Lastly, we\'re constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.</p><p></p>''';
 const nestedDelta = {
