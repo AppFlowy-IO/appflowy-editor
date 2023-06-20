@@ -261,15 +261,23 @@ class _DesktopSelectionServiceWidgetState
     // clear old state.
     _panStartOffset = null;
 
-    final position = getPositionInOffset(details.globalPosition);
-    if (position == null) {
+    final offset = details.globalPosition;
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      clearSelection();
       return;
     }
-
-    // updateSelection(selection);
-    editorState.selection = Selection.collapsed(position);
-
-    _showDebugLayerIfNeeded(offset: details.globalPosition);
+    if (selectable.cursorStyle == CursorStyle.verticalLine) {
+      editorState.selection = Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      );
+    } else {
+      editorState.selection = Selection(
+        start: selectable.start(),
+        end: selectable.end(),
+      );
+    }
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
