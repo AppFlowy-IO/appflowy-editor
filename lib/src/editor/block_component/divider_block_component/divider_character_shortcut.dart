@@ -14,9 +14,16 @@ final CharacterShortcutEvent convertMinusesToDivider = CharacterShortcutEvent(
 );
 
 final CharacterShortcutEvent convertStarsToDivider = CharacterShortcutEvent(
-  key: 'convert starts to a divider',
+  key: 'convert stars to a divider',
   character: '*',
   handler: (editorState) => _convertSyntaxToDivider(editorState, '**'),
+);
+
+final CharacterShortcutEvent convertUnderscoreToDivider =
+    CharacterShortcutEvent(
+  key: 'convert underscore to a divider',
+  character: '_',
+  handler: (editorState) => _convertSyntaxToDivider(editorState, '__'),
 );
 
 Future<bool> _convertSyntaxToDivider(
