@@ -408,5 +408,43 @@ void main() async {
 
       await editor.dispose();
     });
+
+    // Before
+    // Welcome to AppFlowy Editor 🔥!
+    // |---|
+    // Welcome to AppFlowy Editor 🔥!
+    // After
+    // Welcome to AppFlowy Editor 🔥!
+    // |Welcome to AppFlowy Editor 🔥!
+    testWidgets('Delete the non-text node, such as divider', (tester) async {
+      final delta = Delta()..insert(text);
+      final editor = tester.editor
+        ..addParagraph(initialText: text)
+        ..addNode(dividerNode())
+        ..addParagraph(initialText: text);
+
+      await editor.startTesting();
+
+      final selection = Selection.single(
+        path: [1],
+        startOffset: 0,
+        endOffset: 1,
+      );
+      await editor.updateSelection(selection);
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
+
+      expect(
+        editor.nodeAtPath([1])?.delta?.toPlainText(),
+        text,
+      );
+      expect(
+        editor.selection,
+        Selection.collapse([1], 0),
+      );
+
+      await editor.dispose();
+    });
   });
 }
