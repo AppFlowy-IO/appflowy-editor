@@ -64,10 +64,6 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   Node? getNodeInOffset(Offset offset) => forward.getNodeInOffset(offset);
 
   @override
-  List<Node> getNodesInSelection(Selection selection) =>
-      forward.getNodesInSelection(selection);
-
-  @override
   Position? getPositionInOffset(Offset offset) =>
       forward.getPositionInOffset(offset);
 
