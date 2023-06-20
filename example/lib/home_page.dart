@@ -77,10 +77,6 @@ class _HomePageState extends State<HomePage> {
         title: Text('AppFlowy Editor'),
       ),
       body: SafeArea(child: _buildBody(context)),
-      floatingActionButton: PlatformExtension.isDesktopOrWeb
-          ? _buildFloatingActionButton(context)
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
