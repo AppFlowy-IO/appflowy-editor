@@ -66,27 +66,29 @@ void showColorMenu(
 }
 
 void _formatHighlightColor(EditorState editorState, String color) {
+  // if the color is empty, remove the highlight color format
   editorState.formatDelta(
     editorState.selection,
-    {FlowyRichTextKeys.highlightColor: color},
+    {
+      FlowyRichTextKeys.highlightColor: color.isEmpty ? null : color,
+    },
   );
 }
 
 void _formatFontColor(EditorState editorState, String color) {
+  // if the color is empty, remove the color format
   editorState.formatDelta(
     editorState.selection,
-    {FlowyRichTextKeys.textColor: color},
+    {
+      FlowyRichTextKeys.textColor: color.isEmpty ? null : color,
+    },
   );
 }
 
 List<ColorOption> _generateTextColorOptions(EditorState editorState) {
-  final defaultColor = editorState
-          .editorStyle.textStyleConfiguration.text.color ??
-      Colors.black; // color is black if text.color is not set by the developer
-
   return [
     ColorOption(
-      colorHex: defaultColor.toHex(),
+      colorHex: '',
       name: AppFlowyEditorLocalizations.current.fontColorDefault,
     ),
     ColorOption(
@@ -127,7 +129,7 @@ List<ColorOption> _generateTextColorOptions(EditorState editorState) {
 List<ColorOption> _generateHighlightColorOptions(EditorState editorState) {
   return [
     ColorOption(
-      colorHex: Colors.transparent.toHex(),
+      colorHex: '',
       name: AppFlowyEditorLocalizations.current.backgroundColorDefault,
     ),
     ColorOption(
