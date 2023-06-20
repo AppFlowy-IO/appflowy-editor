@@ -26,31 +26,38 @@ Selection _computeSelectionAfterPasteMultipleNodes(
 }
 
 void _handleCopy(EditorState editorState) async {
-  final selection = editorState.cursorSelection?.normalized;
+  final selection = editorState.selection?.normalized;
   if (selection == null || selection.isCollapsed) {
     return;
   }
   if (selection.start.path.equals(selection.end.path)) {
     final nodeAtPath = editorState.document.nodeAtPath(selection.end.path)!;
-    if (nodeAtPath.type == "text") {
-      final textNode = nodeAtPath as TextNode;
-      final htmlString = NodesToHTMLConverter(
-        nodes: [textNode],
-        startOffset: selection.start.offset,
-        endOffset: selection.end.offset,
-      ).toHTMLString();
-      final textString = textNode.toPlainText().substring(
-            selection.startIndex,
-            selection.endIndex,
-          );
-      Log.keyboard.debug('copy html: $htmlString');
-      AppFlowyClipboard.setData(
-        text: textString,
-        html: htmlString,
-      );
+
+    final textNode = nodeAtPath;
+    final htmlString = nodesToHTML([textNode]);
+    String textString = "";
+    final Delta? delta = textNode.delta;
+    final children = textNode.children;
+    final plainText = delta != null ? delta.toPlainText() : "";
+    if (children == null) {
+      textString = plainText;
     } else {
-      Log.keyboard.debug('unimplemented: copy non-text');
+      final String chilrenString = children.fold('', (previousValue, node) {
+        final delta = node.delta;
+        if (delta != null) {
+          return previousValue + '\n' + delta.toPlainText();
+        }
+
+        return previousValue;
+      });
+      textString = "$plainText $chilrenString";
     }
+    Log.keyboard.debug('copy html: $htmlString');
+    AppFlowyClipboard.setData(
+      text: textString,
+      html: htmlString,
+    );
+
     return;
   }
 
@@ -63,24 +70,30 @@ void _handleCopy(EditorState editorState) async {
     endNode: endNode,
   ).toList();
 
-  final html = NodesToHTMLConverter(
-    nodes: nodes,
-    startOffset: selection.start.offset,
-    endOffset: selection.end.offset,
-  ).toHTMLString();
+  final html = nodesToHTML(nodes);
   var text = '';
   for (final node in nodes) {
-    if (node is TextNode) {
-      if (node.path == selection.start.path) {
-        text += node.toPlainText().substring(selection.start.offset);
-      } else if (node.path == selection.end.path) {
-        text += node.toPlainText().substring(0, selection.end.offset);
-      } else {
-        text += node.toPlainText();
-      }
+    String textString = "";
+    final Delta? delta = node.delta;
+    final children = node.children;
+    final plainText = delta != null ? delta.toPlainText() : "";
+    if (children == null) {
+      textString = plainText;
+    } else {
+      final String childrenString =
+          children.fold('', (previousValue, stringnode) {
+        final delta = node.delta;
+        if (delta != null) {
+          return previousValue + '\n' + delta.toPlainText();
+        }
+
+        return previousValue;
+      });
+      textString = "$plainText $childrenString";
     }
-    text += '\n';
+    text = text + textString + '\n';
   }
+  Log.keyboard.debug('copy html: $html');
   AppFlowyClipboard.setData(
     text: text,
     html: html,
@@ -88,7 +101,7 @@ void _handleCopy(EditorState editorState) async {
 }
 
 void _pasteHTML(EditorState editorState, String html) {
-  final selection = editorState.cursorSelection?.normalized;
+  final selection = editorState.selection?.normalized;
   if (selection == null) {
     return;
   }
@@ -101,35 +114,14 @@ void _pasteHTML(EditorState editorState, String html) {
   }
 
   Log.keyboard.debug('paste html: $html');
-  final nodes = HTMLToNodesConverter(html).toNodes();
+  final htmltoNodes = htmlToNodes(html);
 
-  if (nodes.isEmpty) {
+  if (htmltoNodes.isEmpty) {
     return;
-  } else if (nodes.length == 1) {
-    final firstNode = nodes[0];
-    final nodeAtPath = editorState.document.nodeAtPath(path)!;
-    final tb = editorState.transaction;
-    final startOffset = selection.start.offset;
-    if (nodeAtPath.type == "text" && firstNode.type == "text") {
-      final textNodeAtPath = nodeAtPath as TextNode;
-      final firstTextNode = firstNode as TextNode;
-      tb.updateText(
-        textNodeAtPath,
-        (Delta()..retain(startOffset)) + firstTextNode.delta,
-      );
-      tb.updateNode(textNodeAtPath, firstTextNode.attributes);
-      tb.afterSelection = (Selection.collapsed(
-        Position(
-          path: path,
-          offset: startOffset + firstTextNode.delta.length,
-        ),
-      ));
-      editorState.apply(tb);
-      return;
-    }
   }
 
-  _pasteMultipleLinesInText(editorState, path, selection.start.offset, nodes);
+  _pasteMultipleLinesInText(
+      editorState, path, selection.start.offset, htmltoNodes);
 }
 
 void _pasteMultipleLinesInText(

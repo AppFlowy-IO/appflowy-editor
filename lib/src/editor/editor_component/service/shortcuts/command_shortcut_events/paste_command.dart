@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
 /// Paste.
