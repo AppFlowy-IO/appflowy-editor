@@ -1,8 +1,6 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'dart:io';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 class ImageNodeWidget extends StatefulWidget {
@@ -14,6 +12,7 @@ class ImageNodeWidget extends StatefulWidget {
     required this.alignment,
     required this.editable,
     required this.onResize,
+    required this.imageSourceType,
   }) : super(key: key);
 
   final Node node;
@@ -21,6 +20,7 @@ class ImageNodeWidget extends StatefulWidget {
   final double? width;
   final Alignment alignment;
   final bool editable;
+  final ImageSourceType imageSourceType;
   final void Function(double width) onResize;
 
   @override
@@ -138,30 +138,37 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   }
 
   Widget _buildResizableImage(BuildContext context) {
-    final networkImage = Image.network(
-      widget.src,
-      width: _imageWidth == null ? null : _imageWidth! - _distance,
-      gaplessPlayback: true,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null ||
-            loadingProgress.cumulativeBytesLoaded ==
-                loadingProgress.expectedTotalBytes) {
-          return child;
-        }
+    final image = widget.imageSourceType == ImageSourceType.network
+        ? Image.network(
+            widget.src,
+            width: _imageWidth == null ? null : _imageWidth! - _distance,
+            gaplessPlayback: true,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null ||
+                  loadingProgress.cumulativeBytesLoaded ==
+                      loadingProgress.expectedTotalBytes) {
+                return child;
+              }
 
-        return _buildLoading(context);
-      },
-      errorBuilder: (context, error, stackTrace) => _buildError(context),
-    );
+              return _buildLoading(context);
+            },
+            errorBuilder: (context, error, stackTrace) => _buildError(context),
+          )
+        : Image.file(
+            File(widget.src),
+            width: _imageWidth == null ? null : _imageWidth! - _distance,
+            gaplessPlayback: true,
+            errorBuilder: (context, error, stackTrace) => _buildError(context),
+          );
 
     if (_imageWidth == null) {
-      _imageStream = networkImage.image.resolve(const ImageConfiguration())
+      _imageStream = image.image.resolve(const ImageConfiguration())
         ..addListener(_imageStreamListener);
     }
 
     return Stack(
       children: [
-        networkImage,
+        image,
         if (widget.editable) ...[
           _buildEdgeGesture(
             context,
