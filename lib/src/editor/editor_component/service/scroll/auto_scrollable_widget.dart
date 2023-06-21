@@ -38,10 +38,17 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
         builder: builder,
       );
     } else {
-      return SingleChildScrollView(
-        controller: widget.scrollController,
-        child: Builder(
-          builder: builder,
+      return LayoutBuilder(
+        builder: (context, viewportConstraints) => SingleChildScrollView(
+          controller: widget.scrollController,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: viewportConstraints.maxHeight,
+            ),
+            child: Builder(
+              builder: builder,
+            ),
+          ),
         ),
       );
     }
