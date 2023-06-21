@@ -56,15 +56,15 @@ class MobileToolbar extends StatelessWidget {
     ],
     this.backgroundColorOptions = const [
       ColorOption(
-        colorHex: '#4d4d4d',
+        colorHex: '#4D4D4D',
         name: 'Gray',
       ),
       ColorOption(
-        colorHex: '#a52a2a',
+        colorHex: '#A52A2A',
         name: 'Brown',
       ),
       ColorOption(
-        colorHex: '#ffff00',
+        colorHex: '#FFFF00',
         name: 'Yellow',
       ),
       ColorOption(
@@ -72,7 +72,7 @@ class MobileToolbar extends StatelessWidget {
         name: 'Green',
       ),
       ColorOption(
-        colorHex: '#0000ff',
+        colorHex: '#0000FF',
         name: 'Blue',
       ),
       ColorOption(
@@ -80,11 +80,11 @@ class MobileToolbar extends StatelessWidget {
         name: 'Purple',
       ),
       ColorOption(
-        colorHex: '#ffc0cb',
+        colorHex: '#FFC0CB',
         name: 'Pink',
       ),
       ColorOption(
-        colorHex: '#ff0000',
+        colorHex: '#FF0000',
         name: 'Red',
       ),
     ],
