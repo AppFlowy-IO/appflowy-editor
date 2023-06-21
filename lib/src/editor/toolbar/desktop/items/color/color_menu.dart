@@ -1,6 +1,4 @@
-import 'package:appflowy_editor/appflowy_editor.dart'
-    hide formatFontColor, formatHighlightColor;
-import 'package:appflowy_editor/src/editor/toolbar/util/format_color.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 void showColorMenu(

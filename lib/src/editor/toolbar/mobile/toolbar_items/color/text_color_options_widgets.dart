@@ -1,7 +1,5 @@
-import 'package:appflowy_editor/src/editor/toolbar/mobile/toolbar_items/color/utils/utils.dart';
-import 'package:appflowy_editor/src/editor/toolbar/util/format_color.dart';
 import 'package:flutter/material.dart';
-import 'package:appflowy_editor/appflowy_editor.dart' hide formatFontColor;
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 class TextColorOptionsWidgets extends StatefulWidget {
   const TextColorOptionsWidgets(
