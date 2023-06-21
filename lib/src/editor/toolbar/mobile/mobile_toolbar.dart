@@ -16,10 +16,10 @@ class MobileToolbar extends StatelessWidget {
     this.tabbarSelectedForegroundColor = Colors.black,
     this.toolbarHeight = 50.0,
     this.borderRadius = 6.0,
-    this.buttonHeight = 40,
-    this.buttonSpacing = 8,
-    this.buttonBorderWidth = 1,
-    this.buttonSelectedBorderWidth = 2,
+    this.buttonHeight = 40.0,
+    this.buttonSpacing = 8.0,
+    this.buttonBorderWidth = 1.0,
+    this.buttonSelectedBorderWidth = 2.0,
     this.textColorOptions = const [
       ColorOption(
         colorHex: '#808080',
@@ -267,19 +267,23 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toobarItem = toolbarItems[index];
-        return IconButton(
-          icon: toobarItem.itemIcon,
-          onPressed: () {
-            if (toobarItem.hasMenu) {
-              // open /close current item menu through its parent widget(MobileToolbarWidget)
-              itemOnPressed.call(index);
-            } else {
-              toolbarItems[index].actionHandler?.call(
-                    editorState,
-                    selection,
-                  );
-            }
-          },
+        return Material(
+          // Need Material to pass the test in mobile_toolbar_test.dart
+          color: Colors.transparent,
+          child: IconButton(
+            icon: toobarItem.itemIcon,
+            onPressed: () {
+              if (toobarItem.hasMenu) {
+                // open /close current item menu through its parent widget(MobileToolbarWidget)
+                itemOnPressed.call(index);
+              } else {
+                toolbarItems[index].actionHandler?.call(
+                      editorState,
+                      selection,
+                    );
+              }
+            },
+          ),
         );
       },
       itemCount: toolbarItems.length,

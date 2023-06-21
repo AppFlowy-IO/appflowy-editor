@@ -14,7 +14,7 @@ void main() {
         child: MobileToolbarItemMenuBtn(
           onPressed: () {},
           icon: icon,
-          label: label,
+          label: Text(label),
           isSelected: false,
         ),
       ),
