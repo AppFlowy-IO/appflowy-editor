@@ -1,5 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart' as fp;
+import '../../util/file_picker/file_picker_impl.dart';
 
 void showImageMenu(
   OverlayState container,
@@ -12,8 +14,9 @@ void showImageMenu(
 
   late final OverlayEntry imageMenuEntry;
 
-  void insertImage(String text) {
-    editorState.insertImageNode(text);
+  void insertImage(String text,
+      {ImageSourceType imageSourceType = ImageSourceType.network}) {
+    editorState.insertImageNode(text, imageSourceType);
     menuService.dismiss();
     imageMenuEntry.remove();
     keepEditorFocusNotifier.value -= 1;
@@ -50,16 +53,18 @@ class UploadImageMenu extends StatefulWidget {
   final Color headerColor;
   final double width;
   final void Function(String text) onSubmitted;
-  final void Function(String text) onUpload;
+  final void Function(String text, {ImageSourceType imageSourceType}) onUpload;
 
   @override
   State<UploadImageMenu> createState() => _UploadImageMenuState();
 }
 
 class _UploadImageMenuState extends State<UploadImageMenu> {
+  static const allowedExtensions = ['jpg', 'png', 'jpeg'];
+
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
-
+  final _filePicker = FilePicker();
   @override
   void initState() {
     super.initState();
@@ -95,8 +100,47 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           const SizedBox(height: 16.0),
           _buildInput(),
           const SizedBox(height: 18.0),
-          _buildUploadButton(context),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(child: _buildUploadButton(context)),
+              // const SizedBox(width: 18.0),
+              const Text('or'),
+              Flexible(child: _buildSelectFileButton(context)),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSelectFileButton(BuildContext context) {
+    return SizedBox(
+      width: 170,
+      height: 48,
+      child: TextButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+        ),
+        onPressed: () async {
+          final result = await _filePicker.pickFiles(
+            dialogTitle: 'Select an image',
+            allowMultiple: false,
+            type: fp.FileType.image,
+            allowedExtensions: allowedExtensions,
+          );
+          if (result != null) {
+            final file = result.files.first;
+            widget.onUpload(file.path!, imageSourceType: ImageSourceType.file);
+          }
+        },
+        child: const Text('Pick a File',style: TextStyle(color: Colors.white, fontSize: 14.0),),
       ),
     );
   }
@@ -155,7 +199,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             ),
           ),
         ),
-        onPressed: () => widget.onUpload(_textEditingController.text),
+        onPressed: () => widget.onUpload(_textEditingController.text,
+            imageSourceType: ImageSourceType.network),
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
@@ -166,7 +211,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 }
 
 extension on EditorState {
-  Future<void> insertImageNode(String src) async {
+  Future<void> insertImageNode(
+      String src, ImageSourceType imageSourceType) async {
     final selection = this.selection;
     if (selection == null || !selection.isCollapsed) {
       return;
@@ -179,10 +225,13 @@ extension on EditorState {
     // if the current node is empty paragraph, replace it with image node
     if (node.type == 'paragraph' && (node.delta?.isEmpty ?? false)) {
       transaction
-        ..insertNode(node.path, imageNode(url: src))
+        ..insertNode(
+            node.path, imageNode(url: src, imageSourceType: imageSourceType))
         ..deleteNode(node);
     } else {
-      transaction.insertNode(node.path.next, imageNode(url: src));
+      transaction
+        ..insertNode(node.path.next,
+            imageNode(url: src, imageSourceType: imageSourceType));
     }
 
     return apply(transaction);

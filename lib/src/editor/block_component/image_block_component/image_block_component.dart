@@ -4,6 +4,21 @@ import 'package:provider/provider.dart';
 
 import 'image_block_widget.dart';
 
+enum ImageSourceType {
+  network,
+  file,
+}
+
+extension ImageSourceTypeExtension on ImageSourceType {
+  String get name => toString().split('.').last;
+
+  static ImageSourceType fromName(String name) {
+    return ImageSourceType.values.firstWhere(
+      (e) => e.name == name,
+    );
+  }
+}
+
 class ImageBlockKeys {
   ImageBlockKeys._();
 
@@ -30,10 +45,17 @@ class ImageBlockKeys {
   ///
   /// The value is a double.
   static const String height = 'height';
+
+  /// The image source type of a image block.
+  ///
+  /// The value is a String.
+  /// network, file
+  static const String imageSourceType = 'imageSourceType';
 }
 
 Node imageNode({
   required String url,
+  required ImageSourceType imageSourceType,
   String align = 'center',
   double? height,
   double? width,
@@ -45,6 +67,7 @@ Node imageNode({
       ImageBlockKeys.align: align,
       ImageBlockKeys.height: height,
       ImageBlockKeys.width: width,
+      ImageBlockKeys.imageSourceType: imageSourceType.name,
     },
   );
 }
@@ -103,6 +126,8 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final src = attributes[ImageBlockKeys.url];
     final align = attributes[ImageBlockKeys.align] ?? 'center';
     final width = attributes[ImageBlockKeys.width]?.toDouble();
+    final imageSourceType = ImageSourceTypeExtension.fromName(
+        attributes[ImageBlockKeys.imageSourceType]);
 
     Widget child = ImageNodeWidget(
       node: node,
@@ -110,6 +135,7 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
       width: width,
       editable: editorState.editable,
       alignment: _textToAlignment(align),
+      imageSourceType: imageSourceType,
       onResize: (width) {
         final transaction = editorState.transaction
           ..updateNode(node, {
