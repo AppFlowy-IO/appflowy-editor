@@ -53,10 +53,9 @@ class _TextAndBackgroundColorMenuState
               dividerColor: Colors.transparent,
             ),
           ),
-          Container(
+          SizedBox(
             // 3 lines of buttons
             height: 3 * style.buttonHeight + 4 * style.buttonSpacing,
-            padding: EdgeInsets.all(style.buttonSpacing),
             child: TabBarView(
               children: [
                 TextColorOptionsWidgets(

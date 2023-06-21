@@ -29,56 +29,53 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
       );
     });
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GridView(
-          shrinkWrap: true,
-          gridDelegate: buildMobileToolbarMenuGridDelegate(
-            mobileToolbarStyle: style,
-            crossAxisCount: 3,
+    return Scrollbar(
+      child: GridView(
+        shrinkWrap: true,
+        gridDelegate: buildMobileToolbarMenuGridDelegate(
+          mobileToolbarStyle: style,
+          crossAxisCount: 3,
+        ),
+        padding: EdgeInsets.all(style.buttonSpacing),
+        children: [
+          ClearColorButton(
+            onPressed: () {
+              if (hasTextColor) {
+                setState(() {
+                  widget.editorState.formatDelta(
+                    selection,
+                    {FlowyRichTextKeys.textColor: null},
+                  );
+                });
+              }
+            },
+            isSelected: !hasTextColor,
           ),
-          children: [
-            ClearColorButton(
+          // color option buttons
+          ...style.textColorOptions.map((e) {
+            final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
+              return delta.everyAttributes(
+                (attributes) =>
+                    attributes[FlowyRichTextKeys.textColor] == e.colorHex,
+              );
+            });
+            return ColorButton(
+              colorOption: e,
               onPressed: () {
-                if (hasTextColor) {
+                if (!isSelected) {
                   setState(() {
-                    widget.editorState.formatDelta(
-                      selection,
-                      {FlowyRichTextKeys.textColor: null},
+                    formatFontColor(
+                      widget.editorState,
+                      e.colorHex,
                     );
                   });
                 }
               },
-              isSelected: !hasTextColor,
-            ),
-            // color option buttons
-            ...style.textColorOptions.map((e) {
-              final isSelected =
-                  nodes.allSatisfyInSelection(selection, (delta) {
-                return delta.everyAttributes(
-                  (attributes) =>
-                      attributes[FlowyRichTextKeys.textColor] == e.colorHex,
-                );
-              });
-              return ColorButton(
-                colorOption: e,
-                onPressed: () {
-                  if (!isSelected) {
-                    setState(() {
-                      formatFontColor(
-                        widget.editorState,
-                        e.colorHex,
-                      );
-                    });
-                  }
-                },
-                isSelected: isSelected,
-              );
-            }).toList()
-          ],
-        ),
-      ],
+              isSelected: isSelected,
+            );
+          }).toList()
+        ],
+      ),
     );
   }
 }

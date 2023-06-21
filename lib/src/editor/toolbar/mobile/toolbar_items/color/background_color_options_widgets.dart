@@ -30,58 +30,54 @@ class _BackgroundColorOptionsWidgetsState
       );
     });
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GridView(
-          shrinkWrap: true,
-          gridDelegate: buildMobileToolbarMenuGridDelegate(
-            mobileToolbarStyle: style,
-            crossAxisCount: 3,
+    return Scrollbar(
+      child: GridView(
+        shrinkWrap: true,
+        gridDelegate: buildMobileToolbarMenuGridDelegate(
+          mobileToolbarStyle: style,
+          crossAxisCount: 3,
+        ),
+        padding: EdgeInsets.all(style.buttonSpacing),
+        children: [
+          ClearColorButton(
+            onPressed: () {
+              if (hasTextColor) {
+                setState(() {
+                  widget.editorState.formatDelta(
+                    selection,
+                    {FlowyRichTextKeys.highlightColor: null},
+                  );
+                });
+              }
+            },
+            isSelected: !hasTextColor,
           ),
-          children: [
-            ClearColorButton(
+          // color option buttons
+          ...style.backgroundColorOptions.map((e) {
+            final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
+              return delta.everyAttributes(
+                (attributes) =>
+                    attributes[FlowyRichTextKeys.highlightColor] == e.colorHex,
+              );
+            });
+            return ColorButton(
+              isBackgroundColor: true,
+              colorOption: e,
               onPressed: () {
-                if (hasTextColor) {
+                if (!isSelected) {
                   setState(() {
-                    widget.editorState.formatDelta(
-                      selection,
-                      {FlowyRichTextKeys.highlightColor: null},
+                    formatHighlightColor(
+                      widget.editorState,
+                      e.colorHex,
                     );
                   });
                 }
               },
-              isSelected: !hasTextColor,
-            ),
-            // color option buttons
-            ...style.backgroundColorOptions.map((e) {
-              final isSelected =
-                  nodes.allSatisfyInSelection(selection, (delta) {
-                return delta.everyAttributes(
-                  (attributes) =>
-                      attributes[FlowyRichTextKeys.highlightColor] ==
-                      e.colorHex,
-                );
-              });
-              return ColorButton(
-                isBackgroundColor: true,
-                colorOption: e,
-                onPressed: () {
-                  if (!isSelected) {
-                    setState(() {
-                      formatHighlightColor(
-                        widget.editorState,
-                        e.colorHex,
-                      );
-                    });
-                  }
-                },
-                isSelected: isSelected,
-              );
-            }).toList()
-          ],
-        ),
-      ],
+              isSelected: isSelected,
+            );
+          }).toList()
+        ],
+      ),
     );
   }
 }
