@@ -46,6 +46,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarStyle.of(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
       final node =
@@ -78,8 +79,12 @@ class _HeadingMenuState extends State<_HeadingMenu> {
       );
     }).toList();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GridView(
+      shrinkWrap: true,
+      gridDelegate: buildMobileToolbarMenuGridDelegate(
+        mobileToolbarStyle: style,
+        crossAxisCount: 3,
+      ),
       children: btnList,
     );
   }

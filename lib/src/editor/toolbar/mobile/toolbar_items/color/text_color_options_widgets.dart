@@ -36,7 +36,10 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
       children: [
         GridView(
           shrinkWrap: true,
-          gridDelegate: buildColorGridDelegate(style),
+          gridDelegate: buildMobileToolbarMenuGridDelegate(
+            mobileToolbarStyle: style,
+            crossAxisCount: 3,
+          ),
           children: [
             ClearColorButton(
               onPressed: () {

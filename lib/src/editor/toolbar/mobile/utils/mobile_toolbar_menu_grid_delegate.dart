@@ -1,12 +1,15 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/rendering.dart';
 
-SliverGridDelegate buildColorGridDelegate(MobileToolbarStyle style) {
+SliverGridDelegate buildMobileToolbarMenuGridDelegate({
+  required MobileToolbarStyle mobileToolbarStyle,
+  required int crossAxisCount,
+}) {
   return SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
-    crossAxisCount: 3,
-    mainAxisSpacing: style.buttonSpacing,
-    crossAxisSpacing: style.buttonSpacing,
-    height: style.buttonHeight,
+    crossAxisCount: crossAxisCount,
+    mainAxisSpacing: mobileToolbarStyle.buttonSpacing,
+    crossAxisSpacing: mobileToolbarStyle.buttonSpacing,
+    height: mobileToolbarStyle.buttonHeight,
   );
 }
 

@@ -37,7 +37,10 @@ class _BackgroundColorOptionsWidgetsState
       children: [
         GridView(
           shrinkWrap: true,
-          gridDelegate: buildColorGridDelegate(style),
+          gridDelegate: buildMobileToolbarMenuGridDelegate(
+            mobileToolbarStyle: style,
+            crossAxisCount: 3,
+          ),
           children: [
             ClearColorButton(
               onPressed: () {

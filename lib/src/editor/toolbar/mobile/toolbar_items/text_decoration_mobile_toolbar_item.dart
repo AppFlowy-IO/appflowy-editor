@@ -47,6 +47,7 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
   ];
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarStyle.of(context);
     final btnList = textDecorations.map((currentDecoration) {
       // Check current decoration is active or not
       final nodes = widget.editorState.getNodesInSelection(widget.selection);
@@ -74,24 +75,13 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
       );
     }).toList();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GridView(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 5,
-          ),
-          children: btnList,
-        ),
-        // TODO(yijing): Add color after showColorMenu moved into desktop
-        // Text(AppFlowyEditorLocalizations.current.textColor),
-        // Text(AppFlowyEditorLocalizations.current.highlightColor),
-      ],
+    return GridView(
+      shrinkWrap: true,
+      gridDelegate: buildMobileToolbarMenuGridDelegate(
+        mobileToolbarStyle: style,
+        crossAxisCount: 2,
+      ),
+      children: btnList,
     );
   }
 }
