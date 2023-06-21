@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+/// Used in Desktop only.
+/// Needs to refactor to enable customization
 List<ColorOption> generateTextColorOptions() {
   return [
     ColorOption(

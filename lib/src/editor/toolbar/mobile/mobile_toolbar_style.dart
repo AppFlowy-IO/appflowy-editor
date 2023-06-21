@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 /// Style for the mobile toolbar.
@@ -21,6 +22,8 @@ class MobileToolbarStyle extends InheritedWidget {
   final double buttonSpacing;
   final double buttonBorderWidth;
   final double buttonSelectedBorderWidth;
+  final List<ColorOption> textColorOptions;
+  final List<ColorOption> backgroundColorOptions;
 
   const MobileToolbarStyle({
     Key? key,
@@ -37,6 +40,8 @@ class MobileToolbarStyle extends InheritedWidget {
     required this.buttonSpacing,
     required this.buttonBorderWidth,
     required this.buttonSelectedBorderWidth,
+    required this.textColorOptions,
+    required this.backgroundColorOptions,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -62,6 +67,8 @@ class MobileToolbarStyle extends InheritedWidget {
         buttonHeight != oldWidget.buttonHeight ||
         buttonSpacing != oldWidget.buttonSpacing ||
         buttonBorderWidth != oldWidget.buttonBorderWidth ||
-        buttonSelectedBorderWidth != oldWidget.buttonSelectedBorderWidth;
+        buttonSelectedBorderWidth != oldWidget.buttonSelectedBorderWidth ||
+        textColorOptions != oldWidget.textColorOptions ||
+        backgroundColorOptions != oldWidget.backgroundColorOptions;
   }
 }

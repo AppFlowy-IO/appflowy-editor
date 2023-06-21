@@ -52,7 +52,8 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
               },
               isSelected: !hasTextColor,
             ),
-            ...generateTextColorOptions().map((e) {
+            // color option buttons
+            ...style.textColorOptions.map((e) {
               final isSelected =
                   nodes.allSatisfyInSelection(selection, (delta) {
                 return delta.everyAttributes(

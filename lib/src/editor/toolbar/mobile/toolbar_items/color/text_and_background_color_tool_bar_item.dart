@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'color.dart';
 
 final textAndBackgroundColorMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.color),

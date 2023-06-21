@@ -53,7 +53,8 @@ class _BackgroundColorOptionsWidgetsState
               },
               isSelected: !hasTextColor,
             ),
-            ...generateHighlightColorOptions().map((e) {
+            // color option buttons
+            ...style.backgroundColorOptions.map((e) {
               final isSelected =
                   nodes.allSatisfyInSelection(selection, (delta) {
                 return delta.everyAttributes(
