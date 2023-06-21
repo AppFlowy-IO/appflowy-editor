@@ -45,6 +45,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     interceptor = SelectionGestureInterceptor(
       key: 'keyboard',
       canTap: (details) {
+        enableShortcuts = true;
         focusNode.requestFocus();
         textInputService.close();
         return true;

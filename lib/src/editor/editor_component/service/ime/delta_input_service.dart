@@ -109,6 +109,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void close() {
+    composingTextRange = null;
     _textInputConnection?.close();
     _textInputConnection = null;
   }
