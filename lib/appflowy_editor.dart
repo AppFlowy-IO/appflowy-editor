@@ -24,6 +24,7 @@ export 'src/service/scroll_service.dart';
 export 'src/service/toolbar_service.dart';
 export 'src/service/keyboard_service.dart';
 export 'src/service/input_service.dart';
+export 'src/service/shortcut_event/key_mapping.dart';
 export 'src/service/shortcut_event/keybinding.dart';
 export 'src/service/shortcut_event/shortcut_event.dart';
 export 'src/service/shortcut_event/shortcut_event_handler.dart';
@@ -49,7 +50,6 @@ export 'src/core/document/node_iterator.dart';
 export 'src/infra/flowy_svg.dart';
 export 'src/extensions/extensions.dart';
 export 'src/service/default_text_operations/format_rich_text_style.dart';
-export 'src/infra/html_converter.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 
 export 'src/editor/block_component/block_component.dart';
@@ -62,6 +62,11 @@ export 'src/service/standard_block_components.dart';
 
 export 'src/core/document/deprecated/node.dart';
 export 'src/core/document/deprecated/document.dart';
-
-export 'src/plugins/html/html_document_decoder.dart';
+export 'src/plugins/html/decoder/html_document_decoder.dart';
+export 'src/plugins/html/encoder/html_document_encoder.dart';
+export 'src/plugins/html/decoder/html_nodes_decoder.dart';
+export 'src/plugins/html/encoder/html_nodes_encoder.dart';
 export 'src/plugins/html/html_document.dart';
+export 'src/plugins/html/html_nodes.dart';
+export 'src/infra/mobile/mobile.dart';
+export 'src/infra/clipboard.dart';

@@ -105,7 +105,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
   }) : this(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 200),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 100),
           backgroundColor: backgroundColor ?? Colors.white,
           cursorColor: cursorColor ?? const Color(0xFF00BCF0),
           selectionColor:

@@ -13,6 +13,24 @@ enum SelectionMoveDirection {
 }
 
 extension SelectionTransform on EditorState {
+  /// backward delete one character
+  Future<bool> deleteBackward() async {
+    final selection = this.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return false;
+    }
+    final node = getNodeAtPath(selection.start.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return false;
+    }
+    final transaction = this.transaction;
+    final index = delta.prevRunePosition(selection.startIndex);
+    transaction.deleteText(node, index, selection.startIndex - index);
+    await apply(transaction);
+    return true;
+  }
+
   /// Deletes the selection.
   ///
   /// If the selection is collapsed, this function does nothing.
@@ -83,11 +101,19 @@ extension SelectionTransform on EditorState {
             final last = nodes.last;
 
             if (last.children.isNotEmpty) {
-              transaction.insertNodes(
-                node.path + [0],
-                last.children,
-                deepCopy: true,
-              );
+              if (indentableBlockTypes.contains(node.type)) {
+                transaction.insertNodes(
+                  node.path + [0],
+                  last.children,
+                  deepCopy: true,
+                );
+              } else {
+                transaction.insertNodes(
+                  node.path.next,
+                  last.children,
+                  deepCopy: true,
+                );
+              }
             }
           }
 

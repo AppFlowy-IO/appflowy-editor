@@ -8,15 +8,29 @@ void showImageMenu(
 ) {
   menuService.dismiss();
 
-  final topLeft = menuService.topLeft;
-  final imageMenuEntry = FullScreenOverlayEntry(
-    top: topLeft.dy,
-    left: topLeft.dx,
+  final (left, top, bottom) = menuService.getPosition();
+
+  late final OverlayEntry imageMenuEntry;
+
+  void insertImage(String text) {
+    editorState.insertImageNode(text);
+    menuService.dismiss();
+    imageMenuEntry.remove();
+    keepEditorFocusNotifier.value -= 1;
+  }
+
+  keepEditorFocusNotifier.value += 1;
+  imageMenuEntry = FullScreenOverlayEntry(
+    left: left,
+    top: top,
+    bottom: bottom,
+    dismissCallback: () => keepEditorFocusNotifier.value -= 1,
     builder: (context) => UploadImageMenu(
-      backgroundColor: Colors.white, // TODO: customize the color
+      backgroundColor: menuService.style.selectionMenuBackgroundColor,
+      headerColor: menuService.style.selectionMenuItemTextColor,
       width: MediaQuery.of(context).size.width * 0.5,
-      onSubmitted: editorState.insertImageNode,
-      onUpload: editorState.insertImageNode,
+      onSubmitted: insertImage,
+      onUpload: insertImage,
     ),
   ).build();
   container.insert(imageMenuEntry);
@@ -26,12 +40,14 @@ class UploadImageMenu extends StatefulWidget {
   const UploadImageMenu({
     Key? key,
     this.backgroundColor = Colors.white,
+    this.headerColor = Colors.black,
     this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
   }) : super(key: key);
 
   final Color backgroundColor;
+  final Color headerColor;
   final double width;
   final void Function(String text) onSubmitted;
   final void Function(String text) onUpload;
@@ -86,12 +102,12 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return const Text(
+    return Text(
       'URL Image',
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 14.0,
-        color: Colors.black,
+        color: widget.headerColor,
         fontWeight: FontWeight.w500,
       ),
     );

@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent endCommand = CommandShortcutEvent(
   key: 'scroll to the bottom of the document',
-  command: 'end',
+  command: 'ctrl+end',
+  macOSCommand: 'end',
   handler: _endCommandHandler,
 );
 
@@ -22,7 +23,7 @@ CommandShortcutEventHandler _endCommandHandler = (editorState) {
   if (scrollService == null) {
     return KeyEventResult.ignored;
   }
-  // scroll the document to the top
+  // scroll the document to the bottom
   scrollService.scrollTo(
     scrollService.maxScrollExtent,
     duration: const Duration(milliseconds: 150),

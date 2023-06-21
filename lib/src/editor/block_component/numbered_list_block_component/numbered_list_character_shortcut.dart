@@ -15,22 +15,42 @@ CharacterShortcutEvent formatNumberToNumberedList = CharacterShortcutEvent(
   handler: (editorState) async => await formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'numbered_list',
-    (text, selection) {
+    (node, text, selection) {
       final match = _numberRegex.firstMatch(text);
-      final matchText = match?.group(0);
-      final numberText = match?.group(1);
-      return match != null &&
-          matchText != null &&
-          numberText != null &&
-          selection.endIndex == matchText.length;
+      if (match == null) return false;
+
+      final matchText = match.group(0);
+      final numberText = match.group(1);
+      if (matchText == null || numberText == null) return false;
+
+      // if the previous one is numbered list,
+      // we should check the current number is the next number of the previous one
+      Node? previous = node.previous;
+      int level = 0;
+      int? startNumber;
+      while (previous != null && previous.type == NumberedListBlockKeys.type) {
+        startNumber = previous.attributes[NumberedListBlockKeys.number] as int?;
+        level++;
+        previous = previous.previous;
+      }
+      if (startNumber != null) {
+        final currentNumber = int.tryParse(numberText);
+        if (currentNumber == null || currentNumber != startNumber + level) {
+          return false;
+        }
+      }
+
+      return selection.endIndex == matchText.length;
     },
     (text, node, delta) {
       final match = _numberRegex.firstMatch(text)!;
       final matchText = match.group(0)!;
+      final number = matchText.substring(0, matchText.length - 1);
       return Node(
         type: 'numbered_list',
         attributes: {
           'delta': delta.compose(Delta()..delete(matchText.length)).toJson(),
+          'number': int.tryParse(number),
         },
       );
     },

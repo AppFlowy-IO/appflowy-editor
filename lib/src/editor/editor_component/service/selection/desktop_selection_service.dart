@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
@@ -98,30 +99,6 @@ class _DesktopSelectionServiceWidgetState
       onTripleTapDown: _onTripleTapDown,
       child: widget.child,
     );
-  }
-
-  @override
-  List<Node> getNodesInSelection(Selection selection) {
-    final start =
-        selection.isBackward ? selection.start.path : selection.end.path;
-    final end =
-        selection.isBackward ? selection.end.path : selection.start.path;
-    assert(start <= end);
-    final startNode = editorState.document.nodeAtPath(start);
-    final endNode = editorState.document.nodeAtPath(end);
-    if (startNode != null && endNode != null) {
-      final nodes = NodeIterator(
-        document: editorState.document,
-        startNode: startNode,
-        endNode: endNode,
-      ).toList();
-      if (selection.isBackward) {
-        return nodes;
-      } else {
-        return nodes.reversed.toList(growable: false);
-      }
-    }
-    return [];
   }
 
   @override
@@ -260,15 +237,23 @@ class _DesktopSelectionServiceWidgetState
     // clear old state.
     _panStartOffset = null;
 
-    final position = getPositionInOffset(details.globalPosition);
-    if (position == null) {
+    final offset = details.globalPosition;
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      clearSelection();
       return;
     }
-
-    // updateSelection(selection);
-    editorState.selection = Selection.collapsed(position);
-
-    _showDebugLayerIfNeeded(offset: details.globalPosition);
+    if (selectable.cursorStyle == CursorStyle.verticalLine) {
+      editorState.selection = Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      );
+    } else {
+      editorState.selection = Selection(
+        start: selectable.start(),
+        end: selectable.end(),
+      );
+    }
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
@@ -351,12 +336,20 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateBlockSelectionAreas(Selection selection) {
     assert(editorState.selectionType == SelectionType.block);
-    final nodes = getNodesInSelection(selection).normalized;
+    final nodes = editorState.getNodesInSelection(selection).normalized;
 
     currentSelectedNodes = nodes;
 
     final node = nodes.first;
-    final rect = Offset.zero & node.rect.size;
+    var offset = Offset.zero;
+    var size = node.rect.size;
+    final builder = editorState.renderer.blockComponentBuilder(node.type);
+    if (builder != null && builder.showActions(node)) {
+      offset = offset.translate(blockComponentActionContainerWidth, 0);
+      size = Size(size.width - blockComponentActionContainerWidth, size.height);
+    }
+    final rect = offset & size;
+
     final overlay = OverlayEntry(
       builder: (context) => SelectionWidget(
         color: widget.selectionColor,
@@ -374,7 +367,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelectionAreas(Selection selection) {
-    final nodes = getNodesInSelection(selection);
+    final nodes = editorState.getNodesInSelection(selection);
 
     currentSelectedNodes = nodes;
 

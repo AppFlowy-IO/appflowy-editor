@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
@@ -34,6 +35,11 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
     ),
   ),
   ImageBlockKeys.type: ImageBlockComponentBuilder(),
+  DividerBlockKeys.type: DividerBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      padding: (node) => EdgeInsets.symmetric(vertical: 8.0),
+    ),
+  ),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
@@ -67,6 +73,11 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 
   // slash
   slashCommand,
+
+  // divider
+  convertMinusesToDivider,
+  convertStarsToDivider,
+  convertUnderscoreToDivider,
 
   // markdown syntax
   ...markdownSyntaxShortcutEvents,

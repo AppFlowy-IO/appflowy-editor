@@ -214,7 +214,7 @@ class SelectionMenuWidget extends StatefulWidget {
 class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   final _focusNode = FocusNode(debugLabel: 'popup_list_widget');
 
-  int _selectedIndex = -1;
+  int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
 
   String _keyword = '';
@@ -254,6 +254,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     _showingItems = widget.items;
 
+    keepEditorFocusNotifier.value += 1;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -262,6 +263,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   @override
   void dispose() {
     _focusNode.dispose();
+    keepEditorFocusNotifier.value -= 1;
 
     super.dispose();
   }

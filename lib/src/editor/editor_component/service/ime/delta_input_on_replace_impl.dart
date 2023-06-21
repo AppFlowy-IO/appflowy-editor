@@ -14,28 +14,37 @@ Future<void> onReplace(
   if (selection == null) {
     return;
   }
-  await editorState.deleteSelection(selection);
 
-  // insert the replacement
-  final insertion = replacement.toInsertion();
-  await onInsert(
-    insertion,
-    editorState,
-    characterShortcutEvents,
-  );
+  if (selection.isSingle) {
+    final node = editorState.getNodesInSelection(selection).first;
+    final transaction = editorState.transaction;
+    final start = replacement.replacedRange.start;
+    final length = replacement.replacedRange.end - start;
+    transaction.replaceText(node, start, length, replacement.replacementText);
+    await editorState.apply(transaction);
+  } else {
+    await editorState.deleteSelection(selection);
+    // insert the replacement
+    final insertion = replacement.toInsertion();
+    await onInsert(
+      insertion,
+      editorState,
+      characterShortcutEvents,
+    );
+  }
 }
 
 extension on TextEditingDeltaReplacement {
   TextEditingDeltaInsertion toInsertion() {
     final text = oldText.replaceRange(
-      selection.start,
-      selection.end,
+      replacedRange.start,
+      replacedRange.end,
       '',
     );
     return TextEditingDeltaInsertion(
       oldText: text,
       textInserted: replacementText,
-      insertionOffset: selection.start,
+      insertionOffset: replacedRange.start,
       selection: selection,
       composing: composing,
     );

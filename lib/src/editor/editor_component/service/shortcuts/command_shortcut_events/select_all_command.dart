@@ -28,8 +28,8 @@ CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
         (element) => element.selectable != null,
       )
       ?.selectable;
-  final lastSelectable = editorState.document.root.children
-      .lastWhereOrNull(
+  final lastSelectable = editorState.document.root
+      .lastNodeWhere(
         (element) => element.selectable != null,
       )
       ?.selectable;
@@ -38,6 +38,7 @@ CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
   }
   editorState.updateSelectionWithReason(
     Selection(start: firstSelectable.start(), end: lastSelectable.end()),
+    reason: SelectionUpdateReason.selectAll,
   );
   return KeyEventResult.handled;
 };

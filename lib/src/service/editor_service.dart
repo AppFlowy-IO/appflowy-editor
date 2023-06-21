@@ -3,6 +3,15 @@ import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
+// workaround for the issue:
+// the popover will grab the focus even if it's inside the editor
+// setup a global value to indicate whether the focus should be grabbed
+// increase the value when the popover is opened
+// decrease the value when the popover is closed
+// only grab the focus when the value is 0
+// the operation must be paired
+ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
+
 class AppFlowyEditor extends StatefulWidget {
   @Deprecated('Use AppFlowyEditor.custom or AppFlowyEditor.standard instead')
   const AppFlowyEditor({
@@ -19,7 +28,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-    this.showDefaultToolbar = true,
     this.shrinkWrap = false,
     this.scrollController,
     this.themeData,
@@ -42,6 +50,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<SelectionMenuItem> selectionMenuItems = const [],
     Widget? header,
     FocusNode? focusNode,
+    bool shrinkWrap = false,
   }) : this(
           key: key,
           editorState: editorState,
@@ -56,6 +65,7 @@ class AppFlowyEditor extends StatefulWidget {
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
           focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
         );
 
   AppFlowyEditor.standard({
@@ -68,6 +78,7 @@ class AppFlowyEditor extends StatefulWidget {
     EditorStyle? editorStyle,
     Widget? header,
     FocusNode? focusNode,
+    bool shrinkWrap = false,
   }) : this(
           key: key,
           editorState: editorState,
@@ -81,6 +92,7 @@ class AppFlowyEditor extends StatefulWidget {
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
           focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
         );
 
   final EditorState editorState;
@@ -96,9 +108,6 @@ class AppFlowyEditor extends StatefulWidget {
   final List<CommandShortcutEvent> commandShortcutEvents;
 
   final ScrollController? scrollController;
-
-  final bool showDefaultToolbar;
-  final List<SelectionMenuItem> selectionMenuItems;
 
   final Positioned Function(
     BuildContext context,
@@ -117,7 +126,7 @@ class AppFlowyEditor extends StatefulWidget {
 
   final FocusNode? focusNode;
 
-  /// If false the Editor is inside an [AppFlowyScroll]
+  /// if true, the editor will be sized to its contents.
   final bool shrinkWrap;
 
   /// Render plugins.
@@ -134,6 +143,9 @@ class AppFlowyEditor extends StatefulWidget {
   @Deprecated('Customize the style that block component provides instead.')
   final ThemeData? themeData;
 
+  @Deprecated('Use customSlashCommand instead')
+  final List<SelectionMenuItem> selectionMenuItems;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -147,9 +159,16 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void initState() {
     super.initState();
 
+    if (widget.shrinkWrap && widget.scrollController == null) {
+      throw ArgumentError(
+        'scrollController must be provided when shrinkWrap is true.',
+      );
+    }
+
     editorState.editorStyle = widget.editorStyle;
     editorState.selectionMenuItems = widget.selectionMenuItems;
     editorState.renderer = _renderer;
+    editorState.editable = widget.editable;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -162,6 +181,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     super.didUpdateWidget(oldWidget);
 
     editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
@@ -177,21 +197,35 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     return Provider.value(
       value: editorState,
-      child: Overlay(
-        initialEntries: [
-          OverlayEntry(
-            builder: (context) => services!,
-          ),
-        ],
+      child: FocusScope(
+        child: Overlay(
+          initialEntries: [
+            OverlayEntry(
+              builder: (context) => services!,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildServices(BuildContext context) {
-    return ScrollServiceWidget(
-      key: editorState.service.scrollServiceKey,
-      scrollController: widget.scrollController,
-      child: SelectionServiceWidget(
+    Widget child = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.header != null) widget.header!,
+        Container(
+          padding: widget.editorStyle.padding,
+          child: editorState.renderer.build(
+            context,
+            editorState.document.root,
+          ),
+        ),
+      ],
+    );
+    if (widget.editable) {
+      child = SelectionServiceWidget(
         key: editorState.service.selectionServiceKey,
         cursorColor: widget.editorStyle.cursorColor,
         selectionColor: widget.editorStyle.selectionColor,
@@ -200,22 +234,15 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           characterShortcutEvents: widget.characterShortcutEvents,
           commandShortcutEvents: widget.commandShortcutEvents,
           focusNode: widget.focusNode,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              widget.header ?? const SizedBox.shrink(),
-              Container(
-                padding: widget.editorStyle.padding,
-                child: editorState.renderer.build(
-                  context,
-                  editorState.document.root,
-                ),
-              ),
-            ],
-          ),
+          child: child,
         ),
-      ),
+      );
+    }
+    return ScrollServiceWidget(
+      key: editorState.service.scrollServiceKey,
+      shrinkWrap: widget.shrinkWrap,
+      scrollController: widget.scrollController,
+      child: child,
     );
   }
 
