@@ -14,8 +14,10 @@ void showImageMenu(
 
   late final OverlayEntry imageMenuEntry;
 
-  void insertImage(String text,
-      {ImageSourceType imageSourceType = ImageSourceType.network}) {
+  void insertImage(
+    String text, {
+    ImageSourceType imageSourceType = ImageSourceType.network,
+  }) {
     editorState.insertImageNode(text, imageSourceType);
     menuService.dismiss();
     imageMenuEntry.remove();
@@ -105,7 +107,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(child: _buildUploadButton(context)),
-              // const SizedBox(width: 18.0),
               const Text('or'),
               Flexible(child: _buildSelectFileButton(context)),
             ],
@@ -140,7 +141,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             widget.onUpload(file.path!, imageSourceType: ImageSourceType.file);
           }
         },
-        child: const Text('Pick a File',style: TextStyle(color: Colors.white, fontSize: 14.0),),
+        child: const Text(
+          'Pick a File',
+          style: TextStyle(color: Colors.white, fontSize: 14.0),
+        ),
       ),
     );
   }
@@ -199,8 +203,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             ),
           ),
         ),
-        onPressed: () => widget.onUpload(_textEditingController.text,
-            imageSourceType: ImageSourceType.network),
+        onPressed: () => widget.onUpload(
+          _textEditingController.text,
+          imageSourceType: ImageSourceType.network,
+        ),
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
@@ -212,7 +218,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
 extension on EditorState {
   Future<void> insertImageNode(
-      String src, ImageSourceType imageSourceType) async {
+    String src,
+    ImageSourceType imageSourceType,
+  ) async {
     final selection = this.selection;
     if (selection == null || !selection.isCollapsed) {
       return;
@@ -226,12 +234,15 @@ extension on EditorState {
     if (node.type == 'paragraph' && (node.delta?.isEmpty ?? false)) {
       transaction
         ..insertNode(
-            node.path, imageNode(url: src, imageSourceType: imageSourceType))
+          node.path,
+          imageNode(url: src, imageSourceType: imageSourceType),
+        )
         ..deleteNode(node);
     } else {
-      transaction
-        ..insertNode(node.path.next,
-            imageNode(url: src, imageSourceType: imageSourceType));
+      transaction.insertNode(
+        node.path.next,
+        imageNode(url: src, imageSourceType: imageSourceType),
+      );
     }
 
     return apply(transaction);

@@ -322,7 +322,7 @@ class HTMLToNodesConverter {
 
   Node _handleImage(html.Element element) {
     final src = element.attributes['src'] ?? '';
-    final imageSourceType;
+    final ImageSourceType imageSourceType;
     if (src.startsWith('http')) {
       imageSourceType = ImageSourceType.network;
     } else {

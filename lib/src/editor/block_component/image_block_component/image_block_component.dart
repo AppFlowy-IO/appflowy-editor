@@ -127,7 +127,8 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
     final align = attributes[ImageBlockKeys.align] ?? 'center';
     final width = attributes[ImageBlockKeys.width]?.toDouble();
     final imageSourceType = ImageSourceTypeExtension.fromName(
-        attributes[ImageBlockKeys.imageSourceType]);
+      attributes[ImageBlockKeys.imageSourceType],
+    );
 
     Widget child = ImageNodeWidget(
       node: node,
