@@ -32,6 +32,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
+  // use for IME only
+  bool enableShortcuts = true;
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +46,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       key: 'keyboard',
       canTap: (details) {
         focusNode.requestFocus();
+        textInputService.close();
         return true;
       },
     );
@@ -137,7 +141,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   /// handle hardware keyboard
   KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
-    if (event is! RawKeyDownEvent) {
+    if (event is! RawKeyDownEvent || !enableShortcuts) {
       return KeyEventResult.ignored;
     }
 
@@ -164,6 +168,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onSelectionChanged() {
+    enableShortcuts = true;
     // attach the delta text input service if needed
     final selection = editorState.selection;
     if (selection == null) {
@@ -192,6 +197,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
       textInputService.attach(textEditingValue);
+      // disable shortcuts when the IME active
+      enableShortcuts = textEditingValue.composing == TextRange.empty;
+    } else {
+      enableShortcuts = true;
     }
   }
 
@@ -204,7 +213,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         .where((element) => element.delta != null);
 
     // Get the composing text range.
-    final composingTextRange = textInputService.composingTextRange;
+    final composingTextRange =
+        textInputService.composingTextRange ?? TextRange.empty;
     if (editableNodes.isNotEmpty) {
       // Get the text by concatenating all the editable nodes in the selection.
       var text = editableNodes.fold<String>(
@@ -221,8 +231,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           baseOffset: selection.startIndex,
           extentOffset: selection.endIndex,
         ),
-        composing:
-            composingTextRange ?? TextRange.collapsed(selection.start.offset),
+        composing: composingTextRange,
       );
     }
     return null;
