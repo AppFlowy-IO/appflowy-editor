@@ -21,14 +21,14 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(
-      MobileAppWithToolbarWidget(
+    await tester.pumpWidget(Material(
+      child: MobileAppWithToolbarWidget(
         editorState: editor.editorState,
         toolbarItems: [
           linkMobileToolbarItem,
         ],
       ),
-    );
+    ));
 
     // Tap link toolbar item
     await tester.tap(find.byType(IconButton).first);

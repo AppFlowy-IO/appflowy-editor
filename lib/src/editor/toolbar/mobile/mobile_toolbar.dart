@@ -235,15 +235,12 @@ class _CloseKeyboardBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: IconButton(
-        onPressed: () {
-          // clear selection to close keyboard and toolbar
-          editorState.selectionService.updateSelection(null);
-        },
-        icon: const Icon(Icons.keyboard_hide),
-      ),
+    return IconButton(
+      onPressed: () {
+        // clear selection to close keyboard and toolbar
+        editorState.selectionService.updateSelection(null);
+      },
+      icon: const Icon(Icons.keyboard_hide),
     );
   }
 }
@@ -267,23 +264,19 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toobarItem = toolbarItems[index];
-        return Material(
-          // Need Material to pass the test in mobile_toolbar_test.dart
-          color: Colors.transparent,
-          child: IconButton(
-            icon: toobarItem.itemIcon,
-            onPressed: () {
-              if (toobarItem.hasMenu) {
-                // open /close current item menu through its parent widget(MobileToolbarWidget)
-                itemOnPressed.call(index);
-              } else {
-                toolbarItems[index].actionHandler?.call(
-                      editorState,
-                      selection,
-                    );
-              }
-            },
-          ),
+        return IconButton(
+          icon: toobarItem.itemIcon,
+          onPressed: () {
+            if (toobarItem.hasMenu) {
+              // open /close current item menu through its parent widget(MobileToolbarWidget)
+              itemOnPressed.call(index);
+            } else {
+              toolbarItems[index].actionHandler?.call(
+                    editorState,
+                    selection,
+                  );
+            }
+          },
         );
       },
       itemCount: toolbarItems.length,

@@ -9,8 +9,8 @@ void main() {
     const icon = Icon(Icons.add);
     const label = 'Add';
 
-    await tester.pumpWidget(
-      MobileToolbarStyleTestWidget(
+    await tester.pumpWidget(Material(
+      child: MobileToolbarStyleTestWidget(
         child: MobileToolbarItemMenuBtn(
           onPressed: () {},
           icon: icon,
@@ -18,7 +18,7 @@ void main() {
           isSelected: false,
         ),
       ),
-    );
+    ));
     expect(find.byIcon(Icons.add), findsOneWidget);
     expect(find.text('Add'), findsOneWidget);
   });

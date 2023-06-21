@@ -17,14 +17,14 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(
-      MobileAppWithToolbarWidget(
+    await tester.pumpWidget(Material(
+      child: MobileAppWithToolbarWidget(
         editorState: editor.editorState,
         toolbarItems: [
           quoteMobileToolbarItem,
         ],
       ),
-    );
+    ));
 
     // Tap quote toolbar item
     final quoteBtn = find.byType(IconButton).first;
