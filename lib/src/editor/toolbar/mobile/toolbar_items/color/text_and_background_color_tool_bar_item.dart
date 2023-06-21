@@ -50,6 +50,8 @@ class _TextAndBackgroundColorMenuState
                 borderRadius: BorderRadius.circular(style.borderRadius),
                 color: style.tabbarSelectedBackgroundColor,
               ),
+              // remove the bottom line of TabBar
+              dividerColor: Colors.transparent,
             ),
           ),
           Container(
