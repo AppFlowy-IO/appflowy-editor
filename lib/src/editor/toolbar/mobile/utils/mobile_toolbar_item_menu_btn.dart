@@ -31,11 +31,22 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
             if (isSelected == true) {
               return BorderSide(
                 color: style.itemHighlightColor,
-                width: style.buttonBorderWidth,
+                width: style.buttonSelectedBorderWidth,
               );
             }
             return BorderSide(color: style.itemOutlineColor);
           },
+        ),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(style.borderRadius),
+          ),
+        ),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 8,
+          ),
         ),
       ),
     );

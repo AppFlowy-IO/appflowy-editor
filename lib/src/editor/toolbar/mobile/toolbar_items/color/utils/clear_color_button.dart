@@ -45,7 +45,7 @@ class _DiagonalLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = diagonalLineColor
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     canvas.drawLine(
       Offset(0, size.height),

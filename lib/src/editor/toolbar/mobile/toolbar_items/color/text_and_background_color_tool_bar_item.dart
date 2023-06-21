@@ -43,6 +43,7 @@ class _TextAndBackgroundColorMenuState
           SizedBox(
             height: style.buttonHeight,
             child: TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
               tabs: myTabs,
               labelColor: style.tabbarSelectedForegroundColor,
               indicator: BoxDecoration(
