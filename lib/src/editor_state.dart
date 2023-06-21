@@ -34,6 +34,11 @@ enum SelectionType {
   block,
 }
 
+enum TransactionTime {
+  before,
+  after,
+}
+
 /// The state of the editor.
 ///
 /// The state includes:
@@ -119,8 +124,12 @@ class EditorState {
   List<ToolbarItem> toolbarItems = [];
 
   /// listen to this stream to get notified when the transaction applies.
-  Stream<Transaction> get transactionStream => _observer.stream;
-  final StreamController<Transaction> _observer = StreamController.broadcast();
+  Stream<(TransactionTime, Transaction)> get transactionStream =>
+      _observer.stream;
+  final StreamController<(TransactionTime, Transaction)> _observer =
+      StreamController.broadcast(
+    sync: true,
+  );
 
   final UndoManager undoManager = UndoManager();
 
@@ -211,13 +220,16 @@ class EditorState {
 
     final completer = Completer<void>();
 
+    // broadcast to other users here, before applying the transaction
+    _observer.add((TransactionTime.before, transaction));
+
     for (final operation in transaction.operations) {
       Log.editor.debug('apply op: ${operation.toJson()}');
       _applyOperation(operation);
     }
 
-    // broadcast to other users here
-    _observer.add(transaction);
+    // broadcast to other users here, after applying the transaction
+    _observer.add((TransactionTime.after, transaction));
 
     _recordRedoOrUndo(options, transaction);
 

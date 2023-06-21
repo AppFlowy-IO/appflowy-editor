@@ -23,12 +23,9 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     },
     (text, node, delta) {
       final numberOfSign = text.split('').length;
-      return Node(
-        type: 'heading',
-        attributes: {
-          'delta': delta.compose(Delta()..delete(numberOfSign)).toJson(),
-          'level': numberOfSign,
-        },
+      return headingNode(
+        level: numberOfSign,
+        delta: delta.compose(Delta()..delete(numberOfSign)),
       );
     },
   ),
