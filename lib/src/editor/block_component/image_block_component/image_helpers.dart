@@ -1,43 +1,41 @@
 import 'package:flutter/material.dart';
 
 class BuildResizableImage extends StatefulWidget {
-  BuildResizableImage({
+  const BuildResizableImage({
     Key? key,
-    required BuildContext context,
     required this.src,
     required this.editable,
     required this.imageWidth,
-    required this.distance,
     required this.imageStream,
     required this.imageStreamListener,
-    required this.onFocus,
     required this.onResize,
-    required this.initial,
+    required this.onFocus,
   }) : super(key: key);
   final String src;
   final bool editable;
-  bool onFocus;
+  final bool onFocus;
   final double? imageWidth;
-  double initial;
-  double distance;
-  ImageStream? imageStream;
+  final ImageStream? imageStream;
   final void Function(double width) onResize;
-  ImageStreamListener imageStreamListener;
+  final ImageStreamListener imageStreamListener;
 
   @override
   State<BuildResizableImage> createState() => _BuildResizableImageState();
 }
 
 class _BuildResizableImageState extends State<BuildResizableImage> {
+  double initial = 0.0;
+  double imageDistance = 0.0;
+  ImageStream? imageStreamValue;
+
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     //NOTE: Created a class in order to handle local image files later
     final networkImage = ImageFileType()
-        .networkImage(widget.src, widget.distance, widget.imageWidth);
+        .networkImage(widget.src, imageDistance, widget.imageWidth);
 
     if (widget.imageWidth == null) {
-      widget.imageStream = networkImage.image
-          .resolve(const ImageConfiguration())
+      imageStreamValue = networkImage.image.resolve(const ImageConfiguration())
         ..addListener(widget.imageStreamListener);
     }
     return Stack(
@@ -47,32 +45,36 @@ class _BuildResizableImageState extends State<BuildResizableImage> {
           BuildEdgeGestures(
             top: 0,
             left: 0,
+            right: null,
             bottom: 0,
             width: 5,
-            distance: widget.distance,
+            distance: imageDistance,
             onFocus: widget.onFocus,
             imageWidth: widget.imageWidth,
             onResize: widget.onResize,
-            initial: widget.initial,
+            initial: initial,
             onUpdate: (distance) {
               setState(() {
-                widget.distance = distance;
+                imageDistance = distance;
               });
             },
           ),
           BuildEdgeGestures(
             top: 0,
+            left: null,
             right: 0,
             bottom: 0,
             width: 5,
-            distance: widget.distance,
+            distance: imageDistance,
             onFocus: widget.onFocus,
             imageWidth: widget.imageWidth,
             onResize: widget.onResize,
-            initial: widget.initial,
+            initial: initial,
             onUpdate: (distance) {
               setState(() {
-                widget.distance = -distance;
+                //BUG: The right side does not have any effect
+                //More like it resets the image to full size
+                imageDistance = -distance;
               });
             },
           ),
@@ -149,13 +151,13 @@ class BuildErrorState extends StatelessWidget {
 }
 
 class BuildEdgeGestures extends StatefulWidget {
-  BuildEdgeGestures({
+  const BuildEdgeGestures({
     Key? key,
-    this.top,
-    this.left,
-    this.right,
-    this.bottom,
-    this.width,
+    required this.top,
+    required this.left,
+    required this.right,
+    required this.bottom,
+    required this.width,
     required this.onUpdate,
     required this.distance,
     required this.initial,
@@ -163,27 +165,31 @@ class BuildEdgeGestures extends StatefulWidget {
     required this.onFocus,
     required this.onResize,
   }) : super(key: key);
-  double? top;
-  double? left;
-  double? right;
-  double? bottom;
-  double? width;
-  double distance;
-  double initial;
-  double? imageWidth;
-
-  bool onFocus;
-
-  void Function(double distance)? onUpdate;
-  void Function(double width) onResize;
+  //NOTE: Removing top, left, right, bottom, width.
+  //Will cause the widget to fail even if we use 0.0
+  final double? top;
+  final double? left;
+  final double? right;
+  final double? bottom;
+  final double? width;
+  final double distance;
+  final double initial;
+  final double? imageWidth;
+  final bool onFocus;
+  final void Function(double distance)? onUpdate;
+  final void Function(double width) onResize;
 
   @override
   State<BuildEdgeGestures> createState() => _BuildEdgeGesturesState();
 }
 
 class _BuildEdgeGesturesState extends State<BuildEdgeGestures> {
+  double initialDistance = 0;
+  double imageMovedDistance = 0;
+
   @override
   Widget build(BuildContext context) {
+    double? imageWidth = widget.imageWidth;
     return Positioned(
       top: widget.top,
       left: widget.left,
@@ -192,7 +198,7 @@ class _BuildEdgeGesturesState extends State<BuildEdgeGestures> {
       width: widget.width,
       child: GestureDetector(
         onHorizontalDragStart: (details) {
-          widget.initial = details.globalPosition.dx;
+          initialDistance = details.globalPosition.dx;
         },
         onHorizontalDragUpdate: (details) {
           if (widget.onUpdate != null) {
@@ -200,11 +206,11 @@ class _BuildEdgeGesturesState extends State<BuildEdgeGestures> {
           }
         },
         onHorizontalDragEnd: (details) {
-          widget.imageWidth = widget.imageWidth! - widget.distance;
-          widget.initial = 0;
-          widget.distance = 0;
+          imageWidth = imageWidth! - widget.distance;
+          initialDistance = 0;
+          imageMovedDistance = 0;
 
-          widget.onResize(widget.imageWidth!);
+          widget.onResize(imageWidth!);
         },
         child: MouseRegion(
           cursor: SystemMouseCursors.resizeLeftRight,

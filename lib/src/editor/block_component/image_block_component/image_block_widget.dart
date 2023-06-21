@@ -34,8 +34,6 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   final _imageKey = GlobalKey();
 
   double? _imageWidth;
-  final double _initial = 0;
-  final double _distance = 0;
 
   @visibleForTesting
   bool onFocus = false;
@@ -79,15 +77,12 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
           onEnter: (event) => setState(() => onFocus = true),
           onExit: (event) => setState(() => onFocus = false),
           child: BuildResizableImage(
-            context: context,
             src: widget.src,
             editable: widget.editable,
             imageWidth: _imageWidth,
-            distance: _distance,
             imageStream: _imageStream,
             imageStreamListener: _imageStreamListener,
             onFocus: onFocus,
-            initial: _initial,
             onResize: widget.onResize,
           ),
         ),
