@@ -16,9 +16,6 @@ final ToolbarItem quoteItem = ToolbarItem(
         selection,
         (node) => node.copyWith(
           type: isHighlight ? 'paragraph' : 'quote',
-          attributes: {
-            'delta': (node.delta ?? Delta()).toJson(),
-          },
         ),
       ),
     );

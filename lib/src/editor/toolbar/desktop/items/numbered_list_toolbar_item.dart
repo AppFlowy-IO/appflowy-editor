@@ -16,9 +16,6 @@ final ToolbarItem numberedListItem = ToolbarItem(
         selection,
         (node) => node.copyWith(
           type: isHighlight ? 'paragraph' : 'numbered_list',
-          attributes: {
-            'delta': (node.delta ?? Delta()).toJson(),
-          },
         ),
       ),
     );

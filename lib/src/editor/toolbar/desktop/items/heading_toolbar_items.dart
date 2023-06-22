@@ -32,6 +32,8 @@ class _HeadingToolbarItem extends ToolbarItem {
                     HeadingBlockKeys.backgroundColor:
                         node.attributes[blockComponentBackgroundColor],
                     'delta': (node.delta ?? Delta()).toJson(),
+                    FlowyRichTextKeys.dir:
+                        node.attributes[FlowyRichTextKeys.dir]
                   },
                 ),
               ),

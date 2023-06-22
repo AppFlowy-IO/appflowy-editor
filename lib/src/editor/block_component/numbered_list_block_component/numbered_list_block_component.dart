@@ -145,6 +145,7 @@ class _NumberedListBlockComponentWidgetState
       padding: const EdgeInsets.only(right: 5.0),
       child: Text.rich(
         TextSpan(text: '$level.', style: text.combine(textStyle)),
+        textDirection: lastDirection,
       ),
     );
   }
