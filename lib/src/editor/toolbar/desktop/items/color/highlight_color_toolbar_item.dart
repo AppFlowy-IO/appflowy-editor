@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 final highlightColorItem = ToolbarItem(
   id: 'editor.highlightColor',
   group: 4,
-  isActive: onlyShowInSingleSelectionAndTextType,
+  isActive: onlyShowInTextType,
   builder: (context, editorState) {
     String? highlightColorHex;
 

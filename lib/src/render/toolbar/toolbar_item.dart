@@ -334,3 +334,12 @@ bool onlyShowInSingleSelectionAndTextType(EditorState editorState) {
   final node = editorState.getNodeAtPath(selection.start.path);
   return node?.delta != null;
 }
+
+bool onlyShowInTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return false;
+  }
+  final nodes = editorState.getNodesInSelection(selection);
+  return nodes.every((element) => element.delta != null);
+}
