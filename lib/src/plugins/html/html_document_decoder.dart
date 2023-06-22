@@ -1,22 +1,25 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart';
 
-class NodeHTMLDecoder extends Converter<String, List<Node>> {
-  NodeHTMLDecoder();
+class DocumentHTMLDecoder extends Converter<String, Document> {
+  DocumentHTMLDecoder();
 
   @override
-  List<Node> convert(String input) {
+  Document convert(String input) {
     final document = parse(input);
     final body = document.body;
     if (body == null) {
-      return [];
+      return Document.blank(withInitialText: false);
     }
     final nodes = _parseElement(body.nodes);
-    return nodes.toList();
+    return Document.blank(withInitialText: false)
+      ..insert(
+        [0],
+        nodes,
+      );
   }
 
   Iterable<Node> _parseElement(Iterable<dom.Node> domNodes) {
@@ -331,12 +334,12 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
-    HTMLTags.div,
+    HTMLTag.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTags.image
+    HTMLTag.image
   ];
 
   static bool isTopLevel(String tag) {
