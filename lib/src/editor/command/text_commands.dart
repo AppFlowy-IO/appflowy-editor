@@ -47,10 +47,14 @@ extension TextTransforms on EditorState {
     }
 
     final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
+    final Map<String, dynamic> attributes = {
+      'delta': slicedDelta.toJson(),
+    };
+    if (node.attributes.direction != null) {
+      attributes['dir'] = node.attributes[FlowyRichTextKeys.dir];
+    }
     final insertedNode = paragraphNode(
-      attributes: {
-        'delta': slicedDelta.toJson(),
-      },
+      attributes: attributes,
       children: children,
     );
     nodeBuilder ??= (node) => node.copyWith();

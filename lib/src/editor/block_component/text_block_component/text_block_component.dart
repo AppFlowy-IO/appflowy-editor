@@ -97,8 +97,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Widget buildComponent(BuildContext context) {
     final (textDirection, startText) = getTextDirection(
-      widget.node.attributes.direction,
-      node.delta?.toPlainText(),
+      node,
       lastStartText,
       lastDirection,
     );

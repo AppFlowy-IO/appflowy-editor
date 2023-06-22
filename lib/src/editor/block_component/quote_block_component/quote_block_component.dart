@@ -90,8 +90,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   @override
   Widget build(BuildContext context) {
     final (textDirection, startText) = getTextDirection(
-      widget.node.attributes.direction,
-      node.delta?.toPlainText(),
+      node,
       lastStartText,
       lastDirection,
     );

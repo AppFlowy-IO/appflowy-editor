@@ -107,6 +107,20 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
             Rect.zero,
           ) ??
           Offset.zero;
+      if (textDirection() == TextDirection.rtl) {
+        if (widget.placeholderText.trim().isEmpty) {
+          var w = widget.node.key.currentContext?.size?.width ?? 0;
+          cursorOffset = cursorOffset.translate(
+            w == 0 ? 0 : w - cursorOffset.dx - widget.cursorWidth,
+            0,
+          );
+        } else {
+          cursorOffset = cursorOffset.translate(
+            _placeholderRenderParagraph?.size.width ?? 0,
+            0,
+          );
+        }
+      }
     }
     if (widget.cursorHeight != null && cursorHeight != null) {
       cursorOffset = Offset(
@@ -197,6 +211,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       cursor: SystemMouseCursors.text,
       child: widget.node.delta?.toPlainText().isEmpty ?? true
           ? Stack(
+              textDirection: textDirection(),
               children: [
                 _buildPlaceholderText(context),
                 _buildSingleRichText(context),
@@ -217,7 +232,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
-      textDirection: widget.textDirection,
+      textDirection: textDirection(),
     );
   }
 
@@ -232,7 +247,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       text: widget.textSpanDecorator != null
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
-      textDirection: widget.textDirection,
+      textDirection: textDirection(),
     );
   }
 

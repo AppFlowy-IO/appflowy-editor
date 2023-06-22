@@ -2,17 +2,26 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 (TextDirection, String?) getTextDirection(
-  FlowyTextDirection? dir, [
-  String? text,
+  Node node, [
   String? lastStartText,
   TextDirection? lastDirection,
   FlowyTextDirection defaultDirection = FlowyTextDirection.ltr,
 ]) {
-  final FlowyTextDirection direction = dir ?? defaultDirection;
-  final TextDirection fallBackDir = direction == FlowyTextDirection.rtl
+  final text = node.delta?.toPlainText();
+  final FlowyTextDirection direction =
+      node.attributes.direction ?? defaultDirection;
+  TextDirection fallBackDir = direction == FlowyTextDirection.rtl
       ? TextDirection.rtl
       : TextDirection.ltr;
+  fallBackDir = lastDirection ?? fallBackDir;
 
+  final prevNodeDir = node
+      .previousNodeWhere((n) => n.selectable != null)
+      ?.selectable!
+      .textDirection();
+  if (direction == FlowyTextDirection.auto && prevNodeDir != null) {
+    fallBackDir = lastDirection ?? prevNodeDir;
+  }
   if (direction != FlowyTextDirection.auto || (text?.isEmpty ?? true)) {
     return (fallBackDir, null);
   }
