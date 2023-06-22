@@ -137,7 +137,12 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       );
     }
 
-    return child;
+    return blockPadding(
+      child,
+      widget.node,
+      widget.configuration.padding(node),
+      textDirection,
+    );
   }
 
   // TODO: support custom icon.

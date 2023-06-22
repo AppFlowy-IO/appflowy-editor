@@ -85,7 +85,11 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    return child;
+    return blockPadding(
+      child,
+      widget.node,
+      widget.configuration.padding(widget.node),
+    );
   }
 
   @override

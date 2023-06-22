@@ -127,7 +127,11 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
       );
     }
 
-    return child;
+    return blockPadding(
+      child,
+      widget.node,
+      widget.configuration.padding(node),
+    );
   }
 
   Alignment _textToAlignment(String text) {

@@ -137,7 +137,12 @@ class _BulletedListBlockComponentWidgetState
       );
     }
 
-    return child;
+    return blockPadding(
+      child,
+      widget.node,
+      widget.configuration.padding(node),
+      textDirection,
+    );
   }
 }
 

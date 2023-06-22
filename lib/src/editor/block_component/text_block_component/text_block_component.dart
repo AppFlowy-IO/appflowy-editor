@@ -128,6 +128,12 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         child: child,
       );
     }
-    return child;
+
+    return blockPadding(
+      child,
+      widget.node,
+      widget.configuration.padding(node),
+      textDirection,
+    );
   }
 }
