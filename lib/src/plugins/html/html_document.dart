@@ -1,8 +1,10 @@
-library html_to_document;
+library delta_markdown;
 
 import 'dart:convert';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/core/document/document.dart';
+import 'package:appflowy_editor/src/plugins/html/html_document_decoder.dart';
+import 'package:appflowy_editor/src/plugins/html/html_document_encoder.dart';
 
 /// Converts a html to [Document].
 Document htmlToDocument(String html) {
