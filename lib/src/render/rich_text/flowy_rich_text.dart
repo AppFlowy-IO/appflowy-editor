@@ -37,7 +37,7 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
-    required this.textDirection,
+    this.textDirection = TextDirection.ltr,
     required this.node,
     required this.editorState,
   }) : super(key: key);
