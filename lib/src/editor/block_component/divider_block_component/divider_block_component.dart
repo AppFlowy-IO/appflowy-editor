@@ -18,12 +18,14 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
     this.lineColor = Colors.grey,
+    this.height = 10,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
   final Color lineColor;
+  final double height;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -33,6 +35,7 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       configuration: configuration,
       lineColor: lineColor,
+      height: height,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -53,9 +56,11 @@ class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.lineColor = Colors.grey,
+    this.height = 10,
   });
 
   final Color lineColor;
+  final double height;
 
   @override
   State<DividerBlockComponentWidget> createState() =>
@@ -64,12 +69,14 @@ class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
 
 class _DividerBlockComponentWidgetState
     extends State<DividerBlockComponentWidget> with SelectableMixin {
+  final dividerKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   @override
   Widget build(BuildContext context) {
     Widget child = Container(
-      height: 10,
+      key: dividerKey,
+      height: widget.height,
       alignment: Alignment.center,
       child: Divider(
         color: widget.lineColor,
@@ -110,8 +117,17 @@ class _DividerBlockComponentWidgetState
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) =>
-      [Offset.zero & _renderBox.size];
+  List<Rect> getRectsInSelection(Selection selection) {
+    final parentBox = context.findRenderObject();
+    final dividerBox = dividerKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && dividerBox is RenderBox) {
+      return [
+        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            dividerBox.size
+      ];
+    }
+    return [Offset.zero & _renderBox.size];
+  }
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) => Selection.single(

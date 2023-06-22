@@ -47,7 +47,7 @@ class _BlockComponentActionWrapperState
       hitTestBehavior: HitTestBehavior.opaque,
       opaque: false,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [

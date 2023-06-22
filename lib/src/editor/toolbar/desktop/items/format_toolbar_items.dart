@@ -42,14 +42,7 @@ class _FormatToolbarItem extends ToolbarItem {
   }) : super(
           id: 'editor.$id',
           group: 2,
-          isActive: (editorState) {
-            final selection = editorState.selection;
-            if (selection == null) {
-              return false;
-            }
-            final nodes = editorState.getNodesInSelection(selection);
-            return nodes.every((element) => element.delta != null);
-          },
+          isActive: onlyShowInTextType,
           builder: (context, editorState) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);

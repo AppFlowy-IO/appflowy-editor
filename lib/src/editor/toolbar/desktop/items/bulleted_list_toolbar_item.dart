@@ -3,7 +3,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 final ToolbarItem bulletedListItem = ToolbarItem(
   id: 'editor.bulleted_list',
   group: 3,
-  isActive: (editorState) => editorState.selection?.isSingle ?? false,
+  isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
