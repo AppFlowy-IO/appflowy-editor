@@ -107,18 +107,27 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
-      child: FlowyRichText(
-        key: forwardKey,
-        node: widget.node,
-        editorState: editorState,
-        placeholderText: placeholderText,
-        textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-          textStyle,
-        ),
-        placeholderTextSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-          placeholderTextStyle,
-        ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
+        children: [
+          FlowyRichText(
+            key: forwardKey,
+            node: widget.node,
+            editorState: editorState,
+            placeholderText: placeholderText,
+            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+              textStyle,
+            ),
+            placeholderTextSpanDecorator: (textSpan) =>
+                textSpan.updateTextStyle(
+              placeholderTextStyle,
+            ),
+            textDirection: textDirection,
+          ),
+        ],
       ),
     );
     if (showActions) {

@@ -108,13 +108,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
           ) ??
           Offset.zero;
       if (textDirection() == TextDirection.rtl) {
-        if (widget.placeholderText.trim().isEmpty) {
-          var w = widget.node.key.currentContext?.size?.width ?? 0;
-          cursorOffset = cursorOffset.translate(
-            w == 0 ? 0 : w - cursorOffset.dx - widget.cursorWidth,
-            0,
-          );
-        } else {
+        if (widget.placeholderText.trim().isNotEmpty) {
           cursorOffset = cursorOffset.translate(
             _placeholderRenderParagraph?.size.width ?? 0,
             0,
