@@ -18,6 +18,7 @@ Widget blockPadding(
     padding += indentPadding;
     parent = parent.parent;
   }
+  padding -= indentPadding;
 
   return Padding(padding: padding, child: child);
 }
