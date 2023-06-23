@@ -47,6 +47,7 @@ export 'src/render/toolbar/toolbar_item.dart';
 export 'src/render/action_menu/action_menu.dart';
 export 'src/render/action_menu/action_menu_item.dart';
 export 'src/core/document/node_iterator.dart';
+export 'src/service/context_menu/context_menu.dart';
 export 'src/infra/flowy_svg.dart';
 export 'src/extensions/extensions.dart';
 export 'src/service/default_text_operations/format_rich_text_style.dart';

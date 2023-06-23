@@ -40,6 +40,8 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
       padding: (node) => EdgeInsets.symmetric(vertical: 8.0),
     ),
   ),
+  kTableType: TableBlockComponentBuilder(),
+  kTableCellType: TableCellBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [

@@ -2,9 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
@@ -326,8 +324,6 @@ class _DesktopSelectionServiceWidgetState
       final selection = Selection(start: start, end: end);
       updateSelection(selection);
     }
-
-    _showDebugLayerIfNeeded(offset: panEndOffset);
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -555,21 +551,30 @@ class _DesktopSelectionServiceWidgetState
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (rect.bottom <= offset.dy) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
+
+    var min = _findCloseNode(
+      sortedNodes,
+      start,
+      end,
+      (rect) => rect.bottom <= offset.dy,
+    );
+
+    final filteredNodes = List.of(sortedNodes)
+      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    min = 0;
+    if (filteredNodes.length > 1) {
+      min = _findCloseNode(
+        sortedNodes,
+        0,
+        filteredNodes.length - 1,
+        (rect) => rect.right <= offset.dx,
+      );
     }
-    min = min.clamp(start, end);
-    final node = sortedNodes[min];
+
+    final node = filteredNodes[min];
     if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false);
+      final children = node.children.toList(growable: false)
+        ..sort((a, b) => a.rect.bottom.compareTo(b.rect.bottom));
       return _getNodeInOffset(
         children,
         offset,
@@ -580,7 +585,27 @@ class _DesktopSelectionServiceWidgetState
     return node;
   }
 
-  void _showDebugLayerIfNeeded({Offset? offset}) {
+  int _findCloseNode(
+    List<Node> sortedNodes,
+    int start,
+    int end,
+    bool Function(Rect rect) compare,
+  ) {
+    var min = start;
+    var max = end;
+    while (min <= max) {
+      final mid = min + ((max - min) >> 1);
+      final rect = sortedNodes[mid].rect;
+      if (compare(rect)) {
+        min = mid + 1;
+      } else {
+        max = mid - 1;
+      }
+    }
+    return min.clamp(start, end);
+  }
+
+  void _showDebugLayerIfNeeded() {
     // remove false to show debug overlay.
     // if (kDebugMode && false) {
     //   _debugOverlay?.remove();
