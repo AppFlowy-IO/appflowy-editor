@@ -17,14 +17,16 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(Material(
-      child: MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          todoListMobileToolbarItem,
-        ],
+    await tester.pumpWidget(
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            todoListMobileToolbarItem,
+          ],
+        ),
       ),
-    ),);
+    );
 
     // Tap todoList toolbar item
     final todoListBtn = find.byType(IconButton).first;

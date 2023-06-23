@@ -17,10 +17,13 @@ void main() {
         endOffset: text.length - 2,
       );
 
-      await tester.pumpWidget(Material(
+      await tester.pumpWidget(
+        Material(
           child: MobileToolbarStyleTestWidget(
-        child: TextColorOptionsWidgets(editor.editorState, selection),
-      ),),);
+            child: TextColorOptionsWidgets(editor.editorState, selection),
+          ),
+        ),
+      );
 
       expect(find.byType(ClearColorButton), findsOneWidget);
     });

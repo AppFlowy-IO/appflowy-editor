@@ -17,14 +17,16 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(Material(
-      child: MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          listMobileToolbarItem,
-        ],
+    await tester.pumpWidget(
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            listMobileToolbarItem,
+          ],
+        ),
       ),
-    ),);
+    );
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -32,14 +34,22 @@ void main() {
 
     // Show its menu and it has 2 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text(AppFlowyEditorLocalizations.current.bulletedList),
-        findsOneWidget,);
-    expect(find.text(AppFlowyEditorLocalizations.current.numberedList),
-        findsOneWidget,);
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.bulletedList),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.numberedList),
+      findsOneWidget,
+    );
 
     // Test Bulleted List button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.bulletedList,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.bulletedList,
+      ),
+    );
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
@@ -48,8 +58,12 @@ void main() {
     );
 
     // Test Numbered List button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.numberedList,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.numberedList,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);

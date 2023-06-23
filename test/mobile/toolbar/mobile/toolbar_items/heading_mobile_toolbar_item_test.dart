@@ -17,14 +17,16 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(Material(
-      child: MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          headingMobileToolbarItem,
-        ],
+    await tester.pumpWidget(
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            headingMobileToolbarItem,
+          ],
+        ),
       ),
-    ),);
+    );
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -32,16 +34,26 @@ void main() {
 
     // Show its menu and it has 3 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading1),
-        findsOneWidget,);
-    expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading2),
-        findsOneWidget,);
-    expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading3),
-        findsOneWidget,);
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading1),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading2),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading3),
+      findsOneWidget,
+    );
 
     // Test Heading 1 button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading1,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading1,
+      ),
+    );
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
@@ -51,8 +63,12 @@ void main() {
     );
 
     // Test Heading 2 button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading2,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading2,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
@@ -63,8 +79,12 @@ void main() {
     );
 
     // Test Heading 3 button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading3,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading3,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);

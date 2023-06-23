@@ -17,14 +17,16 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(Material(
-      child: MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          textDecorationMobileToolbarItem,
-        ],
+    await tester.pumpWidget(
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            textDecorationMobileToolbarItem,
+          ],
+        ),
       ),
-    ),);
+    );
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -34,15 +36,25 @@ void main() {
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(find.text(AppFlowyEditorLocalizations.current.bold), findsOneWidget);
     expect(
-        find.text(AppFlowyEditorLocalizations.current.italic), findsOneWidget,);
-    expect(find.text(AppFlowyEditorLocalizations.current.underline),
-        findsOneWidget,);
-    expect(find.text(AppFlowyEditorLocalizations.current.strikethrough),
-        findsOneWidget,);
+      find.text(AppFlowyEditorLocalizations.current.italic),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.underline),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.strikethrough),
+      findsOneWidget,
+    );
 
     // Test bold button
-    await tester.tap(find.widgetWithText(
-        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.bold,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.bold,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
@@ -55,8 +67,12 @@ void main() {
     );
 
     // Test Italic button
-    await tester.tap(find.widgetWithText(
-        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.italic,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.italic,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -69,8 +85,12 @@ void main() {
     );
 
     // Test Underline button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.underline,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.underline,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -83,8 +103,12 @@ void main() {
     );
 
     // Test Strikethrough button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.strikethrough,),);
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.strikethrough,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
