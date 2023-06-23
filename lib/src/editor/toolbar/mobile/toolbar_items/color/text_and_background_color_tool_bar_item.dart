@@ -29,10 +29,10 @@ class _TextAndBackgroundColorMenuState
   Widget build(BuildContext context) {
     final style = MobileToolbarStyle.of(context);
     List<Tab> myTabs = <Tab>[
-      const Tab(
-        text: 'Text Color',
+      Tab(
+        text: AppFlowyEditorLocalizations.current.textColor,
       ),
-      const Tab(text: 'Background Color'),
+      Tab(text: AppFlowyEditorLocalizations.current.backgroundColor),
     ];
 
     return DefaultTabController(
