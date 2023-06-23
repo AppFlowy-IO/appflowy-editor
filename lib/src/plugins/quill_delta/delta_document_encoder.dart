@@ -5,6 +5,7 @@ import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated('This class is outdated and will be removed in the next release.')
 class DeltaDocumentConvert {
   DeltaDocumentConvert();
 
@@ -19,7 +20,7 @@ class DeltaDocumentConvert {
   Document convertFromDelta(Delta delta) {
     final iter = delta.iterator;
 
-    final document = Document.empty();
+    final document = Document.blank();
     TextNode textNode = TextNode(delta: Delta());
     int path = 0;
 
@@ -88,12 +89,12 @@ class DeltaDocumentConvert {
     final color = attributes?['color'] as String?;
     final colorHex = _convertColorToHexString(color);
     if (colorHex != null) {
-      attrs[BuiltInAttributeKey.color] = colorHex;
+      attrs[BuiltInAttributeKey.textColor] = colorHex;
     }
     final backgroundColor = attributes?['background'] as String?;
     final backgroundHex = _convertColorToHexString(backgroundColor);
     if (backgroundHex != null) {
-      attrs[BuiltInAttributeKey.backgroundColor] = backgroundHex;
+      attrs[BuiltInAttributeKey.highlightColor] = backgroundHex;
     }
 
     textNode.delta.insert(text, attributes: attrs);
@@ -204,9 +205,9 @@ class DeltaDocumentConvert {
   }
 
   /*
-  // convert code-block to appflowy style code
+  // convert code_block to appflowy style code
   void _applyCodeBlock(TextNode textNode, Map? attributes) {
-    final codeBlock = attributes?['code-block'] as bool?;
+    final codeBlock = attributes?['code_block'] as bool?;
     if (codeBlock != null) {
       textNode.updateAttributes({
         BuiltInAttributeKey.subtype: 'code_block',

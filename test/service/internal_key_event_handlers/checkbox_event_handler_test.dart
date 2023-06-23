@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -17,14 +15,10 @@ void main() async {
     testWidgets('toggle checkbox with shortcut ctrl+enter', (tester) async {
       const text = 'Checkbox1';
       final editor = tester.editor
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: false,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: false,
+            delta: Delta()..insert(text),
           ),
         );
       await editor.startTesting();
@@ -32,51 +26,33 @@ void main() async {
         Selection.single(path: [0], startOffset: text.length),
       );
 
-      final checkboxNode = editor.nodeAtPath([0]) as TextNode;
-      expect(checkboxNode.subtype, BuiltInAttributeKey.checkbox);
-      expect(checkboxNode.attributes[BuiltInAttributeKey.checkbox], false);
+      var node = editor.nodeAtPath([0])!;
+      expect(node.type, 'todo_list');
+      expect(node.attributes[TodoListBlockKeys.checked], false);
 
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Toggle Checkbox') {
-          event.updateCommand(
-            windowsCommand: 'ctrl+enter',
-            linuxCommand: 'ctrl+enter',
-            macOSCommand: 'meta+enter',
-          );
-        }
-      }
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+      );
 
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isMetaPressed: true,
-        );
-      }
-
-      expect(checkboxNode.attributes[BuiltInAttributeKey.checkbox], true);
+      node = editor.nodeAtPath([0])!;
+      expect(node.attributes[TodoListBlockKeys.checked], true);
 
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: text.length),
       );
 
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isMetaPressed: true,
-        );
-      }
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+      );
 
-      expect(checkboxNode.attributes[BuiltInAttributeKey.checkbox], false);
+      node = editor.nodeAtPath([0])!;
+      expect(node.attributes[TodoListBlockKeys.checked], false);
+
+      await editor.dispose();
     });
 
     testWidgets(
@@ -84,81 +60,48 @@ void main() async {
         (tester) async {
       const text = 'Checkbox';
       final editor = tester.editor
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: true,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: true,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         )
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: true,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: true,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         )
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: true,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: true,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         );
 
       await editor.startTesting();
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: text.length),
+
+      final selection = Selection.collapse([0], text.length);
+      await editor.updateSelection(selection);
+
+      var nodes = editor.editorState.getNodesInSelection(selection);
+      for (final node in nodes) {
+        expect(node.type, 'todo_list');
+        expect(node.attributes[TodoListBlockKeys.checked], true);
+      }
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
       );
 
-      final nodes =
-          editor.editorState.service.selectionService.currentSelectedNodes;
-      final checkboxTextNodes = nodes
-          .where(
-            (element) =>
-                element is TextNode &&
-                element.subtype == BuiltInAttributeKey.checkbox,
-          )
-          .toList(growable: false);
-
-      for (final node in checkboxTextNodes) {
-        expect(node.attributes[BuiltInAttributeKey.checkbox], true);
+      nodes = editor.editorState.getNodesInSelection(selection);
+      for (final node in nodes) {
+        expect(node.attributes[TodoListBlockKeys.checked], false);
       }
 
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Toggle Checkbox') {
-          event.updateCommand(
-            windowsCommand: 'ctrl+enter',
-            linuxCommand: 'ctrl+enter',
-            macOSCommand: 'meta+enter',
-          );
-        }
-      }
-
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isMetaPressed: true,
-        );
-      }
-
-      for (final node in checkboxTextNodes) {
-        expect(node.attributes[BuiltInAttributeKey.checkbox], false);
-      }
+      await editor.dispose();
     });
 
     testWidgets(
@@ -166,77 +109,48 @@ void main() async {
         (tester) async {
       const text = 'Checkbox';
       final editor = tester.editor
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: false,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: false,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         )
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: true,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: true,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         )
-        ..insertTextNode(
-          '',
-          attributes: {
-            BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-            BuiltInAttributeKey.checkbox: false,
-          },
-          delta: Delta(
-            operations: [TextInsert(text)],
+        ..addNode(
+          todoListNode(
+            checked: false,
+            attributes: {'delta': (Delta()..insert(text)).toJson()},
           ),
         );
 
       await editor.startTesting();
+
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [2], offset: text.length),
+      );
       await editor.updateSelection(
-        Selection.single(path: [0], startOffset: text.length),
+        selection,
       );
 
-      final nodes =
-          editor.editorState.service.selectionService.currentSelectedNodes;
-      final checkboxTextNodes = nodes
-          .where(
-            (element) =>
-                element is TextNode &&
-                element.subtype == BuiltInAttributeKey.checkbox,
-          )
-          .toList(growable: false);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+      );
 
-      for (final event in builtInShortcutEvents) {
-        if (event.key == 'Toggle Checkbox') {
-          event.updateCommand(
-            windowsCommand: 'ctrl+enter',
-            linuxCommand: 'ctrl+enter',
-            macOSCommand: 'meta+enter',
-          );
-        }
+      final nodes = editor.editorState.getNodesInSelection(selection);
+      for (final node in nodes) {
+        expect(node.type, 'todo_list');
+        expect(node.attributes[TodoListBlockKeys.checked], true);
       }
 
-      if (Platform.isWindows || Platform.isLinux) {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isControlPressed: true,
-        );
-      } else {
-        await editor.pressLogicKey(
-          key: LogicalKeyboardKey.enter,
-          isMetaPressed: true,
-        );
-      }
-
-      for (final node in checkboxTextNodes) {
-        expect(node.attributes[BuiltInAttributeKey.checkbox], true);
-      }
+      await editor.dispose();
     });
   });
 }

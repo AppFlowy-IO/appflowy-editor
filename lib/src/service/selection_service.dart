@@ -64,9 +64,6 @@ abstract class AppFlowySelectionService {
   /// Clears the cursor area.
   void clearCursor();
 
-  /// Returns the [Node]s in [Selection].
-  List<Node> getNodesInSelection(Selection selection);
-
   /// Returns the [Node] containing to the [offset].
   ///
   /// [offset] must be under the global coordinate system.
@@ -82,11 +79,18 @@ abstract class AppFlowySelectionService {
   /// The current selection areas's rect in editor.
   List<Rect> get selectionRects;
 
-  void register(SelectionInterceptor interceptor);
-  void unRegister(SelectionInterceptor interceptor);
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor);
+  void unregisterGestureInterceptor(String key);
 }
 
-class SelectionInterceptor {
+class SelectionGestureInterceptor {
+  SelectionGestureInterceptor({
+    required this.key,
+    this.canTap,
+  });
+
+  final String key;
+
   bool Function(TapDownDetails details)? canTap;
 }
 
@@ -139,7 +143,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-    currentSelection.addListener(_onSelectionChange);
+    // editorState.selectionNotifier.addListener(_onSelectionChange);
   }
 
   @override
@@ -148,7 +152,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
     // Need to refresh the selection when the metrics changed.
     if (currentSelection.value != null) {
-      updateSelection(currentSelection.value!);
+      // updateSelection(currentSelection.value!);
     }
   }
 
@@ -156,7 +160,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
-    currentSelection.removeListener(_onSelectionChange);
+    // editorState.selectionNotifier.removeListener(_onSelectionChange);
     _clearToolbar();
 
     super.dispose();
@@ -164,6 +168,9 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      child: widget.child,
+    );
     if (!widget.editable) {
       return Container(
         child: widget.child,
@@ -674,6 +681,9 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
   }
 
   void _onSelectionChange() {
+    // update the selection
+    updateSelection(editorState.selection);
+
     _scrollUpOrDownIfNeeded();
   }
 
@@ -748,14 +758,14 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     // }
   }
 
-  final List<SelectionInterceptor> _interceptors = [];
+  final List<SelectionGestureInterceptor> _interceptors = [];
   @override
-  void register(SelectionInterceptor interceptor) {
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
     _interceptors.add(interceptor);
   }
 
   @override
-  void unRegister(SelectionInterceptor interceptor) {
-    _interceptors.removeWhere((element) => element == interceptor);
+  void unregisterGestureInterceptor(String key) {
+    _interceptors.removeWhere((element) => element.key == key);
   }
 }

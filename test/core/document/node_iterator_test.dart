@@ -39,8 +39,8 @@ void main() async {
       root.insert(n2);
       n1.insert(Node(type: 'node_1_1'));
       n1.insert(Node(type: 'node_1_2'));
-      n1.childAtIndex(0)?.insert(Node(type: 'node_1_1_1'));
-      n1.childAtIndex(1)?.insert(Node(type: 'node_1_2_1'));
+      n1.childAtIndexOrNull(0)?.insert(Node(type: 'node_1_1_1'));
+      n1.childAtIndexOrNull(1)?.insert(Node(type: 'node_1_2_1'));
 
       final nodes = NodeIterator(
         document: Document(root: root),
@@ -48,9 +48,9 @@ void main() async {
         endNode: root.childAtPath([1]),
       ).toList();
 
-      expect(nodes[0].id, n1.id);
-      expect(nodes[1].id, n1.childAtIndex(0)!.id);
-      expect(nodes[nodes.length - 1].id, n2.id);
+      expect(nodes[0].type, n1.type);
+      expect(nodes[1].type, n1.childAtIndexOrNull(0)!.type);
+      expect(nodes[nodes.length - 1].type, n2.type);
     });
   });
 }

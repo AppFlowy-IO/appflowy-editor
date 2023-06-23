@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 SelectionMenuItem autoCompletionMenuItem = SelectionMenuItem(
   name: 'Auto generate content',
-  icon: (editorState, onSelected) => Icon(
+  icon: (editorState, onSelected, style) => Icon(
     Icons.rocket,
     size: 18.0,
     color: onSelected

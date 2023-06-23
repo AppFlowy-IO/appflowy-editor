@@ -1,73 +1,125 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/render/editor/editor_entry.dart';
-import 'package:appflowy_editor/src/render/image/image_node_builder.dart';
-import 'package:appflowy_editor/src/render/rich_text/bulleted_list_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/checkbox_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/heading_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/number_list_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/quoted_text.dart';
-import 'package:appflowy_editor/src/render/rich_text/rich_text.dart';
-import 'package:appflowy_editor/src/render/table/table_const.dart';
-import 'package:appflowy_editor/src/render/table/table_node_widget.dart';
-import 'package:appflowy_editor/src/render/table/table_cell_node_widget.dart';
-import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:appflowy_editor/src/service/shortcut_event/built_in_shortcut_events.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:provider/provider.dart';
 
-NodeWidgetBuilders defaultBuilders = {
-  'editor': EditorEntryWidgetBuilder(),
-  'text': RichTextNodeWidgetBuilder(),
-  'text/checkbox': CheckboxNodeWidgetBuilder(),
-  'text/heading': HeadingTextNodeWidgetBuilder(),
-  'text/bulleted-list': BulletedListTextNodeWidgetBuilder(),
-  'text/number-list': NumberListTextNodeWidgetBuilder(),
-  'text/quote': QuotedTextNodeWidgetBuilder(),
-  'image': ImageNodeBuilder(),
-  kTableType: TableNodeWidgetBuilder(),
-  kTableCellType: TableCellNodeWidgetBuilder(),
-};
+// workaround for the issue:
+// the popover will grab the focus even if it's inside the editor
+// setup a global value to indicate whether the focus should be grabbed
+// increase the value when the popover is opened
+// decrease the value when the popover is closed
+// only grab the focus when the value is 0
+// the operation must be paired
+ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
 
 class AppFlowyEditor extends StatefulWidget {
-  AppFlowyEditor({
-    Key? key,
+  @Deprecated('Use AppFlowyEditor.custom or AppFlowyEditor.standard instead')
+  const AppFlowyEditor({
+    super.key,
     required this.editorState,
     this.customBuilders = const {},
+    this.blockComponentBuilders = const {},
     this.shortcutEvents = const [],
+    this.characterShortcutEvents = const [],
+    this.commandShortcutEvents = const [],
     this.selectionMenuItems = const [],
     this.toolbarItems = const [],
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
     this.customActionMenuBuilder,
-    this.contextMenuItems = const [],
-    this.showDefaultToolbar = true,
     this.shrinkWrap = false,
-    ThemeData? themeData,
-  }) : super(key: key) {
-    this.themeData = themeData ??
-        ThemeData.light().copyWith(
-          extensions: [
-            ...lightEditorStyleExtension,
-            ...lightPluginStyleExtension,
-          ],
+    this.scrollController,
+    this.themeData,
+    this.editorStyle = const EditorStyle.desktop(),
+    this.header,
+    this.footer,
+    this.focusNode,
+  });
+
+  const AppFlowyEditor.custom({
+    Key? key,
+    required EditorState editorState,
+    ScrollController? scrollController,
+    bool editable = true,
+    bool autoFocus = false,
+    Selection? focusedSelection,
+    EditorStyle? editorStyle,
+    Map<String, BlockComponentBuilder> blockComponentBuilders = const {},
+    List<CharacterShortcutEvent> characterShortcutEvents = const [],
+    List<CommandShortcutEvent> commandShortcutEvents = const [],
+    List<SelectionMenuItem> selectionMenuItems = const [],
+    Widget? header,
+    Widget? footer,
+    FocusNode? focusNode,
+    bool shrinkWrap = false,
+  }) : this(
+          key: key,
+          editorState: editorState,
+          scrollController: scrollController,
+          editable: editable,
+          autoFocus: autoFocus,
+          focusedSelection: focusedSelection,
+          blockComponentBuilders: blockComponentBuilders,
+          characterShortcutEvents: characterShortcutEvents,
+          commandShortcutEvents: commandShortcutEvents,
+          selectionMenuItems: selectionMenuItems,
+          editorStyle: editorStyle ?? const EditorStyle.desktop(),
+          header: header,
+          footer: footer,
+          focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
         );
-  }
+
+  AppFlowyEditor.standard({
+    Key? key,
+    required EditorState editorState,
+    ScrollController? scrollController,
+    bool editable = true,
+    bool autoFocus = false,
+    Selection? focusedSelection,
+    EditorStyle? editorStyle,
+    Widget? header,
+    Widget? footer,
+    FocusNode? focusNode,
+    bool shrinkWrap = false,
+  }) : this(
+          key: key,
+          editorState: editorState,
+          scrollController: scrollController,
+          editable: editable,
+          autoFocus: autoFocus,
+          focusedSelection: focusedSelection,
+          blockComponentBuilders: standardBlockComponentBuilderMap,
+          characterShortcutEvents: standardCharacterShortcutEvents,
+          commandShortcutEvents: standardCommandShortcutEvents,
+          editorStyle: editorStyle ?? const EditorStyle.desktop(),
+          header: header,
+          footer: footer,
+          focusNode: focusNode,
+          shrinkWrap: shrinkWrap,
+        );
 
   final EditorState editorState;
 
-  /// Render plugins.
-  final NodeWidgetBuilders customBuilders;
+  final EditorStyle editorStyle;
 
-  /// Keyboard event handlers.
-  final List<ShortcutEvent> shortcutEvents;
-  final bool showDefaultToolbar;
-  final List<SelectionMenuItem> selectionMenuItems;
+  final Map<String, BlockComponentBuilder> blockComponentBuilders;
 
-  final List<ToolbarItem> toolbarItems;
+  /// Character event handlers
+  final List<CharacterShortcutEvent> characterShortcutEvents;
 
-  final List<List<ContextMenuItem>> contextMenuItems;
+  // Command event handlers
+  final List<CommandShortcutEvent> commandShortcutEvents;
 
+  final ScrollController? scrollController;
+
+  final Positioned Function(
+    BuildContext context,
+    List<ActionMenuItem> items,
+  )? customActionMenuBuilder;
+
+  /// Set the value to false to disable editing.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -75,13 +127,30 @@ class AppFlowyEditor extends StatefulWidget {
 
   final Selection? focusedSelection;
 
-  final Positioned Function(BuildContext context, List<ActionMenuItem> items)?
-      customActionMenuBuilder;
+  final Widget? header;
+  final Widget? footer;
 
-  /// If false the Editor is inside an [AppFlowyScroll]
+  final FocusNode? focusNode;
+
+  /// if true, the editor will be sized to its contents.
   final bool shrinkWrap;
 
-  late final ThemeData themeData;
+  /// Render plugins.
+  @Deprecated('Use blockComponentBuilders instead.')
+  final NodeWidgetBuilders customBuilders;
+
+  @Deprecated('Use FloatingToolbar or MobileToolbar instead.')
+  final List<ToolbarItem> toolbarItems;
+
+  /// Keyboard event handlers.
+  @Deprecated('Use characterShortcutEvents or commandShortcutEvents instead.')
+  final List<ShortcutEvent> shortcutEvents;
+
+  @Deprecated('Customize the style that block component provides instead.')
+  final ThemeData? themeData;
+
+  @Deprecated('Use customSlashCommand instead')
+  final List<SelectionMenuItem> selectionMenuItems;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -91,27 +160,25 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget? services;
 
   EditorState get editorState => widget.editorState;
-  EditorStyle get editorStyle =>
-      editorState.themeData.extension<EditorStyle>() ?? EditorStyle.light;
 
   @override
   void initState() {
     super.initState();
 
+    if (widget.shrinkWrap && widget.scrollController == null) {
+      throw ArgumentError(
+        'scrollController must be provided when shrinkWrap is true.',
+      );
+    }
+
+    editorState.editorStyle = widget.editorStyle;
     editorState.selectionMenuItems = widget.selectionMenuItems;
-    editorState.toolbarItems = widget.toolbarItems;
-    editorState.themeData = widget.themeData;
-    editorState.service.renderPluginService = _createRenderPlugin();
+    editorState.renderer = _renderer;
     editorState.editable = widget.editable;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.editable && widget.autoFocus) {
-        editorState.service.selectionService.updateSelection(
-          widget.focusedSelection ??
-              Selection.single(path: [0], startOffset: 0),
-        );
-      }
+      _autoFocusIfNeeded();
     });
   }
 
@@ -119,14 +186,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
+
     if (editorState.service != oldWidget.editorState.service) {
       editorState.selectionMenuItems = widget.selectionMenuItems;
-      editorState.toolbarItems = widget.toolbarItems;
-      editorState.service.renderPluginService = _createRenderPlugin();
+      editorState.renderer = _renderer;
     }
 
-    editorState.themeData = widget.themeData;
-    editorState.editable = widget.editable;
     services = null;
   }
 
@@ -134,82 +201,77 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
-    return Overlay(
-      initialEntries: [
-        OverlayEntry(
-          builder: (context) => services!,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildScroll({required Widget child}) {
-    if (widget.shrinkWrap) {
-      return child;
-    }
-
-    return AppFlowyScroll(
-      key: editorState.service.scrollServiceKey,
-      child: child,
-    );
-  }
-
-  Widget _buildServices(BuildContext context) {
-    return Theme(
-      data: widget.themeData,
-      child: _buildScroll(
-        child: Container(
-          color: editorStyle.backgroundColor,
-          padding: editorStyle.padding!,
-          child: AppFlowySelection(
-            key: editorState.service.selectionServiceKey,
-            cursorColor: editorStyle.cursorColor!,
-            selectionColor: editorStyle.selectionColor!,
-            editorState: editorState,
-            editable: widget.editable,
-            contextMenuItems: [
-              ...builtInContextMenuItems,
-              ...widget.contextMenuItems
-            ],
-            child: AppFlowyInput(
-              key: editorState.service.inputServiceKey,
-              editorState: editorState,
-              editable: widget.editable,
-              child: AppFlowyKeyboard(
-                key: editorState.service.keyboardServiceKey,
-                editable: widget.editable,
-                shortcutEvents: [
-                  ...widget.shortcutEvents,
-                  ...builtInShortcutEvents,
-                ],
-                editorState: editorState,
-                child: FlowyToolbar(
-                  showDefaultToolbar: widget.showDefaultToolbar,
-                  key: editorState.service.toolbarServiceKey,
-                  editorState: editorState,
-                  child:
-                      editorState.service.renderPluginService.buildPluginWidget(
-                    NodeWidgetContext(
-                      context: context,
-                      node: editorState.document.root,
-                      editorState: editorState,
-                    ),
-                  ),
-                ),
-              ),
+    return Provider.value(
+      value: editorState,
+      child: FocusScope(
+        child: Overlay(
+          initialEntries: [
+            OverlayEntry(
+              builder: (context) => services!,
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  AppFlowyRenderPlugin _createRenderPlugin() => AppFlowyRenderPlugin(
-        editorState: editorState,
-        builders: {
-          ...defaultBuilders,
-          ...widget.customBuilders,
-        },
-        customActionMenuBuilder: widget.customActionMenuBuilder,
+  Widget _buildServices(BuildContext context) {
+    Widget child = Container(
+      padding: widget.editorStyle.padding,
+      child: editorState.renderer.build(
+        context,
+        editorState.document.root,
+      ),
+    );
+
+    if (widget.header != null || widget.footer != null) {
+      child = Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.header != null) widget.header!,
+          child,
+          if (widget.footer != null) widget.footer!,
+        ],
+      );
+    }
+
+    if (widget.editable) {
+      child = SelectionServiceWidget(
+        key: editorState.service.selectionServiceKey,
+        cursorColor: widget.editorStyle.cursorColor,
+        selectionColor: widget.editorStyle.selectionColor,
+        child: KeyboardServiceWidget(
+          key: editorState.service.keyboardServiceKey,
+          characterShortcutEvents: widget.characterShortcutEvents,
+          commandShortcutEvents: widget.commandShortcutEvents,
+          focusNode: widget.focusNode,
+          child: child,
+        ),
+      );
+    }
+    return ScrollServiceWidget(
+      key: editorState.service.scrollServiceKey,
+      shrinkWrap: widget.shrinkWrap,
+      scrollController: widget.scrollController,
+      child: child,
+    );
+  }
+
+  void _autoFocusIfNeeded() {
+    if (widget.editable && widget.autoFocus) {
+      editorState.updateSelectionWithReason(
+        widget.focusedSelection ??
+            Selection.single(
+              path: [0],
+              startOffset: 0,
+            ),
+        reason: SelectionUpdateReason.uiEvent,
+      );
+    }
+  }
+
+  BlockComponentRendererService get _renderer => BlockComponentRenderer(
+        builders: {...widget.blockComponentBuilders},
       );
 }

@@ -77,8 +77,8 @@ class _AppFlowyInputState extends State<AppFlowyInput>
     super.initState();
 
     if (widget.editable) {
-      _editorState.service.selectionService.currentSelection
-          .addListener(_onSelectionChange);
+      // _editorState.service.selectionService.currentSelection
+      //     .addListener(_onSelectionChange);
     }
   }
 
@@ -86,8 +86,8 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   void dispose() {
     if (widget.editable) {
       close();
-      _editorState.service.selectionService.currentSelection
-          .removeListener(_onSelectionChange);
+      // _editorState.service.selectionService.currentSelection
+      //     .removeListener(_onSelectionChange);
     }
 
     super.dispose();
@@ -279,15 +279,15 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   }
 
   void _onSelectionChange() {
-    final textNodes = _editorState.service.selectionService.currentSelectedNodes
-        .whereType<TextNode>();
-    final selection =
-        _editorState.service.selectionService.currentSelection.value;
-    // FIXME: upward and selection update.
-    if (textNodes.isNotEmpty && selection != null) {
-      final text = textNodes.fold<String>(
+    final editableNodes =
+        _editorState.selectionService.currentSelectedNodes.where(
+      (element) => element.delta != null,
+    );
+    final selection = _editorState.selection;
+    if (editableNodes.isNotEmpty && selection != null) {
+      final text = editableNodes.fold<String>(
         '',
-        (sum, textNode) => '$sum${textNode.toPlainText()}\n',
+        (sum, editableNode) => '$sum${editableNode.delta!.toPlainText()}\n',
       );
       attach(
         TextEditingValue(
@@ -296,11 +296,12 @@ class _AppFlowyInputState extends State<AppFlowyInput>
             baseOffset: selection.start.offset,
             extentOffset: selection.end.offset,
           ),
-          composing: _composingTextRange ?? const TextRange.collapsed(-1),
+          composing: _composingTextRange ??
+              TextRange.collapsed(selection.start.offset),
         ),
       );
-      if (textNodes.length == 1) {
-        _updateCaretPosition(textNodes.first, selection);
+      if (editableNodes.length == 1) {
+        _updateCaretPosition(editableNodes.first, selection);
       }
     } else {
       // https://github.com/flutter/flutter/issues/104944
@@ -313,12 +314,12 @@ class _AppFlowyInputState extends State<AppFlowyInput>
 
   // TODO: support IME in linux / windows / ios / android
   // Only support macOS now.
-  void _updateCaretPosition(TextNode textNode, Selection selection) {
-    if (!selection.isCollapsed) {
+  void _updateCaretPosition(Node node, Selection selection) {
+    if (!selection.isCollapsed || node.delta == null) {
       return;
     }
-    final renderBox = textNode.renderBox;
-    final selectable = textNode.selectable;
+    final renderBox = node.renderBox;
+    final selectable = node.selectable;
     if (renderBox != null && selectable != null) {
       final size = renderBox.size;
       final transform = renderBox.getTransformTo(null);
@@ -342,5 +343,10 @@ class _AppFlowyInputState extends State<AppFlowyInput>
   @override
   void performSelector(String selectorName) {
     // TODO: implement performSelector
+  }
+
+  @override
+  void insertContent(KeyboardInsertedContent content) {
+    // TODO: implement insertContent
   }
 }

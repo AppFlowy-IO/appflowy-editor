@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
+import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -9,180 +9,189 @@ void main() async {
     const example = '''
 {
   "document": {
-    "type": "editor",
+    "type": "page",
     "children": [
       {
-        "type": "text",
-        "attributes": {
-          "subtype": "heading",
-          "heading": "h2"
-        },
-        "delta": [
-          { "insert": "👋 " },
-          { "insert": "Welcome to", "attributes": { "bold": true } },
-          { "insert": " " },
-          {
-            "insert": "AppFlowy Editor",
-            "attributes": {
-              "href": "appflowy.io",
-              "italic": true,
-              "bold": true
+        "type": "heading",
+        "data": {
+          "level": 2,
+          "delta": [
+            {
+              "insert": "👋 "
+            },
+            {
+              "insert": "Welcome to",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "italic": true,
+                "bold": true,
+                "href": "appflowy.io"
+              }
             }
-          }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "delta": [
-          { "insert": "AppFlowy Editor is a " },
-          { "insert": "highly customizable", "attributes": { "bold": true } },
-          { "insert": " " },
-          { "insert": "rich-text editor", "attributes": { "italic": true } },
-          { "insert": " for " },
-          { "insert": "Flutter", "attributes": { "underline": true } }
-        ]
+          ]
+        }
       },
       {
-        "type": "text",
-        "attributes": { "checkbox": true, "subtype": "checkbox" },
-        "delta": [{ "insert": "Customizable" }]
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
       },
       {
-        "type": "text",
-        "attributes": { "checkbox": true, "subtype": "checkbox" },
-        "delta": [{ "insert": "Test-covered" }]
-      },
-      {
-        "type": "text",
-        "attributes": { "checkbox": false, "subtype": "checkbox" },
-        "delta": [{ "insert": "more to come!" }]
-      },
-      {
-        "type": "table",
-        "attributes": {
-          "colsLen": 2,
-          "rowsLen": 2,
-          "colDefaultWidth": 60,
-          "rowDefaultHeight": 50,
-          "colMinimumWidth": 30
-        },
-        "children": [
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 0,
-              "rowPosition": 0,
-              "width": 35
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "AppFlowy Editor is a "
             },
-            "children": [
-              {
-                "type": "text",
-                "attributes": {"subtype": "heading", "heading": "h2"},
-                "delta": [
-                  {"insert": "a"}
-                ]
+            {
+              "insert": "highly customizable",
+              "attributes": {
+                "bold": true
               }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 0,
-              "rowPosition": 1
             },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "b",
-                    "attributes": {"bold": true}
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 1,
-              "rowPosition": 0
+            {
+              "insert": " "
             },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "c",
-                    "attributes": {"italic": true}
-                  }
-                ]
+            {
+              "insert": "rich-text editor",
+              "attributes": {
+                "italic": true
               }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 1,
-              "rowPosition": 1
-            },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {"insert": "d"}
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "attributes": { "subtype": "quote" },
-        "delta": [{ "insert": "Here is an example you can give a try" }]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "delta": [
-          { "insert": "You can also use " },
-          {
-            "insert": "AppFlowy Editor",
-            "attributes": {
-              "italic": true,
-              "bold": true,
-              "backgroundColor": "0x6000BCF0"
             }
-          },
-          { "insert": " as a component to build your own app." }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "attributes": { "subtype": "bulleted-list" },
-        "delta": [{ "insert": "Use / to insert blocks" }]
+          ]
+        }
       },
       {
-        "type": "text",
-        "attributes": { "subtype": "bulleted-list" },
-        "delta": [
-          {
-            "insert": "Select text to trigger to the toolbar to format your notes."
-          }
-        ]
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {
+              "insert": "Customizable"
+            }
+          ]
+        }
       },
-      { "type": "text", "delta": [] },
       {
-        "type": "text",
-        "delta": [
-          {
-            "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-          }
-        ]
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [
+            {
+              "insert": "Test-covered"
+            }
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            {
+              "insert": "more to come!"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "quote",
+        "data": {
+          "delta": [
+            {
+              "insert": "Here is an example you can give a try"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "You can also use "
+            },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "italic": true,
+                "bold": true
+              }
+            },
+            {
+              "insert": " as a component to build your own app."
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Use / to insert blocks"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Select text to trigger to the toolbar to format your notes."
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
       }
     ]
   }
@@ -198,20 +207,22 @@ void main() async {
       final result = DocumentMarkdownEncoder(
         parsers: [
           const TextNodeParser(),
+          const BulletedListNodeParser(),
+          const NumberedListNodeParser(),
+          const TodoListNodeParser(),
+          const QuoteNodeParser(),
+          const CodeBlockNodeParser(),
+          const HeadingNodeParser(),
           const ImageNodeParser(),
-          const TableNodeParser(),
         ],
       ).convert(document);
       expect(result, '''
 ## 👋 **Welcome to** ***[AppFlowy Editor](appflowy.io)***
 
-AppFlowy Editor is a **highly customizable** _rich-text editor_ for <u>Flutter</u>
+AppFlowy Editor is a **highly customizable** _rich-text editor_
 - [x] Customizable
 - [x] Test-covered
 - [ ] more to come!
-|## a|_c_|
-|-|-|
-|**b**|d|
 
 > Here is an example you can give a try
 
@@ -220,7 +231,8 @@ You can also use ***AppFlowy Editor*** as a component to build your own app.
 * Use / to insert blocks
 * Select text to trigger to the toolbar to format your notes.
 
-If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!''');
+If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!
+''');
     });
   });
 }

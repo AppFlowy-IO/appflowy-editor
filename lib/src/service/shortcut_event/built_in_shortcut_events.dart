@@ -2,9 +2,11 @@ import 'package:appflowy_editor/src/render/table/table_shortcut_event.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/arrow_keys_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/backspace_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
+import 'package:appflowy_editor/src/service/internal_key_event_handlers/cursor_left_delete_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/enter_without_shift_in_text_node_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/exit_editing_mode_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart';
+import 'package:appflowy_editor/src/service/internal_key_event_handlers/outdent_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/page_up_down_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/redo_undo_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/select_all_handler.dart';
@@ -243,11 +245,11 @@ List<ShortcutEvent> builtInShortcutEvents = [
     command: 'end',
     handler: cursorEnd,
   ),
-  ShortcutEvent(
-    key: 'Delete Text by backspace',
-    command: 'backspace',
-    handler: backspaceEventHandler,
-  ),
+  // ShortcutEvent(
+  //   key: 'Delete Text by backspace',
+  //   command: 'backspace',
+  //   handler: backspaceEventHandler,
+  // ),
   ShortcutEvent(
     key: 'Delete Text',
     command: 'delete',
@@ -291,6 +293,11 @@ List<ShortcutEvent> builtInShortcutEvents = [
     handler: tabHandler,
   ),
   ShortcutEvent(
+    key: 'Outdent List',
+    command: 'shift+tab',
+    handler: outdentTabHandler,
+  ),
+  ShortcutEvent(
     key: 'Backquote to code',
     command: 'backquote',
     handler: backquoteToCodeHandler,
@@ -313,7 +320,12 @@ List<ShortcutEvent> builtInShortcutEvents = [
   ShortcutEvent(
     key: 'Underscore to italic',
     character: '_',
-    handler: underscoreToItalicHandler,
+    handler: singleUnderscoreToItalicHandler,
+  ),
+  ShortcutEvent(
+    key: 'Asterisk to italic',
+    character: '*',
+    handler: singleAsteriskToItalicHandler,
   ),
   ShortcutEvent(
     key: 'Double asterisk to bold',

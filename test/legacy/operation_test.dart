@@ -36,7 +36,7 @@ void main() {
           [Node(type: "node", attributes: {}, children: LinkedList())],
         ),
       );
-      expect(t.path, [0, 2]);
+      expect(t!.path, [0, 2]);
     });
     test('delete + delete', () {
       final t = transformOperation(
@@ -49,22 +49,35 @@ void main() {
           [Node(type: "node", attributes: {}, children: LinkedList())],
         ),
       );
-      expect(t.path, [0, 1]);
+      expect(t!.path, [0, 1]);
+    });
+
+    test('delete two nodes with same parent', () {
+      final t = transformOperation(
+        DeleteOperation(
+          [0],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+        DeleteOperation(
+          [0, 2],
+          [Node(type: "node", attributes: {}, children: LinkedList())],
+        ),
+      );
+      expect(t, null);
     });
   });
   test('transform transaction builder', () {
-    final item1 = Node(type: "node", attributes: {}, children: LinkedList());
-    final item2 = Node(type: "node", attributes: {}, children: LinkedList());
-    final item3 = Node(type: "node", attributes: {}, children: LinkedList());
+    final item1 = Node(type: "node");
+    final item2 = Node(type: "node");
+    final item3 = Node(type: "node");
     final root = Node(
-      type: "root",
+      type: 'page',
       attributes: {},
-      children: LinkedList()
-        ..addAll([
-          item1,
-          item2,
-          item3,
-        ]),
+      children: [
+        item1,
+        item2,
+        item3,
+      ],
     );
     final state = EditorState(document: Document(root: root));
 
@@ -104,11 +117,9 @@ void main() {
       final item1 = Node(type: "node", attributes: {}, children: LinkedList());
       final root = Node(
         type: "root",
-        attributes: {},
-        children: LinkedList()
-          ..addAll([
-            item1,
-          ]),
+        children: [
+          item1,
+        ],
       );
       final state = EditorState(document: Document(root: root));
       final transaction = state.transaction;

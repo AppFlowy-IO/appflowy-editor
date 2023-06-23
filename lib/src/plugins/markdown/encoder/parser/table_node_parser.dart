@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/text_node_parser.dart';
-import 'package:appflowy_editor/src/render/table/util.dart';
+import 'package:appflowy_editor/src/editor/block_component/table/util.dart';
 
 class TableNodeParser extends NodeParser {
   const TableNodeParser();

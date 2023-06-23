@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/table/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table/table_node.dart';
 
 class TableMarkdownDecoder {
   Node convert(List<String> lines) {

@@ -39,19 +39,10 @@ class CheckboxNodeWidget extends BuiltInTextWidget {
 class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
     with SelectableMixin, DefaultSelectable, BuiltInTextWidgetMixin {
   @override
-  final iconKey = GlobalKey();
-
-  final _richTextKey = GlobalKey(debugLabel: 'checkbox_text');
-
+  final forwardKey = GlobalKey(debugLabel: 'checkbox_text');
   @override
-  SelectableMixin<StatefulWidget> get forward =>
-      _richTextKey.currentState as SelectableMixin;
-
-  @override
-  Offset get baseOffset {
-    return super.baseOffset.translate(0, padding.top);
-  }
-
+  GlobalKey<State<StatefulWidget>> get containerKey =>
+      throw UnimplementedError();
   CheckboxPluginStyle get style =>
       Theme.of(context).extensionOrNull<CheckboxPluginStyle>() ??
       CheckboxPluginStyle.light;
@@ -73,29 +64,27 @@ class _CheckboxNodeWidgetState extends State<CheckboxNodeWidget>
 
   @override
   Widget buildWithSingle(BuildContext context) {
-    final check = widget.textNode.attributes.check;
     return Padding(
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            key: iconKey,
             behavior: HitTestBehavior.opaque,
             onTap: () async {
-              await widget.editorState.formatTextToCheckbox(
-                !check,
-                textNode: widget.textNode,
-              );
+              // await widget.editorState.formatTextToCheckbox(
+              //   !check,
+              //   textNode: widget.textNode,
+              // );
             },
             child: icon,
           ),
           Flexible(
             child: FlowyRichText(
-              key: _richTextKey,
+              key: forwardKey,
               placeholderText: 'To-do',
               lineHeight: widget.editorState.editorStyle.lineHeight,
-              textNode: widget.textNode,
+              node: widget.textNode,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle),
               placeholderTextSpanDecorator: (textSpan) =>
