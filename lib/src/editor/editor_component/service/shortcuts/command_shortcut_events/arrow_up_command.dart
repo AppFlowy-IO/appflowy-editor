@@ -69,6 +69,11 @@ CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,
   );
+  final scrollService = editorState.scrollService;
+  if (scrollService != null) {
+    final top = scrollService.minScrollExtent;
+    scrollService.scrollTo(top);
+  }
   return KeyEventResult.handled;
 };
 
@@ -97,6 +102,11 @@ CommandShortcutEventHandler _moveCursorTopCommandHandler = (editorState) {
     Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,
   );
+  final scrollService = editorState.scrollService;
+  if (scrollService != null) {
+    final top = scrollService.minScrollExtent;
+    scrollService.scrollTo(top);
+  }
   return KeyEventResult.handled;
 };
 
