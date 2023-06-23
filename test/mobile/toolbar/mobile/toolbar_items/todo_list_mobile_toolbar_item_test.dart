@@ -33,7 +33,7 @@ void main() {
     // Check if the text becomes quote node
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'todo_list',
+      node?.type == TodoListBlockKeys.type,
       true,
     );
   });

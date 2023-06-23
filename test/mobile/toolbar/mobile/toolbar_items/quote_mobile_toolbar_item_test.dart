@@ -33,7 +33,7 @@ void main() {
     // Check if the text becomes quote node
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'quote',
+      node?.type == QuoteBlockKeys.type,
       true,
     );
   });

@@ -32,27 +32,29 @@ void main() {
 
     // Show its menu and it has 2 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text('Bulleted List'), findsOneWidget);
-    expect(find.text('Numbered List'), findsOneWidget);
+    expect(find.text(AppFlowyEditorLocalizations.current.bulletedList),
+        findsOneWidget);
+    expect(find.text(AppFlowyEditorLocalizations.current.numberedList),
+        findsOneWidget);
 
     // Test Bulleted List button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Bulleted List'));
+    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.bulletedList));
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
-      node?.type == 'bulleted_list',
+      node?.type == BulletedListBlockKeys.type,
       true,
     );
 
     // Test Numbered List button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Numbered List'));
+    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.numberedList));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'numbered_list',
+      node?.type == NumberedListBlockKeys.type,
       true,
     );
   });

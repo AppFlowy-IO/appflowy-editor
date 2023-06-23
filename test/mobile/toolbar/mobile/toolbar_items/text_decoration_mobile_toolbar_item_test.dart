@@ -32,13 +32,17 @@ void main() {
 
     // Show its menu and it has 4 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text('Bold'), findsOneWidget);
-    expect(find.text('Italic'), findsOneWidget);
-    expect(find.text('Underline'), findsOneWidget);
-    expect(find.text('Strikethrough'), findsOneWidget);
+    expect(find.text(AppFlowyEditorLocalizations.current.bold), findsOneWidget);
+    expect(
+        find.text(AppFlowyEditorLocalizations.current.italic), findsOneWidget);
+    expect(find.text(AppFlowyEditorLocalizations.current.underline),
+        findsOneWidget);
+    expect(find.text(AppFlowyEditorLocalizations.current.strikethrough),
+        findsOneWidget);
 
     // Test bold button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Bold'));
+    await tester.tap(find.widgetWithText(
+        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.bold));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
@@ -51,7 +55,8 @@ void main() {
     );
 
     // Test Italic button
-    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Italic'));
+    await tester.tap(find.widgetWithText(
+        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.italic));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -64,8 +69,8 @@ void main() {
     );
 
     // Test Underline button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Underline'));
+    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.underline));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -78,8 +83,8 @@ void main() {
     );
 
     // Test Strikethrough button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Strikethrough'));
+    await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.strikethrough));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
