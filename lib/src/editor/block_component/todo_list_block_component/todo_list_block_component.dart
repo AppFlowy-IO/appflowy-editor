@@ -127,7 +127,7 @@ class _TodoListBlockComponentWidgetState
       color: backgroundColor,
       width: double.infinity,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,

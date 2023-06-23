@@ -102,30 +102,6 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  List<Node> getNodesInSelection(Selection selection) {
-    final start =
-        selection.isBackward ? selection.start.path : selection.end.path;
-    final end =
-        selection.isBackward ? selection.end.path : selection.start.path;
-    assert(start <= end);
-    final startNode = editorState.document.nodeAtPath(start);
-    final endNode = editorState.document.nodeAtPath(end);
-    if (startNode != null && endNode != null) {
-      final nodes = NodeIterator(
-        document: editorState.document,
-        startNode: startNode,
-        endNode: endNode,
-      ).toList();
-      if (selection.isBackward) {
-        return nodes;
-      } else {
-        return nodes.reversed.toList(growable: false);
-      }
-    }
-    return [];
-  }
-
-  @override
   void updateSelection(Selection? selection) {
     if (currentSelection.value == selection) {
       return;
@@ -261,15 +237,23 @@ class _DesktopSelectionServiceWidgetState
     // clear old state.
     _panStartOffset = null;
 
-    final position = getPositionInOffset(details.globalPosition);
-    if (position == null) {
+    final offset = details.globalPosition;
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      clearSelection();
       return;
     }
-
-    // updateSelection(selection);
-    editorState.selection = Selection.collapsed(position);
-
-    _showDebugLayerIfNeeded(offset: details.globalPosition);
+    if (selectable.cursorStyle == CursorStyle.verticalLine) {
+      editorState.selection = Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      );
+    } else {
+      editorState.selection = Selection(
+        start: selectable.start(),
+        end: selectable.end(),
+      );
+    }
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
@@ -352,7 +336,7 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateBlockSelectionAreas(Selection selection) {
     assert(editorState.selectionType == SelectionType.block);
-    final nodes = getNodesInSelection(selection).normalized;
+    final nodes = editorState.getNodesInSelection(selection).normalized;
 
     currentSelectedNodes = nodes;
 
@@ -383,7 +367,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelectionAreas(Selection selection) {
-    final nodes = getNodesInSelection(selection);
+    final nodes = editorState.getNodesInSelection(selection);
 
     currentSelectedNodes = nodes;
 

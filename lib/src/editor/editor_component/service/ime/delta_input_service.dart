@@ -109,6 +109,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void close() {
+    composingTextRange = null;
     _textInputConnection?.close();
     _textInputConnection = null;
   }
@@ -166,7 +167,33 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   ) {}
 
   @override
-  void performSelector(String selectorName) {}
+  void performSelector(String selectorName) {
+    final currentTextEditingValue = this.currentTextEditingValue;
+    if (currentTextEditingValue == null) {
+      return;
+    }
+    // magic string from flutter callback
+    if (selectorName == 'deleteBackward:') {
+      final oldText = currentTextEditingValue.text;
+      final selection = currentTextEditingValue.selection;
+      final deleteRange = selection.isCollapsed
+          ? TextRange(
+              start: selection.start - 1,
+              end: selection.end,
+            )
+          : selection;
+      onDelete(
+        TextEditingDeltaDeletion(
+          oldText: oldText,
+          deletedRange: deleteRange,
+          selection: const TextSelection.collapsed(
+            offset: -1,
+          ), // just pass a invalid value, because we don't use this selection inside.
+          composing: TextRange.empty,
+        ),
+      );
+    }
+  }
 
   @override
   void insertContent(KeyboardInsertedContent content) {}

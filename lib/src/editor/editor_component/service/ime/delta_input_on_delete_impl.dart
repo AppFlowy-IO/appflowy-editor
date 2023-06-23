@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 Future<void> onDelete(
@@ -12,6 +13,19 @@ Future<void> onDelete(
     return;
   }
 
-  // use backspace command instead.
-  backspaceCommand.execute(editorState);
+  // IME
+  if (selection.isSingle && deletion.composing.isValid) {
+    final node = editorState.getNodesInSelection(selection).first;
+    final transaction = editorState.transaction;
+    final start = deletion.deletedRange.start;
+    final length = deletion.deletedRange.end - start;
+    transaction.deleteText(node, start, length);
+    await editorState.apply(transaction);
+  } else {
+    // use backspace command instead.
+    if (KeyEventResult.ignored ==
+        convertToParagraphCommand.execute(editorState)) {
+      backspaceCommand.execute(editorState);
+    }
+  }
 }

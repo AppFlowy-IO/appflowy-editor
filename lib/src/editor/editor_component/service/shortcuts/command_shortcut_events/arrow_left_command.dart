@@ -41,8 +41,8 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
 // arrow left key + ctrl or command
 // move the cursor to the beginning of the block
 final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
-  key: 'move the cursor forward one character',
-  command: 'ctrl+arrow left',
+  key: 'move the cursor at the start of line',
+  command: 'ctrl+arrow left,home',
   macOSCommand: 'cmd+arrow left',
   handler: _moveCursorToBeginCommandHandler,
 );
@@ -146,7 +146,7 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
 
 // arrow left key + shift + ctrl or cmd
 final CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
-  key: 'move the cursor left select',
+  key: 'move the cursor left select line',
   command: 'ctrl+shift+arrow left',
   macOSCommand: 'cmd+shift+arrow left',
   handler: _moveCursorBeginSelectCommandHandler,

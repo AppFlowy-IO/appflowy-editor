@@ -210,15 +210,18 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     final right = (rect.right - editorCenter.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
+    final top = rect.top < floatingToolbarHeight
+        ? rect.bottom + floatingToolbarHeight
+        : rect.top;
     if (rect.left >= threshold && rect.right <= threshold * 2.0) {
       // show in center
-      return (rect.top, threshold, null);
+      return (top, threshold, null);
     } else if (left >= right && rect.left <= threshold) {
       // show in left
-      return (rect.top, rect.left, null);
+      return (top, rect.left, null);
     } else {
       // show in right
-      return (rect.top, null, editorRect.right - rect.right);
+      return (top, null, editorRect.right - rect.right);
     }
   }
 }

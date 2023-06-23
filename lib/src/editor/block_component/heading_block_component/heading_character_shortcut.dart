@@ -13,7 +13,7 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
   handler: (editorState) async => await formatMarkdownSymbol(
     editorState,
     (node) => true,
-    (text, selection) {
+    (_, text, selection) {
       final characters = text.split('');
       // only supports heading1 to heading6 levels
       // if the characters is empty, the every function will return true directly
@@ -23,12 +23,9 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     },
     (text, node, delta) {
       final numberOfSign = text.split('').length;
-      return Node(
-        type: 'heading',
-        attributes: {
-          'delta': delta.compose(Delta()..delete(numberOfSign)).toJson(),
-          'level': numberOfSign,
-        },
+      return headingNode(
+        level: numberOfSign,
+        delta: delta.compose(Delta()..delete(numberOfSign)),
       );
     },
   ),

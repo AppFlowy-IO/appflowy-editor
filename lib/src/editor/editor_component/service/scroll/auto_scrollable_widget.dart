@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
 
@@ -37,10 +38,17 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
         builder: builder,
       );
     } else {
-      return SingleChildScrollView(
-        controller: widget.scrollController,
-        child: Builder(
-          builder: builder,
+      return LayoutBuilder(
+        builder: (context, viewportConstraints) => SingleChildScrollView(
+          controller: widget.scrollController,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: viewportConstraints.maxHeight,
+            ),
+            child: Builder(
+              builder: builder,
+            ),
+          ),
         ),
       );
     }
@@ -49,9 +57,9 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   void _initAutoScroller() {
     _autoScroller = AutoScroller(
       _scrollableState,
-      velocityScalar: 15,
+      velocityScalar: PlatformExtension.isDesktopOrWeb ? 15 : 100,
       onScrollViewScrolled: () {
-        _autoScroller.continueToAutoScroll();
+        // _autoScroller.continueToAutoScroll();
       },
     );
   }
