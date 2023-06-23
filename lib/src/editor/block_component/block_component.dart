@@ -46,3 +46,4 @@ export 'base_component/background_color_mixin.dart';
 export 'base_component/markdown_format_helper.dart';
 export 'base_component/widget/nested_list_widget.dart';
 export 'base_component/block_component_action_wrapper.dart';
+export 'base_component/get_node_direction.dart';

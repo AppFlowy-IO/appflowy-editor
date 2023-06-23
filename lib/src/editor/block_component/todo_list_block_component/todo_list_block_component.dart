@@ -115,7 +115,7 @@ class _TodoListBlockComponentWidgetState
 
   @override
   Widget buildComponent(BuildContext context) {
-    final (textDirection, startText) = getTextDirection(
+    final (textDirection, startText) = getNodeDirection(
       node,
       lastStartText,
       lastDirection,

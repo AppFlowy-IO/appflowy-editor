@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-(TextDirection, String?) getTextDirection(
+(TextDirection, String?) getNodeDirection(
   Node node, [
   String? lastStartText,
   TextDirection? lastDirection,

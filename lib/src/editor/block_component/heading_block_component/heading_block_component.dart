@@ -114,7 +114,7 @@ class _HeadingBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final (textDirection, startText) = getTextDirection(
+    final (textDirection, startText) = getNodeDirection(
       node,
       lastStartText,
       lastDirection,

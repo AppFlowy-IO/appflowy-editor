@@ -197,5 +197,22 @@ void main() {
       };
       expect(attribute.href, null);
     });
+
+    test('direction', () {
+      final dirKey = FlowyRichTextKeys.dir;
+      final tests = [
+        {dirKey: 'rtl', 'exp': FlowyTextDirection.rtl},
+        {dirKey: 'auto', 'exp': FlowyTextDirection.auto},
+        {dirKey: 'ltr', 'exp': FlowyTextDirection.ltr},
+        {dirKey: 'invalid', 'exp': null},
+      ];
+
+      for (var test in tests) {
+        final Attributes attribute = {
+          dirKey: test[dirKey],
+        };
+        expect(attribute.direction, test['exp']);
+      }
+    });
   });
 }
