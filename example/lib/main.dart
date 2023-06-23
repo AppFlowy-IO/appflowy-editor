@@ -15,15 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         AppFlowyEditorLocalizations.delegate,
       ],
-      supportedLocales: [Locale('en', 'US')],
+      supportedLocales: const [Locale('en', 'US')],
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'AppFlowyEditor Example'),
+      home: const MyHomePage(title: 'AppFlowyEditor Example'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

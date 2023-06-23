@@ -7,12 +7,12 @@ class SimpleEditor extends StatelessWidget {
   const SimpleEditor({
     super.key,
     required this.jsonString,
-    required this.themeData,
     required this.onEditorStateChange,
+    this.editorStyle,
   });
 
   final Future<String> jsonString;
-  final ThemeData themeData;
+  final EditorStyle? editorStyle;
   final void Function(EditorState editorState) onEditorStateChange;
 
   @override
@@ -31,7 +31,7 @@ class SimpleEditor extends StatelessWidget {
           );
           editorState.logConfiguration
             ..handler = debugPrint
-            ..level = LogLevel.all;
+            ..level = LogLevel.off;
           onEditorStateChange(editorState);
           final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
@@ -49,7 +49,7 @@ class SimpleEditor extends StatelessWidget {
               ],
               editorState: editorState,
               scrollController: scrollController,
-              child: _buildEditor(
+              child: _buildDesktopEditor(
                 context,
                 editorState,
                 scrollController,
@@ -101,12 +101,44 @@ class SimpleEditor extends StatelessWidget {
     );
   }
 
-  Widget _buildEditor(
+  Widget _buildDesktopEditor(
     BuildContext context,
     EditorState editorState,
     ScrollController? scrollController,
   ) {
+    final editorStyle = EditorStyle.desktop(
+      // Example for customizing a new attribute key.
+      textSpanDecorator: (textInsert, textSpan) {
+        final attributes = textInsert.attributes;
+        if (attributes == null) {
+          return textSpan;
+        }
+        final mention = attributes['mention'] as Map?;
+        if (mention != null) {
+          return WidgetSpan(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  debugPrint('at');
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.edit_document),
+                    Text(mention['id']),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+        return textSpan;
+      },
+    );
     return AppFlowyEditor.standard(
+      editorStyle: editorStyle,
       editorState: editorState,
       scrollController: scrollController,
     );
