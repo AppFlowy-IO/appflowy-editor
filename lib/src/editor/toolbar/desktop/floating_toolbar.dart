@@ -213,7 +213,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (rect.left >= threshold && rect.right <= threshold * 2.0) {
       // show in center
       return (rect.top, threshold, null);
-    } else if (left >= right) {
+    } else if (left >= right && rect.left <= threshold) {
       // show in left
       return (rect.top, rect.left, null);
     } else {
