@@ -25,7 +25,7 @@ void main() {
           textAndBackgroundColorMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap color toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -34,9 +34,9 @@ void main() {
     // Show its menu and it has a tabbar to switch between text and background color
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(find.text(AppFlowyEditorLocalizations.current.textColor),
-        findsOneWidget);
+        findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.backgroundColor),
-        findsOneWidget);
+        findsOneWidget,);
 
     // Test text color tab
     // It has 9 buttons(default setting is clear + 8 colors)
@@ -71,7 +71,7 @@ void main() {
 
     // Test background color tab
     await tester.tap(find.widgetWithText(
-        TabBar, AppFlowyEditorLocalizations.current.backgroundColor));
+        TabBar, AppFlowyEditorLocalizations.current.backgroundColor,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     // Tap red color button
     await tester.tap(find.byType(ColorButton).last);
@@ -80,7 +80,7 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every((element) =>
-            element.attributes?[FlowyRichTextKeys.highlightColor] == '#FF0000');
+            element.attributes?[FlowyRichTextKeys.highlightColor] == '#FF0000',);
       }),
       true,
     );

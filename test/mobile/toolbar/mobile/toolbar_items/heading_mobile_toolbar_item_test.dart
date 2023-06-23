@@ -24,7 +24,7 @@ void main() {
           headingMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -33,15 +33,15 @@ void main() {
     // Show its menu and it has 3 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading1),
-        findsOneWidget);
+        findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading2),
-        findsOneWidget);
+        findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.mobileHeading3),
-        findsOneWidget);
+        findsOneWidget,);
 
     // Test Heading 1 button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading1));
+        AppFlowyEditorLocalizations.current.mobileHeading1,),);
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
@@ -52,7 +52,7 @@ void main() {
 
     // Test Heading 2 button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading2));
+        AppFlowyEditorLocalizations.current.mobileHeading2,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
@@ -64,7 +64,7 @@ void main() {
 
     // Test Heading 3 button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading3));
+        AppFlowyEditorLocalizations.current.mobileHeading3,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);

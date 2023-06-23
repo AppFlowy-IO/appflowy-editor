@@ -28,7 +28,7 @@ void main() {
           linkMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap link toolbar item
     await tester.tap(find.byType(IconButton).first);

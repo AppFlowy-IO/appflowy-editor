@@ -24,7 +24,7 @@ void main() {
           quoteMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap quote toolbar item
     final quoteBtn = find.byType(IconButton).first;

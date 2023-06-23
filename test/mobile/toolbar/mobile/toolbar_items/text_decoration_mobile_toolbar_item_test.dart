@@ -24,7 +24,7 @@ void main() {
           textDecorationMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -34,15 +34,15 @@ void main() {
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(find.text(AppFlowyEditorLocalizations.current.bold), findsOneWidget);
     expect(
-        find.text(AppFlowyEditorLocalizations.current.italic), findsOneWidget);
+        find.text(AppFlowyEditorLocalizations.current.italic), findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.underline),
-        findsOneWidget);
+        findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.strikethrough),
-        findsOneWidget);
+        findsOneWidget,);
 
     // Test bold button
     await tester.tap(find.widgetWithText(
-        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.bold));
+        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.bold,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
@@ -56,7 +56,7 @@ void main() {
 
     // Test Italic button
     await tester.tap(find.widgetWithText(
-        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.italic));
+        MobileToolbarItemMenuBtn, AppFlowyEditorLocalizations.current.italic,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -70,7 +70,7 @@ void main() {
 
     // Test Underline button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.underline));
+        AppFlowyEditorLocalizations.current.underline,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
@@ -84,7 +84,7 @@ void main() {
 
     // Test Strikethrough button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.strikethrough));
+        AppFlowyEditorLocalizations.current.strikethrough,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {

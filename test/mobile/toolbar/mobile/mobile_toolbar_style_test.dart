@@ -8,10 +8,10 @@ void main() {
       (WidgetTester tester) async {
     const backgroundColor = Colors.white;
     const foregroundColor = Colors.black;
-    const clearDiagonalLineColor = const Color(0xffB3261E);
-    const itemHighlightColor = const Color(0xff1F71AC);
-    const itemOutlineColor = const Color(0xFFE3E3E3);
-    const tabbarSelectedBackgroundColor = const Color(0x23808080);
+    const clearDiagonalLineColor = Color(0xffB3261E);
+    const itemHighlightColor = Color(0xff1F71AC);
+    const itemOutlineColor = Color(0xFFE3E3E3);
+    const tabbarSelectedBackgroundColor = Color(0x23808080);
     const tabbarSelectedForegroundColor = Colors.black;
     const toolbarHeight = 50.0;
     const borderRadius = 6.0;
@@ -19,7 +19,7 @@ void main() {
     const buttonSpacing = 8.0;
     const buttonBorderWidth = 1.0;
     const buttonSelectedBorderWidth = 2.0;
-    const textColorOptions = const [
+    const textColorOptions = [
       ColorOption(
         colorHex: '#808080',
         name: 'Gray',

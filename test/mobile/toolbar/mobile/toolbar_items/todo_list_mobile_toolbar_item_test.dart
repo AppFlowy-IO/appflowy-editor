@@ -24,7 +24,7 @@ void main() {
           todoListMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap todoList toolbar item
     final todoListBtn = find.byType(IconButton).first;

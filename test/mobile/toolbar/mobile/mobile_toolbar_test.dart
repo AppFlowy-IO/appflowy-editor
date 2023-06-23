@@ -45,7 +45,7 @@ void main() {
 
       await tester.pumpWidget(Material(
         child: MobileAppWithToolbarWidget(editorState: editor.editorState),
-      ));
+      ),);
 
       expect(find.byType(MobileToolbarWidget), findsOneWidget);
     });

@@ -24,7 +24,7 @@ void main() {
           listMobileToolbarItem,
         ],
       ),
-    ));
+    ),);
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -33,13 +33,13 @@ void main() {
     // Show its menu and it has 2 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(find.text(AppFlowyEditorLocalizations.current.bulletedList),
-        findsOneWidget);
+        findsOneWidget,);
     expect(find.text(AppFlowyEditorLocalizations.current.numberedList),
-        findsOneWidget);
+        findsOneWidget,);
 
     // Test Bulleted List button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.bulletedList));
+        AppFlowyEditorLocalizations.current.bulletedList,),);
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
@@ -49,7 +49,7 @@ void main() {
 
     // Test Numbered List button
     await tester.tap(find.widgetWithText(MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.numberedList));
+        AppFlowyEditorLocalizations.current.numberedList,),);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
