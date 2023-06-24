@@ -106,39 +106,8 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    final editorStyle = EditorStyle.desktop(
-      // Example for customizing a new attribute key.
-      textSpanDecorator: (textInsert, textSpan) {
-        final attributes = textInsert.attributes;
-        if (attributes == null) {
-          return textSpan;
-        }
-        final mention = attributes['mention'] as Map?;
-        if (mention != null) {
-          return WidgetSpan(
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  debugPrint('at');
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.edit_document),
-                    Text(mention['id']),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-        return textSpan;
-      },
-    );
     return AppFlowyEditor.standard(
-      editorStyle: editorStyle,
+      editorStyle: const EditorStyle.desktop(),
       editorState: editorState,
       scrollController: scrollController,
     );

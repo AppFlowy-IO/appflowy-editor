@@ -677,7 +677,13 @@ extension on Delta {
     if (index <= 0) {
       return null;
     }
-
-    return slice(index - 1, index).first.attributes;
+    final attributes = slice(index - 1, index).first.attributes;
+    if (attributes == null ||
+        !attributes.keys.every(
+          (element) => FlowyRichTextKeys.supportSliced.contains(element),
+        )) {
+      return null;
+    }
+    return attributes;
   }
 }
