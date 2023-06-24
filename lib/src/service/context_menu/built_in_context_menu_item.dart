@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/render/table/table_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
 
@@ -26,5 +25,4 @@ final builtInContextMenuItems = [
       },
     ),
   ],
-  tableContextMenuItems
 ];
