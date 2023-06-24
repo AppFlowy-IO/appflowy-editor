@@ -2,6 +2,12 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class TableCellBlockKeys {
+  const TableCellBlockKeys._();
+
+  static const String type = 'table/cell';
+}
+
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
@@ -13,7 +19,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
-    return TableCellNodeWidget(
+    return TableCelBlockWidget(
       key: node.key,
       node: node,
       configuration: configuration,
@@ -32,8 +38,8 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
       node.attributes.containsKey('colPosition');
 }
 
-class TableCellNodeWidget extends BlockComponentStatefulWidget {
-  const TableCellNodeWidget({
+class TableCelBlockWidget extends BlockComponentStatefulWidget {
+  const TableCelBlockWidget({
     super.key,
     required super.node,
     super.showActions,
@@ -42,10 +48,10 @@ class TableCellNodeWidget extends BlockComponentStatefulWidget {
   });
 
   @override
-  State<TableCellNodeWidget> createState() => _TableCellNodeWidgetState();
+  State<TableCelBlockWidget> createState() => _TableCeBlockeWidgetState();
 }
 
-class _TableCellNodeWidgetState extends State<TableCellNodeWidget> {
+class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override

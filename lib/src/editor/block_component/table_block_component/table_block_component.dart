@@ -1,9 +1,15 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/render/selection_menu/selection_menu_icon.dart';
-import 'package:appflowy_editor/src/editor/block_component/table/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'table_view.dart';
+
+class TableBlockKeys {
+  const TableBlockKeys._();
+
+  static const String type = 'table';
+}
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
@@ -16,7 +22,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
-    return TableNodeWidget(
+    return TableBlockComponentWidget(
       key: node.key,
       tableNode: TableNode(node: node),
       node: node,
@@ -36,8 +42,8 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
       node.attributes.containsKey('rowsLen');
 }
 
-class TableNodeWidget extends BlockComponentStatefulWidget {
-  const TableNodeWidget({
+class TableBlockComponentWidget extends BlockComponentStatefulWidget {
+  const TableBlockComponentWidget({
     super.key,
     required this.tableNode,
     required super.node,
@@ -49,10 +55,11 @@ class TableNodeWidget extends BlockComponentStatefulWidget {
   final TableNode tableNode;
 
   @override
-  State<TableNodeWidget> createState() => _TableNodeWidgetState();
+  State<TableBlockComponentWidget> createState() =>
+      _TableBlockComponentWidgetState();
 }
 
-class _TableNodeWidgetState extends State<TableNodeWidget>
+class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     with SelectableMixin {
   late final editorState = Provider.of<EditorState>(context, listen: false);
   final _scrollController = ScrollController();

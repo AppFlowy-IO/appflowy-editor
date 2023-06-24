@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table/table_action.dart';
-import 'package:appflowy_editor/src/editor/block_component/table/table_config.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 
 class TableNode {
   final TableConfig _config;
@@ -12,7 +12,7 @@ class TableNode {
   TableNode({
     required this.node,
   }) : _config = TableConfig.fromJson(node.attributes) {
-    assert(node.type == kTableType);
+    assert(node.type == TableBlockKeys.type);
     assert(node.attributes.containsKey('colsLen'));
     assert(node.attributes['colsLen'] is int);
     assert(node.attributes.containsKey('rowsLen'));
@@ -67,7 +67,7 @@ class TableNode {
     config = config ?? const TableConfig();
 
     Node node = Node(
-      type: kTableType,
+      type: TableBlockKeys.type,
       attributes: {}
         ..addAll({
           'colsLen': cols.length,
@@ -78,7 +78,7 @@ class TableNode {
     for (var i = 0; i < cols.length; i++) {
       for (var j = 0; j < cols[0].length; j++) {
         final n = Node(
-          type: kTableCellType,
+          type: TableCellBlockKeys.type,
           attributes: {'colPosition': i, 'rowPosition': j},
         );
         if (T == String) {

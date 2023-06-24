@@ -40,8 +40,12 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
       padding: (node) => EdgeInsets.symmetric(vertical: 8.0),
     ),
   ),
-  kTableType: TableBlockComponentBuilder(),
-  kTableCellType: TableCellBlockComponentBuilder(),
+  TableBlockKeys.type: TableBlockComponentBuilder(),
+  TableCellBlockKeys.type: TableCellBlockComponentBuilder(
+    configuration: BlockComponentConfiguration(
+      padding: (_) => const EdgeInsets.symmetric(vertical: 0.0),
+    ),
+  ),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [

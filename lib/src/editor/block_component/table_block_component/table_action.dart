@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table/util.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 
 void addCol(Node tableNode, Transaction transaction) {
   List<Node> cellNodes = [];
@@ -9,7 +9,7 @@ void addCol(Node tableNode, Transaction transaction) {
   var lastCellNode = getCellNode(tableNode, colsLen - 1, rowsLen - 1)!;
   for (var i = 0; i < rowsLen; i++) {
     final node = Node(
-      type: kTableCellType,
+      type: TableCellBlockKeys.type,
       attributes: {
         'colPosition': colsLen,
         'rowPosition': i,
@@ -31,7 +31,7 @@ void addRow(Node tableNode, Transaction transaction) {
       colsLen = tableNode.attributes['colsLen'];
   for (var i = 0; i < colsLen; i++) {
     final node = Node(
-      type: kTableCellType,
+      type: TableCellBlockKeys.type,
       attributes: {
         'colPosition': i,
         'rowPosition': rowsLen,
