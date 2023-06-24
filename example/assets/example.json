@@ -1,181 +1,180 @@
 {
   "document": {
-    "type": "editor",
-    "children": [
-      {
-        "type": "text",
-        "attributes": {
-          "subtype": "heading",
-          "heading": "h2"
-        },
-        "delta": [
-          { "insert": "👋 " },
-          { "insert": "Welcome to", "attributes": { "bold": true } },
-          { "insert": " " },
-          {
-            "insert": "AppFlowy Editor",
-            "attributes": {
-              "href": "appflowy.io",
-              "italic": true,
-              "bold": true
+    "type": "page",
+    "children": [{
+        "type": "heading",
+        "data": {
+          "level": 2,
+          "delta": [{
+              "insert": "👋 "
+            },
+            {
+              "insert": "Welcome to",
+              "data": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "AppFlowy Editor",
+              "data": {
+                "href": "appflowy.io",
+                "italic": true,
+                "bold": true
+              }
             }
-          }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "delta": [
-          { "insert": "AppFlowy Editor is a" },
-          { "insert": " " },
-          { "insert": "highly customizable", "attributes": { "bold": true } },
-          { "insert": " " },
-          { "insert": "rich-text editor", "attributes": { "italic": true } },
-          { "insert": " for " },
-          { "insert": "Flutter", "attributes": { "underline": true } }
-        ]
+          ]
+        }
       },
       {
-        "type": "text",
-        "attributes": { "checkbox": true, "subtype": "checkbox" },
-        "delta": [{ "insert": "Customizable" }]
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
       },
       {
-        "type": "text",
-        "attributes": { "checkbox": true, "subtype": "checkbox" },
-        "delta": [{ "insert": "Test-covered" }]
-      },
-      {
-        "type": "text",
-        "attributes": { "checkbox": false, "subtype": "checkbox" },
-        "delta": [{ "insert": "more to come!" }]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "attributes": { "subtype": "quote" },
-        "delta": [{ "insert": "Here is an example you can give a try" }]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "table",
-        "attributes": {
-          "colsLen": 2,
-          "rowsLen": 2,
-          "colDefaultWidth": 60,
-          "rowDefaultHeight": 50,
-          "colMinimumWidth": 30
-        },
-        "children": [
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 0,
-              "rowPosition": 0,
-              "width": 135.0
+        "type": "paragraph",
+        "data": {
+          "delta": [{
+              "insert": "AppFlowy Editor is a"
             },
-            "children": [
-              {
-                "type": "text",
-                "attributes": {"subtype": "heading", "heading": "h2"},
-                "delta": [
-                  {"insert": "Cell 1"}
-                ]
-              }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 0,
-              "rowPosition": 1
+            {
+              "insert": " "
             },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "Cell 2",
-                    "attributes": {"bold": true}
-                  }
-                ]
+            {
+              "insert": "highly customizable",
+              "data": {
+                "bold": true
               }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 1,
-              "rowPosition": 0
             },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "Cell 3",
-                    "attributes": {"italic": true}
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "table/cell",
-            "attributes": {
-              "colPosition": 1,
-              "rowPosition": 1
+            {
+              "insert": " "
             },
-            "children": [
-              {
-                "type": "text",
-                "delta": [
-                  {"insert": "Cell 4"}
-                ]
+            {
+              "insert": "rich-text editor",
+              "data": {
+                "italic": true
               }
-            ]
-          }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "delta": [
-          { "insert": "You can also use " },
-          {
-            "insert": "AppFlowy Editor",
-            "attributes": {
-              "italic": true,
-              "bold": true,
-              "backgroundColor": "0x6000BCF0"
+            },
+            {
+              "insert": " for "
+            },
+            {
+              "insert": "Flutter",
+              "data": {
+                "underline": true
+              }
             }
-          },
-          { "insert": " as a component to build your own app." }
-        ]
-      },
-      { "type": "text", "delta": [] },
-      {
-        "type": "text",
-        "attributes": { "subtype": "bulleted-list" },
-        "delta": [{ "insert": "Use / to insert blocks" }]
+          ]
+        }
       },
       {
-        "type": "text",
-        "attributes": { "subtype": "bulleted-list" },
-        "delta": [
-          {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [{
+            "insert": "Customizable"
+          }]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": true,
+          "delta": [{
+            "insert": "Test-covered"
+          }]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [{
+            "insert": "more to come!"
+          }]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "quote",
+        "data": {
+          "delta": [{
+            "insert": "Here is an example you can give a try"
+          }]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [{
+              "insert": "You can also use "
+            },
+            {
+              "insert": "AppFlowy Editor",
+              "data": {
+                "italic": true,
+                "bold": true,
+                "textColor": "0xffD70040",
+                "highlightColor": "0x6000BCF0"
+              }
+            },
+            {
+              "insert": " as a component to build your own app."
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [{
+            "insert": "Use / to insert blocks"
+          }]
+        }
+
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [{
             "insert": "Select text to trigger to the toolbar to format your notes."
-          }
-        ]
+          }]
+        }
+
       },
-      { "type": "text", "delta": [] },
       {
-        "type": "text",
-        "delta": [
-          {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [{
             "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-          }
-        ]
+          }]
+        }
       }
     ]
   }

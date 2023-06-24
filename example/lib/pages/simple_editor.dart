@@ -33,18 +33,82 @@ class SimpleEditor extends StatelessWidget {
             ..handler = debugPrint
             ..level = LogLevel.all;
           onEditorStateChange(editorState);
-
-          return AppFlowyEditor(
-            editorState: editorState,
-            themeData: themeData,
-            autoFocus: editorState.document.isEmpty,
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          final scrollController = ScrollController();
+          if (PlatformExtension.isDesktopOrWeb) {
+            return FloatingToolbar(
+              items: [
+                paragraphItem,
+                ...headingItems,
+                ...markdownFormatItems,
+                quoteItem,
+                bulletedListItem,
+                numberedListItem,
+                linkItem,
+                textColorItem,
+                highlightColorItem
+              ],
+              editorState: editorState,
+              scrollController: scrollController,
+              child: _buildEditor(
+                context,
+                editorState,
+                scrollController,
+              ),
+            );
+          } else if (PlatformExtension.isMobile) {
+            return Column(
+              children: [
+                Expanded(
+                  child: _buildMobileEditor(
+                    context,
+                    editorState,
+                    scrollController,
+                  ),
+                ),
+                MobileToolbar(
+                  editorState: editorState,
+                  toolbarItems: [
+                    textDecorationMobileToolbarItem,
+                    headingMobileToolbarItem,
+                    todoListMobileToolbarItem,
+                    listMobileToolbarItem,
+                    linkMobileToolbarItem,
+                    quoteMobileToolbarItem,
+                    codeMobileToolbarItem,
+                    // dividerMobileToolbarItem,
+                  ],
+                ),
+              ],
+            );
+          }
         }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
+    );
+  }
+
+  Widget _buildMobileEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.standard(
+      editorStyle: const EditorStyle.mobile(),
+      editorState: editorState,
+      scrollController: scrollController,
+    );
+  }
+
+  Widget _buildEditor(
+    BuildContext context,
+    EditorState editorState,
+    ScrollController? scrollController,
+  ) {
+    return AppFlowyEditor.standard(
+      editorState: editorState,
+      scrollController: scrollController,
     );
   }
 }

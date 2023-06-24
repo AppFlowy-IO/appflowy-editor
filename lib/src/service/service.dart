@@ -1,6 +1,6 @@
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_service.dart';
 import 'package:appflowy_editor/src/service/input_service.dart';
 import 'package:appflowy_editor/src/service/keyboard_service.dart';
-import 'package:appflowy_editor/src/service/render_plugin_service.dart';
 import 'package:appflowy_editor/src/service/scroll_service.dart';
 import 'package:appflowy_editor/src/service/selection_service.dart';
 import 'package:appflowy_editor/src/service/toolbar_service.dart';
@@ -38,7 +38,8 @@ class FlowyService {
   }
 
   // render plugin service
-  late AppFlowyRenderPlugin renderPluginService;
+  // late AppFlowyRenderPlugin renderPluginService;
+  late BlockComponentRendererService rendererService;
 
   // toolbar service
   final toolbarServiceKey = GlobalKey(debugLabel: 'flowy_toolbar_service');

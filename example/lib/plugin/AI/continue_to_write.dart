@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 SelectionMenuItem continueToWriteMenuItem = SelectionMenuItem(
   name: 'Continue To Write',
-  icon: (editorState, onSelected) => Icon(
+  icon: (editorState, onSelected, style) => Icon(
     Icons.print,
     size: 18.0,
     color: onSelected
@@ -79,10 +79,10 @@ SelectionMenuItem continueToWriteMenuItem = SelectionMenuItem(
       context: context,
       builder: (context) {
         diglogContext = context;
-        return AlertDialog(
+        return const AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               CircularProgressIndicator(),
               SizedBox(height: 10),
               Text('Loading'),

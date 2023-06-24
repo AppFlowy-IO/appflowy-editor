@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 enum CursorStyle {
   verticalLine,
   borderLine,
+  cover,
 }
 
 /// [SelectableMixin] is used for the editor to calculate the position
@@ -66,4 +67,9 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   bool get shouldCursorBlink => true;
 
   CursorStyle get cursorStyle => CursorStyle.verticalLine;
+
+  Rect transformRectToGlobal(Rect r) {
+    final topLeft = localToGlobal(r.topLeft);
+    return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
+  }
 }

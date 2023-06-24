@@ -12,8 +12,10 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
 
   @override
   Delta convert(String input) {
-    final document =
-        md.Document(extensionSet: md.ExtensionSet.gitHubWeb).parseInline(input);
+    final document = md.Document(
+      extensionSet: md.ExtensionSet.gitHubWeb,
+      encodeHtml: false,
+    ).parseInline(input);
     for (final node in document) {
       node.accept(this);
     }

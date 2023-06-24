@@ -1,143 +1,94 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-void insertHeadingAfterSelection(EditorState editorState, String heading) {
-  insertTextNodeAfterSelection(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-    BuiltInAttributeKey.heading: heading,
-  });
+void insertHeadingAfterSelection(EditorState editorState, int level) {
+  insertNodeAfterSelection(
+    editorState,
+    headingNode(level: level),
+  );
 }
 
 void insertQuoteAfterSelection(EditorState editorState) {
-  insertTextNodeAfterSelection(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.quote,
-  });
+  insertNodeAfterSelection(
+    editorState,
+    quoteNode(),
+  );
 }
 
 void insertCheckboxAfterSelection(EditorState editorState) {
-  insertTextNodeAfterSelection(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-    BuiltInAttributeKey.checkbox: false,
-  });
+  insertNodeAfterSelection(
+    editorState,
+    todoListNode(checked: false),
+  );
 }
 
 void insertBulletedListAfterSelection(EditorState editorState) {
-  insertTextNodeAfterSelection(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList,
-  });
+  insertNodeAfterSelection(
+    editorState,
+    bulletedListNode(),
+  );
 }
 
 void insertNumberedListAfterSelection(EditorState editorState) {
-  insertTextNodeAfterSelection(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.numberList,
-    BuiltInAttributeKey.number: 1,
-  });
+  insertNodeAfterSelection(
+    editorState,
+    numberedListNode(),
+  );
 }
 
-bool insertTextNodeAfterSelection(
+bool insertNodeAfterSelection(
   EditorState editorState,
-  Attributes attributes,
+  Node node,
 ) {
-  final selection = editorState.service.selectionService.currentSelection.value;
-  final nodes = editorState.service.selectionService.currentSelectedNodes;
-  if (selection == null || nodes.isEmpty) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isCollapsed) {
     return false;
   }
 
-  final node = nodes.first;
-  if (node is TextNode && node.delta.isEmpty) {
-    formatTextNodes(editorState, attributes);
+  final currentNode = editorState.getNodeAtPath(selection.end.path);
+  if (currentNode == null) {
+    return false;
+  }
+  final transaction = editorState.transaction;
+  final delta = currentNode.delta;
+  if (delta != null && delta.isEmpty) {
+    transaction
+      ..insertNode(selection.end.path, node)
+      ..deleteNode(currentNode)
+      ..afterSelection = Selection.collapse(
+        selection.end.path,
+        0,
+      );
   } else {
     final next = selection.end.path.next;
-    final transaction = editorState.transaction
-      ..insertNode(
-        next,
-        TextNode.empty(attributes: attributes),
-      )
+    transaction
+      ..insertNode(next, node)
       ..afterSelection = Selection.collapsed(
         Position(path: next, offset: 0),
-      );
-    editorState.apply(transaction);
-  }
-
-  return true;
-}
-
-void formatText(EditorState editorState) {
-  formatTextNodes(editorState, {});
-}
-
-void formatHeading(EditorState editorState, String heading) {
-  formatTextNodes(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.heading,
-    BuiltInAttributeKey.heading: heading,
-  });
-}
-
-void formatQuote(EditorState editorState) {
-  formatTextNodes(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.quote,
-  });
-}
-
-void formatCheckbox(EditorState editorState, bool check) {
-  formatTextNodes(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.checkbox,
-    BuiltInAttributeKey.checkbox: check,
-  });
-}
-
-void formatBulletedList(EditorState editorState) {
-  formatTextNodes(editorState, {
-    BuiltInAttributeKey.subtype: BuiltInAttributeKey.bulletedList,
-  });
-}
-
-/// Format the current selection with the given attributes.
-///
-/// If the selected nodes are not text nodes, this method will do nothing.
-/// If the selected text nodes already contain the style in attributes, this method will remove the existing style.
-bool formatTextNodes(EditorState editorState, Attributes attributes) {
-  final nodes = editorState.service.selectionService.currentSelectedNodes;
-  final textNodes = nodes.whereType<TextNode>().toList();
-
-  if (textNodes.isEmpty) {
-    return false;
-  }
-
-  final transaction = editorState.transaction;
-
-  for (final textNode in textNodes) {
-    var newAttributes = {...textNode.attributes};
-    for (final globalStyleKey in BuiltInAttributeKey.globalStyleKeys) {
-      if (newAttributes.keys.contains(globalStyleKey)) {
-        newAttributes[globalStyleKey] = null;
-      }
-    }
-
-    // if an attribute already exists in the node, it should be removed instead
-    for (final entry in attributes.entries) {
-      if (textNode.attributes.containsKey(entry.key) &&
-          textNode.attributes[entry.key] == entry.value) {
-        // attribute is not added to the node new attributes
-      } else {
-        newAttributes.addEntries([entry]);
-      }
-    }
-    transaction
-      ..updateNode(
-        textNode,
-        newAttributes,
-      )
-      ..afterSelection = Selection.collapsed(
-        Position(
-          path: textNode.path,
-          offset: textNode.toPlainText().length,
-        ),
       );
   }
 
   editorState.apply(transaction);
   return true;
+}
+
+void formatText(EditorState editorState) {
+  throw UnimplementedError();
+}
+
+void formatHeading(EditorState editorState, String heading) {
+  throw UnimplementedError();
+}
+
+void formatQuote(EditorState editorState) {
+  throw UnimplementedError();
+}
+
+void formatCheckbox(EditorState editorState, bool check) {
+  throw UnimplementedError();
+}
+
+void formatBulletedList(EditorState editorState) {
+  throw UnimplementedError();
 }
 
 bool formatBold(EditorState editorState) {
@@ -166,12 +117,12 @@ bool formatEmbedCode(EditorState editorState) {
 bool formatHighlight(EditorState editorState, String colorHex) {
   bool value = _allSatisfyInSelection(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     colorHex,
   );
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     customValue: value ? '0x00000000' : colorHex,
   );
 }
@@ -179,7 +130,7 @@ bool formatHighlight(EditorState editorState, String colorHex) {
 bool formatHighlightColor(EditorState editorState, String colorHex) {
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.backgroundColor,
+    BuiltInAttributeKey.highlightColor,
     customValue: colorHex,
   );
 }
@@ -187,7 +138,7 @@ bool formatHighlightColor(EditorState editorState, String colorHex) {
 bool formatFontColor(EditorState editorState, String colorHex) {
   return formatRichTextPartialStyle(
     editorState,
-    BuiltInAttributeKey.color,
+    BuiltInAttributeKey.textColor,
     customValue: colorHex,
   );
 }
