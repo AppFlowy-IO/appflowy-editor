@@ -130,13 +130,26 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
       return;
     }
 
+    final currentNode = editorState.getNodeAtPath(selection.end.path);
+    if (currentNode == null) {
+      return;
+    }
+
     final tableNode = TableNode.fromList([
       ['', ''],
       ['', '']
     ]);
 
-    final transaction = editorState.transaction
-      ..insertNode(selection.end.path, tableNode.node);
+    final transaction = editorState.transaction;
+    final delta = currentNode.delta;
+    if (delta != null && delta.isEmpty) {
+      transaction
+        ..insertNode(selection.end.path, tableNode.node)
+        ..deleteNode(currentNode);
+    } else {
+      transaction.insertNode(selection.end.path.next, tableNode.node);
+    }
+
     editorState.apply(transaction);
   },
 );

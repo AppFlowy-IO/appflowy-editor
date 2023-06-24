@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_const.dart';
 
 // TODO(zoli): better to have sub context menu
 final tableContextMenuItems = [
@@ -122,19 +121,20 @@ final tableContextMenuItems = [
 ];
 
 bool _isSelectionInTable(EditorState editorState) {
-  var selection = editorState.service.selectionService.currentSelection.value;
+  var selection = editorState.selection;
   if (selection == null || !selection.isSingle) {
     return false;
   }
 
-  var node = editorState.service.selectionService.currentSelectedNodes.first;
+  var node = editorState.selectionService.currentSelectedNodes.first;
 
-  return node.id == kTableCellType || node.parent?.type == kTableCellType;
+  return node.type == TableCellBlockKeys.type ||
+      node.parent?.type == TableCellBlockKeys.type;
 }
 
 Node _getTableCellNode(EditorState editorState) {
-  var node = editorState.service.selectionService.currentSelectedNodes.first;
-  return node.id == kTableCellType ? node : node.parent!;
+  var node = editorState.selectionService.currentSelectedNodes.first;
+  return node.type == TableCellBlockKeys.type ? node : node.parent!;
 }
 
 OverlayEntry? _colorMenuOverlay;
@@ -148,16 +148,14 @@ void _showColorMenu(
 ) {
   editorState.service.scrollService?.disable();
   editorState.service.keyboardService?.disable();
-  editorState.service.selectionService.currentSelection
-      .addListener(_dismissColorMenu);
+  editorState.selectionNotifier.addListener(_dismissColorMenu);
 }
 
 void _dismissColorMenu() {
   // workaround: SelectionService has been released after hot reload.
   final isSelectionDisposed =
       _editorState?.service.selectionServiceKey.currentState == null;
-  if (isSelectionDisposed ||
-      _editorState?.service.selectionService.currentSelection.value == null) {
+  if (isSelectionDisposed || _editorState?.selection == null) {
     return;
   }
   _colorMenuOverlay?.remove();
@@ -165,8 +163,7 @@ void _dismissColorMenu() {
 
   _editorState?.service.scrollService?.enable();
   _editorState?.service.keyboardService?.enable();
-  _editorState?.service.selectionService.currentSelection
-      .removeListener(_dismissColorMenu);
+  _editorState?.selectionNotifier.removeListener(_dismissColorMenu);
   _editorState = null;
 }
 
