@@ -194,9 +194,11 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.onExit,
     required this.onSelectionUpdate,
     required this.selectionMenuStyle,
+    required this.itemCountFilter,
   }) : super(key: key);
 
   final List<SelectionMenuItem> items;
+  final int itemCountFilter;
   final int maxItemInRow;
 
   final SelectionMenuService menuService;
@@ -290,6 +292,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
             : _buildResultsWidget(
                 context,
                 _showingItems,
+                widget.itemCountFilter,
                 _selectedIndex,
               ),
       ),
@@ -299,10 +302,18 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   Widget _buildResultsWidget(
     BuildContext buildContext,
     List<SelectionMenuItem> items,
+    int itemCountFilter,
     int selectedIndex,
   ) {
     List<Widget> columns = [];
     List<Widget> itemWidgets = [];
+
+    // apply item count filter
+    
+    if (itemCountFilter > 0) {
+      items = items.take(itemCountFilter).toList();
+    }
+
     for (var i = 0; i < items.length; i++) {
       if (i != 0 && i % (widget.maxItemInRow) == 0) {
         columns.add(
