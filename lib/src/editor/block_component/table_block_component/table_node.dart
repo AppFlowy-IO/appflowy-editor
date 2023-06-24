@@ -140,8 +140,9 @@ class TableNode {
   }
 
   void updateRowHeight(int row) {
+    // The extra 8 is because of paragraph padding
     double maxHeight = _cells
-        .map<double>((c) => c[row].children.first.rect.height)
+        .map<double>((c) => c[row].children.first.rect.height + 8)
         .reduce(max);
 
     if (_cells[0][row].attributes['height'] != maxHeight) {
