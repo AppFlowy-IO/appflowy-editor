@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/non_delta_input_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,7 +55,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
 
-    textInputService = DeltaTextInputService(
+    textInputService = NonDeltaTextInputService(
       onInsert: (insertion) async => await onInsert(
         insertion,
         editorState,
