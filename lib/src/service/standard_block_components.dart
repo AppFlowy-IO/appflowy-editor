@@ -90,14 +90,13 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 ];
 
 final List<CommandShortcutEvent> standardCommandShortcutEvents = [
-  ...tableCommands,
-
   // undo, redo
   undoCommand,
   redoCommand,
 
   // backspace
   convertToParagraphCommand,
+  ...tableCommands,
   backspaceCommand,
   deleteLeftWordCommand,
   deleteLeftSentenceCommand,

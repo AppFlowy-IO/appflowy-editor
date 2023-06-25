@@ -173,9 +173,9 @@ CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
 
 Iterable<Node> _inTableNodes(EditorState editorState) {
   final nodes = editorState.selectionService.currentSelectedNodes;
-  return nodes.where((node) => node.type == ParagraphBlockKeys.type).where(
-        (node) => node.parent?.type.contains(TableBlockKeys.type) ?? false,
-      );
+  return nodes.where(
+    (node) => node.parent?.type.contains(TableBlockKeys.type) ?? false,
+  );
 }
 
 bool _hasSelectionAndTableCell(
