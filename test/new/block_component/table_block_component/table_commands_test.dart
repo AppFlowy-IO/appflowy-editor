@@ -97,11 +97,126 @@ void main() async {
       await editor.dispose();
     });
 
-    // TODO(zoli)
-    //testWidgets('backspace on multiple cell selection', (tester) async {});
+    testWidgets('backspace on multiple cell selection', (tester) async {
+      final tableNode = TableNode.fromList([
+        ['ab', 'cd'],
+        ['ef', 'hi']
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
 
-    //testWidgets(
-    //    'backspace on cell and after table node selection', (tester) async {});
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+
+      await editor.updateSelection(
+        Selection(
+          start: Position(
+            path: cell11.childAtIndexOrNull(0)!.path,
+            offset: 1,
+          ),
+          end: Position(
+            path: cell10.childAtIndexOrNull(0)!.path,
+            offset: 1,
+          ),
+        ),
+      );
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+
+      var selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 1);
+
+      cell11 = getCellNode(tableNode.node, 1, 1)!;
+      cell10 = getCellNode(tableNode.node, 1, 0)!;
+      expect(cell10.childAtIndexOrNull(0)!.delta?.toPlainText(), 'e');
+      expect(cell11.childAtIndexOrNull(0)!.delta?.toPlainText(), 'i');
+
+      await editor.dispose();
+    });
+
+    testWidgets('backspace on cell and after table node selection',
+        (tester) async {
+      final tableNode = TableNode.fromList([
+        ['ab', 'cd'],
+        ['ef', 'hi']
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+      editor.addParagraph(initialText: 'Testing');
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+
+      await editor.updateSelection(
+        Selection(
+          start: Position(
+            path: cell11.childAtIndexOrNull(0)!.path,
+            offset: 1,
+          ),
+          end: Position(
+            path: editor.document.last!.path,
+            offset: 3,
+          ),
+        ),
+      );
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+
+      var selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell11.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 1);
+
+      cell11 = getCellNode(tableNode.node, 1, 1)!;
+      expect(cell11.childAtIndexOrNull(0)!.delta?.toPlainText(), 'h');
+      expect(editor.document.last!.delta?.toPlainText(), 'ting');
+
+      await editor.dispose();
+    });
+
+    testWidgets('backspace on whole table in selection', (tester) async {
+      final tableNode = TableNode.fromList([
+        ['ab', 'cd'],
+        ['ef', 'hi']
+      ]);
+      final editor = tester.editor..addParagraph(initialText: 'Start');
+      editor.addNode(tableNode.node);
+      editor.addParagraph(initialText: 'Testing');
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+
+      await editor.updateSelection(
+        Selection(
+          start: Position(
+            path: editor.document.first!.path,
+            offset: 1,
+          ),
+          end: Position(
+            path: editor.document.last!.path,
+            offset: 3,
+          ),
+        ),
+      );
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+
+      var selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, editor.document.first!.path);
+      expect(selection.start.offset, 1);
+
+      expect(editor.document.last!.delta?.toPlainText(), 'Sting');
+
+      await editor.dispose();
+    });
 
     testWidgets('up arrow key move to above row with same column',
         (tester) async {

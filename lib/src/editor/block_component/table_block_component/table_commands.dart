@@ -44,7 +44,7 @@ final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
 final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
   key: 'Stop at the beginning of the cell',
   command: 'backspace',
-  handler: _backSpaceInTableCellHandler,
+  handler: _backspaceInTableCellHandler,
 );
 
 CommandShortcutEventHandler _enterInTableCellHandler = (editorState) {
@@ -152,7 +152,7 @@ CommandShortcutEventHandler _downInTableCellHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
-CommandShortcutEventHandler _backSpaceInTableCellHandler = (editorState) {
+CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
     return KeyEventResult.ignored;
@@ -185,7 +185,7 @@ bool _hasSelectionAndTableCell(
     nodes.length == 1 &&
     selection != null &&
     selection.isCollapsed &&
-    nodes.first.parent?.type == 'table/cell';
+    nodes.first.parent?.type == TableCellBlockKeys.type;
 
 Node? _getNextNode(Iterable<Node> nodes, int colDiff, rowDiff) {
   final cell = nodes.first.parent!;
@@ -199,4 +199,4 @@ Node? _getNextNode(Iterable<Node> nodes, int colDiff, rowDiff) {
 bool _nodeHasTextChild(Node? n) =>
     n != null &&
     n.children.isNotEmpty &&
-    n.childAtIndexOrNull(0)!.type == ParagraphBlockKeys.type;
+    n.childAtIndexOrNull(0)!.delta != null;
