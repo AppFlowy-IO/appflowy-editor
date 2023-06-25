@@ -10,7 +10,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 final CharacterShortcutEvent convertMinusesToDivider = CharacterShortcutEvent(
   key: 'convert minuses to a divider',
   character: '-',
-  handler: (editorState) => _convertSyntaxToDivider(editorState, '--'),
+  handler: (editorState) async =>
+      await _convertSyntaxToDivider(editorState, '--') ||
+      await _convertSyntaxToDivider(editorState, ' —'),
 );
 
 final CharacterShortcutEvent convertStarsToDivider = CharacterShortcutEvent(
