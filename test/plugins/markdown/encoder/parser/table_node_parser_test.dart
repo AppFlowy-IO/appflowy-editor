@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
-import 'package:appflowy_editor/src/render/table/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {

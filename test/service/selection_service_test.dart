@@ -26,6 +26,7 @@ void main() async {
         Selection.single(path: [1], startOffset: 0),
       );
 
+      await tester.pumpAndSettle(const Duration(seconds: 1));
       // tap at the ending
       await tester.tapAt(rect.centerRight);
       expect(

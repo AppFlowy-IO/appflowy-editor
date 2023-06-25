@@ -1,8 +1,4 @@
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/node_parser.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/text_node_parser.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 
 class TableNodeParser extends NodeParser {
@@ -13,9 +9,6 @@ class TableNodeParser extends NodeParser {
 
   @override
   String transform(Node node) {
-    final dme = DocumentMarkdownEncoder(
-      parsers: [const TextNodeParser()],
-    );
     final int rowsLen = node.attributes['rowsLen'],
         colsLen = node.attributes['colsLen'];
     String result = '';
@@ -23,7 +16,7 @@ class TableNodeParser extends NodeParser {
     for (var i = 0; i < rowsLen; i++) {
       for (var j = 0; j < colsLen; j++) {
         final Node cell = getCellNode(node, j, i)!;
-        String cellStr = '|${dme.convert(Document(root: cell))}';
+        String cellStr = '|${documentToMarkdown(Document(root: cell))}';
         // markdown doesn't have literally empty table cell
         cellStr = cellStr == '|' ? '| ' : cellStr;
 

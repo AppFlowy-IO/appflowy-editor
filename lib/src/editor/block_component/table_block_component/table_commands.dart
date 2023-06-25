@@ -8,6 +8,7 @@ final List<CommandShortcutEvent> tableCommands = [
   _rightInTableCell,
   _upInTableCell,
   _downInTableCell,
+  _backSpaceInTableCell,
 ];
 
 final CommandShortcutEvent _enterInTableCell = CommandShortcutEvent(
@@ -38,6 +39,12 @@ final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
   key: 'Move to down cell at same offset',
   command: 'arrow down',
   handler: _downInTableCellHandler,
+);
+
+final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
+  key: 'Stop at the beginning of the cell',
+  command: 'backspace',
+  handler: _backSpaceInTableCellHandler,
 );
 
 CommandShortcutEventHandler _enterInTableCellHandler = (editorState) {
@@ -142,6 +149,25 @@ CommandShortcutEventHandler _downInTableCellHandler = (editorState) {
     }
     return KeyEventResult.handled;
   }
+  return KeyEventResult.ignored;
+};
+
+CommandShortcutEventHandler _backSpaceInTableCellHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isCollapsed) {
+    return KeyEventResult.ignored;
+  }
+
+  final position = selection.start;
+  final node = editorState.getNodeAtPath(position.path);
+  if (node == null || node.delta == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (node.parent?.type == TableCellBlockKeys.type && position.offset == 0) {
+    return KeyEventResult.handled;
+  }
+
   return KeyEventResult.ignored;
 };
 

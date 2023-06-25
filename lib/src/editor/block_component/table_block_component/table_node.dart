@@ -59,7 +59,13 @@ class TableNode {
   }
 
   static TableNode fromList<T>(List<List<T>> cols, {TableConfig? config}) {
-    // assert(T == String || T == TextNode);
+    assert(
+      T == String ||
+          (T == Node &&
+              cols.every(
+                (col) => col.every((n) => (n as Node).delta != null),
+              )),
+    );
     assert(cols.isNotEmpty);
     assert(cols[0].isNotEmpty);
     assert(cols.every((col) => col.length == cols[0].length));
@@ -77,19 +83,22 @@ class TableNode {
     );
     for (var i = 0; i < cols.length; i++) {
       for (var j = 0; j < cols[0].length; j++) {
-        final n = Node(
+        final cell = Node(
           type: TableCellBlockKeys.type,
           attributes: {'colPosition': i, 'rowPosition': j},
         );
-        if (T == String) {
-          n.insert(
-            paragraphNode(
-              delta: Delta()..insert(cols[i][j] as String),
-            ),
-          );
-        }
 
-        node.insert(n);
+        late Node cellChild;
+        if (T == String) {
+          cellChild = paragraphNode(
+            delta: Delta()..insert(cols[i][j] as String),
+          );
+        } else {
+          cellChild = cols[i][j] as Node;
+        }
+        cell.insert(cellChild);
+
+        node.insert(cell);
       }
     }
 

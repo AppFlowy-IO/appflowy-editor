@@ -90,6 +90,8 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 ];
 
 final List<CommandShortcutEvent> standardCommandShortcutEvents = [
+  ...tableCommands,
+
   // undo, redo
   undoCommand,
   redoCommand,
@@ -99,8 +101,6 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   backspaceCommand,
   deleteLeftWordCommand,
   deleteLeftSentenceCommand,
-
-  ...tableCommands,
 
   // arrow keys
   ...arrowLeftKeys,

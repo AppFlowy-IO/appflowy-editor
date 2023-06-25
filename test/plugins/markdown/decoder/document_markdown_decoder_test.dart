@@ -103,6 +103,101 @@ void main() async {
         }
       },
       {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "heading",
+                "data": {
+                  "level": 2,
+                  "delta": [
+                    {"insert": "a"}
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "b",
+                      "attributes": {"bold": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {
+                      "insert": "c",
+                      "attributes": {"italic": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {"insert": "d"}
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 80.0,
+          "rowDefaultHeight": 40.0,
+          "colMinimumWidth": 40.0
+        }
+      },
+      {
         "type": "paragraph",
         "data": {
           "delta": []
@@ -344,6 +439,7 @@ If you have questions or feedback, please submit an issue on Github or join the 
       final data = jsonDecode(example);
       expect(result.toJson(), data);
     });
+
     test('test code block', () async {
       const markdown = '''
 # Welcome to AppFlowy
@@ -375,28 +471,21 @@ void main(){
       expect(result.toJson(), data);
     });
 
-    test('parser document', () async {
+    test('decode uncommon markdown table', () async {
       const markdown = r'''
   |  ## \|a|_c_|
       | -- |   -|''';
       const expected = '''
 {
   "document": {
-              "type": "editor",
+              "type": "page",
               "children": [
                 {
                   "type": "table",
-                  "attributes": {
-                    "colsLen": 2,
-                    "rowsLen": 1,
-                    "colDefaultWidth": 80.0,
-                    "rowDefaultHeight": 40.0,
-                    "colMinimumWidth": 40.0
-                  },
                   "children": [
                     {
                       "type": "table/cell",
-                      "attributes": {
+                      "data": {
                         "colPosition": 0,
                         "rowPosition": 0,
                         "height": 40.0,
@@ -404,16 +493,19 @@ void main(){
                       },
                       "children": [
                         {
-                          "type": "text",
-                          "delta": [
-                            {"insert": "## |a"}
-                          ]
+                          "type": "heading",
+                          "data": {
+                            "level": 2,
+                            "delta": [
+                              {"insert": "|a"}
+                            ]
+                          }
                         }
                       ]
                     },
                     {
                       "type": "table/cell",
-                      "attributes": {
+                      "data": {
                         "colPosition": 1,
                         "rowPosition": 0,
                         "height": 40.0,
@@ -421,19 +513,27 @@ void main(){
                       },
                       "children": [
                         {
-                          "type": "text",
-                          "delta": [
-                            {
-                              "insert": "c",
-                              "attributes": {"italic": true}
-                            }
-                          ]
+                          "type": "paragraph",
+                          "data": {
+                            "delta": [
+                              {
+                                "insert": "c",
+                                "attributes": {"italic": true}
+                              }
+                            ]
+                          }
                         }
                       ]
                     }
-                  ]
-                },
-                {"type": "text", "delta": [{"insert": ""}]}
+                  ],
+                  "data": {
+                    "colsLen": 2,
+                    "rowsLen": 1,
+                    "colDefaultWidth": 80.0,
+                    "rowDefaultHeight": 40.0,
+                    "colMinimumWidth": 40.0
+                  }
+                }
               ]
             }
 }

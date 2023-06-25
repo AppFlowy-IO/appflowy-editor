@@ -1,11 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/src/render/table/table_node_widget.dart';
-import 'package:appflowy_editor/src/render/table/table_cell_node_widget.dart';
-import 'package:appflowy_editor/src/render/table/table_node.dart';
-import 'package:appflowy_editor/src/render/table/table_const.dart';
-import 'package:appflowy_editor/src/render/table/table_action.dart';
-import 'package:appflowy_editor/src/render/table/util.dart';
-import '../../infra/test_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import '../../infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -18,14 +15,9 @@ void main() async {
         ['1', '2'],
         ['3', '4']
       ]);
-      final editor = tester.editor..insert(tableNode.node);
+      final editor = tester.editor..addNode(tableNode.node);
 
-      await editor.startTesting(
-        customBuilders: {
-          kTableType: TableNodeWidgetBuilder(),
-          kTableCellType: TableCellNodeWidgetBuilder()
-        },
-      );
+      await editor.startTesting();
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -38,14 +30,15 @@ void main() async {
       expect(
         tableNode.getCell(0, 0).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {
-              "insert": "3",
-            }
-          ]
+          "type": "paragraph",
+          "data": {
+            "delta": [
+              {"insert": "3"}
+            ]
+          }
         },
       );
+      await editor.dispose();
     });
 
     testWidgets('remove row', (tester) async {
@@ -53,14 +46,9 @@ void main() async {
         ['1', '2'],
         ['3', '4']
       ]);
-      final editor = tester.editor..insert(tableNode.node);
+      final editor = tester.editor..addNode(tableNode.node);
 
-      await editor.startTesting(
-        customBuilders: {
-          kTableType: TableNodeWidgetBuilder(),
-          kTableCellType: TableCellNodeWidgetBuilder()
-        },
-      );
+      await editor.startTesting();
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -73,14 +61,15 @@ void main() async {
       expect(
         tableNode.getCell(0, 0).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {
-              "insert": "2",
-            }
-          ]
+          "type": "paragraph",
+          "data": {
+            "delta": [
+              {"insert": "2"}
+            ]
+          }
         },
       );
+      await editor.dispose();
     });
 
     testWidgets('duplicate column', (tester) async {
@@ -88,14 +77,9 @@ void main() async {
         ['1', '2'],
         ['3', '4']
       ]);
-      final editor = tester.editor..insert(tableNode.node);
+      final editor = tester.editor..addNode(tableNode.node);
 
-      await editor.startTesting(
-        customBuilders: {
-          kTableType: TableNodeWidgetBuilder(),
-          kTableCellType: TableCellNodeWidgetBuilder()
-        },
-      );
+      await editor.startTesting();
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -111,6 +95,7 @@ void main() async {
           getCellNode(tableNode.node, 1, i)!.children.first.toJson(),
         );
       }
+      await editor.dispose();
     });
 
     testWidgets('duplicate row', (tester) async {
@@ -118,14 +103,9 @@ void main() async {
         ['1', '2'],
         ['3', '4']
       ]);
-      final editor = tester.editor..insert(tableNode.node);
+      final editor = tester.editor..addNode(tableNode.node);
 
-      await editor.startTesting(
-        customBuilders: {
-          kTableType: TableNodeWidgetBuilder(),
-          kTableCellType: TableCellNodeWidgetBuilder()
-        },
-      );
+      await editor.startTesting();
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
@@ -141,6 +121,7 @@ void main() async {
           getCellNode(tableNode.node, i, 1)!.children.first.toJson(),
         );
       }
+      await editor.dispose();
     });
   });
 }

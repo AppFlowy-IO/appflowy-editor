@@ -1,14 +1,15 @@
-import 'package:appflowy_editor/src/render/table/table_config.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/src/render/table/table_node.dart';
-import 'package:appflowy_editor/src/render/table/table_const.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_cell_block_component.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_block_component.dart';
 
 void main() {
   group('table_node.dart', () {
     test('fromJson', () {
       final tableNode = TableNode.fromJson({
-        'type': kTableType,
-        'attributes': {
+        'type': TableBlockKeys.type,
+        'data': {
           'colsLen': 2,
           'rowsLen': 2,
           'colDefaultWidth': 60,
@@ -17,70 +18,78 @@ void main() {
         },
         'children': [
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 0,
               'rowPosition': 0,
               'width': 35,
             },
             'children': [
               {
-                'type': 'text',
-                "attributes": {"subtype": "heading", "heading": "h2"},
-                "delta": [
-                  {"insert": "a"}
-                ]
+                'type': 'heading',
+                'data': {
+                  'level': 2,
+                  'delta': [
+                    {'insert': 'a'}
+                  ]
+                }
               },
             ]
           },
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 0,
               'rowPosition': 1,
             },
             'children': [
               {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "b",
-                    "attributes": {"bold": true}
-                  }
-                ]
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {
+                      'insert': 'b',
+                      'data': {'bold': true}
+                    }
+                  ]
+                }
               },
             ],
           },
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 1,
               'rowPosition': 0,
             },
             'children': [
               {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "c",
-                    "attributes": {"italic": true}
-                  }
-                ]
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {
+                      'insert': 'c',
+                      'data': {'italic': true}
+                    }
+                  ]
+                }
               },
             ],
           },
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 1,
               'rowPosition': 1,
             },
             'children': [
               {
-                "type": "text",
-                "delta": [
-                  {"insert": "d"}
-                ]
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {'insert': 'd'}
+                  ]
+                }
               }
             ]
           }
@@ -100,41 +109,47 @@ void main() {
       expect(
         tableNode.getCell(0, 0).children.first.toJson(),
         {
-          'type': 'text',
-          "attributes": {"subtype": "heading", "heading": "h2"},
-          "delta": [
-            {"insert": "a"}
-          ]
+          'type': 'heading',
+          'data': {
+            'level': 2,
+            'delta': [
+              {'insert': 'a'}
+            ]
+          }
         },
       );
       expect(
         tableNode.getCell(1, 0).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {
-              "insert": "c",
-              "attributes": {"italic": true}
-            }
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {
+                'insert': 'c',
+                'data': {'italic': true}
+              }
+            ]
+          }
         },
       );
 
       expect(
         tableNode.getCell(1, 1).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {"insert": "d"}
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {'insert': 'd'}
+            ]
+          }
         },
       );
     });
 
     test('fromJson - error when columns length mismatch', () {
       final jsonData = {
-        'type': kTableType,
-        'attributes': {
+        'type': TableBlockKeys.type,
+        'data': {
           'colsLen': 2,
           'rowsLen': 2,
           'colDefaultWidth': 60,
@@ -143,52 +158,58 @@ void main() {
         },
         'children': [
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 0,
               'rowPosition': 0,
               'width': 35,
             },
             'children': [
               {
-                'type': 'text',
-                "attributes": {"subtype": "heading", "heading": "h2"},
-                "delta": [
-                  {"insert": "a"}
-                ]
+                'type': 'heading',
+                'data': {
+                  'level': 2,
+                  'delta': [
+                    {'insert': 'a'}
+                  ]
+                }
               },
             ]
           },
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 1,
               'rowPosition': 0,
             },
             'children': [
               {
-                "type": "text",
-                "delta": [
-                  {
-                    "insert": "c",
-                    "attributes": {"italic": true}
-                  }
-                ]
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {
+                      'insert': 'c',
+                      'data': {'italic': true}
+                    }
+                  ]
+                }
               },
             ],
           },
           {
-            'type': kTableCellType,
-            'attributes': {
+            'type': TableCellBlockKeys.type,
+            'data': {
               'colPosition': 1,
               'rowPosition': 1,
             },
             'children': [
               {
-                "type": "text",
-                "delta": [
-                  {"insert": "d"}
-                ]
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {'insert': 'd'}
+                  ]
+                }
               }
             ]
           }
@@ -222,31 +243,37 @@ void main() {
       expect(
         tableNode.getCell(0, 0).children.first.toJson(),
         {
-          'type': 'text',
-          "delta": [
-            {"insert": "1"}
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {'insert': '1'}
+            ]
+          }
         },
       );
       expect(
         tableNode.getCell(1, 0).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {
-              "insert": "3",
-            }
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {
+                'insert': '3',
+              }
+            ]
+          }
         },
       );
 
       expect(
         tableNode.getCell(1, 1).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {"insert": "4"}
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {'insert': '4'}
+            ]
+          }
         },
       );
     });
@@ -276,12 +303,14 @@ void main() {
       expect(
         tableNode.getCell(1, 0).children.first.toJson(),
         {
-          "type": "text",
-          "delta": [
-            {
-              "insert": "3",
-            }
-          ]
+          'type': 'paragraph',
+          'data': {
+            'delta': [
+              {
+                'insert': '3',
+              }
+            ]
+          }
         },
       );
     });

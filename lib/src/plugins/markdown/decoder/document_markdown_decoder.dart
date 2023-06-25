@@ -11,29 +11,26 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     int path = 0;
     for (var i = 0; i < lines.length; i++) {
       late Node node;
-      if (lines[i].startsWith('```') &&
-          lines[i].endsWith('```') &&
-          lines[i].length > 3) {
-        node = _convertLineToNode(lines[i]);
-      } else if (lines[i].startsWith("```")) {
+      if (lines[i].startsWith("```") &&
+          (!lines[i].endsWith('```') || lines[i].length <= 3)) {
         // if the line starts with ``` it means there are chances it may be a code block
         // so it iterates through all the lines(using another loop) storing them in a
         // string variable codeblock until it finds another ``` which marks the end of code
-        // block it then sends this to convert _convertLineToNode function .
+        // block it then sends this to convert convertLineToNode function .
         // If we reach the end of lines and we still haven't found ``` then we will treat the
         // line starting with ``` as a regular paragraph and continue the main while loop from
         // a temporary pointer which stored the line number of the line with starting ```
-        String codeBlock = "";
-        var j = i;
+        String codeBlock = "${lines[i]}\n";
+        var j = i + 1;
         for (; j < lines.length && !lines[j].endsWith("```"); j++) {
           codeBlock += "${lines[j]}\n";
         }
 
         if (j == lines.length) {
-          node = _convertLineToNode(lines[i]);
+          node = convertLineToNode(lines[i]);
         } else {
           codeBlock += lines[j];
-          node = _convertLineToNode(codeBlock);
+          node = convertLineToNode(codeBlock);
           i = j;
         }
       } else if (i + 1 < lines.length &&
@@ -41,7 +38,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         node = TableMarkdownDecoder().convert(lines.sublist(i));
         i += node.attributes['rowsLen'] as int;
       } else {
-        node = _convertLineToNode(lines[i]);
+        node = convertLineToNode(lines[i]);
       }
 
       document.insert([path++], [node]);
@@ -50,7 +47,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return document;
   }
 
-  Node _convertLineToNode(String line) {
+  static Node convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
 
     // Heading Style
@@ -90,7 +87,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     } else if (line.isNotEmpty && RegExp('^-*').stringMatch(line) == line) {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
-      return _codeBlockNodeFromMarkdown(line, decoder);
+      return codeBlockNodeFromMarkdown(line, decoder);
     }
 
     if (line.isNotEmpty) {
@@ -104,7 +101,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     );
   }
 
-  Node _codeBlockNodeFromMarkdown(
+  static Node codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
   ) {

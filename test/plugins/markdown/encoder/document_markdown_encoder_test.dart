@@ -104,6 +104,94 @@ void main() async {
         }
       },
       {
+        "type": "table",
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 60,
+          "rowDefaultHeight": 50,
+          "colMinimumWidth": 30
+        },
+        "children": [
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 35
+            },
+            "children": [
+              {
+                "type": "heading",
+                "data": {
+                  "level": 2,
+                  "delta": [
+                    {"insert": "a"}
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "b",
+                      "attributes": {"bold": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {
+                      "insert": "c",
+                      "attributes": {"italic": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {"insert": "d"}
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "data": {
           "delta": []

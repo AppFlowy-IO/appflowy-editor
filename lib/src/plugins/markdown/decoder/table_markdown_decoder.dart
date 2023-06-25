@@ -1,9 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
 
 class TableMarkdownDecoder {
   Node convert(List<String> lines) {
-    late List<List<TextNode>> columns;
+    late List<List<Node>> columns;
 
     for (var i = 0; i < lines.length; i++) {
       // i = 1 is table mark (e.g "|-|-|")
@@ -21,7 +22,7 @@ class TableMarkdownDecoder {
       }
 
       for (var i = 0; i < row.length; i++) {
-        columns[i].add(TextNode(delta: DeltaMarkdownDecoder().convert(row[i])));
+        columns[i].add(DocumentMarkdownDecoder.convertLineToNode(row[i]));
       }
     }
 

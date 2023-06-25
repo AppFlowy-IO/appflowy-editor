@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/render/table/table_shortcut_event.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/arrow_keys_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/backspace_handler.dart';
 import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
@@ -351,11 +350,6 @@ List<ShortcutEvent> builtInShortcutEvents = [
     linuxCommand: 'alt+arrow right',
     handler: cursorRightWordMove,
   ),
-  enterInTableCell,
-  leftInTableCell,
-  rightInTableCell,
-  upInTableCell,
-  downInTableCell,
 
   // https://github.com/flutter/flutter/issues/104944
   // Workaround: Using space editing on the web platform often results in errors,
