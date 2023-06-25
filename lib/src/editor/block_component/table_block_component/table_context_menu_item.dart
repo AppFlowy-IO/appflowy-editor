@@ -167,7 +167,7 @@ void _dismissColorMenu() {
   _editorState = null;
 }
 
-List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
+/*List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
   final defaultBackgroundColor =
       editorState.editorStyle.backgroundColor ?? Colors.white;
   return [
@@ -208,4 +208,4 @@ List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
       name: AppFlowyEditorLocalizations.current.backgroundColorRed,
     ),
   ];
-}
+}*/
