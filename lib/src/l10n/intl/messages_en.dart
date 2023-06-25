@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addYourLink": MessageLookupByLibrary.simpleMessage("Add your link"),
+        "backgroundColor":
+            MessageLookupByLibrary.simpleMessage("Background Color"),
         "backgroundColorBlue":
             MessageLookupByLibrary.simpleMessage("Blue background"),
         "backgroundColorBrown":
@@ -44,13 +46,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "backgroundColorYellow":
             MessageLookupByLibrary.simpleMessage("Yellow background"),
         "bold": MessageLookupByLibrary.simpleMessage("Bold"),
-        "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted list"),
+        "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
         "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
         "customColor": MessageLookupByLibrary.simpleMessage("Custom color"),
+        "done": MessageLookupByLibrary.simpleMessage("Done"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Embed Code"),
         "fontColorBlue": MessageLookupByLibrary.simpleMessage("Blue"),
         "fontColorBrown": MessageLookupByLibrary.simpleMessage("Brown"),
@@ -81,7 +84,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "lightLightTint8": MessageLookupByLibrary.simpleMessage("Aqua"),
         "lightLightTint9": MessageLookupByLibrary.simpleMessage("Blue"),
         "link": MessageLookupByLibrary.simpleMessage("Link"),
-        "numberedList": MessageLookupByLibrary.simpleMessage("Numbered list"),
+        "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
+        "mobileHeading2": MessageLookupByLibrary.simpleMessage("Heading 2"),
+        "mobileHeading3": MessageLookupByLibrary.simpleMessage("Heading 3"),
+        "numberedList": MessageLookupByLibrary.simpleMessage("Numbered List"),
         "opacity": MessageLookupByLibrary.simpleMessage("Opacity"),
         "openLink": MessageLookupByLibrary.simpleMessage("Open link"),
         "quote": MessageLookupByLibrary.simpleMessage("Quote"),
@@ -90,7 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reset to default color"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
-        "textColor": MessageLookupByLibrary.simpleMessage("Text color"),
+        "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
         "tint2": MessageLookupByLibrary.simpleMessage("Tint 2"),
         "tint3": MessageLookupByLibrary.simpleMessage("Tint 3"),

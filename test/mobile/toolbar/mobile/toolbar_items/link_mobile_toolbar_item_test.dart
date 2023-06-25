@@ -22,11 +22,13 @@ void main() {
 
     await editor.updateSelection(selection);
     await tester.pumpWidget(
-      MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          linkMobileToolbarItem,
-        ],
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            linkMobileToolbarItem,
+          ],
+        ),
       ),
     );
 

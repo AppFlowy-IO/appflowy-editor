@@ -127,7 +127,7 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
                     ),
                   ),
                 ),
-                child: const Text('Done'),
+                child: Text(AppFlowyEditorLocalizations.current.done),
               ),
             )
             // TODO(yijing): edit link?
