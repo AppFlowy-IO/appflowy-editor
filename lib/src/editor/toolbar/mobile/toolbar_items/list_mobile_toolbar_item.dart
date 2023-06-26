@@ -26,12 +26,12 @@ class _ListMenuState extends State<_ListMenu> {
   final lists = [
     ListUnit(
       icon: AFMobileIcons.bulletedList,
-      label: 'Bulleted List',
+      label: AppFlowyEditorLocalizations.current.bulletedList,
       name: 'bulleted_list',
     ),
     ListUnit(
       icon: AFMobileIcons.numberedList,
-      label: 'Numbered List',
+      label: AppFlowyEditorLocalizations.current.numberedList,
       name: 'numbered_list',
     ),
   ];
@@ -45,7 +45,7 @@ class _ListMenuState extends State<_ListMenu> {
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(afMobileIcons: currentList.icon),
-        label: currentList.label,
+        label: Text(currentList.label),
         isSelected: isSelected,
         onPressed: () {
           setState(() {

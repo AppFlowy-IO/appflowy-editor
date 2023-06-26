@@ -10,12 +10,14 @@ void main() {
     const label = 'Add';
 
     await tester.pumpWidget(
-      MobileToolbarStyleTestWidget(
-        child: MobileToolbarItemMenuBtn(
-          onPressed: () {},
-          icon: icon,
-          label: label,
-          isSelected: false,
+      Material(
+        child: MobileToolbarStyleTestWidget(
+          child: MobileToolbarItemMenuBtn(
+            onPressed: () {},
+            icon: icon,
+            label: const Text(label),
+            isSelected: false,
+          ),
         ),
       ),
     );

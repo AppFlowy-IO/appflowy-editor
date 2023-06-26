@@ -1,47 +1,11 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
 import 'package:flutter/services.dart';
 
-abstract class TextInputService {
-  TextInputService({
-    required this.onInsert,
-    required this.onDelete,
-    required this.onReplace,
-    required this.onNonTextUpdate,
-    required this.onPerformAction,
-  });
-
-  Future<void> Function(TextEditingDeltaInsertion insertion) onInsert;
-  Future<void> Function(TextEditingDeltaDeletion deletion) onDelete;
-  Future<void> Function(TextEditingDeltaReplacement replacement) onReplace;
-  Future<void> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
-      onNonTextUpdate;
-  Future<void> Function(TextInputAction action) onPerformAction;
-
-  TextRange? get composingTextRange;
-  bool get attached;
-
-  void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
-
-  /// Updates the [TextEditingValue] of the text currently being edited.
-  ///
-  /// Note that if there are IME-related requirements,
-  ///   please config `composing` value within [TextEditingValue]
-  void attach(TextEditingValue textEditingValue);
-
-  /// Applies insertion, deletion and replacement
-  ///   to the text currently being edited.
-  ///
-  /// For more information, please check [TextEditingDelta].
-  Future<void> apply(List<TextEditingDelta> deltas);
-
-  /// Closes the editing state of the text currently being edited.
-  void close();
-}
-
-class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
-  DeltaTextInputService({
+class NonDeltaTextInputService extends TextInputService with TextInputClient {
+  NonDeltaTextInputService({
     required super.onInsert,
     required super.onDelete,
     required super.onReplace,
@@ -88,7 +52,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         const TextInputConfiguration(
-          enableDeltaModel: true,
+          enableDeltaModel: false,
           inputType: TextInputType.multiline,
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
@@ -108,27 +72,26 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   }
 
   @override
+  void updateEditingValue(TextEditingValue value) {
+    final deltas = getTextEditingDeltas(currentTextEditingValue, value);
+    apply(deltas);
+  }
+
+  @override
   void close() {
     composingTextRange = null;
     _textInputConnection?.close();
     _textInputConnection = null;
   }
 
-  @override
-  void updateEditingValueWithDeltas(List<TextEditingDelta> textEditingDeltas) {
-    Log.input.debug(
-      textEditingDeltas.map((delta) => delta.toString()).toString(),
-    );
-    apply(textEditingDeltas);
-  }
-
-  // TODO: support IME in linux / windows / ios / android
-  // Only support macOS now.
+  // TODO: support IME in linux / ios / android
+  // Only verify in macOS and Windows now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
     _textInputConnection
       ?..setEditableSizeAndTransform(size, transform)
-      ..setCaretRect(rect);
+      ..setCaretRect(rect)
+      ..setComposingRect(rect.translate(0, rect.height));
   }
 
   @override
@@ -153,9 +116,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void showToolbar() {}
-
-  @override
-  void updateEditingValue(TextEditingValue value) {}
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {}
@@ -209,6 +169,16 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
         );
       } else {
         composingTextRange = delta.composing;
+      }
+    } else {
+      final textEditingValue = TextEditingValue(
+        text: delta.oldText,
+        selection: delta.selection,
+        composing: delta.composing,
+      );
+      composingTextRange = delta.composing;
+      if (currentTextEditingValue != textEditingValue.format()) {
+        attach(textEditingValue);
       }
     }
   }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import '../../../../new/infra/testable_editor.dart';
-import '../test_helpers/mobile_app_with_toolbar_widget.dart';
+import '../../../../../new/infra/testable_editor.dart';
+import '../../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
-  testWidgets('textDecorationMobileToolbarItem', (WidgetTester tester) async {
+  testWidgets('textAndBackgroundColorMobileToolbarItem',
+      (WidgetTester tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
     await editor.startTesting();
@@ -22,99 +23,88 @@ void main() {
         child: MobileAppWithToolbarWidget(
           editorState: editor.editorState,
           toolbarItems: [
-            textDecorationMobileToolbarItem,
+            textAndBackgroundColorMobileToolbarItem,
           ],
         ),
       ),
     );
 
-    // Tap text decoration toolbar item
+    // Tap color toolbar item
     await tester.tap(find.byType(IconButton).first);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-    // Show its menu and it has 4 buttons
+    // Show its menu and it has a tabbar to switch between text and background color
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text(AppFlowyEditorLocalizations.current.bold), findsOneWidget);
     expect(
-      find.text(AppFlowyEditorLocalizations.current.italic),
+      find.text(AppFlowyEditorLocalizations.current.textColor),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.underline),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppFlowyEditorLocalizations.current.strikethrough),
+      find.text(AppFlowyEditorLocalizations.current.backgroundColor),
       findsOneWidget,
     );
 
-    // Test bold button
-    await tester.tap(
-      find.widgetWithText(
-        MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.bold,
-      ),
-    );
+    // Test text color tab
+    // It has 9 buttons(default setting is clear + 8 colors)
+    expect(find.byType(ClearColorButton), findsOneWidget);
+    expect(find.byType(ColorButton), findsNWidgets(8));
+    // Tap red color button
+    await tester.tap(find.widgetWithText(ColorButton, 'Red'));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
-    final node = editor.editorState.getNodeAtPath([1]);
+    var node = editor.editorState.getNodeAtPath([1]);
+    // Check if the text color is red
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) => element.attributes?[FlowyRichTextKeys.bold] == true,
+              (element) =>
+                  element.attributes?[FlowyRichTextKeys.textColor] == '#FF0000',
             );
       }),
       true,
     );
-
-    // Test Italic button
-    await tester.tap(
-      find.widgetWithText(
-        MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.italic,
-      ),
-    );
+    // Tap clear color button
+    await tester.tap(find.byType(ClearColorButton));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.italic] == true,
+                  element.attributes?[FlowyRichTextKeys.textColor] == null,
             );
       }),
       true,
     );
 
-    // Test Underline button
+    // Test background color tab
     await tester.tap(
       find.widgetWithText(
-        MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.underline,
+        TabBar,
+        AppFlowyEditorLocalizations.current.backgroundColor,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
+    // Tap red color button
+    await tester.tap(find.byType(ColorButton).last);
+    await tester.pumpAndSettle(const Duration(milliseconds: 500));
+    // Check if the background color is red
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.underline] == true,
+                  element.attributes?[FlowyRichTextKeys.highlightColor] ==
+                  '#FF0000',
             );
       }),
       true,
     );
-
-    // Test Strikethrough button
-    await tester.tap(
-      find.widgetWithText(
-        MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.strikethrough,
-      ),
-    );
+    // Tap clear color button
+    await tester.tap(find.byType(ClearColorButton));
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.strikethrough] == true,
+                  element.attributes?[FlowyRichTextKeys.highlightColor] == null,
             );
       }),
       true,

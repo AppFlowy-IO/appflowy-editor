@@ -9,21 +9,107 @@ class MobileToolbar extends StatelessWidget {
     // default MobileToolbarStyle parameters
     this.backgroundColor = Colors.white,
     this.foregroundColor = const Color(0xff676666),
+    this.clearDiagonalLineColor = const Color(0xffB3261E),
     this.itemHighlightColor = const Color(0xff1F71AC),
     this.itemOutlineColor = const Color(0xFFE3E3E3),
+    this.tabbarSelectedBackgroundColor = const Color(0x23808080),
+    this.tabbarSelectedForegroundColor = Colors.black,
     this.toolbarHeight = 50.0,
     this.borderRadius = 6.0,
-  });
+    this.buttonHeight = 40.0,
+    this.buttonSpacing = 8.0,
+    this.buttonBorderWidth = 1.0,
+    this.buttonSelectedBorderWidth = 2.0,
+    this.textColorOptions = const [
+      ColorOption(
+        colorHex: '#808080',
+        name: 'Gray',
+      ),
+      ColorOption(
+        colorHex: '#A52A2A',
+        name: 'Brown',
+      ),
+      ColorOption(
+        colorHex: '#FFFF00',
+        name: 'Yellow',
+      ),
+      ColorOption(
+        colorHex: '#008000',
+        name: 'Green',
+      ),
+      ColorOption(
+        colorHex: '#0000FF',
+        name: 'Blue',
+      ),
+      ColorOption(
+        colorHex: '#800080',
+        name: 'Purple',
+      ),
+      ColorOption(
+        colorHex: '#FFC0CB',
+        name: 'Pink',
+      ),
+      ColorOption(
+        colorHex: '#FF0000',
+        name: 'Red',
+      ),
+    ],
+    this.backgroundColorOptions = const [
+      ColorOption(
+        colorHex: '#4D4D4D',
+        name: 'Gray',
+      ),
+      ColorOption(
+        colorHex: '#A52A2A',
+        name: 'Brown',
+      ),
+      ColorOption(
+        colorHex: '#FFFF00',
+        name: 'Yellow',
+      ),
+      ColorOption(
+        colorHex: '#008000',
+        name: 'Green',
+      ),
+      ColorOption(
+        colorHex: '#0000FF',
+        name: 'Blue',
+      ),
+      ColorOption(
+        colorHex: '#800080',
+        name: 'Purple',
+      ),
+      ColorOption(
+        colorHex: '#FFC0CB',
+        name: 'Pink',
+      ),
+      ColorOption(
+        colorHex: '#FF0000',
+        name: 'Red',
+      ),
+    ],
+  }) : assert(
+          textColorOptions.length > 0 && backgroundColorOptions.length > 0,
+        );
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
   // MobileToolbarStyle parameters
   final Color backgroundColor;
   final Color foregroundColor;
+  final Color clearDiagonalLineColor;
   final Color itemHighlightColor;
   final Color itemOutlineColor;
+  final Color tabbarSelectedBackgroundColor;
+  final Color tabbarSelectedForegroundColor;
   final double toolbarHeight;
   final double borderRadius;
+  final double buttonHeight;
+  final double buttonSpacing;
+  final double buttonBorderWidth;
+  final double buttonSelectedBorderWidth;
+  final List<ColorOption> textColorOptions;
+  final List<ColorOption> backgroundColorOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +122,19 @@ class MobileToolbar extends StatelessWidget {
         return MobileToolbarStyle(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
+          clearDiagonalLineColor: clearDiagonalLineColor,
           itemHighlightColor: itemHighlightColor,
           itemOutlineColor: itemOutlineColor,
+          tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+          tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
           toolbarHeight: toolbarHeight,
           borderRadius: borderRadius,
+          buttonHeight: buttonHeight,
+          buttonSpacing: buttonSpacing,
+          buttonBorderWidth: buttonBorderWidth,
+          buttonSelectedBorderWidth: buttonSelectedBorderWidth,
+          textColorOptions: textColorOptions,
+          backgroundColorOptions: backgroundColorOptions,
           child: MobileToolbarWidget(
             // Use selection as key to force rebuild toolbar widget when selection changed.
             key: ValueKey(selection),
@@ -140,15 +235,12 @@ class _CloseKeyboardBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: IconButton(
-        onPressed: () {
-          // clear selection to close keyboard and toolbar
-          editorState.selectionService.updateSelection(null);
-        },
-        icon: const Icon(Icons.keyboard_hide),
-      ),
+    return IconButton(
+      onPressed: () {
+        // clear selection to close keyboard and toolbar
+        editorState.selectionService.updateSelection(null);
+      },
+      icon: const Icon(Icons.keyboard_hide),
     );
   }
 }
@@ -172,22 +264,19 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toobarItem = toolbarItems[index];
-        return Material(
-          color: Colors.transparent,
-          child: IconButton(
-            icon: toobarItem.itemIcon,
-            onPressed: () {
-              if (toobarItem.hasMenu) {
-                // open /close current item menu through its parent widget(MobileToolbarWidget)
-                itemOnPressed.call(index);
-              } else {
-                toolbarItems[index].actionHandler?.call(
-                      editorState,
-                      selection,
-                    );
-              }
-            },
-          ),
+        return IconButton(
+          icon: toobarItem.itemIcon,
+          onPressed: () {
+            if (toobarItem.hasMenu) {
+              // open /close current item menu through its parent widget(MobileToolbarWidget)
+              itemOnPressed.call(index);
+            } else {
+              toolbarItems[index].actionHandler?.call(
+                    editorState,
+                    selection,
+                  );
+            }
+          },
         );
       },
       itemCount: toolbarItems.length,
