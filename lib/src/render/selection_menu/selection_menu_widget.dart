@@ -309,7 +309,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     List<Widget> itemWidgets = [];
 
     // apply item count filter
-    
+
     if (itemCountFilter > 0) {
       items = items.take(itemCountFilter).toList();
     }
