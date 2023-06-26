@@ -128,7 +128,7 @@ class SelectionMenu extends SelectionMenuService {
                         }),
                       maxItemInRow: 5,
                       editorState: editorState,
-                      itemCountFilter: itemCountFilter!,
+                      itemCountFilter: itemCountFilter,
                       menuService: this,
                       onExit: () {
                         dismiss();
