@@ -29,23 +29,24 @@ class _HeadingMenuState extends State<_HeadingMenu> {
   final headings = [
     HeadingUnit(
       icon: AFMobileIcons.h1,
-      label: 'Heading 1',
+      label: AppFlowyEditorLocalizations.current.mobileHeading1,
       level: 1,
     ),
     HeadingUnit(
       icon: AFMobileIcons.h2,
-      label: 'Heading 2',
+      label: AppFlowyEditorLocalizations.current.mobileHeading2,
       level: 2,
     ),
     HeadingUnit(
       icon: AFMobileIcons.h3,
-      label: 'Heading 3',
+      label: AppFlowyEditorLocalizations.current.mobileHeading3,
       level: 3,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarStyle.of(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
       final node =
@@ -55,7 +56,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
-        label: currentHeading.label,
+        label: Text(currentHeading.label),
         isSelected: isSelected,
         onPressed: () {
           setState(() {
@@ -78,8 +79,12 @@ class _HeadingMenuState extends State<_HeadingMenu> {
       );
     }).toList();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GridView(
+      shrinkWrap: true,
+      gridDelegate: buildMobileToolbarMenuGridDelegate(
+        mobileToolbarStyle: style,
+        crossAxisCount: 3,
+      ),
       children: btnList,
     );
   }

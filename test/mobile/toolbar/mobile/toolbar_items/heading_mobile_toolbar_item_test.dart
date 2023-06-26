@@ -18,11 +18,13 @@ void main() {
 
     await editor.updateSelection(selection);
     await tester.pumpWidget(
-      MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          headingMobileToolbarItem,
-        ],
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            headingMobileToolbarItem,
+          ],
+        ),
       ),
     );
 
@@ -32,39 +34,63 @@ void main() {
 
     // Show its menu and it has 3 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text('Heading 1'), findsOneWidget);
-    expect(find.text('Heading 2'), findsOneWidget);
-    expect(find.text('Heading 3'), findsOneWidget);
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading1),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading2),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.mobileHeading3),
+      findsOneWidget,
+    );
 
     // Test Heading 1 button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Heading 1'));
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading1,
+      ),
+    );
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     expect(
-      node?.type == 'heading' && node?.attributes['level'] == 1,
+      node?.type == HeadingBlockKeys.type &&
+          node?.attributes[HeadingBlockKeys.level] == 1,
       true,
     );
 
     // Test Heading 2 button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Heading 2'));
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading2,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'heading' && node?.attributes['level'] == 2,
+      node?.type == HeadingBlockKeys.type &&
+          node?.attributes[HeadingBlockKeys.level] == 2,
       true,
     );
 
     // Test Heading 3 button
-    await tester
-        .tap(find.widgetWithText(MobileToolbarItemMenuBtn, 'Heading 3'));
+    await tester.tap(
+      find.widgetWithText(
+        MobileToolbarItemMenuBtn,
+        AppFlowyEditorLocalizations.current.mobileHeading3,
+      ),
+    );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'heading' && node?.attributes['level'] == 3,
+      node?.type == HeadingBlockKeys.type &&
+          node?.attributes[HeadingBlockKeys.level] == 3,
       true,
     );
   });
