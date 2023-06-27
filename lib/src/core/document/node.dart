@@ -84,6 +84,10 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   final key = GlobalKey();
   final layerLink = LayerLink();
 
+  void notify() {
+    notifyListeners();
+  }
+
   /// Update the attributes of the node.
   ///
   ///
