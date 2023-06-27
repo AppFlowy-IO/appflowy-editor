@@ -90,25 +90,12 @@ void main() async {
       final delta = Delta(
         operations: [
           TextInsert(
-            '<u>',
-            attributes: {
-              BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.bold: true,
-            },
-          ),
-          TextInsert(
             'Welcome',
             attributes: {
               BuiltInAttributeKey.code: true,
               BuiltInAttributeKey.italic: true,
               BuiltInAttributeKey.bold: true,
-            },
-          ),
-          TextInsert(
-            '</u>',
-            attributes: {
-              BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.bold: true,
+              BuiltInAttributeKey.underline: true,
             },
           ),
           TextInsert(' '),
