@@ -23,9 +23,17 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
   @override
-  TextEditingValue? currentTextEditingValue;
+  @override
+  TextEditingValue? get currentTextEditingValue => _currentTextEditingValue;
+
+  TextEditingValue? _currentTextEditingValue;
+  set currentTextEditingValue(TextEditingValue? newValue) {
+    _currentTextEditingValue = newValue;
+  }
 
   TextInputConnection? _textInputConnection;
+
+  final String debounceKey = 'updateEditingValue';
 
   @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
@@ -60,6 +68,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       );
     }
 
+    Debounce.cancel(debounceKey);
+
     final formattedValue = textEditingValue.format();
     _textInputConnection!
       ..setEditingState(formattedValue)
@@ -74,11 +84,23 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void updateEditingValue(TextEditingValue value) {
     final deltas = getTextEditingDeltas(currentTextEditingValue, value);
-    apply(deltas);
+    // On mobile, the IME will send a lot of updateEditingValue events, so we
+    // need to debounce it to combine them together.
+    Debounce.debounce(
+      debounceKey,
+      PlatformExtension.isMobile
+          ? const Duration(milliseconds: 10)
+          : Duration.zero,
+      () {
+        currentTextEditingValue = value;
+        apply(deltas);
+      },
+    );
   }
 
   @override
   void close() {
+    currentTextEditingValue = null;
     composingTextRange = null;
     _textInputConnection?.close();
     _textInputConnection = null;
@@ -170,22 +192,12 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       } else {
         composingTextRange = delta.composing;
       }
-    } else {
-      final textEditingValue = TextEditingValue(
-        text: delta.oldText,
-        selection: delta.selection,
-        composing: delta.composing,
-      );
-      composingTextRange = delta.composing;
-      if (currentTextEditingValue != textEditingValue.format()) {
-        attach(textEditingValue);
-      }
     }
   }
 }
 
 const String _whitespace = ' ';
-const int _len = 1;
+const int _len = _whitespace.length;
 
 extension on TextEditingValue {
   // The IME will not report the backspace button if the cursor is at the beginning of the text.
