@@ -23,6 +23,7 @@ class SelectionMenu extends SelectionMenuService {
     required this.selectionMenuItems,
     this.deleteSlashByDefault = true,
     this.style = SelectionMenuStyle.light,
+    this.itemCountFilter = 0,
   });
 
   final BuildContext context;
@@ -38,6 +39,7 @@ class SelectionMenu extends SelectionMenuService {
   Offset _offset = Offset.zero;
   Alignment _alignment = Alignment.topLeft;
   bool showBelow = true;
+  int itemCountFilter;
 
   @override
   void dismiss() {
@@ -126,6 +128,7 @@ class SelectionMenu extends SelectionMenuService {
                         }),
                       maxItemInRow: 5,
                       editorState: editorState,
+                      itemCountFilter: itemCountFilter,
                       menuService: this,
                       onExit: () {
                         dismiss();
