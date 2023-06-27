@@ -55,6 +55,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void attach(TextEditingValue textEditingValue) {
+    final formattedValue = textEditingValue.format();
+    if (currentTextEditingValue == formattedValue) {
+      return;
+    }
+
     if (_textInputConnection == null ||
         _textInputConnection!.attached == false) {
       _textInputConnection = TextInput.attach(
@@ -70,7 +75,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     Debounce.cancel(debounceKey);
 
-    final formattedValue = textEditingValue.format();
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
@@ -83,6 +87,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
+    if (currentTextEditingValue == value) {
+      return;
+    }
     final deltas = getTextEditingDeltas(currentTextEditingValue, value);
     // On mobile, the IME will send a lot of updateEditingValue events, so we
     // need to debounce it to combine them together.
