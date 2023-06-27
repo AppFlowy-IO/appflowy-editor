@@ -249,6 +249,11 @@ class EditorState {
     return completer.future;
   }
 
+  /// Force rebuild the editor.
+  void reload() {
+    document.root.notify();
+  }
+
   /// get nodes in selection
   ///
   /// if selection is backward, return nodes in order
