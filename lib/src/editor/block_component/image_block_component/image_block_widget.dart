@@ -138,34 +138,46 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
   }
 
   Widget _buildResizableImage(BuildContext context) {
-    final image = widget.imageSourceType == ImageSourceType.network
-        ? Image.network(
-            widget.src,
-            width: _imageWidth == null ? null : _imageWidth! - _distance,
-            gaplessPlayback: true,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null ||
-                  loadingProgress.cumulativeBytesLoaded ==
-                      loadingProgress.expectedTotalBytes) {
-                return child;
-              }
+    dynamic image;
+    if (widget.imageSourceType == ImageSourceType.network) {
+      image = Image.network(
+        widget.src,
+        width: _imageWidth == null ? null : _imageWidth! - _distance,
+        gaplessPlayback: true,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null ||
+              loadingProgress.cumulativeBytesLoaded ==
+                  loadingProgress.expectedTotalBytes) {
+            return child;
+          }
 
-              return _buildLoading(context);
-            },
-            errorBuilder: (context, error, stackTrace) => _buildError(context),
-          )
-        : Image.file(
-            File(widget.src),
-            width: _imageWidth == null ? null : _imageWidth! - _distance,
-            gaplessPlayback: true,
-            errorBuilder: (context, error, stackTrace) => _buildError(context),
-          );
+          return _buildLoading(context);
+        },
+        errorBuilder: (context, error, stackTrace) => _buildError(context),
+      );
 
-    if (_imageWidth == null) {
-      _imageStream = image.image.resolve(const ImageConfiguration())
-        ..addListener(_imageStreamListener);
+      if (_imageWidth == null) {
+        _imageStream = image.image.resolve(const ImageConfiguration())
+          ..addListener(_imageStreamListener);
+      }
+    } else {
+      File imageFile = File(widget.src);
+      if (imageFile.existsSync()) {
+        image = Image.file(
+          imageFile,
+          width: _imageWidth == null ? null : _imageWidth! - _distance,
+          gaplessPlayback: true,
+          errorBuilder: (context, error, stackTrace) => _buildError(context),
+        );
+
+        if (_imageWidth == null) {
+          _imageStream = image.image.resolve(const ImageConfiguration())
+            ..addListener(_imageStreamListener);
+        }
+      } else {
+        image = _buildError(context);
+      }
     }
-
     return Stack(
       children: [
         image,

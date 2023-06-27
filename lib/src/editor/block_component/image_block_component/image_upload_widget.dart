@@ -1,7 +1,14 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart' as fp;
 import '../../util/file_picker/file_picker_impl.dart';
+
+enum ImageFromFileStatus {
+  notSelected,
+  selected,
+}
 
 void showImageMenu(
   OverlayState container,
@@ -63,7 +70,9 @@ class UploadImageMenu extends StatefulWidget {
 
 class _UploadImageMenuState extends State<UploadImageMenu> {
   static const allowedExtensions = ['jpg', 'png', 'jpeg'];
-
+  final ValueNotifier<ImageFromFileStatus> _selectedFileStatus =
+      ValueNotifier<ImageFromFileStatus>(ImageFromFileStatus.notSelected);
+  fp.PlatformFile? _selectedFile;
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _filePicker = FilePicker();
@@ -83,6 +92,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.width,
+      height: 350,
       padding: const EdgeInsets.all(24.0),
       decoration: BoxDecoration(
         color: widget.backgroundColor,
@@ -95,55 +105,36 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         ],
         // borderRadius: BorderRadius.circular(6.0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          const SizedBox(height: 16.0),
-          _buildInput(),
-          const SizedBox(height: 18.0),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(child: _buildUploadButton(context)),
-              const Text('or'),
-              Flexible(child: _buildSelectFileButton(context)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSelectFileButton(BuildContext context) {
-    return SizedBox(
-      width: 170,
-      height: 48,
-      child: TextButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+      child: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 300,
+                child: TabBar(
+                  tabs: [
+                    Tab(text: 'Upload Image'),
+                    Tab(text: 'URL Image'),
+                  ],
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Color(0xff00BCF0),
+                  dividerColor: Colors.transparent,
+                ),
+              ),
             ),
-          ),
-        ),
-        onPressed: () async {
-          final result = await _filePicker.pickFiles(
-            dialogTitle: 'Select an image',
-            allowMultiple: false,
-            type: fp.FileType.image,
-            allowedExtensions: allowedExtensions,
-          );
-          if (result != null) {
-            final file = result.files.first;
-            widget.onUpload(file.path!, imageSourceType: ImageSourceType.file);
-          }
-        },
-        child: const Text(
-          'Pick a File',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+            Expanded(
+              child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildFileTab(context),
+                  _buildUrlTab(context),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -190,7 +181,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 
-  Widget _buildUploadButton(BuildContext context) {
+  Widget _buildUploadButton(
+    BuildContext context,
+    ImageSourceType imageSourceType,
+  ) {
     return SizedBox(
       width: 170,
       height: 48,
@@ -203,14 +197,113 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             ),
           ),
         ),
-        onPressed: () => widget.onUpload(
-          _textEditingController.text,
-          imageSourceType: ImageSourceType.network,
-        ),
+        onPressed: () {
+          String? filePath;
+          if (imageSourceType == ImageSourceType.network) {
+            filePath = _textEditingController.text;
+          } else if (imageSourceType == ImageSourceType.file) {
+            filePath = _selectedFile?.path;
+          }
+          if (filePath != null && filePath.isNotEmpty) {
+            widget.onUpload(filePath, imageSourceType: imageSourceType);
+          }
+        },
         child: const Text(
           'Upload',
           style: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
+      ),
+    );
+  }
+
+  Widget _buildUrlTab(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeader(context),
+        const SizedBox(height: 16.0),
+        _buildInput(),
+        const SizedBox(height: 18.0),
+        _buildUploadButton(
+          context,
+          ImageSourceType.network,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFileTab(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16.0),
+        _buildFileUploadContainer(context),
+        const SizedBox(height: 18.0),
+        Align(
+          alignment: Alignment.centerRight,
+          child: _buildUploadButton(
+            context,
+            ImageSourceType.file,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildFileUploadContainer(BuildContext context) {
+    return Expanded(
+      child: ValueListenableBuilder<ImageFromFileStatus>(
+        valueListenable: _selectedFileStatus,
+        builder: (context, selectedFileStatus, child) {
+          return GestureDetector(
+            onTap: selectedFileStatus == ImageFromFileStatus.selected
+                ? null
+                : () async {
+                    final result = await _filePicker.pickFiles(
+                      dialogTitle: 'Select an image',
+                      allowMultiple: false,
+                      type: fp.FileType.image,
+                      allowedExtensions: allowedExtensions,
+                    );
+                    if (result != null && result.files.isNotEmpty) {
+                      _selectedFile = result.files.first;
+                      _selectedFileStatus.value = ImageFromFileStatus.selected;
+                    }
+                  },
+            child: Container(
+              height: 80,
+              margin: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: selectedFileStatus == ImageFromFileStatus.selected
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Image.file(
+                        File(
+                          _selectedFile!.path!,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.image, size: 48.0, color: Colors.grey),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Pick a file',
+                            style:
+                                TextStyle(fontSize: 14.0, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          );
+        },
       ),
     );
   }
