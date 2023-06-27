@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/underline_syntax.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class DeltaMarkdownDecoder extends Converter<String, Delta>
@@ -12,8 +13,12 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
 
   @override
   Delta convert(String input) {
+    final inlineSyntaxes = [
+      UnderlineInlineSyntax(),
+    ];
     final document = md.Document(
       extensionSet: md.ExtensionSet.gitHubWeb,
+      inlineSyntaxes: inlineSyntaxes,
       encodeHtml: false,
     ).parseInline(input);
     for (final node in document) {
@@ -49,6 +54,8 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.strikethrough] = true;
     } else if (element.tag == 'a') {
       _attributes[BuiltInAttributeKey.href] = element.attributes['href'];
+    } else if (element.tag == 'u') {
+      _attributes[BuiltInAttributeKey.underline] = true;
     }
   }
 
@@ -63,6 +70,8 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes.remove(BuiltInAttributeKey.strikethrough);
     } else if (element.tag == 'a') {
       _attributes.remove(BuiltInAttributeKey.href);
+    } else if (element.tag == 'u') {
+      _attributes.remove(BuiltInAttributeKey.underline);
     }
   }
 }
