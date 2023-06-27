@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/image_block_component/base64_image.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart' as fp;
 import '../../util/file_picker/file_picker_impl.dart';
+import 'package:file_picker/file_picker.dart' as fp;
 
 enum ImageFromFileStatus {
   notSelected,
@@ -22,10 +23,10 @@ void showImageMenu(
   late final OverlayEntry imageMenuEntry;
 
   void insertImage(
-    String text, {
+    String src, {
     ImageSourceType imageSourceType = ImageSourceType.network,
   }) {
-    editorState.insertImageNode(text, imageSourceType);
+    editorState.insertImageNode(src, imageSourceType);
     menuService.dismiss();
     imageMenuEntry.remove();
     keepEditorFocusNotifier.value -= 1;
@@ -70,12 +71,13 @@ class UploadImageMenu extends StatefulWidget {
 
 class _UploadImageMenuState extends State<UploadImageMenu> {
   static const allowedExtensions = ['jpg', 'png', 'jpeg'];
-  final ValueNotifier<ImageFromFileStatus> _selectedFileStatus =
-      ValueNotifier<ImageFromFileStatus>(ImageFromFileStatus.notSelected);
-  fp.PlatformFile? _selectedFile;
+
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _filePicker = FilePicker();
+
+  String? _localImagePath;
+
   @override
   void initState() {
     super.initState();
@@ -197,15 +199,19 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             ),
           ),
         ),
-        onPressed: () {
-          String? filePath;
+        onPressed: () async {
           if (imageSourceType == ImageSourceType.network) {
-            filePath = _textEditingController.text;
-          } else if (imageSourceType == ImageSourceType.file) {
-            filePath = _selectedFile?.path;
-          }
-          if (filePath != null && filePath.isNotEmpty) {
-            widget.onUpload(filePath, imageSourceType: imageSourceType);
+            widget.onUpload(
+              _textEditingController.text,
+              imageSourceType: imageSourceType,
+            );
+          } else if (imageSourceType == ImageSourceType.file &&
+              _localImagePath != null) {
+            final content = await base64StringFromImage(_localImagePath!);
+            widget.onUpload(
+              content,
+              imageSourceType: imageSourceType,
+            );
           }
         },
         child: const Text(
@@ -252,58 +258,51 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   Widget _buildFileUploadContainer(BuildContext context) {
     return Expanded(
-      child: ValueListenableBuilder<ImageFromFileStatus>(
-        valueListenable: _selectedFileStatus,
-        builder: (context, selectedFileStatus, child) {
-          return GestureDetector(
-            onTap: selectedFileStatus == ImageFromFileStatus.selected
-                ? null
-                : () async {
-                    final result = await _filePicker.pickFiles(
-                      dialogTitle: 'Select an image',
-                      allowMultiple: false,
-                      type: fp.FileType.image,
-                      allowedExtensions: allowedExtensions,
-                    );
-                    if (result != null && result.files.isNotEmpty) {
-                      _selectedFile = result.files.first;
-                      _selectedFileStatus.value = ImageFromFileStatus.selected;
-                    }
-                  },
-            child: Container(
-              height: 80,
-              margin: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: selectedFileStatus == ImageFromFileStatus.selected
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Image.file(
-                        File(
-                          _selectedFile!.path!,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image, size: 48.0, color: Colors.grey),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Pick a file',
-                            style:
-                                TextStyle(fontSize: 14.0, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
+      child: GestureDetector(
+        onTap: () async {
+          final result = await _filePicker.pickFiles(
+            dialogTitle: 'Select an image',
+            allowMultiple: false,
+            type: fp.FileType.image,
+            allowedExtensions: allowedExtensions,
           );
+          if (result != null && result.files.isNotEmpty) {
+            setState(() {
+              _localImagePath = result.files.first.path;
+            });
+          }
         },
+        child: Container(
+          height: 80,
+          margin: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: _localImagePath != null
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Image.file(
+                    File(
+                      _localImagePath!,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.image, size: 48.0, color: Colors.grey),
+                      SizedBox(height: 8.0),
+                      Text(
+                        'Pick a file',
+                        style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+        ),
       ),
     );
   }
@@ -324,11 +323,16 @@ extension on EditorState {
     }
     final transaction = this.transaction;
     // if the current node is empty paragraph, replace it with image node
-    if (node.type == 'paragraph' && (node.delta?.isEmpty ?? false)) {
+    if (node.type == ParagraphBlockKeys.type &&
+        (node.delta?.isEmpty ?? false)) {
       transaction
         ..insertNode(
           node.path,
-          imageNode(url: src, imageSourceType: imageSourceType),
+          imageNode(
+            url: imageSourceType == ImageSourceType.network ? src : null,
+            content: imageSourceType == ImageSourceType.file ? src : null,
+            imageSourceType: imageSourceType,
+          ),
         )
         ..deleteNode(node);
     } else {
