@@ -5,7 +5,7 @@ class UnderlineInlineSyntax extends md.InlineSyntax {
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-    final text = parser.source.substring(match.start + 3, match.end - 4);
+    final text = match.group(1) ?? '';
     List<md.Node> nestedNodes = md.InlineParser(text, parser.document).parse();
     parser.addNode(md.Element('u', nestedNodes));
     return true;
