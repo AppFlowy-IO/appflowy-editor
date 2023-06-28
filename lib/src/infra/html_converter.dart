@@ -321,9 +321,14 @@ class HTMLToNodesConverter {
   }
 
   Node _handleImage(html.Element element) {
-    final src = element.attributes['src'] ?? '';
+    final src = element.attributes['src'];
+    if (src == null || src.isEmpty || !src.startsWith('http')) {
+      return paragraphNode(); // return empty paragraph
+    }
+    // only support network image
     return imageNode(
       url: src,
+      imageSourceType: ImageSourceType.network,
     );
   }
 
