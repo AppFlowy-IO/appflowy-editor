@@ -18,7 +18,7 @@ final List<ToolbarItem> markdownFormatItems = [
     id: 'editor.italic',
     name: 'italic',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.bold}${shortcutTooltips('⌘ + I', 'CTRL + I', 'CTRL + I')}',
+        '${AppFlowyEditorLocalizations.current.italic}${shortcutTooltips('⌘ + I', 'CTRL + I', 'CTRL + I')}',
   ),
   _FormatToolbarItem(
     id: 'editor.strikethrough',
