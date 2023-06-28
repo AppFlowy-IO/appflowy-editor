@@ -62,8 +62,10 @@ class _TableColState extends State<TableCol> {
               iconBuilder: ({size, color}) {
                 return Transform.rotate(
                   angle: math.pi / 2,
-                  child: const Icon(
+                  child: Icon(
                     Icons.drag_indicator,
+                    size: size,
+                    color: color,
                   ),
                 );
               },

@@ -107,8 +107,10 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
           alignment: Alignment.centerLeft,
           height: context.select((Node n) => n.attributes['height']),
           iconBuilder: ({size, color}) {
-            return const Icon(
+            return Icon(
               Icons.drag_indicator,
+              size: size,
+              color: color,
             );
           },
           dir: TableDirection.row,
