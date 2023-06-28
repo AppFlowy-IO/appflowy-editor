@@ -20,7 +20,15 @@ class _HeadingToolbarItem extends ToolbarItem {
             return IconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
-              tooltip: AppFlowyEditorLocalizations.current.heading1,
+              tooltip: (() {
+                if (level == 1) {
+                  return AppFlowyEditorLocalizations.current.heading1;
+                } else if (level == 2) {
+                  return AppFlowyEditorLocalizations.current.heading2;
+                } else {
+                  return AppFlowyEditorLocalizations.current.heading3;
+                }
+              }()),
               onPressed: () => editorState.formatNode(
                 selection,
                 (node) => node.copyWith(
