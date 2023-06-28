@@ -91,8 +91,8 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
           height: context.select((Node n) => n.attributes['height']),
           transform: context.select((Node n) {
             final int col = n.attributes['colPosition'];
-            double left = 20.0 + n.attributes['width'] / 2;
-            for (var i = 0; i <= col; i++) {
+            double left = -20.0;
+            for (var i = 0; i < col; i++) {
               left -=
                   getCellNode(n.parent!, i, 0)?.attributes['width'] as double;
               left -= n.parent!.attributes['tableBorderWidth'] ??
