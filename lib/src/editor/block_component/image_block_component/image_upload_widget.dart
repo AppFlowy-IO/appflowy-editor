@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection_menu/selection_menu.dart';
 import 'package:appflowy_editor/src/editor/block_component/image_block_component/base64_image.dart';
 import 'package:flutter/material.dart';
 import '../../util/file_picker/file_picker_impl.dart';

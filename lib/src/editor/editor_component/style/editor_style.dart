@@ -2,14 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 import 'package:flutter/material.dart';
 
-Iterable<ThemeExtension<dynamic>> get lightEditorStyleExtension => [
-      EditorStyle.light,
-    ];
-
-Iterable<ThemeExtension<dynamic>> get darkEditorStyleExtension => [
-      EditorStyle.dark,
-    ];
-
 class EditorStyle extends ThemeExtension<EditorStyle> {
   // Editor styles
   final EdgeInsets? padding;
@@ -318,64 +310,4 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   static EditorStyle? of(BuildContext context) {
     return Theme.of(context).extension<EditorStyle>();
   }
-
-  static final light = EditorStyle(
-    padding: PlatformExtension.isMobile
-        ? const EdgeInsets.symmetric(horizontal: 20)
-        : const EdgeInsets.symmetric(horizontal: 200),
-    backgroundColor: Colors.white,
-    cursorColor: const Color(0xFF00BCF0),
-    textStyleConfiguration: const TextStyleConfiguration(
-      text: TextStyle(fontSize: 16, color: Colors.black),
-    ),
-    textSpanDecorator: (_, textSpan) => textSpan,
-    selectionColor: const Color.fromARGB(53, 111, 201, 231),
-    selectionMenuBackgroundColor: const Color(0xFFFFFFFF),
-    selectionMenuItemTextColor: const Color(0xFF333333),
-    selectionMenuItemIconColor: const Color(0xFF333333),
-    selectionMenuItemSelectedTextColor: const Color.fromARGB(255, 56, 91, 247),
-    selectionMenuItemSelectedIconColor: const Color.fromARGB(255, 56, 91, 247),
-    selectionMenuItemSelectedColor: const Color(0xFFE0F8FF),
-    toolbarColor: const Color(0xFF333333),
-    toolbarElevation: 0.0,
-    textPadding: const EdgeInsets.symmetric(vertical: 8.0),
-    textStyle: const TextStyle(fontSize: 16.0, color: Colors.black),
-    placeholderTextStyle: const TextStyle(fontSize: 16.0, color: Colors.grey),
-    bold: const TextStyle(fontWeight: FontWeight.bold),
-    italic: const TextStyle(fontStyle: FontStyle.italic),
-    underline: const TextStyle(decoration: TextDecoration.underline),
-    strikethrough: const TextStyle(decoration: TextDecoration.lineThrough),
-    href: const TextStyle(
-      color: Colors.blue,
-      decoration: TextDecoration.underline,
-    ),
-    code: const TextStyle(
-      fontFamily: 'monospace',
-      color: Color(0xFF00BCF0),
-      backgroundColor: Color(0xFFE0F8FF),
-    ),
-    highlightColorHex: '0x6000BCF0',
-    lineHeight: 1.5,
-    popupMenuFGColor: const Color(0xFF333333),
-    popupMenuHoverColor: const Color(0xFFE0F8FF),
-  );
-
-  static final dark = light.copyWith(
-    backgroundColor: Colors.black,
-    textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
-    placeholderTextStyle: TextStyle(
-      fontSize: 16.0,
-      color: Colors.white.withOpacity(0.3),
-    ),
-    selectionMenuBackgroundColor: const Color(0xFF282E3A),
-    selectionMenuItemTextColor: const Color(0xFFBBC3CD),
-    selectionMenuItemIconColor: const Color(0xFFBBC3CD),
-    selectionMenuItemSelectedTextColor: const Color(0xFF131720),
-    selectionMenuItemSelectedIconColor: const Color(0xFF131720),
-    selectionMenuItemSelectedColor: const Color(0xFF00BCF0),
-    toolbarColor: const Color(0xFF131720),
-    toolbarElevation: 0.0,
-    popupMenuFGColor: Colors.white,
-    popupMenuHoverColor: const Color(0xFF00BCF0),
-  );
 }

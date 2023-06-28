@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection_menu/selection_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

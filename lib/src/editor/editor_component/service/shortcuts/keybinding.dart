@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:appflowy_editor/src/service/shortcut_event/key_mapping.dart';
+import 'package:appflowy_editor/src/editor/util/key_mapping.dart';
 import 'package:flutter/material.dart';
 
 extension KeybindingsExtension on List<Keybinding> {

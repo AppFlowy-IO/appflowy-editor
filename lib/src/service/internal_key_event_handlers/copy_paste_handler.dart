@@ -390,18 +390,3 @@ void _deleteSelectedContent(EditorState editorState) {
   tb.afterSelection = Selection.collapsed(selection.start);
   editorState.apply(tb);
 }
-
-ShortcutEventHandler copyEventHandler = (editorState, event) {
-  _handleCopy(editorState);
-  return KeyEventResult.handled;
-};
-
-ShortcutEventHandler pasteEventHandler = (editorState, event) {
-  _handlePaste(editorState);
-  return KeyEventResult.handled;
-};
-
-ShortcutEventHandler cutEventHandler = (editorState, event) {
-  _handleCut(editorState);
-  return KeyEventResult.handled;
-};

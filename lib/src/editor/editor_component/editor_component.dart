@@ -21,3 +21,9 @@ export 'service/renderer/block_component_container.dart';
 export 'service/renderer/block_component_widget.dart';
 export 'service/renderer/block_component_service.dart';
 export 'service/renderer/block_component_context.dart';
+
+// service
+export 'service/editor_service.dart';
+export 'service/keyboard_service.dart';
+export 'service/scroll_service.dart';
+export 'service/selection_service.dart';

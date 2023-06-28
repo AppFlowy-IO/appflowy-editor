@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection/selectable.dart';
 import 'package:flutter/material.dart';
 
 class CursorWidget extends StatefulWidget {

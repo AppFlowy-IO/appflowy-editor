@@ -1,4 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection_menu/selection_menu.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/standard_block_components.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
@@ -17,9 +19,7 @@ class AppFlowyEditor extends StatefulWidget {
   const AppFlowyEditor({
     super.key,
     required this.editorState,
-    this.customBuilders = const {},
     this.blockComponentBuilders = const {},
-    this.shortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.commandShortcutEvents = const [],
     this.selectionMenuItems = const [],
@@ -27,7 +27,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
-    this.customActionMenuBuilder,
     this.shrinkWrap = false,
     this.scrollController,
     this.themeData,
@@ -114,11 +113,6 @@ class AppFlowyEditor extends StatefulWidget {
 
   final ScrollController? scrollController;
 
-  final Positioned Function(
-    BuildContext context,
-    List<ActionMenuItem> items,
-  )? customActionMenuBuilder;
-
   /// Set the value to false to disable editing.
   final bool editable;
 
@@ -135,16 +129,8 @@ class AppFlowyEditor extends StatefulWidget {
   /// if true, the editor will be sized to its contents.
   final bool shrinkWrap;
 
-  /// Render plugins.
-  @Deprecated('Use blockComponentBuilders instead.')
-  final NodeWidgetBuilders customBuilders;
-
   @Deprecated('Use FloatingToolbar or MobileToolbar instead.')
   final List<ToolbarItem> toolbarItems;
-
-  /// Keyboard event handlers.
-  @Deprecated('Use characterShortcutEvents or commandShortcutEvents instead.')
-  final List<ShortcutEvent> shortcutEvents;
 
   @Deprecated('Customize the style that block component provides instead.')
   final ThemeData? themeData;

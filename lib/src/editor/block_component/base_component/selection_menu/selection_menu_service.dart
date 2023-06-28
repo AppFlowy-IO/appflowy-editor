@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection_menu/selection_menu.dart';
 import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_upload_widget.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_icon.dart';
 import 'package:flutter/material.dart';
 
 // TODO: this file is too long, need to refactor.
