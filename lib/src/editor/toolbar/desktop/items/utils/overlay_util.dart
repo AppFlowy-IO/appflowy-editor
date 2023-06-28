@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 ButtonStyle buildOverlayButtonStyle(BuildContext context) {
@@ -43,4 +44,47 @@ class EditorOverlayTitle extends StatelessWidget {
       ),
     );
   }
+}
+
+(double?, double?, double?) positionFromRect(
+  Rect rect,
+  EditorState editorState,
+) {
+  final left = rect.left + 10;
+  double? top;
+  double? bottom;
+  final offset = rect.center;
+  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
+  final editorHeight = editorState.renderBox!.size.height;
+  final threshold = editorOffset.dy + editorHeight - 200;
+  if (offset.dy > threshold) {
+    bottom = editorOffset.dy + editorHeight - rect.top - 5;
+  } else {
+    top = rect.bottom + 5;
+  }
+
+  return (top, bottom, left);
+}
+
+Widget basicOverlay(
+  BuildContext context, {
+  double? width,
+  double? height,
+  required List<Widget> children,
+}) {
+  return Container(
+    width: width,
+    height: height,
+    decoration: buildOverlayDecoration(context),
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+    child: ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+    ),
+  );
 }

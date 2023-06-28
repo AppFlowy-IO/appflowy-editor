@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 
 void showColorMenu(
@@ -13,21 +14,7 @@ void showColorMenu(
   final rect = editorState.selectionRects().first;
   OverlayEntry? overlay;
 
-  // should abstract this logic to a method
-  // ----
-  final left = rect.left + 10;
-  double? top;
-  double? bottom;
-  final offset = rect.center;
-  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
-  final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - 200;
-  if (offset.dy > threshold) {
-    bottom = editorOffset.dy + editorHeight - rect.top - 5;
-  } else {
-    top = rect.bottom + 5;
-  }
-  // ----
+  final (top, bottom, left) = positionFromRect(rect, editorState);
 
   void dismissOverlay() {
     overlay?.remove();
@@ -40,8 +27,9 @@ void showColorMenu(
     left: left,
     builder: (context) {
       return ColorPicker(
-        isTextColor: isTextColor,
-        editorState: editorState,
+        title: isTextColor
+            ? AppFlowyEditorLocalizations.current.textColor
+            : AppFlowyEditorLocalizations.current.highlightColor,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
             ? generateTextColorOptions()
@@ -58,7 +46,11 @@ void showColorMenu(
                 );
           dismissOverlay();
         },
-        onDismiss: dismissOverlay,
+        resetText: isTextColor
+            ? AppFlowyEditorLocalizations.current.resetToDefaultColor
+            : AppFlowyEditorLocalizations.current.clearHighlightColor,
+        resetIconName:
+            isTextColor ? 'reset_text_color' : 'clear_highlight_color',
       );
     },
   ).build();

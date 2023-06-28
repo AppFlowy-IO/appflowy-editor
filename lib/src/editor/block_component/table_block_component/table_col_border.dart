@@ -26,10 +26,9 @@ class _TableColBorderState extends State<TableColBorder> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.resizable) {
-      return buildResizableBorder(context);
-    }
-    return buildFixedBorder(context);
+    return widget.resizable
+        ? buildResizableBorder(context)
+        : buildFixedBorder(context);
   }
 
   MouseRegion buildResizableBorder(BuildContext context) {

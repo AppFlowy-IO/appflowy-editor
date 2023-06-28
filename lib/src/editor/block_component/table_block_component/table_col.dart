@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col_border.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
-import 'package:flutter/material.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
-import 'package:provider/provider.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
 
 class TableCol extends StatefulWidget {
   const TableCol({
@@ -22,6 +23,8 @@ class TableCol extends StatefulWidget {
 }
 
 class _TableColState extends State<TableCol> {
+  bool _colActionVisiblity = false;
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -40,7 +43,21 @@ class _TableColState extends State<TableCol> {
         width: context.select(
           (Node n) => getCellNode(n, widget.colIdx, 0)?.attributes['width'],
         ),
-        child: Column(children: _buildCells(context)),
+        child: Stack(
+          children: [
+            MouseRegion(
+              onEnter: (_) => setState(() => _colActionVisiblity = true),
+              onExit: (_) => setState(() => _colActionVisiblity = false),
+              child: Column(children: _buildCells(context)),
+            ),
+            TableActionHandler(
+              visible: _colActionVisiblity,
+              tableNode: widget.tableNode,
+              editorState: widget.editorState,
+              colIdx: widget.colIdx,
+            )
+          ],
+        ),
       ),
       TableColBorder(
         resizable: true,

@@ -1,17 +1,27 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 
-void addCol(Node tableNode, Transaction transaction) {
+void addCol(Node tableNode, int position, Transaction transaction) {
+  assert(position >= 0);
+
   List<Node> cellNodes = [];
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
 
-  var lastCellNode = getCellNode(tableNode, colsLen - 1, rowsLen - 1)!;
+  if (position != colsLen) {
+    for (var i = position; i < colsLen; i++) {
+      for (var j = 0; j < rowsLen; j++) {
+        final node = getCellNode(tableNode, i, j)!;
+        transaction.updateNode(node, {'colPosition': i + 1});
+      }
+    }
+  }
+
   for (var i = 0; i < rowsLen; i++) {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
-        'colPosition': colsLen,
+        'colPosition': position,
         'rowPosition': i,
       },
     );
@@ -20,27 +30,51 @@ void addCol(Node tableNode, Transaction transaction) {
     cellNodes.add(newCellNode(tableNode, node));
   }
 
+  late Path insertPath;
+  if (position == 0) {
+    insertPath = getCellNode(tableNode, 0, 0)!.path;
+  } else {
+    insertPath = getCellNode(tableNode, position - 1, rowsLen - 1)!.path.next;
+  }
   // TODO(zoli): this calls notifyListener rowsLen+1 times. isn't there a better
   // way?
-  transaction.insertNodes(lastCellNode.path.next, cellNodes);
+  transaction.insertNodes(insertPath, cellNodes);
   transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
 }
 
-void addRow(Node tableNode, Transaction transaction) {
+void addRow(Node tableNode, int position, Transaction transaction) {
+  assert(position >= 0);
+
   final int rowsLen = tableNode.attributes['rowsLen'],
       colsLen = tableNode.attributes['colsLen'];
+
+  if (position != rowsLen) {
+    for (var i = position; i < rowsLen; i++) {
+      for (var j = 0; j < colsLen; j++) {
+        final node = getCellNode(tableNode, j, i)!;
+        transaction.updateNode(node, {'rowPosition': i + 1});
+      }
+    }
+  }
+
   for (var i = 0; i < colsLen; i++) {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
         'colPosition': i,
-        'rowPosition': rowsLen,
+        'rowPosition': position,
       },
     );
     node.insert(paragraphNode());
 
+    late Path insertPath;
+    if (position == 0) {
+      insertPath = getCellNode(tableNode, i, 0)!.path;
+    } else {
+      insertPath = getCellNode(tableNode, i, position - 1)!.path.next;
+    }
     transaction.insertNode(
-      getCellNode(tableNode, i, rowsLen - 1)!.path.next,
+      insertPath,
       newCellNode(tableNode, node),
     );
   }
@@ -84,6 +118,7 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
     nodes.add(
       node.copyWith(
         attributes: {
+          ...node.attributes,
           'colPosition': col + 1,
           'rowPosition': i,
         },
@@ -109,6 +144,7 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
       node.path.next,
       node.copyWith(
         attributes: {
+          ...node.attributes,
           'rowPosition': row + 1,
           'colPosition': i,
         },
@@ -149,6 +185,42 @@ void setRowBgColor(
     transaction.updateNode(
       node,
       {'backgroundColor': color},
+    );
+  }
+}
+
+void clearCol(
+  Node tableNode,
+  int col,
+  Transaction transaction,
+) {
+  final rowsLen = tableNode.attributes['rowsLen'];
+  for (var i = 0; i < rowsLen; i++) {
+    final node = getCellNode(tableNode, col, i)!;
+    transaction.insertNode(
+      node.children.first.path,
+      Node(
+        type: 'paragraph',
+        attributes: {'delta': (Delta()..insert('')).toJson()},
+      ),
+    );
+  }
+}
+
+void clearRow(
+  Node tableNode,
+  int row,
+  Transaction transaction,
+) {
+  final colsLen = tableNode.attributes['colsLen'];
+  for (var i = 0; i < colsLen; i++) {
+    final node = getCellNode(tableNode, i, row)!;
+    transaction.insertNode(
+      node.children.first.path,
+      Node(
+        type: 'paragraph',
+        attributes: {'delta': (Delta()..insert('')).toJson()},
+      ),
     );
   }
 }

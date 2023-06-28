@@ -1,4 +1,7 @@
-const defaultColWidth = 80.0, defaultRowHeight = 40.0, minimumColWidth = 40.0;
+const defaultColWidth = 80.0,
+    defaultRowHeight = 40.0,
+    minimumColWidth = 40.0,
+    defaultBorderWidth = 2.0;
 
 class TableConfig {
   const TableConfig({
@@ -29,7 +32,7 @@ class TableConfig {
 
   final double colDefaultWidth, rowDefaultHeight, colMinimumWidth;
 
-  final double tableBorderWidth = 2.0;
+  final double tableBorderWidth = defaultBorderWidth;
 
   TableConfig clone() => TableConfig(
         colDefaultWidth: colDefaultWidth,

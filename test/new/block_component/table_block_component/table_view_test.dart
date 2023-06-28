@@ -90,7 +90,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      addCol(tableNode.node, transaction);
+      addCol(tableNode.node, 2, transaction);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
@@ -118,7 +118,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      addRow(tableNode.node, transaction);
+      addRow(tableNode.node, 2, transaction);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
