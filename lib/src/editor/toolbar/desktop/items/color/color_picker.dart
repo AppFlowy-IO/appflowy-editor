@@ -2,17 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 
-class ColorOption {
-  const ColorOption({
-    required this.colorHex,
-    required this.name,
-  });
-
-  // 0xFF000000
-  final String colorHex;
-  final String name;
-}
-
 class ColorPicker extends StatefulWidget {
   const ColorPicker({
     super.key,

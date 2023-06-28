@@ -23,13 +23,7 @@ class ToolbarItem {
     this.itemBuilder,
     this.isActive,
     this.builder,
-  }) {
-    // assert(
-    //   (iconBuilder != null && itemBuilder == null) ||
-    //       (iconBuilder == null && itemBuilder != null),
-    //   'iconBuilder and itemBuilder must be set one of them',
-    // );
-  }
+  });
 
   final String id;
   final int group;
@@ -330,4 +324,22 @@ bool _allSatisfy(
         styleKey,
         test,
       );
+}
+
+bool onlyShowInSingleSelectionAndTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isSingle) {
+    return false;
+  }
+  final node = editorState.getNodeAtPath(selection.start.path);
+  return node?.delta != null;
+}
+
+bool onlyShowInTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return false;
+  }
+  final nodes = editorState.getNodesInSelection(selection);
+  return nodes.every((element) => element.delta != null);
 }

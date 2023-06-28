@@ -18,7 +18,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-const _kRichTextDebugMode = false;
+typedef TextSpanDecoratorForCustomAttributes = InlineSpan Function(
+  TextInsert attributeKey,
+  TextSpan textSpan,
+);
 
 typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
@@ -31,6 +34,7 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
+    this.textSpanDecoratorForCustomAttributes,
     required this.node,
     required this.editorState,
   }) : super(key: key);
@@ -43,6 +47,8 @@ class FlowyRichText extends StatefulWidget {
   final FlowyTextSpanDecorator? textSpanDecorator;
   final String placeholderText;
   final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
+  final TextSpanDecoratorForCustomAttributes?
+      textSpanDecoratorForCustomAttributes;
 
   @override
   State<FlowyRichText> createState() => _FlowyRichTextState();
@@ -58,6 +64,11 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   RenderParagraph? get _placeholderRenderParagraph =>
       _placeholderTextKey.currentContext?.findRenderObject()
           as RenderParagraph?;
+
+  TextSpanDecoratorForCustomAttributes?
+      get textSpanDecoratorForCustomAttributes =>
+          widget.textSpanDecoratorForCustomAttributes ??
+          widget.editorState.editorStyle.textSpanDecorator;
 
   @override
   void didUpdateWidget(covariant FlowyRichText oldWidget) {
@@ -235,7 +246,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 
   TextSpan get _textSpan {
     var offset = 0;
-    List<TextSpan> textSpans = [];
+    List<InlineSpan> textSpans = [];
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
@@ -281,23 +292,15 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
         }
       }
       offset += textInsert.length;
-      textSpans.add(
-        TextSpan(
-          text: textInsert.text,
-          style: textStyle,
-          recognizer: recognizer,
-        ),
+      final textSpan = TextSpan(
+        text: textInsert.text,
+        style: textStyle,
+        recognizer: recognizer,
       );
-    }
-    if (_kRichTextDebugMode) {
       textSpans.add(
-        TextSpan(
-          text: '${widget.node.path}',
-          style: const TextStyle(
-            backgroundColor: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
+        textSpanDecoratorForCustomAttributes != null
+            ? textSpanDecoratorForCustomAttributes!(textInsert, textSpan)
+            : textSpan,
       );
     }
     return TextSpan(

@@ -7,4 +7,13 @@ class FlowyRichTextKeys {
   static String highlightColor = 'bg_color';
   static String code = 'code';
   static String href = 'href';
+
+  static List<String> supportSliced = [
+    bold,
+    italic,
+    underline,
+    strikethrough,
+    textColor,
+    highlightColor,
+  ];
 }

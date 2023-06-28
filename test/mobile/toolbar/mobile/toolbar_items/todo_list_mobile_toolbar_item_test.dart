@@ -18,11 +18,13 @@ void main() {
 
     await editor.updateSelection(selection);
     await tester.pumpWidget(
-      MobileAppWithToolbarWidget(
-        editorState: editor.editorState,
-        toolbarItems: [
-          todoListMobileToolbarItem,
-        ],
+      Material(
+        child: MobileAppWithToolbarWidget(
+          editorState: editor.editorState,
+          toolbarItems: [
+            todoListMobileToolbarItem,
+          ],
+        ),
       ),
     );
 
@@ -33,7 +35,7 @@ void main() {
     // Check if the text becomes quote node
     final node = editor.editorState.getNodeAtPath([1]);
     expect(
-      node?.type == 'todo_list',
+      node?.type == TodoListBlockKeys.type,
       true,
     );
   });

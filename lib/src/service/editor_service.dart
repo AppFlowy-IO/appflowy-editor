@@ -33,6 +33,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.themeData,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
+    this.footer,
     this.focusNode,
   });
 
@@ -49,6 +50,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CommandShortcutEvent> commandShortcutEvents = const [],
     List<SelectionMenuItem> selectionMenuItems = const [],
     Widget? header,
+    Widget? footer,
     FocusNode? focusNode,
     bool shrinkWrap = false,
   }) : this(
@@ -64,6 +66,7 @@ class AppFlowyEditor extends StatefulWidget {
           selectionMenuItems: selectionMenuItems,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
+          footer: footer,
           focusNode: focusNode,
           shrinkWrap: shrinkWrap,
         );
@@ -77,6 +80,7 @@ class AppFlowyEditor extends StatefulWidget {
     Selection? focusedSelection,
     EditorStyle? editorStyle,
     Widget? header,
+    Widget? footer,
     FocusNode? focusNode,
     bool shrinkWrap = false,
   }) : this(
@@ -91,6 +95,7 @@ class AppFlowyEditor extends StatefulWidget {
           commandShortcutEvents: standardCommandShortcutEvents,
           editorStyle: editorStyle ?? const EditorStyle.desktop(),
           header: header,
+          footer: footer,
           focusNode: focusNode,
           shrinkWrap: shrinkWrap,
         );
@@ -123,6 +128,7 @@ class AppFlowyEditor extends StatefulWidget {
   final Selection? focusedSelection;
 
   final Widget? header;
+  final Widget? footer;
 
   final FocusNode? focusNode;
 
@@ -210,20 +216,26 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   }
 
   Widget _buildServices(BuildContext context) {
-    Widget child = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.header != null) widget.header!,
-        Container(
-          padding: widget.editorStyle.padding,
-          child: editorState.renderer.build(
-            context,
-            editorState.document.root,
-          ),
-        ),
-      ],
+    Widget child = Container(
+      padding: widget.editorStyle.padding,
+      child: editorState.renderer.build(
+        context,
+        editorState.document.root,
+      ),
     );
+
+    if (widget.header != null || widget.footer != null) {
+      child = Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.header != null) widget.header!,
+          child,
+          if (widget.footer != null) widget.footer!,
+        ],
+      );
+    }
+
     if (widget.editable) {
       child = SelectionServiceWidget(
         key: editorState.service.selectionServiceKey,

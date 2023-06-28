@@ -1,11 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
+import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
 final linkItem = ToolbarItem(
   id: 'editor.link',
   group: 4,
-  isActive: (editorState) => editorState.selection?.isSingle ?? false,
+  isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
