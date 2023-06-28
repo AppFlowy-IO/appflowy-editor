@@ -1,5 +1,5 @@
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/keybinding.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 void main() async {
   setUpAll(() {

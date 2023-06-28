@@ -108,33 +108,6 @@ class EditorWidgetTester {
     );
   }
 
-  Future<void> insertText(
-    TextNode textNode,
-    String text,
-    int offset, {
-    Selection? selection,
-  }) async {
-    await apply([
-      TextEditingDeltaInsertion(
-        oldText: textNode.toPlainText(),
-        textInserted: text,
-        insertionOffset: offset,
-        selection: selection != null
-            ? TextSelection(
-                baseOffset: selection.start.offset,
-                extentOffset: selection.end.offset,
-              )
-            : TextSelection.collapsed(offset: offset),
-        composing: TextRange.empty,
-      )
-    ]);
-  }
-
-  Future<void> apply(List<TextEditingDelta> deltas) async {
-    _editorState.service.inputService?.apply(deltas);
-    await tester.pumpAndSettle();
-  }
-
   Future<void> pressLogicKey({
     String? character,
     LogicalKeyboardKey? key,
