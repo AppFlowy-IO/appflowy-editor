@@ -20,15 +20,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             return IconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
-              tooltip: (() {
-                if (level == 1) {
-                  return AppFlowyEditorLocalizations.current.heading1;
-                } else if (level == 2) {
-                  return AppFlowyEditorLocalizations.current.heading2;
-                } else {
-                  return AppFlowyEditorLocalizations.current.heading3;
-                }
-              }()),
+              tooltip: levelToTooltips(level),
               onPressed: () => editorState.formatNode(
                 selection,
                 (node) => node.copyWith(
@@ -46,4 +38,15 @@ class _HeadingToolbarItem extends ToolbarItem {
             );
           },
         );
+
+  static String levelToTooltips(int level) {
+    if (level == 1) {
+      return AppFlowyEditorLocalizations.current.heading1;
+    } else if (level == 2) {
+      return AppFlowyEditorLocalizations.current.heading2;
+    } else if (level == 3) {
+      return AppFlowyEditorLocalizations.current.heading3;
+    }
+    return '';
+  }
 }
