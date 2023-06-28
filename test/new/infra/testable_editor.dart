@@ -81,7 +81,7 @@ class TestableEditor {
         home: Scaffold(
           body: wrapper == null
               ? editor
-              : wrapper!(
+              : wrapper(
                   editor,
                 ),
         ),

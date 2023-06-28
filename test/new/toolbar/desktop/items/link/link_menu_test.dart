@@ -38,7 +38,7 @@ void main() async {
       await tester.enterText(find.byType(TextField), link);
       await tester.pumpAndSettle();
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle(Duration(milliseconds: 500));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(submittedText, link);
     });

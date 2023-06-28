@@ -1,10 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../infra/testable_editor.dart';
-import '../../util/util.dart';
 
 void main() async {
   group('delta input insert - widget test', () {
@@ -52,7 +49,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      final welcomeLength = 'Welcome'.length;
+      const welcomeLength = 'Welcome'.length;
       final selection = Selection(
         start: Position(path: [0], offset: welcomeLength),
         end: Position(path: [2], offset: welcomeLength),

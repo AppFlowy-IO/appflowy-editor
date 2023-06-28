@@ -28,7 +28,6 @@ void main() {
           initialText: 'Hello',
         );
       await editor.startTesting(shrinkWrap: false);
-      final size = tester.getSize(find.byType(AppFlowyEditor));
       await editor.dispose();
     });
 

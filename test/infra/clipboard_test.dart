@@ -28,17 +28,18 @@ void main() {
   setUp(() {
     mockClipboard = const MockClipboard(html: null, text: null);
 
-    SystemChannels.platform
-        .setMockMethodCallHandler((MethodCall methodCall) async {
-      switch (methodCall.method) {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (message) async {
+      switch (message.method) {
         case "Clipboard.getData":
           return mockClipboard.getData;
         case "Clipboard.setData":
-          final args = methodCall.arguments as Map<String, dynamic>;
+          final args = message.arguments as Map<String, dynamic>;
           mockClipboard = mockClipboard.copyWith(
             text: args['text'],
           );
       }
+      return null;
     });
   });
 
