@@ -15,7 +15,7 @@ enum ImageSourceType {
       case 'file':
         return ImageSourceType.file;
       default:
-        throw UnimplementedError();
+        return ImageSourceType.network; // compatible with old version
     }
   }
 }

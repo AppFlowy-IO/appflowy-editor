@@ -68,6 +68,7 @@ class _ResizableImageState extends State<ResizableImage> {
     if (widget.type == ImageSourceType.network && widget.src != null) {
       _cacheImage ??= Image.network(
         widget.src!,
+        width: widget.width,
         gaplessPlayback: true,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null ||

@@ -188,16 +188,14 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   }
 
   Node _parseImageElement(dom.Element element) {
-    final src = element.attributes['src'] ?? '';
-    final ImageSourceType imageSourceType;
-    if (src.startsWith('http')) {
-      imageSourceType = ImageSourceType.network;
-    } else {
-      imageSourceType = ImageSourceType.file;
+    final src = element.attributes['src'];
+    if (src == null || src.isEmpty || !src.startsWith('http')) {
+      return paragraphNode(); // return empty paragraph
     }
+    // only support network image
     return imageNode(
       url: src,
-      imageSourceType: imageSourceType,
+      imageSourceType: ImageSourceType.network,
     );
   }
 

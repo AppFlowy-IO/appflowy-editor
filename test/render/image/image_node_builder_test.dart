@@ -21,7 +21,8 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addParagraph(initialText: text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -38,7 +39,8 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addParagraph(initialText: text);
 
         await editor.startTesting(editable: false);
@@ -68,7 +70,8 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addParagraph(initialText: text);
 
         await editor.startTesting();
@@ -97,21 +100,30 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(imageNode(
+          ..addNode(
+            imageNode(
               url: url,
               align: 'left',
               width: 100,
-              imageSourceType: ImageSourceType.network))
-          ..addNode(imageNode(
+              imageSourceType: ImageSourceType.network,
+            ),
+          )
+          ..addNode(
+            imageNode(
               url: url,
               align: 'center',
               width: 100,
-              imageSourceType: ImageSourceType.network))
-          ..addNode(imageNode(
+              imageSourceType: ImageSourceType.network,
+            ),
+          )
+          ..addNode(
+            imageNode(
               url: url,
               align: 'right',
               width: 100,
-              imageSourceType: ImageSourceType.network))
+              imageSourceType: ImageSourceType.network,
+            ),
+          )
           ..addParagraph(initialText: text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -164,7 +176,8 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addParagraph(initialText: text);
         await editor.startTesting();
 
@@ -172,7 +185,7 @@ void main() async {
         final imageFinder = find.byType(Image);
         expect(imageFinder, findsOneWidget);
 
-        final node = editor.document.nodeAtPath([1]);
+        // final node = editor.document.nodeAtPath([1]);
 
         // expect(editor.runAction(3, imageNode!), true); // copy
         // await tester.pump();
@@ -184,9 +197,11 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addNode(
-              imageNode(url: url, imageSourceType: ImageSourceType.network))
+            imageNode(url: url, imageSourceType: ImageSourceType.network),
+          )
           ..addParagraph(initialText: text);
         await editor.startTesting();
 
