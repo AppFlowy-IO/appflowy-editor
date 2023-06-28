@@ -6,37 +6,7 @@ import 'package:appflowy_editor/src/editor/block_component/table_block_component
 
 enum TableDirection { row, col }
 
-void showColActionMenu(
-  BuildContext context,
-  Node node,
-  EditorState editorState,
-  int position,
-) {
-  _showActionMenu(
-    context,
-    node,
-    editorState,
-    position,
-    TableDirection.col,
-  );
-}
-
-void showRowActionMenu(
-  BuildContext context,
-  Node node,
-  EditorState editorState,
-  int position,
-) {
-  _showActionMenu(
-    context,
-    node,
-    editorState,
-    position,
-    TableDirection.row,
-  );
-}
-
-void _showActionMenu(
+void showActionMenu(
   BuildContext context,
   Node node,
   EditorState editorState,

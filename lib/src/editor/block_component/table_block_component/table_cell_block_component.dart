@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -56,7 +57,7 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
 
 class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
   late final editorState = Provider.of<EditorState>(context, listen: false);
-  bool _rowActionVisiblity = false, _visible = false;
+  bool _rowActionVisiblity = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +87,11 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
             ),
           ),
         ),
-        Container(
-          alignment: Alignment.centerLeft,
-          height: context.select((Node n) => n.attributes['height']),
+        TableActionHandler(
+          visible: _rowActionVisiblity,
+          node: widget.node.parent!,
+          editorState: editorState,
+          position: widget.node.attributes['rowPosition'],
           transform: context.select((Node n) {
             final int col = n.attributes['colPosition'];
             double left = -20.0;
@@ -101,30 +104,14 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
 
             return Matrix4.translationValues(left, 0.0, 0.0);
           }),
-          child: Visibility(
-            visible: _rowActionVisiblity || _visible,
-            child: MouseRegion(
-              onEnter: (_) => setState(() => _visible = true),
-              onExit: (_) => setState(() => _visible = false),
-              child: ActionMenuWidget(
-                items: [
-                  ActionMenuItem(
-                    iconBuilder: ({size, color}) {
-                      return const Icon(
-                        Icons.drag_indicator,
-                      );
-                    },
-                    onPressed: () => showRowActionMenu(
-                      context,
-                      widget.node.parent!,
-                      editorState,
-                      widget.node.attributes['rowPosition'],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          alignment: Alignment.centerLeft,
+          height: context.select((Node n) => n.attributes['height']),
+          iconBuilder: ({size, color}) {
+            return const Icon(
+              Icons.drag_indicator,
+            );
+          },
+          dir: TableDirection.row,
         ),
       ],
     );

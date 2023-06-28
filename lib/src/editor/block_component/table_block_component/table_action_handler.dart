@@ -1,22 +1,30 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_menu.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 
 class TableActionHandler extends StatefulWidget {
   const TableActionHandler({
     Key? key,
     this.visible = false,
-    required this.tableNode,
+    this.height,
+    required this.node,
     required this.editorState,
-    required this.colIdx,
+    required this.position,
+    required this.iconBuilder,
+    required this.alignment,
+    required this.transform,
+    required this.dir,
   }) : super(key: key);
 
   final bool visible;
-  final TableNode tableNode;
+  final Node node;
   final EditorState editorState;
-  final int colIdx;
+  final int position;
+  final Widget Function({double? size, Color? color}) iconBuilder;
+  final Alignment alignment;
+  final Matrix4 transform;
+  final double? height;
+  final TableDirection dir;
 
   @override
   State<TableActionHandler> createState() => _TableActionHandlerState();
@@ -28,8 +36,9 @@ class _TableActionHandlerState extends State<TableActionHandler> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.topCenter,
-      transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+      alignment: widget.alignment,
+      transform: widget.transform,
+      height: widget.height,
       child: Visibility(
         visible: widget.visible || _visible,
         child: MouseRegion(
@@ -38,19 +47,13 @@ class _TableActionHandlerState extends State<TableActionHandler> {
           child: ActionMenuWidget(
             items: [
               ActionMenuItem(
-                iconBuilder: ({size, color}) {
-                  return Transform.rotate(
-                    angle: math.pi / 2,
-                    child: const Icon(
-                      Icons.drag_indicator,
-                    ),
-                  );
-                },
-                onPressed: () => showColActionMenu(
+                iconBuilder: widget.iconBuilder,
+                onPressed: () => showActionMenu(
                   context,
-                  widget.tableNode.node,
+                  widget.node,
                   widget.editorState,
-                  widget.colIdx,
+                  widget.position,
+                  widget.dir,
                 ),
               ),
             ],
