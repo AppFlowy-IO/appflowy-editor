@@ -183,10 +183,24 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor.standard(
-      editorStyle: const EditorStyle.desktop(),
+    final customBlockComponentBuilders = {
+      ...standardBlockComponentBuilderMap,
+      ImageBlockKeys.type: ImageBlockComponentBuilder(
+        showMenu: true,
+        menuBuilder: (node) {
+          return const Positioned(
+            right: 10,
+            child: Text('Sample Menu'),
+          );
+        },
+      )
+    };
+    return AppFlowyEditor.custom(
       editorState: editorState,
       scrollController: scrollController,
+      blockComponentBuilders: customBlockComponentBuilders,
+      commandShortcutEvents: standardCommandShortcutEvents,
+      characterShortcutEvents: standardCharacterShortcutEvents,
     );
   }
 }

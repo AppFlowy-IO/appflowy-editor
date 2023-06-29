@@ -83,10 +83,18 @@ Node imageNode({
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  ///
+  final Widget Function(Node node)? menuBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -100,6 +108,8 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      showMenu: showMenu,
+      menuBuilder: menuBuilder,
     );
   }
 
@@ -114,7 +124,14 @@ class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
   });
+
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  final Widget Function(Node node)? menuBuilder;
 
   @override
   State<ImageBlockComponentWidget> createState() =>
@@ -126,6 +143,8 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
+
+  final showActionsNotifier = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +182,27 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
         node: node,
         actionBuilder: widget.actionBuilder!,
         child: child,
+      );
+    }
+
+    if (widget.showMenu && widget.menuBuilder != null) {
+      child = MouseRegion(
+        onEnter: (_) => showActionsNotifier.value = true,
+        onExit: (_) => showActionsNotifier.value = false,
+        hitTestBehavior: HitTestBehavior.opaque,
+        opaque: false,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: showActionsNotifier,
+          builder: (context, value, child) {
+            return Stack(
+              children: [
+                child!,
+                if (value) widget.menuBuilder!(widget.node),
+              ],
+            );
+          },
+          child: child,
+        ),
       );
     }
 
