@@ -360,6 +360,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     popupMenuHoverColor: const Color(0xFFE0F8FF),
   );
 
+  @Deprecated('EditorStyle.dark has been deprecated. You can now customize the editor style by utilizing the TextStyleConfiguration.')
   static final dark = light.copyWith(
     backgroundColor: Colors.black,
     textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
