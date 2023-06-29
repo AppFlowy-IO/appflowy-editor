@@ -23,7 +23,7 @@ void main() {
         child: MobileAppWithToolbarWidget(
           editorState: editor.editorState,
           toolbarItems: [
-            textAndBackgroundColorMobileToolbarItem,
+            buildTextAndBackgroundColorMobileToolbarItem(),
           ],
         ),
       ),
@@ -57,7 +57,8 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.textColor] == '#FF0000',
+                  element.attributes?[FlowyRichTextKeys.textColor] ==
+                  Colors.red.toHex(),
             );
       }),
       true,
@@ -92,7 +93,7 @@ void main() {
         return delta.whereType<TextInsert>().every(
               (element) =>
                   element.attributes?[FlowyRichTextKeys.highlightColor] ==
-                  '#FF0000',
+                  Colors.red.withOpacity(0.3).toHex(),
             );
       }),
       true,
