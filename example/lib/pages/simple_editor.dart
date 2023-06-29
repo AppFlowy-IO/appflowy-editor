@@ -44,8 +44,8 @@ class SimpleEditor extends StatelessWidget {
                 bulletedListItem,
                 numberedListItem,
                 linkItem,
-                textColorItem,
-                highlightColorItem
+                buildTextColorItem(),
+                buildHighlightColorItem()
               ],
               editorState: editorState,
               scrollController: scrollController,
@@ -69,7 +69,7 @@ class SimpleEditor extends StatelessWidget {
                   editorState: editorState,
                   toolbarItems: [
                     textDecorationMobileToolbarItem,
-                    textAndBackgroundColorMobileToolbarItem,
+                    buildTextAndBackgroundColorMobileToolbarItem,
                     headingMobileToolbarItem,
                     todoListMobileToolbarItem,
                     listMobileToolbarItem,

@@ -5,11 +5,13 @@ class TextColorOptionsWidgets extends StatefulWidget {
   const TextColorOptionsWidgets(
     this.editorState,
     this.selection, {
+    this.textColorOptions,
     Key? key,
   }) : super(key: key);
 
   final Selection selection;
   final EditorState editorState;
+  final List<ColorOption>? textColorOptions;
 
   @override
   State<TextColorOptionsWidgets> createState() =>
@@ -28,6 +30,8 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
         (attributes) => attributes[FlowyRichTextKeys.textColor] != null,
       );
     });
+
+    final colorOptions = widget.textColorOptions ?? generateTextColorOptions();
 
     return Scrollbar(
       child: GridView(
@@ -52,7 +56,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
             isSelected: !hasTextColor,
           ),
           // color option buttons
-          ...style.textColorOptions.map((e) {
+          ...colorOptions.map((e) {
             final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
               return delta.everyAttributes(
                 (attributes) =>
