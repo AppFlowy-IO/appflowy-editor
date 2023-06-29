@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 abstract class TextInputService {
@@ -27,8 +28,10 @@ abstract class TextInputService {
   /// Updates the [TextEditingValue] of the text currently being edited.
   ///
   /// Note that if there are IME-related requirements,
-  ///   please config `composing` value within [TextEditingValue]
-  void attach(TextEditingValue textEditingValue);
+  /// please config `composing` value within [TextEditingValue]
+  ///
+  /// [BuildContext] is used to get current keyboard appearance(light or dark)
+  void attach(TextEditingValue textEditingValue, BuildContext context);
 
   /// Applies insertion, deletion and replacement
   ///   to the text currently being edited.
@@ -82,16 +85,17 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   }
 
   @override
-  void attach(TextEditingValue textEditingValue) {
+  void attach(TextEditingValue textEditingValue, BuildContext context) {
     if (_textInputConnection == null ||
         _textInputConnection!.attached == false) {
       _textInputConnection = TextInput.attach(
         this,
-        const TextInputConfiguration(
+        TextInputConfiguration(
           enableDeltaModel: true,
           inputType: TextInputType.multiline,
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
+          keyboardAppearance: Theme.of(context).brightness,
         ),
       );
     }

@@ -198,7 +198,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
-      textInputService.attach(textEditingValue);
+      textInputService.attach(
+        textEditingValue,
+        context,
+      );
       // disable shortcuts when the IME active
       enableShortcuts = textEditingValue.composing == TextRange.empty;
     } else {
