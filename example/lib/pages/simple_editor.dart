@@ -69,7 +69,7 @@ class SimpleEditor extends StatelessWidget {
                   editorState: editorState,
                   toolbarItems: [
                     textDecorationMobileToolbarItem,
-                    buildTextAndBackgroundColorMobileToolbarItem,
+                    buildTextAndBackgroundColorMobileToolbarItem(),
                     headingMobileToolbarItem,
                     todoListMobileToolbarItem,
                     listMobileToolbarItem,
