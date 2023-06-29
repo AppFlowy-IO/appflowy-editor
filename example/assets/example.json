@@ -10,7 +10,7 @@
             },
             {
               "insert": "Welcome to",
-              "data": {
+              "attributes": {
                 "bold": true
               }
             },
@@ -19,7 +19,7 @@
             },
             {
               "insert": "AppFlowy Editor",
-              "data": {
+              "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
                 "bold": true
@@ -45,7 +45,7 @@
             },
             {
               "insert": "highly customizable",
-              "data": {
+              "attributes": {
                 "bold": true
               }
             },
@@ -54,7 +54,7 @@
             },
             {
               "insert": "rich-text editor",
-              "data": {
+              "attributes": {
                 "italic": true
               }
             },
@@ -63,7 +63,7 @@
             },
             {
               "insert": "Flutter",
-              "data": {
+              "attributes": {
                 "underline": true
               }
             }
@@ -125,7 +125,7 @@
             },
             {
               "insert": "AppFlowy Editor",
-              "data": {
+              "attributes": {
                 "italic": true,
                 "bold": true,
                 "textColor": "0xffD70040",
@@ -151,7 +151,6 @@
             "insert": "Use / to insert blocks"
           }]
         }
-
       },
       {
         "type": "bulleted_list",

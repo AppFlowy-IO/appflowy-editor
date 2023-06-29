@@ -4,12 +4,10 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/simple_editor.dart';
-import 'package:example/plugin/AI/text_robot.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:universal_html/html.dart' as html;
 
 enum ExportFileType {
@@ -45,12 +43,6 @@ class _HomePageState extends State<HomePage> {
   late WidgetBuilder _widgetBuilder;
   late EditorState _editorState;
   late Future<String> _jsonString;
-  ThemeData _themeData = ThemeData.light().copyWith(
-    extensions: [
-      ...lightEditorStyleExtension,
-      ...lightPluginStyleExtension,
-    ],
-  );
 
   @override
   void initState() {
@@ -59,7 +51,6 @@ class _HomePageState extends State<HomePage> {
     _jsonString = rootBundle.loadString('assets/example.json');
     _widgetBuilder = (context) => SimpleEditor(
           jsonString: _jsonString,
-          themeData: _themeData,
           onEditorStateChange: (editorState) {
             _editorState = editorState;
           },
@@ -74,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       drawer: _buildDrawer(context),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('AppFlowy Editor'),
+        title: const Text('AppFlowy Editor'),
       ),
       body: SafeArea(child: _buildBody(context)),
     );
@@ -110,7 +101,9 @@ class _HomePageState extends State<HomePage> {
                 html.toJson(),
               ).toString(),
             );
-            _loadEditor(context, jsonString);
+            if (mounted) {
+              _loadEditor(context, jsonString);
+            }
           }),
           _buildListTile(context, 'With Empty Document', () {
             final jsonString = Future<String>.value(
@@ -122,30 +115,30 @@ class _HomePageState extends State<HomePage> {
           }),
 
           // Text Robot
-          _buildSeparator(context, 'Text Robot'),
-          _buildListTile(context, 'Type Text Automatically', () async {
-            final jsonString = Future<String>.value(
-              jsonEncode(
-                EditorState.blank(withInitialText: true).document.toJson(),
-              ).toString(),
-            );
-            await _loadEditor(context, jsonString);
+//           _buildSeparator(context, 'Text Robot'),
+//           _buildListTile(context, 'Type Text Automatically', () async {
+//             final jsonString = Future<String>.value(
+//               jsonEncode(
+//                 EditorState.blank(withInitialText: true).document.toJson(),
+//               ).toString(),
+//             );
+//             await _loadEditor(context, jsonString);
 
-            Future.delayed(const Duration(seconds: 2), () {
-              final textRobot = TextRobot(
-                editorState: _editorState,
-              );
-              textRobot.insertText(
-                '''
-Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
-"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+//             Future.delayed(const Duration(seconds: 2), () {
+//               final textRobot = TextRobot(
+//                 editorState: _editorState,
+//               );
+//               textRobot.insertText(
+//                 '''
+// Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
+// "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
 
-1914 translation by H. Rackham
-"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
-''',
-              );
-            });
-          }),
+// 1914 translation by H. Rackham
+// "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+// ''',
+//               );
+//             });
+//           }),
 
           // Encoder Demo
           _buildSeparator(context, 'Encoder Demo'),
@@ -174,21 +167,14 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
             _jsonString = Future<String>.value(
               jsonEncode(_editorState.document.toJson()).toString(),
             );
-            setState(() {
-              _themeData = ThemeData.dark().copyWith(
-                extensions: [
-                  ...darkEditorStyleExtension,
-                  ...darkPluginStyleExtension,
-                ],
-              );
-            });
+            setState(() {});
           }),
           _buildListTile(context, 'Custom Theme', () {
             _jsonString = Future<String>.value(
               jsonEncode(_editorState.document.toJson()).toString(),
             );
             setState(() {
-              _themeData = _customizeEditorTheme(context);
+              // todo: implement it
             });
           }),
         ],
@@ -236,15 +222,6 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        _scaffoldKey.currentState?.openDrawer();
-      },
-      child: const Icon(Icons.menu),
-    );
-  }
-
   Future<void> _loadEditor(
     BuildContext context,
     Future<String> jsonString,
@@ -255,7 +232,6 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
       () {
         _widgetBuilder = (context) => SimpleEditor(
               jsonString: _jsonString,
-              themeData: _themeData,
               onEditorStateChange: (editorState) {
                 _editorState = editorState;
               },
@@ -340,15 +316,7 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
         jsonString = jsonEncode(markdownToDocument(plainText).toJson());
         break;
       case ExportFileType.delta:
-        jsonString = jsonEncode(
-          DeltaDocumentConvert()
-              .convertFromJSON(
-                jsonDecode(
-                  plainText.replaceAll('\\\\\n', '\\n'),
-                ),
-              )
-              .toJson(),
-        );
+        jsonString = 'unsupported';
         break;
       case ExportFileType.html:
         throw UnimplementedError();
@@ -357,44 +325,5 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
     if (mounted) {
       _loadEditor(context, Future<String>.value(jsonString));
     }
-  }
-
-  ThemeData _customizeEditorTheme(BuildContext context) {
-    final dark = EditorStyle.dark;
-    final editorStyle = dark.copyWith(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 150),
-      cursorColor: Colors.blue.shade600,
-      selectionColor: Colors.yellow.shade600.withOpacity(0.5),
-      textStyle: GoogleFonts.poppins().copyWith(
-        fontSize: 14,
-        color: Colors.grey,
-      ),
-      placeholderTextStyle: GoogleFonts.poppins().copyWith(
-        fontSize: 14,
-        color: Colors.grey.shade500,
-      ),
-      code: dark.code?.copyWith(
-        backgroundColor: Colors.lightBlue.shade200,
-        fontStyle: FontStyle.italic,
-      ),
-      highlightColorHex: '0x60FF0000', // red
-    );
-
-    final quote = QuotedTextPluginStyle.dark.copyWith(
-      textStyle: (_, __) => GoogleFonts.poppins().copyWith(
-        fontSize: 14,
-        color: Colors.blue.shade400,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w700,
-      ),
-    );
-
-    return Theme.of(context).copyWith(
-      extensions: [
-        editorStyle,
-        ...darkPluginStyleExtension,
-        quote,
-      ],
-    );
   }
 }

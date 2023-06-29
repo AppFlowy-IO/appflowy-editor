@@ -105,6 +105,8 @@ class EditorState {
   // Service reference.
   final service = FlowyService();
 
+  AppFlowyScrollService? get scrollService => service.scrollService;
+
   AppFlowySelectionService get selectionService => service.selectionService;
   BlockComponentRendererService get renderer => service.rendererService;
   set renderer(BlockComponentRendererService value) {
@@ -245,6 +247,11 @@ class EditorState {
     }
 
     return completer.future;
+  }
+
+  /// Force rebuild the editor.
+  void reload() {
+    document.root.notify();
   }
 
   /// get nodes in selection

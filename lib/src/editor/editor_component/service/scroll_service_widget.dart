@@ -123,7 +123,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          startAutoScroll(endTouchPoint, edgeOffset: 50);
+          startAutoScroll(endTouchPoint, edgeOffset: 100);
         }
       } else {
         startAutoScroll(endTouchPoint);

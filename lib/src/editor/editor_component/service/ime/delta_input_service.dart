@@ -309,7 +309,7 @@ extension on String {
   String operator <<(int shiftAmount) => shift(shiftAmount);
   String shift(int shiftAmount) {
     if (shiftAmount > length) {
-      throw const FormatException();
+      return '';
     }
     return substring(shiftAmount);
   }
