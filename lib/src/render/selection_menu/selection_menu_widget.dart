@@ -243,11 +243,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     if (keyword.length >= maxKeywordLength + 2) {
       widget.onExit();
-    } else {
-      setState(() {
-        _showingItems = items;
-      });
     }
+    setState(() {
+      _showingItems = items;
+    });
   }
 
   @override

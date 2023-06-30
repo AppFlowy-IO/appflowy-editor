@@ -131,7 +131,9 @@ class SelectionMenu extends SelectionMenuService {
                       itemCountFilter: itemCountFilter,
                       menuService: this,
                       onExit: () {
-                        dismiss();
+                        if (!deleteSlashByDefault) {
+                          dismiss();
+                        }
                       },
                       onSelectionUpdate: () {
                         _selectionUpdateByInner = true;
