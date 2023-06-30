@@ -295,7 +295,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        'Chose an image',
+                        'Choose an image',
                         style:
                             TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
                       ),
