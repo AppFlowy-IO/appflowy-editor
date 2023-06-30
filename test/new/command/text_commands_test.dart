@@ -176,6 +176,29 @@ void main() async {
       );
       expect(editorState.getNodeAtPath([1, 0])?.delta?.toPlainText(), text);
     });
+
+    test('insert new line preserve direction', () async {
+      final document = Document.blank().addParagraph(
+        initialText: text,
+        decorator: (index, node) => node.updateAttributes(
+          {
+            FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+          },
+        ),
+      );
+      final editorState = EditorState(document: document);
+
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+      editorState.insertNewLine();
+
+      expect(
+        editorState.getNodeAtPath([1])?.attributes.direction,
+        FlowyTextDirection.rtl,
+      );
+    });
   });
 
   group('insertText', () {

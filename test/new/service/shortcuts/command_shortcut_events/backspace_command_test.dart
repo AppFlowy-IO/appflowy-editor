@@ -153,6 +153,35 @@ void main() async {
           ),
         );
       });
+
+      test("backspace convert bullet list to paragraph but keep direction",
+          () async {
+        final rtlText = 'سلام';
+        final document = Document.blank().addNode(
+          BulletedListBlockKeys.type,
+          initialText: rtlText,
+          decorator: (index, node) => node.updateAttributes(
+            {
+              FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+            },
+          ),
+        );
+        final editorState = EditorState(document: document);
+
+        // Welcome to AppFlowy Editor 🔥!
+        // |Welcome to AppFlowy Editor 🔥!
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: 0),
+        );
+        editorState.selection = selection;
+
+        final result = convertToParagraphCommand.execute(editorState);
+        expect(result, KeyEventResult.handled);
+
+        final node = editorState.getNodeAtPath([0])!;
+        expect(node.type, ParagraphBlockKeys.type);
+        expect(node.attributes.direction, FlowyTextDirection.rtl);
+      });
     });
 
     group('backspaceCommand - not collapsed selection', () {
