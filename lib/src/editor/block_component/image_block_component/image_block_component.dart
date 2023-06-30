@@ -121,7 +121,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
 
   final showActionsNotifier = ValueNotifier<bool>(false);
 
-  bool alwaysShowMenu = true;
+  bool alwaysShowMenu = false;
 
   @override
   Widget build(BuildContext context) {
