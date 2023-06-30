@@ -58,6 +58,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+
+    _jsonString = Future.value(
+      jsonEncode(_editorState.document.toJson()),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,

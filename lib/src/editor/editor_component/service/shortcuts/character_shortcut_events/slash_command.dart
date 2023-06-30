@@ -25,10 +25,7 @@ CharacterShortcutEvent customSlashCommand(
     character: '/',
     handler: (editorState) => _showSlashMenu(
       editorState,
-      [
-        ...standardSelectionMenuItems,
-        ...items,
-      ],
+      items,
       shouldInsertSlash: shouldInsertSlash,
       style: style,
     ),

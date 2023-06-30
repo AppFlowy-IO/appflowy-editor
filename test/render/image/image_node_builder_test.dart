@@ -21,7 +21,7 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addParagraph(initialText: text);
         await editor.startTesting();
@@ -39,7 +39,7 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addParagraph(initialText: text);
 
@@ -70,7 +70,7 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addParagraph(initialText: text);
 
@@ -105,7 +105,6 @@ void main() async {
               url: url,
               align: 'left',
               width: 100,
-              imageSourceType: ImageSourceType.network,
             ),
           )
           ..addNode(
@@ -113,7 +112,6 @@ void main() async {
               url: url,
               align: 'center',
               width: 100,
-              imageSourceType: ImageSourceType.network,
             ),
           )
           ..addNode(
@@ -121,7 +119,6 @@ void main() async {
               url: url,
               align: 'right',
               width: 100,
-              imageSourceType: ImageSourceType.network,
             ),
           )
           ..addParagraph(initialText: text);
@@ -176,7 +173,7 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addParagraph(initialText: text);
         await editor.startTesting();
@@ -197,10 +194,10 @@ void main() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addNode(
-            imageNode(url: url, imageSourceType: ImageSourceType.network),
+            imageNode(url: url),
           )
           ..addParagraph(initialText: text);
         await editor.startTesting();

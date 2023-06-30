@@ -15,6 +15,5 @@ analyzer:
   exclude:
     - lib/src/l10n/**
     # Remove the below directory until migration is complete.
-    - example/**
     - test/**
     - lib/src/service/**

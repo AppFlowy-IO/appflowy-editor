@@ -346,11 +346,9 @@ const nestedDelta = {
         'type': 'image',
         'data': {
           'url': 'https://richtexteditor.com/images/editor-image.png',
-          'content': null,
           'align': 'center',
           'height': null,
           'width': null,
-          'imageSourceType': 'network'
         }
       },
       {
@@ -399,11 +397,9 @@ const nestedDelta = {
             'type': 'image',
             'data': {
               'url': 'https://richtexteditor.com/images/editor-image.png',
-              'content': null,
               'align': 'center',
               'height': null,
               'width': null,
-              'imageSourceType': 'network'
             }
           }
         ],
