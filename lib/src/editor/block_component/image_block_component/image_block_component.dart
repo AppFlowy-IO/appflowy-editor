@@ -4,22 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'resizable_image.dart';
 
-enum ImageSourceType {
-  network,
-  file;
-
-  static ImageSourceType fromString(String value) {
-    switch (value) {
-      case 'network':
-        return ImageSourceType.network;
-      case 'file':
-        return ImageSourceType.file;
-      default:
-        return ImageSourceType.network; // compatible with old version
-    }
-  }
-}
-
 class ImageBlockKeys {
   ImageBlockKeys._();
 
@@ -46,23 +30,10 @@ class ImageBlockKeys {
   ///
   /// The value is a double.
   static const String height = 'height';
-
-  /// The image source type of a image block.
-  ///
-  /// The value is a String.
-  /// network, file
-  static const String imageSourceType = 'imageSourceType';
-
-  /// The image content of a image block.
-  ///
-  /// base64 image content
-  static const String content = 'content';
 }
 
 Node imageNode({
-  required ImageSourceType imageSourceType,
-  String? content,
-  String? url,
+  required String url,
   String align = 'center',
   double? height,
   double? width,
@@ -71,22 +42,33 @@ Node imageNode({
     type: ImageBlockKeys.type,
     attributes: {
       ImageBlockKeys.url: url,
-      ImageBlockKeys.content: content,
       ImageBlockKeys.align: align,
       ImageBlockKeys.height: height,
       ImageBlockKeys.width: width,
-      ImageBlockKeys.imageSourceType: imageSourceType.name,
     },
   );
 }
 
+typedef ImageBlockComponentMenuBuilder = Widget Function(
+  Node node,
+  ImageBlockComponentWidgetState state,
+);
+
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  ///
+  final ImageBlockComponentMenuBuilder? menuBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -100,6 +82,8 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      showMenu: showMenu,
+      menuBuilder: menuBuilder,
     );
   }
 
@@ -114,41 +98,51 @@ class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
   });
+
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  final ImageBlockComponentMenuBuilder? menuBuilder;
 
   @override
   State<ImageBlockComponentWidget> createState() =>
-      _ImageBlockComponentWidgetState();
+      ImageBlockComponentWidgetState();
 }
 
-class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
+class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     with SelectableMixin {
+  final imageKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
+
+  final showActionsNotifier = ValueNotifier<bool>(false);
+
+  bool alwaysShowMenu = false;
 
   @override
   Widget build(BuildContext context) {
     final node = widget.node;
     final attributes = node.attributes;
     final src = attributes[ImageBlockKeys.url];
-    final content = attributes[ImageBlockKeys.content];
+
     final alignment = AlignmentExtension.fromString(
       attributes[ImageBlockKeys.align] ?? 'center',
     );
     final width = attributes[ImageBlockKeys.width]?.toDouble() ??
         MediaQuery.of(context).size.width;
-    final imageSourceType = ImageSourceType.fromString(
-      attributes[ImageBlockKeys.imageSourceType],
-    );
+    final height = attributes[ImageBlockKeys.height]?.toDouble();
 
     Widget child = ResizableImage(
+      key: imageKey,
       src: src,
-      content: content,
       width: width,
+      height: height,
       editable: editorState.editable,
       alignment: alignment,
-      type: imageSourceType,
       onResize: (width) {
         final transaction = editorState.transaction
           ..updateNode(node, {
@@ -163,6 +157,31 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
         node: node,
         actionBuilder: widget.actionBuilder!,
         child: child,
+      );
+    }
+
+    if (widget.showMenu && widget.menuBuilder != null) {
+      child = MouseRegion(
+        onEnter: (_) => showActionsNotifier.value = true,
+        onExit: (_) {
+          if (!alwaysShowMenu) {
+            showActionsNotifier.value = false;
+          }
+        },
+        hitTestBehavior: HitTestBehavior.opaque,
+        opaque: false,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: showActionsNotifier,
+          builder: (context, value, child) {
+            return Stack(
+              children: [
+                child!,
+                if (value) widget.menuBuilder!(widget.node, this),
+              ],
+            );
+          },
+          child: child,
+        ),
       );
     }
 
@@ -195,8 +214,17 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) =>
-      [Offset.zero & _renderBox.size];
+  List<Rect> getRectsInSelection(Selection selection) {
+    final parentBox = context.findRenderObject();
+    final dividerBox = imageKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && dividerBox is RenderBox) {
+      return [
+        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            dividerBox.size
+      ];
+    }
+    return [Offset.zero & _renderBox.size];
+  }
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) => Selection.single(

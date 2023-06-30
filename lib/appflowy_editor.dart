@@ -33,6 +33,7 @@ export 'src/render/rich_text/flowy_rich_text.dart';
 export 'src/render/rich_text/flowy_rich_text_keys.dart';
 export 'src/render/selection_menu/selection_menu_widget.dart';
 export 'src/render/selection_menu/selection_menu_item_widget.dart';
+export 'src/render/selection_menu/selection_menu_icon.dart';
 export 'src/l10n/l10n.dart';
 export 'src/render/style/plugin_styles.dart';
 export 'src/plugins/markdown/encoder/delta_markdown_encoder.dart';
