@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/ime/non_delta_input_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -200,7 +199,13 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (textEditingValue != null) {
       textInputService.attach(
         textEditingValue,
-        context,
+        TextInputConfiguration(
+          enableDeltaModel: false,
+          inputType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          inputAction: TextInputAction.newline,
+          keyboardAppearance: Theme.of(context).brightness,
+        ),
       );
       // disable shortcuts when the IME active
       enableShortcuts = textEditingValue.composing == TextRange.empty;

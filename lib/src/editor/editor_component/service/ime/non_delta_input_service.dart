@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
-import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/services.dart';
 
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
@@ -57,7 +57,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void attach(
     TextEditingValue textEditingValue,
-    BuildContext context,
+    TextInputConfiguration configuration,
   ) {
     final formattedValue = textEditingValue.format();
     if (currentTextEditingValue == formattedValue) {
@@ -68,13 +68,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         _textInputConnection!.attached == false) {
       _textInputConnection = TextInput.attach(
         this,
-        TextInputConfiguration(
-          enableDeltaModel: false,
-          inputType: TextInputType.multiline,
-          textCapitalization: TextCapitalization.sentences,
-          inputAction: TextInputAction.newline,
-          keyboardAppearance: Theme.of(context).brightness,
-        ),
+        configuration,
+        // TextInputConfiguration(
+        //   enableDeltaModel: false,
+        //   inputType: TextInputType.multiline,
+        //   textCapitalization: TextCapitalization.sentences,
+        //   inputAction: TextInputAction.newline,
+        //   keyboardAppearance: Theme.of(context).brightness,
+        // ),
       );
     }
 
