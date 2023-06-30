@@ -6,7 +6,6 @@ final List<ToolbarItem> textDirectionItems = [
     id: 'auto',
     name: 'auto',
     tooltip: AppFlowyEditorLocalizations.current.auto,
-    // TODO: auto direction icon
     icon: Icons.swap_horiz,
   ),
   _FormatToolbarItem(

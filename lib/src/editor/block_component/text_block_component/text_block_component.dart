@@ -107,7 +107,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
