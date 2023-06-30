@@ -94,7 +94,7 @@ class _ResizableImageState extends State<ResizableImage> {
           _buildEdgeGesture(
             context,
             top: 0,
-            left: 0,
+            left: 5,
             bottom: 0,
             width: 5,
             onUpdate: (distance) {
@@ -106,7 +106,7 @@ class _ResizableImageState extends State<ResizableImage> {
           _buildEdgeGesture(
             context,
             top: 0,
-            right: 0,
+            right: 5,
             bottom: 0,
             width: 5,
             onUpdate: (distance) {
@@ -195,6 +195,7 @@ class _ResizableImageState extends State<ResizableImage> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5.0),
                       ),
+                      border: Border.all(width: 1, color: Colors.white),
                     ),
                   ),
                 )

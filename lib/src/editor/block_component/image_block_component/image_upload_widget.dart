@@ -41,7 +41,7 @@ void showImageMenu(
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
-      width: MediaQuery.of(context).size.width * 0.5,
+      width: MediaQuery.of(context).size.width * 0.4,
       onSubmitted: insertImage,
       onUpload: insertImage,
     ),
@@ -94,8 +94,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.width,
-      height: 350,
-      padding: const EdgeInsets.all(24.0),
+      height: 300,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         boxShadow: [
@@ -111,18 +111,18 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         length: 2,
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
                 width: 300,
                 child: TabBar(
-                  tabs: [
+                  tabs: const [
                     Tab(text: 'Upload Image'),
                     Tab(text: 'URL Image'),
                   ],
-                  labelColor: Colors.black,
+                  labelColor: widget.headerColor,
                   unselectedLabelColor: Colors.grey,
-                  indicatorColor: Color(0xff00BCF0),
+                  indicatorColor: const Color(0xff00BCF0),
                   dividerColor: Colors.transparent,
                 ),
               ),
@@ -138,18 +138,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Text(
-      'URL Image',
-      textAlign: TextAlign.left,
-      style: TextStyle(
-        fontSize: 14.0,
-        color: widget.headerColor,
-        fontWeight: FontWeight.w500,
       ),
     );
   }
@@ -226,14 +214,16 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(context),
         const SizedBox(height: 16.0),
         _buildInput(),
         const SizedBox(height: 18.0),
-        _buildUploadButton(
-          context,
-          ImageSourceType.network,
-        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: _buildUploadButton(
+            context,
+            ImageSourceType.file,
+          ),
+        )
       ],
     );
   }

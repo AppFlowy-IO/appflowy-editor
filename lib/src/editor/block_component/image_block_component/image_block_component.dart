@@ -80,6 +80,11 @@ Node imageNode({
   );
 }
 
+typedef ImageBlockComponentMenuBuilder = Widget Function(
+  Node node,
+  ImageBlockComponentWidgetState state,
+);
+
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
@@ -94,7 +99,7 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
   final bool showMenu;
 
   ///
-  final Widget Function(Node node)? menuBuilder;
+  final ImageBlockComponentMenuBuilder? menuBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -131,20 +136,23 @@ class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
   /// Whether to show the menu of this block component.
   final bool showMenu;
 
-  final Widget Function(Node node)? menuBuilder;
+  final ImageBlockComponentMenuBuilder? menuBuilder;
 
   @override
   State<ImageBlockComponentWidget> createState() =>
-      _ImageBlockComponentWidgetState();
+      ImageBlockComponentWidgetState();
 }
 
-class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
+class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     with SelectableMixin {
+  final imageKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   final showActionsNotifier = ValueNotifier<bool>(false);
+
+  bool alwaysShowMenu = true;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +170,7 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     );
 
     Widget child = ResizableImage(
+      key: imageKey,
       src: src,
       content: content,
       width: width,
@@ -188,7 +197,11 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     if (widget.showMenu && widget.menuBuilder != null) {
       child = MouseRegion(
         onEnter: (_) => showActionsNotifier.value = true,
-        onExit: (_) => showActionsNotifier.value = false,
+        onExit: (_) {
+          if (!alwaysShowMenu) {
+            showActionsNotifier.value = false;
+          }
+        },
         hitTestBehavior: HitTestBehavior.opaque,
         opaque: false,
         child: ValueListenableBuilder<bool>(
@@ -197,7 +210,7 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
             return Stack(
               children: [
                 child!,
-                if (value) widget.menuBuilder!(widget.node),
+                if (value) widget.menuBuilder!(widget.node, this),
               ],
             );
           },
@@ -231,8 +244,17 @@ class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) =>
-      [Offset.zero & _renderBox.size];
+  List<Rect> getRectsInSelection(Selection selection) {
+    final parentBox = context.findRenderObject();
+    final dividerBox = imageKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && dividerBox is RenderBox) {
+      return [
+        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            dividerBox.size
+      ];
+    }
+    return [Offset.zero & _renderBox.size];
+  }
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) => Selection.single(

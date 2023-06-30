@@ -187,7 +187,7 @@ class SimpleEditor extends StatelessWidget {
       ...standardBlockComponentBuilderMap,
       ImageBlockKeys.type: ImageBlockComponentBuilder(
         showMenu: true,
-        menuBuilder: (node) {
+        menuBuilder: (node, _) {
           return const Positioned(
             right: 10,
             child: Text('Sample Menu'),

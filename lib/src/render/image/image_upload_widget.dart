@@ -103,24 +103,10 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context),
-          const SizedBox(height: 16.0),
           _buildInput(),
           const SizedBox(height: 18.0),
           _buildUploadButton(context),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Text(
-      'URL Image',
-      textAlign: TextAlign.left,
-      style: TextStyle(
-        fontSize: 14.0,
-        color: style?.selectionMenuItemTextColor ?? Colors.black,
-        fontWeight: FontWeight.w500,
       ),
     );
   }
