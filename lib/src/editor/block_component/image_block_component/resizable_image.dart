@@ -1,5 +1,5 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/base64_image.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ResizableImage extends StatefulWidget {
@@ -8,18 +8,15 @@ class ResizableImage extends StatefulWidget {
     required this.alignment,
     required this.editable,
     required this.onResize,
-    required this.type,
     required this.width,
-    this.src,
-    this.content,
+    required this.src,
   });
 
-  final String? src;
-  final String? content;
+  final String src;
   final double width;
   final Alignment alignment;
   final bool editable;
-  final ImageSourceType type;
+
   final void Function(double width) onResize;
 
   @override
@@ -65,9 +62,12 @@ class _ResizableImageState extends State<ResizableImage> {
 
   Widget _buildResizableImage(BuildContext context) {
     Widget child;
-    if (widget.type == ImageSourceType.network && widget.src != null) {
+    final regex = RegExp('^(http|https)://');
+    final url = widget.src;
+    if (regex.hasMatch(url)) {
+      // load network image
       _cacheImage ??= Image.network(
-        widget.src!,
+        widget.src,
         width: widget.width,
         gaplessPlayback: true,
         loadingBuilder: (context, child, loadingProgress) {
@@ -81,11 +81,10 @@ class _ResizableImageState extends State<ResizableImage> {
         errorBuilder: (context, error, stackTrace) => _buildError(context),
       );
       child = _cacheImage!;
-    } else if (widget.type == ImageSourceType.file && widget.content != null) {
-      _cacheImage ??= imageFromBase64String(widget.content!);
-      child = _cacheImage!;
     } else {
-      child = _buildError(context);
+      // load local file
+      _cacheImage ??= Image.file(File(url));
+      child = _cacheImage!;
     }
     return Stack(
       children: [

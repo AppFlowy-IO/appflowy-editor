@@ -195,7 +195,6 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     // only support network image
     return imageNode(
       url: src,
-      imageSourceType: ImageSourceType.network,
     );
   }
 

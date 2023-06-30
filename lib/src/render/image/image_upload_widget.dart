@@ -28,8 +28,8 @@ void showImageUploadMenu(
       child: Material(
         child: ImageUploadMenu(
           editorState: editorState,
-          onSubmitted: editorState.insertImageNode,
-          onUpload: editorState.insertImageNode,
+          onSubmitted: (src) {},
+          onUpload: (src) {},
         ),
       ),
     ),
@@ -163,7 +163,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
   }
 }
 
-extension InsertImage on EditorState {
+extension on EditorState {
   void insertImageNode(String src) {
     final selection = service.selectionService.currentSelection.value;
     if (selection == null) {

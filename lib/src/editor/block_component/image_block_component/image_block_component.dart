@@ -4,22 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'resizable_image.dart';
 
-enum ImageSourceType {
-  network,
-  file;
-
-  static ImageSourceType fromString(String value) {
-    switch (value) {
-      case 'network':
-        return ImageSourceType.network;
-      case 'file':
-        return ImageSourceType.file;
-      default:
-        return ImageSourceType.network; // compatible with old version
-    }
-  }
-}
-
 class ImageBlockKeys {
   ImageBlockKeys._();
 
@@ -46,23 +30,10 @@ class ImageBlockKeys {
   ///
   /// The value is a double.
   static const String height = 'height';
-
-  /// The image source type of a image block.
-  ///
-  /// The value is a String.
-  /// network, file
-  static const String imageSourceType = 'imageSourceType';
-
-  /// The image content of a image block.
-  ///
-  /// base64 image content
-  static const String content = 'content';
 }
 
 Node imageNode({
-  required ImageSourceType imageSourceType,
-  String? content,
-  String? url,
+  required String url,
   String align = 'center',
   double? height,
   double? width,
@@ -71,11 +42,9 @@ Node imageNode({
     type: ImageBlockKeys.type,
     attributes: {
       ImageBlockKeys.url: url,
-      ImageBlockKeys.content: content,
       ImageBlockKeys.align: align,
       ImageBlockKeys.height: height,
       ImageBlockKeys.width: width,
-      ImageBlockKeys.imageSourceType: imageSourceType.name,
     },
   );
 }
@@ -159,24 +128,19 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final node = widget.node;
     final attributes = node.attributes;
     final src = attributes[ImageBlockKeys.url];
-    final content = attributes[ImageBlockKeys.content];
+
     final alignment = AlignmentExtension.fromString(
       attributes[ImageBlockKeys.align] ?? 'center',
     );
     final width = attributes[ImageBlockKeys.width]?.toDouble() ??
         MediaQuery.of(context).size.width;
-    final imageSourceType = ImageSourceType.fromString(
-      attributes[ImageBlockKeys.imageSourceType],
-    );
 
     Widget child = ResizableImage(
       key: imageKey,
       src: src,
-      content: content,
       width: width,
       editable: editorState.editable,
       alignment: alignment,
-      type: imageSourceType,
       onResize: (width) {
         final transaction = editorState.transaction
           ..updateNode(node, {

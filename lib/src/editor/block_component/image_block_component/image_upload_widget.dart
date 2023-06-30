@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/base64_image.dart';
 import 'package:flutter/material.dart';
 import '../../util/file_picker/file_picker_impl.dart';
 import 'package:file_picker/file_picker.dart' as fp;
@@ -11,11 +10,14 @@ enum ImageFromFileStatus {
   selected,
 }
 
+typedef OnInsertImage = void Function(String url);
+
 void showImageMenu(
   OverlayState container,
   EditorState editorState,
-  SelectionMenuService menuService,
-) {
+  SelectionMenuService menuService, {
+  OnInsertImage? onInsertImage,
+}) {
   menuService.dismiss();
 
   final (left, top, bottom) = menuService.getPosition();
@@ -23,10 +25,13 @@ void showImageMenu(
   late final OverlayEntry imageMenuEntry;
 
   void insertImage(
-    String src, {
-    ImageSourceType imageSourceType = ImageSourceType.network,
-  }) {
-    editorState.insertImageNode(src, imageSourceType);
+    String url,
+  ) {
+    if (onInsertImage != null) {
+      onInsertImage(url);
+    } else {
+      editorState.insertImageNode(url);
+    }
     menuService.dismiss();
     imageMenuEntry.remove();
     keepEditorFocusNotifier.value -= 1;
@@ -63,7 +68,7 @@ class UploadImageMenu extends StatefulWidget {
   final Color headerColor;
   final double width;
   final void Function(String text) onSubmitted;
-  final void Function(String text, {ImageSourceType imageSourceType}) onUpload;
+  final void Function(String text) onUpload;
 
   @override
   State<UploadImageMenu> createState() => _UploadImageMenuState();
@@ -173,7 +178,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   Widget _buildUploadButton(
     BuildContext context,
-    ImageSourceType imageSourceType,
   ) {
     return SizedBox(
       width: 170,
@@ -188,17 +192,13 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           ),
         ),
         onPressed: () async {
-          if (imageSourceType == ImageSourceType.network) {
+          if (_localImagePath != null) {
+            widget.onUpload(
+              _localImagePath!,
+            );
+          } else if (_textEditingController.text.isNotEmpty) {
             widget.onUpload(
               _textEditingController.text,
-              imageSourceType: imageSourceType,
-            );
-          } else if (imageSourceType == ImageSourceType.file &&
-              _localImagePath != null) {
-            final content = await base64StringFromImage(_localImagePath!);
-            widget.onUpload(
-              content,
-              imageSourceType: imageSourceType,
             );
           }
         },
@@ -221,7 +221,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           alignment: Alignment.centerRight,
           child: _buildUploadButton(
             context,
-            ImageSourceType.file,
           ),
         )
       ],
@@ -239,7 +238,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           alignment: Alignment.centerRight,
           child: _buildUploadButton(
             context,
-            ImageSourceType.file,
           ),
         )
       ],
@@ -298,10 +296,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   }
 }
 
-extension on EditorState {
+extension InsertImage on EditorState {
   Future<void> insertImageNode(
     String src,
-    ImageSourceType imageSourceType,
   ) async {
     final selection = this.selection;
     if (selection == null || !selection.isCollapsed) {
@@ -319,16 +316,16 @@ extension on EditorState {
         ..insertNode(
           node.path,
           imageNode(
-            url: imageSourceType == ImageSourceType.network ? src : null,
-            content: imageSourceType == ImageSourceType.file ? src : null,
-            imageSourceType: imageSourceType,
+            url: src,
           ),
         )
         ..deleteNode(node);
     } else {
       transaction.insertNode(
         node.path.next,
-        imageNode(url: src, imageSourceType: imageSourceType),
+        imageNode(
+          url: src,
+        ),
       );
     }
 
