@@ -129,6 +129,13 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: const Color(0xff00BCF0),
                   dividerColor: Colors.transparent,
+                  onTap: (value) {
+                    if (value == 1) {
+                      _focusNode.requestFocus();
+                    } else {
+                      _focusNode.unfocus();
+                    }
+                  },
                 ),
               ),
             ),
@@ -249,7 +256,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       child: GestureDetector(
         onTap: () async {
           final result = await _filePicker.pickFiles(
-            dialogTitle: 'Select an image',
+            dialogTitle: '',
             allowMultiple: false,
             type: fp.FileType.image,
             allowedExtensions: allowedExtensions,
@@ -264,7 +271,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           height: 80,
           margin: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
+            border: Border.all(color: const Color(0xff00BCF0)),
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: _localImagePath != null
@@ -281,11 +288,16 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.image, size: 48.0, color: Colors.grey),
+                      FlowySvg(
+                        name: 'upload_image',
+                        width: 32,
+                        height: 32,
+                      ),
                       SizedBox(height: 8.0),
                       Text(
-                        'Pick a file',
-                        style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                        'Chose an image',
+                        style:
+                            TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
                       ),
                     ],
                   ),
