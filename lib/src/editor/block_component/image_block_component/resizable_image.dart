@@ -10,10 +10,12 @@ class ResizableImage extends StatefulWidget {
     required this.onResize,
     required this.width,
     required this.src,
+    this.height,
   });
 
   final String src;
   final double width;
+  final double? height;
   final Alignment alignment;
   final bool editable;
 
@@ -47,6 +49,7 @@ class _ResizableImageState extends State<ResizableImage> {
       alignment: widget.alignment,
       child: SizedBox(
         width: imageWidth - moveDistance,
+        height: widget.height,
         child: MouseRegion(
           onEnter: (event) => setState(() {
             onFocus = true;

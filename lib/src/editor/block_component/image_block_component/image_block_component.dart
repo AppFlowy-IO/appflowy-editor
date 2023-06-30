@@ -134,11 +134,13 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     );
     final width = attributes[ImageBlockKeys.width]?.toDouble() ??
         MediaQuery.of(context).size.width;
+    final height = attributes[ImageBlockKeys.height]?.toDouble();
 
     Widget child = ResizableImage(
       key: imageKey,
       src: src,
       width: width,
+      height: height,
       editable: editorState.editable,
       alignment: alignment,
       onResize: (width) {
