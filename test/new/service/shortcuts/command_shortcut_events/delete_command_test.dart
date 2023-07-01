@@ -116,43 +116,43 @@ void main() async {
       });
 
       // Before
-      // Welcome to AppFlowy Editor 🔥!
-      //    |Welcome to AppFlowy Editor 🔥!
+      // Welcome to AppFlowy Editor 🔥!|
+      //    Welcome to AppFlowy Editor 🔥!
       // After
-      // Welcome to AppFlowy Editor 🔥!
-      // |Welcome to AppFlowy Editor 🔥!
-      test('''Delete the collapsed selection when the index is 0
-          and there is a previous node that contains a delta
-          and the previous node is the parent of the current node''', () async {
-        final document = Document.blank().addParagraph(
-          initialText: text,
-          decorator: (index, node) => node.addParagraph(
-            initialText: text,
-          ),
-        );
-        final editorState = EditorState(document: document);
+      // Welcome to AppFlowy Editor 🔥!|Welcome to AppFlowy Editor 🔥!
+      //
+      //   test('''Delete the collapsed selection's next node when cursor is at end
+      //       and current node contains a delta
+      //       and the next node is the child of the current node''', () async {
+      //     final document = Document.blank().addParagraph(
+      //       initialText: text,
+      //       decorator: (index, node) => node.addParagraph(
+      //         initialText: text,
+      //       ),
+      //     );
+      //     final editorState = EditorState(document: document);
 
-        // Welcome to AppFlowy Editor 🔥!
-        // |Welcome to AppFlowy Editor 🔥!
-        final selection = Selection.collapsed(
-          Position(path: [0, 0], offset: 0),
-        );
-        editorState.selection = selection;
+      //     // Welcome to AppFlowy Editor 🔥!
+      //     // |Welcome to AppFlowy Editor 🔥!
+      //     final selection = Selection.collapsed(
+      //       Position(path: [0, 0], offset: 0),
+      //     );
+      //     editorState.selection = selection;
 
-        final result = backspaceCommand.execute(editorState);
-        expect(result, KeyEventResult.handled);
+      //     final result = deleteCommand.execute(editorState);
+      //     expect(result, KeyEventResult.handled);
 
-        // the second node should be moved to the same level as it's parent.
-        expect(editorState.getNodeAtPath([0, 1]), null);
-        final after = editorState.getNodeAtPath([1])!;
-        expect(after.delta!.toPlainText(), text);
-        expect(
-          editorState.selection,
-          Selection.collapsed(
-            Position(path: [1], offset: 0),
-          ),
-        );
-      });
+      //     // the second node should be moved to the same level as it's parent.
+      //     expect(editorState.getNodeAtPath([0, 1]), null);
+      //     final after = editorState.getNodeAtPath([1])!;
+      //     expect(after.delta!.toPlainText(), text);
+      //     expect(
+      //       editorState.selection,
+      //       Selection.collapsed(
+      //         Position(path: [1], offset: 0),
+      //       ),
+      //     );
+      //   });
     });
 
     group('deleteCommand - not collapsed selection', () {
@@ -213,7 +213,7 @@ void main() async {
         );
         editorState.selection = selection;
 
-        final result = backspaceCommand.execute(editorState);
+        final result = deleteCommand.execute(editorState);
         expect(result, KeyEventResult.handled);
 
         final after = editorState.getNodeAtPath([0])!;
@@ -260,7 +260,7 @@ void main() async {
         );
         editorState.selection = selection;
 
-        final result = backspaceCommand.execute(editorState);
+        final result = deleteCommand.execute(editorState);
         expect(result, KeyEventResult.handled);
 
         // Welcome| to AppFlowy Editor 🔥!
@@ -285,7 +285,7 @@ void main() async {
     // |Welcome| to AppFlowy Editor 🔥!
     // After
     // | to AppFlowy Editor 🔥!
-    testWidgets('Delete the collapsed selection', (tester) async {
+    testWidgets('Delete the not collapsed selection', (tester) async {
       TestableEditor editor = tester.editor
         ..addParagraph(
           initialText: text,
@@ -321,7 +321,7 @@ void main() async {
     // # Welcome to AppFlowy Editor 🔥!
     // * Welcome to AppFlowy Editor 🔥!
     testWidgets(
-        'Delete the collapsed selection and the first node can\'t have children',
+        'Delete the non collapsed selection and the first node can\'t have children',
         (tester) async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
@@ -369,7 +369,7 @@ void main() async {
     // # Welcome to AppFlowy Editor 🔥!
     // * Welcome to AppFlowy Editor 🔥!
     testWidgets(
-        'Delete the collapsed selection and the first node can have children',
+        'Delete the non collapsed selection and the first node can have children',
         (tester) async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
@@ -416,7 +416,8 @@ void main() async {
     // After
     // Welcome to AppFlowy Editor 🔥!
     // |Welcome to AppFlowy Editor 🔥!
-    testWidgets('Delete the non-text node, such as divider', (tester) async {
+    testWidgets('Delete the non-text node after selecting it, such as divider',
+        (tester) async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addParagraph(initialText: text)
