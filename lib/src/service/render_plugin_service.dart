@@ -98,7 +98,7 @@ class AppFlowyRenderPlugin extends AppFlowyRenderPluginService {
   Widget buildPluginWidget(NodeWidgetContext context) {
     final node = context.node;
     final name =
-        node.subtype == null ? node.type : '${node.type}/${node.subtype!}';
+        node.subtype == null ? node.type : '${node.type}/${node.subtype}';
     final builder = _builders[name];
     if (builder != null && builder.nodeValidator(node)) {
       return _autoUpdateNodeWidget(builder, context);

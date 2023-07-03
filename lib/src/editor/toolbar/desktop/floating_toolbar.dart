@@ -3,6 +3,14 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+class FloatingToolbarStyle {
+  const FloatingToolbarStyle({
+    this.backgroundColor = Colors.black,
+  });
+
+  final Color backgroundColor;
+}
+
 /// A floating toolbar that displays at the top of the editor when the selection
 ///   and will be hidden when the selection is collapsed.
 ///
@@ -13,18 +21,21 @@ class FloatingToolbar extends StatefulWidget {
     required this.editorState,
     required this.scrollController,
     required this.child,
+    this.style = const FloatingToolbarStyle(),
   });
 
   final List<ToolbarItem> items;
   final EditorState editorState;
   final ScrollController scrollController;
   final Widget child;
+  final FloatingToolbarStyle style;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
 }
 
-class _FloatingToolbarState extends State<FloatingToolbar> {
+class _FloatingToolbarState extends State<FloatingToolbar>
+    with WidgetsBindingObserver {
   OverlayEntry? _toolbarContainer;
   FloatingToolbarWidget? _toolbarWidget;
 
@@ -34,6 +45,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
     widget.scrollController.addListener(_onScrollPositionChanged);
   }
@@ -55,6 +67,10 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     widget.scrollController.removeListener(_onScrollPositionChanged);
+    WidgetsBinding.instance.removeObserver(this);
+
+    _clear();
+    _toolbarWidget = null;
 
     super.dispose();
   }
@@ -65,6 +81,13 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
 
     _clear();
     _toolbarWidget = null;
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+
+    _showAfterDelay();
   }
 
   @override
@@ -83,9 +106,6 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
       // uses debounce to avoid the computing the rects too frequently.
       _showAfterDelay(const Duration(milliseconds: 200));
     }
-
-    // clear the toolbar widget
-    _toolbarWidget = null;
   }
 
   void _onScrollPositionChanged() {
@@ -108,30 +128,34 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
   }
 
   void _showAfterDelay([Duration duration = Duration.zero]) {
-    _clear(); // clear the previous toolbar
-
     // uses debounce to avoid the computing the rects too frequently.
     Debounce.debounce(
       _debounceKey,
       duration,
       () {
+        _clear(); // clear the previous toolbar.
         _showToolbar();
       },
     );
   }
 
   void _showToolbar() {
+    if (editorState.selection?.isCollapsed ?? true) {
+      return;
+    }
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;
     }
 
-    final offset = _findSuitableOffset(rects.map((e) => e.topLeft));
+    final rect = _findSuitableRect(rects);
+    final (top, left, right) = calculateToolbarOffset(rect);
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
-          left: offset.dx,
-          top: max(0, offset.dy) - 30,
+          top: max(0, top) - floatingToolbarHeight,
+          left: left,
+          right: right,
           child: _buildToolbar(context),
         );
       },
@@ -143,31 +167,61 @@ class _FloatingToolbarState extends State<FloatingToolbar> {
     _toolbarWidget ??= FloatingToolbarWidget(
       items: widget.items,
       editorState: editorState,
+      backgroundColor: widget.style.backgroundColor,
     );
     return _toolbarWidget!;
   }
 
-  Offset _findSuitableOffset(Iterable<Offset> offsets) {
-    assert(offsets.isNotEmpty);
+  Rect _findSuitableRect(Iterable<Rect> rects) {
+    assert(rects.isNotEmpty);
+
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
 
     // find the min offset with non-negative dy.
-    final offsetsWithNonNegativeDy =
-        offsets.where((element) => element.dy >= 30);
-    if (offsetsWithNonNegativeDy.isEmpty) {
+    final rectsWithNonNegativeDy = rects.where(
+      (element) => element.top >= editorOffset.dy,
+    );
+    if (rectsWithNonNegativeDy.isEmpty) {
       // if all the rects offset is negative, then the selection is not visible.
-      return offsets.last;
+      return Rect.zero;
     }
 
-    final minOffset = offsetsWithNonNegativeDy.reduce((min, current) {
-      if (min.dy < current.dy) {
+    final minRect = rectsWithNonNegativeDy.reduce((min, current) {
+      if (min.top < current.top) {
         return min;
-      } else if (min.dy == current.dy) {
-        return min.dx < current.dx ? min : current;
+      } else if (min.top == current.top) {
+        return min.top < current.top ? min : current;
       } else {
         return current;
       }
     });
 
-    return minOffset;
+    return minRect;
+  }
+
+  (double top, double? left, double? right) calculateToolbarOffset(Rect rect) {
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final editorSize = editorState.renderBox?.size ?? Size.zero;
+    final editorRect = editorOffset & editorSize;
+    final editorCenter = editorRect.center;
+    final left = (rect.left - editorCenter.dx).abs();
+    final right = (rect.right - editorCenter.dx).abs();
+    final width = editorSize.width;
+    final threshold = width / 3.0;
+    final top = rect.top < floatingToolbarHeight
+        ? rect.bottom + floatingToolbarHeight
+        : rect.top;
+    if (rect.left >= threshold && rect.right <= threshold * 2.0) {
+      // show in center
+      return (top, threshold, null);
+    } else if (left >= right) {
+      // show in left
+      return (top, rect.left, null);
+    } else {
+      // show in right
+      return (top, null, editorRect.right - rect.right);
+    }
   }
 }

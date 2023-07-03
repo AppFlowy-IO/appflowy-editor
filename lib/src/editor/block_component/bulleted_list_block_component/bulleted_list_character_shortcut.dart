@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/insert_newline_in_type_command.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/markdown_format_helper.dart';
 
 /// Convert '* ' to bulleted list
 ///
@@ -59,7 +57,7 @@ Future<bool> _formatSymbolToBulletedList(
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'bulleted_list',
-    (text, _) => text == symbol,
+    (_, text, __) => text == symbol,
     (_, node, delta) => Node(
       type: 'bulleted_list',
       attributes: {

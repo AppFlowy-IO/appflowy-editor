@@ -13,14 +13,17 @@ class HeadingBlockKeys {
   /// The value is a int.
   static const String level = 'level';
 
+  static const String delta = 'delta';
+
   static const backgroundColor = blockComponentBackgroundColor;
 }
 
 Node headingNode({
   required int level,
+  Delta? delta,
   Attributes? attributes,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: HeadingBlockKeys.type,
     attributes: {
@@ -43,13 +46,18 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   final TextStyle Function(int level)? textStyleBuilder;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return HeadingBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
       textStyleBuilder: textStyleBuilder,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -60,16 +68,15 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
       node.attributes[HeadingBlockKeys.level] is int;
 }
 
-class HeadingBlockComponentWidget extends StatefulWidget {
+class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
   const HeadingBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
   });
-
-  final Node node;
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;
@@ -104,7 +111,7 @@ class _HeadingBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: FlowyRichText(
         key: forwardKey,
@@ -125,6 +132,16 @@ class _HeadingBlockComponentWidgetState
             ),
       ),
     );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   TextStyle? defaultTextStyle(int level) {

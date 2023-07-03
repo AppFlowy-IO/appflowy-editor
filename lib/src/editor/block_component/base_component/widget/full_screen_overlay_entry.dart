@@ -9,6 +9,7 @@ class FullScreenOverlayEntry {
     this.right,
     required this.builder,
     this.tapToDismiss = true,
+    this.dismissCallback,
   });
 
   final double? top;
@@ -17,6 +18,7 @@ class FullScreenOverlayEntry {
   final double? right;
   final WidgetBuilder builder;
   final bool tapToDismiss;
+  final VoidCallback? dismissCallback;
 
   OverlayEntry? _entry;
 
@@ -34,6 +36,7 @@ class FullScreenOverlayEntry {
                 // remove this from the overlay when tapped the opaque layer
                 _entry?.remove();
                 _entry = null;
+                dismissCallback?.call();
               }
             },
             child: Stack(

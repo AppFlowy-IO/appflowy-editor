@@ -1,17 +1,19 @@
 name: appflowy_editor
 description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
-version: 0.1.12
+version: 1.0.4
 homepage: https://github.com/AppFlowy-IO/appflowy-editor
 
 platforms:
+  android:
+  ios:
   linux:
   macos:
   windows:
   web:
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
-  flutter: ">=3.7.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -19,25 +21,26 @@ dependencies:
 
   rich_clipboard: ^1.0.0
   html: ^0.15.0
-  flutter_svg: ^2.0.2
-  provider: ^6.0.3
-  url_launcher: ^6.1.5
-  logging: ^1.0.2
-  intl_utils: ^2.7.0
-  intl: any
-  markdown: ^7.0.1
+  flutter_svg: ^2.0.6
+  provider: ^6.0.5
+  url_launcher: ^6.1.11
+  logging: ^1.2.0
+  intl_utils: ^2.8.2
+  intl: ^0.18.0
+  markdown: ^7.1.0
   flutter_localizations:
     sdk: flutter
   tuple: ^2.0.1
   collection: ^1.17.0
   nanoid: ^1.0.0
-
+  visibility_detector: ^0.4.0+2
+  file_picker: ^5.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
   network_image_mock: ^2.1.1
-  mockito: ^5.3.2
+  mockito: ^5.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -50,6 +53,7 @@ flutter:
     - assets/images/selection_menu/
     - assets/images/image_toolbar/
     - assets/images/
+    - assets/mobile/toolbar_icons/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

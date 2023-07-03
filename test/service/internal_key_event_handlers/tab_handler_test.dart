@@ -35,9 +35,9 @@ void main() async {
     testWidgets('press tab in bulleted list', (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
-        ..addNode(bulletedListNode(text: text))
-        ..addNode(bulletedListNode(text: text))
-        ..addNode(bulletedListNode(text: text));
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)))
+        ..addNode(bulletedListNode(delta: Delta()..insert(text)));
       await editor.startTesting();
       var document = editor.document;
 
@@ -143,9 +143,9 @@ void main() async {
     testWidgets('press tab in checkbox/todo list', (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
-        ..addNode(todoListNode(checked: false, text: text))
-        ..addNode(todoListNode(checked: false, text: text))
-        ..addNode(todoListNode(checked: false, text: text));
+        ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+        ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)))
+        ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)));
       await editor.startTesting();
       Document document = editor.document;
 

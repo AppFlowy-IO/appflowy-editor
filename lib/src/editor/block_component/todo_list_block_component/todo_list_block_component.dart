@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
   TodoListBlockKeys._();
@@ -16,11 +15,11 @@ class TodoListBlockKeys {
 
 Node todoListNode({
   required bool checked,
-  String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
@@ -35,7 +34,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
-    this.icon,
+    this.iconBuilder,
   });
 
   @override
@@ -44,18 +43,22 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
 
-  /// The icon of the todo list block.
-  final Widget? Function(bool checked)? icon;
+  final BlockIconBuilder? iconBuilder;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return TodoListBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
       textStyleBuilder: textStyleBuilder,
-      icon: icon,
+      iconBuilder: iconBuilder,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -66,19 +69,19 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class TodoListBlockComponentWidget extends StatefulWidget {
+class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
   const TodoListBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
-    this.icon,
+    this.iconBuilder,
   });
 
-  final Node node;
-  final BlockComponentConfiguration configuration;
   final TextStyle Function(bool checked)? textStyleBuilder;
-  final Widget? Function(bool checked)? icon;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<TodoListBlockComponentWidget> createState() =>
@@ -91,7 +94,8 @@ class _TodoListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -104,42 +108,23 @@ class _TodoListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
   @override
-  Widget build(BuildContext context) {
-    return node.children.isEmpty
-        ? buildTodoListBlockComponent(context)
-        : buildTodoListBlockComponentWithChildren(context);
-  }
-
-  Widget buildTodoListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildTodoListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildTodoListBlockComponent(BuildContext context) {
-    return Container(
+  Widget buildComponent(BuildContext context) {
+    Widget child = Container(
       color: backgroundColor,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _TodoListIcon(
-            icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),
-            onTap: checkOrUncheck,
-          ),
+          widget.iconBuilder != null
+              ? widget.iconBuilder!(context, node)
+              : _TodoListIcon(
+                  checked: checked,
+                  onTap: checkOrUncheck,
+                ),
           Flexible(
             child: FlowyRichText(
               key: forwardKey,
@@ -160,6 +145,16 @@ class _TodoListBlockComponentWidgetState
         ],
       ),
     );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   Future<void> checkOrUncheck() async {
@@ -168,15 +163,6 @@ class _TodoListBlockComponentWidgetState
         TodoListBlockKeys.checked: !checked,
       });
     return editorState.apply(transaction);
-  }
-
-  FlowySvg defaultCheckboxIcon() {
-    return FlowySvg(
-      width: 22,
-      height: 22,
-      padding: const EdgeInsets.only(right: 5.0),
-      name: checked ? 'check' : 'uncheck',
-    );
   }
 
   TextStyle? defaultTextStyle() {
@@ -192,12 +178,12 @@ class _TodoListBlockComponentWidgetState
 
 class _TodoListIcon extends StatelessWidget {
   const _TodoListIcon({
-    required this.icon,
     required this.onTap,
+    required this.checked,
   });
 
-  final Widget icon;
   final VoidCallback onTap;
+  final bool checked;
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +192,12 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: icon,
+        child: FlowySvg(
+          width: 22,
+          height: 22,
+          padding: const EdgeInsets.only(right: 5.0),
+          name: checked ? 'check' : 'uncheck',
+        ),
       ),
     );
   }

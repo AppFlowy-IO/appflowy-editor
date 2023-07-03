@@ -421,6 +421,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Done`
+  String get done {
+    return Intl.message(
+      'Done',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tint 1`
   String get tint1 {
     return Intl.message(
@@ -601,120 +611,160 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `text color`
-  String get textColor {
-    return Intl.message(
-      'text color',
-      name: 'textColor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `add your link`
-  String get addYourLink {
-    return Intl.message(
-      'add your link',
-      name: 'addYourLink',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `open link`
-  String get openLink {
-    return Intl.message(
-      'open link',
-      name: 'openLink',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `copy link`
-  String get copyLink {
-    return Intl.message(
-      'copy link',
-      name: 'copyLink',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `remove link`
-  String get removeLink {
-    return Intl.message(
-      'remove link',
-      name: 'removeLink',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `url`
+  /// `URL`
   String get urlHint {
     return Intl.message(
-      'url',
+      'URL',
       name: 'urlHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `highlight color`
+  /// `Heading 1`
+  String get mobileHeading1 {
+    return Intl.message(
+      'Heading 1',
+      name: 'mobileHeading1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 2`
+  String get mobileHeading2 {
+    return Intl.message(
+      'Heading 2',
+      name: 'mobileHeading2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 3`
+  String get mobileHeading3 {
+    return Intl.message(
+      'Heading 3',
+      name: 'mobileHeading3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Color`
+  String get textColor {
+    return Intl.message(
+      'Text Color',
+      name: 'textColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Background Color`
+  String get backgroundColor {
+    return Intl.message(
+      'Background Color',
+      name: 'backgroundColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your link`
+  String get addYourLink {
+    return Intl.message(
+      'Add your link',
+      name: 'addYourLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open link`
+  String get openLink {
+    return Intl.message(
+      'Open link',
+      name: 'openLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy link`
+  String get copyLink {
+    return Intl.message(
+      'Copy link',
+      name: 'copyLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove link`
+  String get removeLink {
+    return Intl.message(
+      'Remove link',
+      name: 'removeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Highlight color`
   String get highlightColor {
     return Intl.message(
-      'highlight color',
+      'Highlight color',
       name: 'highlightColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `clear highlight color`
+  /// `Clear highlight color`
   String get clearHighlightColor {
     return Intl.message(
-      'clear highlight color',
+      'Clear highlight color',
       name: 'clearHighlightColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `custom color`
+  /// `Custom color`
   String get customColor {
     return Intl.message(
-      'custom color',
+      'Custom color',
       name: 'customColor',
       desc: '',
       args: [],
     );
   }
 
-  /// `hex value`
+  /// `Hex value`
   String get hexValue {
     return Intl.message(
-      'hex value',
+      'Hex value',
       name: 'hexValue',
       desc: '',
       args: [],
     );
   }
 
-  /// `opacity`
+  /// `Opacity`
   String get opacity {
     return Intl.message(
-      'opacity',
+      'Opacity',
       name: 'opacity',
       desc: '',
       args: [],
     );
   }
 
-  /// `reset to default color`
+  /// `Reset to default color`
   String get resetToDefaultColor {
     return Intl.message(
-      'reset to default color',
+      'Reset to default color',
       name: 'resetToDefaultColor',
       desc: '',
       args: [],

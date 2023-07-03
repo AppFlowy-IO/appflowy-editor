@@ -1,13 +1,27 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:appflowy_editor/src/core/document/attributes.dart';
+import 'package:appflowy_editor/src/core/document/node.dart';
+import 'package:appflowy_editor/src/core/document/text_delta.dart';
+import 'package:appflowy_editor/src/core/location/position.dart';
+import 'package:appflowy_editor/src/core/location/selection.dart';
+import 'package:appflowy_editor/src/editor/toolbar/toolbar.dart';
+import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
+import 'package:appflowy_editor/src/render/rich_text/flowy_rich_text_keys.dart';
+import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
+import 'package:appflowy_editor/src/editor/util/color_util.dart';
+import 'package:appflowy_editor/src/core/document/path.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
-
-const _kRichTextDebugMode = false;
+typedef TextSpanDecoratorForCustomAttributes = InlineSpan Function(
+  TextInsert attributeKey,
+  TextSpan textSpan,
+);
 
 typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
@@ -16,10 +30,11 @@ class FlowyRichText extends StatefulWidget {
     Key? key,
     this.cursorHeight,
     this.cursorWidth = 1.5,
-    this.lineHeight = 1.0,
+    this.lineHeight,
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
+    this.textSpanDecoratorForCustomAttributes,
     required this.node,
     required this.editorState,
   }) : super(key: key);
@@ -28,10 +43,12 @@ class FlowyRichText extends StatefulWidget {
   final EditorState editorState;
   final double? cursorHeight;
   final double cursorWidth;
-  final double lineHeight;
+  final double? lineHeight;
   final FlowyTextSpanDecorator? textSpanDecorator;
   final String placeholderText;
   final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
+  final TextSpanDecoratorForCustomAttributes?
+      textSpanDecoratorForCustomAttributes;
 
   @override
   State<FlowyRichText> createState() => _FlowyRichTextState();
@@ -47,6 +64,11 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   RenderParagraph? get _placeholderRenderParagraph =>
       _placeholderTextKey.currentContext?.findRenderObject()
           as RenderParagraph?;
+
+  TextSpanDecoratorForCustomAttributes?
+      get textSpanDecoratorForCustomAttributes =>
+          widget.textSpanDecoratorForCustomAttributes ??
+          widget.editorState.editorStyle.textSpanDecorator;
 
   @override
   void didUpdateWidget(covariant FlowyRichText oldWidget) {
@@ -211,11 +233,12 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
   }
 
   TextSpan get _placeholderTextSpan {
+    final style = widget.editorState.editorStyle.textStyleConfiguration;
     return TextSpan(
       children: [
         TextSpan(
           text: widget.placeholderText,
-          style: widget.editorState.editorStyle.textStyleConfiguration.text,
+          style: style.text.copyWith(height: widget.lineHeight),
         ),
       ],
     );
@@ -223,11 +246,11 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 
   TextSpan get _textSpan {
     var offset = 0;
-    List<TextSpan> textSpans = [];
+    List<InlineSpan> textSpans = [];
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
-      var textStyle = style.text;
+      var textStyle = style.text.copyWith(height: widget.lineHeight);
       GestureRecognizer? recognizer;
       final attributes = textInsert.attributes;
       if (attributes != null) {
@@ -269,23 +292,15 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
         }
       }
       offset += textInsert.length;
-      textSpans.add(
-        TextSpan(
-          text: textInsert.text,
-          style: textStyle,
-          recognizer: recognizer,
-        ),
+      final textSpan = TextSpan(
+        text: textInsert.text,
+        style: textStyle,
+        recognizer: recognizer,
       );
-    }
-    if (_kRichTextDebugMode) {
       textSpans.add(
-        TextSpan(
-          text: '${widget.node.path}',
-          style: const TextStyle(
-            backgroundColor: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
+        textSpanDecoratorForCustomAttributes != null
+            ? textSpanDecoratorForCustomAttributes!(textInsert, textSpan)
+            : textSpan,
       );
     }
     return TextSpan(
@@ -373,5 +388,37 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       }
     }
     return textSelection;
+  }
+}
+
+extension FlowyRichTextAttributes on Attributes {
+  bool get bold => this[FlowyRichTextKeys.bold] == true;
+
+  bool get italic => this[FlowyRichTextKeys.italic] == true;
+
+  bool get underline => this[FlowyRichTextKeys.underline] == true;
+
+  bool get code => this[FlowyRichTextKeys.code] == true;
+
+  bool get strikethrough {
+    return (containsKey(FlowyRichTextKeys.strikethrough) &&
+        this[FlowyRichTextKeys.strikethrough] == true);
+  }
+
+  Color? get color {
+    final textColor = this[FlowyRichTextKeys.textColor] as String?;
+    return textColor?.toColor();
+  }
+
+  Color? get backgroundColor {
+    final highlightColor = this[FlowyRichTextKeys.highlightColor] as String?;
+    return highlightColor?.toColor();
+  }
+
+  String? get href {
+    if (this[FlowyRichTextKeys.href] is String) {
+      return this[FlowyRichTextKeys.href];
+    }
+    return null;
   }
 }

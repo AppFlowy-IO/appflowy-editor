@@ -5,17 +5,19 @@ import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
     Key? key,
+    this.shrinkWrap = false,
     this.scrollController,
     required this.child,
   }) : super(key: key);
 
   final ScrollController? scrollController;
+  final bool shrinkWrap;
   final Widget child;
 
   @override
@@ -29,6 +31,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   AppFlowyScrollService get forward =>
       _forwardKey.currentState as AppFlowyScrollService;
 
+  late EditorState editorState = context.read<EditorState>();
+
   @override
   late ScrollController scrollController;
 
@@ -37,6 +41,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     super.initState();
 
     scrollController = widget.scrollController ?? ScrollController();
+    editorState.selectionNotifier.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void dispose() {
+    editorState.selectionNotifier.removeListener(_onSelectionChanged);
+    super.dispose();
   }
 
   @override
@@ -54,12 +65,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   Widget build(BuildContext context) {
     return AutoScrollableWidget(
+      shrinkWrap: widget.shrinkWrap,
       scrollController: scrollController,
       builder: ((context, autoScroller) {
-        if (kIsWeb ||
-            Platform.isLinux ||
-            Platform.isMacOS ||
-            Platform.isWindows) {
+        if (PlatformExtension.isDesktopOrWeb) {
           return _buildDesktopScrollService(context, autoScroller);
         } else if (Platform.isIOS || Platform.isAndroid) {
           return _buildMobileScrollService(context, autoScroller);
@@ -91,6 +100,35 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       autoScroller: autoScroller,
       child: widget.child,
     );
+  }
+
+  void _onSelectionChanged() {
+    // should auto scroll after the cursor or selection updated.
+    final selection = editorState.selection;
+    if (selection == null ||
+        editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final selectionRect = editorState.selectionRects();
+      if (selectionRect.isEmpty) {
+        return;
+      }
+      final endTouchPoint = selectionRect.last.centerRight;
+      if (selection.isCollapsed) {
+        if (PlatformExtension.isMobile) {
+          // soft keyboard
+          // workaround: wait for the soft keyboard to show up
+          Future.delayed(const Duration(milliseconds: 300), () {
+            startAutoScroll(endTouchPoint, edgeOffset: 50);
+          });
+        } else {
+          startAutoScroll(endTouchPoint, edgeOffset: 100);
+        }
+      } else {
+        startAutoScroll(endTouchPoint);
+      }
+    });
   }
 
   @override

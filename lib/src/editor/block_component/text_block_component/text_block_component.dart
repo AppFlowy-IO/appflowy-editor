@@ -1,7 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ParagraphBlockKeys {
   ParagraphBlockKeys._();
@@ -15,11 +13,12 @@ class ParagraphBlockKeys {
 
 Node paragraphNode({
   String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
   attributes ??= {
-    ParagraphBlockKeys.delta: (Delta()..insert(text ?? '')).toJson(),
+    ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? ''))).toJson(),
   };
   return Node(
     type: ParagraphBlockKeys.type,
@@ -39,12 +38,17 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   final BlockComponentConfiguration configuration;
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return TextBlockComponentWidget(
       node: node,
       key: node.key,
       configuration: configuration,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -54,15 +58,14 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class TextBlockComponentWidget extends StatefulWidget {
+class TextBlockComponentWidget extends BlockComponentStatefulWidget {
   const TextBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
   });
-
-  final Node node;
-  final BlockComponentConfiguration configuration;
 
   @override
   State<TextBlockComponentWidget> createState() =>
@@ -74,7 +77,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -87,32 +91,10 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   @override
-  Widget build(BuildContext context) {
-    return node.children.isEmpty
-        ? buildBulletListBlockComponent(context)
-        : buildBulletListBlockComponentWithChildren(context);
-  }
-
-  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor.withOpacity(0.5),
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildBulletListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildBulletListBlockComponent(BuildContext context) {
-    return Container(
-      color: node.children.isEmpty ? backgroundColor : null,
-      // padding: padding,
+  Widget buildComponent(BuildContext context) {
+    Widget child = Container(
+      color: backgroundColor,
       child: FlowyRichText(
         key: forwardKey,
         node: widget.node,
@@ -126,5 +108,13 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         ),
       ),
     );
+    if (showActions) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+    return child;
   }
 }

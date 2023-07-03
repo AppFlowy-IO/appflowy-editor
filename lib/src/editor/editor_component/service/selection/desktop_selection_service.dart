@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
@@ -101,30 +102,6 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  List<Node> getNodesInSelection(Selection selection) {
-    final start =
-        selection.isBackward ? selection.start.path : selection.end.path;
-    final end =
-        selection.isBackward ? selection.end.path : selection.start.path;
-    assert(start <= end);
-    final startNode = editorState.document.nodeAtPath(start);
-    final endNode = editorState.document.nodeAtPath(end);
-    if (startNode != null && endNode != null) {
-      final nodes = NodeIterator(
-        document: editorState.document,
-        startNode: startNode,
-        endNode: endNode,
-      ).toList();
-      if (selection.isBackward) {
-        return nodes;
-      } else {
-        return nodes.reversed.toList(growable: false);
-      }
-    }
-    return [];
-  }
-
-  @override
   void updateSelection(Selection? selection) {
     if (currentSelection.value == selection) {
       return;
@@ -137,6 +114,7 @@ class _DesktopSelectionServiceWidgetState
       if (selection.isCollapsed) {
         // updates cursor area.
         Log.selection.debug('update cursor area, $selection');
+        _forceShowCursor();
         _updateCursorAreas(selection.start);
       } else {
         // updates selection area.
@@ -259,15 +237,23 @@ class _DesktopSelectionServiceWidgetState
     // clear old state.
     _panStartOffset = null;
 
-    final position = getPositionInOffset(details.globalPosition);
-    if (position == null) {
+    final offset = details.globalPosition;
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      clearSelection();
       return;
     }
-
-    // updateSelection(selection);
-    editorState.selection = Selection.collapsed(position);
-
-    _showDebugLayerIfNeeded(offset: details.globalPosition);
+    if (selectable.cursorStyle == CursorStyle.verticalLine) {
+      editorState.selection = Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      );
+    } else {
+      editorState.selection = Selection(
+        start: selectable.start(),
+        end: selectable.end(),
+      );
+    }
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
@@ -342,10 +328,6 @@ class _DesktopSelectionServiceWidgetState
     }
 
     _showDebugLayerIfNeeded(offset: panEndOffset);
-
-    editorState.service.scrollService?.startAutoScroll(
-      details.globalPosition,
-    );
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -354,17 +336,29 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateBlockSelectionAreas(Selection selection) {
     assert(editorState.selectionType == SelectionType.block);
-    final nodes = getNodesInSelection(selection).normalized;
+    final nodes = editorState.getNodesInSelection(selection).normalized;
 
     currentSelectedNodes = nodes;
 
     final node = nodes.first;
-    final rect = Offset.zero & node.rect.size;
+    var offset = Offset.zero;
+    var size = node.rect.size;
+    final builder = editorState.renderer.blockComponentBuilder(node.type);
+    if (builder != null && builder.showActions(node)) {
+      offset = offset.translate(blockComponentActionContainerWidth, 0);
+      size = Size(size.width - blockComponentActionContainerWidth, size.height);
+    }
+    final rect = offset & size;
+
     final overlay = OverlayEntry(
       builder: (context) => SelectionWidget(
         color: widget.selectionColor,
         layerLink: node.layerLink,
         rect: rect,
+        decoration: BoxDecoration(
+          color: widget.selectionColor,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
       ),
     );
     _selectionAreas.add(overlay);
@@ -373,7 +367,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelectionAreas(Selection selection) {
-    final nodes = getNodesInSelection(selection);
+    final nodes = editorState.getNodesInSelection(selection);
 
     currentSelectedNodes = nodes;
 
@@ -438,7 +432,7 @@ class _DesktopSelectionServiceWidgetState
         const baseToolbarOffset = Offset(0, 35.0);
         final rects = selectable.getRectsInSelection(newSelection);
         for (final rect in rects) {
-          final selectionRect = _transformRectToGlobal(selectable, rect);
+          final selectionRect = selectable.transformRectToGlobal(rect);
           selectionRects.add(selectionRect);
 
           // TODO: Need to compute more precise location.
@@ -517,7 +511,7 @@ class _DesktopSelectionServiceWidgetState
       );
 
       _cursorAreas.add(cursorArea);
-      selectionRects.add(_transformRectToGlobal(selectable, cursorRect));
+      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
       Overlay.of(context)?.insertAll(_cursorAreas);
 
       _forceShowCursor();
@@ -584,11 +578,6 @@ class _DesktopSelectionServiceWidgetState
       );
     }
     return node;
-  }
-
-  Rect _transformRectToGlobal(SelectableMixin selectable, Rect r) {
-    final Offset topLeft = selectable.localToGlobal(Offset(r.left, r.top));
-    return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
   }
 
   void _showDebugLayerIfNeeded({Offset? offset}) {

@@ -18,7 +18,7 @@ void main() async {
         ..addNode(
           todoListNode(
             checked: false,
-            text: text,
+            delta: Delta()..insert(text),
           ),
         );
       await editor.startTesting();

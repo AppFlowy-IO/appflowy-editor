@@ -13,6 +13,7 @@ typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 class ToolbarItem {
   ToolbarItem({
     required this.id,
+    required this.group,
     this.type = 1,
     this.tooltipsMessage = '',
     this.iconBuilder,
@@ -22,15 +23,10 @@ class ToolbarItem {
     this.itemBuilder,
     this.isActive,
     this.builder,
-  }) {
-    // assert(
-    //   (iconBuilder != null && itemBuilder == null) ||
-    //       (iconBuilder == null && itemBuilder != null),
-    //   'iconBuilder and itemBuilder must be set one of them',
-    // );
-  }
+  });
 
   final String id;
+  final int group;
   final bool Function(EditorState editorState)? isActive;
   final Widget Function(BuildContext context, EditorState editorState)? builder;
 
@@ -51,6 +47,7 @@ class ToolbarItem {
     return ToolbarItem(
       id: 'divider',
       type: -1,
+      group: -1,
       iconBuilder: (_) => const FlowySvg(name: 'toolbar/divider'),
       validator: (editorState) => true,
       handler: (editorState, context) {},
@@ -73,10 +70,12 @@ class ToolbarItem {
   int get hashCode => id.hashCode;
 }
 
+const baseToolbarIndex = 1;
 List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h1',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading1,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h1',
@@ -94,6 +93,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h2',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading2,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h2',
@@ -111,6 +111,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h3',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading3,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h3',
@@ -128,6 +129,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.bold',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.bold}${_shortcutTooltips("⌘ + B", "CTRL + B", "CTRL + B")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -145,6 +147,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.italic',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.italic}${_shortcutTooltips("⌘ + I", "CTRL + I", "CTRL + I")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -162,6 +165,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.underline',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.underline}${_shortcutTooltips("⌘ + U", "CTRL + U", "CTRL + U")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -179,6 +183,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.strikethrough',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.strikethrough}${_shortcutTooltips("⌘ + SHIFT + S", "CTRL + SHIFT + S", "CTRL + SHIFT + S")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -196,6 +201,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.code',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.embedCode}${_shortcutTooltips("⌘ + E", "CTRL + E", "CTRL + E")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -213,6 +219,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.quote',
     type: 3,
+    group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.quote,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/quote',
@@ -231,6 +238,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.bulleted_list',
     type: 3,
+    group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.bulletedList,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/bulleted_list',
@@ -247,6 +255,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.highlight',
     type: 4,
+    group: baseToolbarIndex + 2,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.highlight}${_shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -315,4 +324,22 @@ bool _allSatisfy(
         styleKey,
         test,
       );
+}
+
+bool onlyShowInSingleSelectionAndTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isSingle) {
+    return false;
+  }
+  final node = editorState.getNodeAtPath(selection.start.path);
+  return node?.delta != null;
+}
+
+bool onlyShowInTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return false;
+  }
+  final nodes = editorState.getNodesInSelection(selection);
+  return nodes.every((element) => element.delta != null);
 }

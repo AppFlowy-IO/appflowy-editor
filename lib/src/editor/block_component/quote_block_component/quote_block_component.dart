@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,10 +10,11 @@ class QuoteBlockKeys {
 }
 
 Node quoteNode({
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: QuoteBlockKeys.type,
     attributes: {
@@ -25,18 +27,27 @@ Node quoteNode({
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   QuoteBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
+  final BlockIconBuilder? iconBuilder;
+
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return QuoteBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
+      iconBuilder: iconBuilder,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -44,15 +55,17 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) => node.delta != null;
 }
 
-class QuoteBlockComponentWidget extends StatefulWidget {
+class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
   const QuoteBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
-  final Node node;
-  final BlockComponentConfiguration configuration;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<QuoteBlockComponentWidget> createState() =>
@@ -81,7 +94,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget child = Container(
       color: backgroundColor,
       child: IntrinsicHeight(
         child: Row(
@@ -89,7 +102,9 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            defaultIcon(),
+            widget.iconBuilder != null
+                ? widget.iconBuilder!(context, node)
+                : const _QuoteIcon(),
             Flexible(
               child: FlowyRichText(
                 key: forwardKey,
@@ -109,10 +124,24 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         ),
       ),
     );
-  }
 
-  // TODO: support custom icon.
-  Widget defaultIcon() {
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
+  }
+}
+
+class _QuoteIcon extends StatelessWidget {
+  const _QuoteIcon();
+
+  @override
+  Widget build(BuildContext context) {
     return const FlowySvg(
       width: 20,
       height: 20,

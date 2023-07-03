@@ -1,5 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+
+const floatingToolbarHeight = 32.0;
 
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
@@ -30,7 +33,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SizedBox(
-          height: 32.0,
+          height: floatingToolbarHeight,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -47,20 +50,19 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
   }
 
   Iterable<ToolbarItem> _computeActiveItems() {
-    var activeItems = widget.items
-        .where(
-          (element) => element.isActive?.call(widget.editorState) ?? false,
-        )
+    final activeItems = widget.items
+        .where((e) => e.isActive?.call(widget.editorState) ?? false)
         .toList();
-    // remove the unused placeholder items.
-    return activeItems.where(
-      (item) => !(item.id == placeholderItemId &&
-          (activeItems.indexOf(item) == 0 ||
-              activeItems.indexOf(item) == activeItems.length - 1 ||
-              activeItems[activeItems.indexOf(item) - 1].id ==
-                  placeholderItemId ||
-              activeItems[activeItems.indexOf(item) + 1].id ==
-                  placeholderItemId)),
-    );
+    if (activeItems.isEmpty) {
+      return [];
+    }
+    // sort by group.
+    activeItems.sort((a, b) => a.group.compareTo(b.group));
+    // insert the divider.
+    return activeItems
+        .splitBetween((first, second) => first.group != second.group)
+        .expand((element) => [...element, placeholderItem])
+        .toList()
+      ..removeLast();
   }
 }

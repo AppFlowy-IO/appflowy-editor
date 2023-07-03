@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'image_block_widget.dart';
+import 'resizable_image.dart';
 
 class ImageBlockKeys {
   ImageBlockKeys._();
@@ -49,178 +49,199 @@ Node imageNode({
   );
 }
 
+typedef ImageBlockComponentMenuBuilder = Widget Function(
+  Node node,
+  ImageBlockComponentWidgetState state,
+);
+
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
-  ImageBlockComponentBuilder();
+  ImageBlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
+  });
 
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  final BlockComponentConfiguration configuration;
+
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  ///
+  final ImageBlockComponentMenuBuilder? menuBuilder;
+
+  @override
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return ImageBlockComponentWidget(
+      key: node.key,
       node: node,
+      showActions: showActions(node),
+      configuration: configuration,
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
+      showMenu: showMenu,
+      menuBuilder: menuBuilder,
     );
   }
 
   @override
-  bool validate(Node node) =>
-      node.delta == null &&
-      node.children.isEmpty &&
-      node.attributes[ImageBlockKeys.url] is String;
+  bool validate(Node node) => node.delta == null && node.children.isEmpty;
 }
 
-class ImageBlockComponentWidget extends StatefulWidget {
+class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
   const ImageBlockComponentWidget({
     super.key,
-    required this.node,
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
+    this.showMenu = false,
+    this.menuBuilder,
   });
 
-  final Node node;
+  /// Whether to show the menu of this block component.
+  final bool showMenu;
+
+  final ImageBlockComponentMenuBuilder? menuBuilder;
 
   @override
   State<ImageBlockComponentWidget> createState() =>
-      _ImageBlockComponentWidgetState();
+      ImageBlockComponentWidgetState();
 }
 
-class _ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget> {
+class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
+    with SelectableMixin {
+  final imageKey = GlobalKey();
+  RenderBox get _renderBox => context.findRenderObject() as RenderBox;
+
   late final editorState = Provider.of<EditorState>(context, listen: false);
+
+  final showActionsNotifier = ValueNotifier<bool>(false);
+
+  bool alwaysShowMenu = false;
 
   @override
   Widget build(BuildContext context) {
     final node = widget.node;
     final attributes = node.attributes;
     final src = attributes[ImageBlockKeys.url];
-    final align = attributes[ImageBlockKeys.align] ?? 'center';
-    final width = attributes[ImageBlockKeys.width]?.toDouble();
 
-    return ImageNodeWidget(
-      key: node.key,
-      node: node,
+    final alignment = AlignmentExtension.fromString(
+      attributes[ImageBlockKeys.align] ?? 'center',
+    );
+    final width = attributes[ImageBlockKeys.width]?.toDouble() ??
+        MediaQuery.of(context).size.width;
+    final height = attributes[ImageBlockKeys.height]?.toDouble();
+
+    Widget child = ResizableImage(
+      key: imageKey,
       src: src,
       width: width,
+      height: height,
       editable: editorState.editable,
-      alignment: _textToAlignment(align),
+      alignment: alignment,
       onResize: (width) {
         final transaction = editorState.transaction
           ..updateNode(node, {
-            'width': width,
+            ImageBlockKeys.width: width,
           });
         editorState.apply(transaction);
       },
     );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    if (widget.showMenu && widget.menuBuilder != null) {
+      child = MouseRegion(
+        onEnter: (_) => showActionsNotifier.value = true,
+        onExit: (_) {
+          if (!alwaysShowMenu) {
+            showActionsNotifier.value = false;
+          }
+        },
+        hitTestBehavior: HitTestBehavior.opaque,
+        opaque: false,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: showActionsNotifier,
+          builder: (context, value, child) {
+            return Stack(
+              children: [
+                child!,
+                if (value) widget.menuBuilder!(widget.node, this),
+              ],
+            );
+          },
+          child: child,
+        ),
+      );
+    }
+
+    return child;
   }
 
-  Alignment _textToAlignment(String text) {
-    if (text == 'left') {
-      return Alignment.centerLeft;
-    } else if (text == 'right') {
-      return Alignment.centerRight;
-    }
-    return Alignment.center;
+  @override
+  Position start() => Position(path: widget.node.path, offset: 0);
+
+  @override
+  Position end() => Position(path: widget.node.path, offset: 1);
+
+  @override
+  Position getPositionInOffset(Offset start) => end();
+
+  @override
+  bool get shouldCursorBlink => false;
+
+  @override
+  CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
+  Rect? getCursorRectInPosition(Position position) {
+    final size = _renderBox.size;
+    return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
+
+  @override
+  List<Rect> getRectsInSelection(Selection selection) {
+    final parentBox = context.findRenderObject();
+    final dividerBox = imageKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && dividerBox is RenderBox) {
+      return [
+        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            dividerBox.size
+      ];
+    }
+    return [Offset.zero & _renderBox.size];
+  }
+
+  @override
+  Selection getSelectionInRange(Offset start, Offset end) => Selection.single(
+        path: widget.node.path,
+        startOffset: 0,
+        endOffset: 1,
+      );
+
+  @override
+  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
 }
 
-// class ImageNodeBuilder extends NodeWidgetBuilder<Node>
-//     with ActionProvider<Node> {
-//   @override
-//   Widget build(NodeWidgetContext<Node> context) {
-//     final src = context.node.attributes['image_src'];
-//     final align = context.node.attributes['align'];
-//     double? width;
-//     if (context.node.attributes.containsKey('width')) {
-//       width = context.node.attributes['width'].toDouble();
-//     }
-//     return ImageNodeWidget(
-//       key: context.node.key,
-//       node: context.node,
-//       src: src,
-//       width: width,
-//       editable: context.editorState.editable,
-//       alignment: _textToAlignment(align),
-//       onResize: (width) {
-//         final transaction = context.editorState.transaction
-//           ..updateNode(context.node, {
-//             'width': width,
-//           });
-//         context.editorState.apply(transaction);
-//       },
-//     );
-//   }
-
-//   @override
-//   NodeValidator<Node> get nodeValidator => ((node) {
-//         return node.type == 'image' &&
-//             node.attributes.containsKey('image_src') &&
-//             node.attributes.containsKey('align');
-//       });
-
-//   @override
-//   List<ActionMenuItem> actions(NodeWidgetContext<Node> context) {
-//     return [
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_left',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.centerLeft;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.centerLeft),
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_center',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.center;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.center),
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/align_right',
-//         selected: () {
-//           final align = context.node.attributes['align'];
-//           return _textToAlignment(align) == Alignment.centerRight;
-//         },
-//         onPressed: () => _onAlign(context, Alignment.centerRight),
-//       ),
-//       ActionMenuItem.separator(),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/copy',
-//         onPressed: () {
-//           final src = context.node.attributes['image_src'];
-//           AppFlowyClipboard.setData(text: src);
-//         },
-//       ),
-//       ActionMenuItem.svg(
-//         name: 'image_toolbar/delete',
-//         onPressed: () {
-//           final transaction = context.editorState.transaction
-//             ..deleteNode(context.node);
-//           context.editorState.apply(transaction);
-//         },
-//       ),
-//     ];
-//   }
-
-//   Alignment _textToAlignment(String text) {
-//     if (text == 'left') {
-//       return Alignment.centerLeft;
-//     } else if (text == 'right') {
-//       return Alignment.centerRight;
-//     }
-//     return Alignment.center;
-//   }
-
-//   String _alignmentToText(Alignment alignment) {
-//     if (alignment == Alignment.centerLeft) {
-//       return 'left';
-//     } else if (alignment == Alignment.centerRight) {
-//       return 'right';
-//     }
-//     return 'center';
-//   }
-
-//   void _onAlign(NodeWidgetContext context, Alignment alignment) {
-//     final transaction = context.editorState.transaction
-//       ..updateNode(context.node, {
-//         'align': _alignmentToText(alignment),
-//       });
-//     context.editorState.apply(transaction);
-//   }
-// }
+extension AlignmentExtension on Alignment {
+  static Alignment fromString(String name) {
+    switch (name) {
+      case 'left':
+        return Alignment.centerLeft;
+      case 'right':
+        return Alignment.centerRight;
+      default:
+        return Alignment.center;
+    }
+  }
+}

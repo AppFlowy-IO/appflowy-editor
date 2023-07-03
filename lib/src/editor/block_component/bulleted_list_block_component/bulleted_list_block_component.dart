@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class BulletedListBlockKeys {
   BulletedListBlockKeys._();
@@ -10,11 +9,11 @@ class BulletedListBlockKeys {
 }
 
 Node bulletedListNode({
-  String? text,
+  Delta? delta,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (Delta()..insert(text ?? '')).toJson()};
+  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {
@@ -27,18 +26,27 @@ Node bulletedListNode({
 class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   BulletedListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
+  final BlockIconBuilder? iconBuilder;
+
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return BulletedListBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
+      iconBuilder: iconBuilder,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -46,15 +54,17 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) => node.delta != null;
 }
 
-class BulletedListBlockComponentWidget extends StatefulWidget {
+class BulletedListBlockComponentWidget extends BlockComponentStatefulWidget {
   const BulletedListBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
-  final Node node;
-  final BlockComponentConfiguration configuration;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<BulletedListBlockComponentWidget> createState() =>
@@ -67,7 +77,8 @@ class _BulletedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -80,40 +91,21 @@ class _BulletedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   @override
-  Widget build(BuildContext context) {
-    return widget.node.children.isEmpty
-        ? buildBulletListBlockComponent(context)
-        : buildBulletListBlockComponentWithChildren(context);
-  }
-
-  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildBulletListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildBulletListBlockComponent(BuildContext context) {
-    return Container(
+  Widget buildComponent(BuildContext context) {
+    Widget child = Container(
       color: backgroundColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _BulletedListIcon(
-            node: widget.node,
-            textStyle: textStyle,
-          ),
+          widget.iconBuilder != null
+              ? widget.iconBuilder!(context, node)
+              : _BulletedListIcon(
+                  node: widget.node,
+                  textStyle: textStyle,
+                ),
           Flexible(
             child: FlowyRichText(
               key: forwardKey,
@@ -132,6 +124,16 @@ class _BulletedListBlockComponentWidgetState
         ],
       ),
     );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 }
 

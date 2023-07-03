@@ -5,22 +5,21 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 /// For example,
 ///   bulleted list: '- '
 ///   numbered list: '1. '
-///   quote: '> '
+///   quote: '" '
 ///   ...
 Future<bool> formatMarkdownSymbol(
   EditorState editorState,
   bool Function(Node node) shouldFormat,
   bool Function(
+    Node node,
     String text,
     Selection selection,
-  )
-      predicate,
+  ) predicate,
   Node Function(
     String text,
     Node node,
     Delta delta,
-  )
-      nodeBuilder,
+  ) nodeBuilder,
 ) async {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -43,7 +42,7 @@ Future<bool> formatMarkdownSymbol(
 
   // If the text doesn't match the predicate, then we don't want to
   // format it.
-  if (!predicate(text, selection)) {
+  if (!predicate(node, text, selection)) {
     return false;
   }
 

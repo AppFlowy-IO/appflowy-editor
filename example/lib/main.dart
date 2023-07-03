@@ -14,16 +14,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      localizationsDelegates: [
+    return MaterialApp(
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         AppFlowyEditorLocalizations.delegate,
       ],
-      supportedLocales: [Locale('en', 'US')],
+      supportedLocales: const [Locale('en', 'US')],
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'AppFlowyEditor Example'),
+      home: const MyHomePage(title: 'AppFlowyEditor Example'),
+      theme: ThemeData.light(useMaterial3: true),
     );
   }
 }

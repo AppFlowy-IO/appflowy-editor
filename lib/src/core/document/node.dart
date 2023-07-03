@@ -8,7 +8,7 @@ import 'package:nanoid/nanoid.dart';
 ///
 /// It contains three parts:
 ///   - [type]: The type of the node to determine which block component to render it.
-///   - [attributes]: The attributes of the node to determine how to render it.
+///   - [data]: The data of the node to determine how to render it.
 ///   - [children]: The children of the node.
 ///
 ///
@@ -18,7 +18,7 @@ import 'package:nanoid/nanoid.dart';
 ///   'data': Map<String, Object>
 ///   'children': List<Node>,
 /// }
-class Node extends ChangeNotifier with LinkedListEntry<Node> {
+final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
     String? id,
@@ -41,7 +41,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   factory Node.fromJson(Map<String, Object> json) {
     final node = Node(
       type: json['type'] as String,
-      attributes: Attributes.from(json['attributes'] as Map? ?? {}),
+      attributes: Attributes.from(json['data'] as Map? ?? {}),
       children: (json['children'] as List? ?? [])
           .map((e) => Map<String, Object>.from(e))
           .map((e) => Node.fromJson(e)),
@@ -83,6 +83,10 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
   // Render Part
   final key = GlobalKey();
   final layerLink = LayerLink();
+
+  void notify() {
+    notifyListeners();
+  }
 
   /// Update the attributes of the node.
   ///
@@ -195,7 +199,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
           .toList(growable: false);
     }
     if (attributes.isNotEmpty) {
-      map['attributes'] = attributes;
+      map['data'] = attributes;
     }
     return map;
   }
@@ -231,7 +235,7 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 }
 
 @Deprecated('Use Paragraph instead')
-class TextNode extends Node {
+final class TextNode extends Node {
   TextNode({
     required Delta delta,
     Iterable<Node>? children,

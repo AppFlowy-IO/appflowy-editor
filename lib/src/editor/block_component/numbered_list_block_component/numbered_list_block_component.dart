@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/nested_list_widget.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,13 +7,20 @@ class NumberedListBlockKeys {
   const NumberedListBlockKeys._();
 
   static const String type = 'numbered_list';
+
+  static const String number = 'number';
 }
 
 Node numberedListNode({
+  Delta? delta,
   Attributes? attributes,
+  int? number,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': Delta().toJson()};
+  attributes ??= {
+    'delta': (delta ?? Delta()).toJson(),
+    NumberedListBlockKeys.number: number,
+  };
   return Node(
     type: NumberedListBlockKeys.type,
     attributes: {
@@ -26,18 +33,27 @@ Node numberedListNode({
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
+  final BlockIconBuilder? iconBuilder;
+
   @override
-  Widget build(BlockComponentContext blockComponentContext) {
+  BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
     return NumberedListBlockComponentWidget(
       key: node.key,
       node: node,
       configuration: configuration,
+      iconBuilder: iconBuilder,
+      showActions: showActions(node),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -45,15 +61,17 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) => node.delta != null;
 }
 
-class NumberedListBlockComponentWidget extends StatefulWidget {
+class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
   const NumberedListBlockComponentWidget({
     super.key,
-    required this.node,
-    this.configuration = const BlockComponentConfiguration(),
+    required super.node,
+    super.showActions,
+    super.actionBuilder,
+    super.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
-  final Node node;
-  final BlockComponentConfiguration configuration;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<NumberedListBlockComponentWidget> createState() =>
@@ -66,7 +84,8 @@ class _NumberedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectable,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -79,37 +98,21 @@ class _NumberedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  late final editorState = Provider.of<EditorState>(context, listen: false);
-
   @override
-  Widget build(BuildContext context) {
-    return widget.node.children.isEmpty
-        ? buildBulletListBlockComponent(context)
-        : buildBulletListBlockComponentWithChildren(context);
-  }
-
-  Widget buildBulletListBlockComponentWithChildren(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: NestedListWidget(
-        children: editorState.renderer.buildList(
-          context,
-          widget.node.children,
-        ),
-        child: buildBulletListBlockComponent(context),
-      ),
-    );
-  }
-
-  Widget buildBulletListBlockComponent(BuildContext context) {
-    return Container(
+  Widget buildComponent(BuildContext context) {
+    Widget child = Container(
       color: backgroundColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          defaultIcon(),
+          widget.iconBuilder != null
+              ? widget.iconBuilder!(context, node)
+              : _NumberedListIcon(
+                  node: node,
+                  textStyle: textStyle,
+                ),
           Flexible(
             child: FlowyRichText(
               key: forwardKey,
@@ -128,16 +131,42 @@ class _NumberedListBlockComponentWidgetState
         ],
       ),
     );
-  }
 
-  // TODO: support custom icon.
-  Widget defaultIcon() {
-    final level = _NumberedListIconBuilder(node: widget.node).level;
-    return FlowySvg(
-      width: 20,
-      height: 20,
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
+  }
+}
+
+class _NumberedListIcon extends StatelessWidget {
+  const _NumberedListIcon({
+    required this.node,
+    required this.textStyle,
+  });
+
+  final Node node;
+  final TextStyle textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final editorState = context.read<EditorState>();
+    final text = editorState.editorStyle.textStyleConfiguration.text;
+    final level = _NumberedListIconBuilder(node: node).level;
+    return Padding(
       padding: const EdgeInsets.only(right: 5.0),
-      number: level,
+      child: Text.rich(
+        textHeightBehavior: const TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+        ),
+        TextSpan(text: '$level.', style: text.combine(textStyle)),
+      ),
     );
   }
 }
@@ -150,15 +179,22 @@ class _NumberedListIconBuilder {
   final Node node;
 
   int get level {
-    var level = 1;
-    var previous = node.previous;
-    while (previous != null) {
-      if (previous.type == 'numbered_list') {
-        level++;
-      } else {
-        break;
-      }
+    int level = 1;
+    Node? previous = node.previous;
+
+    // if the previous one is not a numbered list, then it is the first one
+    if (previous == null || previous.type != NumberedListBlockKeys.type) {
+      return node.attributes[NumberedListBlockKeys.number] ?? level;
+    }
+
+    int? startNumber;
+    while (previous != null && previous.type == NumberedListBlockKeys.type) {
+      startNumber = previous.attributes[NumberedListBlockKeys.number] as int?;
+      level++;
       previous = previous.previous;
+    }
+    if (startNumber != null) {
+      return startNumber + level - 1;
     }
     return level;
   }

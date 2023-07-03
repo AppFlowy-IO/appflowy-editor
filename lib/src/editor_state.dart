@@ -26,11 +26,17 @@ enum CursorUpdateReason {
 enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
+  selectAll,
 }
 
 enum SelectionType {
   inline,
   block,
+}
+
+enum TransactionTime {
+  before,
+  after,
 }
 
 /// The state of the editor.
@@ -53,27 +59,35 @@ enum SelectionType {
 class EditorState {
   EditorState({
     required this.document,
-    this.editable = true,
   }) {
     undoManager.state = this;
   }
 
+  @Deprecated('use EditorState.blank() instead')
   EditorState.empty()
       : this(
           document: Document.blank(),
         );
 
+  EditorState.blank({
+    bool withInitialText = true,
+  }) : this(
+          document: Document.blank(
+            withInitialText: withInitialText,
+          ),
+        );
+
   final Document document;
 
   /// Whether the editor is editable.
-  final bool editable;
+  bool editable = true;
 
   /// The style of the editor.
   late EditorStyle editorStyle;
 
   /// The selection notifier of the editor.
-  final ValueNotifier<Selection?> selectionNotifier =
-      ValueNotifier<Selection?>(null);
+  final PropertyValueNotifier<Selection?> selectionNotifier =
+      PropertyValueNotifier<Selection?>(null);
 
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
@@ -90,6 +104,8 @@ class EditorState {
 
   // Service reference.
   final service = FlowyService();
+
+  AppFlowyScrollService? get scrollService => service.scrollService;
 
   AppFlowySelectionService get selectionService => service.selectionService;
   BlockComponentRendererService get renderer => service.rendererService;
@@ -110,8 +126,12 @@ class EditorState {
   List<ToolbarItem> toolbarItems = [];
 
   /// listen to this stream to get notified when the transaction applies.
-  Stream<Transaction> get transactionStream => _observer.stream;
-  final StreamController<Transaction> _observer = StreamController.broadcast();
+  Stream<(TransactionTime, Transaction)> get transactionStream =>
+      _observer.stream;
+  final StreamController<(TransactionTime, Transaction)> _observer =
+      StreamController.broadcast(
+    sync: true,
+  );
 
   final UndoManager undoManager = UndoManager();
 
@@ -202,21 +222,23 @@ class EditorState {
 
     final completer = Completer<void>();
 
+    // broadcast to other users here, before applying the transaction
+    _observer.add((TransactionTime.before, transaction));
+
     for (final operation in transaction.operations) {
       Log.editor.debug('apply op: ${operation.toJson()}');
       _applyOperation(operation);
     }
 
-    // broadcast to other users here
-    _observer.add(transaction);
+    // broadcast to other users here, after applying the transaction
+    _observer.add((TransactionTime.after, transaction));
 
     _recordRedoOrUndo(options, transaction);
 
     if (withUpdateSelection) {
       _selectionUpdateReason = SelectionUpdateReason.transaction;
       selection = transaction.afterSelection;
-      // if the selection is not changed, we still need to notify the listeners.
-      selectionNotifier.notifyListeners();
+      _selectionUpdateReason = SelectionUpdateReason.uiEvent;
     }
 
     // TODO: execute this line after the UI has been updated.
@@ -225,6 +247,11 @@ class EditorState {
     }
 
     return completer.future;
+  }
+
+  /// Force rebuild the editor.
+  void reload() {
+    document.root.notify();
   }
 
   /// get nodes in selection
@@ -261,28 +288,39 @@ class EditorState {
   /// The current selection areas's rect in editor.
   List<Rect> selectionRects() {
     final selection = this.selection;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null) {
       return [];
     }
 
     final nodes = getNodesInSelection(selection);
     final rects = <Rect>[];
-    for (final node in nodes) {
-      final selectable = node.selectable;
-      if (selectable == null) {
-        continue;
+
+    if (selection.isCollapsed && nodes.length == 1) {
+      final selectable = nodes.first.selectable;
+      if (selectable != null) {
+        final rect = selectable.getCursorRectInPosition(selection.end);
+        if (rect != null) {
+          rects.add(selectable.transformRectToGlobal(rect));
+        }
       }
-      final nodeRects = selectable.getRectsInSelection(selection);
-      if (nodeRects.isEmpty) {
-        continue;
-      }
-      final renderBox = node.renderBox;
-      if (renderBox == null) {
-        continue;
-      }
-      for (final rect in nodeRects) {
-        final globalOffset = renderBox.localToGlobal(rect.topLeft);
-        rects.add(globalOffset & rect.size);
+    } else {
+      for (final node in nodes) {
+        final selectable = node.selectable;
+        if (selectable == null) {
+          continue;
+        }
+        final nodeRects = selectable.getRectsInSelection(selection);
+        if (nodeRects.isEmpty) {
+          continue;
+        }
+        final renderBox = node.renderBox;
+        if (renderBox == null) {
+          continue;
+        }
+        for (final rect in nodeRects) {
+          final globalOffset = renderBox.localToGlobal(rect.topLeft);
+          rects.add(globalOffset & rect.size);
+        }
       }
     }
 
@@ -302,6 +340,10 @@ class EditorState {
     */
 
     return rects;
+  }
+
+  void cancelSubscription() {
+    _observer.close();
   }
 
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
@@ -350,30 +392,6 @@ class EditorState {
       document.delete(op.path, op.nodes.length);
     } else if (op is UpdateTextOperation) {
       document.updateText(op.path, op.delta);
-    }
-  }
-
-  void _applyRules(int maximumRuleApplyLoop) {
-    // Set a maximum count to prevent a dead loop.
-    if (maximumRuleApplyLoop >= 5 || disableRules) {
-      return;
-    }
-
-    // Rules
-    _insureLastNodeEditable(transaction);
-
-    if (transaction.operations.isNotEmpty) {
-      apply(
-        transaction,
-        withUpdateSelection: false,
-      );
-    }
-  }
-
-  void _insureLastNodeEditable(Transaction tr) {
-    if (document.root.children.isEmpty ||
-        document.root.children.last.id != 'text') {
-      tr.insertNode([document.root.children.length], TextNode.empty());
     }
   }
 }

@@ -21,8 +21,6 @@ class DesktopScrollService extends StatefulWidget {
 
 class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
-  bool _scrollEnabled = true;
-
   @override
   double get dy => widget.scrollController.position.pixels;
 
@@ -76,13 +74,11 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void disable() {
-    _scrollEnabled = false;
     Log.scroll.debug('disable scroll service');
   }
 
   @override
   void enable() {
-    _scrollEnabled = true;
     Log.scroll.debug('enable scroll service');
   }
 

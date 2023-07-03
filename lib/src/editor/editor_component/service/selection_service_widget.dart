@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 class SelectionServiceWidget extends StatefulWidget {
@@ -31,7 +30,7 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb || PlatformExtension.isDesktop) {
+    if (PlatformExtension.isDesktopOrWeb) {
       return DesktopSelectionServiceWidget(
         key: forwardKey,
         cursorColor: widget.cursorColor,
@@ -63,10 +62,6 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
 
   @override
   Node? getNodeInOffset(Offset offset) => forward.getNodeInOffset(offset);
-
-  @override
-  List<Node> getNodesInSelection(Selection selection) =>
-      forward.getNodesInSelection(selection);
 
   @override
   Position? getPositionInOffset(Offset offset) =>

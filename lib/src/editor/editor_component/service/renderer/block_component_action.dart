@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+const double blockComponentActionContainerWidth = 50;
+
 class BlockComponentActionContainer extends StatelessWidget {
   const BlockComponentActionContainer({
     super.key,
@@ -17,7 +19,7 @@ class BlockComponentActionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
-      width: 30,
+      width: blockComponentActionContainerWidth,
       height: 25, // TODO: magic number, change it to the height of the block
       color: Colors
           .transparent, // have to set the color to transparent to make the MouseRegion work

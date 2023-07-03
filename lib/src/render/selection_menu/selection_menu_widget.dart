@@ -19,21 +19,32 @@ class SelectionMenuItem {
     required SelectionMenuItemHandler handler,
   }) {
     this.handler = (editorState, menuService, context) {
-      _deleteSlash(editorState);
+      if (deleteSlash) {
+        _deleteSlash(editorState);
+      }
       // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handler(editorState, menuService, context);
+      onSelected?.call();
       // });
     };
   }
 
   final String name;
-  final Widget Function(EditorState editorState, bool onSelected) icon;
+  final Widget Function(
+    EditorState editorState,
+    bool onSelected,
+    SelectionMenuStyle style,
+  ) icon;
 
   /// Customizes keywords for item.
   ///
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
   late final SelectionMenuItemHandler handler;
+
+  VoidCallback? onSelected;
+
+  bool deleteSlash = true;
 
   void _deleteSlash(EditorState editorState) {
     final selection = editorState.selection;
@@ -82,16 +93,15 @@ class SelectionMenuItem {
       Path insertPath,
       bool replaced,
       bool insertedBefore,
-    )?
-        updateSelection,
+    )? updateSelection,
   }) {
     return SelectionMenuItem(
       name: name,
-      icon: (editorState, onSelected) => Icon(
+      icon: (editorState, onSelected, style) => Icon(
         iconData,
         color: onSelected
-            ? editorState.editorStyle.selectionMenuItemSelectedIconColor
-            : editorState.editorStyle.selectionMenuItemIconColor,
+            ? style.selectionMenuItemSelectedIconColor
+            : style.selectionMenuItemIconColor,
         size: 18.0,
       ),
       keywords: keywords,
@@ -138,6 +148,42 @@ class SelectionMenuItem {
   }
 }
 
+class SelectionMenuStyle {
+  const SelectionMenuStyle({
+    required this.selectionMenuBackgroundColor,
+    required this.selectionMenuItemTextColor,
+    required this.selectionMenuItemIconColor,
+    required this.selectionMenuItemSelectedTextColor,
+    required this.selectionMenuItemSelectedIconColor,
+    required this.selectionMenuItemSelectedColor,
+  });
+
+  static const light = SelectionMenuStyle(
+    selectionMenuBackgroundColor: Color(0xFFFFFFFF),
+    selectionMenuItemTextColor: Color(0xFF333333),
+    selectionMenuItemIconColor: Color(0xFF333333),
+    selectionMenuItemSelectedTextColor: Color.fromARGB(255, 56, 91, 247),
+    selectionMenuItemSelectedIconColor: Color.fromARGB(255, 56, 91, 247),
+    selectionMenuItemSelectedColor: Color(0xFFE0F8FF),
+  );
+
+  static const dark = SelectionMenuStyle(
+    selectionMenuBackgroundColor: Color(0xFF282E3A),
+    selectionMenuItemTextColor: Color(0xFFBBC3CD),
+    selectionMenuItemIconColor: Color(0xFFBBC3CD),
+    selectionMenuItemSelectedTextColor: Color(0xFF131720),
+    selectionMenuItemSelectedIconColor: Color(0xFF131720),
+    selectionMenuItemSelectedColor: Color(0xFF00BCF0),
+  );
+
+  final Color selectionMenuBackgroundColor;
+  final Color selectionMenuItemTextColor;
+  final Color selectionMenuItemIconColor;
+  final Color selectionMenuItemSelectedTextColor;
+  final Color selectionMenuItemSelectedIconColor;
+  final Color selectionMenuItemSelectedColor;
+}
+
 class SelectionMenuWidget extends StatefulWidget {
   const SelectionMenuWidget({
     Key? key,
@@ -147,9 +193,12 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.menuService,
     required this.onExit,
     required this.onSelectionUpdate,
+    required this.selectionMenuStyle,
+    required this.itemCountFilter,
   }) : super(key: key);
 
   final List<SelectionMenuItem> items;
+  final int itemCountFilter;
   final int maxItemInRow;
 
   final SelectionMenuService menuService;
@@ -157,6 +206,8 @@ class SelectionMenuWidget extends StatefulWidget {
 
   final VoidCallback onSelectionUpdate;
   final VoidCallback onExit;
+
+  final SelectionMenuStyle selectionMenuStyle;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
@@ -205,6 +256,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     _showingItems = widget.items;
 
+    keepEditorFocusNotifier.value += 1;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -213,6 +265,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   @override
   void dispose() {
     _focusNode.dispose();
+    keepEditorFocusNotifier.value -= 1;
 
     super.dispose();
   }
@@ -224,7 +277,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       onKey: _onKey,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: widget.editorState.editorStyle.selectionMenuBackgroundColor,
+          color: widget.selectionMenuStyle.selectionMenuBackgroundColor,
           boxShadow: [
             BoxShadow(
               blurRadius: 5,
@@ -239,6 +292,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
             : _buildResultsWidget(
                 context,
                 _showingItems,
+                widget.itemCountFilter,
                 _selectedIndex,
               ),
       ),
@@ -248,10 +302,18 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   Widget _buildResultsWidget(
     BuildContext buildContext,
     List<SelectionMenuItem> items,
+    int itemCountFilter,
     int selectedIndex,
   ) {
     List<Widget> columns = [];
     List<Widget> itemWidgets = [];
+
+    // apply item count filter
+
+    if (itemCountFilter > 0) {
+      items = items.take(itemCountFilter).toList();
+    }
+
     for (var i = 0; i < items.length; i++) {
       if (i != 0 && i % (widget.maxItemInRow) == 0) {
         columns.add(
@@ -268,6 +330,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
           isSelected: selectedIndex == i,
           editorState: widget.editorState,
           menuService: widget.menuService,
+          selectionMenuStyle: widget.selectionMenuStyle,
         ),
       );
     }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 /// - support
 ///   - desktop
 ///   - web
+///   - mobile
 ///
 final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   key: 'backspace',
@@ -111,10 +112,6 @@ CommandShortcutEventHandler _deleteLeftSentenceCommandHandler = (editorState) {
 };
 
 CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'backspaceCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;

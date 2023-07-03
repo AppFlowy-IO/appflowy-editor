@@ -3,102 +3,102 @@ import 'package:appflowy_editor/src/editor/editor_component/service/renderer/blo
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-abstract class BlockComponentState {
-  set alwaysShowActions(bool alwaysShowActions);
+mixin BlockComponentWidget on Widget {
+  Node get node;
+  BlockComponentConfiguration get configuration;
+  BlockComponentActionBuilder? get actionBuilder;
+  bool get showActions;
 }
 
-/// BlockComponentContainer is a wrapper of block component
-///
-/// 1. used to update the child widget when node is changed
-/// 2. used to show block component actions
-/// 3. used to add the layer link to the child widget
-class BlockComponentContainer extends StatefulWidget {
-  const BlockComponentContainer({
+class BlockComponentStatelessWidget extends StatelessWidget
+    implements BlockComponentWidget {
+  const BlockComponentStatelessWidget({
     super.key,
-    this.showBlockComponentActions = false,
-    required this.configuration,
     required this.node,
-    required this.builder,
-    required this.actionBuilder,
+    required this.configuration,
+    this.showActions = false,
+    this.actionBuilder,
   });
 
+  @override
   final Node node;
+  @override
   final BlockComponentConfiguration configuration;
-
-  /// show block component actions or not
-  ///
-  /// + and option button
-  final bool showBlockComponentActions;
-
-  final WidgetBuilder builder;
-  final Widget Function(
-    BuildContext context,
-    BlockComponentState state,
-  ) actionBuilder;
-
   @override
-  State<BlockComponentContainer> createState() =>
-      BlockComponentContainerState();
-}
-
-class BlockComponentContainerState extends State<BlockComponentContainer>
-    implements BlockComponentState {
-  final showActionsNotifier = ValueNotifier<bool>(false);
-
-  bool _alwaysShowActions = false;
-  bool get alwaysShowActions => _alwaysShowActions;
+  final BlockComponentActionBuilder? actionBuilder;
   @override
-  set alwaysShowActions(bool alwaysShowActions) {
-    _alwaysShowActions = alwaysShowActions;
-    if (_alwaysShowActions == false && showActionsNotifier.value == true) {
-      showActionsNotifier.value = false;
-    }
-  }
+  final bool showActions;
 
   @override
   Widget build(BuildContext context) {
-    Widget child = ChangeNotifierProvider<Node>.value(
-      value: widget.node,
-      child: Consumer<Node>(
-        builder: (_, __, ___) {
-          Log.editor.debug('node is rebuilding...: type: ${widget.node.type} ');
-          return CompositedTransformTarget(
-            link: widget.node.layerLink,
-            child: widget.builder(context),
-          );
-        },
-      ),
-    );
+    throw UnimplementedError();
+  }
+}
 
-    if (widget.showBlockComponentActions) {
-      child = MouseRegion(
-        onEnter: (_) => showActionsNotifier.value = true,
-        onExit: (_) => showActionsNotifier.value = alwaysShowActions || false,
-        hitTestBehavior: HitTestBehavior.deferToChild,
-        opaque: false,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ValueListenableBuilder<bool>(
-              valueListenable: showActionsNotifier,
-              builder: (context, value, child) => BlockComponentActionContainer(
-                node: widget.node,
-                showActions: value,
-                actionBuilder: (context) => widget.actionBuilder(context, this),
-              ),
-            ),
-            Expanded(child: child),
-          ],
+class BlockComponentStatefulWidget extends StatefulWidget
+    implements BlockComponentWidget {
+  const BlockComponentStatefulWidget({
+    super.key,
+    required this.node,
+    required this.configuration,
+    this.showActions = false,
+    this.actionBuilder,
+  });
+
+  @override
+  final Node node;
+  @override
+  final BlockComponentConfiguration configuration;
+  @override
+  final BlockComponentActionBuilder? actionBuilder;
+  @override
+  final bool showActions;
+
+  @override
+  State<BlockComponentStatefulWidget> createState() =>
+      _BlockComponentStatefulWidgetState();
+}
+
+class _BlockComponentStatefulWidgetState
+    extends State<BlockComponentStatefulWidget> {
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
+  }
+}
+
+mixin NestedBlockComponentStatefulWidgetMixin<
+    T extends BlockComponentStatefulWidget> on State<T>, BackgroundColorMixin {
+  late final editorState = Provider.of<EditorState>(context, listen: false);
+  bool get showActions => widget.showActions && widget.actionBuilder != null;
+
+  @override
+  Widget build(BuildContext context) {
+    return node.children.isEmpty
+        ? buildComponent(context)
+        : buildComponentWithChildren(context);
+  }
+
+  Widget buildComponentWithChildren(BuildContext context) {
+    final left = showActions ? blockComponentActionContainerWidth : 0.0;
+    return Stack(
+      children: [
+        Positioned.fill(
+          left: left,
+          child: Container(
+            color: backgroundColor,
+          ),
         ),
-      );
-    }
-
-    final padding = widget.configuration.padding(widget.node);
-    return Padding(
-      padding: padding,
-      child: child,
+        NestedListWidget(
+          child: buildComponent(context),
+          children: editorState.renderer.buildList(
+            context,
+            widget.node.children,
+          ),
+        )
+      ],
     );
   }
+
+  Widget buildComponent(BuildContext context);
 }

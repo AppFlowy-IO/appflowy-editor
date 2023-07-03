@@ -15,16 +15,19 @@ final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   ),
 );
 
-CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
+CharacterShortcutEvent customSlashCommand(
+  List<SelectionMenuItem> items, {
+  bool shouldInsertSlash = true,
+  SelectionMenuStyle style = SelectionMenuStyle.light,
+}) {
   return CharacterShortcutEvent(
     key: 'show the slash menu',
     character: '/',
     handler: (editorState) => _showSlashMenu(
       editorState,
-      [
-        ...standardSelectionMenuItems,
-        ...items,
-      ],
+      items,
+      shouldInsertSlash: shouldInsertSlash,
+      style: style,
     ),
   );
 }
@@ -32,8 +35,10 @@ CharacterShortcutEvent customSlashCommand(List<SelectionMenuItem> items) {
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
   EditorState editorState,
-  List<SelectionMenuItem> items,
-) async {
+  List<SelectionMenuItem> items, {
+  bool shouldInsertSlash = true,
+  SelectionMenuStyle style = SelectionMenuStyle.light,
+}) async {
   if (PlatformExtension.isMobile) {
     return false;
   }
@@ -53,10 +58,12 @@ Future<bool> _showSlashMenu(
   }
 
   // insert the slash character
-  await editorState.insertTextAtPosition('/', position: selection.start);
+  if (shouldInsertSlash) {
+    await editorState.insertTextAtPosition('/', position: selection.start);
+  }
 
   // show the slash menu
-  {
+  () {
     // this code is copied from the the old editor.
     // TODO: refactor this code
     final context = editorState.getNodeAtPath(selection.start.path)?.context;
@@ -65,10 +72,12 @@ Future<bool> _showSlashMenu(
         context: context,
         editorState: editorState,
         selectionMenuItems: items,
+        deleteSlashByDefault: shouldInsertSlash,
+        style: style,
       );
       _selectionMenuService?.show();
     }
-  }
+  }();
 
   return true;
 }
