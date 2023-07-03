@@ -1,18 +1,20 @@
+import 'dart:convert';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   group('delta_document_encoder.dart', () {
     test('', () {
-      // TODO: lucas.xu
-      // final json = jsonDecode(quillDeltaSample.replaceAll('\\\\\n', '\\n'));
-      // final document = DeltaDocumentConvert().convertFromJSON(json);
-      // expect(jsonEncode(document.toJson()), documentSample);
+      final json = jsonDecode(quillDeltaSample.replaceAll('\\\\\n', '\\n'));
+      final document = quillDeltaEncoder.convert(Delta.fromJson(json));
+      expect(jsonEncode(document.toJson()), documentSample);
     });
   });
 }
 
 const documentSample =
-    '''{"document":{"type":"document","children":[{"type":"text","data":{"subtype":"heading","heading":"h1"},"delta":[{"insert":"Flutter Quill"}]},{"type":"text","delta":[]},{"type":"text","data":{"subtype":"heading","heading":"h2"},"delta":[{"insert":"Rich text editor for Flutter"}]},{"type":"text","data":{"subtype":"heading","heading":"h3"},"delta":[{"insert":"Quill component for Flutter"}]},{"type":"text","delta":[{"insert":"This "},{"insert":"library","data":{"italic":true}},{"insert":" supports "},{"insert":"mobile","data":{"bold":true,"backgroundColor":"0xFFebd6ff"}},{"insert":" platform "},{"insert":"only","data":{"underline":true,"bold":true,"color":"0xFFe60000"}},{"insert":" and ","data":{"color":"0xd7000000"}},{"insert":"web","data":{"strikethrough":true}},{"insert":" is not supported."}]},{"type":"text","delta":[{"insert":"You are welcome to use "},{"insert":"Bullet Journal","data":{"href":"https://bulletjournal.us/home/index.html"}},{"insert":":"}]},{"type":"text","data":{"subtype":"number-list","number":1},"delta":[{"insert":"Track personal and group journals (ToDo, Note, Ledger) from multiple views with timely reminders"}]},{"type":"text","data":{"subtype":"number-list","number":2},"delta":[{"insert":"Share your tasks and notes with teammates, and see changes as they happen in real-time, across all devices"}]},{"type":"text","data":{"subtype":"number-list","number":3},"delta":[{"insert":"Check out what you and your teammates are working on each day"}]},{"type":"text","delta":[]},{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"Splitting bills with friends can never be easier."}]},{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"Start creating a group and invite your friends to join."}]},{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"Create a BuJo of Ledger type to see expense or balance summary."}]},{"type":"text","delta":[]},{"type":"text","data":{"subtype":"quote"},"delta":[{"insert":"Attach one or multiple labels to tasks, notes or transactions. Later you can track them just using the label(s)."}]},{"type":"text","delta":[]},{"type":"text","delta":[{"insert":"var BuJo = 'Bullet' + 'Journal'"}]},{"type":"text","delta":[]},{"type":"text","delta":[{"insert":"  Start tracking in your browser"}]},{"type":"text","delta":[{"insert":"  Stop the timer on your phone"}]},{"type":"text","delta":[{"insert":"    All your time entries are synced"}]},{"type":"text","delta":[{"insert":"    between the phone apps"}]},{"type":"text","delta":[{"insert":"      and the website."}]},{"type":"text","delta":[]},{"type":"text","delta":[]},{"type":"text","delta":[{"insert":"Center Align"}]},{"type":"text","delta":[{"insert":"Right Align"}]},{"type":"text","delta":[{"insert":"Justify Align"}]},{"type":"text","data":{"subtype":"number-list","number":1},"delta":[{"insert":"Have trouble finding things? "}]},{"type":"text","data":{"subtype":"number-list","number":2},"delta":[{"insert":"Just type in the search bar"}]},{"type":"text","data":{"subtype":"number-list","number":3},"delta":[{"insert":"and easily find contents"}]},{"type":"text","data":{"subtype":"number-list","number":4},"delta":[{"insert":"across projects or folders."}]},{"type":"text","data":{"subtype":"number-list","number":5},"delta":[{"insert":"It matches text in your note or task."}]},{"type":"text","data":{"subtype":"number-list","number":6},"delta":[{"insert":"Enable reminders so that you will get notified by"}]},{"type":"text","data":{"subtype":"number-list","number":7},"delta":[{"insert":"email"}]},{"type":"text","data":{"subtype":"number-list","number":8},"delta":[{"insert":"message on your phone"}]},{"type":"text","data":{"subtype":"number-list","number":9},"delta":[{"insert":"popup on the web site"}]},{"type":"text","children":[{"type":"text","children":[{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"tasks"}]},{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"notes"}]},{"type":"text","children":[{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"under BuJo "}]}],"data":{"subtype":"bulleted-list"},"delta":[{"insert":"transactions"}]}],"data":{"subtype":"bulleted-list"},"delta":[{"insert":"Organize your"}]}],"data":{"subtype":"bulleted-list"},"delta":[{"insert":"Create a BuJo serving as project or folder"}]},{"type":"text","children":[{"type":"text","data":{"subtype":"bulleted-list"},"delta":[{"insert":"or hierarchical view"}]}],"data":{"subtype":"bulleted-list"},"delta":[{"insert":"See them in Calendar"}]},{"type":"text","data":{"subtype":"checkbox","checkbox":true},"delta":[{"insert":"this is a check list"}]},{"type":"text","data":{"subtype":"checkbox","checkbox":false},"delta":[{"insert":"this is a uncheck list"}]},{"type":"text","delta":[{"insert":"Font Sans Serif Serif Monospace Size Small Large Hugefont size 15 font size 35 font size 20 diff-match-patch"}]},{"type":"text","delta":[{"insert":""}]}]}}''';
+    '''{"document":{"type":"page","children":[{"type":"heading","data":{"level":1,"delta":[{"insert":"Flutter Quill"}]}},{"type":"paragraph","data":{"delta":[]}},{"type":"heading","data":{"level":2,"delta":[{"insert":"Rich text editor for Flutter"}]}},{"type":"heading","data":{"level":3,"delta":[{"insert":"Quill component for Flutter"}]}},{"type":"paragraph","data":{"delta":[{"insert":"This "},{"insert":"library","attributes":{"italic":true}},{"insert":" supports "},{"insert":"mobile","attributes":{"bold":true,"bg_color":"0xFFebd6ff"}},{"insert":" platform "},{"insert":"only","attributes":{"underline":true,"bold":true,"font_color":"0xFFe60000"}},{"insert":" and ","attributes":{"font_color":"d7000000"}},{"insert":"web","attributes":{"strikethrough":true}}]}},{"type":"paragraph","data":{"delta":[{"insert":"You are welcome to use "},{"insert":"Bullet Journal","attributes":{"href":"https://bulletjournal.us/home/index.html"}}]}},{"type":"numbered_list","data":{"delta":[{"insert":"Track personal and group journals (ToDo, Note, Ledger) from multiple views with timely reminders"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"Share your tasks and notes with teammates, and see changes as they happen in real-time, across all devices"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"Check out what you and your teammates are working on each day"}],"number":null}},{"type":"paragraph","data":{"delta":[]}},{"type":"bulleted_list","data":{"delta":[{"insert":"Splitting bills with friends can never be easier."}]}},{"type":"bulleted_list","data":{"delta":[{"insert":"Start creating a group and invite your friends to join."}]}},{"type":"bulleted_list","data":{"delta":[{"insert":"Create a BuJo of Ledger type to see expense or balance summary."}]}},{"type":"paragraph","data":{"delta":[]}},{"type":"quote","data":{"delta":[{"insert":"Attach one or multiple labels to tasks, notes or transactions. Later you can track them just using the label(s)."}]}},{"type":"paragraph","data":{"delta":[]}},{"type":"paragraph","data":{"delta":[{"insert":"var BuJo = 'Bullet' + 'Journal'"}]}},{"type":"paragraph","data":{"delta":[]}},{"type":"paragraph","data":{"delta":[{"insert":"  Start tracking in your browser"}]}},{"type":"paragraph","data":{"delta":[{"insert":"  Stop the timer on your phone"}]}},{"type":"paragraph","data":{"delta":[{"insert":"    All your time entries are synced"}]}},{"type":"paragraph","data":{"delta":[{"insert":"    between the phone apps"}]}},{"type":"paragraph","data":{"delta":[{"insert":"      and the website."}]}},{"type":"paragraph","data":{"delta":[]}},{"type":"paragraph","data":{"delta":[]}},{"type":"paragraph","data":{"delta":[{"insert":"Center Align"}]}},{"type":"paragraph","data":{"delta":[{"insert":"Right Align"}]}},{"type":"paragraph","data":{"delta":[{"insert":"Justify Align"}]}},{"type":"numbered_list","children":[{"type":"numbered_list","children":[{"type":"numbered_list","data":{"delta":[{"insert":"and easily find contents"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"across projects or folders."}],"number":null}}],"data":{"delta":[{"insert":"Just type in the search bar"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"It matches text in your note or task."}],"number":null}}],"data":{"delta":[{"insert":"Have trouble finding things? "}],"number":null}},{"type":"numbered_list","children":[{"type":"numbered_list","data":{"delta":[{"insert":"email"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"message on your phone"}],"number":null}},{"type":"numbered_list","data":{"delta":[{"insert":"popup on the web site"}],"number":null}}],"data":{"delta":[{"insert":"Enable reminders so that you will get notified by"}],"number":null}},{"type":"bulleted_list","children":[{"type":"bulleted_list","children":[{"type":"bulleted_list","data":{"delta":[{"insert":"tasks"}]}},{"type":"bulleted_list","data":{"delta":[{"insert":"notes"}]}},{"type":"bulleted_list","children":[{"type":"bulleted_list","data":{"delta":[{"insert":"under BuJo "}]}}],"data":{"delta":[{"insert":"transactions"}]}}],"data":{"delta":[{"insert":"Organize your"}]}}],"data":{"delta":[{"insert":"Create a BuJo serving as project or folder"}]}},{"type":"bulleted_list","children":[{"type":"bulleted_list","data":{"delta":[{"insert":"or hierarchical view"}]}}],"data":{"delta":[{"insert":"See them in Calendar"}]}},{"type":"todo_list","data":{"checked":true,"delta":[{"insert":"this is a check list"}]}},{"type":"todo_list","data":{"checked":false,"delta":[{"insert":"this is a uncheck list"}]}},{"type":"paragraph","data":{"delta":[{"insert":"Font Sans Serif Serif Monospace Size Small Large Hugefont size 15 font size 35 font size 20 diff-match-patch"}]}}]}}''';
 
 const quillDeltaSample = r'''
 [
@@ -20,7 +22,7 @@ const quillDeltaSample = r'''
     "insert": "Flutter Quill"
   },
   {
-    "data": {
+    "attributes": {
       "header": 1
     },
     "insert": "\n"
@@ -39,7 +41,7 @@ const quillDeltaSample = r'''
     "insert": "\nRich text editor for Flutter"
   },
   {
-    "data": {
+    "attributes": {
       "header": 2
     },
     "insert": "\n"
@@ -48,7 +50,7 @@ const quillDeltaSample = r'''
     "insert": "Quill component for Flutter"
   },
   {
-    "data": {
+    "attributes": {
       "header": 3
     },
     "insert": "\n"
@@ -57,7 +59,7 @@ const quillDeltaSample = r'''
     "insert": "This "
   },
   {
-    "data": {
+    "attributes": {
       "italic": true,
       "background": "transparent"
     },
@@ -67,7 +69,7 @@ const quillDeltaSample = r'''
     "insert": " supports "
   },
   {
-    "data": {
+    "attributes": {
       "bold": true,
       "background": "#ebd6ff"
     },
@@ -77,7 +79,7 @@ const quillDeltaSample = r'''
     "insert": " platform "
   },
   {
-    "data": {
+    "attributes": {
       "underline": true,
       "bold": true,
       "color": "#e60000"
@@ -85,13 +87,13 @@ const quillDeltaSample = r'''
     "insert": "only"
   },
   {
-    "data": {
+    "attributes": {
       "color": "rgba(0, 0, 0, 0.847)"
     },
     "insert": " and "
   },
   {
-    "data": {
+    "attributes": {
       "strike": true,
       "color": "black"
     },
@@ -101,7 +103,7 @@ const quillDeltaSample = r'''
     "insert": " is not supported.\nYou are welcome to use "
   },
   {
-    "data": {
+    "attributes": {
       "link": "https://bulletjournal.us/home/index.html"
     },
     "insert": "Bullet Journal"
@@ -110,7 +112,7 @@ const quillDeltaSample = r'''
     "insert": ":\nTrack personal and group journals (ToDo, Note, Ledger) from multiple views with timely reminders"
   },
   {
-    "data": {
+    "attributes": {
       "list": "ordered"
     },
     "insert": "\n"
@@ -119,7 +121,7 @@ const quillDeltaSample = r'''
     "insert": "Share your tasks and notes with teammates, and see changes as they happen in real-time, across all devices"
   },
   {
-    "data": {
+    "attributes": {
       "list": "ordered"
     },
     "insert": "\n"
@@ -128,7 +130,7 @@ const quillDeltaSample = r'''
     "insert": "Check out what you and your teammates are working on each day"
   },
   {
-    "data": {
+    "attributes": {
       "list": "ordered"
     },
     "insert": "\n"
@@ -137,7 +139,7 @@ const quillDeltaSample = r'''
     "insert": "\nSplitting bills with friends can never be easier."
   },
   {
-    "data": {
+    "attributes": {
       "list": "bullet"
     },
     "insert": "\n"
@@ -146,7 +148,7 @@ const quillDeltaSample = r'''
     "insert": "Start creating a group and invite your friends to join."
   },
   {
-    "data": {
+    "attributes": {
       "list": "bullet"
     },
     "insert": "\n"
@@ -155,7 +157,7 @@ const quillDeltaSample = r'''
     "insert": "Create a BuJo of Ledger type to see expense or balance summary."
   },
   {
-    "data": {
+    "attributes": {
       "list": "bullet"
     },
     "insert": "\n"
@@ -164,7 +166,7 @@ const quillDeltaSample = r'''
     "insert": "\nAttach one or multiple labels to tasks, notes or transactions. Later you can track them just using the label(s)."
   },
   {
-    "data": {
+    "attributes": {
       "blockquote": true
     },
     "insert": "\n"
@@ -173,7 +175,7 @@ const quillDeltaSample = r'''
     "insert": "\nvar BuJo = 'Bullet' + 'Journal'"
   },
   {
-    "data": {
+    "attributes": {
       "code_block": true
     },
     "insert": "\n"
@@ -182,7 +184,7 @@ const quillDeltaSample = r'''
     "insert": "\nStart tracking in your browser"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1
     },
     "insert": "\n"
@@ -191,7 +193,7 @@ const quillDeltaSample = r'''
     "insert": "Stop the timer on your phone"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1
     },
     "insert": "\n"
@@ -200,7 +202,7 @@ const quillDeltaSample = r'''
     "insert": "All your time entries are synced"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2
     },
     "insert": "\n"
@@ -209,7 +211,7 @@ const quillDeltaSample = r'''
     "insert": "between the phone apps"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2
     },
     "insert": "\n"
@@ -218,7 +220,7 @@ const quillDeltaSample = r'''
     "insert": "and the website."
   },
   {
-    "data": {
+    "attributes": {
       "indent": 3
     },
     "insert": "\n"
@@ -230,7 +232,7 @@ const quillDeltaSample = r'''
     "insert": "\nCenter Align"
   },
   {
-    "data": {
+    "attributes": {
       "align": "center"
     },
     "insert": "\n"
@@ -239,7 +241,7 @@ const quillDeltaSample = r'''
     "insert": "Right Align"
   },
   {
-    "data": {
+    "attributes": {
       "align": "right"
     },
     "insert": "\n"
@@ -248,7 +250,7 @@ const quillDeltaSample = r'''
     "insert": "Justify Align"
   },
   {
-    "data": {
+    "attributes": {
       "align": "justify"
     },
     "insert": "\n"
@@ -257,7 +259,7 @@ const quillDeltaSample = r'''
     "insert": "Have trouble finding things? "
   },
   {
-    "data": {
+    "attributes": {
       "list": "ordered"
     },
     "insert": "\n"
@@ -266,7 +268,7 @@ const quillDeltaSample = r'''
     "insert": "Just type in the search bar"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "ordered"
     },
@@ -276,7 +278,7 @@ const quillDeltaSample = r'''
     "insert": "and easily find contents"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2,
       "list": "ordered"
     },
@@ -286,7 +288,7 @@ const quillDeltaSample = r'''
     "insert": "across projects or folders."
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2,
       "list": "ordered"
     },
@@ -296,7 +298,7 @@ const quillDeltaSample = r'''
     "insert": "It matches text in your note or task."
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "ordered"
     },
@@ -306,7 +308,7 @@ const quillDeltaSample = r'''
     "insert": "Enable reminders so that you will get notified by"
   },
   {
-    "data": {
+    "attributes": {
       "list": "ordered"
     },
     "insert": "\n"
@@ -315,7 +317,7 @@ const quillDeltaSample = r'''
     "insert": "email"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "ordered"
     },
@@ -325,7 +327,7 @@ const quillDeltaSample = r'''
     "insert": "message on your phone"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "ordered"
     },
@@ -335,7 +337,7 @@ const quillDeltaSample = r'''
     "insert": "popup on the web site"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "ordered"
     },
@@ -345,7 +347,7 @@ const quillDeltaSample = r'''
     "insert": "Create a BuJo serving as project or folder"
   },
   {
-    "data": {
+    "attributes": {
       "list": "bullet"
     },
     "insert": "\n"
@@ -354,7 +356,7 @@ const quillDeltaSample = r'''
     "insert": "Organize your"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "bullet"
     },
@@ -364,7 +366,7 @@ const quillDeltaSample = r'''
     "insert": "tasks"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2,
       "list": "bullet"
     },
@@ -374,7 +376,7 @@ const quillDeltaSample = r'''
     "insert": "notes"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2,
       "list": "bullet"
     },
@@ -384,7 +386,7 @@ const quillDeltaSample = r'''
     "insert": "transactions"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 2,
       "list": "bullet"
     },
@@ -394,7 +396,7 @@ const quillDeltaSample = r'''
     "insert": "under BuJo "
   },
   {
-    "data": {
+    "attributes": {
       "indent": 3,
       "list": "bullet"
     },
@@ -404,7 +406,7 @@ const quillDeltaSample = r'''
     "insert": "See them in Calendar"
   },
   {
-    "data": {
+    "attributes": {
       "list": "bullet"
     },
     "insert": "\n"
@@ -413,7 +415,7 @@ const quillDeltaSample = r'''
     "insert": "or hierarchical view"
   },
   {
-    "data": {
+    "attributes": {
       "indent": 1,
       "list": "bullet"
     },
@@ -423,7 +425,7 @@ const quillDeltaSample = r'''
     "insert": "this is a check list"
   },
   {
-    "data": {
+    "attributes": {
       "list": "checked"
     },
     "insert": "\n"
@@ -432,7 +434,7 @@ const quillDeltaSample = r'''
     "insert": "this is a uncheck list"
   },
   {
-    "data": {
+    "attributes": {
       "list": "unchecked"
     },
     "insert": "\n"
@@ -441,7 +443,7 @@ const quillDeltaSample = r'''
     "insert": "Font "
   },
   {
-    "data": {
+    "attributes": {
       "font": "sans-serif"
     },
     "insert": "Sans Serif"
@@ -450,7 +452,7 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "font": "serif"
     },
     "insert": "Serif"
@@ -459,7 +461,7 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "font": "monospace"
     },
     "insert": "Monospace"
@@ -468,7 +470,7 @@ const quillDeltaSample = r'''
     "insert": " Size "
   },
   {
-    "data": {
+    "attributes": {
       "size": "small"
     },
     "insert": "Small"
@@ -477,7 +479,7 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "size": "large"
     },
     "insert": "Large"
@@ -486,13 +488,13 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "size": "huge"
     },
     "insert": "Huge"
   },
   {
-    "data": {
+    "attributes": {
       "size": "15.0"
     },
     "insert": "font size 15"
@@ -501,7 +503,7 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "size": "35"
     },
     "insert": "font size 35"
@@ -510,25 +512,25 @@ const quillDeltaSample = r'''
     "insert": " "
   },
   {
-    "data": {
+    "attributes": {
       "size": "20"
     },
     "insert": "font size 20"
   },
   {
-    "data": {
+    "attributes": {
       "token": "built_in"
     },
     "insert": " diff"
   },
   {
-    "data": {
+    "attributes": {
       "token": "operator"
     },
     "insert": "-match"
   },
   {
-    "data": {
+    "attributes": {
       "token": "literal"
     },
     "insert": "-patch"
@@ -537,7 +539,7 @@ const quillDeltaSample = r'''
     "insert": {
       "image": "https://user-images.githubusercontent.com/122956/72955931-ccc07900-3d52-11ea-89b1-d468a6e2aa2b.png"
     },
-    "data": {
+    "attributes": {
       "width": "230",
       "style": "display: block; margin: auto;"
     }
