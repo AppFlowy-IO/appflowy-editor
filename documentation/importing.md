@@ -1,16 +1,27 @@
 # Importing data
 
-For now, we have supported three ways to import data to initialize AppFlowy Editor.
+Currently, we have supported three methods for importing data to initialize AppFlowy Editor.
 
 1. From AppFlowy Document JSON
 
 ```dart
-const document = r'''{"document":{"type":"editor","children":[{"type":"text","attributes":{"subtype":"heading","heading":"h1"},"delta":[{"insert":"Hello AppFlowy!"}]}]}}''';
-final json = jsonDecode(document);
+const document = r'''{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+            "delta": [{ "insert": "Hello AppFlowy!" }],
+            "level": 1
+        }
+      }
+    ]
+  }
+}''';
+final json = Map<String, Object>.from(jsonDecode(document));
 final editorState = EditorState(
-    document: Document.fromJson(
-        Map<String, Object>.from(json),
-    ),
+  document: Document.fromJson(json),
 );
 ```
 
@@ -19,18 +30,19 @@ final editorState = EditorState(
 ```dart
 const markdown = r'''# Hello AppFlowy!''';
 final editorState = EditorState(
-    document: markdownToDocument(markdown),
+  document: markdownToDocument(markdown),
 );
 ```
 
 3. From Quill Delta
 
 ```dart
-const delta = r'''[{"insert":"Hello AppFlowy!"},{"attributes":{"header":1},"insert":"\n"}]''';
-final json = jsonDecode(delta);
-final editorState = EditorState(
-    document: DeltaDocumentConvert().convertFromJSON(json),
-);
+const json = r'''[{"insert":"Hello AppFlowy!"},{"attributes":{"header":1},"insert":"\n"}]''';
+final delta = Delta.fromJson(jsonDecode(json));
+final document = quillDeltaEncoder.convert(delta);
+final editorState = EditorState(document: document);
 ```
 
-For more details, please refer to the function `_importFile` through this [link](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/home_page.dart).
+> Notes: Some styles, such as font-size, font-family and text-align, are not supported yet.
+
+For more details, please refer to the function `_importFile` through this [link](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/home_page.dart#L298).
