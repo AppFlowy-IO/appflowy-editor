@@ -249,6 +249,7 @@ class _AppFlowySelectionState extends State<AppFlowySelection>
     currentSelectedNodes = [];
     currentSelection.value = null;
 
+    _clearToolbar();
     clearCursor();
     // clear selection areas
     _selectionAreas
