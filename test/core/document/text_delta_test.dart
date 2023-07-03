@@ -325,11 +325,48 @@ void main() {
       });
     });
     group('runes', () {
-      test("stringIndexes", () {
-        final indexes = stringIndexes('😊');
-        expect(indexes[0], 0);
-        expect(indexes[1], 0);
+      test('emoji next rune', () {
+        final text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
+        final delta = Delta()..insert(text);
+        final pos = [0];
+        for (var i = 0; i < 6; i++) {
+          pos.add(delta.nextRunePosition(pos.last));
+        }
+        expect(pos, [0, 2, 4, 15, 23, 28, 33]);
       });
+
+      test('text next rune', () {
+        final text = 'Hello你好こんにちは안녕하세요';
+        final delta = Delta()..insert(text);
+        var pos = 0;
+        for (var i = 0; i < text.length; i++) {
+          expect(pos, i);
+          pos = delta.nextRunePosition(pos);
+        }
+        expect(pos, text.length);
+      });
+
+      test('emoji previous rune', () {
+        final text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
+        final delta = Delta()..insert(text);
+        final pos = [text.length];
+        for (var i = 0; i < 6; i++) {
+          pos.add(delta.prevRunePosition(pos.last));
+        }
+        expect(pos.reversed, [0, 2, 4, 15, 23, 28, 33]);
+      });
+
+      test('text previous rune', () {
+        final text = 'Hello你好こんにちは안녕하세요';
+        final delta = Delta()..insert(text);
+        var pos = text.length;
+        for (var i = text.length; i > 0; i--) {
+          expect(pos, i);
+          pos = delta.prevRunePosition(pos);
+        }
+        expect(pos, 0);
+      });
+
       test("next rune 1", () {
         final delta = Delta()..insert('😊');
         expect(delta.nextRunePosition(0), 2);
@@ -339,6 +376,10 @@ void main() {
         expect(delta.nextRunePosition(0), 2);
       });
       test("next rune 3", () {
+        final delta = Delta()..insert('😊陈');
+        expect(delta.nextRunePosition(2), 3);
+      });
+      test("next rune 4", () {
         final delta = Delta()..insert('😊陈');
         expect(delta.nextRunePosition(2), 3);
       });

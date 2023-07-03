@@ -1,11 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
-import 'package:appflowy_editor/src/render/color_menu/color_picker.dart';
-import 'package:appflowy_editor/src/render/link_menu/link_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 typedef ToolbarItemEventHandler = void Function(
@@ -18,25 +13,28 @@ typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 class ToolbarItem {
   ToolbarItem({
     required this.id,
-    required this.type,
+    required this.group,
+    this.type = 1,
     this.tooltipsMessage = '',
     this.iconBuilder,
-    required this.validator,
+    this.validator,
     this.highlightCallback,
     this.handler,
     this.itemBuilder,
-  }) {
-    assert(
-      (iconBuilder != null && itemBuilder == null) ||
-          (iconBuilder == null && itemBuilder != null),
-      'iconBuilder and itemBuilder must be set one of them',
-    );
-  }
+    this.isActive,
+    this.builder,
+  });
 
   final String id;
+  final int group;
+  final bool Function(EditorState editorState)? isActive;
+  final Widget Function(BuildContext context, EditorState editorState)? builder;
+
+  // deprecated
   final int type;
   final String tooltipsMessage;
-  final ToolbarItemValidator validator;
+
+  final ToolbarItemValidator? validator;
 
   final Widget Function(bool isHighlight)? iconBuilder;
   final ToolbarItemEventHandler? handler;
@@ -49,6 +47,7 @@ class ToolbarItem {
     return ToolbarItem(
       id: 'divider',
       type: -1,
+      group: -1,
       iconBuilder: (_) => const FlowySvg(name: 'toolbar/divider'),
       validator: (editorState) => true,
       handler: (editorState, context) {},
@@ -71,10 +70,12 @@ class ToolbarItem {
   int get hashCode => id.hashCode;
 }
 
+const baseToolbarIndex = 1;
 List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h1',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading1,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h1',
@@ -92,6 +93,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h2',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading2,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h2',
@@ -109,6 +111,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.h3',
     type: 1,
+    group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading3,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/h3',
@@ -126,6 +129,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.bold',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.bold}${_shortcutTooltips("⌘ + B", "CTRL + B", "CTRL + B")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -143,6 +147,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.italic',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.italic}${_shortcutTooltips("⌘ + I", "CTRL + I", "CTRL + I")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -160,6 +165,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.underline',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.underline}${_shortcutTooltips("⌘ + U", "CTRL + U", "CTRL + U")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -177,6 +183,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.strikethrough',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.strikethrough}${_shortcutTooltips("⌘ + SHIFT + S", "CTRL + SHIFT + S", "CTRL + SHIFT + S")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -194,6 +201,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.code',
     type: 2,
+    group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.embedCode}${_shortcutTooltips("⌘ + E", "CTRL + E", "CTRL + E")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -211,6 +219,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.quote',
     type: 3,
+    group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.quote,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/quote',
@@ -229,6 +238,7 @@ List<ToolbarItem> defaultToolbarItems = [
   ToolbarItem(
     id: 'appflowy.toolbar.bulleted_list',
     type: 3,
+    group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.bulletedList,
     iconBuilder: (isHighlight) => FlowySvg(
       name: 'toolbar/bulleted_list',
@@ -243,25 +253,9 @@ List<ToolbarItem> defaultToolbarItems = [
     handler: (editorState, context) => formatBulletedList(editorState),
   ),
   ToolbarItem(
-    id: 'appflowy.toolbar.link',
-    type: 4,
-    tooltipsMessage:
-        "${AppFlowyEditorLocalizations.current.link}${_shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}",
-    iconBuilder: (isHighlight) => FlowySvg(
-      name: 'toolbar/link',
-      color: isHighlight ? Colors.lightBlue : null,
-    ),
-    validator: _onlyShowInSingleTextSelection,
-    highlightCallback: (editorState) => _allSatisfy(
-      editorState,
-      BuiltInAttributeKey.href,
-      (value) => value != null,
-    ),
-    handler: (editorState, context) => showLinkMenu(context, editorState),
-  ),
-  ToolbarItem(
     id: 'appflowy.toolbar.highlight',
     type: 4,
+    group: baseToolbarIndex + 2,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.highlight}${_shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}",
     iconBuilder: (isHighlight) => FlowySvg(
@@ -271,7 +265,7 @@ List<ToolbarItem> defaultToolbarItems = [
     validator: _showInBuiltInTextSelection,
     highlightCallback: (editorState) => _allSatisfy(
       editorState,
-      BuiltInAttributeKey.backgroundColor,
+      BuiltInAttributeKey.highlightColor,
       (value) {
         return value != null && value != '0x00000000'; // transparent color;
       },
@@ -279,37 +273,6 @@ List<ToolbarItem> defaultToolbarItems = [
     handler: (editorState, context) => formatHighlight(
       editorState,
       editorState.editorStyle.highlightColorHex!,
-    ),
-  ),
-  ToolbarItem(
-    id: 'appflowy.toolbar.color',
-    type: 4,
-    tooltipsMessage: AppFlowyEditorLocalizations.current.color,
-    iconBuilder: (isHighlight) => Icon(
-      Icons.color_lens_outlined,
-      size: 14,
-      color: isHighlight ? Colors.lightBlue : Colors.white,
-    ),
-    validator: _showInBuiltInTextSelection,
-    highlightCallback: (editorState) =>
-        _allSatisfy(
-          editorState,
-          BuiltInAttributeKey.color,
-          (value) =>
-              value != null &&
-              value != _generateFontColorOptions(editorState).first.colorHex,
-        ) ||
-        _allSatisfy(
-          editorState,
-          BuiltInAttributeKey.backgroundColor,
-          (value) =>
-              value != null &&
-              value !=
-                  _generateBackgroundColorOptions(editorState).first.colorHex,
-        ),
-    handler: (editorState, context) => showColorMenu(
-      context,
-      editorState,
     ),
   ),
 ];
@@ -344,8 +307,7 @@ ToolbarItemValidator _showInBuiltInTextSelection = (editorState) {
       .whereType<TextNode>()
       .where(
         (textNode) =>
-            BuiltInAttributeKey.globalStyleKeys.contains(textNode.subtype) ||
-            textNode.subtype == null,
+            BuiltInAttributeKey.globalStyleKeys.contains(textNode.type),
       );
   return nodes.isNotEmpty;
 };
@@ -355,7 +317,7 @@ bool _allSatisfy(
   String styleKey,
   bool Function(dynamic value) test,
 ) {
-  final selection = editorState.service.selectionService.currentSelection.value;
+  final selection = editorState.selection;
   return selection != null &&
       editorState.selectedTextNodes.allSatisfyInSelection(
         selection,
@@ -364,315 +326,20 @@ bool _allSatisfy(
       );
 }
 
-OverlayEntry? _overlay;
-
-EditorState? _editorState;
-bool _changeSelectionInner = false;
-void showLinkMenu(
-  BuildContext context,
-  EditorState editorState, {
-  Selection? customSelection,
-}) {
-  final rects = editorState.service.selectionService.selectionRects;
-  var maxBottom = 0.0;
-  late Rect matchRect;
-  for (final rect in rects) {
-    if (rect.bottom > maxBottom) {
-      maxBottom = rect.bottom;
-      matchRect = rect;
-    }
+bool onlyShowInSingleSelectionAndTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isSingle) {
+    return false;
   }
-  final baseOffset =
-      editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-  matchRect = matchRect.shift(-baseOffset);
-
-  _dismissOverlay();
-  _editorState = editorState;
-
-  // Since the link menu will only show in single text selection,
-  // We get the text node directly instead of judging details again.
-  final selection = customSelection ??
-      editorState.service.selectionService.currentSelection.value;
-  final node = editorState.service.selectionService.currentSelectedNodes;
-  if (selection == null || node.isEmpty || node.first is! TextNode) {
-    return;
-  }
-  final index =
-      selection.isBackward ? selection.start.offset : selection.end.offset;
-  final length = (selection.start.offset - selection.end.offset).abs();
-  final textNode = node.first as TextNode;
-  String? linkText;
-  if (textNode.allSatisfyLinkInSelection(selection)) {
-    linkText = textNode.getAttributeInSelection<String>(
-      selection,
-      BuiltInAttributeKey.href,
-    );
-  }
-
-  _overlay = OverlayEntry(
-    builder: (context) {
-      return Positioned(
-        top: matchRect.bottom + 5.0,
-        left: matchRect.left,
-        child: Material(
-          child: LinkMenu(
-            linkText: linkText,
-            editorState: editorState,
-            onOpenLink: () async {
-              await safeLaunchUrl(linkText);
-            },
-            onSubmitted: (text) async {
-              await editorState.formatLinkInText(
-                text,
-                textNode: textNode,
-              );
-
-              _dismissOverlay();
-            },
-            onCopyLink: () {
-              AppFlowyClipboard.setData(text: linkText);
-              _dismissOverlay();
-            },
-            onRemoveLink: () {
-              final transaction = editorState.transaction
-                ..formatText(
-                  textNode,
-                  index,
-                  length,
-                  {BuiltInAttributeKey.href: null},
-                );
-              editorState.apply(transaction);
-              _dismissOverlay();
-            },
-            onFocusChange: (value) {
-              if (value && customSelection != null) {
-                _changeSelectionInner = true;
-                editorState.service.selectionService
-                    .updateSelection(customSelection);
-              }
-            },
-          ),
-        ),
-      );
-    },
-  );
-  Overlay.of(context)?.insert(_overlay!);
-
-  editorState.service.scrollService?.disable();
-  editorState.service.keyboardService?.disable();
-  editorState.service.selectionService.currentSelection
-      .addListener(_dismissOverlay);
+  final node = editorState.getNodeAtPath(selection.start.path);
+  return node?.delta != null;
 }
 
-void _dismissOverlay() {
-  // workaround: SelectionService has been released after hot reload.
-  final isSelectionDisposed =
-      _editorState?.service.selectionServiceKey.currentState == null;
-  if (isSelectionDisposed) {
-    return;
+bool onlyShowInTextType(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return false;
   }
-  if (_editorState?.service.selectionService.currentSelection.value == null) {
-    return;
-  }
-  if (_changeSelectionInner) {
-    _changeSelectionInner = false;
-    return;
-  }
-  _overlay?.remove();
-  _overlay = null;
-
-  _editorState?.service.scrollService?.enable();
-  _editorState?.service.keyboardService?.enable();
-  _editorState?.service.selectionService.currentSelection
-      .removeListener(_dismissOverlay);
-  _editorState = null;
-}
-
-void showColorMenu(
-  BuildContext context,
-  EditorState editorState, {
-  Selection? customSelection,
-}) {
-  final rects = editorState.service.selectionService.selectionRects;
-  var maxBottom = 0.0;
-  late Rect matchRect;
-  for (final rect in rects) {
-    if (rect.bottom > maxBottom) {
-      maxBottom = rect.bottom;
-      matchRect = rect;
-    }
-  }
-  final baseOffset =
-      editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-  matchRect = matchRect.shift(-baseOffset);
-
-  _dismissOverlay();
-  _editorState = editorState;
-
-  // Since the link menu will only show in single text selection,
-  // We get the text node directly instead of judging details again.
-  final selection = customSelection ??
-      editorState.service.selectionService.currentSelection.value;
-
-  final node = editorState.service.selectionService.currentSelectedNodes;
-  if (selection == null || node.isEmpty || node.first is! TextNode) {
-    return;
-  }
-  final textNode = node.first as TextNode;
-
-  String? backgroundColorHex;
-  if (textNode.allSatisfyBackgroundColorInSelection(selection)) {
-    backgroundColorHex = textNode.getAttributeInSelection<String>(
-      selection,
-      BuiltInAttributeKey.backgroundColor,
-    );
-  }
-  String? fontColorHex;
-  if (textNode.allSatisfyFontColorInSelection(selection)) {
-    fontColorHex = textNode.getAttributeInSelection<String>(
-      selection,
-      BuiltInAttributeKey.color,
-    );
-  } else {
-    fontColorHex = editorState.editorStyle.textStyle?.color?.toHex();
-  }
-
-  final style = editorState.editorStyle;
-  _overlay = OverlayEntry(
-    builder: (context) {
-      return Positioned(
-        top: matchRect.bottom + 5.0,
-        left: matchRect.left + 10,
-        child: Material(
-          color: Colors.transparent,
-          child: ColorPicker(
-            editorState: editorState,
-            pickerBackgroundColor:
-                style.selectionMenuBackgroundColor ?? Colors.white,
-            pickerItemHoverColor:
-                style.popupMenuHoverColor ?? Colors.blue.withOpacity(0.3),
-            pickerItemTextColor:
-                style.selectionMenuItemTextColor ?? Colors.black,
-            selectedFontColorHex: fontColorHex,
-            selectedBackgroundColorHex: backgroundColorHex,
-            fontColorOptions: _generateFontColorOptions(editorState),
-            backgroundColorOptions:
-                _generateBackgroundColorOptions(editorState),
-            onSubmittedbackgroundColorHex: (color) {
-              formatHighlightColor(
-                editorState,
-                color,
-              );
-              _dismissOverlay();
-            },
-            onSubmittedFontColorHex: (color) {
-              formatFontColor(
-                editorState,
-                color,
-              );
-              _dismissOverlay();
-            },
-          ),
-        ),
-      );
-    },
-  );
-  Overlay.of(context)?.insert(_overlay!);
-
-  editorState.service.scrollService?.disable();
-  editorState.service.keyboardService?.disable();
-  editorState.service.selectionService.currentSelection
-      .addListener(_dismissOverlay);
-}
-
-List<ColorOption> _generateFontColorOptions(EditorState editorState) {
-  final defaultColor =
-      editorState.editorStyle.textStyle?.color ?? Colors.black; // black
-  return [
-    ColorOption(
-      colorHex: defaultColor.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorDefault,
-    ),
-    ColorOption(
-      colorHex: Colors.grey.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorGray,
-    ),
-    ColorOption(
-      colorHex: Colors.brown.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorBrown,
-    ),
-    ColorOption(
-      colorHex: Colors.yellow.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorYellow,
-    ),
-    ColorOption(
-      colorHex: Colors.green.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorGreen,
-    ),
-    ColorOption(
-      colorHex: Colors.blue.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorBlue,
-    ),
-    ColorOption(
-      colorHex: Colors.purple.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorPurple,
-    ),
-    ColorOption(
-      colorHex: Colors.pink.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorPink,
-    ),
-    ColorOption(
-      colorHex: Colors.red.toHex(),
-      name: AppFlowyEditorLocalizations.current.fontColorRed,
-    ),
-  ];
-}
-
-List<ColorOption> _generateBackgroundColorOptions(EditorState editorState) {
-  final defaultBackgroundColorHex =
-      editorState.editorStyle.highlightColorHex ?? '0x6000BCF0';
-  return [
-    ColorOption(
-      colorHex: defaultBackgroundColorHex,
-      name: AppFlowyEditorLocalizations.current.backgroundColorDefault,
-    ),
-    ColorOption(
-      colorHex: Colors.grey.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorGray,
-    ),
-    ColorOption(
-      colorHex: Colors.brown.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorBrown,
-    ),
-    ColorOption(
-      colorHex: Colors.yellow.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorYellow,
-    ),
-    ColorOption(
-      colorHex: Colors.green.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorGreen,
-    ),
-    ColorOption(
-      colorHex: Colors.blue.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorBlue,
-    ),
-    ColorOption(
-      colorHex: Colors.purple.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorPurple,
-    ),
-    ColorOption(
-      colorHex: Colors.pink.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorPink,
-    ),
-    ColorOption(
-      colorHex: Colors.red.withOpacity(0.3).toHex(),
-      name: AppFlowyEditorLocalizations.current.backgroundColorRed,
-    ),
-  ];
-}
-
-extension on Color {
-  String toHex() {
-    return '0x${value.toRadixString(16)}';
-  }
+  final nodes = editorState.getNodesInSelection(selection);
+  return nodes.every((element) => element.delta != null);
 }

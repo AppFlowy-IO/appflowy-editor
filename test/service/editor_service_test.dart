@@ -1,41 +1,69 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../infra/test_editor.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
+import '../new/infra/testable_editor.dart';
 
 void main() {
   group('AppFlowyEditor tests', () {
-    testWidgets('shrinkWrap is false', (tester) async {
-      final editor = tester.editor;
-      await editor.startTesting();
-
-      expect(find.byType(AppFlowyScroll), findsOneWidget);
+    testWidgets('without autoFocus false', (tester) async {
+      final editor = tester.editor..addParagraph(initialText: 'Hello');
+      await editor.startTesting(autoFocus: false);
+      final selection = editor.selection;
+      expect(selection != null, false);
+      await editor.dispose();
     });
 
-    testWidgets('shrinkWrap is true', (tester) async {
-      final editor = tester.editor;
+    testWidgets('with autoFocus true', (tester) async {
+      final editor = tester.editor..addParagraph(initialText: 'Hello');
+      await editor.startTesting(autoFocus: true);
+      final selection = editor.selection;
+      expect(selection != null, true);
+      await editor.dispose();
+    });
+
+    testWidgets('with shrinkWrap false', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          1000,
+          initialText: 'Hello',
+        );
+      await editor.startTesting(shrinkWrap: false);
+      final size = tester.getSize(find.byType(AppFlowyEditor));
+      await editor.dispose();
+    });
+
+    testWidgets('with shrinkWrap true', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          1000,
+          initialText: 'Hello',
+        );
       await editor.startTesting(shrinkWrap: true);
-
-      expect(find.byType(AppFlowyScroll), findsNothing);
+      expect(
+        tester.takeException(),
+        isInstanceOf<ArgumentError>(),
+      );
     });
 
-    testWidgets('without autoFocus', (tester) async {
-      final editor = tester.editor..insertTextNode('Hello');
-      await editor.startTesting(shrinkWrap: true, autoFocus: false);
-
-      final selectedNodes =
-          editor.editorState.service.selectionService.currentSelectedNodes;
-
-      expect(selectedNodes.isEmpty, true);
-    });
-
-    testWidgets('with autoFocus', (tester) async {
-      final editor = tester.editor..insertTextNode('Hello');
-      await editor.startTesting(shrinkWrap: true, autoFocus: true);
-
-      final selectedNodes =
-          editor.editorState.service.selectionService.currentSelectedNodes;
-
-      expect(selectedNodes.isEmpty, false);
+    testWidgets('with shrinkWrap true and wrapper with scroll view',
+        (tester) async {
+      final scrollController = ScrollController();
+      final editor = tester.editor
+        ..addParagraphs(
+          1000,
+          initialText: 'Hello',
+        );
+      await editor.startTesting(
+        shrinkWrap: true,
+        scrollController: scrollController,
+        wrapper: (child) => SingleChildScrollView(
+          child: IntrinsicHeight(
+            child: child,
+          ),
+        ),
+      );
+      final size = tester.getSize(find.byType(AppFlowyEditor));
+      expect(size.height > 1000, true);
     });
   });
 }
