@@ -225,9 +225,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   int _searchCounter = 0;
 
   String _keyword = '';
-
   String get keyword => _keyword;
-
   set keyword(String newKeyword) {
     _keyword = newKeyword;
 
