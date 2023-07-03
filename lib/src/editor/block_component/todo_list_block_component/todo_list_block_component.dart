@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 
 class TodoListBlockKeys {
@@ -33,7 +34,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
-    this.icon,
+    this.iconBuilder,
   });
 
   @override
@@ -42,8 +43,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
 
-  /// The icon of the todo list block.
-  final Widget? Function(bool checked)? icon;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -53,7 +53,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       configuration: configuration,
       textStyleBuilder: textStyleBuilder,
-      icon: icon,
+      iconBuilder: iconBuilder,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -77,11 +77,11 @@ class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
-    this.icon,
+    this.iconBuilder,
   });
 
   final TextStyle Function(bool checked)? textStyleBuilder;
-  final Widget? Function(bool checked)? icon;
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<TodoListBlockComponentWidget> createState() =>
@@ -119,10 +119,12 @@ class _TodoListBlockComponentWidgetState
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _TodoListIcon(
-            icon: widget.icon?.call(checked) ?? defaultCheckboxIcon(),
-            onTap: checkOrUncheck,
-          ),
+          widget.iconBuilder != null
+              ? widget.iconBuilder!(context, node)
+              : _TodoListIcon(
+                  checked: checked,
+                  onTap: checkOrUncheck,
+                ),
           Flexible(
             child: FlowyRichText(
               key: forwardKey,
@@ -163,15 +165,6 @@ class _TodoListBlockComponentWidgetState
     return editorState.apply(transaction);
   }
 
-  FlowySvg defaultCheckboxIcon() {
-    return FlowySvg(
-      width: 22,
-      height: 22,
-      padding: const EdgeInsets.only(right: 5.0),
-      name: checked ? 'check' : 'uncheck',
-    );
-  }
-
   TextStyle? defaultTextStyle() {
     if (!checked) {
       return null;
@@ -185,12 +178,12 @@ class _TodoListBlockComponentWidgetState
 
 class _TodoListIcon extends StatelessWidget {
   const _TodoListIcon({
-    required this.icon,
     required this.onTap,
+    required this.checked,
   });
 
-  final Widget icon;
   final VoidCallback onTap;
+  final bool checked;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +192,12 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: icon,
+        child: FlowySvg(
+          width: 22,
+          height: 22,
+          padding: const EdgeInsets.only(right: 5.0),
+          name: checked ? 'check' : 'uncheck',
+        ),
       ),
     );
   }
