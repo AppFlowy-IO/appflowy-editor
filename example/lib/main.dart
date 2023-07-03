@@ -24,10 +24,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('en', 'US')],
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'AppFlowyEditor Example'),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData.light(useMaterial3: true),
     );
   }
 }
