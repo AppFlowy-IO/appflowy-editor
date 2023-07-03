@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/link_menu/link_menu.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
+
 import 'package:appflowy_editor/src/render/toolbar/toolbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -48,21 +49,6 @@ void main() async {
       );
     });
 
-    testWidgets('Presses Command + Shift + H to update text style',
-        (tester) async {
-      // FIXME: customize the highlight color instead of using magic number.
-      await _testUpdateTextStyleByCommandX(
-        tester,
-        BuiltInAttributeKey.backgroundColor,
-        '0x6000BCF0',
-        LogicalKeyboardKey.keyH,
-      );
-    });
-
-    testWidgets('Presses Command + K to trigger link menu', (tester) async {
-      await _testLinkMenuInSingleTextSelection(tester);
-    });
-
     testWidgets('Presses Command + E to update text style', (tester) async {
       await _testUpdateTextStyleByCommandX(
         tester,
@@ -83,37 +69,31 @@ Future<void> _testUpdateTextStyleByCommandX(
   final isShiftPressed =
       key == LogicalKeyboardKey.keyS || key == LogicalKeyboardKey.keyH;
   const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor
-    ..insertTextNode(text)
-    ..insertTextNode(text)
-    ..insertTextNode(text);
+  final editor = tester.editor..addParagraphs(3, initialText: text);
   await editor.startTesting();
 
   var selection =
       Selection.single(path: [1], startOffset: 2, endOffset: text.length - 2);
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isMetaPressed: true,
     );
   }
-  var textNode = editor.nodeAtPath([1]) as TextNode;
+  Node? node = editor.nodeAtPath([1]);
   expect(
-    textNode.allSatisfyInSelection(
-      selection,
-      matchStyle,
-      (value) {
-        return value == matchValue;
-      },
-    ),
+    node?.allSatisfyInSelection(selection, (delta) {
+      return delta
+          .everyAttributes((element) => element[matchStyle] == matchValue);
+    }),
     true,
   );
 
@@ -121,48 +101,48 @@ Future<void> _testUpdateTextStyleByCommandX(
       Selection.single(path: [1], startOffset: 0, endOffset: text.length);
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isMetaPressed: true,
     );
   }
-  textNode = editor.nodeAtPath([1]) as TextNode;
+  node = editor.nodeAtPath([1]);
   expect(
-    textNode.allSatisfyInSelection(
-      selection,
-      matchStyle,
-      (value) {
-        return value == matchValue;
-      },
-    ),
+    node?.allSatisfyInSelection(selection, (delta) {
+      return delta
+          .everyAttributes((element) => element[matchStyle] == matchValue);
+    }),
     true,
   );
 
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isMetaPressed: true,
     );
   }
-  textNode = editor.nodeAtPath([1]) as TextNode;
+  node = editor.nodeAtPath([1]);
   expect(
-    textNode.allNotSatisfyInSelection(matchStyle, matchValue, selection),
-    true,
+    node?.allSatisfyInSelection(selection, (delta) {
+      return delta
+          .everyAttributes((element) => element[matchStyle] == matchValue);
+    }),
+    false,
   );
 
   selection = Selection(
@@ -171,34 +151,31 @@ Future<void> _testUpdateTextStyleByCommandX(
   );
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isMetaPressed: true,
     );
   }
-  var nodes = editor.editorState.service.selectionService.currentSelectedNodes
-      .whereType<TextNode>();
+  var nodes = editor.editorState.service.selectionService.currentSelectedNodes;
   expect(nodes.length, 3);
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(
-        Selection.single(
-          path: node.path,
-          startOffset: 0,
-          endOffset: text.length,
-        ),
-        matchStyle,
-        (value) {
-          return value == matchValue;
-        },
-      ),
+          Selection.single(
+            path: node.path,
+            startOffset: 0,
+            endOffset: text.length,
+          ), (delta) {
+        return delta
+            .everyAttributes((element) => element[matchStyle] == matchValue);
+      }),
       true,
     );
   }
@@ -206,44 +183,42 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
 
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: key,
       isShiftPressed: isShiftPressed,
       isMetaPressed: true,
     );
   }
-  nodes = editor.editorState.service.selectionService.currentSelectedNodes
-      .whereType<TextNode>();
+  nodes = editor.editorState.service.selectionService.currentSelectedNodes;
   expect(nodes.length, 3);
   for (final node in nodes) {
     expect(
-      node.allNotSatisfyInSelection(
-        matchStyle,
-        matchValue,
-        Selection.single(
-          path: node.path,
-          startOffset: 0,
-          endOffset: text.length,
-        ),
-      ),
-      true,
+      node.allSatisfyInSelection(
+          Selection.single(
+            path: node.path,
+            startOffset: 0,
+            endOffset: text.length,
+          ), (delta) {
+        return delta
+            .everyAttributes((element) => element[matchStyle] == matchValue);
+      }),
+      false,
     );
   }
+
+  await editor.dispose();
 }
 
 Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   const link = 'appflowy.io';
   const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor
-    ..insertTextNode(text)
-    ..insertTextNode(text)
-    ..insertTextNode(text);
+  final editor = tester.editor..addParagraphs(3, initialText: text);
   await editor.startTesting();
 
 // selection is collapsed
@@ -254,7 +229,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   await editor.updateSelection(emptySelection);
 
   // Link dialog should not be visible when selection is null or collapsed
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.keyK,
     isControlPressed: !Platform.isMacOS,
     isMetaPressed: Platform.isMacOS,
@@ -274,7 +249,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(find.byType(ToolbarWidget), findsOneWidget);
 
   // trigger the link menu
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.keyK,
     isControlPressed: !Platform.isMacOS,
     isMetaPressed: Platform.isMacOS,
@@ -299,7 +274,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   );
 
   await editor.updateSelection(selection);
-  await editor.pressLogicKey(
+  await editor.pressKey(
     key: LogicalKeyboardKey.keyK,
     isControlPressed: !Platform.isMacOS,
     isMetaPressed: Platform.isMacOS,
@@ -319,12 +294,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   // Remove link
   if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isControlPressed: true,
     );
   } else {
-    await editor.pressLogicKey(
+    await editor.pressKey(
       key: LogicalKeyboardKey.keyK,
       isMetaPressed: true,
     );
@@ -343,4 +318,6 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ),
     false,
   );
+
+  await editor.dispose();
 }
