@@ -8,6 +8,7 @@ class IconItemWidget extends StatelessWidget {
     this.iconSize = const Size.square(18.0),
     required this.iconName,
     required this.isHighlight,
+    this.highlightColor = Colors.lightBlue,
     this.tooltip,
     this.onPressed,
   });
@@ -16,6 +17,7 @@ class IconItemWidget extends StatelessWidget {
   final Size iconSize;
   final String iconName;
   final bool isHighlight;
+  final Color highlightColor;
   final String? tooltip;
   final VoidCallback? onPressed;
 
@@ -23,7 +25,7 @@ class IconItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = FlowySvg(
       name: iconName,
-      color: isHighlight ? Colors.lightBlue : null,
+      color: isHighlight ? highlightColor : null,
       width: iconSize.width,
       height: iconSize.height,
     );
