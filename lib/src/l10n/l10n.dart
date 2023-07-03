@@ -611,6 +611,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `URL`
+  String get urlHint {
+    return Intl.message(
+      'URL',
+      name: 'urlHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Heading 1`
   String get mobileHeading1 {
     return Intl.message(
