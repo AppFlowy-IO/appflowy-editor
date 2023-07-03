@@ -12,9 +12,10 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[FlowyRichTextKeys.highlightColor] != null,
-        );
+        return delta.everyAttributes((attributes) {
+          highlightColorHex = attributes[FlowyRichTextKeys.highlightColor];
+          return highlightColorHex != null;
+        });
       });
       return IconItemWidget(
         iconName: 'toolbar/highlight_color',

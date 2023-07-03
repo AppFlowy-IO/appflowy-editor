@@ -13,9 +13,10 @@ ToolbarItem buildTextColorItem({
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[FlowyRichTextKeys.textColor] != null,
-        );
+        return delta.everyAttributes((attributes) {
+          textColorHex = attributes[FlowyRichTextKeys.textColor];
+          return (textColorHex != null);
+        });
       });
       return IconItemWidget(
         iconName: 'toolbar/text_color',
