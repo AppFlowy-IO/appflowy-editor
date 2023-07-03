@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,12 +34,41 @@ class TestableEditor {
     Locale locale = const Locale('en'),
     bool autoFocus = false,
     bool editable = true,
+    bool shrinkWrap = false,
+    bool withFloatingToolbar = false,
+    ScrollController? scrollController,
+    Widget Function(Widget child)? wrapper,
   }) async {
-    final editor = AppFlowyEditor.standard(
+    await AppFlowyEditorLocalizations.load(locale);
+
+    if (withFloatingToolbar) {
+      scrollController ??= ScrollController();
+    }
+    Widget editor = AppFlowyEditor.standard(
       editorState: editorState,
       editable: editable,
       autoFocus: autoFocus,
+      shrinkWrap: shrinkWrap,
+      scrollController: scrollController,
     );
+    if (withFloatingToolbar) {
+      editor = FloatingToolbar(
+        items: [
+          paragraphItem,
+          ...headingItems,
+          ...markdownFormatItems,
+          quoteItem,
+          bulletedListItem,
+          numberedListItem,
+          linkItem,
+          textColorItem,
+          highlightColorItem
+        ],
+        editorState: editorState,
+        scrollController: scrollController!,
+        child: editor,
+      );
+    }
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [
@@ -50,7 +80,11 @@ class TestableEditor {
         supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
         locale: locale,
         home: Scaffold(
-          body: editor,
+          body: wrapper == null
+              ? editor
+              : wrapper(
+                  editor,
+                ),
         ),
       ),
     );
@@ -201,9 +235,9 @@ class MockIMEInput {
     // if the selection is collapsed, do insertion.
     //  else if the selection is not collapsed, do replacement.
     if (selection.isCollapsed) {
-      return insertText(text);
+      await insertText(text);
     } else {
-      return replaceText(text);
+      await replaceText(text);
     }
   }
 
@@ -217,7 +251,7 @@ class MockIMEInput {
     if (delta == null) {
       return;
     }
-    return imeInput.apply([
+    await imeInput.apply([
       TextEditingDeltaInsertion(
         oldText: ' ${delta.toPlainText()}', // TODO: fix this workaround
         textInserted: text,
@@ -228,6 +262,7 @@ class MockIMEInput {
         composing: TextRange.empty,
       )
     ]);
+    await tester.pumpAndSettle();
   }
 
   Future<void> replaceText(String text) async {
@@ -236,7 +271,7 @@ class MockIMEInput {
       return;
     }
     final texts = editorState.getTextInSelection(selection).join('\n');
-    return imeInput.apply([
+    await imeInput.apply([
       TextEditingDeltaReplacement(
         oldText: ' $texts',
         replacementText: text,
@@ -250,5 +285,6 @@ class MockIMEInput {
         composing: TextRange.empty,
       )
     ]);
+    await tester.pumpAndSettle();
   }
 }

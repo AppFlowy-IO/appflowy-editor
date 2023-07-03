@@ -1,9 +1,9 @@
 {
   "document": {
-    "type": "document",
+    "type": "page",
     "children": [{
         "type": "heading",
-        "attributes": {
+        "data": {
           "level": 2,
           "delta": [{
               "insert": "👋 "
@@ -30,13 +30,13 @@
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [{
               "insert": "AppFlowy Editor is a"
             },
@@ -72,7 +72,7 @@
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": true,
           "delta": [{
             "insert": "Customizable"
@@ -81,7 +81,7 @@
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": true,
           "delta": [{
             "insert": "Test-covered"
@@ -90,7 +90,7 @@
       },
       {
         "type": "todo_list",
-        "attributes": {
+        "data": {
           "checked": false,
           "delta": [{
             "insert": "more to come!"
@@ -99,13 +99,13 @@
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "quote",
-        "attributes": {
+        "data": {
           "delta": [{
             "insert": "Here is an example you can give a try"
           }]
@@ -113,13 +113,13 @@
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [{
               "insert": "You can also use "
             },
@@ -140,22 +140,21 @@
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "bulleted_list",
-        "attributes": {
+        "data": {
           "delta": [{
             "insert": "Use / to insert blocks"
           }]
         }
-
       },
       {
         "type": "bulleted_list",
-        "attributes": {
+        "data": {
           "delta": [{
             "insert": "Select text to trigger to the toolbar to format your notes."
           }]
@@ -164,13 +163,13 @@
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": []
         }
       },
       {
         "type": "paragraph",
-        "attributes": {
+        "data": {
           "delta": [{
             "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
           }]

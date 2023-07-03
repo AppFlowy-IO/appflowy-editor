@@ -53,7 +53,11 @@ bool insertNodeAfterSelection(
   if (delta != null && delta.isEmpty) {
     transaction
       ..insertNode(selection.end.path, node)
-      ..deleteNode(currentNode);
+      ..deleteNode(currentNode)
+      ..afterSelection = Selection.collapse(
+        selection.end.path,
+        0,
+      );
   } else {
     final next = selection.end.path.next;
     transaction
@@ -120,22 +124,6 @@ bool formatHighlight(EditorState editorState, String colorHex) {
     editorState,
     BuiltInAttributeKey.highlightColor,
     customValue: value ? '0x00000000' : colorHex,
-  );
-}
-
-bool formatHighlightColor(EditorState editorState, String colorHex) {
-  return formatRichTextPartialStyle(
-    editorState,
-    BuiltInAttributeKey.highlightColor,
-    customValue: colorHex,
-  );
-}
-
-bool formatFontColor(EditorState editorState, String colorHex) {
-  return formatRichTextPartialStyle(
-    editorState,
-    BuiltInAttributeKey.textColor,
-    customValue: colorHex,
   );
 }
 

@@ -227,7 +227,7 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
         textNode.path,
         Node.fromJson({
           'type': 'image',
-          'attributes': {
+          'data': {
             'image_src': imgUrl,
             'align': 'center',
           }

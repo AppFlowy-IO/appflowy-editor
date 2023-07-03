@@ -32,6 +32,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
+  // use for IME only
+  bool enableShortcuts = true;
+
   @override
   void initState() {
     super.initState();
@@ -42,14 +45,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     interceptor = SelectionGestureInterceptor(
       key: 'keyboard',
       canTap: (details) {
+        enableShortcuts = true;
         focusNode.requestFocus();
+        textInputService.close();
         return true;
       },
     );
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
 
-    textInputService = DeltaTextInputService(
+    textInputService = NonDeltaTextInputService(
       onInsert: (insertion) async => await onInsert(
         insertion,
         editorState,
@@ -73,6 +78,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
     focusNode.addListener(_onFocusChanged);
+
+    keepEditorFocusNotifier.addListener(_onKeepEditorFocusChanged);
   }
 
   @override
@@ -85,6 +92,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (widget.focusNode == null) {
       focusNode.dispose();
     }
+    keepEditorFocusNotifier.removeListener(_onKeepEditorFocusChanged);
     super.dispose();
   }
 
@@ -134,7 +142,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   /// handle hardware keyboard
   KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
-    if (event is! RawKeyDownEvent) {
+    if (event is! RawKeyDownEvent || !enableShortcuts) {
       return KeyEventResult.ignored;
     }
 
@@ -161,6 +169,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onSelectionChanged() {
+    enableShortcuts = true;
     // attach the delta text input service if needed
     final selection = editorState.selection;
     if (selection == null) {
@@ -168,6 +177,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     } else {
       // For the deletion, we should attach the text input service immediately.
       _attachTextInputService(selection);
+      _updateCaretPosition(selection);
 
       // debounce the attachTextInputService function to avoid
       // the text input service being attached too frequently.
@@ -187,7 +197,20 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
-      textInputService.attach(textEditingValue);
+      textInputService.attach(
+        textEditingValue,
+        TextInputConfiguration(
+          enableDeltaModel: false,
+          inputType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          inputAction: TextInputAction.newline,
+          keyboardAppearance: Theme.of(context).brightness,
+        ),
+      );
+      // disable shortcuts when the IME active
+      enableShortcuts = textEditingValue.composing == TextRange.empty;
+    } else {
+      enableShortcuts = true;
     }
   }
 
@@ -200,7 +223,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         .where((element) => element.delta != null);
 
     // Get the composing text range.
-    final composingTextRange = textInputService.composingTextRange;
+    final composingTextRange =
+        textInputService.composingTextRange ?? TextRange.empty;
     if (editableNodes.isNotEmpty) {
       // Get the text by concatenating all the editable nodes in the selection.
       var text = editableNodes.fold<String>(
@@ -214,11 +238,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       return TextEditingValue(
         text: text,
         selection: TextSelection(
-          baseOffset: selection.start.offset,
-          extentOffset: selection.end.offset,
+          baseOffset: selection.startIndex,
+          extentOffset: selection.endIndex,
         ),
-        composing:
-            composingTextRange ?? TextRange.collapsed(selection.start.offset),
+        composing: composingTextRange,
       );
     }
     return null;
@@ -230,8 +253,49 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     );
 
     // clear the selection when the focus is lost.
-    // if (!focusNode.hasFocus) {
-    //   editorState.selection = null;
-    // }
+    if (!focusNode.hasFocus) {
+      if (PlatformExtension.isDesktop) {
+        if (keepEditorFocusNotifier.value > 0) {
+          return;
+        }
+      }
+      final children =
+          WidgetsBinding.instance.focusManager.primaryFocus?.children;
+      if (children != null && !children.contains(focusNode)) {
+        editorState.selection = null;
+      }
+      textInputService.close();
+    }
+  }
+
+  void _onKeepEditorFocusChanged() {
+    Log.editor.debug(
+      'keyboard service - on keep editor focus changed: ${keepEditorFocusNotifier.value}}',
+    );
+
+    if (keepEditorFocusNotifier.value == 0) {
+      focusNode.requestFocus();
+    }
+  }
+
+  // only verify on macOS.
+  void _updateCaretPosition(Selection? selection) {
+    if (selection == null || !selection.isCollapsed) {
+      return;
+    }
+    final node = editorState.getNodeAtPath(selection.start.path);
+    if (node == null) {
+      return;
+    }
+    final renderBox = node.renderBox;
+    final selectable = node.selectable;
+    if (renderBox != null && selectable != null) {
+      final size = renderBox.size;
+      final transform = renderBox.getTransformTo(null);
+      final rect = selectable.getCursorRectInPosition(selection.end);
+      if (rect != null) {
+        textInputService.updateCaretPosition(size, transform, rect);
+      }
+    }
   }
 }

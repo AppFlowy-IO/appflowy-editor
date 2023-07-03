@@ -1,20 +1,18 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:appflowy_editor/src/infra/mobile/mobile.dart';
 
 class SimpleEditor extends StatelessWidget {
   const SimpleEditor({
     super.key,
     required this.jsonString,
-    required this.themeData,
     required this.onEditorStateChange,
+    this.editorStyle,
   });
 
   final Future<String> jsonString;
-  final ThemeData themeData;
+  final EditorStyle? editorStyle;
   final void Function(EditorState editorState) onEditorStateChange;
 
   @override
@@ -51,13 +49,13 @@ class SimpleEditor extends StatelessWidget {
               ],
               editorState: editorState,
               scrollController: scrollController,
-              child: _buildEditor(
+              child: _buildDesktopEditor(
                 context,
                 editorState,
                 scrollController,
               ),
             );
-          } else {
+          } else if (PlatformExtension.isMobile) {
             return Column(
               children: [
                 Expanded(
@@ -67,16 +65,103 @@ class SimpleEditor extends StatelessWidget {
                     scrollController,
                   ),
                 ),
-                if (Platform.isIOS || Platform.isAndroid)
-                  _buildMobileToolbar(context, editorState),
+                MobileToolbar(
+                  editorState: editorState,
+                  toolbarItems: [
+                    textDecorationMobileToolbarItem,
+                    textAndBackgroundColorMobileToolbarItem,
+                    headingMobileToolbarItem,
+                    todoListMobileToolbarItem,
+                    listMobileToolbarItem,
+                    linkMobileToolbarItem,
+                    quoteMobileToolbarItem,
+                    codeMobileToolbarItem,
+                    // dividerMobileToolbarItem,
+                  ],
+                  textColorOptions: [
+                    ColorOption(
+                      colorHex: Colors.grey.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorGray,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.brown.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorBrown,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.yellow.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorYellow,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.green.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorGreen,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.blue.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorBlue,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.purple.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorPurple,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.pink.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorPink,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.red.toHex(),
+                      name: AppFlowyEditorLocalizations.current.fontColorRed,
+                    ),
+                  ],
+                  backgroundColorOptions: [
+                    ColorOption(
+                      colorHex: Colors.grey.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorGray,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.brown.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorBrown,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.yellow.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorYellow,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.green.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorGreen,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.blue.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorBlue,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.purple.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorPurple,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.pink.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorPink,
+                    ),
+                    ColorOption(
+                      colorHex: Colors.red.withOpacity(0.3).toHex(),
+                      name: AppFlowyEditorLocalizations
+                          .current.backgroundColorRed,
+                    ),
+                  ],
+                ),
               ],
             );
           }
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
         }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -86,47 +171,36 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor.custom(
+    return AppFlowyEditor.standard(
       editorStyle: const EditorStyle.mobile(),
       editorState: editorState,
       scrollController: scrollController,
-      blockComponentBuilders: standardBlockComponentBuilderMap,
     );
   }
 
-  Widget _buildEditor(
+  Widget _buildDesktopEditor(
     BuildContext context,
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor.standard(
+    final customBlockComponentBuilders = {
+      ...standardBlockComponentBuilderMap,
+      ImageBlockKeys.type: ImageBlockComponentBuilder(
+        showMenu: true,
+        menuBuilder: (node, _) {
+          return const Positioned(
+            right: 10,
+            child: Text('Sample Menu'),
+          );
+        },
+      )
+    };
+    return AppFlowyEditor.custom(
       editorState: editorState,
       scrollController: scrollController,
-    );
-  }
-
-  Widget _buildMobileToolbar(BuildContext context, EditorState editorState) {
-    return MobileToolbar(
-      editorState: editorState,
-      // TODO(yijing): Implement toolbar features later
-      toolbarItems: [
-        IconButton(
-          onPressed: () {
-            editorState.selectionService.updateSelection(null);
-          },
-          icon: const Icon(Icons.keyboard_hide),
-        ),
-        ...AFMobileIcons.values
-            .map(
-              (e) => IconButton(
-                onPressed: () {},
-                icon: AFMobileIcon(
-                  afMobileIcons: e,
-                ),
-              ),
-            )
-            .toList(),
-      ],
+      blockComponentBuilders: customBlockComponentBuilders,
+      commandShortcutEvents: standardCommandShortcutEvents,
+      characterShortcutEvents: standardCharacterShortcutEvents,
     );
   }
 }

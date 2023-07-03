@@ -151,7 +151,8 @@ class Transaction {
   ///
   /// Also, this method will transform the path of the operations
   /// to avoid conflicts.
-  void add(Operation op, {bool transform = true}) {
+  void add(Operation operation, {bool transform = true}) {
+    Operation? op = operation;
     final Operation? last = _operations.isEmpty ? null : _operations.last;
     if (last != null) {
       if (op is UpdateTextOperation &&
@@ -168,10 +169,16 @@ class Transaction {
     }
     if (transform) {
       for (var i = 0; i < _operations.length; i++) {
+        if (op == null) {
+          continue;
+        }
         op = transformOperation(_operations[i], op);
       }
     }
     if (op is UpdateTextOperation && op.delta.isEmpty) {
+      return;
+    }
+    if (op == null) {
       return;
     }
     _operations.add(op);
@@ -670,7 +677,13 @@ extension on Delta {
     if (index <= 0) {
       return null;
     }
-
-    return slice(index - 1, index).first.attributes;
+    final attributes = slice(index - 1, index).first.attributes;
+    if (attributes == null ||
+        !attributes.keys.every(
+          (element) => FlowyRichTextKeys.supportSliced.contains(element),
+        )) {
+      return null;
+    }
+    return attributes;
   }
 }

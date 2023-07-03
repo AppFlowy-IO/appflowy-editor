@@ -25,6 +25,12 @@ export 'heading_block_component/heading_character_shortcut.dart';
 
 // image
 export 'image_block_component/image_block_component.dart';
+export 'image_block_component/image_upload_widget.dart';
+
+// divider
+export 'divider_block_component/divider_block_component.dart';
+export 'divider_block_component/divider_character_shortcut.dart';
+export 'divider_block_component/divider_menu_item.dart';
 
 // base
 export 'base_component/convert_to_paragraph_command.dart';

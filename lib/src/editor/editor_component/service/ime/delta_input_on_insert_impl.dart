@@ -21,27 +21,35 @@ Future<void> onInsert(
     }
   }
 
-  final selection = editorState.selection;
+  var selection = editorState.selection;
   if (selection == null) {
+    return;
+  }
+
+  if (!selection.isCollapsed) {
+    await editorState.deleteSelection(selection);
+  }
+
+  selection = editorState.selection?.normalized;
+  if (selection == null || !selection.isCollapsed) {
     return;
   }
 
   // IME
   // single line
-  if (selection.isCollapsed) {
-    final node = editorState.selectionService.currentSelectedNodes.first;
-    assert(node.delta != null);
-
-    final transaction = editorState.transaction
-      ..insertText(
-        node,
-        insertion.insertionOffset,
-        insertion.textInserted,
-      );
-    return editorState.apply(transaction);
-  } else {
-    throw UnimplementedError();
+  final node = editorState.getNodeAtPath(selection.start.path);
+  if (node == null) {
+    return;
   }
+  assert(node.delta != null);
+
+  final transaction = editorState.transaction
+    ..insertText(
+      node,
+      selection.startIndex,
+      insertion.textInserted,
+    );
+  return editorState.apply(transaction);
 }
 
 Future<bool> _executeCharacterShortcutEvent(

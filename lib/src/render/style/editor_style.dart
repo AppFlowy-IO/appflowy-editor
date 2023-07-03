@@ -17,6 +17,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
   final Color cursorColor;
   final Color selectionColor;
   final TextStyleConfiguration textStyleConfiguration;
+  final TextSpanDecoratorForCustomAttributes? textSpanDecorator;
 
   // @Deprecated('customize the editor\'s background color directly')
   final Color? backgroundColor;
@@ -96,6 +97,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     required this.lineHeight,
     required this.popupMenuFGColor,
     required this.popupMenuHoverColor,
+    required this.textSpanDecorator,
   });
 
   const EditorStyle.desktop({
@@ -104,8 +106,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
+    TextSpanDecoratorForCustomAttributes? textSpanDecorator,
   }) : this(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 200),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 100),
           backgroundColor: backgroundColor ?? Colors.white,
           cursorColor: cursorColor ?? const Color(0xFF00BCF0),
           selectionColor:
@@ -114,6 +117,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
               const TextStyleConfiguration(
                 text: TextStyle(fontSize: 16, color: Colors.black),
               ),
+          textSpanDecorator: textSpanDecorator,
           selectionMenuBackgroundColor: null,
           selectionMenuItemTextColor: null,
           selectionMenuItemIconColor: null,
@@ -143,6 +147,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
+    TextSpanDecoratorForCustomAttributes? textSpanDecorator,
   }) : this(
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
           backgroundColor: backgroundColor ?? Colors.white,
@@ -153,6 +158,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
               const TextStyleConfiguration(
                 text: TextStyle(fontSize: 16, color: Colors.black),
               ),
+          textSpanDecorator: textSpanDecorator,
           selectionMenuBackgroundColor: null,
           selectionMenuItemTextColor: null,
           selectionMenuItemIconColor: null,
@@ -183,6 +189,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
+    TextSpanDecoratorForCustomAttributes? textSpanDecorator,
     Color? selectionMenuBackgroundColor,
     Color? selectionMenuItemTextColor,
     Color? selectionMenuItemIconColor,
@@ -212,6 +219,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       selectionColor: selectionColor ?? this.selectionColor,
       textStyleConfiguration:
           textStyleConfiguration ?? this.textStyleConfiguration,
+      textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
       selectionMenuBackgroundColor:
           selectionMenuBackgroundColor ?? this.selectionMenuBackgroundColor,
       selectionMenuItemTextColor:
@@ -256,6 +264,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
       cursorColor: Color.lerp(cursorColor, other.cursorColor, t)!,
       textPadding: EdgeInsets.lerp(textPadding, other.textPadding, t),
       textStyleConfiguration: other.textStyleConfiguration,
+      textSpanDecorator: other.textSpanDecorator,
       selectionColor: Color.lerp(selectionColor, other.selectionColor, t)!,
       selectionMenuBackgroundColor: Color.lerp(
         selectionMenuBackgroundColor,
@@ -319,6 +328,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     textStyleConfiguration: const TextStyleConfiguration(
       text: TextStyle(fontSize: 16, color: Colors.black),
     ),
+    textSpanDecorator: (_, textSpan) => textSpan,
     selectionColor: const Color.fromARGB(53, 111, 201, 231),
     selectionMenuBackgroundColor: const Color(0xFFFFFFFF),
     selectionMenuItemTextColor: const Color(0xFF333333),
@@ -350,6 +360,9 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     popupMenuHoverColor: const Color(0xFFE0F8FF),
   );
 
+  @Deprecated(
+    'EditorStyle.dark has been deprecated. You can now customize the editor style by utilizing the TextStyleConfiguration.',
+  )
   static final dark = light.copyWith(
     backgroundColor: Colors.black,
     textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),

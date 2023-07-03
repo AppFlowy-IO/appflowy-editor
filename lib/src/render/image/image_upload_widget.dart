@@ -1,8 +1,4 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
-import 'package:appflowy_editor/src/render/style/editor_style.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 // void showImageMenu(
@@ -32,8 +28,8 @@ void showImageUploadMenu(
       child: Material(
         child: ImageUploadMenu(
           editorState: editorState,
-          onSubmitted: editorState.insertImageNode,
-          onUpload: editorState.insertImageNode,
+          onSubmitted: (src) {},
+          onUpload: (src) {},
         ),
       ),
     ),
@@ -107,24 +103,10 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context),
-          const SizedBox(height: 16.0),
           _buildInput(),
           const SizedBox(height: 18.0),
           _buildUploadButton(context),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Text(
-      'URL Image',
-      textAlign: TextAlign.left,
-      style: TextStyle(
-        fontSize: 14.0,
-        color: style?.selectionMenuItemTextColor ?? Colors.black,
-        fontWeight: FontWeight.w500,
       ),
     );
   }
@@ -178,27 +160,5 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
         ),
       ),
     );
-  }
-}
-
-extension InsertImage on EditorState {
-  void insertImageNode(String src) {
-    final selection = service.selectionService.currentSelection.value;
-    if (selection == null) {
-      return;
-    }
-    final imageNode = Node(
-      type: 'image',
-      attributes: {
-        'image_src': src,
-        'align': 'center',
-      },
-    );
-    final transaction = this.transaction;
-    transaction.insertNode(
-      selection.start.path,
-      imageNode,
-    );
-    apply(transaction);
   }
 }

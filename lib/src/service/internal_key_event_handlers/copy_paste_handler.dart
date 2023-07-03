@@ -296,7 +296,17 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   }
   final document = markdownToDocument(markdown);
   final transaction = editorState.transaction;
-  transaction.insertNodes(path, document.root.children);
+  var afterPath = path;
+  for (var i = 0; i < document.root.children.length - 1; i++) {
+    afterPath = afterPath.next;
+  }
+  final offset = document.root.children.lastOrNull?.delta?.length ?? 0;
+  transaction
+    ..insertNodes(path, document.root.children)
+    ..afterSelection = Selection.collapse(
+      afterPath,
+      offset,
+    );
   editorState.apply(transaction);
 }
 

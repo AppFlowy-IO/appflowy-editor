@@ -61,10 +61,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Bulleted list`
+  /// `Bulleted List`
   String get bulletedList {
     return Intl.message(
-      'Bulleted list',
+      'Bulleted List',
       name: 'bulletedList',
       desc: '',
       args: [],
@@ -171,10 +171,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Numbered list`
+  /// `Numbered List`
   String get numberedList {
     return Intl.message(
-      'Numbered list',
+      'Numbered List',
       name: 'numberedList',
       desc: '',
       args: [],
@@ -421,6 +421,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Done`
+  String get done {
+    return Intl.message(
+      'Done',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tint 1`
   String get tint1 {
     return Intl.message(
@@ -601,11 +611,51 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Text color`
+  /// `Heading 1`
+  String get mobileHeading1 {
+    return Intl.message(
+      'Heading 1',
+      name: 'mobileHeading1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 2`
+  String get mobileHeading2 {
+    return Intl.message(
+      'Heading 2',
+      name: 'mobileHeading2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 3`
+  String get mobileHeading3 {
+    return Intl.message(
+      'Heading 3',
+      name: 'mobileHeading3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Color`
   String get textColor {
     return Intl.message(
-      'Text color',
+      'Text Color',
       name: 'textColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Background Color`
+  String get backgroundColor {
+    return Intl.message(
+      'Background Color',
+      name: 'backgroundColor',
       desc: '',
       args: [],
     );

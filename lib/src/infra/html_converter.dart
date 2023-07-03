@@ -60,7 +60,7 @@ class HTMLToNodesConverter {
     final childNodes = _document.body?.nodes.toList() ?? <html.Node>[];
     return Document.fromJson({
       'document': {
-        'type': 'document',
+        'type': 'page',
         'children': _handleContainer(childNodes).map((e) => e.toJson()).toList()
       }
     });
@@ -321,7 +321,11 @@ class HTMLToNodesConverter {
   }
 
   Node _handleImage(html.Element element) {
-    final src = element.attributes['src'] ?? '';
+    final src = element.attributes['src'];
+    if (src == null || src.isEmpty || !src.startsWith('http')) {
+      return paragraphNode(); // return empty paragraph
+    }
+    // only support network image
     return imageNode(
       url: src,
     );

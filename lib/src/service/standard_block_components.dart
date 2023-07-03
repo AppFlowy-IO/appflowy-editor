@@ -1,39 +1,45 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
-  'document': DocumentComponentBuilder(),
-  'paragraph': TextBlockComponentBuilder(
+  PageBlockKeys.type: PageBlockComponentBuilder(),
+  ParagraphBlockKeys.type: TextBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration,
   ),
-  'todo_list': TodoListBlockComponentBuilder(
+  TodoListBlockKeys.type: TodoListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'To-do',
     ),
   ),
-  'bulleted_list': BulletedListBlockComponentBuilder(
+  BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'List',
     ),
   ),
-  'numbered_list': NumberedListBlockComponentBuilder(
+  NumberedListBlockKeys.type: NumberedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'List',
     ),
   ),
-  'quote': QuoteBlockComponentBuilder(
+  QuoteBlockKeys.type: QuoteBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'Quote',
     ),
   ),
-  'heading': HeadingBlockComponentBuilder(
+  HeadingBlockKeys.type: HeadingBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (node) =>
           'Heading ${node.attributes[HeadingBlockKeys.level]}',
     ),
   ),
-  'image': ImageBlockComponentBuilder(),
+  ImageBlockKeys.type: ImageBlockComponentBuilder(),
+  DividerBlockKeys.type: DividerBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      padding: (node) => EdgeInsets.symmetric(vertical: 8.0),
+    ),
+  ),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
@@ -67,6 +73,11 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 
   // slash
   slashCommand,
+
+  // divider
+  convertMinusesToDivider,
+  convertStarsToDivider,
+  convertUnderscoreToDivider,
 
   // markdown syntax
   ...markdownSyntaxShortcutEvents,
