@@ -209,9 +209,12 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             );
           }
         },
-        child: const Text(
+        child: Text(
           'Upload',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
