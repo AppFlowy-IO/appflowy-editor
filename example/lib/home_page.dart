@@ -61,9 +61,15 @@ class _HomePageState extends State<HomePage> {
   void reassemble() {
     super.reassemble();
 
-    _jsonString = Future.value(
-      jsonEncode(_editorState.document.toJson()),
-    );
+    _widgetBuilder = (context) => SimpleEditor(
+          jsonString: _jsonString,
+          onEditorStateChange: (editorState) {
+            _editorState = editorState;
+            _jsonString = Future.value(
+              jsonEncode(_editorState.document.toJson()),
+            );
+          },
+        );
   }
 
   @override
@@ -74,6 +80,7 @@ class _HomePageState extends State<HomePage> {
       drawer: _buildDrawer(context),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        surfaceTintColor: Colors.transparent,
         title: const Text('AppFlowy Editor'),
       ),
       body: SafeArea(child: _buildBody(context)),
