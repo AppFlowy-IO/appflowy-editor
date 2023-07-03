@@ -154,9 +154,12 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
           ),
         ),
         onPressed: () => widget.onUpload(_textEditingController.text),
-        child: const Text(
+        child: Text(
           'Upload',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
