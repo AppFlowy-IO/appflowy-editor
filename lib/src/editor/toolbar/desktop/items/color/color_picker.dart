@@ -173,7 +173,7 @@ class ResetTextColorButton extends StatelessWidget {
         onPressed: () {
           final selection = editorState.selection!;
           editorState
-              .formatDelta(selection, {BuiltInAttributeKey.textColor: null});
+              .formatDelta(selection, {FlowyRichTextKeys.textColor: null});
           dismissOverlay();
         },
         icon: FlowySvg(
@@ -225,7 +225,7 @@ class ClearHighlightColorButton extends StatelessWidget {
           final selection = editorState.selection!;
           editorState.formatDelta(
             selection,
-            {BuiltInAttributeKey.highlightColor: null},
+            {FlowyRichTextKeys.highlightColor: null},
           );
           dismissOverlay();
         },

@@ -61,8 +61,8 @@ class TestableEditor {
           bulletedListItem,
           numberedListItem,
           linkItem,
-          textColorItem,
-          highlightColorItem
+          buildTextColorItem(),
+          buildHighlightColorItem()
         ],
         editorState: editorState,
         scrollController: scrollController!,
