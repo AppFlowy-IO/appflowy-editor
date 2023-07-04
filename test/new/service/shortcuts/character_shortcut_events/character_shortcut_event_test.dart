@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -34,10 +33,10 @@ void main() async {
 
     test('execute should call the handler', () async {
       var handlerCalled = false;
-      var handler = (EditorState state) async {
+      Future<bool> handler(EditorState state) async {
         handlerCalled = true;
         return true;
-      };
+      }
 
       final myEvent =
           CharacterShortcutEvent(key: "test", character: "a", handler: handler);
@@ -48,9 +47,9 @@ void main() async {
     });
 
     test('equality check should compare properties correctly', () async {
-      var handler = (EditorState state) async {
+      Future<bool> handler(EditorState state) async {
         return true;
-      };
+      }
 
       final shortcutOne =
           CharacterShortcutEvent(key: "test", character: "a", handler: handler);

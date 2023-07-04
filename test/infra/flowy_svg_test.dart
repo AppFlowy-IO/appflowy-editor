@@ -8,7 +8,7 @@ void main() {
   group('FlowySvg tests', () {
     testWidgets('FlowySvg w/ Name', (tester) async {
       await tester.buildAndPump(
-        const FlowySvg(name: 'checkmark', color: Colors.blue),
+        const EditorSvg(name: 'checkmark', color: Colors.blue),
       );
 
       final svgFinder = find.byType(SvgPicture);
@@ -24,7 +24,7 @@ void main() {
 
     testWidgets('FlowySvg w/ Number', (tester) async {
       await tester.buildAndPump(
-        const FlowySvg(number: 1),
+        const EditorSvg(number: 1),
       );
 
       expect(find.byType(SvgPicture), findsOneWidget);
@@ -32,7 +32,7 @@ void main() {
 
     testWidgets('FlowySvg null', (tester) async {
       await tester.buildAndPump(
-        const FlowySvg(),
+        const EditorSvg(),
       );
 
       expect(find.byType(Container), findsOneWidget);

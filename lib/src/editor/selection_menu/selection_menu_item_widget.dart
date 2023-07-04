@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_service.dart';
-import 'package:appflowy_editor/src/render/selection_menu/selection_menu_widget.dart';
+import 'package:appflowy_editor/src/editor/selection_menu/selection_menu_service.dart';
+import 'package:appflowy_editor/src/editor/selection_menu/selection_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class SelectionMenuItemWidget extends StatefulWidget {

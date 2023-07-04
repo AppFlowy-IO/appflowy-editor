@@ -1,11 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../infra/testable_editor.dart';
-import '../../util/util.dart';
 
 void main() async {
   group('numbered list component', () {

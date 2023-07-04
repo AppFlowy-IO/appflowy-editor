@@ -192,7 +192,7 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: FlowySvg(
+        child: EditorSvg(
           width: 22,
           height: 22,
           padding: const EdgeInsets.only(right: 5.0),

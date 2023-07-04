@@ -131,8 +131,7 @@ class EditorWidgetTester {
   }
 
   Future<void> apply(List<TextEditingDelta> deltas) async {
-    _editorState.service.inputService?.apply(deltas);
-    await tester.pumpAndSettle();
+    throw UnimplementedError();
   }
 
   Future<void> pressLogicKey({

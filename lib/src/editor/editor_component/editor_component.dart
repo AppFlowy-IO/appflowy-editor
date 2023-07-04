@@ -1,3 +1,7 @@
+// editor
+export 'service/editor.dart';
+export 'service/editor_service.dart';
+
 // entry
 export 'entry/page_block_component.dart';
 
@@ -11,6 +15,9 @@ export 'service/shortcut_events.dart';
 export 'service/keyboard_service_widget.dart';
 export 'service/scroll_service_widget.dart';
 export 'service/selection_service_widget.dart';
+export 'service/selection_service.dart';
+export 'service/keyboard_service.dart';
+export 'service/scroll_service.dart';
 
 // toolbar
 export '../toolbar/mobile/mobile.dart';
@@ -21,3 +28,6 @@ export 'service/renderer/block_component_container.dart';
 export 'service/renderer/block_component_widget.dart';
 export 'service/renderer/block_component_service.dart';
 export 'service/renderer/block_component_context.dart';
+
+// style
+export 'style/editor_style.dart';

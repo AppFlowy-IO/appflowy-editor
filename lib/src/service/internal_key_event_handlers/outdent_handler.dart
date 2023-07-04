@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 
 ShortcutEventHandler outdentTabHandler = (editorState, event) {
   final selection = editorState.service.selectionService.currentSelection.value;

@@ -37,7 +37,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   ImageBlockKeys.type: ImageBlockComponentBuilder(),
   DividerBlockKeys.type: DividerBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      padding: (node) => EdgeInsets.symmetric(vertical: 8.0),
+      padding: (node) => const EdgeInsets.symmetric(vertical: 8.0),
     ),
   ),
 };

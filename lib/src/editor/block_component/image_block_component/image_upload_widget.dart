@@ -168,7 +168,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         isDense: true,
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
+          icon: const EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
@@ -291,7 +291,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlowySvg(
+                      EditorSvg(
                         name: 'upload_image',
                         width: 32,
                         height: 32,

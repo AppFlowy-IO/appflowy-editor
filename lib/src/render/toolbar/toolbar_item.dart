@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -48,7 +49,7 @@ class ToolbarItem {
       id: 'divider',
       type: -1,
       group: -1,
-      iconBuilder: (_) => const FlowySvg(name: 'toolbar/divider'),
+      iconBuilder: (_) => const EditorSvg(name: 'toolbar/divider'),
       validator: (editorState) => true,
       handler: (editorState, context) {},
       highlightCallback: (editorState) => false,
@@ -77,7 +78,7 @@ List<ToolbarItem> defaultToolbarItems = [
     type: 1,
     group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading1,
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/h1',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -95,7 +96,7 @@ List<ToolbarItem> defaultToolbarItems = [
     type: 1,
     group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading2,
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/h2',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -113,7 +114,7 @@ List<ToolbarItem> defaultToolbarItems = [
     type: 1,
     group: baseToolbarIndex,
     tooltipsMessage: AppFlowyEditorLocalizations.current.heading3,
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/h3',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -132,7 +133,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.bold}${_shortcutTooltips("⌘ + B", "CTRL + B", "CTRL + B")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/bold',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -150,7 +151,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.italic}${_shortcutTooltips("⌘ + I", "CTRL + I", "CTRL + I")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/italic',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -168,7 +169,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.underline}${_shortcutTooltips("⌘ + U", "CTRL + U", "CTRL + U")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/underline',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -186,7 +187,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.strikethrough}${_shortcutTooltips("⌘ + SHIFT + S", "CTRL + SHIFT + S", "CTRL + SHIFT + S")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/strikethrough',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -204,7 +205,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 1,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.embedCode}${_shortcutTooltips("⌘ + E", "CTRL + E", "CTRL + E")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/code',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -221,7 +222,7 @@ List<ToolbarItem> defaultToolbarItems = [
     type: 3,
     group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.quote,
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/quote',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -240,7 +241,7 @@ List<ToolbarItem> defaultToolbarItems = [
     type: 3,
     group: baseToolbarIndex + 2,
     tooltipsMessage: AppFlowyEditorLocalizations.current.bulletedList,
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/bulleted_list',
       color: isHighlight ? Colors.lightBlue : null,
     ),
@@ -258,7 +259,7 @@ List<ToolbarItem> defaultToolbarItems = [
     group: baseToolbarIndex + 2,
     tooltipsMessage:
         "${AppFlowyEditorLocalizations.current.highlight}${_shortcutTooltips("⌘ + SHIFT + H", "CTRL + SHIFT + H", "CTRL + SHIFT + H")}",
-    iconBuilder: (isHighlight) => FlowySvg(
+    iconBuilder: (isHighlight) => EditorSvg(
       name: 'toolbar/highlight',
       color: isHighlight ? Colors.lightBlue : null,
     ),

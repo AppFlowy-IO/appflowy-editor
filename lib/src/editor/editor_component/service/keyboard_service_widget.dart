@@ -110,9 +110,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
 
   @override
-  List<ShortcutEvent> get shortcutEvents => throw UnimplementedError();
-
-  @override
   Widget build(BuildContext context) {
     Widget child = widget.child;
     // if there is no command shortcut event, we don't need to handle hardware keyboard.

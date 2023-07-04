@@ -142,7 +142,7 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const FlowySvg(
+    return const EditorSvg(
       width: 20,
       height: 20,
       padding: EdgeInsets.only(right: 5.0),

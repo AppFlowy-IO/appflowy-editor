@@ -28,7 +28,7 @@ class SelectionMenuIconWidget extends StatelessWidget {
             : style.selectionMenuItemIconColor,
       );
     } else if (name != null) {
-      return FlowySvg(
+      return EditorSvg(
         name: 'selection_menu/$name',
         width: 18.0,
         height: 18.0,

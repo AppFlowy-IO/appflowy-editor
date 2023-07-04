@@ -326,7 +326,7 @@ void main() {
     });
     group('runes', () {
       test('emoji next rune', () {
-        final text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
+        const text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
         final delta = Delta()..insert(text);
         final pos = [0];
         for (var i = 0; i < 6; i++) {
@@ -336,7 +336,7 @@ void main() {
       });
 
       test('text next rune', () {
-        final text = 'Hello你好こんにちは안녕하세요';
+        const text = 'Hello你好こんにちは안녕하세요';
         final delta = Delta()..insert(text);
         var pos = 0;
         for (var i = 0; i < text.length; i++) {
@@ -347,7 +347,7 @@ void main() {
       });
 
       test('emoji previous rune', () {
-        final text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
+        const text = '😊👫👩‍👩‍👧‍👧👨‍👨‍👧👩‍👧🧑‍🚀'; // 6 emojis
         final delta = Delta()..insert(text);
         final pos = [text.length];
         for (var i = 0; i < 6; i++) {
@@ -357,7 +357,7 @@ void main() {
       });
 
       test('text previous rune', () {
-        final text = 'Hello你好こんにちは안녕하세요';
+        const text = 'Hello你好こんにちは안녕하세요';
         final delta = Delta()..insert(text);
         var pos = text.length;
         for (var i = text.length; i > 0; i--) {

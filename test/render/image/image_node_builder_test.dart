@@ -1,6 +1,4 @@
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_block_component.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
-import 'package:appflowy_editor/src/service/editor_service.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,7 +57,7 @@ void main() async {
         await gesture.moveTo(tester.getCenter(find.byType(Image)));
         await tester.pumpAndSettle();
 
-        expect(find.byType(FlowySvg), findsNothing);
+        expect(find.byType(EditorSvg), findsNothing);
 
         await editor.dispose();
       });

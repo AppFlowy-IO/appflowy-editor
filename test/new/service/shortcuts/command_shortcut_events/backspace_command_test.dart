@@ -232,7 +232,6 @@ void main() async {
       test(
           'Delete in the not collapsed selection that is not single and not flatted',
           () async {
-        Delta deltaBuilder(index) => Delta()..insert(text);
         final document = Document.blank()
             .addParagraph(
               initialText: text,
@@ -326,10 +325,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(headingNode(level: 1, delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
@@ -374,10 +375,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(bulletedListNode(delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
@@ -417,7 +420,6 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!
     // |Welcome to AppFlowy Editor 🔥!
     testWidgets('Delete the non-text node, such as divider', (tester) async {
-      final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addParagraph(initialText: text)
         ..addNode(dividerNode())
