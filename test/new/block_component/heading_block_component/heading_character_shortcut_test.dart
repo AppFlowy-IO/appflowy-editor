@@ -26,13 +26,18 @@ void main() async {
     // After
     // ' '
     test('mock inputting a ` ` after the >', () async {
-      testFormatCharacterShortcut(formatSignToHeading, '', 0,
-          (result, before, after) {
-        expect(result, false);
-        expect(before.delta!.toPlainText(), '');
-        expect(after.delta!.toPlainText(), '');
-        expect(after.type != HeadingBlockKeys.type, true);
-      }, text: '',);
+      testFormatCharacterShortcut(
+        formatSignToHeading,
+        '',
+        0,
+        (result, before, after) {
+          expect(result, false);
+          expect(before.delta!.toPlainText(), '');
+          expect(after.delta!.toPlainText(), '');
+          expect(after.type != HeadingBlockKeys.type, true);
+        },
+        text: '',
+      );
     });
 
     // Before
