@@ -329,7 +329,7 @@ void main() async {
         ..addNode(bulletedListNode(
           delta: delta,
           children: [bulletedListNode(delta: delta)],
-        ));
+        ),);
 
       await editor.startTesting();
 
@@ -377,7 +377,7 @@ void main() async {
         ..addNode(bulletedListNode(
           delta: delta,
           children: [bulletedListNode(delta: delta)],
-        ));
+        ),);
 
       await editor.startTesting();
 

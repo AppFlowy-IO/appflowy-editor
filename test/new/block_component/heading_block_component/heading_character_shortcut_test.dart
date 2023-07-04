@@ -32,7 +32,7 @@ void main() async {
         expect(before.delta!.toPlainText(), '');
         expect(after.delta!.toPlainText(), '');
         expect(after.type != HeadingBlockKeys.type, true);
-      }, text: '');
+      }, text: '',);
     });
 
     // Before
