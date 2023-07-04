@@ -249,31 +249,32 @@ void _pasteSingleLine(
   editorState.apply(transaction);
 }
 
+// TODO(Lucas): migrate to the new command
 /// parse url from the line text
 /// reference: https://stackoverflow.com/questions/59444837/flutter-dart-regex-to-extract-urls-from-a-string
-Delta _lineContentToDelta(String lineContent) {
-  final exp = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\#\w/\-?=%.]+');
-  final Iterable<RegExpMatch> matches = exp.allMatches(lineContent);
+// Delta _lineContentToDelta(String lineContent) {
+//   final exp = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\#\w/\-?=%.]+');
+//   final Iterable<RegExpMatch> matches = exp.allMatches(lineContent);
 
-  final delta = Delta();
+//   final delta = Delta();
 
-  var lastUrlEndOffset = 0;
+//   var lastUrlEndOffset = 0;
 
-  for (final match in matches) {
-    if (lastUrlEndOffset < match.start) {
-      delta.insert(lineContent.substring(lastUrlEndOffset, match.start));
-    }
-    final linkContent = lineContent.substring(match.start, match.end);
-    delta.insert(linkContent, attributes: {"href": linkContent});
-    lastUrlEndOffset = match.end;
-  }
+//   for (final match in matches) {
+//     if (lastUrlEndOffset < match.start) {
+//       delta.insert(lineContent.substring(lastUrlEndOffset, match.start));
+//     }
+//     final linkContent = lineContent.substring(match.start, match.end);
+//     delta.insert(linkContent, attributes: {"href": linkContent});
+//     lastUrlEndOffset = match.end;
+//   }
 
-  if (lastUrlEndOffset < lineContent.length) {
-    delta.insert(lineContent.substring(lastUrlEndOffset, lineContent.length));
-  }
+//   if (lastUrlEndOffset < lineContent.length) {
+//     delta.insert(lineContent.substring(lastUrlEndOffset, lineContent.length));
+//   }
 
-  return delta;
-}
+//   return delta;
+// }
 
 void _pasteMarkdown(EditorState editorState, String markdown) {
   final selection =
