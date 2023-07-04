@@ -1,8 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-/// Used in Desktop only.
-/// Needs to refactor to enable customization
+/// Default text color options when no option is provided
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
 List<ColorOption> generateTextColorOptions() {
   return [
     ColorOption(
@@ -40,6 +44,12 @@ List<ColorOption> generateTextColorOptions() {
   ];
 }
 
+/// Default background color options when no option is provided
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
 List<ColorOption> generateHighlightColorOptions() {
   return [
     ColorOption(
