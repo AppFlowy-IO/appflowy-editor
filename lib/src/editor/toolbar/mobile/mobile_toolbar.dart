@@ -126,6 +126,8 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                       } else {
                         // If not, show item menu
                         _showItemMenu = true;
+                        // close keyboard when menu pop up
+                        widget.editorState.service.keyboardService?.close();
                       }
                       _selectedToolbarItemIndex = selectedItemIndex;
                     });
@@ -164,6 +166,7 @@ class _CloseKeyboardBtn extends StatelessWidget {
       onPressed: () {
         // clear selection to close keyboard and toolbar
         editorState.selectionService.updateSelection(null);
+        // editorState.service.keyboardService?.close();
       },
       icon: const Icon(Icons.keyboard_hide),
     );

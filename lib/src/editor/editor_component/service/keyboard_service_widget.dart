@@ -104,6 +104,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       focusNode.unfocus(disposition: disposition);
 
   @override
+  void close() => textInputService.close();
+
+  @override
   void enable() => focusNode.requestFocus();
 
   @override

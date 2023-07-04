@@ -34,4 +34,9 @@ abstract class AppFlowyKeyboardService {
     bool showCursor = false,
     UnfocusDisposition disposition = UnfocusDisposition.scope,
   });
+
+  /// Closes the keyboard.
+  ///
+  /// To close the keyboard only. It won't change anything about cursor or selection.
+  void close();
 }
