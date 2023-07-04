@@ -1,7 +1,5 @@
 # Customizing Editor Features
 
-Note: `AppFlowyEditor` has since been depreciated and `AppFlowyEditor.standard` or `AppFlowyEditor.custom` should be used instead. To recreate the examples below, you would use `AppFlowyEditor.custom`.
-
 ## Customizing a Shortcut Event
 
 We will use a simple example to illustrate how to quickly add a shortcut event.
@@ -11,18 +9,20 @@ In this example, text that starts and ends with an underscore ( \_ ) character w
 Let's start with a blank document:
 
 ```dart
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      alignment: Alignment.topCenter,
-      child: AppFlowyEditor(
-        editorState: EditorState.empty(),
-        shortcutEvents: const [],
-        customBuilders: const {},
-      ),
-    ),
-  );
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
+
+class UnderScoreToItalic extends StatelessWidget {
+  const UnderScoreToItalic({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppFlowyEditor.custom(
+      editorState: EditorState.blank(withInitialText: true),
+      blockComponentBuilders: standardBlockComponentBuilderMap,
+      characterShortcutEvents: const [],
+    );
+  }
 }
 ```
 
@@ -30,118 +30,69 @@ At this point, nothing magic will happen after typing `_xxx_`.
 
 ![Before](./images/customize_a_shortcut_event_before.gif)
 
-To implement our shortcut event we will create a `ShortcutEvent` instance to handle an underscore input.
+To implement our shortcut event we will create a `CharacterShortcutEvent` instance to handle an underscore input.
 
-We need to define `key` and `command` in a ShortCutEvent object to customize hotkeys. We recommend using the description of your event as a key. For example, if the underscore `_` is defined to make text italic, the key can be 'Underscore to italic'.
+We need to define `key` and `character` in a `CharacterShortcutEvent` object to customize hotkeys. We recommend using the description of your event as a key. For example, if the underscore `_` is defined to make text italic, the key can be 'Underscore to italic'.
 
-> The command, made up of a single keyword such as `underscore` or a combination of keywords using the `+` sign in between to concatenate, is a condition that triggers a user-defined function. To see which keywords are available to define a command, please refer to [key_mapping.dart](../lib/src/service/shortcut_event/key_mapping.dart).
-> If more than one commands trigger the same handler, then we use ',' to split them. For example, using CTRL and A or CMD and A to 'select all', we describe it as `cmd+a,ctrl+a`(case-insensitive).
 
 ```dart
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-ShortcutEvent underscoreToItalicEvent = ShortcutEvent(
+// ...
+
+CharacterShortcutEvent underscoreToItalicEvent = CharacterShortcutEvent(
   key: 'Underscore to italic',
-  command: 'shift+underscore',
-  handler: _underscoreToItalicHandler,
+  character: '_',
+  handler: (editorState) async => handleFormatByWrappingWithSingleCharacter(
+    editorState: editorState,
+    character: '_',
+    formatStyle: FormatStyleByWrappingWithSingleChar.italic,
+  ),
 );
-
-ShortcutEventHandler _underscoreToItalicHandler = (editorState, event) {
-
-};
-```
-
-Then, we need to determine if the currently selected node is a `TextNode` and if the selection is collapsed.
-
-If so, we will continue.
-
-```dart
-// ...
-ShortcutEventHandler _underscoreToItalicHandler = (editorState, event) {
-  // Obtain the selection and selected nodes of the current document through the 'selectionService'
-  // to determine whether the selection is collapsed and whether the selected node is a text node.
-  final selectionService = editorState.service.selectionService;
-  final selection = selectionService.currentSelection.value;
-  final textNodes = selectionService.currentSelectedNodes.whereType<TextNode>();
-  if (selection == null || !selection.isSingle || textNodes.length != 1) {
-    return KeyEventResult.ignored;
-  }
-```
-
-Now, we deal with handling the underscore.
-
-Look for the position of the previous underscore and
-1. if one is _not_ found, return without doing anything.
-2. if one is found, the text enclosed within the two underscores will be formatted to display in italics.
-
-```dart
-// ...
-ShortcutEventHandler _underscoreToItalicHandler = (editorState, event) {
-  // ...
-
-  final textNode = textNodes.first;
-  final text = textNode.toRawString();
-  // Determine if an 'underscore' already exists in the text node and only once.
-  final firstUnderscore = text.indexOf('_');
-  final lastUnderscore = text.lastIndexOf('_');
-  if (firstUnderscore == -1 ||
-      firstUnderscore != lastUnderscore ||
-      firstUnderscore == selection.start.offset - 1) {
-    return KeyEventResult.ignored;
-  }
-
-  // Delete the previous 'underscore',
-  // update the style of the text surrounded by the two underscores to 'italic',
-  // and update the cursor position.
-  final transaction = editorState.transaction
-    ..deleteText(textNode, firstUnderscore, 1)
-    ..formatText(
-      textNode,
-      firstUnderscore,
-      selection.end.offset - firstUnderscore - 1,
-      {
-        BuiltInAttributeKey.italic: true,
-      },
-    )
-    ..afterSelection = Selection.collapsed(
-      Position(
-        path: textNode.path,
-        offset: selection.end.offset - 1,
-      ),
-    );
-  editorState.apply(transaction);
-
-  return KeyEventResult.handled;
-};
 ```
 
 Now our 'underscore handler' function is done and the only task left is to inject it into the AppFlowyEditor.
 
 ```dart
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      alignment: Alignment.topCenter,
-      child: AppFlowyEditor(
-        editorState: EditorState.empty(),
-        customBuilders: const {},
-        shortcutEvents: [
-          underscoreToItalic,
-        ],
-      ),
-    ),
-  );
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
+
+class UnderScoreToItalic extends StatelessWidget {
+  const UnderScoreToItalic({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppFlowyEditor.custom(
+      editorState: EditorState.blank(withInitialText: true),
+      blockComponentBuilders: standardBlockComponentBuilderMap,
+      characterShortcutEvents: [
+        underScoreToItalicEvent,
+      ],
+    );
+  }
 }
+
+CharacterShortcutEvent underScoreToItalicEvent = CharacterShortcutEvent(
+  key: 'Underscore to italic',
+  character: '_',
+  handler: (editorState) async => handleFormatByWrappingWithSingleCharacter(
+    editorState: editorState,
+    character: '_',
+    formatStyle: FormatStyleByWrappingWithSingleChar.italic,
+  ),
+);
 ```
 
 ![After](./images/customize_a_shortcut_event_after.gif)
 
-Check out the [complete code](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/service/internal_key_event_handlers/markdown_syntax_to_styled_text.dart) file of this example.
+Check out the [complete code](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/samples/underscore_to_italic.dart) file of this example.
 
 
 ## Customizing a Component
+
+> ⚠️ Notes: The content below is outdated.
+
 We will use a simple example to show how to quickly add a custom component.
 
 In this example we will render an image from the network.

@@ -5,7 +5,7 @@ import '../../../../new/infra/testable_editor.dart';
 import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
-  group('dividerMobileToolbarItem\n', () {
+  group('dividerMobileToolbarItem', () {
     testWidgets(
         'If the user tries to insert a divider while some text is selected, no action should be taken',
         (WidgetTester tester) async {
