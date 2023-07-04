@@ -18,7 +18,6 @@ class AppFlowyEditor extends StatefulWidget {
     super.key,
     required this.editorState,
     this.blockComponentBuilders = const {},
-    this.shortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.commandShortcutEvents = const [],
     this.selectionMenuItems = const [],
@@ -130,10 +129,6 @@ class AppFlowyEditor extends StatefulWidget {
 
   @Deprecated('Use FloatingToolbar or MobileToolbar instead.')
   final List<ToolbarItem> toolbarItems;
-
-  /// Keyboard event handlers.
-  @Deprecated('Use characterShortcutEvents or commandShortcutEvents instead.')
-  final List<ShortcutEvent> shortcutEvents;
 
   @Deprecated('Customize the style that block component provides instead.')
   final ThemeData? themeData;

@@ -1,5 +1,3 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
-
 import 'package:flutter/material.dart';
 
 /// [AppFlowyKeyboardService] is responsible for processing shortcut keys,
@@ -21,10 +19,6 @@ abstract class AppFlowyKeyboardService {
   /// Processes shortcut key input.
   @Deprecated('Not used anymore')
   KeyEventResult onKey(RawKeyEvent event);
-
-  /// Gets the shortcut events
-  @Deprecated('Not used anymore')
-  List<ShortcutEvent> get shortcutEvents;
 
   /// Enables shortcuts service.
   void enable();

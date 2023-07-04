@@ -125,7 +125,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
         isDense: true,
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
+          icon: const EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
