@@ -75,8 +75,8 @@ class SimpleEditor extends StatelessWidget {
                     listMobileToolbarItem,
                     linkMobileToolbarItem,
                     quoteMobileToolbarItem,
+                    dividerMobileToolbarItem,
                     codeMobileToolbarItem,
-                    // dividerMobileToolbarItem,
                   ],
                   textColorOptions: [
                     ColorOption(
