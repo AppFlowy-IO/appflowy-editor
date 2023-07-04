@@ -232,7 +232,6 @@ void main() async {
       test(
           'Delete in the not collapsed selection that is not single and not flatted',
           () async {
-        Delta deltaBuilder(index) => Delta()..insert(text);
         final document = Document.blank()
             .addParagraph(
               initialText: text,

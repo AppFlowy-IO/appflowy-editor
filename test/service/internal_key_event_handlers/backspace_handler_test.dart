@@ -676,60 +676,60 @@ Future<void> _deleteTextByBackspace(
   await editor.dispose();
 }
 
-Future<void> _deleteTextByDelete(
-  WidgetTester tester,
-  bool isBackwardSelection,
-) async {
-  const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor..addParagraphs(3, initialText: text);
-  await editor.startTesting();
+// Future<void> _deleteTextByDelete(
+//   WidgetTester tester,
+//   bool isBackwardSelection,
+// ) async {
+//   const text = 'Welcome to Appflowy 😁';
+//   final editor = tester.editor..addParagraphs(3, initialText: text);
+//   await editor.startTesting();
 
-  // delete 'o'
-  await editor.updateSelection(
-    Selection.single(path: [1], startOffset: 9),
-  );
-  await editor.pressKey(key: LogicalKeyboardKey.delete);
+//   // delete 'o'
+//   await editor.updateSelection(
+//     Selection.single(path: [1], startOffset: 9),
+//   );
+//   await editor.pressKey(key: LogicalKeyboardKey.delete);
 
-  expect(editor.documentRootLen, 3);
-  expect(editor.selection, Selection.single(path: [1], startOffset: 9));
-  expect(
-    editor.nodeAtPath([1])?.delta?.toPlainText(),
-    'Welcome t Appflowy 😁',
-  );
+//   expect(editor.documentRootLen, 3);
+//   expect(editor.selection, Selection.single(path: [1], startOffset: 9));
+//   expect(
+//     editor.nodeAtPath([1])?.delta?.toPlainText(),
+//     'Welcome t Appflowy 😁',
+//   );
 
-  // delete 'to '
-  await editor.updateSelection(
-    Selection.single(path: [2], startOffset: 8, endOffset: 11),
-  );
-  await editor.pressKey(key: LogicalKeyboardKey.delete);
-  expect(editor.documentRootLen, 3);
-  expect(editor.selection, Selection.single(path: [2], startOffset: 8));
-  expect(
-    editor.nodeAtPath([2])?.delta?.toPlainText(),
-    'Welcome Appflowy 😁',
-  );
+//   // delete 'to '
+//   await editor.updateSelection(
+//     Selection.single(path: [2], startOffset: 8, endOffset: 11),
+//   );
+//   await editor.pressKey(key: LogicalKeyboardKey.delete);
+//   expect(editor.documentRootLen, 3);
+//   expect(editor.selection, Selection.single(path: [2], startOffset: 8));
+//   expect(
+//     editor.nodeAtPath([2])?.delta?.toPlainText(),
+//     'Welcome Appflowy 😁',
+//   );
 
-  // delete 'Appflowy 😁
-  // Welcome t Appflowy 😁
-  // Welcome '
-  final start = Position(path: [0], offset: 11);
-  final end = Position(path: [2], offset: 8);
-  await editor.updateSelection(
-    Selection(
-      start: isBackwardSelection ? start : end,
-      end: isBackwardSelection ? end : start,
-    ),
-  );
-  await editor.pressKey(key: LogicalKeyboardKey.delete);
-  expect(editor.documentRootLen, 1);
-  expect(
-    editor.selection,
-    Selection.single(path: [0], startOffset: 11),
-  );
-  expect(
-    editor.nodeAtPath([0])?.delta?.toPlainText(),
-    'Welcome to Appflowy 😁',
-  );
+//   // delete 'Appflowy 😁
+//   // Welcome t Appflowy 😁
+//   // Welcome '
+//   final start = Position(path: [0], offset: 11);
+//   final end = Position(path: [2], offset: 8);
+//   await editor.updateSelection(
+//     Selection(
+//       start: isBackwardSelection ? start : end,
+//       end: isBackwardSelection ? end : start,
+//     ),
+//   );
+//   await editor.pressKey(key: LogicalKeyboardKey.delete);
+//   expect(editor.documentRootLen, 1);
+//   expect(
+//     editor.selection,
+//     Selection.single(path: [0], startOffset: 11),
+//   );
+//   expect(
+//     editor.nodeAtPath([0])?.delta?.toPlainText(),
+//     'Welcome to Appflowy 😁',
+//   );
 
-  await editor.dispose();
-}
+//   await editor.dispose();
+// }
