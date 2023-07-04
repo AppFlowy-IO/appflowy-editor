@@ -38,8 +38,7 @@ export 'src/plugins/markdown/encoder/parser/image_node_parser.dart';
 export 'src/plugins/markdown/encoder/parser/node_parser.dart';
 export 'src/plugins/markdown/encoder/parser/text_node_parser.dart';
 export 'src/plugins/quill_delta/quill_delta_encoder.dart';
-export 'src/render/action_menu/action_menu.dart';
-export 'src/render/action_menu/action_menu_item.dart';
+
 export 'src/render/rich_text/default_selectable.dart';
 export 'src/render/rich_text/flowy_rich_text.dart';
 export 'src/render/rich_text/flowy_rich_text_keys.dart';
@@ -55,7 +54,7 @@ export 'src/service/default_text_operations/format_rich_text_style.dart';
 export 'src/service/editor_service.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 export 'src/service/keyboard_service.dart';
-export 'src/service/render_plugin_service.dart';
+
 export 'src/service/scroll_service.dart';
 export 'src/service/selection_service.dart';
 export 'src/service/service.dart';
