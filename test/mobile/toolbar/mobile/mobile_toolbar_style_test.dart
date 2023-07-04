@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/mobile_toolbar_style.dart';
-import 'package:appflowy_editor/src/editor/toolbar/utils/utils.dart';
 
 void main() {
   testWidgets('MobileToolbarStyle should have correct values',
