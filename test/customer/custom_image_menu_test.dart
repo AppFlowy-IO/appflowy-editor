@@ -6,14 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
 void main() async {
-  // column
-  // - text field
-  // - editor
-
-  // 1. When the text field is focused, the editor's cursor should be disabled.
-  // 2. When the editor is focused, the text field's cursor should be disabled.
-  // 3. Tapping a non-first line of the editor should still allow the editor to grab focus.
-  testWidgets('text field + editor', (tester) async {
+  /// customize the image menu
+  testWidgets('customize the image block\'s menu', (tester) async {
     await mockNetworkImagesFor(() async {
       const widget = CustomImageMenu();
       await tester.pumpWidget(widget);

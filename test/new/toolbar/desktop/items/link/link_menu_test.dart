@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../../infra/testable_editor.dart';
 
@@ -20,6 +21,7 @@ void main() async {
         onSubmitted: (text) {
           submittedText = text;
         },
+        onDismiss: () {},
       );
       final editor = tester.editor;
       await editor.startTesting();
@@ -38,7 +40,7 @@ void main() async {
       await tester.enterText(find.byType(TextField), link);
       await tester.pumpAndSettle();
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle(Duration(milliseconds: 500));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(submittedText, link);
     });
@@ -91,6 +93,37 @@ void main() async {
       expect(find.text(link, findRichText: true), findsOneWidget);
 
       await editor.dispose();
+    });
+
+    testWidgets('test dismiss link menu by pressing ESC', (tester) async {
+      var dismissed = false;
+
+      final linkMenu = LinkMenu(
+        onOpenLink: () {},
+        onCopyLink: () {},
+        onRemoveLink: () {},
+        onSubmitted: (text) {},
+        onDismiss: () {
+          dismissed = true;
+        },
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Material(
+            child: linkMenu,
+          ),
+        ),
+      );
+
+      expect(find.byType(TextButton), findsNothing);
+      expect(find.byType(TextField), findsOneWidget);
+
+      // Simulate keyboard press event for the Escape key
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+
+      expect(dismissed, true);
     });
   });
 }

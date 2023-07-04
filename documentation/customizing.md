@@ -1,5 +1,7 @@
 # Customizing Editor Features
 
+Note: `AppFlowyEditor` has since been depreciated and `AppFlowyEditor.standard` or `AppFlowyEditor.custom` should be used instead. To recreate the examples below, you would use `AppFlowyEditor.custom`.
+
 ## Customizing a Shortcut Event
 
 We will use a simple example to illustrate how to quickly add a shortcut event.
@@ -391,3 +393,61 @@ Widget build(BuildContext context) {
 ```
 
 ![After](./images/customizing_a_theme_after.png)
+
+### Note:
+
+`themeData` has since been depreciated, and you should now use `textStyleConfiguration`. If you would like to use dark mode, the following code will set the text colour to white:
+
+```dart
+editorStyle: const EditorStyle.desktop().copyWith(
+  textStyleConfiguration: TextStyleConfiguration(
+    text: TextStyle(
+      color: Theme.of(context).primaryColorLight,
+    )
+  )
+)
+```
+
+The above example of `customizeEditorTheme` would turn into the following, which is how AppFlowy customises its editor style:
+
+```dart
+EditorStyle desktop() {
+  final theme = Theme.of(context);
+  final fontSize = context
+      .read<DocumentAppearanceCubit>()
+      .state
+      .fontSize;
+  return EditorStyle.desktop(
+    padding: padding,
+    backgroundColor: theme.colorScheme.surface,
+    cursorColor: theme.colorScheme.primary,
+    textStyleConfiguration: TextStyleConfiguration(
+      text: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: fontSize,
+        color: theme.colorScheme.onBackground,
+        height: 1.5,
+      ),
+      bold: const TextStyle(
+        fontFamily: 'Poppins-Bold',
+        fontWeight: FontWeight.w600,
+      ),
+      italic: const TextStyle(fontStyle: FontStyle.italic),
+      underline: const TextStyle(decoration: TextDecoration.underline),
+      strikethrough: const TextStyle(decoration: TextDecoration.lineThrough),
+      href: TextStyle(
+        color: theme.colorScheme.primary,
+        decoration: TextDecoration.underline,
+      ),
+      code: GoogleFonts.robotoMono(
+        textStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.normal,
+          color: Colors.red,
+          backgroundColor: theme.colorScheme.inverseSurface,
+        ),
+      ),
+    ),
+  );
+}
+```

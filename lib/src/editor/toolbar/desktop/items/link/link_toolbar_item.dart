@@ -111,6 +111,7 @@ void showLinkMenu(
           editorState.apply(transaction);
           dismissOverlay();
         },
+        onDismiss: dismissOverlay,
       );
     },
   ).build();

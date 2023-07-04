@@ -125,7 +125,7 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
         isDense: true,
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
+          icon: const EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
@@ -154,9 +154,12 @@ class _ImageUploadMenuState extends State<ImageUploadMenu> {
           ),
         ),
         onPressed: () => widget.onUpload(_textEditingController.text),
-        child: const Text(
+        child: Text(
           'Upload',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
