@@ -118,10 +118,13 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                   editorState: widget.editorState,
                   selection: widget.selection,
                   toolbarItems: widget.toolbarItems,
-                  menuIsOn: _showItemMenu,
-                  closeMenu: () => setState(() {
-                    _showItemMenu = false;
-                  }),
+                  closeMenu: () {
+                    if (_showItemMenu) {
+                      setState(() {
+                        _showItemMenu = false;
+                      });
+                    }
+                  },
                   itemWithMenuOnPressed: (selectedItemIndex) {
                     setState(() {
                       // If last selected item is selected again, toggle item menu
@@ -205,7 +208,6 @@ class _ToolbarItemListView extends StatelessWidget {
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
-    required this.menuIsOn,
     required this.closeMenu,
   }) : super(key: key);
 
@@ -214,7 +216,6 @@ class _ToolbarItemListView extends StatelessWidget {
   final List<MobileToolbarItem> toolbarItems;
   final EditorState editorState;
   final Selection selection;
-  final bool menuIsOn;
 
   @override
   Widget build(BuildContext context) {
@@ -228,9 +229,8 @@ class _ToolbarItemListView extends StatelessWidget {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
               itemWithMenuOnPressed.call(index);
             } else {
-              if (menuIsOn) {
-                closeMenu.call();
-              }
+              // close menu if other item's menu is still on the screen
+              closeMenu.call();
               toolbarItems[index].actionHandler?.call(
                     editorState,
                     selection,
