@@ -118,19 +118,23 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                   editorState: widget.editorState,
                   selection: widget.selection,
                   toolbarItems: widget.toolbarItems,
-                  itemOnPressed: (selectedItemIndex) {
+                  menuIsOn: _showItemMenu,
+                  closeMenu: () => setState(() {
+                    _showItemMenu = false;
+                  }),
+                  itemWithMenuOnPressed: (selectedItemIndex) {
                     setState(() {
                       // If last selected item is selected again, toggle item menu
                       if (_selectedToolbarItemIndex == selectedItemIndex) {
                         _showItemMenu = !_showItemMenu;
                       } else {
+                        _selectedToolbarItemIndex = selectedItemIndex;
                         // If not, show item menu
                         _showItemMenu = true;
                         // close keyboard when menu pop up
                         widget.editorState.service.keyboardService
                             ?.closeKeyBoard();
                       }
-                      _selectedToolbarItemIndex = selectedItemIndex;
                     });
                   },
                 ),
@@ -197,16 +201,20 @@ class _QuitEditingBtn extends StatelessWidget {
 class _ToolbarItemListView extends StatelessWidget {
   const _ToolbarItemListView({
     Key? key,
-    required this.itemOnPressed,
+    required this.itemWithMenuOnPressed,
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
+    required this.menuIsOn,
+    required this.closeMenu,
   }) : super(key: key);
 
-  final Function(int index) itemOnPressed;
+  final Function(int index) itemWithMenuOnPressed;
+  final Function() closeMenu;
   final List<MobileToolbarItem> toolbarItems;
   final EditorState editorState;
   final Selection selection;
+  final bool menuIsOn;
 
   @override
   Widget build(BuildContext context) {
@@ -218,8 +226,11 @@ class _ToolbarItemListView extends StatelessWidget {
           onPressed: () {
             if (toobarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
-              itemOnPressed.call(index);
+              itemWithMenuOnPressed.call(index);
             } else {
+              if (menuIsOn) {
+                closeMenu.call();
+              }
               toolbarItems[index].actionHandler?.call(
                     editorState,
                     selection,
