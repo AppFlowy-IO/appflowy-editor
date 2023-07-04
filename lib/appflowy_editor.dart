@@ -53,7 +53,6 @@ export 'src/render/style/plugin_styles.dart';
 export 'src/render/toolbar/toolbar_item.dart';
 export 'src/service/default_text_operations/format_rich_text_style.dart';
 export 'src/service/editor_service.dart';
-export 'src/service/input_service.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 export 'src/service/keyboard_service.dart';
 export 'src/service/render_plugin_service.dart';
