@@ -104,7 +104,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       focusNode.unfocus(disposition: disposition);
 
   @override
-  void close() => textInputService.close();
+  void closeKeyBoard() => textInputService.close();
+
+  @override
+  void enableKeyBoard(Selection selection) =>
+      _attachTextInputService(selection);
 
   @override
   void enable() => focusNode.requestFocus();

@@ -19,7 +19,8 @@ enum AFMobileIcons {
   numberedList('toolbar_icons/numbered_list'),
   checkbox('toolbar_icons/checkbox'),
   quote('toolbar_icons/quote'),
-  divider('toolbar_icons/divider');
+  divider('toolbar_icons/divider'),
+  close('toolbar_icons/close');
 
   final String iconPath;
   const AFMobileIcons(this.iconPath);

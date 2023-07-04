@@ -127,14 +127,34 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                         // If not, show item menu
                         _showItemMenu = true;
                         // close keyboard when menu pop up
-                        widget.editorState.service.keyboardService?.close();
+                        widget.editorState.service.keyboardService
+                            ?.closeKeyBoard();
                       }
                       _selectedToolbarItemIndex = selectedItemIndex;
                     });
                   },
                 ),
               ),
-              _CloseKeyboardBtn(widget.editorState),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: VerticalDivider(),
+              ),
+              _showItemMenu
+                  ? IconButton(
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.centerLeft,
+                      onPressed: () {
+                        setState(() {
+                          _showItemMenu = false;
+                          widget.editorState.service.keyboardService!
+                              .enableKeyBoard(widget.selection);
+                        });
+                      },
+                      icon: const AFMobileIcon(
+                        afMobileIcons: AFMobileIcons.close,
+                      ),
+                    )
+                  : _QuitEditingBtn(widget.editorState),
             ],
           ),
         ),
@@ -155,18 +175,19 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
   }
 }
 
-class _CloseKeyboardBtn extends StatelessWidget {
-  const _CloseKeyboardBtn(this.editorState);
+class _QuitEditingBtn extends StatelessWidget {
+  const _QuitEditingBtn(this.editorState);
 
   final EditorState editorState;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      padding: EdgeInsets.zero,
+      alignment: Alignment.centerLeft,
       onPressed: () {
         // clear selection to close keyboard and toolbar
         editorState.selectionService.updateSelection(null);
-        // editorState.service.keyboardService?.close();
       },
       icon: const Icon(Icons.keyboard_hide),
     );
