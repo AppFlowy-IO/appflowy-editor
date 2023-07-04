@@ -19,74 +19,6 @@ void main() {
     const buttonSpacing = 8.0;
     const buttonBorderWidth = 1.0;
     const buttonSelectedBorderWidth = 2.0;
-    const textColorOptions = [
-      ColorOption(
-        colorHex: '#808080',
-        name: 'Gray',
-      ),
-      ColorOption(
-        colorHex: '#A52A2A',
-        name: 'Brown',
-      ),
-      ColorOption(
-        colorHex: '#FFFF00',
-        name: 'Yellow',
-      ),
-      ColorOption(
-        colorHex: '#008000',
-        name: 'Green',
-      ),
-      ColorOption(
-        colorHex: '#0000FF',
-        name: 'Blue',
-      ),
-      ColorOption(
-        colorHex: '#800080',
-        name: 'Purple',
-      ),
-      ColorOption(
-        colorHex: '#FFC0CB',
-        name: 'Pink',
-      ),
-      ColorOption(
-        colorHex: '#FF0000',
-        name: 'Red',
-      ),
-    ];
-    const backgroundColorOptions = [
-      ColorOption(
-        colorHex: '#4d4d4d',
-        name: 'Gray',
-      ),
-      ColorOption(
-        colorHex: '#a52a2a',
-        name: 'Brown',
-      ),
-      ColorOption(
-        colorHex: '#ffff00',
-        name: 'Yellow',
-      ),
-      ColorOption(
-        colorHex: '#008000',
-        name: 'Green',
-      ),
-      ColorOption(
-        colorHex: '#0000ff',
-        name: 'Blue',
-      ),
-      ColorOption(
-        colorHex: '#800080',
-        name: 'Purple',
-      ),
-      ColorOption(
-        colorHex: '#ffc0cb',
-        name: 'Pink',
-      ),
-      ColorOption(
-        colorHex: '#ff0000',
-        name: 'Red',
-      ),
-    ];
 
     await tester.pumpWidget(
       const MobileToolbarStyle(
@@ -103,8 +35,6 @@ void main() {
         buttonSpacing: buttonSpacing,
         buttonBorderWidth: buttonBorderWidth,
         buttonSelectedBorderWidth: buttonSelectedBorderWidth,
-        textColorOptions: textColorOptions,
-        backgroundColorOptions: backgroundColorOptions,
         child: SizedBox(),
       ),
     );

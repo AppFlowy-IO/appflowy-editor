@@ -1,22 +1,36 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-final textAndBackgroundColorMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.color),
-  itemMenuBuilder: (editorState, selection, _) {
-    return _TextAndBackgroundColorMenu(editorState, selection);
-  },
-);
+MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
+  List<ColorOption>? textColorOptions,
+  List<ColorOption>? backgroundColorOptions,
+}) {
+  return MobileToolbarItem.withMenu(
+    itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.color),
+    itemMenuBuilder: (editorState, selection, _) {
+      return _TextAndBackgroundColorMenu(
+        editorState,
+        selection,
+        textColorOptions: textColorOptions,
+        backgroundColorOptions: backgroundColorOptions,
+      );
+    },
+  );
+}
 
 class _TextAndBackgroundColorMenu extends StatefulWidget {
   const _TextAndBackgroundColorMenu(
     this.editorState,
     this.selection, {
+    this.textColorOptions,
+    this.backgroundColorOptions,
     Key? key,
   }) : super(key: key);
 
   final EditorState editorState;
   final Selection selection;
+  final List<ColorOption>? textColorOptions;
+  final List<ColorOption>? backgroundColorOptions;
 
   @override
   State<_TextAndBackgroundColorMenu> createState() =>
@@ -61,10 +75,12 @@ class _TextAndBackgroundColorMenuState
                 TextColorOptionsWidgets(
                   widget.editorState,
                   widget.selection,
+                  textColorOptions: widget.textColorOptions,
                 ),
                 BackgroundColorOptionsWidgets(
                   widget.editorState,
                   widget.selection,
+                  backgroundColorOptions: widget.backgroundColorOptions,
                 ),
               ],
             ),
