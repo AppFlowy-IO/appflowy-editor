@@ -248,7 +248,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     if (keyword.length >= maxKeywordLength + 2 &&
         !(widget.deleteSlashByDefault && _searchCounter < 2)) {
-      widget.onExit();
+      return widget.onExit();
     }
     setState(() {
       _showingItems = items;
@@ -256,6 +256,8 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     if (_showingItems.isEmpty) {
       _searchCounter++;
+    } else {
+      _searchCounter = 0;
     }
   }
 
@@ -399,6 +401,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       widget.onExit();
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      if (_searchCounter > 0) {
+        _searchCounter--;
+      }
       if (keyword.isEmpty) {
         widget.onExit();
       } else {
