@@ -134,7 +134,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
             // checkbox
-            if (isChecked) const FlowySvg(name: 'checkmark'),
+            if (isChecked) const EditorSvg(name: 'checkmark'),
           ],
         ),
       ),
@@ -176,7 +176,7 @@ class ResetTextColorButton extends StatelessWidget {
               .formatDelta(selection, {FlowyRichTextKeys.textColor: null});
           dismissOverlay();
         },
-        icon: FlowySvg(
+        icon: EditorSvg(
           name: 'reset_text_color',
           width: 13,
           height: 13,
@@ -229,7 +229,7 @@ class ClearHighlightColorButton extends StatelessWidget {
           );
           dismissOverlay();
         },
-        icon: FlowySvg(
+        icon: EditorSvg(
           name: 'clear_highlight_color',
           width: 13,
           height: 13,

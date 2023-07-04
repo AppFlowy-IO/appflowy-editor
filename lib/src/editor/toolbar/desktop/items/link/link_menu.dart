@@ -103,7 +103,7 @@ class _LinkMenuState extends State<LinkMenu> {
           isDense: true,
           suffixIcon: IconButton(
             padding: const EdgeInsets.all(4.0),
-            icon: const FlowySvg(
+            icon: const EditorSvg(
               name: 'clear',
               width: 24,
               height: 24,
@@ -127,7 +127,7 @@ class _LinkMenuState extends State<LinkMenu> {
     return SizedBox(
       height: 36,
       child: TextButton.icon(
-        icon: FlowySvg(
+        icon: EditorSvg(
           name: iconName,
           color: Theme.of(context).textTheme.labelLarge?.color,
         ),

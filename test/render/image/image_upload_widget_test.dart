@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/image_upload_widget.dart';
 import '../../new/infra/testable_editor.dart';
 
 void main() {

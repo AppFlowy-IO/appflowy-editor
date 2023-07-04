@@ -23,7 +23,7 @@ class IconItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = FlowySvg(
+    Widget child = EditorSvg(
       name: iconName,
       color: isHighlight ? highlightColor : null,
       width: iconSize.width,
