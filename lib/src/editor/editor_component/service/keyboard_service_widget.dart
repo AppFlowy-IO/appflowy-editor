@@ -104,14 +104,19 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       focusNode.unfocus(disposition: disposition);
 
   @override
-  void closeKeyBoard() => textInputService.close();
-
-  @override
-  void enableKeyBoard(Selection selection) =>
-      _attachTextInputService(selection);
-
-  @override
   void enable() => focusNode.requestFocus();
+
+  @override
+  void closeKeyBoard() {
+    assert(PlatformExtension.isMobile, 'only support mobile platform');
+    textInputService.close();
+  }
+
+  @override
+  void enableKeyBoard(Selection selection) {
+    assert(PlatformExtension.isMobile, 'only support mobile platform');
+    _attachTextInputService(selection);
+  }
 
   @override
   KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
