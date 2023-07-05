@@ -19,7 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 typedef TextSpanDecoratorForCustomAttributes = InlineSpan Function(
-  TextInsert attributeKey,
+  Node node,
+  int index,
+  TextInsert text,
   TextSpan textSpan,
 );
 
@@ -291,7 +293,6 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
           );
         }
       }
-      offset += textInsert.length;
       final textSpan = TextSpan(
         text: textInsert.text,
         style: textStyle,
@@ -299,9 +300,15 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       );
       textSpans.add(
         textSpanDecoratorForCustomAttributes != null
-            ? textSpanDecoratorForCustomAttributes!(textInsert, textSpan)
+            ? textSpanDecoratorForCustomAttributes!(
+                widget.node,
+                offset,
+                textInsert,
+                textSpan,
+              )
             : textSpan,
       );
+      offset += textInsert.length;
     }
     return TextSpan(
       children: textSpans,
