@@ -328,7 +328,7 @@ class EditorStyle extends ThemeExtension<EditorStyle> {
     textStyleConfiguration: const TextStyleConfiguration(
       text: TextStyle(fontSize: 16, color: Colors.black),
     ),
-    textSpanDecorator: (_, textSpan) => textSpan,
+    textSpanDecorator: (_, __, ___, textSpan) => textSpan,
     selectionColor: const Color.fromARGB(53, 111, 201, 231),
     selectionMenuBackgroundColor: const Color(0xFFFFFFFF),
     selectionMenuItemTextColor: const Color(0xFF333333),
