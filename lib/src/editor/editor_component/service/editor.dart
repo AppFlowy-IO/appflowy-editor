@@ -129,6 +129,8 @@ class AppFlowyEditor extends StatefulWidget {
   /// if true, the editor will be sized to its contents.
   ///
   /// You should wrap the editor with a sized widget if you set this value to true.
+  ///
+  /// Notes: Must provide a scrollController when shrinkWrap is true.
   final bool shrinkWrap;
 
   @override
@@ -185,7 +187,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           initialEntries: [
             OverlayEntry(
               builder: (context) => services!,
-            ),
+            )
           ],
         ),
       ),
