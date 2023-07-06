@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import '../../../../new/infra/testable_editor.dart';
-import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
 void main() {
   testWidgets('textDecorationMobileToolbarItem', (WidgetTester tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
-    await editor.startTesting();
+    await editor.startTesting(
+      inMobile: true,
+      withFloatingToolbar: true,
+    );
 
     var selection = Selection.single(
       path: [1],
@@ -17,16 +19,6 @@ void main() {
     );
 
     await editor.updateSelection(selection);
-    await tester.pumpWidget(
-      Material(
-        child: MobileAppWithToolbarWidget(
-          editorState: editor.editorState,
-          toolbarItems: [
-            textDecorationMobileToolbarItem,
-          ],
-        ),
-      ),
-    );
 
     // Tap text decoration toolbar item
     await tester.tap(find.byType(IconButton).first);
@@ -34,7 +26,10 @@ void main() {
 
     // Show its menu and it has 4 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(find.text(AppFlowyEditorLocalizations.current.bold), findsOneWidget);
+    expect(
+      find.text(AppFlowyEditorLocalizations.current.bold),
+      findsOneWidget,
+    );
     expect(
       find.text(AppFlowyEditorLocalizations.current.italic),
       findsOneWidget,

@@ -1,4 +1,4 @@
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,19 +49,25 @@ void main() async {
       const link = 'appflowy.io';
 
       final editor = tester.editor;
-      //create a link [appflowy.io](appflowy.io)
+      // create a link [appflowy.io](appflowy.io)
       editor.addParagraph(
-        builder: (index) => Delta()..insert(link, attributes: {"href": link}),
+        builder: (index) => Delta()
+          ..insert(
+            link,
+            attributes: {
+              AppFlowyRichTextKeys.href: link,
+            },
+          ),
       );
-
       await editor.startTesting();
-      await tester.pumpAndSettle();
+
       final finder = find.text(link, findRichText: true);
       expect(finder, findsOneWidget);
 
       // tap the link
       await tester.tap(finder);
-      await tester.pumpAndSettle(const Duration(milliseconds: 350));
+      tester.binding.scheduleWarmUpFrame();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
       final linkMenu = find.byType(LinkMenu);
       expect(linkMenu, findsOneWidget);
       expect(find.text(link, findRichText: true), findsNWidgets(2));

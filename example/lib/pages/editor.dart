@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class SimpleEditor extends StatelessWidget {
-  const SimpleEditor({
+class Editor extends StatelessWidget {
+  const Editor({
     super.key,
     required this.jsonString,
     required this.onEditorStateChange,

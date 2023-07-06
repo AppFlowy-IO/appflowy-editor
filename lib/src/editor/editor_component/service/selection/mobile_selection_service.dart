@@ -451,7 +451,10 @@ class _MobileSelectionServiceWidgetState
       }
     }
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    Overlay.of(context)?.insertAll(
+      _selectionAreas,
+      below: editorState.service.editorOverlayEntry,
+    );
   }
 
   void _updateCursorAreas(Position position) {

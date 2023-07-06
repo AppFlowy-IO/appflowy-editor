@@ -36,6 +36,7 @@ class TestableEditor {
     bool editable = true,
     bool shrinkWrap = false,
     bool withFloatingToolbar = false,
+    bool inMobile = false,
     ScrollController? scrollController,
     Widget Function(Widget child)? wrapper,
   }) async {
@@ -50,24 +51,53 @@ class TestableEditor {
       autoFocus: autoFocus,
       shrinkWrap: shrinkWrap,
       scrollController: scrollController,
+      editorStyle:
+          inMobile ? const EditorStyle.mobile() : const EditorStyle.desktop(),
     );
     if (withFloatingToolbar) {
-      editor = FloatingToolbar(
-        items: [
-          paragraphItem,
-          ...headingItems,
-          ...markdownFormatItems,
-          quoteItem,
-          bulletedListItem,
-          numberedListItem,
-          linkItem,
-          buildTextColorItem(),
-          buildHighlightColorItem()
-        ],
-        editorState: editorState,
-        scrollController: scrollController!,
-        child: editor,
-      );
+      if (inMobile) {
+        final items = [
+          textDecorationMobileToolbarItem,
+          headingMobileToolbarItem,
+          todoListMobileToolbarItem,
+          listMobileToolbarItem,
+          linkMobileToolbarItem,
+          quoteMobileToolbarItem,
+          codeMobileToolbarItem,
+        ];
+        editor = Column(
+          children: [
+            Expanded(
+              child: AppFlowyEditor(
+                editorStyle: const EditorStyle.mobile(),
+                editorState: editorState,
+                scrollController: scrollController,
+              ),
+            ),
+            MobileToolbar(
+              editorState: editorState,
+              toolbarItems: items,
+            ),
+          ],
+        );
+      } else {
+        editor = FloatingToolbar(
+          items: [
+            paragraphItem,
+            ...headingItems,
+            ...markdownFormatItems,
+            quoteItem,
+            bulletedListItem,
+            numberedListItem,
+            linkItem,
+            buildTextColorItem(),
+            buildHighlightColorItem()
+          ],
+          editorState: editorState,
+          scrollController: scrollController!,
+          child: editor,
+        );
+      }
     }
     await tester.pumpWidget(
       MaterialApp(

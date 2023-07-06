@@ -481,7 +481,7 @@ class _DesktopSelectionServiceWidgetState
 
     Overlay.of(context)?.insertAll(
       _selectionAreas,
-      below: Overlay.of(context)?.entries.first,
+      below: editorState.service.editorOverlayEntry,
     );
   }
 

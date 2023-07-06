@@ -163,6 +163,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
@@ -179,16 +184,18 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   @override
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
+    final entry = OverlayEntry(
+      builder: (context) => services!,
+    );
+
+    // save the entry to show the selection above or below the editor
+    editorState.service.editorOverlayEntry = entry;
 
     return Provider.value(
       value: editorState,
       child: FocusScope(
         child: Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (context) => services!,
-            )
-          ],
+          initialEntries: [entry],
         ),
       ),
     );

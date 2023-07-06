@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 /// only for the common config of text style
@@ -17,7 +16,6 @@ class TextStyleConfiguration {
       color: Colors.lightBlue,
       decoration: TextDecoration.underline,
     ),
-    this.recognizer,
     this.code = const TextStyle(
       color: Colors.red,
       backgroundColor: Color.fromARGB(98, 0, 195, 255),
@@ -41,9 +39,6 @@ class TextStyleConfiguration {
 
   /// href text style
   final TextStyle href;
-
-  /// href gesture recognizer
-  final GestureRecognizer? recognizer;
 
   /// code text style
   final TextStyle code;

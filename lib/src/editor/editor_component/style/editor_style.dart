@@ -138,7 +138,10 @@ TextSpan defaultTextSpanDecoratorForAttribute(
             startOffset: index,
             endOffset: index + text.text.length,
           );
-          editorState.updateSelectionWithReason(selection);
+          editorState.updateSelectionWithReason(
+            selection,
+            reason: SelectionUpdateReason.uiEvent,
+          );
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             showLinkMenu(context, editorState, selection, true);
           });
