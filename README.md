@@ -56,7 +56,7 @@ Start by creating a new empty AppFlowyEditor object.
 
 ```dart
 final editorState = EditorState.blank(withInitialText: true); // with an empty paragraph
-final editor = AppFlowyEditor.standard(
+final editor = AppFlowyEditor(
   editorState: editorState,
 );
 ```
@@ -66,7 +66,7 @@ You can also create an editor from a JSON object in order to configure your init
 ```dart
 final json = jsonDecode('YOUR INPUT JSON STRING');
 final editorState = EditorState(document: Document.fromJson(json));
-final editor = AppFlowyEditor.standard(
+final editor = AppFlowyEditor(
   editorState: editorState,
 );
 ```

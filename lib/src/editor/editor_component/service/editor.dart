@@ -13,102 +13,98 @@ import 'package:provider/provider.dart';
 ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
 
 class AppFlowyEditor extends StatefulWidget {
-  @Deprecated('Use AppFlowyEditor.custom or AppFlowyEditor.standard instead')
-  const AppFlowyEditor({
+  AppFlowyEditor({
     super.key,
     required this.editorState,
-    this.blockComponentBuilders = const {},
-    this.characterShortcutEvents = const [],
-    this.commandShortcutEvents = const [],
-    this.selectionMenuItems = const [],
-    this.toolbarItems = const [],
+    Map<String, BlockComponentBuilder>? blockComponentBuilders,
+    List<CharacterShortcutEvent>? characterShortcutEvents,
+    List<CommandShortcutEvent>? commandShortcutEvents,
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
     this.shrinkWrap = false,
     this.scrollController,
-    this.themeData,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
     this.footer,
     this.focusNode,
-  });
-
-  const AppFlowyEditor.custom({
-    Key? key,
-    required EditorState editorState,
-    ScrollController? scrollController,
-    bool editable = true,
-    bool autoFocus = false,
-    Selection? focusedSelection,
-    EditorStyle? editorStyle,
-    Map<String, BlockComponentBuilder> blockComponentBuilders = const {},
-    List<CharacterShortcutEvent> characterShortcutEvents = const [],
-    List<CommandShortcutEvent> commandShortcutEvents = const [],
-    List<SelectionMenuItem> selectionMenuItems = const [],
-    Widget? header,
-    Widget? footer,
-    FocusNode? focusNode,
-    bool shrinkWrap = false,
-  }) : this(
-          key: key,
-          editorState: editorState,
-          scrollController: scrollController,
-          editable: editable,
-          autoFocus: autoFocus,
-          focusedSelection: focusedSelection,
-          blockComponentBuilders: blockComponentBuilders,
-          characterShortcutEvents: characterShortcutEvents,
-          commandShortcutEvents: commandShortcutEvents,
-          selectionMenuItems: selectionMenuItems,
-          editorStyle: editorStyle ?? const EditorStyle.desktop(),
-          header: header,
-          footer: footer,
-          focusNode: focusNode,
-          shrinkWrap: shrinkWrap,
-        );
-
-  AppFlowyEditor.standard({
-    Key? key,
-    required EditorState editorState,
-    ScrollController? scrollController,
-    bool editable = true,
-    bool autoFocus = false,
-    Selection? focusedSelection,
-    EditorStyle? editorStyle,
-    Widget? header,
-    Widget? footer,
-    FocusNode? focusNode,
-    bool shrinkWrap = false,
-  }) : this(
-          key: key,
-          editorState: editorState,
-          scrollController: scrollController,
-          editable: editable,
-          autoFocus: autoFocus,
-          focusedSelection: focusedSelection,
-          blockComponentBuilders: standardBlockComponentBuilderMap,
-          characterShortcutEvents: standardCharacterShortcutEvents,
-          commandShortcutEvents: standardCommandShortcutEvents,
-          editorStyle: editorStyle ?? const EditorStyle.desktop(),
-          header: header,
-          footer: footer,
-          focusNode: focusNode,
-          shrinkWrap: shrinkWrap,
-        );
+  })  : blockComponentBuilders =
+            blockComponentBuilders ?? standardBlockComponentBuilderMap,
+        characterShortcutEvents =
+            characterShortcutEvents ?? standardCharacterShortcutEvents,
+        commandShortcutEvents =
+            commandShortcutEvents ?? standardCommandShortcutEvents;
 
   final EditorState editorState;
 
   final EditorStyle editorStyle;
 
+  /// Block component builders
+  ///
+  /// Pass the [standardBlockComponentBuilderMap] as well
+  ///   if you simply want to extend it with a new one.
+  ///
+  /// For example, if you want to add a new block component:
+  ///
+  /// ```dart
+  /// AppFlowyEditor(
+  ///   blockComponentBuilders: {
+  ///     ...standardBlockComponentBuilderMap,
+  ///     'my_block_component': MyBlockComponentBuilder(),
+  ///   },
+  /// );
+  /// ```
+  ///
+  /// Also, you can override the standard block component:
+  ///
+  /// ```dart
+  /// AppFlowyEditor(
+  ///   blockComponentBuilders: {
+  ///     ...standardBlockComponentBuilderMap,
+  ///     'paragraph': MyParagraphBlockComponentBuilder(),
+  ///   },
+  /// );
+  /// ```
   final Map<String, BlockComponentBuilder> blockComponentBuilders;
 
   /// Character event handlers
+  ///
+  /// Pass the [standardCharacterShortcutEvents] as well
+  ///   if you simply want to extend it with a new one.
+  ///
+  /// For example, if you want to add a new character shortcut event:
+  ///
+  /// ```dart
+  /// AppFlowyEditor(
+  ///  characterShortcutEvents: [
+  ///   ...standardCharacterShortcutEvents,
+  ///   [YOUR_SHORTCUT_EVENT],
+  ///  ],
+  /// );
+  /// ```
   final List<CharacterShortcutEvent> characterShortcutEvents;
 
-  // Command event handlers
+  /// Command event handlers
+  ///
+  /// Pass the [standardCommandShortcutEvents] as well
+  ///   if you simply want to extend it with a new one.
+  ///
+  /// For example, if you want to add a new command shortcut event:
+  ///
+  /// ```dart
+  /// AppFlowyEditor(
+  ///   commandShortcutEvents: [
+  ///     ...standardCommandShortcutEvents,
+  ///     [YOUR_SHORTCUT_EVENT],
+  ///   ],
+  /// );
+  /// ```
   final List<CommandShortcutEvent> commandShortcutEvents;
 
+  /// Provide a scrollController to control the scroll behavior
+  ///   if you need to custom the scroll behavior.
+  ///
+  /// Otherwise, the editor will create a scrollController inside.
   final ScrollController? scrollController;
 
   /// Set the value to false to disable editing.
@@ -117,24 +113,23 @@ class AppFlowyEditor extends StatefulWidget {
   /// Set the value to true to focus the editor on the start of the document.
   final bool autoFocus;
 
+  /// Set the value to focus the editor on the specified selection.
+  ///
+  /// only works when [autoFocus] is true.
   final Selection? focusedSelection;
-
-  final Widget? header;
-  final Widget? footer;
 
   final FocusNode? focusNode;
 
+  /// AppFlowy Editor use column as the root widget.
+  ///
+  /// You can provide a header and/or a footer to the editor.
+  final Widget? header;
+  final Widget? footer;
+
   /// if true, the editor will be sized to its contents.
+  ///
+  /// You should wrap the editor with a sized widget if you set this value to true.
   final bool shrinkWrap;
-
-  @Deprecated('Use FloatingToolbar or MobileToolbar instead.')
-  final List<ToolbarItem> toolbarItems;
-
-  @Deprecated('Customize the style that block component provides instead.')
-  final ThemeData? themeData;
-
-  @Deprecated('Use customSlashCommand instead')
-  final List<SelectionMenuItem> selectionMenuItems;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -156,7 +151,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     }
 
     editorState.editorStyle = widget.editorStyle;
-    editorState.selectionMenuItems = widget.selectionMenuItems;
     editorState.renderer = _renderer;
     editorState.editable = widget.editable;
 
@@ -174,7 +168,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.editable = widget.editable;
 
     if (editorState.service != oldWidget.editorState.service) {
-      editorState.selectionMenuItems = widget.selectionMenuItems;
       editorState.renderer = _renderer;
     }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 /// only for the common config of text style
@@ -16,18 +17,35 @@ class TextStyleConfiguration {
       color: Colors.lightBlue,
       decoration: TextDecoration.underline,
     ),
+    this.recognizer,
     this.code = const TextStyle(
       color: Colors.red,
       backgroundColor: Color.fromARGB(98, 0, 195, 255),
     ),
   });
 
+  /// default text style
   final TextStyle text;
+
+  /// bold text style
   final TextStyle bold;
+
+  /// italic text style
   final TextStyle italic;
+
+  /// underline text style
   final TextStyle underline;
+
+  /// strikethrough text style
   final TextStyle strikethrough;
+
+  /// href text style
   final TextStyle href;
+
+  /// href gesture recognizer
+  final GestureRecognizer? recognizer;
+
+  /// code text style
   final TextStyle code;
 
   TextStyleConfiguration copyWith({

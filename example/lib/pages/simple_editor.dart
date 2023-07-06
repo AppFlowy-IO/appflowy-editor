@@ -95,7 +95,7 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor.standard(
+    return AppFlowyEditor(
       editorStyle: const EditorStyle.mobile(),
       editorState: editorState,
       scrollController: scrollController,
@@ -119,7 +119,7 @@ class SimpleEditor extends StatelessWidget {
         },
       )
     };
-    return AppFlowyEditor.custom(
+    return AppFlowyEditor(
       editorState: editorState,
       scrollController: scrollController,
       blockComponentBuilders: customBlockComponentBuilders,

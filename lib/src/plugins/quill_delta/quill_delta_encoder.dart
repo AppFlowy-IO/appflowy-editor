@@ -69,30 +69,30 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
   void _applyStyle(Node node, String text, Map<String, dynamic>? attributes) {
     final Attributes attrs = {};
     if (_containsStyle(attributes, 'strike')) {
-      attrs[FlowyRichTextKeys.strikethrough] = true;
+      attrs[AppFlowyRichTextKeys.strikethrough] = true;
     }
     if (_containsStyle(attributes, 'underline')) {
-      attrs[FlowyRichTextKeys.underline] = true;
+      attrs[AppFlowyRichTextKeys.underline] = true;
     }
     if (_containsStyle(attributes, 'bold')) {
-      attrs[FlowyRichTextKeys.bold] = true;
+      attrs[AppFlowyRichTextKeys.bold] = true;
     }
     if (_containsStyle(attributes, 'italic')) {
-      attrs[FlowyRichTextKeys.italic] = true;
+      attrs[AppFlowyRichTextKeys.italic] = true;
     }
     final link = attributes?['link'] as String?;
     if (link != null) {
-      attrs[FlowyRichTextKeys.href] = link;
+      attrs[AppFlowyRichTextKeys.href] = link;
     }
     final color = attributes?['color'] as String?;
     final colorHex = _convertColorToHexString(color);
     if (colorHex != null) {
-      attrs[FlowyRichTextKeys.textColor] = colorHex;
+      attrs[AppFlowyRichTextKeys.textColor] = colorHex;
     }
     final backgroundColor = attributes?['background'] as String?;
     final backgroundHex = _convertColorToHexString(backgroundColor);
     if (backgroundHex != null) {
-      attrs[FlowyRichTextKeys.highlightColor] = backgroundHex;
+      attrs[AppFlowyRichTextKeys.highlightColor] = backgroundHex;
     }
     node.updateAttributes({
       'delta': (node.delta?..insert(text, attributes: attrs))?.toJson(),

@@ -97,19 +97,19 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     Attributes attributes = {};
     switch (localName) {
       case HTMLTags.bold || HTMLTags.strong:
-        attributes = {FlowyRichTextKeys.bold: true};
+        attributes = {AppFlowyRichTextKeys.bold: true};
         break;
       case HTMLTags.italic || HTMLTags.em:
-        attributes = {FlowyRichTextKeys.italic: true};
+        attributes = {AppFlowyRichTextKeys.italic: true};
         break;
       case HTMLTags.underline:
-        attributes = {FlowyRichTextKeys.underline: true};
+        attributes = {AppFlowyRichTextKeys.underline: true};
         break;
       case HTMLTags.del:
-        attributes = {FlowyRichTextKeys.strikethrough: true};
+        attributes = {AppFlowyRichTextKeys.strikethrough: true};
         break;
       case HTMLTags.code:
-        attributes = {FlowyRichTextKeys.code: true};
+        attributes = {AppFlowyRichTextKeys.code: true};
       case HTMLTags.span:
         final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
               element.attributes,
@@ -120,7 +120,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       case HTMLTags.anchor:
         final href = element.attributes['href'];
         if (href != null) {
-          attributes = {FlowyRichTextKeys.href: href};
+          attributes = {AppFlowyRichTextKeys.href: href};
         }
         break;
       default:
@@ -235,11 +235,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final fontWeight = css['font-weight'];
     if (fontWeight != null) {
       if (fontWeight == 'bold') {
-        attributes[FlowyRichTextKeys.bold] = true;
+        attributes[AppFlowyRichTextKeys.bold] = true;
       } else {
         final weight = int.tryParse(fontWeight);
         if (weight != null && weight >= 500) {
-          attributes[FlowyRichTextKeys.bold] = true;
+          attributes[AppFlowyRichTextKeys.bold] = true;
         }
       }
     }
@@ -251,10 +251,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       for (final decoration in decorations) {
         switch (decoration) {
           case 'underline':
-            attributes[FlowyRichTextKeys.underline] = true;
+            attributes[AppFlowyRichTextKeys.underline] = true;
             break;
           case 'line-through':
-            attributes[FlowyRichTextKeys.strikethrough] = true;
+            attributes[AppFlowyRichTextKeys.strikethrough] = true;
             break;
           default:
             break;
@@ -267,14 +267,14 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     if (backgroundColor != null) {
       final highlightColor = backgroundColor.tryToColor()?.toHex();
       if (highlightColor != null) {
-        attributes[FlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
       }
     }
 
     // italic
     final fontStyle = css['font-style'];
     if (fontStyle == 'italic') {
-      attributes[FlowyRichTextKeys.italic] = true;
+      attributes[AppFlowyRichTextKeys.italic] = true;
     }
 
     return attributes.isEmpty ? null : attributes;

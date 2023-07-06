@@ -44,7 +44,7 @@ class TestableEditor {
     if (withFloatingToolbar) {
       scrollController ??= ScrollController();
     }
-    Widget editor = AppFlowyEditor.standard(
+    Widget editor = AppFlowyEditor(
       editorState: editorState,
       editable: editable,
       autoFocus: autoFocus,

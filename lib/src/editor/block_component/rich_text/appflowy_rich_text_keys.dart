@@ -1,4 +1,4 @@
-class FlowyRichTextKeys {
+class AppFlowyRichTextKeys {
   static String bold = 'bold';
   static String italic = 'italic';
   static String underline = 'underline';
