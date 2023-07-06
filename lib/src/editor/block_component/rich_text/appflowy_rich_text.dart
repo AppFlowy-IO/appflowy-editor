@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
@@ -6,15 +5,12 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor/toolbar/toolbar.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
 import 'package:appflowy_editor/src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
 import 'package:appflowy_editor/src/editor/util/color_util.dart';
 import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -310,36 +306,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return TextSpan(
       children: textSpans,
     );
-  }
-
-  GestureRecognizer _buildTapHrefGestureRecognizer(
-    String href,
-    Selection selection,
-  ) {
-    Timer? timer;
-    var tapCount = 0;
-    final tapGestureRecognizer = TapGestureRecognizer()
-      ..onTap = () async {
-        // implement a simple double tap logic
-        tapCount += 1;
-        timer?.cancel();
-
-        if (tapCount == 2 || !widget.editorState.editable) {
-          tapCount = 0;
-          safeLaunchUrl(href);
-          return;
-        }
-
-        timer = Timer(const Duration(milliseconds: 200), () {
-          tapCount = 0;
-          widget.editorState.service.selectionService
-              .updateSelection(selection);
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            showLinkMenu(context, widget.editorState, selection, true);
-          });
-        });
-      };
-    return tapGestureRecognizer;
   }
 
   TextSelection? textSelectionFromEditorSelection(Selection? selection) {

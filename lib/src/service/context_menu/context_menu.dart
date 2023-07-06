@@ -30,7 +30,6 @@ class ContextMenu extends StatelessWidget {
     final children = <Widget>[];
     for (var i = 0; i < items.length; i++) {
       for (var j = 0; j < items[i].length; j++) {
-        var onHover = false;
         children.add(
           StatefulBuilder(
             builder: (BuildContext context, setState) {
@@ -43,9 +42,7 @@ class ContextMenu extends StatelessWidget {
                     items[i][j].onPressed(editorState);
                     onPressed();
                   },
-                  onHover: (value) => setState(() {
-                    onHover = value;
-                  }),
+                  onHover: (value) => setState(() {}),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
