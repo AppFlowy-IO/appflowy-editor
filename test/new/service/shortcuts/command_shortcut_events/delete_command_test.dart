@@ -232,7 +232,6 @@ void main() async {
       test(
           'Delete in the not collapsed selection that is not single and not flatted',
           () async {
-        Delta deltaBuilder(index) => Delta()..insert(text);
         final document = Document.blank()
             .addParagraph(
               initialText: text,
@@ -422,7 +421,6 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     testWidgets('Delete the non-text node after selecting it, such as divider',
         (tester) async {
-      final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addParagraph(initialText: text)
         ..addNode(dividerNode())
