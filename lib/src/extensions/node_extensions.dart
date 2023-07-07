@@ -29,7 +29,7 @@ extension NodeExtensions on Node {
   Node? previousNodeWhere(bool Function(Node element) test) {
     var previous = this.previous;
     while (previous != null) {
-      final last = previous.lastNodeWhere(test);
+      final last = previous.lastChildWhere(test);
       if (last != null) {
         return last;
       }
@@ -49,11 +49,11 @@ extension NodeExtensions on Node {
   }
 
   /// Returns the last node in the subtree that satisfies the given predicate
-  Node? lastNodeWhere(bool Function(Node element) test) {
+  Node? lastChildWhere(bool Function(Node element) test) {
     final children = this.children.toList().reversed;
     for (final child in children) {
       if (child.children.isNotEmpty) {
-        final last = child.lastNodeWhere(test);
+        final last = child.lastChildWhere(test);
         if (last != null) {
           return last;
         }
@@ -61,6 +61,30 @@ extension NodeExtensions on Node {
       if (test(child)) {
         return child;
       }
+    }
+    return null;
+  }
+
+  // find the node from it's children or it's next sibling to find the node that matches the given predicate
+  Node? findDownward(bool Function(Node element) test) {
+    final children = this.children.toList();
+    for (final child in children) {
+      if (test(child)) {
+        return child;
+      }
+      if (child.children.isNotEmpty) {
+        final node = child.findDownward(test);
+        if (node != null) {
+          return node;
+        }
+      }
+    }
+    final next = this.next;
+    if (next != null) {
+      if (test(next)) {
+        return next;
+      }
+      return next.findDownward(test);
     }
     return null;
   }

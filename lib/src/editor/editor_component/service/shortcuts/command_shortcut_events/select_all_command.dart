@@ -29,7 +29,7 @@ CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
       )
       ?.selectable;
   final lastSelectable = editorState.document.root
-      .lastNodeWhere(
+      .lastChildWhere(
         (element) => element.selectable != null,
       )
       ?.selectable;

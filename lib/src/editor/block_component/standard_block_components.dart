@@ -94,6 +94,9 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   deleteLeftWordCommand,
   deleteLeftSentenceCommand,
 
+  //delete
+  deleteCommand,
+
   // arrow keys
   ...arrowLeftKeys,
   ...arrowRightKeys,
