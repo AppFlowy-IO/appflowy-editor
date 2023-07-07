@@ -57,7 +57,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.textColor] ==
+                  element.attributes?[AppFlowyRichTextKeys.textColor] ==
                   Colors.red.toHex(),
             );
       }),
@@ -70,7 +70,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.textColor] == null,
+                  element.attributes?[AppFlowyRichTextKeys.textColor] == null,
             );
       }),
       true,
@@ -92,7 +92,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.highlightColor] ==
+                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
                   Colors.red.withOpacity(0.3).toHex(),
             );
       }),
@@ -105,7 +105,8 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.highlightColor] == null,
+                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
+                  null,
             );
       }),
       true,

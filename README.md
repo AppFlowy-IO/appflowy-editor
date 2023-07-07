@@ -56,7 +56,7 @@ Start by creating a new empty AppFlowyEditor object.
 
 ```dart
 final editorState = EditorState.blank(withInitialText: true); // with an empty paragraph
-final editor = AppFlowyEditor.standard(
+final editor = AppFlowyEditor(
   editorState: editorState,
 );
 ```
@@ -66,7 +66,7 @@ You can also create an editor from a JSON object in order to configure your init
 ```dart
 final json = jsonDecode('YOUR INPUT JSON STRING');
 final editorState = EditorState(document: Document.fromJson(json));
-final editor = AppFlowyEditor.standard(
+final editor = AppFlowyEditor(
   editorState: editorState,
 );
 ```
@@ -90,6 +90,12 @@ flutter run
 
 ## Customizing Your Editor
 
+### Customizing theme
+
+Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing theme](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md#customizing-a-theme).
+
+ * See further examples of [how AppFlowy custom the theme](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/appflowy_flutter/lib/plugins/document/presentation/editor_style.dart)
+
 ### Customizing Block Components
 
 Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing components](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md#customize-a-component).
@@ -98,7 +104,7 @@ Below are some examples of component customizations:
 
  * [Todo List Block Component](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/editor/block_component/todo_list_block_component/todo_list_block_component.dart) demonstrates how to extend new styles based on existing rich text components
  * [Divider Block Component](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/editor/block_component/divider_block_component/divider_block_component.dart) demonstrates how to extend a new block component and render it
- * See further examples of [Rich-Text Plugins](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/block_component)
+ * See further examples of [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/appflowy_flutter/lib/plugins/document/presentation/editor_page.dart)
 
 ### Customizing Shortcut Events
 

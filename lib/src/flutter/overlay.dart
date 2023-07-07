@@ -334,6 +334,9 @@ class Overlay extends StatefulWidget {
 class OverlayState extends State<Overlay> with TickerProviderStateMixin {
   final List<OverlayEntry> _entries = <OverlayEntry>[];
 
+  UnmodifiableListView<OverlayEntry> get entries =>
+      UnmodifiableListView<OverlayEntry>(_entries);
+
   @override
   void initState() {
     super.initState();
