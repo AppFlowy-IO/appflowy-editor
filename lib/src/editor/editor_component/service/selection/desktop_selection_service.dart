@@ -479,9 +479,9 @@ class _DesktopSelectionServiceWidgetState
       }
     }
 
-    Overlay.of(context)?.insertAll(
+    final overlay = Overlay.of(context);
+    overlay?.insertAll(
       _selectionAreas,
-      below: editorState.service.editorOverlayEntry,
     );
   }
 

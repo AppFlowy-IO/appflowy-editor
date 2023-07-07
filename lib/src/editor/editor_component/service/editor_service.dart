@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/toolbar_service.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry, OverlayState;
 
 class EditorService {
@@ -47,6 +46,4 @@ class EditorService {
     }
     return null;
   }
-
-  OverlayEntry? editorOverlayEntry;
 }

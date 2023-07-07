@@ -184,18 +184,16 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   @override
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
-    final entry = OverlayEntry(
-      builder: (context) => services!,
-    );
-
-    // save the entry to show the selection above or below the editor
-    editorState.service.editorOverlayEntry = entry;
 
     return Provider.value(
       value: editorState,
       child: FocusScope(
         child: Overlay(
-          initialEntries: [entry],
+          initialEntries: [
+            OverlayEntry(
+              builder: (context) => services!,
+            )
+          ],
         ),
       ),
     );
