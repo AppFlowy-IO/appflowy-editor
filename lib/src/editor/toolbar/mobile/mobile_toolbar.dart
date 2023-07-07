@@ -188,11 +188,11 @@ class _ToolbarItemListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        final toobarItem = toolbarItems[index];
+        final toolbarItem = toolbarItems[index];
         return IconButton(
-          icon: toobarItem.itemIcon,
+          icon: toolbarItem.itemIcon,
           onPressed: () {
-            if (toobarItem.hasMenu) {
+            if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
               itemOnPressed.call(index);
             } else {

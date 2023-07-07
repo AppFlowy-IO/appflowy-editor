@@ -13,7 +13,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
         return delta.everyAttributes((attributes) {
-          highlightColorHex = attributes[FlowyRichTextKeys.highlightColor];
+          highlightColorHex = attributes[AppFlowyRichTextKeys.highlightColor];
           return highlightColorHex != null;
         });
       });

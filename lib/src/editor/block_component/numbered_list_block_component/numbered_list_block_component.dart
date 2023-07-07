@@ -82,7 +82,7 @@ class _NumberedListBlockComponentWidgetState
     extends State<NumberedListBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin {
@@ -114,7 +114,7 @@ class _NumberedListBlockComponentWidgetState
                   textStyle: textStyle,
                 ),
           Flexible(
-            child: FlowyRichText(
+            child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
               editorState: editorState,

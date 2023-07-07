@@ -211,29 +211,29 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
   }
 
   dom.Element _applyAttributes(Attributes attributes, {required String text}) {
-    if (attributes[FlowyRichTextKeys.bold] == true) {
+    if (attributes[AppFlowyRichTextKeys.bold] == true) {
       final strong = dom.Element.tag(HTMLTags.strong);
       strong.append(dom.Text(text));
       return strong;
-    } else if (attributes[FlowyRichTextKeys.underline] == true) {
+    } else if (attributes[AppFlowyRichTextKeys.underline] == true) {
       final underline = dom.Element.tag(HTMLTags.underline);
       underline.append(dom.Text(text));
       return underline;
-    } else if (attributes[FlowyRichTextKeys.italic] == true) {
+    } else if (attributes[AppFlowyRichTextKeys.italic] == true) {
       final italic = dom.Element.tag(HTMLTags.italic);
       italic.append(dom.Text(text));
       return italic;
-    } else if (attributes[FlowyRichTextKeys.strikethrough] == true) {
+    } else if (attributes[AppFlowyRichTextKeys.strikethrough] == true) {
       final del = dom.Element.tag(HTMLTags.del);
       del.append(dom.Text(text));
       return del;
-    } else if (attributes[FlowyRichTextKeys.code] == true) {
+    } else if (attributes[AppFlowyRichTextKeys.code] == true) {
       final code = dom.Element.tag(HTMLTags.code);
       code.append(dom.Text(text));
       return code;
-    } else if (attributes[FlowyRichTextKeys.href] != null) {
+    } else if (attributes[AppFlowyRichTextKeys.href] != null) {
       final anchor = dom.Element.tag(HTMLTags.anchor);
-      anchor.attributes['href'] = attributes[FlowyRichTextKeys.href];
+      anchor.attributes['href'] = attributes[AppFlowyRichTextKeys.href];
       anchor.append(dom.Text(text));
       return anchor;
     } else {

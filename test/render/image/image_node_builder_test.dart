@@ -133,12 +133,12 @@ void main() async {
         final leftImageRect = tester.getRect(imageFinder.at(0));
         expect(
           leftImageRect.left,
-          editor.editorState.editorStyle.padding!.left,
+          editor.editorState.editorStyle.padding.left,
         );
         final rightImageRect = tester.getRect(imageFinder.at(2));
         expect(
           rightImageRect.right,
-          editorRect.right - editor.editorState.editorStyle.padding!.right,
+          editorRect.right - editor.editorState.editorStyle.padding.right,
         );
         final centerImageRect = tester.getRect(imageFinder.at(1));
         expect(

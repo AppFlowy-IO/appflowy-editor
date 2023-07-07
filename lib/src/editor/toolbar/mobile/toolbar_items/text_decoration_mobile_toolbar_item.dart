@@ -27,22 +27,22 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
     TextDecorationUnit(
       icon: AFMobileIcons.bold,
       label: AppFlowyEditorLocalizations.current.bold,
-      name: FlowyRichTextKeys.bold,
+      name: AppFlowyRichTextKeys.bold,
     ),
     TextDecorationUnit(
       icon: AFMobileIcons.italic,
       label: AppFlowyEditorLocalizations.current.italic,
-      name: FlowyRichTextKeys.italic,
+      name: AppFlowyRichTextKeys.italic,
     ),
     TextDecorationUnit(
       icon: AFMobileIcons.underline,
       label: AppFlowyEditorLocalizations.current.underline,
-      name: FlowyRichTextKeys.underline,
+      name: AppFlowyRichTextKeys.underline,
     ),
     TextDecorationUnit(
       icon: AFMobileIcons.strikethrough,
       label: AppFlowyEditorLocalizations.current.strikethrough,
-      name: FlowyRichTextKeys.strikethrough,
+      name: AppFlowyRichTextKeys.strikethrough,
     ),
   ];
   @override

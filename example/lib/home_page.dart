@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:example/pages/simple_editor.dart';
+import 'package:example/pages/customize_theme_for_editor.dart';
+import 'package:example/pages/editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   late WidgetBuilder _widgetBuilder;
   late EditorState _editorState;
   late Future<String> _jsonString;
@@ -49,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _jsonString = rootBundle.loadString('assets/example.json');
-    _widgetBuilder = (context) => SimpleEditor(
+    _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
             _editorState = editorState;
@@ -61,7 +63,7 @@ class _HomePageState extends State<HomePage> {
   void reassemble() {
     super.reassemble();
 
-    _widgetBuilder = (context) => SimpleEditor(
+    _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
             _editorState = editorState;
@@ -130,6 +132,17 @@ class _HomePageState extends State<HomePage> {
             _loadEditor(context, jsonString);
           }),
 
+          // Theme Demo
+          _buildSeparator(context, 'Theme Demo'),
+          _buildListTile(context, 'Custom Theme', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CustomizeThemeForEditor(),
+              ),
+            );
+          }),
+
           // Encoder Demo
           _buildSeparator(context, 'Export To X Demo'),
           _buildListTile(context, 'Export To JSON', () {
@@ -149,23 +162,6 @@ class _HomePageState extends State<HomePage> {
           }),
           _buildListTile(context, 'Import From Quill Delta', () {
             _importFile(ExportFileType.delta);
-          }),
-
-          // Theme Demo
-          _buildSeparator(context, 'Theme Demo'),
-          _buildListTile(context, 'Built In Dark Mode', () {
-            _jsonString = Future<String>.value(
-              jsonEncode(_editorState.document.toJson()).toString(),
-            );
-            setState(() {});
-          }),
-          _buildListTile(context, 'Custom Theme', () {
-            _jsonString = Future<String>.value(
-              jsonEncode(_editorState.document.toJson()).toString(),
-            );
-            setState(() {
-              // todo: implement it
-            });
           }),
         ],
       ),
@@ -220,7 +216,7 @@ class _HomePageState extends State<HomePage> {
     _jsonString = jsonString;
     setState(
       () {
-        _widgetBuilder = (context) => SimpleEditor(
+        _widgetBuilder = (context) => Editor(
               jsonString: _jsonString,
               onEditorStateChange: (editorState) {
                 _editorState = editorState;

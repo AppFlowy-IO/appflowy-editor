@@ -71,7 +71,7 @@ class CustomBlockIcon extends StatelessWidget {
         body: SafeArea(
           child: SizedBox(
             width: 500,
-            child: AppFlowyEditor.custom(
+            child: AppFlowyEditor(
               editorState: editorState,
               blockComponentBuilders: customBlockComponentBuilders,
               commandShortcutEvents: standardCommandShortcutEvents,

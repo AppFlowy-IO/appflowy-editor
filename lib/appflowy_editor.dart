@@ -18,9 +18,9 @@ export 'src/l10n/l10n.dart';
 // plugins part, including decoder and encoder.
 export 'src/plugins/plugins.dart';
 // legacy
-export 'src/render/rich_text/default_selectable.dart';
-export 'src/render/rich_text/flowy_rich_text.dart';
-export 'src/render/rich_text/flowy_rich_text_keys.dart';
+export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
+export 'src/editor/block_component/rich_text/appflowy_rich_text.dart';
+export 'src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
 export 'src/render/selection/selectable.dart';
 export 'src/render/toolbar/toolbar_item.dart';
 export 'src/service/shortcut_event/key_mapping.dart';

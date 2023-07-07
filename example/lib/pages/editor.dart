@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class SimpleEditor extends StatelessWidget {
-  const SimpleEditor({
+class Editor extends StatelessWidget {
+  const Editor({
     super.key,
     required this.jsonString,
     required this.onEditorStateChange,
@@ -95,7 +95,7 @@ class SimpleEditor extends StatelessWidget {
     EditorState editorState,
     ScrollController? scrollController,
   ) {
-    return AppFlowyEditor.standard(
+    return AppFlowyEditor(
       editorStyle: const EditorStyle.mobile(),
       editorState: editorState,
       scrollController: scrollController,
@@ -119,7 +119,7 @@ class SimpleEditor extends StatelessWidget {
         },
       )
     };
-    return AppFlowyEditor.custom(
+    return AppFlowyEditor(
       editorState: editorState,
       scrollController: scrollController,
       blockComponentBuilders: customBlockComponentBuilders,

@@ -28,7 +28,7 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
       home: Column(
         children: [
           Expanded(
-            child: AppFlowyEditor.standard(
+            child: AppFlowyEditor(
               editorStyle: const EditorStyle.mobile(),
               editorState: editorState,
               scrollController: scrollController,

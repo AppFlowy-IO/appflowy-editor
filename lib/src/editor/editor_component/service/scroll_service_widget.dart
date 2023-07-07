@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scrollable_widget.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
@@ -70,7 +68,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       builder: ((context, autoScroller) {
         if (PlatformExtension.isDesktopOrWeb) {
           return _buildDesktopScrollService(context, autoScroller);
-        } else if (Platform.isIOS || Platform.isAndroid) {
+        } else if (PlatformExtension.isMobile) {
           return _buildMobileScrollService(context, autoScroller);
         }
         throw UnimplementedError();

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
@@ -6,30 +5,28 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor/toolbar/toolbar.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/url_launcher_extension.dart';
-import 'package:appflowy_editor/src/render/rich_text/flowy_rich_text_keys.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
 import 'package:appflowy_editor/src/editor/util/color_util.dart';
 import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-typedef TextSpanDecoratorForCustomAttributes = InlineSpan Function(
+typedef TextSpanDecoratorForAttribute = InlineSpan Function(
+  BuildContext context,
   Node node,
   int index,
   TextInsert text,
   TextSpan textSpan,
 );
 
-typedef FlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
+typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
-class FlowyRichText extends StatefulWidget {
-  const FlowyRichText({
-    Key? key,
+class AppFlowyRichText extends StatefulWidget {
+  const AppFlowyRichText({
+    super.key,
     this.cursorHeight,
     this.cursorWidth = 1.5,
     this.lineHeight,
@@ -39,53 +36,72 @@ class FlowyRichText extends StatefulWidget {
     this.textSpanDecoratorForCustomAttributes,
     required this.node,
     required this.editorState,
-  }) : super(key: key);
+  });
 
+  /// The node of the rich text.
   final Node node;
+
+  /// The editor state.
   final EditorState editorState;
+
+  /// The height of the cursor.
+  ///
+  /// If this is null, the height of the cursor will be calculated automatically.
   final double? cursorHeight;
+
+  /// The width of the cursor.
   final double cursorWidth;
+
+  /// The height of each line.
   final double? lineHeight;
-  final FlowyTextSpanDecorator? textSpanDecorator;
+
+  /// customize the text span for rich text
+  final AppFlowyTextSpanDecorator? textSpanDecorator;
+
+  /// The placeholder text when the rich text is empty.
   final String placeholderText;
-  final FlowyTextSpanDecorator? placeholderTextSpanDecorator;
-  final TextSpanDecoratorForCustomAttributes?
-      textSpanDecoratorForCustomAttributes;
+
+  /// customize the text span for placeholder text
+  final AppFlowyTextSpanDecorator? placeholderTextSpanDecorator;
+
+  /// customize the text span for custom attributes
+  ///
+  /// You can use this to customize the text span for custom attributes
+  ///   or override the existing one.
+  final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
 
   @override
-  State<FlowyRichText> createState() => _FlowyRichTextState();
+  State<AppFlowyRichText> createState() => _AppFlowyRichTextState();
 }
 
-class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
-  var _textKey = GlobalKey();
-  final _placeholderTextKey = GlobalKey();
+class _AppFlowyRichTextState extends State<AppFlowyRichText>
+    with SelectableMixin {
+  final textKey = GlobalKey();
+  final placeholderTextKey = GlobalKey();
 
   RenderParagraph get _renderParagraph =>
-      _textKey.currentContext?.findRenderObject() as RenderParagraph;
+      textKey.currentContext?.findRenderObject() as RenderParagraph;
 
   RenderParagraph? get _placeholderRenderParagraph =>
-      _placeholderTextKey.currentContext?.findRenderObject()
-          as RenderParagraph?;
+      placeholderTextKey.currentContext?.findRenderObject() as RenderParagraph?;
 
-  TextSpanDecoratorForCustomAttributes?
-      get textSpanDecoratorForCustomAttributes =>
-          widget.textSpanDecoratorForCustomAttributes ??
-          widget.editorState.editorStyle.textSpanDecorator;
-
-  @override
-  void didUpdateWidget(covariant FlowyRichText oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // https://github.com/flutter/flutter/issues/110342
-    if (_textKey.currentWidget is RichText) {
-      // Force refresh the RichText widget.
-      _textKey = GlobalKey();
-    }
-  }
+  TextSpanDecoratorForAttribute? get textSpanDecoratorForAttribute =>
+      widget.textSpanDecoratorForCustomAttributes ??
+      widget.editorState.editorStyle.textSpanDecorator;
 
   @override
   Widget build(BuildContext context) {
-    return _buildRichText(context);
+    return MouseRegion(
+      cursor: SystemMouseCursors.text,
+      child: widget.node.delta?.toPlainText().isEmpty ?? true
+          ? Stack(
+              children: [
+                _buildPlaceholderText(context),
+                _buildRichText(context),
+              ],
+            )
+          : _buildRichText(context),
+    );
   }
 
   @override
@@ -192,24 +208,10 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     return _renderParagraph.localToGlobal(offset);
   }
 
-  Widget _buildRichText(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.text,
-      child: widget.node.delta?.toPlainText().isEmpty ?? true
-          ? Stack(
-              children: [
-                _buildPlaceholderText(context),
-                _buildSingleRichText(context),
-              ],
-            )
-          : _buildSingleRichText(context),
-    );
-  }
-
   Widget _buildPlaceholderText(BuildContext context) {
-    final textSpan = _placeholderTextSpan;
+    final textSpan = getPlaceholderTextSpan();
     return RichText(
-      key: _placeholderTextKey,
+      key: placeholderTextKey,
       textHeightBehavior: const TextHeightBehavior(
         applyHeightToFirstAscent: false,
         applyHeightToLastDescent: false,
@@ -220,10 +222,10 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     );
   }
 
-  Widget _buildSingleRichText(BuildContext context) {
-    final textSpan = _textSpan;
+  Widget _buildRichText(BuildContext context) {
+    final textSpan = getTextSpan();
     return RichText(
-      key: _textKey,
+      key: textKey,
       textHeightBehavior: const TextHeightBehavior(
         applyHeightToFirstAscent: false,
         applyHeightToLastDescent: false,
@@ -234,7 +236,7 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     );
   }
 
-  TextSpan get _placeholderTextSpan {
+  TextSpan getPlaceholderTextSpan() {
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     return TextSpan(
       children: [
@@ -246,14 +248,13 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     );
   }
 
-  TextSpan get _textSpan {
-    var offset = 0;
+  TextSpan getTextSpan() {
+    int offset = 0;
     List<InlineSpan> textSpans = [];
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
-      var textStyle = style.text.copyWith(height: widget.lineHeight);
-      GestureRecognizer? recognizer;
+      TextStyle textStyle = style.text.copyWith(height: widget.lineHeight);
       final attributes = textInsert.attributes;
       if (attributes != null) {
         if (attributes.bold == true) {
@@ -270,14 +271,6 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
         }
         if (attributes.href != null) {
           textStyle = textStyle.combine(style.href);
-          recognizer = _buildTapHrefGestureRecognizer(
-            attributes.href!,
-            Selection.single(
-              path: widget.node.path,
-              startOffset: offset,
-              endOffset: offset + textInsert.length,
-            ),
-          );
         }
         if (attributes.code == true) {
           textStyle = textStyle.combine(style.code);
@@ -296,11 +289,11 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
       final textSpan = TextSpan(
         text: textInsert.text,
         style: textStyle,
-        recognizer: recognizer,
       );
       textSpans.add(
-        textSpanDecoratorForCustomAttributes != null
-            ? textSpanDecoratorForCustomAttributes!(
+        textSpanDecoratorForAttribute != null
+            ? textSpanDecoratorForAttribute!(
+                context,
                 widget.node,
                 offset,
                 textInsert,
@@ -313,36 +306,6 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
     return TextSpan(
       children: textSpans,
     );
-  }
-
-  GestureRecognizer _buildTapHrefGestureRecognizer(
-    String href,
-    Selection selection,
-  ) {
-    Timer? timer;
-    var tapCount = 0;
-    final tapGestureRecognizer = TapGestureRecognizer()
-      ..onTap = () async {
-        // implement a simple double tap logic
-        tapCount += 1;
-        timer?.cancel();
-
-        if (tapCount == 2 || !widget.editorState.editable) {
-          tapCount = 0;
-          safeLaunchUrl(href);
-          return;
-        }
-
-        timer = Timer(const Duration(milliseconds: 200), () {
-          tapCount = 0;
-          widget.editorState.service.selectionService
-              .updateSelection(selection);
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            showLinkMenu(context, widget.editorState, selection, true);
-          });
-        });
-      };
-    return tapGestureRecognizer;
   }
 
   TextSelection? textSelectionFromEditorSelection(Selection? selection) {
@@ -399,32 +362,32 @@ class _FlowyRichTextState extends State<FlowyRichText> with SelectableMixin {
 }
 
 extension FlowyRichTextAttributes on Attributes {
-  bool get bold => this[FlowyRichTextKeys.bold] == true;
+  bool get bold => this[AppFlowyRichTextKeys.bold] == true;
 
-  bool get italic => this[FlowyRichTextKeys.italic] == true;
+  bool get italic => this[AppFlowyRichTextKeys.italic] == true;
 
-  bool get underline => this[FlowyRichTextKeys.underline] == true;
+  bool get underline => this[AppFlowyRichTextKeys.underline] == true;
 
-  bool get code => this[FlowyRichTextKeys.code] == true;
+  bool get code => this[AppFlowyRichTextKeys.code] == true;
 
   bool get strikethrough {
-    return (containsKey(FlowyRichTextKeys.strikethrough) &&
-        this[FlowyRichTextKeys.strikethrough] == true);
+    return (containsKey(AppFlowyRichTextKeys.strikethrough) &&
+        this[AppFlowyRichTextKeys.strikethrough] == true);
   }
 
   Color? get color {
-    final textColor = this[FlowyRichTextKeys.textColor] as String?;
+    final textColor = this[AppFlowyRichTextKeys.textColor] as String?;
     return textColor?.toColor();
   }
 
   Color? get backgroundColor {
-    final highlightColor = this[FlowyRichTextKeys.highlightColor] as String?;
+    final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
     return highlightColor?.toColor();
   }
 
   String? get href {
-    if (this[FlowyRichTextKeys.href] is String) {
-      return this[FlowyRichTextKeys.href];
+    if (this[AppFlowyRichTextKeys.href] is String) {
+      return this[AppFlowyRichTextKeys.href];
     }
     return null;
   }

@@ -40,6 +40,11 @@ export 'base_component/outdent_command.dart';
 export 'base_component/widget/full_screen_overlay_entry.dart';
 export 'base_component/widget/ignore_parent_pointer.dart';
 
+// rich text
+export 'rich_text/default_selectable_mixin.dart';
+export 'rich_text/appflowy_rich_text.dart';
+export 'rich_text/appflowy_rich_text_keys.dart';
+
 export 'base_component/block_component_configuration.dart';
 export 'base_component/text_style_configuration.dart';
 export 'base_component/background_color_mixin.dart';

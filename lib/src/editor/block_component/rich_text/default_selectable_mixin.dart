@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
 
-mixin DefaultSelectable {
+mixin DefaultSelectableMixin {
   GlobalKey get forwardKey;
   GlobalKey get containerKey;
 

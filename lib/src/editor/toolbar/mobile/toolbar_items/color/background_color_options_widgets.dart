@@ -29,7 +29,7 @@ class _BackgroundColorOptionsWidgetsState
     final nodes = widget.editorState.getNodesInSelection(selection);
     final hasTextColor = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes[FlowyRichTextKeys.highlightColor] != null,
+        (attributes) => attributes[AppFlowyRichTextKeys.highlightColor] != null,
       );
     });
 
@@ -48,7 +48,7 @@ class _BackgroundColorOptionsWidgetsState
                 setState(() {
                   widget.editorState.formatDelta(
                     selection,
-                    {FlowyRichTextKeys.highlightColor: null},
+                    {AppFlowyRichTextKeys.highlightColor: null},
                   );
                 });
               }
@@ -60,7 +60,8 @@ class _BackgroundColorOptionsWidgetsState
             final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
               return delta.everyAttributes(
                 (attributes) =>
-                    attributes[FlowyRichTextKeys.highlightColor] == e.colorHex,
+                    attributes[AppFlowyRichTextKeys.highlightColor] ==
+                    e.colorHex,
               );
             });
             return ColorButton(

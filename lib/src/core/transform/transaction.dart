@@ -681,7 +681,7 @@ extension on Delta {
     final attributes = slice(index - 1, index).first.attributes;
     if (attributes == null ||
         !attributes.keys.every(
-          (element) => FlowyRichTextKeys.supportSliced.contains(element),
+          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
         )) {
       return null;
     }
