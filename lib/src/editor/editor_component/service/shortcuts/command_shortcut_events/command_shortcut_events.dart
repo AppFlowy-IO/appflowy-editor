@@ -14,3 +14,4 @@ export 'select_all_command.dart';
 export 'show_link_menu_command.dart';
 export 'copy_command.dart';
 export 'paste_command.dart';
+export 'delete_command.dart';
