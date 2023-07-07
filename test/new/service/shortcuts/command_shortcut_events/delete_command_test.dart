@@ -326,10 +326,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(headingNode(level: 1, delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
@@ -374,10 +376,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(bulletedListNode(delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
