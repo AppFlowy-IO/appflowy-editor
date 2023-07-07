@@ -92,7 +92,7 @@ class _TodoListBlockComponentWidgetState
     extends State<TodoListBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin {
@@ -126,7 +126,7 @@ class _TodoListBlockComponentWidgetState
                   onTap: checkOrUncheck,
                 ),
           Flexible(
-            child: FlowyRichText(
+            child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
               editorState: editorState,

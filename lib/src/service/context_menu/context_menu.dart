@@ -30,15 +30,11 @@ class ContextMenu extends StatelessWidget {
     final children = <Widget>[];
     for (var i = 0; i < items.length; i++) {
       for (var j = 0; j < items[i].length; j++) {
-        var onHover = false;
         children.add(
           StatefulBuilder(
             builder: (BuildContext context, setState) {
               return Material(
-                color: editorState.editorStyle.selectionMenuBackgroundColor,
                 child: InkWell(
-                  hoverColor:
-                      editorState.editorStyle.selectionMenuItemSelectedColor,
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -46,21 +42,14 @@ class ContextMenu extends StatelessWidget {
                     items[i][j].onPressed(editorState);
                     onPressed();
                   },
-                  onHover: (value) => setState(() {
-                    onHover = value;
-                  }),
+                  onHover: (value) => setState(() {}),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       items[i][j].name,
                       textAlign: TextAlign.start,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: onHover
-                            ? editorState
-                                .editorStyle.selectionMenuItemSelectedTextColor
-                            : editorState
-                                .editorStyle.selectionMenuItemTextColor,
                       ),
                     ),
                   ),
@@ -84,7 +73,6 @@ class ContextMenu extends StatelessWidget {
           minWidth: 140,
         ),
         decoration: BoxDecoration(
-          color: editorState.editorStyle.selectionMenuBackgroundColor,
           boxShadow: [
             BoxShadow(
               blurRadius: 5,
