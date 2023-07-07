@@ -103,7 +103,7 @@ class EditorState {
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
   // Service reference.
-  final service = FlowyService();
+  final service = EditorService();
 
   AppFlowyScrollService? get scrollService => service.scrollService;
 

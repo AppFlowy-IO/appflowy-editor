@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -60,8 +61,8 @@ class TestableEditor {
           bulletedListItem,
           numberedListItem,
           linkItem,
-          textColorItem,
-          highlightColorItem
+          buildTextColorItem(),
+          buildHighlightColorItem()
         ],
         editorState: editorState,
         scrollController: scrollController!,
@@ -81,7 +82,7 @@ class TestableEditor {
         home: Scaffold(
           body: wrapper == null
               ? editor
-              : wrapper!(
+              : wrapper(
                   editor,
                 ),
         ),

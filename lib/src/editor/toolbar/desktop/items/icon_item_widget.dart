@@ -6,27 +6,33 @@ class IconItemWidget extends StatelessWidget {
     super.key,
     this.size = const Size.square(30.0),
     this.iconSize = const Size.square(18.0),
-    required this.iconName,
+    this.iconName,
+    this.iconBuilder,
     required this.isHighlight,
+    this.highlightColor = Colors.lightBlue,
     this.tooltip,
     this.onPressed,
   });
 
   final Size size;
   final Size iconSize;
-  final String iconName;
+  final String? iconName;
+  final WidgetBuilder? iconBuilder;
   final bool isHighlight;
+  final Color highlightColor;
   final String? tooltip;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    Widget child = FlowySvg(
-      name: iconName,
-      color: isHighlight ? Colors.lightBlue : null,
-      width: iconSize.width,
-      height: iconSize.height,
-    );
+    Widget child = iconBuilder != null
+        ? iconBuilder!(context)
+        : EditorSvg(
+            name: iconName,
+            color: isHighlight ? highlightColor : null,
+            width: iconSize.width,
+            height: iconSize.height,
+          );
     if (onPressed != null) {
       child = MouseRegion(
         cursor: SystemMouseCursors.click,

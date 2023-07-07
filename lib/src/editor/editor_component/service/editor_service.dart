@@ -1,12 +1,9 @@
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_service.dart';
-import 'package:appflowy_editor/src/service/input_service.dart';
-import 'package:appflowy_editor/src/service/keyboard_service.dart';
-import 'package:appflowy_editor/src/service/scroll_service.dart';
-import 'package:appflowy_editor/src/service/selection_service.dart';
-import 'package:appflowy_editor/src/service/toolbar_service.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/toolbar_service.dart';
+
 import 'package:flutter/material.dart';
 
-class FlowyService {
+class EditorService {
   // selection service
   final selectionServiceKey = GlobalKey(debugLabel: 'flowy_selection_service');
   AppFlowySelectionService get selectionService {
@@ -23,16 +20,6 @@ class FlowyService {
     if (keyboardServiceKey.currentState != null &&
         keyboardServiceKey.currentState is AppFlowyKeyboardService) {
       return keyboardServiceKey.currentState! as AppFlowyKeyboardService;
-    }
-    return null;
-  }
-
-  // input service
-  final inputServiceKey = GlobalKey(debugLabel: 'flowy_input_service');
-  AppFlowyInputService? get inputService {
-    if (inputServiceKey.currentState != null &&
-        inputServiceKey.currentState is AppFlowyInputService) {
-      return inputServiceKey.currentState! as AppFlowyInputService;
     }
     return null;
   }

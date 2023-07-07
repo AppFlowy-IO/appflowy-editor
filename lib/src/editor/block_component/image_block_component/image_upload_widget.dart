@@ -168,7 +168,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         isDense: true,
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
+          icon: const EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
@@ -209,9 +209,12 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             );
           }
         },
-        child: const Text(
+        child: Text(
           'Upload',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -288,7 +291,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlowySvg(
+                      EditorSvg(
                         name: 'upload_image',
                         width: 32,
                         height: 32,

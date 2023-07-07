@@ -150,9 +150,12 @@ void main() async {
 
         expect(result, true);
         final after = editorState.getNodeAtPath([0])!;
-        expect(after.delta!.toPlainText(), '$text1$text2');
-        expect(after.delta!.toList()[0].attributes, null);
-        expect(after.delta!.toList()[1].attributes, {'italic': true});
+        final afterDelta = after.delta!;
+        expect(afterDelta.toPlainText(), '$text1$text2');
+        final deltaList = afterDelta.toList();
+        expect(deltaList.length, 2);
+        expect(deltaList[0].attributes, null);
+        expect(deltaList[1].attributes, {'italic': true});
       });
 
       // Before
