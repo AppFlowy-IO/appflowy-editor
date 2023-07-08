@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'image_helpers.dart';
 
 class ResizableImage extends StatefulWidget {
   const ResizableImage({
@@ -63,26 +63,14 @@ class _ResizableImageState extends State<ResizableImage> {
     );
   }
 
+//NOTE: Context works fine if we use this, but doesnt work when we pile stuff on it
   Widget _buildResizableImage(BuildContext context) {
     Widget child;
+    //NOTE: SImilar to how the ImageFileType works just that there are alot of ifs
     final regex = RegExp('^(http|https)://');
     final url = widget.src;
     if (regex.hasMatch(url)) {
-      // load network image
-      _cacheImage ??= Image.network(
-        widget.src,
-        width: widget.width,
-        gaplessPlayback: true,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null ||
-              loadingProgress.cumulativeBytesLoaded ==
-                  loadingProgress.expectedTotalBytes) {
-            return child;
-          }
-          return _buildLoading(context);
-        },
-        errorBuilder: (context, error, stackTrace) => _buildError(context),
-      );
+      _cacheImage ??= ImageFileType().networkImage(widget.src, widget.width);
       child = _cacheImage!;
     } else {
       // load local file
@@ -93,10 +81,15 @@ class _ResizableImageState extends State<ResizableImage> {
       children: [
         child,
         if (widget.editable) ...[
-          _buildEdgeGesture(
+          /*NOTE: for some reason this BuildEdgeGestures resets image
+           * size then resizes the image.
+           * Although the _buildEdgeGesture function didn't do that
+           */
+          BuildEdgeGestures(
             context,
             top: 0,
             left: 5,
+            right: null,
             bottom: 0,
             width: 5,
             onUpdate: (distance) {
@@ -104,10 +97,15 @@ class _ResizableImageState extends State<ResizableImage> {
                 moveDistance = distance;
               });
             },
+            onFocus: onFocus,
+            imageWidth: imageWidth,
+            onResize: widget.onResize,
+            distance: moveDistance,
           ),
-          _buildEdgeGesture(
+          BuildEdgeGestures(
             context,
             top: 0,
+            left: null,
             right: 5,
             bottom: 0,
             width: 5,
@@ -116,94 +114,13 @@ class _ResizableImageState extends State<ResizableImage> {
                 moveDistance = -distance;
               });
             },
+            onFocus: onFocus,
+            imageWidth: imageWidth,
+            onResize: widget.onResize,
+            distance: moveDistance,
           ),
         ],
       ],
-    );
-  }
-
-  Widget _buildLoading(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox.fromSize(
-            size: const Size(18, 18),
-            child: const CircularProgressIndicator(),
-          ),
-          SizedBox.fromSize(
-            size: const Size(10, 10),
-          ),
-          const Text('Loading'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildError(BuildContext context) {
-    return Container(
-      height: 100,
-      width: imageWidth,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-        border: Border.all(width: 1, color: Colors.black),
-      ),
-      child: const Text('Could not load the image'),
-    );
-  }
-
-  Widget _buildEdgeGesture(
-    BuildContext context, {
-    double? top,
-    double? left,
-    double? right,
-    double? bottom,
-    double? width,
-    void Function(double distance)? onUpdate,
-  }) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      bottom: bottom,
-      width: width,
-      child: GestureDetector(
-        onHorizontalDragStart: (details) {
-          initialOffset = details.globalPosition.dx;
-        },
-        onHorizontalDragUpdate: (details) {
-          if (onUpdate != null) {
-            onUpdate((details.globalPosition.dx - initialOffset) * 2.0);
-          }
-        },
-        onHorizontalDragEnd: (details) {
-          imageWidth = imageWidth - moveDistance;
-          initialOffset = 0;
-          moveDistance = 0;
-
-          widget.onResize(imageWidth);
-        },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.resizeLeftRight,
-          child: onFocus
-              ? Center(
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                      border: Border.all(width: 1, color: Colors.white),
-                    ),
-                  ),
-                )
-              : null,
-        ),
-      ),
     );
   }
 }
