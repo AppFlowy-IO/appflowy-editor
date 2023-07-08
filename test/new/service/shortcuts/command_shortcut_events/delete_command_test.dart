@@ -55,7 +55,7 @@ void main() async {
       // After
       // Welcome to AppFlowy Editor 🔥!|
       test(
-          'Delete the collapsed selection when the index is at the very end and there is no next node that contains a delta',
+          'Do nothing when the index is at the very end and there is no next node that contains a delta',
           () async {
         final document = Document.blank().addParagraph(
           initialText: text,
@@ -91,8 +91,8 @@ void main() async {
         );
         final editorState = EditorState(document: document);
 
+        // Welcome to AppFlowy Editor 🔥!|
         // Welcome to AppFlowy Editor 🔥!
-        // |Welcome to AppFlowy Editor 🔥!
         final selection = Selection.collapsed(
           Position(path: [0], offset: text.length),
         );
@@ -121,38 +121,40 @@ void main() async {
       // After
       // Welcome to AppFlowy Editor 🔥!|Welcome to AppFlowy Editor 🔥!
       //
-      //   test('''Delete the collapsed selection's next node when cursor is at end
-      //       and current node contains a delta
-      //       and the next node is the child of the current node''', () async {
-      //     final document = Document.blank().addParagraph(
-      //       initialText: text,
-      //       decorator: (index, node) => node.addParagraph(
-      //         initialText: text,
-      //       ),
-      //     );
-      //     final editorState = EditorState(document: document);
+      test('''Delete the collapsed selection's next node when cursor is at end
+            and current node contains a delta
+            and the next node is the child of the current node''', () async {
+        //here we pass another paragraph node to the decorator,
+        //this makes it a child of the first paragraph node.
+        final document = Document.blank().addParagraph(
+          initialText: text,
+          decorator: (index, node) => node.addParagraph(
+            initialText: text,
+          ),
+        );
+        final editorState = EditorState(document: document);
 
-      //     // Welcome to AppFlowy Editor 🔥!
-      //     // |Welcome to AppFlowy Editor 🔥!
-      //     final selection = Selection.collapsed(
-      //       Position(path: [0, 0], offset: 0),
-      //     );
-      //     editorState.selection = selection;
+        // Welcome to AppFlowy Editor 🔥!|
+        //  Welcome to AppFlowy Editor 🔥!
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: text.length),
+        );
+        editorState.selection = selection;
 
-      //     final result = deleteCommand.execute(editorState);
-      //     expect(result, KeyEventResult.handled);
+        final result = deleteCommand.execute(editorState);
+        expect(result, KeyEventResult.handled);
 
-      //     // the second node should be moved to the same level as it's parent.
-      //     expect(editorState.getNodeAtPath([0, 1]), null);
-      //     final after = editorState.getNodeAtPath([1])!;
-      //     expect(after.delta!.toPlainText(), text);
-      //     expect(
-      //       editorState.selection,
-      //       Selection.collapsed(
-      //         Position(path: [1], offset: 0),
-      //       ),
-      //     );
-      //   });
+        // the first node should be combined with the second node.
+        expect(editorState.getNodeAtPath([0, 1]), null);
+        final after = editorState.getNodeAtPath([0])!;
+        expect(after.delta!.toPlainText(), text * 2);
+        expect(
+          editorState.selection,
+          Selection.collapsed(
+            Position(path: [0], offset: text.length),
+          ),
+        );
+      });
     });
 
     group('deleteCommand - not collapsed selection', () {
