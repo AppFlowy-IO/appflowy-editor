@@ -23,7 +23,7 @@ void main() {
         child: MobileAppWithToolbarWidget(
           editorState: editor.editorState,
           toolbarItems: [
-            textAndBackgroundColorMobileToolbarItem,
+            buildTextAndBackgroundColorMobileToolbarItem(),
           ],
         ),
       ),
@@ -57,7 +57,8 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.textColor] == '#FF0000',
+                  element.attributes?[AppFlowyRichTextKeys.textColor] ==
+                  Colors.red.toHex(),
             );
       }),
       true,
@@ -69,7 +70,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.textColor] == null,
+                  element.attributes?[AppFlowyRichTextKeys.textColor] == null,
             );
       }),
       true,
@@ -91,8 +92,8 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.highlightColor] ==
-                  '#FF0000',
+                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
+                  Colors.red.withOpacity(0.3).toHex(),
             );
       }),
       true,
@@ -104,7 +105,8 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.highlightColor] == null,
+                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
+                  null,
             );
       }),
       true,

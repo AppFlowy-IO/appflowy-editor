@@ -191,8 +191,6 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell11 = getCellNode(tableNode.node, 1, 1)!;
-
       await editor.updateSelection(
         Selection(
           start: Position(

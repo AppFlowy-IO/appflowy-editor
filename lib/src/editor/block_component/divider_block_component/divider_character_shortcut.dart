@@ -12,7 +12,7 @@ final CharacterShortcutEvent convertMinusesToDivider = CharacterShortcutEvent(
   character: '-',
   handler: (editorState) async =>
       await _convertSyntaxToDivider(editorState, '--') ||
-      await _convertSyntaxToDivider(editorState, ' —'),
+      await _convertSyntaxToDivider(editorState, '—'),
 );
 
 final CharacterShortcutEvent convertStarsToDivider = CharacterShortcutEvent(

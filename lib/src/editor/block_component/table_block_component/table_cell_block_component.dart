@@ -94,7 +94,7 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
           position: widget.node.attributes['rowPosition'],
           transform: context.select((Node n) {
             final int col = n.attributes['colPosition'];
-            double left = -20.0;
+            double left = -15.0;
             for (var i = 0; i < col; i++) {
               left -=
                   getCellNode(n.parent!, i, 0)?.attributes['width'] as double;
@@ -106,13 +106,7 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
           }),
           alignment: Alignment.centerLeft,
           height: context.select((Node n) => n.attributes['height']),
-          iconBuilder: ({size, color}) {
-            return Icon(
-              Icons.drag_indicator,
-              size: size,
-              color: color,
-            );
-          },
+          icon: const Icon(Icons.drag_indicator),
           dir: TableDirection.row,
         ),
       ],

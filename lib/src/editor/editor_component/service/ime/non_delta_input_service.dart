@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/services.dart';
 
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
@@ -54,7 +55,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void attach(TextEditingValue textEditingValue) {
+  void attach(
+    TextEditingValue textEditingValue,
+    TextInputConfiguration configuration,
+  ) {
     final formattedValue = textEditingValue.format();
     if (currentTextEditingValue == formattedValue) {
       return;
@@ -64,12 +68,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         _textInputConnection!.attached == false) {
       _textInputConnection = TextInput.attach(
         this,
-        const TextInputConfiguration(
-          enableDeltaModel: false,
-          inputType: TextInputType.multiline,
-          textCapitalization: TextCapitalization.sentences,
-          inputAction: TextInputAction.newline,
-        ),
+        configuration,
+        // TextInputConfiguration(
+        //   enableDeltaModel: false,
+        //   inputType: TextInputType.multiline,
+        //   textCapitalization: TextCapitalization.sentences,
+        //   inputAction: TextInputAction.newline,
+        //   keyboardAppearance: Theme.of(context).brightness,
+        // ),
       );
     }
 
@@ -156,33 +162,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   ) {}
 
   @override
-  void performSelector(String selectorName) {
-    final currentTextEditingValue = this.currentTextEditingValue;
-    if (currentTextEditingValue == null) {
-      return;
-    }
-    // magic string from flutter callback
-    if (selectorName == 'deleteBackward:') {
-      final oldText = currentTextEditingValue.text;
-      final selection = currentTextEditingValue.selection;
-      final deleteRange = selection.isCollapsed
-          ? TextRange(
-              start: selection.start - 1,
-              end: selection.end,
-            )
-          : selection;
-      onDelete(
-        TextEditingDeltaDeletion(
-          oldText: oldText,
-          deletedRange: deleteRange,
-          selection: const TextSelection.collapsed(
-            offset: -1,
-          ), // just pass a invalid value, because we don't use this selection inside.
-          composing: TextRange.empty,
-        ),
-      );
-    }
-  }
+  void performSelector(String selectorName) {}
 
   @override
   void insertContent(KeyboardInsertedContent content) {}

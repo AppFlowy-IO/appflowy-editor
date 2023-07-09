@@ -372,7 +372,7 @@ extension TextTransaction on Transaction {
           replaceText(
             node,
             selection.startIndex,
-            delta.length,
+            delta.length - selection.startIndex,
             texts.first,
           );
         } else if (i == length - 1) {
@@ -406,7 +406,7 @@ extension TextTransaction on Transaction {
           replaceText(
             node,
             selection.startIndex,
-            delta.length,
+            delta.length - selection.startIndex,
             texts.first,
           );
         } else if (i == length - 1 && texts.length >= 2) {
@@ -463,7 +463,7 @@ extension TextTransaction on Transaction {
           replaceText(
             nodes.first,
             selection.startIndex,
-            delta.length,
+            delta.length - selection.startIndex,
             text,
           );
           path = path.next;
@@ -538,6 +538,7 @@ extension TextTransaction on Transaction {
       final deltaQueue = entry.value;
       final composed =
           deltaQueue.fold<Delta>(node.delta!, (p, e) => p.compose(e));
+      assert(composed.every((element) => element is TextInsert));
       updateNode(node, {
         'delta': composed.toJson(),
       });
@@ -680,7 +681,7 @@ extension on Delta {
     final attributes = slice(index - 1, index).first.attributes;
     if (attributes == null ||
         !attributes.keys.every(
-          (element) => FlowyRichTextKeys.supportSliced.contains(element),
+          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
         )) {
       return null;
     }

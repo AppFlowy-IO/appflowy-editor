@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/image_block_component/base64_image.dart';
 import 'package:flutter/material.dart';
 import '../../util/file_picker/file_picker_impl.dart';
 import 'package:file_picker/file_picker.dart' as fp;
@@ -11,11 +10,14 @@ enum ImageFromFileStatus {
   selected,
 }
 
+typedef OnInsertImage = void Function(String url);
+
 void showImageMenu(
   OverlayState container,
   EditorState editorState,
-  SelectionMenuService menuService,
-) {
+  SelectionMenuService menuService, {
+  OnInsertImage? onInsertImage,
+}) {
   menuService.dismiss();
 
   final (left, top, bottom) = menuService.getPosition();
@@ -23,10 +25,13 @@ void showImageMenu(
   late final OverlayEntry imageMenuEntry;
 
   void insertImage(
-    String src, {
-    ImageSourceType imageSourceType = ImageSourceType.network,
-  }) {
-    editorState.insertImageNode(src, imageSourceType);
+    String url,
+  ) {
+    if (onInsertImage != null) {
+      onInsertImage(url);
+    } else {
+      editorState.insertImageNode(url);
+    }
     menuService.dismiss();
     imageMenuEntry.remove();
     keepEditorFocusNotifier.value -= 1;
@@ -41,7 +46,7 @@ void showImageMenu(
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
-      width: MediaQuery.of(context).size.width * 0.5,
+      width: MediaQuery.of(context).size.width * 0.4,
       onSubmitted: insertImage,
       onUpload: insertImage,
     ),
@@ -63,7 +68,7 @@ class UploadImageMenu extends StatefulWidget {
   final Color headerColor;
   final double width;
   final void Function(String text) onSubmitted;
-  final void Function(String text, {ImageSourceType imageSourceType}) onUpload;
+  final void Function(String text) onUpload;
 
   @override
   State<UploadImageMenu> createState() => _UploadImageMenuState();
@@ -94,8 +99,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.width,
-      height: 350,
-      padding: const EdgeInsets.all(24.0),
+      height: 300,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         boxShadow: [
@@ -111,19 +116,26 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         length: 2,
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
                 width: 300,
                 child: TabBar(
-                  tabs: [
+                  tabs: const [
                     Tab(text: 'Upload Image'),
                     Tab(text: 'URL Image'),
                   ],
-                  labelColor: Colors.black,
+                  labelColor: widget.headerColor,
                   unselectedLabelColor: Colors.grey,
-                  indicatorColor: Color(0xff00BCF0),
+                  indicatorColor: const Color(0xff00BCF0),
                   dividerColor: Colors.transparent,
+                  onTap: (value) {
+                    if (value == 1) {
+                      _focusNode.requestFocus();
+                    } else {
+                      _focusNode.unfocus();
+                    }
+                  },
                 ),
               ),
             ),
@@ -142,18 +154,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Text(
-      'URL Image',
-      textAlign: TextAlign.left,
-      style: TextStyle(
-        fontSize: 14.0,
-        color: widget.headerColor,
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-
   Widget _buildInput() {
     return TextField(
       focusNode: _focusNode,
@@ -168,7 +168,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         isDense: true,
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
+          icon: const EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
@@ -185,7 +185,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   Widget _buildUploadButton(
     BuildContext context,
-    ImageSourceType imageSourceType,
   ) {
     return SizedBox(
       width: 170,
@@ -200,23 +199,22 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           ),
         ),
         onPressed: () async {
-          if (imageSourceType == ImageSourceType.network) {
+          if (_localImagePath != null) {
+            widget.onUpload(
+              _localImagePath!,
+            );
+          } else if (_textEditingController.text.isNotEmpty) {
             widget.onUpload(
               _textEditingController.text,
-              imageSourceType: imageSourceType,
-            );
-          } else if (imageSourceType == ImageSourceType.file &&
-              _localImagePath != null) {
-            final content = await base64StringFromImage(_localImagePath!);
-            widget.onUpload(
-              content,
-              imageSourceType: imageSourceType,
             );
           }
         },
-        child: const Text(
+        child: Text(
           'Upload',
-          style: TextStyle(color: Colors.white, fontSize: 14.0),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -226,14 +224,15 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(context),
         const SizedBox(height: 16.0),
         _buildInput(),
         const SizedBox(height: 18.0),
-        _buildUploadButton(
-          context,
-          ImageSourceType.network,
-        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: _buildUploadButton(
+            context,
+          ),
+        )
       ],
     );
   }
@@ -249,7 +248,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           alignment: Alignment.centerRight,
           child: _buildUploadButton(
             context,
-            ImageSourceType.file,
           ),
         )
       ],
@@ -261,7 +259,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       child: GestureDetector(
         onTap: () async {
           final result = await _filePicker.pickFiles(
-            dialogTitle: 'Select an image',
+            dialogTitle: '',
             allowMultiple: false,
             type: fp.FileType.image,
             allowedExtensions: allowedExtensions,
@@ -276,7 +274,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           height: 80,
           margin: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
+            border: Border.all(color: const Color(0xff00BCF0)),
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: _localImagePath != null
@@ -293,11 +291,16 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.image, size: 48.0, color: Colors.grey),
+                      EditorSvg(
+                        name: 'upload_image',
+                        width: 32,
+                        height: 32,
+                      ),
                       SizedBox(height: 8.0),
                       Text(
-                        'Pick a file',
-                        style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                        'Choose an image',
+                        style:
+                            TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
                       ),
                     ],
                   ),
@@ -308,10 +311,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   }
 }
 
-extension on EditorState {
+extension InsertImage on EditorState {
   Future<void> insertImageNode(
     String src,
-    ImageSourceType imageSourceType,
   ) async {
     final selection = this.selection;
     if (selection == null || !selection.isCollapsed) {
@@ -329,16 +331,16 @@ extension on EditorState {
         ..insertNode(
           node.path,
           imageNode(
-            url: imageSourceType == ImageSourceType.network ? src : null,
-            content: imageSourceType == ImageSourceType.file ? src : null,
-            imageSourceType: imageSourceType,
+            url: src,
           ),
         )
         ..deleteNode(node);
     } else {
       transaction.insertNode(
         node.path.next,
-        imageNode(url: src, imageSourceType: imageSourceType),
+        imageNode(
+          url: src,
+        ),
       );
     }
 

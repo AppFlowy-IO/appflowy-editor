@@ -1,4 +1,4 @@
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 class ColorOption {
@@ -178,7 +178,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
             // checkbox
-            if (isChecked) const FlowySvg(name: 'checkmark'),
+            if (isChecked) const EditorSvg(name: 'checkmark'),
             const SizedBox(width: 6),
           ],
         ),

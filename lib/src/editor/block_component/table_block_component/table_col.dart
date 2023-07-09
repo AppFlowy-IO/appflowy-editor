@@ -57,18 +57,12 @@ class _TableColState extends State<TableCol> {
               node: widget.tableNode.node,
               editorState: widget.editorState,
               position: widget.colIdx,
-              transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+              transform: Matrix4.translationValues(0.0, -15.0, 0.0),
               alignment: Alignment.topCenter,
-              iconBuilder: ({size, color}) {
-                return Transform.rotate(
-                  angle: math.pi / 2,
-                  child: Icon(
-                    Icons.drag_indicator,
-                    size: size,
-                    color: color,
-                  ),
-                );
-              },
+              icon: Transform.rotate(
+                angle: math.pi / 2,
+                child: const Icon(Icons.drag_indicator),
+              ),
               dir: TableDirection.col,
             )
           ],

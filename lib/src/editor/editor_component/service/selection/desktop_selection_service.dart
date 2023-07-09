@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
+import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
@@ -475,7 +476,10 @@ class _DesktopSelectionServiceWidgetState
       }
     }
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    final overlay = Overlay.of(context);
+    overlay?.insertAll(
+      _selectionAreas,
+    );
   }
 
   void _updateCursorAreas(Position position) {

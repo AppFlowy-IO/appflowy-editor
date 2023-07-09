@@ -25,6 +25,7 @@ export 'heading_block_component/heading_character_shortcut.dart';
 
 // image
 export 'image_block_component/image_block_component.dart';
+export 'image_block_component/image_upload_widget.dart';
 
 // divider
 export 'divider_block_component/divider_block_component.dart';
@@ -44,9 +45,16 @@ export 'base_component/outdent_command.dart';
 export 'base_component/widget/full_screen_overlay_entry.dart';
 export 'base_component/widget/ignore_parent_pointer.dart';
 
+// rich text
+export 'rich_text/default_selectable_mixin.dart';
+export 'rich_text/appflowy_rich_text.dart';
+export 'rich_text/appflowy_rich_text_keys.dart';
+
 export 'base_component/block_component_configuration.dart';
 export 'base_component/text_style_configuration.dart';
 export 'base_component/background_color_mixin.dart';
 export 'base_component/markdown_format_helper.dart';
 export 'base_component/widget/nested_list_widget.dart';
 export 'base_component/block_component_action_wrapper.dart';
+
+export 'standard_block_components.dart';

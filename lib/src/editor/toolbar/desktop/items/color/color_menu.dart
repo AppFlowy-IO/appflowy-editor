@@ -7,6 +7,8 @@ void showColorMenu(
   EditorState editorState,
   Selection selection, {
   String? currentColorHex,
+  List<ColorOption>? textColorOptions,
+  List<ColorOption>? highlightColorOptions,
   required bool isTextColor,
 }) {
   // Since link format is only available for single line selection,
@@ -32,8 +34,8 @@ void showColorMenu(
             : AppFlowyEditorLocalizations.current.highlightColor,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
-            ? generateTextColorOptions()
-            : generateHighlightColorOptions(),
+            ? textColorOptions ?? generateTextColorOptions()
+            : highlightColorOptions ?? generateHighlightColorOptions(),
         onSubmittedColorHex: (color) {
           isTextColor
               ? formatFontColor(

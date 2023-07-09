@@ -114,7 +114,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
             // checkbox
-            if (isChecked) const FlowySvg(name: 'checkmark'),
+            if (isChecked) const EditorSvg(name: 'checkmark'),
           ],
         ),
       ),
@@ -153,7 +153,7 @@ class ResetColorButton extends StatelessWidget {
       height: 32,
       child: TextButton.icon(
         onPressed: () => onPressed(null),
-        icon: FlowySvg(
+        icon: EditorSvg(
           name: resetIconName,
           width: 13,
           height: 13,

@@ -30,7 +30,6 @@ class EditorWidgetTester {
     bool autoFocus = false,
     bool editable = true,
     customBuilders = const {},
-    List<ShortcutEvent> shortcutEvents = const [],
   }) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -48,8 +47,6 @@ class EditorWidgetTester {
             shrinkWrap: shrinkWrap,
             autoFocus: autoFocus,
             editable: editable,
-            customBuilders: customBuilders,
-            shortcutEvents: shortcutEvents,
           ),
         ),
       ),
@@ -135,8 +132,7 @@ class EditorWidgetTester {
   }
 
   Future<void> apply(List<TextEditingDelta> deltas) async {
-    _editorState.service.inputService?.apply(deltas);
-    await tester.pumpAndSettle();
+    throw UnimplementedError();
   }
 
   Future<void> pressLogicKey({

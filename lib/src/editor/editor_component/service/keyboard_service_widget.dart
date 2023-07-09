@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/ime/non_delta_input_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -111,9 +110,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
 
   @override
-  List<ShortcutEvent> get shortcutEvents => throw UnimplementedError();
-
-  @override
   Widget build(BuildContext context) {
     Widget child = widget.child;
     // if there is no command shortcut event, we don't need to handle hardware keyboard.
@@ -198,7 +194,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
-      textInputService.attach(textEditingValue);
+      textInputService.attach(
+        textEditingValue,
+        TextInputConfiguration(
+          enableDeltaModel: false,
+          inputType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          inputAction: TextInputAction.newline,
+          keyboardAppearance: Theme.of(context).brightness,
+        ),
+      );
       // disable shortcuts when the IME active
       enableShortcuts = textEditingValue.composing == TextRange.empty;
     } else {

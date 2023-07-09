@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
@@ -154,7 +153,9 @@ void main() async {
       expect(
         editor.selection,
         Selection.single(
-            path: cell04.childAtIndexOrNull(0)!.path, startOffset: 0),
+          path: cell04.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
       );
 
       await editor.dispose();

@@ -5,11 +5,13 @@ class BackgroundColorOptionsWidgets extends StatefulWidget {
   const BackgroundColorOptionsWidgets(
     this.editorState,
     this.selection, {
+    this.backgroundColorOptions,
     Key? key,
   }) : super(key: key);
 
   final Selection selection;
   final EditorState editorState;
+  final List<ColorOption>? backgroundColorOptions;
 
   @override
   State<BackgroundColorOptionsWidgets> createState() =>
@@ -21,12 +23,13 @@ class _BackgroundColorOptionsWidgetsState
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarStyle.of(context);
-
+    final colorOptions =
+        widget.backgroundColorOptions ?? generateHighlightColorOptions();
     final selection = widget.selection;
     final nodes = widget.editorState.getNodesInSelection(selection);
     final hasTextColor = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes[FlowyRichTextKeys.highlightColor] != null,
+        (attributes) => attributes[AppFlowyRichTextKeys.highlightColor] != null,
       );
     });
 
@@ -45,7 +48,7 @@ class _BackgroundColorOptionsWidgetsState
                 setState(() {
                   widget.editorState.formatDelta(
                     selection,
-                    {FlowyRichTextKeys.highlightColor: null},
+                    {AppFlowyRichTextKeys.highlightColor: null},
                   );
                 });
               }
@@ -53,11 +56,12 @@ class _BackgroundColorOptionsWidgetsState
             isSelected: !hasTextColor,
           ),
           // color option buttons
-          ...style.backgroundColorOptions.map((e) {
+          ...colorOptions.map((e) {
             final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
               return delta.everyAttributes(
                 (attributes) =>
-                    attributes[FlowyRichTextKeys.highlightColor] == e.colorHex,
+                    attributes[AppFlowyRichTextKeys.highlightColor] ==
+                    e.colorHex,
               );
             });
             return ColorButton(

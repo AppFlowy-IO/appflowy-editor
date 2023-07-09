@@ -328,7 +328,6 @@ class HTMLToNodesConverter {
     // only support network image
     return imageNode(
       url: src,
-      imageSourceType: ImageSourceType.network,
     );
   }
 

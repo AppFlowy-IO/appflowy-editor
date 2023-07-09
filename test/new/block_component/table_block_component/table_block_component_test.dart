@@ -23,8 +23,10 @@ void main() async {
       expect(tableNode.colsLen, 1);
       expect(tableNode.rowsLen, 1);
       expect(tableNode.node.children.length, 1);
-      expect(tableNode.node.children.first.children.first.type,
-          ParagraphBlockKeys.type);
+      expect(
+        tableNode.node.children.first.children.first.type,
+        ParagraphBlockKeys.type,
+      );
       await editor.dispose();
     });
 

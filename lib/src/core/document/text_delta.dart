@@ -379,7 +379,7 @@ class Delta extends Iterable<TextOperation> {
   ///
   /// Since the encoding of the [String] in Dart is UTF-16.
   /// If you want to find the previous character of a position,
-  /// you can' just use the `position - 1` simply.
+  /// you can't just use the `position - 1` simply.
   ///
   /// This method can help you to compute the position of the previous character.
   int prevRunePosition(int pos) {
@@ -395,8 +395,8 @@ class Delta extends Iterable<TextOperation> {
   /// This method will return the position of the next rune.
   ///
   /// Since the encoding of the [String] in Dart is UTF-16.
-  /// If you want to find the previous character of a position,
-  /// you can' just use the `position + 1` simply.
+  /// If you want to find the next character of a position,
+  /// you can't just use the `position + 1` simply.
   ///
   /// This method can help you to compute the position of the next character.
   int nextRunePosition(int pos) {

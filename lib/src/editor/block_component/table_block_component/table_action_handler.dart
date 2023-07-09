@@ -10,7 +10,7 @@ class TableActionHandler extends StatefulWidget {
     required this.node,
     required this.editorState,
     required this.position,
-    required this.iconBuilder,
+    required this.icon,
     required this.alignment,
     required this.transform,
     required this.dir,
@@ -20,7 +20,7 @@ class TableActionHandler extends StatefulWidget {
   final Node node;
   final EditorState editorState;
   final int position;
-  final Widget Function({double? size, Color? color}) iconBuilder;
+  final Widget icon;
   final Alignment alignment;
   final Matrix4 transform;
   final double? height;
@@ -44,19 +44,21 @@ class _TableActionHandlerState extends State<TableActionHandler> {
         child: MouseRegion(
           onEnter: (_) => setState(() => _visible = true),
           onExit: (_) => setState(() => _visible = false),
-          child: ActionMenuWidget(
-            items: [
-              ActionMenuItem(
-                iconBuilder: widget.iconBuilder,
-                onPressed: () => showActionMenu(
+          child: Card(
+            elevation: 3.0,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => showActionMenu(
                   context,
                   widget.node,
                   widget.editorState,
                   widget.position,
                   widget.dir,
                 ),
+                child: widget.icon,
               ),
-            ],
+            ),
           ),
         ),
       ),

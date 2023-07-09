@@ -90,7 +90,7 @@ class _HeadingBlockComponentWidgetState
     extends State<HeadingBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin {
   @override
@@ -113,7 +113,7 @@ class _HeadingBlockComponentWidgetState
   Widget build(BuildContext context) {
     Widget child = Container(
       color: backgroundColor,
-      child: FlowyRichText(
+      child: AppFlowyRichText(
         key: forwardKey,
         node: widget.node,
         editorState: editorState,
