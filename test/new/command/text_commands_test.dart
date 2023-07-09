@@ -182,7 +182,7 @@ void main() async {
         initialText: text,
         decorator: (index, node) => node.updateAttributes(
           {
-            FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
           },
         ),
       );
@@ -196,7 +196,7 @@ void main() async {
 
       expect(
         editorState.getNodeAtPath([1])?.attributes.direction,
-        FlowyTextDirection.rtl,
+        AppFlowyTextDirection.rtl,
       );
     });
   });

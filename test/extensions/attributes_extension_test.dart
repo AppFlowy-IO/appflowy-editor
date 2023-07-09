@@ -199,11 +199,11 @@ void main() {
     });
 
     test('direction', () {
-      final dirKey = FlowyRichTextKeys.dir;
+      final dirKey = AppFlowyRichTextKeys.dir;
       final tests = [
-        {dirKey: 'rtl', 'exp': FlowyTextDirection.rtl},
-        {dirKey: 'auto', 'exp': FlowyTextDirection.auto},
-        {dirKey: 'ltr', 'exp': FlowyTextDirection.ltr},
+        {dirKey: 'rtl', 'exp': AppFlowyTextDirection.rtl},
+        {dirKey: 'auto', 'exp': AppFlowyTextDirection.auto},
+        {dirKey: 'ltr', 'exp': AppFlowyTextDirection.ltr},
         {dirKey: 'invalid', 'exp': null},
       ];
 

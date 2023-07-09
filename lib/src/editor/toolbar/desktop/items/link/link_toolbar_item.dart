@@ -12,7 +12,7 @@ final linkItem = ToolbarItem(
     final nodes = editorState.getNodesInSelection(selection);
     final isHref = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes[FlowyRichTextKeys.href] != null,
+        (attributes) => attributes[AppFlowyRichTextKeys.href] != null,
       );
     });
 
@@ -111,6 +111,7 @@ void showLinkMenu(
           editorState.apply(transaction);
           dismissOverlay();
         },
+        onDismiss: dismissOverlay,
       );
     },
   ).build();

@@ -75,7 +75,7 @@ class TextBlockComponentWidget extends BlockComponentStatefulWidget {
 class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin {
@@ -113,7 +113,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
-          FlowyRichText(
+          AppFlowyRichText(
             key: forwardKey,
             node: widget.node,
             editorState: editorState,

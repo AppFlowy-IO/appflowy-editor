@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 import './number_list_helper.dart';
 
 /// Handle some cases where enter is pressed and shift is not pressed.

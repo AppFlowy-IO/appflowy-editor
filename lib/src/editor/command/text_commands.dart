@@ -51,7 +51,7 @@ extension TextTransforms on EditorState {
       'delta': slicedDelta.toJson(),
     };
     if (node.attributes.direction != null) {
-      attributes['dir'] = node.attributes[FlowyRichTextKeys.dir];
+      attributes['dir'] = node.attributes[AppFlowyRichTextKeys.dir];
     }
     final insertedNode = paragraphNode(
       attributes: attributes,

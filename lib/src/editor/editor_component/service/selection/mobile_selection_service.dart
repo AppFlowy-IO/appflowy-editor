@@ -451,7 +451,10 @@ class _MobileSelectionServiceWidgetState
       }
     }
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    final overlay = Overlay.of(context);
+    overlay?.insertAll(
+      _selectionAreas,
+    );
   }
 
   void _updateCursorAreas(Position position) {

@@ -78,7 +78,7 @@ bool handleFormatByWrappingWithSingleCharacter({
   // if the text is already formatted, we should remove the format.
   final sliced = delta.slice(
     headCharIndex + 1,
-    selection.end.offset - headCharIndex - 1,
+    selection.end.offset,
   );
   final result = sliced.everyAttributes((element) => element[style] == true);
 

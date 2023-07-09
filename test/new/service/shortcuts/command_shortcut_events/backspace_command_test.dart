@@ -156,13 +156,13 @@ void main() async {
 
       test("backspace convert bullet list to paragraph but keep direction",
           () async {
-        final rtlText = 'سلام';
+        String rtlText = 'سلام';
         final document = Document.blank().addNode(
           BulletedListBlockKeys.type,
           initialText: rtlText,
           decorator: (index, node) => node.updateAttributes(
             {
-              FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+              AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
             },
           ),
         );
@@ -180,7 +180,7 @@ void main() async {
 
         final node = editorState.getNodeAtPath([0])!;
         expect(node.type, ParagraphBlockKeys.type);
-        expect(node.attributes.direction, FlowyTextDirection.rtl);
+        expect(node.attributes.direction, AppFlowyTextDirection.rtl);
       });
     });
 
@@ -261,7 +261,6 @@ void main() async {
       test(
           'Delete in the not collapsed selection that is not single and not flatted',
           () async {
-        Delta deltaBuilder(index) => Delta()..insert(text);
         final document = Document.blank()
             .addParagraph(
               initialText: text,
@@ -355,10 +354,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(headingNode(level: 1, delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
@@ -403,10 +404,12 @@ void main() async {
       final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addNode(bulletedListNode(delta: delta))
-        ..addNode(bulletedListNode(
-          delta: delta,
-          children: [bulletedListNode(delta: delta)],
-        ));
+        ..addNode(
+          bulletedListNode(
+            delta: delta,
+            children: [bulletedListNode(delta: delta)],
+          ),
+        );
 
       await editor.startTesting();
 
@@ -446,7 +449,6 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!
     // |Welcome to AppFlowy Editor 🔥!
     testWidgets('Delete the non-text node, such as divider', (tester) async {
-      final delta = Delta()..insert(text);
       final editor = tester.editor
         ..addParagraph(initialText: text)
         ..addNode(dividerNode())

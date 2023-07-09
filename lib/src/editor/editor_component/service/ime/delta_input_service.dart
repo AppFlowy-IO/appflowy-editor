@@ -1,44 +1,8 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/services.dart';
-
-abstract class TextInputService {
-  TextInputService({
-    required this.onInsert,
-    required this.onDelete,
-    required this.onReplace,
-    required this.onNonTextUpdate,
-    required this.onPerformAction,
-  });
-
-  Future<void> Function(TextEditingDeltaInsertion insertion) onInsert;
-  Future<void> Function(TextEditingDeltaDeletion deletion) onDelete;
-  Future<void> Function(TextEditingDeltaReplacement replacement) onReplace;
-  Future<void> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
-      onNonTextUpdate;
-  Future<void> Function(TextInputAction action) onPerformAction;
-
-  TextRange? get composingTextRange;
-  bool get attached;
-
-  void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
-
-  /// Updates the [TextEditingValue] of the text currently being edited.
-  ///
-  /// Note that if there are IME-related requirements,
-  ///   please config `composing` value within [TextEditingValue]
-  void attach(TextEditingValue textEditingValue);
-
-  /// Applies insertion, deletion and replacement
-  ///   to the text currently being edited.
-  ///
-  /// For more information, please check [TextEditingDelta].
-  Future<void> apply(List<TextEditingDelta> deltas);
-
-  /// Closes the editing state of the text currently being edited.
-  void close();
-}
 
 class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   DeltaTextInputService({
@@ -82,17 +46,22 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   }
 
   @override
-  void attach(TextEditingValue textEditingValue) {
+  void attach(
+    TextEditingValue textEditingValue,
+    TextInputConfiguration configuration,
+  ) {
     if (_textInputConnection == null ||
         _textInputConnection!.attached == false) {
       _textInputConnection = TextInput.attach(
         this,
-        const TextInputConfiguration(
-          enableDeltaModel: true,
-          inputType: TextInputType.multiline,
-          textCapitalization: TextCapitalization.sentences,
-          inputAction: TextInputAction.newline,
-        ),
+        configuration,
+        // TextInputConfiguration(
+        //   enableDeltaModel: true,
+        //   inputType: TextInputType.multiline,
+        //   textCapitalization: TextCapitalization.sentences,
+        //   inputAction: TextInputAction.newline,
+        //   keyboardAppearance: Theme.of(context).brightness,
+        // ),
       );
     }
 

@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,10 +27,13 @@ Node quoteNode({
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   QuoteBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  final BlockIconBuilder? iconBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -38,6 +42,7 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       node: node,
       configuration: configuration,
+      iconBuilder: iconBuilder,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -57,7 +62,10 @@ class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
+
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<QuoteBlockComponentWidget> createState() =>
@@ -67,7 +75,7 @@ class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
 class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin {
   @override
@@ -107,9 +115,11 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
           mainAxisSize: MainAxisSize.min,
           textDirection: textDirection,
           children: [
-            defaultIcon(),
+            widget.iconBuilder != null
+                ? widget.iconBuilder!(context, node)
+                : const _QuoteIcon(),
             Flexible(
-              child: FlowyRichText(
+              child: AppFlowyRichText(
                 key: forwardKey,
                 node: widget.node,
                 editorState: editorState,
@@ -144,10 +154,14 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       textDirection,
     );
   }
+}
 
-  // TODO: support custom icon.
-  Widget defaultIcon() {
-    return const FlowySvg(
+class _QuoteIcon extends StatelessWidget {
+  const _QuoteIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return const EditorSvg(
       width: 20,
       height: 20,
       padding: EdgeInsets.only(right: 5.0),

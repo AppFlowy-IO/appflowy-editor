@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/infra/clipboard.dart';
+import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
 import 'package:flutter/material.dart';
 
 /// Paste.

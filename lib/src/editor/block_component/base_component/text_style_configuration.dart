@@ -22,12 +22,25 @@ class TextStyleConfiguration {
     ),
   });
 
+  /// default text style
   final TextStyle text;
+
+  /// bold text style
   final TextStyle bold;
+
+  /// italic text style
   final TextStyle italic;
+
+  /// underline text style
   final TextStyle underline;
+
+  /// strikethrough text style
   final TextStyle strikethrough;
+
+  /// href text style
   final TextStyle href;
+
+  /// code text style
   final TextStyle code;
 
   TextStyleConfiguration copyWith({

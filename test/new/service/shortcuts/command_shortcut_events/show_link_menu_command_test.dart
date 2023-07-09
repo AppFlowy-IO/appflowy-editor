@@ -40,12 +40,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
       numberedListItem,
       placeholderItem,
       linkItem,
-      textColorItem,
-      highlightColorItem,
+      buildTextColorItem(),
+      buildHighlightColorItem(),
     ],
     editorState: editor.editorState,
     scrollController: scrollController,
-    child: AppFlowyEditor.standard(editorState: editor.editorState),
+    child: AppFlowyEditor(editorState: editor.editorState),
   );
 
   await tester.pumpWidget(

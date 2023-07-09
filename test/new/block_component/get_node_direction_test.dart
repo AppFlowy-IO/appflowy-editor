@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final dirKey = FlowyRichTextKeys.dir;
+  final dirKey = AppFlowyRichTextKeys.dir;
   group('GetNodeDirection::', () {
     test('rtl', () {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.rtl.name,
+          dirKey: AppFlowyTextDirection.rtl.name,
         },
       );
 
@@ -22,7 +22,7 @@ void main() {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.ltr.name,
+          dirKey: AppFlowyTextDirection.ltr.name,
         },
       );
 
@@ -35,7 +35,7 @@ void main() {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.auto.name,
+          dirKey: AppFlowyTextDirection.auto.name,
         },
       );
 
@@ -48,7 +48,7 @@ void main() {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.auto.name,
+          dirKey: AppFlowyTextDirection.auto.name,
         },
       );
 
@@ -61,7 +61,7 @@ void main() {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.auto.name,
+          dirKey: AppFlowyTextDirection.auto.name,
           ParagraphBlockKeys.delta: (Delta()..insert('Hello')).toJson(),
         },
       );
@@ -75,7 +75,7 @@ void main() {
       final node = Node(
         type: 'example',
         attributes: {
-          dirKey: FlowyTextDirection.auto.name,
+          dirKey: AppFlowyTextDirection.auto.name,
           ParagraphBlockKeys.delta: (Delta()..insert('سلام')).toJson(),
         },
       );
@@ -100,15 +100,18 @@ void main() {
         final node = Node(
           type: 'example',
           attributes: {
-            dirKey: FlowyTextDirection.auto.name,
+            dirKey: AppFlowyTextDirection.auto.name,
             ParagraphBlockKeys.delta:
                 (Delta()..insert(tests[i]['text'].toString())).toJson(),
           },
         );
 
         final (direction, _) = getNodeDirection(node);
-        expect(direction, tests[i]['exp'],
-            reason: 'Test ${i}: text="${tests[i]['text']}"');
+        expect(
+          direction,
+          tests[i]['exp'],
+          reason: 'Test $i: text="${tests[i]['text']}"',
+        );
       }
     });
 
@@ -127,15 +130,18 @@ void main() {
         final node = Node(
           type: 'example',
           attributes: {
-            dirKey: FlowyTextDirection.auto.name,
+            dirKey: AppFlowyTextDirection.auto.name,
             ParagraphBlockKeys.delta:
                 (Delta()..insert(tests[i]['text'].toString())).toJson(),
           },
         );
 
         final (_, lastStartText) = getNodeDirection(node);
-        expect(lastStartText, tests[i]['exp'],
-            reason: 'Test ${i}: text="${tests[i]['text']}"');
+        expect(
+          lastStartText,
+          tests[i]['exp'],
+          reason: 'Test $i: text="${tests[i]['text']}"',
+        );
       }
     });
   });

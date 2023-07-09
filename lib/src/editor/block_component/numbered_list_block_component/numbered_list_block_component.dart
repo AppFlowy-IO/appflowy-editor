@@ -1,5 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NumberedListBlockKeys {
   const NumberedListBlockKeys._();
@@ -31,10 +33,13 @@ Node numberedListNode({
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  final BlockIconBuilder? iconBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -43,6 +48,7 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       node: node,
       configuration: configuration,
+      iconBuilder: iconBuilder,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -62,7 +68,10 @@ class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.iconBuilder,
   });
+
+  final BlockIconBuilder? iconBuilder;
 
   @override
   State<NumberedListBlockComponentWidget> createState() =>
@@ -73,7 +82,7 @@ class _NumberedListBlockComponentWidgetState
     extends State<NumberedListBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin {
@@ -111,9 +120,15 @@ class _NumberedListBlockComponentWidgetState
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
-          defaultIcon(),
+          widget.iconBuilder != null
+              ? widget.iconBuilder!(context, node)
+              : _NumberedListIcon(
+                  node: node,
+                  textStyle: textStyle,
+                  direction: textDirection,
+                ),
           Flexible(
-            child: FlowyRichText(
+            child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
@@ -147,10 +162,24 @@ class _NumberedListBlockComponentWidgetState
       textDirection,
     );
   }
+}
 
-  Widget defaultIcon() {
+class _NumberedListIcon extends StatelessWidget {
+  const _NumberedListIcon({
+    required this.node,
+    required this.textStyle,
+    required this.direction,
+  });
+
+  final Node node;
+  final TextStyle textStyle;
+  final TextDirection direction;
+
+  @override
+  Widget build(BuildContext context) {
+    final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
-    final level = _NumberedListIconBuilder(node: widget.node).level;
+    final level = _NumberedListIconBuilder(node: node).level;
     return Padding(
       padding: const EdgeInsets.only(right: 5.0),
       child: Text.rich(
@@ -159,7 +188,7 @@ class _NumberedListBlockComponentWidgetState
           applyHeightToLastDescent: false,
         ),
         TextSpan(text: '$level.', style: text.combine(textStyle)),
-        textDirection: lastDirection,
+        textDirection: direction,
       ),
     );
   }

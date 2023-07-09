@@ -46,7 +46,7 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
       paragraphNode(
         attributes: {
           'delta': delta.toJson(),
-          FlowyRichTextKeys.dir: node.attributes[FlowyRichTextKeys.dir]
+          AppFlowyRichTextKeys.dir: node.attributes[AppFlowyRichTextKeys.dir]
         },
         children: node.children,
       ),

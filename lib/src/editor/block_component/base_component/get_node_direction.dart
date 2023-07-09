@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
   Node node, [
   String? lastStartText,
   TextDirection? lastDirection,
-  FlowyTextDirection defaultDirection = FlowyTextDirection.ltr,
+  AppFlowyTextDirection defaultDirection = AppFlowyTextDirection.ltr,
 ]) {
   final text = node.delta?.toPlainText();
-  final FlowyTextDirection direction =
+  final AppFlowyTextDirection direction =
       node.attributes.direction ?? defaultDirection;
-  TextDirection fallBackDir = direction == FlowyTextDirection.rtl
+  TextDirection fallBackDir = direction == AppFlowyTextDirection.rtl
       ? TextDirection.rtl
       : TextDirection.ltr;
   fallBackDir = lastDirection ?? fallBackDir;
@@ -19,10 +19,10 @@ import 'package:flutter/material.dart';
       .previousNodeWhere((n) => n.selectable != null)
       ?.selectable!
       .textDirection();
-  if (direction == FlowyTextDirection.auto && prevNodeDir != null) {
+  if (direction == AppFlowyTextDirection.auto && prevNodeDir != null) {
     fallBackDir = lastDirection ?? prevNodeDir;
   }
-  if (direction != FlowyTextDirection.auto || (text?.isEmpty ?? true)) {
+  if (direction != AppFlowyTextDirection.auto || (text?.isEmpty ?? true)) {
     return (fallBackDir, null);
   }
 

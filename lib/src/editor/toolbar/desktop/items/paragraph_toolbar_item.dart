@@ -20,7 +20,7 @@ final ToolbarItem paragraphItem = ToolbarItem(
             'delta': (node.delta ?? Delta()).toJson(),
             ParagraphBlockKeys.backgroundColor:
                 node.attributes[blockComponentBackgroundColor],
-            FlowyRichTextKeys.dir: node.attributes[FlowyRichTextKeys.dir]
+            AppFlowyRichTextKeys.dir: node.attributes[AppFlowyRichTextKeys.dir]
           },
         ),
       ),

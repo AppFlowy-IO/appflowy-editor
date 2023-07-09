@@ -43,8 +43,12 @@ class _FormatToolbarItem extends ToolbarItem {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every((n) => n.attributes['dir'] == name);
-            return MaterialIconItemWidget(
-              icon: icon,
+            return SVGIconItemWidget(
+              iconBuilder: (_) => Icon(
+                icon,
+                size: 16,
+                color: isHighlight ? Colors.lightBlue : Colors.white,
+              ),
               isHighlight: isHighlight,
               tooltip: tooltip,
               onPressed: () => editorState.formatNode(
@@ -52,7 +56,7 @@ class _FormatToolbarItem extends ToolbarItem {
                 (node) => node.copyWith(
                   attributes: {
                     ...node.attributes,
-                    FlowyRichTextKeys.dir: isHighlight ? '' : name,
+                    AppFlowyRichTextKeys.dir: isHighlight ? '' : name,
                   },
                 ),
               ),

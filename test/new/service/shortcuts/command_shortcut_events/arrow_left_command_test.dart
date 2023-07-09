@@ -113,7 +113,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
           }),
           initialSel: Selection.collapse(
             [0],
@@ -127,7 +127,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
           }),
           initialSel: Selection.collapse(
             [0],
@@ -141,7 +141,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            FlowyRichTextKeys.dir: FlowyTextDirection.rtl.name,
+            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
           }),
           initialSel: Selection.single(
             path: [0],
@@ -159,7 +159,7 @@ void main() async {
         await runArrowLeftTest(
           tester,
           tests[i],
-          "Test ${i}: text='${tests[i].text}'",
+          "Test $i: text='${tests[i].text}'",
         );
       }
     });

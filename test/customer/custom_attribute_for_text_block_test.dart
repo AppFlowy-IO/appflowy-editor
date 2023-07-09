@@ -29,7 +29,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorStyle = EditorStyle.desktop(
       // Example for customizing a new attribute key.
-      textSpanDecorator: (textInsert, textSpan) {
+      textSpanDecorator: (_, __, ___, textInsert, textSpan) {
         final attributes = textInsert.attributes;
         if (attributes == null) {
           return textSpan;
@@ -76,7 +76,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.blue),
             ),
-            child: AppFlowyEditor.standard(
+            child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: editorStyle,
             ),

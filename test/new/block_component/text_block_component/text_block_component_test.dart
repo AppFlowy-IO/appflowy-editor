@@ -11,7 +11,7 @@ void main() async {
         ..addParagraph(
           initialText: 'س',
           decorator: (i, n) => n.updateAttributes(
-            {FlowyRichTextKeys.dir: FlowyTextDirection.auto.name},
+            {AppFlowyRichTextKeys.dir: AppFlowyTextDirection.auto.name},
           ),
         );
       await editor.startTesting();
@@ -23,7 +23,7 @@ void main() async {
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;
 
-      final flowyRichText = find.byType(FlowyRichText);
+      final flowyRichText = find.byType(AppFlowyRichText);
       expect(flowyRichText, findsOneWidget);
       expect(
         tester.getTopLeft(flowyRichText).dx > editorCenter.dx,
@@ -39,7 +39,7 @@ void main() async {
         ..addParagraph(
           initialText: 'a',
           decorator: (i, n) => n.updateAttributes(
-            {FlowyRichTextKeys.dir: FlowyTextDirection.auto.name},
+            {AppFlowyRichTextKeys.dir: AppFlowyTextDirection.auto.name},
           ),
         );
       await editor.startTesting();
@@ -51,7 +51,7 @@ void main() async {
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;
 
-      final flowyRichText = find.byType(FlowyRichText);
+      final flowyRichText = find.byType(AppFlowyRichText);
       expect(flowyRichText, findsOneWidget);
       expect(
         tester.getTopLeft(flowyRichText).dx < editorCenter.dx,

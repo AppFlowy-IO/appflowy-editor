@@ -56,7 +56,7 @@ class TextFieldAndEditor extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.blue),
                   ),
-                  child: AppFlowyEditor.standard(
+                  child: AppFlowyEditor(
                     focusNode: editorFocusNode,
                     editorState: EditorState.blank(),
                     editorStyle: const EditorStyle.mobile(),
