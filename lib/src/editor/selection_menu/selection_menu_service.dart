@@ -135,6 +135,7 @@ class SelectionMenu extends SelectionMenuService {
                       onSelectionUpdate: () {
                         _selectionUpdateByInner = true;
                       },
+                      deleteSlashByDefault: deleteSlashByDefault,
                     ),
                   ),
                 )
