@@ -366,22 +366,86 @@ ShortcutEventHandler doubleAsteriskToBoldHandler = (editorState, event) {
     return KeyEventResult.ignored;
   }
 
+  final nestedItalicsIndices = [];
+  for (var i = 0; i < text.length; i++) {
+    if (text[i] == '_') {
+      nestedItalicsIndices.add(i);
+    }
+  }
+
+  if (nestedItalicsIndices.length < 2) {
 //delete the last three asterisks
 //update the style of the text surround by '** **' to bold
 //update the cursor position
-  final transaction = editorState.transaction
-    ..deleteText(textNode, lastAsteriskIndex, 1)
-    ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
-    ..formatText(textNode, thirdToLastAsteriskIndex,
-        selection.end.offset - thirdToLastAsteriskIndex - 2, {
-      BuiltInAttributeKey.bold: true,
-    })
-    ..afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: selection.end.offset - 3),
+    final transaction = editorState.transaction
+      ..deleteText(textNode, lastAsteriskIndex, 1)
+      ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
+      ..formatText(textNode, thirdToLastAsteriskIndex,
+          selection.end.offset - thirdToLastAsteriskIndex - 2, {
+        BuiltInAttributeKey.bold: true,
+      })
+      ..afterSelection = Selection.collapsed(
+        Position(path: textNode.path, offset: selection.end.offset - 3),
+      );
+    editorState.apply(transaction);
+  } else {
+    final transaction = editorState.transaction
+      ..formatText(
+        textNode,
+        thirdToLastAsteriskIndex,
+        lastAsteriskIndex - thirdToLastAsteriskIndex,
+        {
+          BuiltInAttributeKey.bold: true,
+        },
+      );
+
+    for (var i = 0; i < nestedItalicsIndices.length; i = i + 2) {
+      // Set the selected italics segment to italics
+      var transactionItalicFormat = editorState.transaction
+        ..formatText(textNode, nestedItalicsIndices[i],
+            nestedItalicsIndices[i + 1] - nestedItalicsIndices[i], {
+          BuiltInAttributeKey.italic: true,
+        });
+      transaction.operations.addAll(transactionItalicFormat.operations);
+      // Check if we reached the final loop we can do
+      if (i + 3 >= nestedItalicsIndices.length) {
+        break;
+      }
+    }
+
+// Remove all underscore characters in the string
+// If we have an uneven number of underscore characters we keep the last character
+// as it did not form an italics segment
+    if (nestedItalicsIndices.length % 2 == 1) {
+      nestedItalicsIndices.removeLast();
+    }
+
+    for (var i = 0; i < nestedItalicsIndices.length; i++) {
+      // Since we are deleting multiple items in a single transaction, everytime
+      // we delete a character the next deletion's index must be decremented by
+      // the amount of characters we have removed, to compensate for the shifted
+      // indexes after the deletion
+      transaction.deleteText(textNode, nestedItalicsIndices[i] - i, 1);
+    }
+
+    // Remove the asterixes from the text
+    transaction
+      ..deleteText(textNode, thirdToLastAsteriskIndex, 2)
+      ..deleteText(
+        textNode,
+        lastAsteriskIndex - 2 - nestedItalicsIndices.length,
+        1,
+      );
+
+    transaction.afterSelection = Selection.collapsed(
+      Position(
+        path: textNode.path,
+        offset: selection.end.offset - 3 - nestedItalicsIndices.length,
+      ),
     );
 
-  editorState.apply(transaction);
-
+    editorState.apply(transaction);
+  }
   return KeyEventResult.handled;
 };
 
