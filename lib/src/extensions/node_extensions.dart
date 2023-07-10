@@ -1,9 +1,4 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/extensions/object_extensions.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 extension NodeExtensions on Node {
@@ -30,11 +25,88 @@ extension NodeExtensions on Node {
     return Rect.zero;
   }
 
-  bool isSelected(EditorState editorState) {
-    final currentSelectedNodes =
-        editorState.service.selectionService.currentSelectedNodes;
-    return currentSelectedNodes.length == 1 &&
-        currentSelectedNodes.first == this;
+  /// Returns the first previous node in the subtree that satisfies the given predicate
+  Node? previousNodeWhere(bool Function(Node element) test) {
+    var previous = this.previous;
+    while (previous != null) {
+      final last = previous.lastChildWhere(test);
+      if (last != null) {
+        return last;
+      }
+      if (test(previous)) {
+        return previous;
+      }
+      previous = previous.previous;
+    }
+    final parent = this.parent;
+    if (parent != null) {
+      if (test(parent)) {
+        return parent;
+      }
+      return parent.previousNodeWhere(test);
+    }
+    return null;
+  }
+
+  /// Returns the last node in the subtree that satisfies the given predicate
+  Node? lastChildWhere(bool Function(Node element) test) {
+    final children = this.children.toList().reversed;
+    for (final child in children) {
+      if (child.children.isNotEmpty) {
+        final last = child.lastChildWhere(test);
+        if (last != null) {
+          return last;
+        }
+      }
+      if (test(child)) {
+        return child;
+      }
+    }
+    return null;
+  }
+
+  // find the node from it's children or it's next sibling to find the node that matches the given predicate
+  Node? findDownward(bool Function(Node element) test) {
+    final children = this.children.toList();
+    for (final child in children) {
+      if (test(child)) {
+        return child;
+      }
+      if (child.children.isNotEmpty) {
+        final node = child.findDownward(test);
+        if (node != null) {
+          return node;
+        }
+      }
+    }
+    final next = this.next;
+    if (next != null) {
+      if (test(next)) {
+        return next;
+      }
+      return next.findDownward(test);
+    }
+    return null;
+  }
+
+  bool allSatisfyInSelection(
+    Selection selection,
+    bool Function(Delta delta) test,
+  ) {
+    if (selection.isCollapsed) {
+      return false;
+    }
+
+    selection = selection.normalized;
+
+    var delta = this.delta;
+    if (delta == null) {
+      return false;
+    }
+
+    delta = delta.slice(selection.startIndex, selection.endIndex);
+
+    return test(delta);
   }
 }
 
@@ -49,5 +121,40 @@ extension NodesExtensions<T extends Node> on List<T> {
     }
 
     return this;
+  }
+
+  bool allSatisfyInSelection(
+    Selection selection,
+    bool Function(Delta delta) test,
+  ) {
+    if (selection.isCollapsed) {
+      return false;
+    }
+
+    selection = selection.normalized;
+    final nodes = this.normalized;
+
+    if (nodes.length == 1) {
+      return nodes.first.allSatisfyInSelection(selection, test);
+    }
+
+    for (var i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      var delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+
+      if (i == 0) {
+        delta = delta.slice(selection.start.offset);
+      } else if (i == nodes.length - 1) {
+        delta = delta.slice(0, selection.end.offset);
+      }
+      if (!test(delta)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

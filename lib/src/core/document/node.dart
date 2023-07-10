@@ -1,111 +1,103 @@
 import 'dart:collection';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:nanoid/nanoid.dart';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
-
-class Node extends ChangeNotifier with LinkedListEntry<Node> {
+/// [Node] represents a node in the document tree.
+///
+/// It contains three parts:
+///   - [type]: The type of the node to determine which block component to render it.
+///   - [data]: The data of the node to determine how to render it.
+///   - [children]: The children of the node.
+///
+///
+/// Json format:
+/// {
+///   'type': string,
+///   'data': Map<String, Object>
+///   'children': List<Node>,
+/// }
+final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
-    Attributes? attributes,
+    String? id,
     this.parent,
-    LinkedList<Node>? children,
-  })  : children = children ?? LinkedList<Node>(),
-        _attributes = attributes ?? {} {
+    Attributes attributes = const {},
+    Iterable<Node> children = const [],
+  })  : _children = LinkedList<Node>()
+          ..addAll(
+            children.map(
+              (e) => e..unlink(),
+            ),
+          ), // unlink the given children to avoid the error of "node has already a parent"
+        _attributes = attributes,
+        id = id ?? nanoid(10) {
     for (final child in this.children) {
       child.parent = this;
     }
   }
 
   factory Node.fromJson(Map<String, Object> json) {
-    assert(json['type'] is String);
+    final node = Node(
+      type: json['type'] as String,
+      attributes: Attributes.from(json['data'] as Map? ?? {}),
+      children: (json['children'] as List? ?? [])
+          .map((e) => Map<String, Object>.from(e))
+          .map((e) => Node.fromJson(e)),
+    );
 
-    final jType = json['type'] as String;
-    final jChildren = json['children'] as List?;
-    final jAttributes = json['attributes'] != null
-        ? Attributes.from(json['attributes'] as Map)
-        : Attributes.from({});
-
-    final children = LinkedList<Node>();
-    if (jChildren != null) {
-      children.addAll(
-        jChildren.map(
-          (jChild) => Node.fromJson(
-            Map<String, Object>.from(jChild),
-          ),
-        ),
-      );
-    }
-
-    Node node;
-
-    if (jType == 'text') {
-      final jDelta = json['delta'] as List<dynamic>?;
-      final delta = jDelta == null ? Delta() : Delta.fromJson(jDelta);
-      node = TextNode(
-        children: children,
-        attributes: jAttributes,
-        delta: delta,
-      );
-    } else {
-      node = Node(
-        type: jType,
-        children: children,
-        attributes: jAttributes,
-      );
-    }
-
-    for (final child in children) {
+    for (final child in node.children) {
       child.parent = node;
     }
 
     return node;
   }
 
+  /// The type of the node.
   final String type;
-  final LinkedList<Node> children;
-  Node? parent;
-  Attributes _attributes;
 
-  // Renderable
+  /// The id of the node.
+  final String id;
+
+  @Deprecated('Use type instead')
+  String get subtype => type;
+
+  // @Deprecated('Use type instead')
+  // String get id => type;
+
+  /// The parent of the node.
+  Node? parent;
+
+  /// The children of the node.
+  final LinkedList<Node> _children;
+  Iterable<Node> get children => _children.toList(growable: false);
+
+  /// The attributes of the node.
+  Attributes _attributes;
+  Attributes get attributes => {..._attributes};
+
+  /// The path of the node.
+  Path get path => _computePath();
+
+  // Render Part
   final key = GlobalKey();
   final layerLink = LayerLink();
 
-  Attributes get attributes => {..._attributes};
-
-  String get id {
-    if (subtype != null) {
-      return '$type/$subtype';
-    }
-    return type;
+  void notify() {
+    notifyListeners();
   }
 
-  String? get subtype {
-    if (attributes[BuiltInAttributeKey.subtype] is String) {
-      return attributes[BuiltInAttributeKey.subtype] as String;
-    }
-    return null;
-  }
-
-  Path get path => _computePath();
-
+  /// Update the attributes of the node.
+  ///
+  ///
   void updateAttributes(Attributes attributes) {
-    final oldAttributes = this.attributes;
-
     _attributes = composeAttributes(this.attributes, attributes) ?? {};
 
-    // Notifies the new attributes
-    // if attributes contains 'subtype', should notify parent to rebuild node
-    // else, just notify current node.
-    bool shouldNotifyParent =
-        this.attributes['subtype'] != oldAttributes['subtype'];
-    shouldNotifyParent ? parent?.notifyListeners() : notifyListeners();
+    notifyListeners();
   }
 
-  Node? childAtIndex(int index) {
+  Node? childAtIndexOrNull(int index) {
     if (children.length <= index || index < 0) {
       return null;
     }
@@ -118,16 +110,21 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
       return this;
     }
 
-    return childAtIndex(path.first)?.childAtPath(path.sublist(1));
+    final index = path.first;
+    final child = childAtIndexOrNull(index);
+    return child?.childAtPath(path.sublist(1));
   }
 
   void insert(Node entry, {int? index}) {
-    final length = children.length;
+    final length = _children.length;
     index ??= length;
 
+    Log.editor.debug('insert Node $entry at path ${path + [index]}}');
+
+    entry.parent = this;
+
     if (children.isEmpty) {
-      entry.parent = this;
-      children.add(entry);
+      _children.add(entry);
       notifyListeners();
       return;
     }
@@ -136,11 +133,11 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     // If index is negative, insert at the beginning.
     // If index is positive, insert at the index.
     if (index >= length) {
-      children.last.insertAfter(entry);
+      _children.last.insertAfter(entry);
     } else if (index <= 0) {
-      children.first.insertBefore(entry);
+      _children.first.insertBefore(entry);
     } else {
-      childAtIndex(index)?.insertBefore(entry);
+      childAtIndexOrNull(index)?.insertBefore(entry);
     }
   }
 
@@ -164,39 +161,63 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void unlink() {
+    if (parent == null) {
+      return;
+    }
+    Log.editor.debug('delete Node $this from path $path');
     super.unlink();
 
     parent?.notifyListeners();
     parent = null;
   }
 
+  @override
+  String toString() {
+    return '''Node(id: $id,
+    type: $type,
+    attributes: $attributes,
+    children: $children,
+    )''';
+  }
+
+  Delta? get delta {
+    if (attributes['delta'] is List) {
+      return Delta.fromJson(attributes['delta']);
+    }
+    return null;
+  }
+
   Map<String, Object> toJson() {
-    var map = <String, Object>{
+    final map = <String, Object>{
       'type': type,
     };
     if (children.isNotEmpty) {
-      map['children'] =
-          children.map((node) => node.toJson()).toList(growable: false);
+      map['children'] = children
+          .map(
+            (node) => node.toJson(),
+          )
+          .toList(growable: false);
     }
     if (attributes.isNotEmpty) {
-      map['attributes'] = attributes;
+      map['data'] = attributes;
     }
     return map;
   }
 
   Node copyWith({
     String? type,
-    LinkedList<Node>? children,
+    Iterable<Node>? children,
     Attributes? attributes,
   }) {
     final node = Node(
       type: type ?? this.type,
+      id: nanoid(10),
       attributes: attributes ?? {...this.attributes},
-      children: children,
+      children: children ?? [],
     );
     if (children == null && this.children.isNotEmpty) {
       for (final child in this.children) {
-        node.children.add(
+        node._children.add(
           child.copyWith()..parent = node,
         );
       }
@@ -208,27 +229,23 @@ class Node extends ChangeNotifier with LinkedListEntry<Node> {
     if (parent == null) {
       return previous;
     }
-    var index = 0;
-    for (final child in parent!.children) {
-      if (child == this) {
-        break;
-      }
-      index += 1;
-    }
+    final index = parent!.children.toList().indexOf(this);
     return parent!._computePath([index, ...previous]);
   }
 }
 
-class TextNode extends Node {
+@Deprecated('Use Paragraph instead')
+final class TextNode extends Node {
   TextNode({
     required Delta delta,
-    LinkedList<Node>? children,
+    Iterable<Node>? children,
     Attributes? attributes,
   })  : _delta = delta,
         super(
           type: 'text',
-          children: children,
+          children: children?.toList() ?? [],
           attributes: attributes ?? {},
+          id: '',
         );
 
   TextNode.empty({Attributes? attributes})
@@ -238,7 +255,12 @@ class TextNode extends Node {
           attributes: attributes ?? {},
         );
 
+  @override
+  @Deprecated('Use type instead')
+  String get subtype => '';
+
   Delta _delta;
+  @override
   Delta get delta => _delta;
   set delta(Delta v) {
     _delta = v;
@@ -255,18 +277,19 @@ class TextNode extends Node {
   @override
   TextNode copyWith({
     String? type = 'text',
-    LinkedList<Node>? children,
+    Iterable<Node>? children,
     Attributes? attributes,
     Delta? delta,
+    String? id,
   }) {
     final textNode = TextNode(
-      children: children,
+      children: children ?? [],
       attributes: attributes ?? this.attributes,
       delta: delta ?? this.delta,
     );
     if (children == null && this.children.isNotEmpty) {
       for (final child in this.children) {
-        textNode.children.add(
+        textNode._children.add(
           child.copyWith()..parent = textNode,
         );
       }
@@ -290,12 +313,10 @@ extension NodeEquality on Iterable<Node> {
     return true;
   }
 
-  bool _nodeEquals<T, U>(T base, U other) {
-    if (identical(this, other)) return true;
-
-    return base is Node &&
-        other is Node &&
-        other.type == base.type &&
-        other.children.equals(base.children);
-  }
+  bool _nodeEquals<T, U>(T base, U other) =>
+      identical(this, other) ||
+      base is Node &&
+          other is Node &&
+          other.type == base.type &&
+          other.children.equals(base.children);
 }

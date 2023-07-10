@@ -4,22 +4,10 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
+import 'package:flutter/services.dart';
 
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
-
-List<int> stringIndexes(String text) {
-  final indexes = List<int>.filled(text.length, 0);
-  final iterator = text.runes.iterator;
-
-  while (iterator.moveNext()) {
-    for (var i = 0; i < iterator.currentSize; i++) {
-      indexes[iterator.rawIndex + i] = iterator.rawIndex;
-    }
-  }
-
-  return indexes;
-}
 
 abstract class TextOperation {
   Attributes? get attributes;
@@ -163,7 +151,6 @@ class Delta extends Iterable<TextOperation> {
 
   final List<TextOperation> _operations;
   String? _plainText;
-  List<int>? _runeIndexes;
 
   void addAll(Iterable<TextOperation> textOperations) {
     textOperations.forEach(add);
@@ -392,40 +379,34 @@ class Delta extends Iterable<TextOperation> {
   ///
   /// Since the encoding of the [String] in Dart is UTF-16.
   /// If you want to find the previous character of a position,
-  /// you can' just use the `position - 1` simply.
+  /// you can't just use the `position - 1` simply.
   ///
   /// This method can help you to compute the position of the previous character.
   int prevRunePosition(int pos) {
     if (pos == 0) {
       return pos - 1;
     }
-    _plainText ??=
-        _operations.whereType<TextInsert>().map((op) => op.text).join();
-    _runeIndexes ??= stringIndexes(_plainText!);
-    return _runeIndexes![pos - 1];
+    final content = toPlainText();
+    final boundary = CharacterBoundary(content);
+    final index = boundary.getLeadingTextBoundaryAt(pos - 1);
+    return index ?? 0;
   }
 
   /// This method will return the position of the next rune.
   ///
   /// Since the encoding of the [String] in Dart is UTF-16.
-  /// If you want to find the previous character of a position,
-  /// you can' just use the `position + 1` simply.
+  /// If you want to find the next character of a position,
+  /// you can't just use the `position + 1` simply.
   ///
   /// This method can help you to compute the position of the next character.
   int nextRunePosition(int pos) {
-    final stringContent = toPlainText();
-    if (pos >= stringContent.length - 1) {
-      return stringContent.length;
+    final content = toPlainText();
+    if (pos >= content.length - 1) {
+      return content.length;
     }
-    _runeIndexes ??= stringIndexes(_plainText!);
-
-    for (var i = pos + 1; i < _runeIndexes!.length; i++) {
-      if (_runeIndexes![i] != pos) {
-        return _runeIndexes![i];
-      }
-    }
-
-    return stringContent.length;
+    final boundary = CharacterBoundary(content);
+    final index = boundary.getTrailingTextBoundaryAt(pos);
+    return index ?? content.length;
   }
 
   String toPlainText() {

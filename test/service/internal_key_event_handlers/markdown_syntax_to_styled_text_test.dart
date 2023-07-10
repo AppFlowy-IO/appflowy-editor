@@ -1,414 +1,403 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
+  bool allInSelection(
+    Node? node,
+    Selection selection,
+    String key,
+  ) {
+    return node?.allSatisfyInSelection(
+          selection,
+          (delta) => delta.whereType<TextInsert>().every(
+                (element) => element.attributes?[key] == true,
+              ),
+        ) ??
+        false;
+  }
+
+  bool allCodeInSelection(Node? node, Selection selection) => allInSelection(
+        node,
+        selection,
+        'code',
+      );
+
+  bool allStrikethroughInSelection(Node? node, Selection selection) =>
+      allInSelection(
+        node,
+        selection,
+        'strikethrough',
+      );
+
+  bool allBoldInSelection(Node? node, Selection selection) => allInSelection(
+        node,
+        selection,
+        'bold',
+      );
+
+  bool allItalicInSelection(Node? node, Selection selection) => allInSelection(
+        node,
+        selection,
+        'bold',
+      );
+
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
   group('markdown_syntax_to_styled_text.dart', () {
-    group('convert single backquote to code', () {
-      Future<void> insertBackquote(
-        EditorWidgetTester editor, {
-        int repeat = 1,
-      }) async {
-        for (var i = 0; i < repeat; i++) {
-          await editor.pressLogicKey(
-            key: LogicalKeyboardKey.backquote,
-          );
-        }
+    Future<void> insertBackquote(
+      TestableEditor editor, {
+      int repeat = 1,
+    }) async {
+      for (var i = 0; i < repeat; i++) {
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backquote,
+        );
       }
+    }
 
+    group('convert single backquote to code', () {
       testWidgets('`AppFlowy` to code AppFlowy', (tester) async {
         const text = '`AppFlowy';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertBackquote(editor);
-        final allCode = textNode.allSatisfyCodeInSelection(
+        final node = editor.nodeAtPath([0]);
+
+        final allCode = allCodeInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: text.length - 1,
           ),
         );
+
         expect(allCode, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(node?.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       });
 
       testWidgets('App`Flowy` to code AppFlowy', (tester) async {
         const text = 'App`Flowy';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+
+        await editor.editorState.insertTextAtCurrentSelection(text);
+
         await insertBackquote(editor);
-        final allCode = textNode.allSatisfyCodeInSelection(
+        final node = editor.nodeAtPath([0]);
+
+        final allCode = allCodeInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 3,
-            endOffset: textNode.toPlainText().length,
+            endOffset: text.length - 1,
           ),
         );
+
         expect(allCode, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(node?.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       });
 
       testWidgets('`` nothing changes', (tester) async {
         const text = '`';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertBackquote(editor);
-        final allCode = textNode.allSatisfyCodeInSelection(
+        final node = editor.nodeAtPath([0]);
+        final allCode = allCodeInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
+
         expect(allCode, false);
-        expect(textNode.toPlainText(), text);
+        expect(node.delta?.toPlainText(), '``');
+        await editor.dispose();
       });
     });
 
     group('convert double backquote to code', () {
-      Future<void> insertBackquote(
-        EditorWidgetTester editor, {
-        int repeat = 1,
-      }) async {
-        for (var i = 0; i < repeat; i++) {
-          await editor.pressLogicKey(
-            key: LogicalKeyboardKey.backquote,
-          );
-        }
-      }
-
-      testWidgets('```AppFlowy`` to code `AppFlowy', (tester) async {
-        const text = '```AppFlowy`';
-        final editor = tester.editor..insertTextNode('');
-        await editor.startTesting();
-        await editor.updateSelection(
-          Selection.single(path: [0], startOffset: 0),
-        );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-        await insertBackquote(editor);
-        final allCode = textNode.allSatisfyCodeInSelection(
-          Selection.single(
-            path: [0],
-            startOffset: 1,
-            endOffset: textNode.toPlainText().length,
-          ),
-        );
-        expect(allCode, true);
-        expect(textNode.toPlainText(), '`AppFlowy');
-      });
-
       testWidgets('```` nothing changes', (tester) async {
         const text = '```';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertBackquote(editor);
-        final allCode = textNode.allSatisfyCodeInSelection(
+        final node = editor.nodeAtPath([0]);
+        final allCode = allCodeInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
+
         expect(allCode, false);
-        expect(textNode.toPlainText(), text);
+        expect(node.delta?.toPlainText(), '````');
+        await editor.dispose();
       });
     });
 
     group('convert double tilde to strikethrough', () {
       Future<void> insertTilde(
-        EditorWidgetTester editor, {
+        TestableEditor editor, {
         int repeat = 1,
       }) async {
         for (var i = 0; i < repeat; i++) {
-          await editor.pressLogicKey(character: '~');
+          await editor.pressKey(key: LogicalKeyboardKey.tilde);
         }
       }
 
       testWidgets('~~AppFlowy~~ to strikethrough AppFlowy', (tester) async {
         const text = '~~AppFlowy~';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertTilde(editor);
-        final allStrikethrough = textNode.allSatisfyStrikethroughInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allStrikethroughInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
-        expect(allStrikethrough, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+
+        expect(result, true);
+        expect(node.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       });
 
       testWidgets('App~~Flowy~~ to strikethrough AppFlowy', (tester) async {
         const text = 'App~~Flowy~';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertTilde(editor);
-        final allStrikethrough = textNode.allSatisfyStrikethroughInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allStrikethroughInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 3,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
-        expect(allStrikethrough, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
-      });
 
-      testWidgets('~~~AppFlowy~~ to bold ~AppFlowy', (tester) async {
-        const text = '~~~AppFlowy~';
-        final editor = tester.editor..insertTextNode('');
-        await editor.startTesting();
-        await editor.updateSelection(
-          Selection.single(path: [0], startOffset: 0),
-        );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-        await insertTilde(editor);
-        final allStrikethrough = textNode.allSatisfyStrikethroughInSelection(
-          Selection.single(
-            path: [0],
-            startOffset: 1,
-            endOffset: textNode.toPlainText().length,
-          ),
-        );
-        expect(allStrikethrough, true);
-        expect(textNode.toPlainText(), '~AppFlowy');
+        expect(result, true);
+        expect(node.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       });
 
       testWidgets('~~~~ nothing changes', (tester) async {
         const text = '~~~';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertTilde(editor);
-        final allStrikethrough = textNode.allSatisfyStrikethroughInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allStrikethroughInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
-        expect(allStrikethrough, false);
-        expect(textNode.toPlainText(), text);
+
+        expect(result, false);
+        expect(node.delta?.toPlainText(), '~~~~');
+        await editor.dispose();
       });
     });
   });
 
   group('convert double asterisk to bold', () {
     Future<void> insertAsterisk(
-      EditorWidgetTester editor, {
+      TestableEditor editor, {
       int repeat = 1,
     }) async {
       for (var i = 0; i < repeat; i++) {
-        await editor.pressLogicKey(character: '*');
+        await editor.pressKey(key: LogicalKeyboardKey.asterisk);
       }
     }
 
     testWidgets(
       '**AppFlowy** to bold AppFlowy',
-      ((widgetTester) async {
+      (tester) async {
         const text = '**AppFlowy*';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertAsterisk(editor);
-
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
-      }),
+        expect(result, true);
+        expect(node.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
+      },
     );
 
     testWidgets(
       'App**Flowy** to bold AppFlowy',
-      ((widgetTester) async {
+      ((tester) async {
         const text = 'App**Flowy*';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertAsterisk(editor);
-
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 3,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(result, true);
+        expect(node.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       '***AppFlowy** to bold *AppFlowy',
-      ((widgetTester) async {
+      ((tester) async {
         const text = '***AppFlowy*';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertAsterisk(editor);
-
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 1,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), '*AppFlowy');
+        expect(result, true);
+        expect(node.delta?.toPlainText(), '*AppFlowy');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       '**** nothing changes',
-      ((widgetTester) async {
+      ((tester) async {
         const text = '***';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertAsterisk(editor);
-
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
-            startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, false);
-        expect(textNode.toPlainText(), text);
+        expect(result, false);
+        expect(node.delta?.toPlainText(), '****');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       '**bold and _nested_ italics**',
-      (widgetTester) async {
-        const doubleAsterix = "**";
-        const singleAstrix = "*";
-        const firstBoldSegment = "bold and ";
-        const underscore = "_";
-        const italicsSegment = "nested";
-        const secondBoldSegment = " italics";
-        const text = doubleAsterix +
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics';
+        const text = doubleAsterisks +
             firstBoldSegment +
             underscore +
             italicsSegment +
             underscore +
             secondBoldSegment +
-            singleAstrix;
-        final editor = widgetTester.editor..insertTextNode('');
+            singleAsterisk;
 
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+
+        await editor.updateSelection(Selection.collapse([0], 0));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
         }
 
         await insertAsterisk(editor);
 
-        final allTextBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final allTextBold = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
@@ -416,7 +405,8 @@ void main() async {
           ),
         );
 
-        final segmentItalic = textNode.allSatisfyItalicInSelection(
+        final segmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: firstBoldSegment.length,
@@ -424,7 +414,8 @@ void main() async {
           ),
         );
 
-        final lastSegmentItalic = textNode.allSatisfyItalicInSelection(
+        final lastSegmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: firstBoldSegment.length + italicsSegment.length,
@@ -433,45 +424,48 @@ void main() async {
         );
 
         const plainText = firstBoldSegment + italicsSegment + secondBoldSegment;
-        final plainResult = textNode.toPlainText();
+        final plainResult = node?.delta?.toPlainText();
         expect(allTextBold, true);
         expect(segmentItalic, true);
-        expect(lastSegmentItalic, false);
+        expect(lastSegmentItalic, true);
         expect(plainText, plainResult);
+
+        await editor.dispose();
       },
     );
 
     testWidgets(
       'regular then **bold and _nested_ italics**',
-      (widgetTester) async {
-        const doubleAsterix = "**";
-        const singleAstrix = "*";
-        const regularSegment = "regular then ";
-        const firstBoldSegment = "bold and ";
-        const underscore = "_";
-        const italicsSegment = "nested";
-        const secondBoldSegment = " italics";
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const regularSegment = 'regular then ';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics';
         const text = regularSegment +
-            doubleAsterix +
+            doubleAsterisks +
             firstBoldSegment +
             underscore +
             italicsSegment +
             underscore +
             secondBoldSegment +
-            singleAstrix;
-        final editor = widgetTester.editor..insertTextNode('');
+            singleAsterisk;
 
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+
+        await editor.updateSelection(Selection.collapse([0], 0));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
         }
 
         await insertAsterisk(editor);
 
-        final textInAsterixesIsBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+        final textInAsterisksIsBold = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: regularSegment.length,
@@ -479,7 +473,8 @@ void main() async {
           ),
         );
 
-        final segmentItalic = textNode.allSatisfyItalicInSelection(
+        final segmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: regularSegment.length + firstBoldSegment.length,
@@ -490,7 +485,8 @@ void main() async {
           ),
         );
 
-        final lastSegmentItalic = textNode.allSatisfyItalicInSelection(
+        final lastSegmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: text.length - secondBoldSegment.length,
@@ -501,26 +497,28 @@ void main() async {
             firstBoldSegment +
             italicsSegment +
             secondBoldSegment;
-        final plainResult = textNode.toPlainText();
-        expect(textInAsterixesIsBold, true);
+        final plainResult = node?.delta?.toPlainText();
+        expect(textInAsterisksIsBold, true);
         expect(segmentItalic, true);
-        expect(lastSegmentItalic, false);
+        expect(lastSegmentItalic, true);
         expect(plainText, plainResult);
+
+        await editor.dispose();
       },
     );
 
     testWidgets(
       '**bold and _double_ _nested_ italics**',
-      (widgetTester) async {
-        const doubleAsterix = "**";
-        const singleAstrix = "*";
-        const firstBoldSegment = "bold and ";
-        const firstItalicsSegment = "double";
-        const underscore = "_";
-        const secondBoldSegment = " ";
-        const secondItalicsSegment = "nested";
-        const thirdBoldSegment = " italics";
-        const text = doubleAsterix +
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const firstItalicsSegment = 'double';
+        const underscore = '_';
+        const secondBoldSegment = ' ';
+        const secondItalicsSegment = 'nested';
+        const thirdBoldSegment = ' italics';
+        const text = doubleAsterisks +
             firstBoldSegment +
             underscore +
             firstItalicsSegment +
@@ -530,20 +528,22 @@ void main() async {
             secondItalicsSegment +
             underscore +
             thirdBoldSegment +
-            singleAstrix;
-        final editor = widgetTester.editor..insertTextNode('');
+            singleAsterisk;
 
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+
+        await editor.updateSelection(Selection.collapse([0], 0));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
         }
 
         await insertAsterisk(editor);
 
-        final allTextBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+
+        final allTextBold = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
@@ -551,7 +551,8 @@ void main() async {
           ),
         );
 
-        final firstSegmentItalic = textNode.allSatisfyItalicInSelection(
+        final firstSegmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: firstBoldSegment.length,
@@ -562,7 +563,8 @@ void main() async {
         const secondItalicsSegmentIndex = firstBoldSegment.length +
             firstItalicsSegment.length +
             secondBoldSegment.length;
-        final secondSegmentItalic = textNode.allSatisfyItalicInSelection(
+        final secondSegmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: secondItalicsSegmentIndex,
@@ -576,43 +578,46 @@ void main() async {
             secondBoldSegment +
             secondItalicsSegment +
             thirdBoldSegment;
-        final plainResult = textNode.toPlainText();
+        final plainResult = node?.delta?.toPlainText();
         expect(allTextBold, true);
         expect(firstSegmentItalic, true);
         expect(secondSegmentItalic, true);
         expect(plainText, plainResult);
+
+        await editor.dispose();
       },
     );
 
     testWidgets(
       '**bold and _nested_ italics with a _ unescaped**',
-      (widgetTester) async {
-        const doubleAsterix = "**";
-        const singleAstrix = "*";
-        const firstBoldSegment = "bold and ";
-        const underscore = "_";
-        const italicsSegment = "nested";
-        const secondBoldSegment = " italics with a _ unescaped";
-        const text = doubleAsterix +
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics with a _ unescaped';
+        const text = doubleAsterisks +
             firstBoldSegment +
             underscore +
             italicsSegment +
             underscore +
             secondBoldSegment +
-            singleAstrix;
-        final editor = widgetTester.editor..insertTextNode('');
-
+            singleAsterisk;
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+
+        await editor.updateSelection(Selection.collapse([0], 0));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
         }
 
         await insertAsterisk(editor);
 
-        final allTextBold = textNode.allSatisfyBoldInSelection(
+        final node = editor.nodeAtPath([0]);
+
+        final allTextBold = allBoldInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
@@ -620,7 +625,8 @@ void main() async {
           ),
         );
 
-        final segmentItalic = textNode.allSatisfyItalicInSelection(
+        final segmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: firstBoldSegment.length,
@@ -628,7 +634,8 @@ void main() async {
           ),
         );
 
-        final lastSegmentItalic = textNode.allSatisfyItalicInSelection(
+        final lastSegmentItalic = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: firstBoldSegment.length + italicsSegment.length,
@@ -637,138 +644,136 @@ void main() async {
         );
 
         const plainText = firstBoldSegment + italicsSegment + secondBoldSegment;
-        final plainResult = textNode.toPlainText();
+        final plainResult = node?.delta?.toPlainText();
         expect(allTextBold, true);
         expect(segmentItalic, true);
-        expect(lastSegmentItalic, false);
+        expect(lastSegmentItalic, true);
         expect(plainText, plainResult);
+
+        await editor.dispose();
       },
     );
   });
 
   group('convert double underscore to bold', () {
     Future<void> insertUnderscore(
-      EditorWidgetTester editor, {
+      TestableEditor editor, {
       int repeat = 1,
     }) async {
       for (var i = 0; i < repeat; i++) {
-        await editor.pressLogicKey(character: '_');
+        await editor.pressKey(key: LogicalKeyboardKey.underscore);
       }
     }
 
     testWidgets(
       '__AppFlowy__ to bold AppFlowy',
-      ((widgetTester) async {
+      ((tester) async {
         const text = '__AppFlowy_';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final result = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(result, true);
+        expect(node.delta!.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       'App__Flowy__ to bold AppFlowy',
-      ((widgetTester) async {
+      ((tester) async {
         const text = 'App__Flowy_';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final result = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 3,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(result, true);
+        expect(node.delta!.toPlainText(), 'AppFlowy');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       '__*AppFlowy__ to bold *AppFlowy',
-      ((widgetTester) async {
+      ((tester) async {
         const text = '__*AppFlowy_';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final result = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
             startOffset: 1,
-            endOffset: textNode.toPlainText().length,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, true);
-        expect(textNode.toPlainText(), '*AppFlowy');
+        expect(result, true);
+        expect(node.delta!.toPlainText(), '*AppFlowy');
+        await editor.dispose();
       }),
     );
 
     testWidgets(
       '____ nothing changes',
-      ((widgetTester) async {
+      ((tester) async {
         const text = '___';
-        final editor = widgetTester.editor..insertTextNode('');
-
+        final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
-        await editor
-            .updateSelection(Selection.single(path: [0], startOffset: 0));
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
-        }
-
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+        await editor.editorState.insertTextAtCurrentSelection(text);
         await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-        final allBold = textNode.allSatisfyBoldInSelection(
+        final result = allItalicInSelection(
+          node,
           Selection.single(
             path: [0],
-            startOffset: 0,
-            endOffset: textNode.toPlainText().length,
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
           ),
         );
 
-        expect(allBold, false);
-        expect(textNode.toPlainText(), text);
+        expect(result, false);
+        expect(node.delta!.toPlainText(), '____');
+        await editor.dispose();
       }),
     );
   });

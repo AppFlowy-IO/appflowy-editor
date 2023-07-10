@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 
 ShortcutEventHandler spaceOnWebHandler = (editorState, event) {
   final selection = editorState.service.selectionService.currentSelection.value;
@@ -17,7 +18,7 @@ ShortcutEventHandler spaceOnWebHandler = (editorState, event) {
   editorState.insertText(
     selection.startIndex,
     ' ',
-    textNode: textNodes.first,
+    node: textNodes.first,
   );
 
   return KeyEventResult.handled;

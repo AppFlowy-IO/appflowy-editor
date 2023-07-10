@@ -4,26 +4,28 @@ on:
   push:
     branches:
       - "main"
-      - "release/*"
 
   pull_request:
     branches:
       - "main"
-      - "release/*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  FLUTTER_VERSION: "3.7.5"
+  FLUTTER_VERSION: "3.10.1"
 
 jobs:
   tests:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-13, macos-12, macos-11, ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: subosito/flutter-action@v2
         with:
@@ -38,8 +40,13 @@ jobs:
           dart format --set-exit-if-changed .
           flutter test --coverage
 
-      - uses: codecov/codecov-action@v3
+      - name: Upload coverage to Codecov
+        uses: Wandalen/wretry.action@v1.0.36
         with:
-          env_vars: ${{ matrix.os }}
-          fail_ci_if_error: true
-          verbose: true
+          action: codecov/codecov-action@v3
+          with: |
+            fail_ci_if_error: true
+            verbose: true
+            os: ${{ matrix.os }}
+          attempt_limit: 10
+          attempt_delay: 10000

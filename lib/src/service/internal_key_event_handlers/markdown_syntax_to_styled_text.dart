@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-
+import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 import 'package:flutter/material.dart';
 
 bool _isCodeStyle(TextNode textNode, int index) {
@@ -227,7 +228,7 @@ ShortcutEventHandler markdownLinkOrImageHandler = (editorState, event) {
         textNode.path,
         Node.fromJson({
           'type': 'image',
-          'attributes': {
+          'data': {
             'image_src': imgUrl,
             'align': 'center',
           }

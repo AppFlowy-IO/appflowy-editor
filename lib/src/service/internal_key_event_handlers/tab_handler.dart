@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 
 ShortcutEventHandler tabHandler = (editorState, event) {
   // Only Supports BulletedList and Checkboxes for now.
@@ -30,6 +31,7 @@ ShortcutEventHandler tabHandler = (editorState, event) {
     start: selection.start.copyWith(path: path),
     end: selection.end.copyWith(path: path),
   );
+
   final transaction = editorState.transaction
     ..deleteNode(textNode)
     ..insertNode(path, textNode)

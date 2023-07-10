@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
 import 'package:flutter/material.dart';
 
 ShortcutEventHandler cursorLeftWordDelete = (editorState, event) {
@@ -81,7 +82,7 @@ ShortcutEventHandler cursorLeftSentenceDelete = (editorState, event) {
       0,
       selection.end.offset,
     );
-    editorState.apply(deleteTransaction, withUpdateCursor: true);
+    editorState.apply(deleteTransaction, withUpdateSelection: true);
   }
 
   return KeyEventResult.handled;

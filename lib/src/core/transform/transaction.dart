@@ -1,13 +1,6 @@
 import 'dart:math';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
-import 'package:appflowy_editor/src/core/document/text_delta.dart';
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/core/transform/operation.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// A [Transaction] has a list of [Operation] objects that will be applied
 /// to the editor.
@@ -23,13 +16,29 @@ class Transaction {
   final Document document;
 
   /// The operations to be applied.
-  final List<Operation> operations = [];
+  final List<Operation> _operations = [];
+  List<Operation> get operations {
+    if (markNeedsComposing) {
+      // compose the delta operations
+      compose();
+      markNeedsComposing = false;
+    }
+    return _operations;
+  }
+
+  set operations(List<Operation> value) {
+    _operations.clear();
+    _operations.addAll(value);
+  }
 
   /// The selection to be applied.
   Selection? afterSelection;
 
   /// The before selection is to be recovered if needed.
   Selection? beforeSelection;
+
+  // mark needs to be composed
+  bool markNeedsComposing = false;
 
   /// Inserts the [Node] at the given [Path].
   void insertNode(
@@ -46,11 +55,19 @@ class Transaction {
     Iterable<Node> nodes, {
     bool deepCopy = true,
   }) {
-    if (deepCopy) {
-      add(InsertOperation(path, nodes.map((e) => e.copyWith())));
-    } else {
-      add(InsertOperation(path, nodes));
+    if (nodes.isEmpty) {
+      return;
     }
+    if (deepCopy) {
+      // add `toList()` to prevent the redundant copy of the nodes when looping
+      nodes = nodes.map((e) => e.copyWith()).toList();
+    }
+    add(
+      InsertOperation(
+        path,
+        nodes,
+      ),
+    );
   }
 
   /// Updates the attributes of the [Node].
@@ -102,6 +119,12 @@ class Transaction {
     add(DeleteOperation(path, nodes));
   }
 
+  /// move the node
+  void moveNode(Path path, Node node) {
+    deleteNode(node);
+    insertNode(path, node, deepCopy: false);
+  }
+
   /// Update the [TextNode]s with the given [Delta].
   void updateText(TextNode textNode, Delta delta) {
     final inverted = delta.invert(textNode.delta);
@@ -128,8 +151,9 @@ class Transaction {
   ///
   /// Also, this method will transform the path of the operations
   /// to avoid conflicts.
-  void add(Operation op, {bool transform = true}) {
-    final Operation? last = operations.isEmpty ? null : operations.last;
+  void add(Operation operation, {bool transform = true}) {
+    Operation? op = operation;
+    final Operation? last = _operations.isEmpty ? null : _operations.last;
     if (last != null) {
       if (op is UpdateTextOperation &&
           last is UpdateTextOperation &&
@@ -139,47 +163,396 @@ class Transaction {
           last.delta.compose(op.delta),
           op.inverted.compose(last.inverted),
         );
-        operations[operations.length - 1] = newOp;
+        operations[_operations.length - 1] = newOp;
         return;
       }
     }
     if (transform) {
-      for (var i = 0; i < operations.length; i++) {
-        op = transformOperation(operations[i], op);
+      for (var i = 0; i < _operations.length; i++) {
+        if (op == null) {
+          continue;
+        }
+        op = transformOperation(_operations[i], op);
       }
     }
     if (op is UpdateTextOperation && op.delta.isEmpty) {
       return;
     }
-    operations.add(op);
+    if (op == null) {
+      return;
+    }
+    _operations.add(op);
   }
 }
 
 extension TextTransaction on Transaction {
-  void mergeText(
-    TextNode first,
-    TextNode second, {
-    int? firstOffset,
-    int secondOffset = 0,
+  /// We use this map to cache the delta waiting to be composed.
+  ///
+  /// This is for make calling the below function as chained.
+  /// For example, transaction..deleteText(..)..insertText(..);
+  static final Map<Node, List<Delta>> _composeMap = {};
+
+  /// Inserts the [text] at the given [index].
+  ///
+  /// If the [attributes] is null, the attributes of the previous character will be used.
+  /// If the [attributes] is not null, the attributes will be used.
+  void insertText(
+    Node node,
+    int index,
+    String text, {
+    Attributes? attributes,
   }) {
-    final firstLength = first.delta.length;
-    final secondLength = second.delta.length;
-    firstOffset ??= firstLength;
-    updateText(
-      first,
-      Delta()
-        ..retain(firstOffset)
-        ..delete(firstLength - firstOffset)
-        ..addAll(second.delta.slice(secondOffset, secondLength)),
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index <= delta.length && index >= 0,
+      'The index($index) is out of range or negative.',
     );
+
+    final newAttributes = attributes ?? delta.sliceAttributes(index);
+
+    final insert = Delta()
+      ..retain(index)
+      ..insert(text, attributes: newAttributes);
+
+    addDeltaToComposeMap(node, insert);
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index + text.length),
+    );
+  }
+
+  /// Deletes the [length] characters at the given [index].
+  void deleteText(
+    Node node,
+    int index,
+    int length,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index + length <= delta.length && index >= 0 && length >= 0,
+      'The index($index) or length($length) is out of range or negative.',
+    );
+
+    final delete = Delta()
+      ..retain(index)
+      ..delete(length);
+
+    addDeltaToComposeMap(node, delete);
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index),
+    );
+  }
+
+  void mergeText(
+    Node left,
+    Node right, {
+    int? leftOffset,
+    int rightOffset = 0,
+  }) {
+    final leftDelta = left.delta;
+    final rightDelta = right.delta;
+    if (leftDelta == null || rightDelta == null) {
+      return;
+    }
+    final leftLength = leftDelta.length;
+    final rightLength = rightDelta.length;
+    leftOffset ??= leftLength;
+
+    final merge = Delta()
+      ..retain(leftOffset)
+      ..delete(leftLength - leftOffset)
+      ..addAll(rightDelta.slice(rightOffset, rightLength));
+
+    addDeltaToComposeMap(left, merge);
+
     afterSelection = Selection.collapsed(
       Position(
-        path: first.path,
-        offset: firstOffset,
+        path: left.path,
+        offset: leftOffset,
       ),
     );
   }
 
+  void formatText(
+    Node node,
+    int index,
+    int length,
+    Attributes attributes,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      return;
+    }
+    afterSelection = beforeSelection;
+    final format = Delta()
+      ..retain(index)
+      ..retain(length, attributes: attributes);
+
+    addDeltaToComposeMap(node, format);
+  }
+
+  /// replace the text at the given [index] with the [text].
+  void replaceText(
+    Node node,
+    int index,
+    int length,
+    String text, {
+    Attributes? attributes,
+  }) {
+    final delta = node.delta;
+    if (delta == null) {
+      return;
+    }
+    var newAttributes = attributes;
+    if (index != 0 && attributes == null) {
+      newAttributes = delta.slice(max(index - 1, 0), index).first.attributes;
+      if (newAttributes == null) {
+        final slicedDelta = delta.slice(index, index + length);
+        if (slicedDelta.isNotEmpty) {
+          newAttributes = slicedDelta.first.attributes;
+        }
+      }
+    }
+
+    final replace = Delta()
+      ..retain(index)
+      ..delete(length)
+      ..insert(text, attributes: {...newAttributes ?? {}});
+    addDeltaToComposeMap(node, replace);
+
+    afterSelection = Selection.collapsed(
+      Position(
+        path: node.path,
+        offset: index + text.length,
+      ),
+    );
+  }
+
+  // TODO: refactor this code
+  void replaceTexts(
+    List<Node> nodes,
+    Selection selection,
+    List<String> texts,
+  ) {
+    if (nodes.isEmpty || texts.isEmpty) {
+      return;
+    }
+
+    if (nodes.length == texts.length) {
+      final length = nodes.length;
+
+      if (length == 1) {
+        replaceText(
+          nodes.first,
+          selection.startIndex,
+          selection.endIndex - selection.startIndex,
+          texts.first,
+        );
+        return;
+      }
+
+      for (var i = 0; i < nodes.length; i++) {
+        final node = nodes[i];
+        final delta = node.delta;
+        if (delta == null) {
+          continue;
+        }
+        if (i == 0) {
+          replaceText(
+            node,
+            selection.startIndex,
+            delta.length - selection.startIndex,
+            texts.first,
+          );
+        } else if (i == length - 1) {
+          replaceText(
+            node,
+            0,
+            selection.endIndex,
+            texts.last,
+          );
+        } else {
+          replaceText(
+            node,
+            0,
+            delta.toPlainText().length,
+            texts[i],
+          );
+        }
+      }
+      return;
+    }
+
+    if (nodes.length > texts.length) {
+      final length = nodes.length;
+      for (var i = 0; i < nodes.length; i++) {
+        final node = nodes[i];
+        final delta = node.delta;
+        if (delta == null) {
+          continue;
+        }
+        if (i == 0) {
+          replaceText(
+            node,
+            selection.startIndex,
+            delta.length - selection.startIndex,
+            texts.first,
+          );
+        } else if (i == length - 1 && texts.length >= 2) {
+          replaceText(
+            node,
+            0,
+            selection.endIndex,
+            texts.last,
+          );
+        } else if (i < texts.length - 1) {
+          replaceText(
+            node,
+            0,
+            delta.length,
+            texts[i],
+          );
+        } else {
+          deleteNode(node);
+          if (i == nodes.length - 1) {
+            final delta = nodes.last.delta;
+            if (delta == null) {
+              continue;
+            }
+            final newDelta = Delta()
+              ..insert(texts[0])
+              ..addAll(
+                delta.slice(selection.end.offset),
+              );
+            replaceText(
+              node,
+              selection.start.offset,
+              texts[0].length,
+              newDelta.toPlainText(),
+            );
+          }
+        }
+      }
+      afterSelection = null;
+      return;
+    }
+
+    if (nodes.length < texts.length) {
+      final length = texts.length;
+      var path = nodes.first.path;
+
+      for (var i = 0; i < texts.length; i++) {
+        final text = texts[i];
+        if (i == 0) {
+          final node = nodes.first;
+          final delta = node.delta;
+          if (delta == null) {
+            continue;
+          }
+          replaceText(
+            nodes.first,
+            selection.startIndex,
+            delta.length - selection.startIndex,
+            text,
+          );
+          path = path.next;
+        } else if (i == length - 1 && nodes.length >= 2) {
+          replaceText(
+            nodes.last,
+            0,
+            selection.endIndex,
+            text,
+          );
+          path = path.next;
+        } else {
+          if (i < nodes.length - 1) {
+            final node = nodes[i];
+            final delta = node.delta;
+            if (delta == null) {
+              continue;
+            }
+            replaceText(
+              node,
+              0,
+              delta.length,
+              text,
+            );
+            path = path.next;
+          } else {
+            if (i == texts.length - 1) {
+              final delta = nodes.last.delta;
+              if (delta == null) {
+                continue;
+              }
+              final mewDelta = Delta()
+                ..insert(text)
+                ..addAll(
+                  delta.slice(selection.end.offset),
+                );
+              insertNode(
+                path,
+                Node(
+                  type: 'paragraph',
+                  attributes: {'delta': mewDelta.toJson()},
+                ),
+              );
+            } else {
+              insertNode(
+                path,
+                Node(
+                  type: 'paragraph',
+                  attributes: {'delta': (Delta()..insert(text)).toJson()},
+                ),
+              );
+            }
+          }
+        }
+      }
+      afterSelection = null;
+      return;
+    }
+  }
+
+  /// Compose the delta in the compose map.
+  void compose() {
+    if (_composeMap.isEmpty) {
+      markNeedsComposing = false;
+      return;
+    }
+    for (final entry in _composeMap.entries) {
+      final node = entry.key;
+      if (node.delta == null) {
+        continue;
+      }
+      final deltaQueue = entry.value;
+      final composed =
+          deltaQueue.fold<Delta>(node.delta!, (p, e) => p.compose(e));
+      assert(composed.every((element) => element is TextInsert));
+      updateNode(node, {
+        'delta': composed.toJson(),
+      });
+    }
+    markNeedsComposing = false;
+    _composeMap.clear();
+  }
+
+  void addDeltaToComposeMap(Node node, Delta delta) {
+    markNeedsComposing = true;
+    _composeMap.putIfAbsent(node, () => []).add(delta);
+  }
+
+  // the below code is deprecated.
   void splitText(TextNode textNode, int offset) {
     final delta = textNode.delta;
     final second = delta.slice(offset, delta.length);
@@ -204,254 +577,114 @@ extension TextTransaction on Transaction {
   ///
   /// Optionally, you may specify formatting attributes that are applied to the inserted string.
   /// By default, the formatting attributes before the insert position will be reused.
-  void insertText(
-    TextNode textNode,
-    int index,
-    String text, {
-    Attributes? attributes,
-  }) {
-    var newAttributes = attributes;
-    if (index != 0 && attributes == null) {
-      newAttributes =
-          textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-      if (newAttributes != null) {
-        newAttributes = {...newAttributes}; // make a copy
-      }
-    }
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..insert(text, attributes: newAttributes),
-    );
-    afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: index + text.length),
-    );
-  }
+  // void insertText(
+  //   TextNode textNode,
+  //   int index,
+  //   String text, {
+  //   Attributes? attributes,
+  // }) {
+  //   var newAttributes = attributes;
+  //   if (index != 0 && attributes == null) {
+  //     newAttributes =
+  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
+  //     if (newAttributes != null) {
+  //       newAttributes = {...newAttributes}; // make a copy
+  //     }
+  //   }
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..insert(text, attributes: newAttributes),
+  //   );
+  //   afterSelection = Selection.collapsed(
+  //     Position(path: textNode.path, offset: index + text.length),
+  //   );
+  // }
 
   /// Assigns a formatting attributes to a range of text.
-  void formatText(
-    TextNode textNode,
-    int index,
-    int length,
-    Attributes attributes,
-  ) {
-    afterSelection = beforeSelection;
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..retain(length, attributes: attributes),
-    );
-  }
+  // void formatText(
+  //   TextNode textNode,
+  //   int index,
+  //   int length,
+  //   Attributes attributes,
+  // ) {
+  //   afterSelection = beforeSelection;
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..retain(length, attributes: attributes),
+  //   );
+  // }
 
-  /// Deletes the text of specified length starting at index.
-  void deleteText(
-    TextNode textNode,
-    int index,
-    int length,
-  ) {
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..delete(length),
-    );
-    afterSelection = Selection.collapsed(
-      Position(path: textNode.path, offset: index),
-    );
-  }
+  // /// Deletes the text of specified length starting at index.
+  // void deleteText(
+  //   TextNode textNode,
+  //   int index,
+  //   int length,
+  // ) {
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..delete(length),
+  //   );
+  //   afterSelection = Selection.collapsed(
+  //     Position(path: textNode.path, offset: index),
+  //   );
+  // }
 
   /// Replaces the text of specified length starting at index.
   ///
   /// Optionally, you may specify formatting attributes that are applied to the inserted string.
   /// By default, the formatting attributes before the insert position will be reused.
-  void replaceText(
-    TextNode textNode,
-    int index,
-    int length,
-    String text, {
-    Attributes? attributes,
-  }) {
-    var newAttributes = attributes;
-    if (index != 0 && attributes == null) {
-      newAttributes =
-          textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-      if (newAttributes == null) {
-        final slicedDelta = textNode.delta.slice(index, index + length);
-        if (slicedDelta.isNotEmpty) {
-          newAttributes = slicedDelta.first.attributes;
-        }
-      }
+  // void replaceText(
+  //   TextNode textNode,
+  //   int index,
+  //   int length,
+  //   String text, {
+  //   Attributes? attributes,
+  // }) {
+  //   var newAttributes = attributes;
+  //   if (index != 0 && attributes == null) {
+  //     newAttributes =
+  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
+  //     if (newAttributes == null) {
+  //       final slicedDelta = textNode.delta.slice(index, index + length);
+  //       if (slicedDelta.isNotEmpty) {
+  //         newAttributes = slicedDelta.first.attributes;
+  //       }
+  //     }
+  //   }
+  //   updateText(
+  //     textNode,
+  //     Delta()
+  //       ..retain(index)
+  //       ..delete(length)
+  //       ..insert(text, attributes: {...newAttributes ?? {}}),
+  //   );
+  //   afterSelection = Selection.collapsed(
+  //     Position(
+  //       path: textNode.path,
+  //       offset: index + text.length,
+  //     ),
+  //   );
+  // }
+}
+
+extension on Delta {
+  Attributes? sliceAttributes(int index) {
+    if (index <= 0) {
+      return null;
     }
-    updateText(
-      textNode,
-      Delta()
-        ..retain(index)
-        ..delete(length)
-        ..insert(text, attributes: {...newAttributes ?? {}}),
-    );
-    afterSelection = Selection.collapsed(
-      Position(
-        path: textNode.path,
-        offset: index + text.length,
-      ),
-    );
-  }
-
-  void replaceTexts(
-    List<TextNode> textNodes,
-    Selection selection,
-    List<String> texts,
-  ) {
-    if (textNodes.isEmpty || texts.isEmpty) {
-      return;
+    final attributes = slice(index - 1, index).first.attributes;
+    if (attributes == null ||
+        !attributes.keys.every(
+          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+        )) {
+      return null;
     }
-
-    if (textNodes.length == texts.length) {
-      final length = textNodes.length;
-
-      if (length == 1) {
-        replaceText(
-          textNodes.first,
-          selection.startIndex,
-          selection.endIndex - selection.startIndex,
-          texts.first,
-        );
-        return;
-      }
-
-      for (var i = 0; i < textNodes.length; i++) {
-        final textNode = textNodes[i];
-        if (i == 0) {
-          replaceText(
-            textNode,
-            selection.startIndex,
-            textNode.toPlainText().length,
-            texts.first,
-          );
-        } else if (i == length - 1) {
-          replaceText(
-            textNode,
-            0,
-            selection.endIndex,
-            texts.last,
-          );
-        } else {
-          replaceText(
-            textNode,
-            0,
-            textNode.toPlainText().length,
-            texts[i],
-          );
-        }
-      }
-      return;
-    }
-
-    if (textNodes.length > texts.length) {
-      final length = textNodes.length;
-      for (var i = 0; i < textNodes.length; i++) {
-        final textNode = textNodes[i];
-        if (i == 0) {
-          replaceText(
-            textNode,
-            selection.startIndex,
-            textNode.toPlainText().length,
-            texts.first,
-          );
-        } else if (i == length - 1 && texts.length >= 2) {
-          replaceText(
-            textNode,
-            0,
-            selection.endIndex,
-            texts.last,
-          );
-        } else if (i < texts.length - 1) {
-          replaceText(
-            textNode,
-            0,
-            textNode.toPlainText().length,
-            texts[i],
-          );
-        } else {
-          deleteNode(textNode);
-          if (i == textNodes.length - 1) {
-            final delta = Delta()
-              ..insert(texts[0])
-              ..addAll(
-                textNodes.last.delta.slice(selection.end.offset),
-              );
-            replaceText(
-              textNode,
-              selection.start.offset,
-              texts[0].length,
-              delta.toPlainText(),
-            );
-          }
-        }
-      }
-      afterSelection = null;
-      return;
-    }
-
-    if (textNodes.length < texts.length) {
-      final length = texts.length;
-      var path = textNodes.first.path;
-
-      for (var i = 0; i < texts.length; i++) {
-        final text = texts[i];
-        if (i == 0) {
-          replaceText(
-            textNodes.first,
-            selection.startIndex,
-            textNodes.first.toPlainText().length,
-            text,
-          );
-          path = path.next;
-        } else if (i == length - 1 && textNodes.length >= 2) {
-          replaceText(
-            textNodes.last,
-            0,
-            selection.endIndex,
-            text,
-          );
-          path = path.next;
-        } else {
-          if (i < textNodes.length - 1) {
-            replaceText(
-              textNodes[i],
-              0,
-              textNodes[i].toPlainText().length,
-              text,
-            );
-            path = path.next;
-          } else {
-            if (i == texts.length - 1) {
-              final delta = Delta()
-                ..insert(text)
-                ..addAll(
-                  textNodes.last.delta.slice(selection.end.offset),
-                );
-              insertNode(
-                path,
-                TextNode(
-                  delta: delta,
-                ),
-              );
-            } else {
-              insertNode(
-                path,
-                TextNode(
-                  delta: Delta()..insert(text),
-                ),
-              );
-            }
-          }
-        }
-      }
-      afterSelection = null;
-      return;
-    }
+    return attributes;
   }
 }

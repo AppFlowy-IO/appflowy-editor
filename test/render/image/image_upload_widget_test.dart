@@ -1,19 +1,18 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/image/image_upload_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() {
   group('ImageUploadMenu tests', () {
     testWidgets('showImageUploadMenu', (tester) async {
-      final editor = tester.editor..insertTextNode('Welcome to AppFlowy');
+      final editor = tester.editor
+        ..addParagraph(initialText: 'Welcome to AppFlowy');
       await editor.startTesting();
 
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 19),
-      );
+      final selection = Selection.single(path: [0], startOffset: 19);
+      await editor.updateSelection(selection);
 
-      await editor.pressLogicKey(character: '/');
+      await editor.pressKey(character: '/');
       await tester.pumpAndSettle();
 
       expect(find.byType(SelectionMenuWidget), findsOneWidget);
@@ -23,20 +22,16 @@ void main() {
 
       await tester.tap(imageMenuItemFinder);
       await tester.pumpAndSettle();
-    });
+      expect(find.byType(UploadImageMenu), findsOneWidget);
 
-    testWidgets('insertImageNode extension', (tester) async {
-      final editor = tester.editor..insertTextNode('Welcome to AppFlowy');
-      await editor.startTesting();
+      expect(editor.selection, selection);
 
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 19),
-      );
-
-      editor.editorState.insertImageNode('no_src');
+      await tester.tapAt(Offset.zero);
       await tester.pumpAndSettle();
+      expect(find.byType(UploadImageMenu), findsNothing);
+      expect(editor.selection, selection);
 
-      expect(editor.documentLength, 2);
+      await editor.dispose();
     });
   });
 }

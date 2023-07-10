@@ -138,7 +138,7 @@ class CheckboxPluginStyle extends ThemeExtension<CheckboxPluginStyle> {
       final isCheck = textNode.attributes.check;
       const iconSize = Size.square(20.0);
       const iconPadding = EdgeInsets.only(right: 5.0);
-      return FlowySvg(
+      return EditorSvg(
         width: iconSize.width,
         height: iconSize.height,
         padding: iconPadding,
@@ -195,7 +195,7 @@ class BulletedListPluginStyle extends ThemeExtension<BulletedListPluginStyle> {
     icon: (_, __) {
       const iconSize = Size.square(20.0);
       const iconPadding = EdgeInsets.only(right: 5.0);
-      return FlowySvg(
+      return EditorSvg(
         width: iconSize.width,
         height: iconSize.height,
         padding: iconPadding,
@@ -209,7 +209,7 @@ class BulletedListPluginStyle extends ThemeExtension<BulletedListPluginStyle> {
     icon: (_, __) {
       const iconSize = Size.square(20.0);
       const iconPadding = EdgeInsets.only(right: 5.0);
-      return FlowySvg(
+      return EditorSvg(
         width: iconSize.width,
         height: iconSize.height,
         padding: iconPadding,
@@ -339,7 +339,7 @@ class QuotedTextPluginStyle extends ThemeExtension<QuotedTextPluginStyle> {
     icon: (_, __) {
       const iconSize = Size.square(20.0);
       const iconPadding = EdgeInsets.only(right: 5.0);
-      return FlowySvg(
+      return EditorSvg(
         width: iconSize.width,
         padding: iconPadding,
         name: 'quote',
