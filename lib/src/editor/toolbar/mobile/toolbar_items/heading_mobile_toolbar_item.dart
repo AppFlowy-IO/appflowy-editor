@@ -47,7 +47,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarStyle.of(context);
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
       final node =
