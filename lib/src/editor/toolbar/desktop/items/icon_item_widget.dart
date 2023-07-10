@@ -9,7 +9,7 @@ class IconItemWidget extends StatelessWidget {
     this.iconName,
     this.iconBuilder,
     required this.isHighlight,
-    this.highlightColor = Colors.lightBlue,
+    required this.highlightColor,
     this.tooltip,
     this.onPressed,
   });

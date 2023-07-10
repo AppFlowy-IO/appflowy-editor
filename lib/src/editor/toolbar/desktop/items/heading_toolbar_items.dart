@@ -12,7 +12,7 @@ class _HeadingToolbarItem extends ToolbarItem {
           id: 'editor.h$level',
           group: 1,
           isActive: onlyShowInSingleSelectionAndTextType,
-          builder: (context, editorState) {
+          builder: (context, editorState, highlightColor) {
             final selection = editorState.selection!;
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =
@@ -20,6 +20,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             return IconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
+              highlightColor: highlightColor,
               tooltip: levelToTooltips(level),
               onPressed: () => editorState.formatNode(
                 selection,
