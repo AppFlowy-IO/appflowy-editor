@@ -68,7 +68,14 @@ class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class _DividerBlockComponentWidgetState
-    extends State<DividerBlockComponentWidget> with SelectableMixin {
+    extends State<DividerBlockComponentWidget>
+    with SelectableMixin, BlockComponentConfigurable {
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   final dividerKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
@@ -92,10 +99,10 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    return blockPadding(
-      child,
-      widget.node,
-      widget.configuration.padding(widget.node),
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      child: child,
     );
   }
 

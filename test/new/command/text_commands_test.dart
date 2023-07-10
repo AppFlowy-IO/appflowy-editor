@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('formatDelta', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -181,9 +168,7 @@ void main() async {
       final document = Document.blank().addParagraph(
         initialText: text,
         decorator: (index, node) => node.updateAttributes(
-          {
-            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
-          },
+          {ParagraphBlockKeys.textDirection: blockComponentTextDirectionRTL},
         ),
       );
       final editorState = EditorState(document: document);
@@ -192,11 +177,13 @@ void main() async {
         Position(path: [0], offset: text.length),
       );
       editorState.selection = selection;
-      editorState.insertNewLine();
+      await editorState.insertNewLine();
 
+      final textDirection = editorState
+          .getNodeAtPath([1])?.attributes[ParagraphBlockKeys.textDirection];
       expect(
-        editorState.getNodeAtPath([1])?.attributes.direction,
-        AppFlowyTextDirection.rtl,
+        textDirection,
+        blockComponentTextDirectionRTL,
       );
     });
   });

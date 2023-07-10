@@ -1,24 +1,29 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const indentLTRPadding = EdgeInsets.only(left: 30.0);
-const indentRTLPadding = EdgeInsets.only(right: 30.0);
+class BlockComponentPadding extends StatelessWidget {
+  const BlockComponentPadding({
+    super.key,
+    required this.node,
+    required this.padding,
+    this.indentPadding = EdgeInsets.zero,
+    required this.child,
+  });
 
-Widget blockPadding(
-  Widget child,
-  Node node,
-  EdgeInsets padding, [
-  TextDirection dir = TextDirection.ltr,
-]) {
-  final indentPadding =
-      dir == TextDirection.rtl ? indentRTLPadding : indentLTRPadding;
+  final Node node;
+  final Widget child;
+  final EdgeInsets padding;
+  final EdgeInsets indentPadding;
 
-  var parent = node.parent;
-  while (parent != null) {
-    padding += indentPadding;
-    parent = parent.parent;
+  @override
+  Widget build(BuildContext context) {
+    final level = node.level.toDouble();
+    return Padding(
+      padding: padding,
+      child: Padding(
+        padding: indentPadding * level,
+        child: child,
+      ),
+    );
   }
-  padding -= indentPadding;
-
-  return Padding(padding: padding, child: child);
 }

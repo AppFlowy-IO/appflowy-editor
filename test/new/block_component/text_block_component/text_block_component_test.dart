@@ -11,7 +11,7 @@ void main() async {
         ..addParagraph(
           initialText: 'س',
           decorator: (i, n) => n.updateAttributes(
-            {AppFlowyRichTextKeys.dir: AppFlowyTextDirection.auto.name},
+            {blockComponentTextDirection: blockComponentTextDirectionAuto},
           ),
         );
       await editor.startTesting();
@@ -39,7 +39,7 @@ void main() async {
         ..addParagraph(
           initialText: 'a',
           decorator: (i, n) => n.updateAttributes(
-            {AppFlowyRichTextKeys.dir: AppFlowyTextDirection.auto.name},
+            {blockComponentTextDirection: blockComponentTextDirectionAuto},
           ),
         );
       await editor.startTesting();

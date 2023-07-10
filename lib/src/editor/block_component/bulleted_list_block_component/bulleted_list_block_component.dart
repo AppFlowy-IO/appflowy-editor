@@ -6,18 +6,27 @@ class BulletedListBlockKeys {
   BulletedListBlockKeys._();
 
   static const String type = 'bulleted_list';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node bulletedListNode({
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
+  attributes ??= {BulletedListBlockKeys.delta: (delta ?? Delta()).toJson()};
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null)
+        BulletedListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -77,8 +86,9 @@ class _BulletedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -96,13 +106,9 @@ class _BulletedListBlockComponentWidgetState
 
   @override
   Widget buildComponent(BuildContext context) {
-    final (textDirection, startText) = getNodeDirection(
-      node,
-      lastStartText,
-      lastDirection,
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.of(context),
     );
-    lastStartText = startText;
-    lastDirection = textDirection;
 
     Widget child = Container(
       color: backgroundColor,
@@ -147,11 +153,12 @@ class _BulletedListBlockComponentWidgetState
       );
     }
 
-    return blockPadding(
-      child,
-      widget.node,
-      widget.configuration.padding(node),
-      textDirection,
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
     );
   }
 }

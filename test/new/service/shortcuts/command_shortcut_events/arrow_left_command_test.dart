@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,18 +8,6 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('arrowLeft - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -113,7 +100,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
           initialSel: Selection.collapse(
             [0],
@@ -127,7 +114,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
           initialSel: Selection.collapse(
             [0],
@@ -141,7 +128,7 @@ void main() async {
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
           decorator: (i, n) => n.updateAttributes({
-            AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
           initialSel: Selection.single(
             path: [0],

@@ -39,15 +39,16 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
   if (index >= 0) {
     return KeyEventResult.ignored;
   }
+  final textDirection = node.attributes[blockComponentTextDirection];
   final transaction = editorState.transaction;
   transaction
     ..insertNode(
       node.path,
       paragraphNode(
         attributes: {
-          'delta': delta.toJson(),
-          AppFlowyRichTextKeys.dir: node.attributes[AppFlowyRichTextKeys.dir]
+          ParagraphBlockKeys.delta: delta.toJson(),
         },
+        textDirection: textDirection,
         children: node.children,
       ),
       deepCopy: true,

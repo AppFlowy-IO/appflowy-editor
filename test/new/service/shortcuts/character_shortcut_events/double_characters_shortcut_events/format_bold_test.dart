@@ -1,21 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../../util/util.dart';
 
 void main() async {
   group('format the text to bold', () {
-    setUpAll(() {
-      if (kDebugMode) {
-        activateLog();
-      }
-    });
-
-    tearDownAll(() {
-      if (kDebugMode) {
-        deactivateLog();
-      }
-    });
     group('by wrapping with double asterisks', () {
       // Before
       // **AppFlowy*|

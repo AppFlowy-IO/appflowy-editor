@@ -17,6 +17,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =
                 node.type == 'heading' && node.attributes['level'] == level;
+            final delta = (node.delta ?? Delta()).toJson();
             return SVGIconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
@@ -29,11 +30,11 @@ class _HeadingToolbarItem extends ToolbarItem {
                       : HeadingBlockKeys.type,
                   attributes: {
                     HeadingBlockKeys.level: level,
-                    HeadingBlockKeys.backgroundColor:
+                    blockComponentBackgroundColor:
                         node.attributes[blockComponentBackgroundColor],
-                    'delta': (node.delta ?? Delta()).toJson(),
-                    AppFlowyRichTextKeys.dir:
-                        node.attributes[AppFlowyRichTextKeys.dir]
+                    blockComponentTextDirection:
+                        node.attributes[blockComponentTextDirection],
+                    blockComponentDelta: delta,
                   },
                 ),
               ),

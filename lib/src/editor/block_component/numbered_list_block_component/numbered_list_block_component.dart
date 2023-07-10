@@ -9,12 +9,19 @@ class NumberedListBlockKeys {
   static const String type = 'numbered_list';
 
   static const String number = 'number';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node numberedListNode({
   Delta? delta,
   Attributes? attributes,
   int? number,
+  String? textDirection,
   Iterable<Node>? children,
 }) {
   attributes ??= {
@@ -25,6 +32,8 @@ Node numberedListNode({
     type: NumberedListBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null)
+        NumberedListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -84,8 +93,9 @@ class _NumberedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -98,18 +108,11 @@ class _NumberedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  String? lastStartText;
-  TextDirection? lastDirection;
-
   @override
   Widget buildComponent(BuildContext context) {
-    final (textDirection, startText) = getNodeDirection(
-      node,
-      lastStartText,
-      lastDirection,
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.of(context),
     );
-    lastStartText = startText;
-    lastDirection = textDirection;
 
     Widget child = Container(
       color: backgroundColor,
@@ -155,11 +158,12 @@ class _NumberedListBlockComponentWidgetState
       );
     }
 
-    return blockPadding(
-      child,
-      widget.node,
-      widget.configuration.padding(node),
-      textDirection,
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
     );
   }
 }

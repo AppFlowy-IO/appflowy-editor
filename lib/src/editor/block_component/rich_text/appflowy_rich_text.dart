@@ -24,12 +24,6 @@ typedef TextSpanDecoratorForAttribute = InlineSpan Function(
 
 typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 
-enum AppFlowyTextDirection {
-  rtl,
-  ltr,
-  auto,
-}
-
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
@@ -384,7 +378,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 }
 
-extension FlowyRichTextAttributes on Attributes {
+extension AppFlowyRichTextAttributes on Attributes {
   bool get bold => this[AppFlowyRichTextKeys.bold] == true;
 
   bool get italic => this[AppFlowyRichTextKeys.italic] == true;
@@ -411,18 +405,6 @@ extension FlowyRichTextAttributes on Attributes {
   String? get href {
     if (this[AppFlowyRichTextKeys.href] is String) {
       return this[AppFlowyRichTextKeys.href];
-    }
-    return null;
-  }
-
-  AppFlowyTextDirection? get direction {
-    switch (this[AppFlowyRichTextKeys.dir]) {
-      case "rtl":
-        return AppFlowyTextDirection.rtl;
-      case "ltr":
-        return AppFlowyTextDirection.ltr;
-      case "auto":
-        return AppFlowyTextDirection.auto;
     }
     return null;
   }

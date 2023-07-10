@@ -197,22 +197,5 @@ void main() {
       };
       expect(attribute.href, null);
     });
-
-    test('direction', () {
-      final dirKey = AppFlowyRichTextKeys.dir;
-      final tests = [
-        {dirKey: 'rtl', 'exp': AppFlowyTextDirection.rtl},
-        {dirKey: 'auto', 'exp': AppFlowyTextDirection.auto},
-        {dirKey: 'ltr', 'exp': AppFlowyTextDirection.ltr},
-        {dirKey: 'invalid', 'exp': null},
-      ];
-
-      for (var test in tests) {
-        final Attributes attribute = {
-          dirKey: test[dirKey],
-        };
-        expect(attribute.direction, test['exp']);
-      }
-    });
   });
 }

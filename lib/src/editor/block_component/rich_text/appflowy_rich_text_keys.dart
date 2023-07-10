@@ -7,7 +7,6 @@ class AppFlowyRichTextKeys {
   static String highlightColor = 'bg_color';
   static String code = 'code';
   static String href = 'href';
-  static String dir = 'dir';
 
   static List<String> supportSliced = [
     bold,

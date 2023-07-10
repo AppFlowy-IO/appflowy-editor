@@ -2,28 +2,28 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final List<ToolbarItem> textDirectionItems = [
-  _FormatToolbarItem(
-    id: 'auto',
-    name: 'auto',
+  _TextDirectionToolbarItem(
+    id: 'text_direction_auto',
+    name: blockComponentTextDirectionAuto,
     tooltip: AppFlowyEditorLocalizations.current.auto,
     icon: Icons.swap_horiz,
   ),
-  _FormatToolbarItem(
-    id: 'ltr',
-    name: 'ltr',
+  _TextDirectionToolbarItem(
+    id: 'text_direction_ltr',
+    name: blockComponentTextDirectionLTR,
     tooltip: AppFlowyEditorLocalizations.current.ltr,
     icon: Icons.format_textdirection_l_to_r,
   ),
-  _FormatToolbarItem(
-    id: 'rtl',
-    name: 'rtl',
+  _TextDirectionToolbarItem(
+    id: 'text_direction_rtl',
+    name: blockComponentTextDirectionRTL,
     tooltip: AppFlowyEditorLocalizations.current.rtl,
     icon: Icons.format_textdirection_r_to_l,
   ),
 ];
 
-class _FormatToolbarItem extends ToolbarItem {
-  _FormatToolbarItem({
+class _TextDirectionToolbarItem extends ToolbarItem {
+  _TextDirectionToolbarItem({
     required String id,
     required String name,
     required String tooltip,
@@ -31,18 +31,13 @@ class _FormatToolbarItem extends ToolbarItem {
   }) : super(
           id: 'editor.$id',
           group: 6,
-          isActive: (editorState) {
-            final selection = editorState.selection;
-            if (selection == null) {
-              return false;
-            }
-            final nodes = editorState.getNodesInSelection(selection);
-            return nodes.every((element) => element.delta != null);
-          },
+          isActive: onlyShowInTextType,
           builder: (context, editorState) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
-            final isHighlight = nodes.every((n) => n.attributes['dir'] == name);
+            final isHighlight = nodes.every(
+              (n) => n.attributes[blockComponentTextDirection] == name,
+            );
             return SVGIconItemWidget(
               iconBuilder: (_) => Icon(
                 icon,
@@ -56,7 +51,7 @@ class _FormatToolbarItem extends ToolbarItem {
                 (node) => node.copyWith(
                   attributes: {
                     ...node.attributes,
-                    AppFlowyRichTextKeys.dir: isHighlight ? '' : name,
+                    blockComponentTextDirection: isHighlight ? null : name,
                   },
                 ),
               ),

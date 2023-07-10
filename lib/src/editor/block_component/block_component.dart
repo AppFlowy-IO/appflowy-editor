@@ -49,9 +49,10 @@ export 'rich_text/appflowy_rich_text_keys.dart';
 export 'base_component/block_component_configuration.dart';
 export 'base_component/text_style_configuration.dart';
 export 'base_component/background_color_mixin.dart';
+export 'base_component/text_direction_mixin.dart';
 export 'base_component/markdown_format_helper.dart';
 export 'base_component/widget/nested_list_widget.dart';
 export 'base_component/block_component_action_wrapper.dart';
-export 'base_component/get_node_direction.dart';
 
 export 'standard_block_components.dart';
+export 'base_component_keys.dart';

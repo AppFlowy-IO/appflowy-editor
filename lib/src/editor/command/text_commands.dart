@@ -50,9 +50,14 @@ extension TextTransforms on EditorState {
     final Map<String, dynamic> attributes = {
       'delta': slicedDelta.toJson(),
     };
-    if (node.attributes.direction != null) {
-      attributes['dir'] = node.attributes[AppFlowyRichTextKeys.dir];
+
+    // Copy the text direction from the current node.
+    final textDirection =
+        node.attributes[blockComponentTextDirection] as String?;
+    if (textDirection != null) {
+      attributes[blockComponentTextDirection] = textDirection;
     }
+
     final insertedNode = paragraphNode(
       attributes: attributes,
       children: children,

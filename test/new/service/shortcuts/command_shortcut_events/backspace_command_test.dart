@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,18 +9,6 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('backspaceCommand - unit test', () {
     group('backspaceCommand - collapsed selection', () {
       const text = 'Welcome to AppFlowy Editor 🔥!';
@@ -162,7 +149,7 @@ void main() async {
           initialText: rtlText,
           decorator: (index, node) => node.updateAttributes(
             {
-              AppFlowyRichTextKeys.dir: AppFlowyTextDirection.rtl.name,
+              blockComponentTextDirection: blockComponentTextDirectionRTL,
             },
           ),
         );
@@ -180,7 +167,10 @@ void main() async {
 
         final node = editorState.getNodeAtPath([0])!;
         expect(node.type, ParagraphBlockKeys.type);
-        expect(node.attributes.direction, AppFlowyTextDirection.rtl);
+        expect(
+          node.attributes[ParagraphBlockKeys.textDirection],
+          blockComponentTextDirectionRTL,
+        );
       });
     });
 

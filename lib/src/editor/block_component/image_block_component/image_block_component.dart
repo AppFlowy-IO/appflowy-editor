@@ -113,7 +113,13 @@ class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
-    with SelectableMixin {
+    with SelectableMixin, BlockComponentConfigurable {
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   final imageKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
@@ -185,10 +191,10 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       );
     }
 
-    return blockPadding(
-      child,
-      widget.node,
-      widget.configuration.padding(node),
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      child: child,
     );
   }
 

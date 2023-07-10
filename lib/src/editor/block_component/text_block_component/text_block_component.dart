@@ -6,14 +6,17 @@ class ParagraphBlockKeys {
 
   static const String type = 'paragraph';
 
-  static const String delta = 'delta';
+  static const String delta = blockComponentDelta;
 
   static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node paragraphNode({
   String? text,
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
@@ -24,6 +27,8 @@ Node paragraphNode({
     type: ParagraphBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null)
+        ParagraphBlockKeys.textDirection: textDirection,
     },
     children: children,
   );
@@ -77,8 +82,9 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -96,13 +102,9 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
 
   @override
   Widget buildComponent(BuildContext context) {
-    final (textDirection, startText) = getNodeDirection(
-      node,
-      lastStartText,
-      lastDirection,
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.of(context),
     );
-    lastStartText = startText;
-    lastDirection = textDirection;
 
     Widget child = Container(
       color: backgroundColor,
@@ -138,11 +140,12 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
       );
     }
 
-    return blockPadding(
-      child,
-      widget.node,
-      widget.configuration.padding(node),
-      textDirection,
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
     );
   }
 }
