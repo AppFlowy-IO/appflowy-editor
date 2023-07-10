@@ -39,7 +39,7 @@ abstract class AppFlowyKeyboardService {
   /// Closes the keyboard
   ///
   /// Used in mobile
-  void closeKeyBoard();
+  void closeKeyboard();
 
   /// Enable the keyboard in mobile
   ///

@@ -136,7 +136,7 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                         _showItemMenu = true;
                         // close keyboard when menu pop up
                         widget.editorState.service.keyboardService
-                            ?.closeKeyBoard();
+                            ?.closeKeyboard();
                       }
                     });
                   },

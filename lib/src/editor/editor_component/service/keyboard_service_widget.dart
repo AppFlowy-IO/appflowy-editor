@@ -107,7 +107,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void enable() => focusNode.requestFocus();
 
   @override
-  void closeKeyBoard() {
+  void closeKeyboard() {
     assert(PlatformExtension.isMobile, 'only support mobile platform');
     textInputService.close();
   }
