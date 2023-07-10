@@ -2,6 +2,7 @@ import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/infra/flowy_svg.dart';
 import 'package:appflowy_editor/src/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 
 class LinkMenu extends StatefulWidget {
@@ -13,6 +14,7 @@ class LinkMenu extends StatefulWidget {
     required this.onOpenLink,
     required this.onCopyLink,
     required this.onRemoveLink,
+    required this.onDismiss,
   }) : super(key: key);
 
   final String? linkText;
@@ -21,6 +23,7 @@ class LinkMenu extends StatefulWidget {
   final VoidCallback onOpenLink;
   final VoidCallback onCopyLink;
   final VoidCallback onRemoveLink;
+  final VoidCallback onDismiss;
 
   @override
   State<LinkMenu> createState() => _LinkMenuState();
@@ -81,27 +84,36 @@ class _LinkMenuState extends State<LinkMenu> {
   }
 
   Widget _buildInput() {
-    return TextField(
-      focusNode: _focusNode,
-      textAlign: TextAlign.left,
-      controller: _textEditingController,
-      onSubmitted: widget.onSubmitted,
-      decoration: InputDecoration(
-        hintText: 'URL',
-        contentPadding: const EdgeInsets.all(16.0),
-        isDense: true,
-        suffixIcon: IconButton(
-          padding: const EdgeInsets.all(4.0),
-          icon: const FlowySvg(
-            name: 'clear',
-            width: 24,
-            height: 24,
+    return RawKeyboardListener(
+      focusNode: FocusNode(),
+      onKey: (key) {
+        if (key is RawKeyDownEvent &&
+            key.logicalKey == LogicalKeyboardKey.escape) {
+          widget.onDismiss();
+        }
+      },
+      child: TextField(
+        focusNode: _focusNode,
+        textAlign: TextAlign.left,
+        controller: _textEditingController,
+        onSubmitted: widget.onSubmitted,
+        decoration: InputDecoration(
+          hintText: AppFlowyEditorLocalizations.current.urlHint,
+          contentPadding: const EdgeInsets.all(16.0),
+          isDense: true,
+          suffixIcon: IconButton(
+            padding: const EdgeInsets.all(4.0),
+            icon: const EditorSvg(
+              name: 'clear',
+              width: 24,
+              height: 24,
+            ),
+            onPressed: _textEditingController.clear,
+            splashRadius: 5,
           ),
-          onPressed: _textEditingController.clear,
-          splashRadius: 5,
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
         ),
       ),
     );
@@ -115,7 +127,7 @@ class _LinkMenuState extends State<LinkMenu> {
     return SizedBox(
       height: 36,
       child: TextButton.icon(
-        icon: FlowySvg(
+        icon: EditorSvg(
           name: iconName,
           color: Theme.of(context).textTheme.labelLarge?.color,
         ),

@@ -70,7 +70,7 @@ class CustomImageMenu extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.blue),
             ),
-            child: AppFlowyEditor.custom(
+            child: AppFlowyEditor(
               editorState: editorState,
               blockComponentBuilders: customBlockComponentBuilders,
               commandShortcutEvents: standardCommandShortcutEvents,

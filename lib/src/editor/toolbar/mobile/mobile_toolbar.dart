@@ -20,78 +20,7 @@ class MobileToolbar extends StatelessWidget {
     this.buttonSpacing = 8.0,
     this.buttonBorderWidth = 1.0,
     this.buttonSelectedBorderWidth = 2.0,
-    this.textColorOptions = const [
-      ColorOption(
-        colorHex: '#808080',
-        name: 'Gray',
-      ),
-      ColorOption(
-        colorHex: '#A52A2A',
-        name: 'Brown',
-      ),
-      ColorOption(
-        colorHex: '#FFFF00',
-        name: 'Yellow',
-      ),
-      ColorOption(
-        colorHex: '#008000',
-        name: 'Green',
-      ),
-      ColorOption(
-        colorHex: '#0000FF',
-        name: 'Blue',
-      ),
-      ColorOption(
-        colorHex: '#800080',
-        name: 'Purple',
-      ),
-      ColorOption(
-        colorHex: '#FFC0CB',
-        name: 'Pink',
-      ),
-      ColorOption(
-        colorHex: '#FF0000',
-        name: 'Red',
-      ),
-    ],
-    this.backgroundColorOptions = const [
-      ColorOption(
-        colorHex: '#4D4D4D',
-        name: 'Gray',
-      ),
-      ColorOption(
-        colorHex: '#A52A2A',
-        name: 'Brown',
-      ),
-      ColorOption(
-        colorHex: '#FFFF00',
-        name: 'Yellow',
-      ),
-      ColorOption(
-        colorHex: '#008000',
-        name: 'Green',
-      ),
-      ColorOption(
-        colorHex: '#0000FF',
-        name: 'Blue',
-      ),
-      ColorOption(
-        colorHex: '#800080',
-        name: 'Purple',
-      ),
-      ColorOption(
-        colorHex: '#FFC0CB',
-        name: 'Pink',
-      ),
-      ColorOption(
-        colorHex: '#FF0000',
-        name: 'Red',
-      ),
-    ],
-  }) : assert(
-          textColorOptions.length > 0 && backgroundColorOptions.length > 0,
-        );
-
+  });
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
   // MobileToolbarStyle parameters
@@ -108,8 +37,6 @@ class MobileToolbar extends StatelessWidget {
   final double buttonSpacing;
   final double buttonBorderWidth;
   final double buttonSelectedBorderWidth;
-  final List<ColorOption> textColorOptions;
-  final List<ColorOption> backgroundColorOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +60,6 @@ class MobileToolbar extends StatelessWidget {
           buttonSpacing: buttonSpacing,
           buttonBorderWidth: buttonBorderWidth,
           buttonSelectedBorderWidth: buttonSelectedBorderWidth,
-          textColorOptions: textColorOptions,
-          backgroundColorOptions: backgroundColorOptions,
           child: MobileToolbarWidget(
             // Use selection as key to force rebuild toolbar widget when selection changed.
             key: ValueKey(selection),
@@ -263,11 +188,11 @@ class _ToolbarItemListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        final toobarItem = toolbarItems[index];
+        final toolbarItem = toolbarItems[index];
         return IconButton(
-          icon: toobarItem.itemIcon,
+          icon: toolbarItem.itemIcon,
           onPressed: () {
-            if (toobarItem.hasMenu) {
+            if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
               itemOnPressed.call(index);
             } else {

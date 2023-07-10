@@ -75,7 +75,7 @@ class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
 class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin {
   @override
@@ -106,7 +106,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 ? widget.iconBuilder!(context, node)
                 : const _QuoteIcon(),
             Flexible(
-              child: FlowyRichText(
+              child: AppFlowyRichText(
                 key: forwardKey,
                 node: widget.node,
                 editorState: editorState,
@@ -142,7 +142,7 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const FlowySvg(
+    return const EditorSvg(
       width: 20,
       height: 20,
       padding: EdgeInsets.only(right: 5.0),

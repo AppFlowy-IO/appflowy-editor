@@ -92,7 +92,7 @@ class _TodoListBlockComponentWidgetState
     extends State<TodoListBlockComponentWidget>
     with
         SelectableMixin,
-        DefaultSelectable,
+        DefaultSelectableMixin,
         BlockComponentConfigurable,
         BackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin {
@@ -126,7 +126,7 @@ class _TodoListBlockComponentWidgetState
                   onTap: checkOrUncheck,
                 ),
           Flexible(
-            child: FlowyRichText(
+            child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
@@ -192,7 +192,7 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: FlowySvg(
+        child: EditorSvg(
           width: 22,
           height: 22,
           padding: const EdgeInsets.only(right: 5.0),

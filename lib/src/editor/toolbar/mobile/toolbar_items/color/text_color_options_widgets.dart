@@ -5,11 +5,13 @@ class TextColorOptionsWidgets extends StatefulWidget {
   const TextColorOptionsWidgets(
     this.editorState,
     this.selection, {
+    this.textColorOptions,
     Key? key,
   }) : super(key: key);
 
   final Selection selection;
   final EditorState editorState;
+  final List<ColorOption>? textColorOptions;
 
   @override
   State<TextColorOptionsWidgets> createState() =>
@@ -25,9 +27,11 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
     final nodes = widget.editorState.getNodesInSelection(selection);
     final hasTextColor = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes[FlowyRichTextKeys.textColor] != null,
+        (attributes) => attributes[AppFlowyRichTextKeys.textColor] != null,
       );
     });
+
+    final colorOptions = widget.textColorOptions ?? generateTextColorOptions();
 
     return Scrollbar(
       child: GridView(
@@ -44,7 +48,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
                 setState(() {
                   widget.editorState.formatDelta(
                     selection,
-                    {FlowyRichTextKeys.textColor: null},
+                    {AppFlowyRichTextKeys.textColor: null},
                   );
                 });
               }
@@ -52,11 +56,11 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
             isSelected: !hasTextColor,
           ),
           // color option buttons
-          ...style.textColorOptions.map((e) {
+          ...colorOptions.map((e) {
             final isSelected = nodes.allSatisfyInSelection(selection, (delta) {
               return delta.everyAttributes(
                 (attributes) =>
-                    attributes[FlowyRichTextKeys.textColor] == e.colorHex,
+                    attributes[AppFlowyRichTextKeys.textColor] == e.colorHex,
               );
             });
             return ColorButton(

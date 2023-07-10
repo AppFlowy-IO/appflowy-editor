@@ -52,7 +52,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[FlowyRichTextKeys.href] == linkAddress,
+                  element.attributes?[AppFlowyRichTextKeys.href] == linkAddress,
             );
       }),
       true,
