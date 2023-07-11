@@ -55,12 +55,7 @@ Future<void> _testRedoWithoutUndo(WidgetTester tester) async {
 
   expect(editor.documentRootLen, 3);
 
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-    isShiftPressed: true,
-  );
+  await _pressRedoCommand(editor);
 
   expect(editor.documentRootLen, 3);
 
@@ -106,22 +101,13 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   expect(result, true);
 
   //undo should remove bold style and make it normal.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  await _pressUndoCommand(editor);
 
   result = node.allBold(selection);
   expect(result, false);
 
   //redo should make text bold.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-    isShiftPressed: true,
-  );
+  await _pressRedoCommand(editor);
 
   result = node.allBold(selection);
   expect(result, true);
@@ -163,11 +149,7 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   expect(allItalics, true);
 
   //undo should remove italic style and make it normal.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  await _pressUndoCommand(editor);
 
   allItalics = node.allItalic(
     Selection.single(path: [0], startOffset: 1, endOffset: text.length),
@@ -175,12 +157,7 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   expect(allItalics, false);
 
   //redo should make text italic again.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-    isShiftPressed: true,
-  );
+  await _pressRedoCommand(editor);
 
   allItalics = node.allItalic(
     Selection.single(path: [0], startOffset: 1, endOffset: text.length),
@@ -223,25 +200,16 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   );
   expect(allUnderline, true);
 
-  //undo should remove bold style and make it normal.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  //undo should remove underline style and make it normal.
+  await _pressUndoCommand(editor);
 
   allUnderline = node.allUnderline(
     Selection.single(path: [0], startOffset: 1, endOffset: text.length),
   );
   expect(allUnderline, false);
 
-  //redo should make text bold.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-    isShiftPressed: true,
-  );
+  //redo should make text underline.
+  await _pressRedoCommand(editor);
 
   allUnderline = node.allUnderline(
     Selection.single(path: [0], startOffset: 1, endOffset: text.length),
@@ -269,24 +237,32 @@ Future<void> _testBackspaceUndoRedo(
   await editor.pressKey(key: LogicalKeyboardKey.backspace);
   expect(editor.documentRootLen, 2);
 
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
+  await _pressUndoCommand(editor);
 
   expect(editor.documentRootLen, 3);
   expect(editor.nodeAtPath([1])!.delta!.toPlainText(), text);
   expect(editor.selection, selection);
 
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyZ,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-    isShiftPressed: true,
-  );
+  await _pressRedoCommand(editor);
 
   expect(editor.documentRootLen, 2);
 
   await editor.dispose();
+}
+
+Future<void> _pressUndoCommand(TestableEditor editor) async {
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyZ,
+    isMetaPressed: Platform.isMacOS,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+  );
+}
+
+Future<void> _pressRedoCommand(TestableEditor editor) async {
+  await editor.pressKey(
+    key: Platform.isMacOS ? LogicalKeyboardKey.keyZ : LogicalKeyboardKey.keyY,
+    isMetaPressed: Platform.isMacOS,
+    isShiftPressed: Platform.isMacOS,
+    isControlPressed: !Platform.isMacOS,
+  );
 }
