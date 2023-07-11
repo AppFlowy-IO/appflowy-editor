@@ -104,7 +104,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.of(context),
+      defaultTextDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(

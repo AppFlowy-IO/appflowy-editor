@@ -107,7 +107,7 @@ class _BulletedListBlockComponentWidgetState
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.of(context),
+      defaultTextDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(

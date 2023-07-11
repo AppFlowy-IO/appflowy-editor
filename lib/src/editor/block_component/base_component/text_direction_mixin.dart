@@ -13,8 +13,9 @@ mixin BlockComponentTextDirectionMixin {
 
   /// Calculate the text direction of a block component.
   TextDirection calculateTextDirection({
-    TextDirection defaultTextDirection = TextDirection.ltr,
+    TextDirection? defaultTextDirection,
   }) {
+    defaultTextDirection = defaultTextDirection ?? TextDirection.ltr;
     // if the block component has a text direction attribute, use it
     final value = node.attributes[blockComponentTextDirection] as String?;
     if (value != null && value != blockComponentTextDirectionAuto) {
