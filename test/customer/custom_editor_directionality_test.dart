@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
+import '../infra/test_editor.dart';
+
 void main() async {
   testWidgets('wrapp editor with directionality', (tester) async {
     await mockNetworkImagesFor(() async {
@@ -10,15 +12,12 @@ void main() async {
       await tester.pumpWidget(widget);
       await tester.pumpAndSettle();
 
-      final editorState = tester
-          .widget(find.byType(AppFlowyEditor))
-          .unwrapOrNull<AppFlowyEditor>()!
-          .editorState;
-      Node headerNode = editorState.getNodeAtPath([0])!;
-      Node textNode = editorState.getNodeAtPath([1])!;
+      final editorState = tester.editor.editorState;
+      final heading = editorState.getNodeAtPath([0])!;
+      final paragraph = editorState.getNodeAtPath([1])!;
 
-      expect(headerNode.selectable?.textDirection(), TextDirection.rtl);
-      expect(textNode.selectable?.textDirection(), TextDirection.rtl);
+      expect(heading.selectable?.textDirection(), TextDirection.rtl);
+      expect(paragraph.selectable?.textDirection(), TextDirection.rtl);
     });
   });
 }
@@ -47,9 +46,6 @@ class DirectionalityTester extends StatelessWidget {
               textDirection: TextDirection.rtl,
               child: AppFlowyEditor(
                 editorState: editorState,
-                blockComponentBuilders: standardBlockComponentBuilderMap,
-                commandShortcutEvents: standardCommandShortcutEvents,
-                characterShortcutEvents: standardCharacterShortcutEvents,
               ),
             ),
           ),
