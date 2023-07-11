@@ -126,18 +126,12 @@ Future<void> _pressUndoCommand(TestableEditor editor) async {
 }
 
 Future<void> _pressRedoCommand(TestableEditor editor) async {
-  if (Platform.isMacOS) {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyZ,
-      isMetaPressed: true,
-      isShiftPressed: true,
-    );
-  } else {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyY,
-      isControlPressed: true,
-    );
-  }
+  await editor.pressKey(
+    key: Platform.isMacOS ? LogicalKeyboardKey.keyZ : LogicalKeyboardKey.keyY,
+    isMetaPressed: Platform.isMacOS,
+    isShiftPressed: Platform.isMacOS,
+    isControlPressed: !Platform.isMacOS,
+  );
 }
 
 Future<void> _selectNodeAtPathAndDelete(TestableEditor editor) async {
