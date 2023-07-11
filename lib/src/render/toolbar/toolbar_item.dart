@@ -27,8 +27,10 @@ class ToolbarItem {
   final int group;
   final bool Function(EditorState editorState)? isActive;
   final Widget Function(
-          BuildContext context, EditorState editorState, Color highlightColor,)?
-      builder;
+    BuildContext context,
+    EditorState editorState,
+    Color highlightColor,
+  )? builder;
 
   // deprecated
   final int type;

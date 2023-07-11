@@ -43,7 +43,10 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
               final builder = item.builder;
               return Center(
                 child: builder!(
-                    context, widget.editorState, widget.toolbarActiveColor,),
+                  context,
+                  widget.editorState,
+                  widget.toolbarActiveColor,
+                ),
               );
             }).toList(growable: false),
           ),
