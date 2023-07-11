@@ -28,9 +28,10 @@ mixin BlockComponentTextDirectionMixin {
     );
     if (value == blockComponentTextDirectionAuto &&
         previousNodeContainsTextDirection != null) {
-      final previousValue = previousNodeContainsTextDirection
+      final String previousValue = previousNodeContainsTextDirection
           .attributes[blockComponentTextDirection];
-      return previousValue.toTextDirection(fallback: defaultTextDirection);
+      defaultTextDirection =
+          previousValue.toTextDirection(fallback: defaultTextDirection);
     }
 
     // if the value isn't auto or the text is null or empty,

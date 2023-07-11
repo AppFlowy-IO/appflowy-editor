@@ -94,5 +94,47 @@ void main() {
         );
       }
     });
+
+    test('auto empty text use previous node direction', () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            textDirection: blockComponentTextDirectionRTL,
+          ),
+          paragraphNode(
+            text: '\$',
+            textDirection: blockComponentTextDirectionAuto,
+          ),
+        ],
+      );
+      final direction =
+          TextDirectionTest(node: node.children.last).calculateTextDirection(
+        defaultTextDirection: TextDirection.ltr,
+      );
+      expect(direction, TextDirection.rtl);
+    });
+
+    test(
+        'auto empty text don\'t use previous node direction because we can determine by the node text',
+        () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            textDirection: blockComponentTextDirectionRTL,
+          ),
+          paragraphNode(
+            text: 'Hello',
+            textDirection: blockComponentTextDirectionAuto,
+          ),
+        ],
+      );
+      final direction =
+          TextDirectionTest(node: node.children.last).calculateTextDirection(
+        defaultTextDirection: TextDirection.rtl,
+      );
+      expect(direction, TextDirection.ltr);
+    });
   });
 }
