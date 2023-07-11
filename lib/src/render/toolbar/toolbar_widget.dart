@@ -69,7 +69,8 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
             children: widget.items
                 .map(
                   (item) => Center(
-                    child: item.builder?.call(context, widget.editorState, highlightColor) ??
+                    child: item.builder?.call(
+                            context, widget.editorState, highlightColor) ??
                         item.itemBuilder?.call(context, widget.editorState) ??
                         ToolbarItemWidget(
                           item: item,
