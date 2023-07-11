@@ -23,7 +23,7 @@ mixin BlockComponentTextDirectionMixin {
     }
 
     // if the block component doesn't has a text direction attribute, but has a
-    //  parent, use the text direction of the parent
+    // parent, use the text direction of the parent
     final previousNodeContainsTextDirection = node.previousNodeWhere(
       (element) => element.attributes.containsKey(blockComponentTextDirection),
     );
@@ -35,12 +35,10 @@ mixin BlockComponentTextDirectionMixin {
           previousValue.toTextDirection(fallback: defaultTextDirection);
     }
 
-    // if the value isn't auto or the text is null or empty,
-    //  use the default text direction
+    // if the value is null or the text is null or empty,
+    // use the default text direction
     final text = node.delta?.toPlainText();
-    if (value != blockComponentTextDirectionAuto ||
-        text == null ||
-        text.isEmpty) {
+    if (value == null || text == null || text.isEmpty) {
       return defaultTextDirection;
     }
 
