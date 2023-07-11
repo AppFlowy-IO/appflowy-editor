@@ -38,7 +38,7 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
 // move the cursor to the end of the block
 final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
   key: 'move the cursor to the end of line',
-  command: 'ctrl+arrow right,end',
+  command: 'end',
   macOSCommand: 'cmd+arrow right',
   handler: _moveCursorToEndCommandHandler,
 );
@@ -56,7 +56,8 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
 // move the cursor to the right word
 final CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the right word',
-  command: 'alt+arrow right',
+  command: 'ctrl+arrow right',
+  macOSCommand: 'alt+arrow right',
   handler: _moveCursorToRightWordCommandHandler,
 );
 
@@ -74,7 +75,8 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
 final CommandShortcutEvent moveCursorRightWordSelectCommand =
     CommandShortcutEvent(
   key: 'move the cursor to select the right word',
-  command: 'alt+shift+arrow right',
+  command: 'ctrl+shift+arrow right',
+  macOSCommand: 'alt+shift+arrow right',
   handler: _moveCursorRightWordSelectCommandHandler,
 );
 
@@ -100,7 +102,7 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
 };
 
 // arrow right key + shift
-//
+// selects only one character
 final CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
   key: 'move the cursor right select',
   command: 'shift+arrow right',
@@ -126,8 +128,8 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
 
 // arrow right key + shift + ctrl or cmd
 final CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
-  key: 'move the cursor right select',
-  command: 'ctrl+shift+arrow right',
+  key: 'move cursor to select till end of line',
+  command: 'shift+end',
   macOSCommand: 'cmd+shift+arrow right',
   handler: _moveCursorEndSelectCommandHandler,
 );

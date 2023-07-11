@@ -38,7 +38,7 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
 // move the cursor to the beginning of the block
 final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
   key: 'move the cursor at the start of line',
-  command: 'ctrl+arrow left,home',
+  command: 'home',
   macOSCommand: 'cmd+arrow left',
   handler: _moveCursorToBeginCommandHandler,
 );
@@ -56,7 +56,8 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
 // move the cursor to the left word
 final CommandShortcutEvent moveCursorToLeftWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the left word',
-  command: 'alt+arrow left',
+  command: 'ctrl+arrow left',
+  macOSCommand: 'alt+arrow left',
   handler: _moveCursorToLeftWordCommandHandler,
 );
 
@@ -74,7 +75,8 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
 final CommandShortcutEvent moveCursorLeftWordSelectCommand =
     CommandShortcutEvent(
   key: 'move the cursor to select the left word',
-  command: 'alt+shift+arrow left',
+  command: 'ctrl+shift+arrow left',
+  macOSCommand: 'alt+shift+arrow left',
   handler: _moveCursorLeftWordSelectCommandHandler,
 );
 
@@ -99,7 +101,7 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
 };
 
 // arrow left key + shift
-//
+// selects only one character
 final CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
   key: 'move the cursor left select',
   command: 'shift+arrow left',
@@ -123,10 +125,10 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
   return KeyEventResult.handled;
 };
 
-// arrow left key + shift + ctrl or cmd
+//
 final CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
-  key: 'move the cursor left select line',
-  command: 'ctrl+shift+arrow left',
+  key: 'move cursor to select till start of line',
+  command: 'shift+home',
   macOSCommand: 'cmd+shift+arrow left',
   handler: _moveCursorBeginSelectCommandHandler,
 );
