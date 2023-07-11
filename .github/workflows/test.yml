@@ -54,8 +54,7 @@ jobs:
             os: ${{ matrix.os }}
           attempt_limit: 10
           attempt_delay: 10000
-
-ios:
+  ios:
     strategy:
       matrix:
         device:
@@ -97,17 +96,16 @@ ios:
           with: |
             fail_ci_if_error: true
             verbose: true
-            os: ${{ matrix.os }}
+            os: ${{ matrix.device }}
           attempt_limit: 10
-          attempt_delay: 10000
-
-android:
-    runs-on: macos-11
+          attempt_delay: 10000   
+  android:
     strategy:
       matrix:
         api-level:
           - 30
       fail-fast: true
+    runs-on: macos-11
     steps:
       # Similar steps as the desktop job
       - uses: actions/checkout@v3
@@ -132,6 +130,6 @@ android:
           with: |
             fail_ci_if_error: true
             verbose: true
-            os: ${{ matrix.os }}
+            os: ${{ matrix.api-level }}
           attempt_limit: 10
           attempt_delay: 10000
