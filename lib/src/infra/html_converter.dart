@@ -1,8 +1,6 @@
 import 'dart:collection';
-import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as html;
 
@@ -400,7 +398,7 @@ class NodesToHTMLConverter {
   /// </ul>
   ///
   /// This container is used to save the list elements temporarily.
-  html.Element? _stashListContainer;
+  // html.Element? _stashListContainer;
 
   NodesToHTMLConverter({
     required this.nodes,
@@ -411,70 +409,61 @@ class NodesToHTMLConverter {
       return;
     } else if (nodes.length == 1) {
       final first = nodes.first;
-      if (first is TextNode) {
+      if (first.delta != null) {
         nodes[0] = first.copyWith(
-          delta: first.delta.slice(startOffset ?? 0, endOffset),
+          attributes: {
+            ...first.attributes,
+            'delta': (first.delta!.slice(startOffset ?? 0, endOffset)).toJson(),
+          },
         );
       }
     } else {
       final first = nodes.first;
       final last = nodes.last;
-      if (first is TextNode) {
-        nodes[0] = first.copyWith(delta: first.delta.slice(startOffset ?? 0));
+      if (first.delta != null) {
+        nodes[0] = first.copyWith(
+          attributes: {
+            ...first.attributes,
+            'delta': (first.delta!.slice(startOffset ?? 0)).toJson(),
+          },
+        );
       }
-      if (last is TextNode) {
-        nodes[nodes.length - 1] =
-            last.copyWith(delta: last.delta.slice(0, endOffset));
+      if (last.delta != null) {
+        nodes[nodes.length - 1] = first.copyWith(
+          attributes: {
+            ...first.attributes,
+            'delta': (last.delta!.slice(0, endOffset)).toJson(),
+          },
+        );
       }
     }
   }
 
   List<html.Node> toHTMLNodes() {
-    for (final node in nodes) {
-      if (node.type == 'text') {
-        final textNode = node as TextNode;
-        if (node == nodes.first) {
-          _addTextNode(textNode);
-        } else if (node == nodes.last) {
-          _addTextNode(textNode, end: endOffset);
-        } else {
-          _addTextNode(textNode);
-        }
-      } else if (node.type == 'image') {
-        final textNode = node;
-        final anchor = html.Element.tag(HTMLTag.image);
-        anchor.attributes['src'] = textNode.attributes['image_src'];
+    // for (final node in nodes) {
+    //   if (node.type == 'text') {
+    //     final textNode = node as TextNode;
+    //     if (node == nodes.first) {
+    //       _addTextNode(textNode);
+    //     } else if (node == nodes.last) {
+    //       _addTextNode(textNode, end: endOffset);
+    //     } else {
+    //       _addTextNode(textNode);
+    //     }
+    //   } else if (node.type == 'image') {
+    //     final textNode = node;
+    //     final anchor = html.Element.tag(HTMLTag.image);
+    //     anchor.attributes['src'] = textNode.attributes['image_src'];
 
-        _result.add(anchor);
-      }
-      // TODO: handle image and other blocks
-    }
-    if (_stashListContainer != null) {
-      _result.add(_stashListContainer!);
-      _stashListContainer = null;
-    }
+    //     _result.add(anchor);
+    //   }
+    //   // TODO: handle image and other blocks
+    // }
+    // if (_stashListContainer != null) {
+    //   _result.add(_stashListContainer!);
+    //   _stashListContainer = null;
+    // }
     return _result;
-  }
-
-  void _addTextNode(TextNode textNode, {int? end}) {
-    _addElement(textNode, _textNodeToHtml(textNode, end: end));
-  }
-
-  void _addElement(TextNode textNode, html.Element element) {
-    if (element.localName == HTMLTag.list) {
-      final isNumbered =
-          textNode.attributes['subtype'] == BuiltInAttributeKey.numberList;
-      _stashListContainer ??= html.Element.tag(
-        isNumbered ? HTMLTag.orderedList : HTMLTag.unorderedList,
-      );
-      _stashListContainer?.append(element);
-    } else {
-      if (_stashListContainer != null) {
-        _result.add(_stashListContainer!);
-        _stashListContainer = null;
-      }
-      _result.add(element);
-    }
   }
 
   String toHTMLString() {
@@ -486,68 +475,56 @@ class NodesToHTMLConverter {
     return copyString;
   }
 
-  html.Element _textNodeToHtml(TextNode textNode, {int? end}) {
-    String? subType = textNode.attributes['subtype'];
-    String? heading = textNode.attributes['heading'];
-    return _deltaToHtml(
-      textNode.delta,
-      subType: subType,
-      heading: heading,
-      end: end,
-      checked: textNode.attributes['checkbox'] == true,
-    );
-  }
+  // String _textDecorationsFromAttributes(Attributes attributes) {
+  //   var textDecoration = <String>[];
+  //   if (attributes[BuiltInAttributeKey.strikethrough] == true) {
+  //     textDecoration.add('line-through');
+  //   }
+  //   if (attributes[BuiltInAttributeKey.underline] == true) {
+  //     textDecoration.add('underline');
+  //   }
 
-  String _textDecorationsFromAttributes(Attributes attributes) {
-    var textDecoration = <String>[];
-    if (attributes[BuiltInAttributeKey.strikethrough] == true) {
-      textDecoration.add('line-through');
-    }
-    if (attributes[BuiltInAttributeKey.underline] == true) {
-      textDecoration.add('underline');
-    }
+  //   return textDecoration.join(' ');
+  // }
 
-    return textDecoration.join(' ');
-  }
+  // String _attributesToCssStyle(Map<String, dynamic> attributes) {
+  //   final cssMap = <String, String>{};
+  //   if (attributes[BuiltInAttributeKey.highlightColor] != null) {
+  //     final color = Color(
+  //       int.parse(attributes[BuiltInAttributeKey.highlightColor]),
+  //     );
+  //     cssMap['background-color'] = color.toRgbaString();
+  //   }
+  //   if (attributes[BuiltInAttributeKey.textColor] != null) {
+  //     final color = Color(
+  //       int.parse(attributes[BuiltInAttributeKey.textColor]),
+  //     );
+  //     cssMap['color'] = color.toRgbaString();
+  //   }
+  //   if (attributes[BuiltInAttributeKey.bold] == true) {
+  //     cssMap['font-weight'] = 'bold';
+  //   }
 
-  String _attributesToCssStyle(Map<String, dynamic> attributes) {
-    final cssMap = <String, String>{};
-    if (attributes[BuiltInAttributeKey.highlightColor] != null) {
-      final color = Color(
-        int.parse(attributes[BuiltInAttributeKey.highlightColor]),
-      );
-      cssMap['background-color'] = color.toRgbaString();
-    }
-    if (attributes[BuiltInAttributeKey.textColor] != null) {
-      final color = Color(
-        int.parse(attributes[BuiltInAttributeKey.textColor]),
-      );
-      cssMap['color'] = color.toRgbaString();
-    }
-    if (attributes[BuiltInAttributeKey.bold] == true) {
-      cssMap['font-weight'] = 'bold';
-    }
+  //   final textDecoration = _textDecorationsFromAttributes(attributes);
+  //   if (textDecoration.isNotEmpty) {
+  //     cssMap['text-decoration'] = textDecoration;
+  //   }
 
-    final textDecoration = _textDecorationsFromAttributes(attributes);
-    if (textDecoration.isNotEmpty) {
-      cssMap['text-decoration'] = textDecoration;
-    }
+  //   if (attributes[BuiltInAttributeKey.italic] == true) {
+  //     cssMap['font-style'] = 'italic';
+  //   }
+  //   return _cssMapToCssStyle(cssMap);
+  // }
 
-    if (attributes[BuiltInAttributeKey.italic] == true) {
-      cssMap['font-style'] = 'italic';
-    }
-    return _cssMapToCssStyle(cssMap);
-  }
-
-  String _cssMapToCssStyle(Map<String, String> cssMap) {
-    return cssMap.entries.fold('', (previousValue, element) {
-      final kv = '${element.key}: ${element.value}';
-      if (previousValue.isEmpty) {
-        return kv;
-      }
-      return '$previousValue; $kv';
-    });
-  }
+  // String _cssMapToCssStyle(Map<String, String> cssMap) {
+  //   return cssMap.entries.fold('', (previousValue, element) {
+  //     final kv = '${element.key}: ${element.value}';
+  //     if (previousValue.isEmpty) {
+  //       return kv;
+  //     }
+  //     return '$previousValue; $kv';
+  //   });
+  // }
 
   /// Convert the rich text to HTML
   ///
@@ -565,115 +542,115 @@ class NodesToHTMLConverter {
   /// ```html
   /// <span style='...'>Text</span>
   /// ```
-  html.Element _deltaToHtml(
-    Delta delta, {
-    String? subType,
-    String? heading,
-    int? end,
-    bool? checked,
-  }) {
-    if (end != null) {
-      delta = delta.slice(0, end);
-    }
+  // html.Element _deltaToHtml(
+  //   Delta delta, {
+  //   String? subType,
+  //   String? heading,
+  //   int? end,
+  //   bool? checked,
+  // }) {
+  //   if (end != null) {
+  //     delta = delta.slice(0, end);
+  //   }
 
-    final childNodes = <html.Node>[];
-    String tagName = HTMLTag.paragraph;
+  //   final childNodes = <html.Node>[];
+  //   String tagName = HTMLTag.paragraph;
 
-    if (subType == BuiltInAttributeKey.bulletedList ||
-        subType == BuiltInAttributeKey.numberList) {
-      tagName = HTMLTag.list;
-    } else if (subType == BuiltInAttributeKey.checkbox) {
-      final node = html.Element.html('<input type="checkbox" />');
-      if (checked != null && checked) {
-        node.attributes['checked'] = 'true';
-      }
-      childNodes.add(node);
-    } else if (subType == BuiltInAttributeKey.heading) {
-      if (heading == BuiltInAttributeKey.h1) {
-        tagName = HTMLTag.h1;
-      } else if (heading == BuiltInAttributeKey.h2) {
-        tagName = HTMLTag.h2;
-      } else if (heading == BuiltInAttributeKey.h3) {
-        tagName = HTMLTag.h3;
-      }
-    } else if (subType == BuiltInAttributeKey.quote) {
-      tagName = HTMLTag.blockQuote;
-    }
+  //   if (subType == BuiltInAttributeKey.bulletedList ||
+  //       subType == BuiltInAttributeKey.numberList) {
+  //     tagName = HTMLTag.list;
+  //   } else if (subType == BuiltInAttributeKey.checkbox) {
+  //     final node = html.Element.html('<input type="checkbox" />');
+  //     if (checked != null && checked) {
+  //       node.attributes['checked'] = 'true';
+  //     }
+  //     childNodes.add(node);
+  //   } else if (subType == BuiltInAttributeKey.heading) {
+  //     if (heading == BuiltInAttributeKey.h1) {
+  //       tagName = HTMLTag.h1;
+  //     } else if (heading == BuiltInAttributeKey.h2) {
+  //       tagName = HTMLTag.h2;
+  //     } else if (heading == BuiltInAttributeKey.h3) {
+  //       tagName = HTMLTag.h3;
+  //     }
+  //   } else if (subType == BuiltInAttributeKey.quote) {
+  //     tagName = HTMLTag.blockQuote;
+  //   }
 
-    for (final op in delta) {
-      if (op is TextInsert) {
-        final attributes = op.attributes;
-        if (attributes != null) {
-          if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.bold] == true) {
-            final strong = html.Element.tag(HTMLTag.strong);
-            strong.append(html.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.underline] == true) {
-            final strong = html.Element.tag(HTMLTag.underline);
-            strong.append(html.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.italic] == true) {
-            final strong = html.Element.tag(HTMLTag.italic);
-            strong.append(html.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.strikethrough] == true) {
-            final strong = html.Element.tag(HTMLTag.del);
-            strong.append(html.Text(op.text));
-            childNodes.add(strong);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.code] == true) {
-            final code = html.Element.tag(HTMLTag.code);
-            code.append(html.Text(op.text));
-            childNodes.add(code);
-          } else if (attributes.length == 1 &&
-              attributes[BuiltInAttributeKey.href] != null) {
-            final anchor = html.Element.tag(HTMLTag.anchor);
-            anchor.attributes['href'] = attributes[BuiltInAttributeKey.href];
-            anchor.append(html.Text(op.text));
-            childNodes.add(anchor);
-          } else {
-            final span = html.Element.tag(HTMLTag.span);
-            final cssString = _attributesToCssStyle(attributes);
-            if (cssString.isNotEmpty) {
-              span.attributes['style'] = cssString;
-            }
-            span.append(html.Text(op.text));
-            childNodes.add(span);
-          }
-        } else {
-          childNodes.add(html.Text(op.text));
-        }
-      }
-    }
+  //   for (final op in delta) {
+  //     if (op is TextInsert) {
+  //       final attributes = op.attributes;
+  //       if (attributes != null) {
+  //         if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.bold] == true) {
+  //           final strong = html.Element.tag(HTMLTag.strong);
+  //           strong.append(html.Text(op.text));
+  //           childNodes.add(strong);
+  //         } else if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.underline] == true) {
+  //           final strong = html.Element.tag(HTMLTag.underline);
+  //           strong.append(html.Text(op.text));
+  //           childNodes.add(strong);
+  //         } else if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.italic] == true) {
+  //           final strong = html.Element.tag(HTMLTag.italic);
+  //           strong.append(html.Text(op.text));
+  //           childNodes.add(strong);
+  //         } else if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.strikethrough] == true) {
+  //           final strong = html.Element.tag(HTMLTag.del);
+  //           strong.append(html.Text(op.text));
+  //           childNodes.add(strong);
+  //         } else if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.code] == true) {
+  //           final code = html.Element.tag(HTMLTag.code);
+  //           code.append(html.Text(op.text));
+  //           childNodes.add(code);
+  //         } else if (attributes.length == 1 &&
+  //             attributes[BuiltInAttributeKey.href] != null) {
+  //           final anchor = html.Element.tag(HTMLTag.anchor);
+  //           anchor.attributes['href'] = attributes[BuiltInAttributeKey.href];
+  //           anchor.append(html.Text(op.text));
+  //           childNodes.add(anchor);
+  //         } else {
+  //           final span = html.Element.tag(HTMLTag.span);
+  //           final cssString = _attributesToCssStyle(attributes);
+  //           if (cssString.isNotEmpty) {
+  //             span.attributes['style'] = cssString;
+  //           }
+  //           span.append(html.Text(op.text));
+  //           childNodes.add(span);
+  //         }
+  //       } else {
+  //         childNodes.add(html.Text(op.text));
+  //       }
+  //     }
+  //   }
 
-    if (tagName == HTMLTag.blockQuote) {
-      final p = html.Element.tag(HTMLTag.paragraph);
-      for (final node in childNodes) {
-        p.append(node);
-      }
-      final blockQuote = html.Element.tag(tagName);
-      blockQuote.append(p);
-      return blockQuote;
-    } else if (!HTMLTag.isTopLevel(tagName)) {
-      final p = html.Element.tag(HTMLTag.paragraph);
-      for (final node in childNodes) {
-        p.append(node);
-      }
-      final result = html.Element.tag(HTMLTag.list);
-      result.append(p);
-      return result;
-    } else {
-      final p = html.Element.tag(tagName);
-      for (final node in childNodes) {
-        p.append(node);
-      }
-      return p;
-    }
-  }
+  //   if (tagName == HTMLTag.blockQuote) {
+  //     final p = html.Element.tag(HTMLTag.paragraph);
+  //     for (final node in childNodes) {
+  //       p.append(node);
+  //     }
+  //     final blockQuote = html.Element.tag(tagName);
+  //     blockQuote.append(p);
+  //     return blockQuote;
+  //   } else if (!HTMLTag.isTopLevel(tagName)) {
+  //     final p = html.Element.tag(HTMLTag.paragraph);
+  //     for (final node in childNodes) {
+  //       p.append(node);
+  //     }
+  //     final result = html.Element.tag(HTMLTag.list);
+  //     result.append(p);
+  //     return result;
+  //   } else {
+  //     final p = html.Element.tag(tagName);
+  //     for (final node in childNodes) {
+  //       p.append(node);
+  //     }
+  //     return p;
+  //   }
+  // }
 }
 
 String stringify(html.Node node) {

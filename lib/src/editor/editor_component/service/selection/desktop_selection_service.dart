@@ -289,7 +289,7 @@ class _DesktopSelectionServiceWidgetState
     final selection = currentSelection.value;
     if (selection == null ||
         (selection.isCollapsed == true &&
-            currentSelectedNodes.first is TextNode)) {
+            currentSelectedNodes.first.delta != null)) {
       _onDoubleTapDown(details);
     }
 
@@ -529,7 +529,7 @@ class _DesktopSelectionServiceWidgetState
     _clearContextMenu();
 
     // For now, only support the text node.
-    if (!currentSelectedNodes.every((element) => element is TextNode)) {
+    if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
     }
 

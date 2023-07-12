@@ -10,7 +10,5 @@ linter:
     - use_decorated_box
 
 analyzer:
-  errors:
-    deprecated_member_use_from_same_package: ignore
   exclude:
     - lib/src/l10n/**

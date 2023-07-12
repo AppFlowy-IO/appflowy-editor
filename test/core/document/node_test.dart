@@ -49,56 +49,56 @@ void main() async {
     });
 
     test('test textNode copyWith', () {
-      final textNode = TextNode(
+      final node = paragraphNode(
+        delta: Delta()..insert('AppFlowy'),
         attributes: {
           'example': 'example',
         },
-        delta: Delta()..insert('AppFlowy'),
       );
-      expect(textNode.toJson(), {
-        'type': 'text',
+      expect(node.toJson(), {
+        'type': 'paragraph',
         'data': {
           'example': 'example',
+          'delta': [
+            {'insert': 'AppFlowy'},
+          ],
         },
-        'delta': [
-          {'insert': 'AppFlowy'},
-        ],
       });
       expect(
-        textNode.copyWith().toJson(),
-        textNode.toJson(),
+        node.copyWith().toJson(),
+        node.toJson(),
       );
 
-      final textNodeWithChildren = TextNode(
-        children: [textNode],
+      final nodeWithChildren = paragraphNode(
+        delta: Delta()..insert('AppFlowy'),
+        children: [node],
         attributes: {
           'example': 'example',
         },
-        delta: Delta()..insert('AppFlowy'),
       );
-      expect(textNodeWithChildren.toJson(), {
-        'type': 'text',
+      expect(nodeWithChildren.toJson(), {
+        'type': 'paragraph',
         'data': {
           'example': 'example',
+          'delta': [
+            {'insert': 'AppFlowy'},
+          ],
         },
-        'delta': [
-          {'insert': 'AppFlowy'},
-        ],
         'children': [
           {
-            'type': 'text',
+            'type': 'paragraph',
             'data': {
               'example': 'example',
+              'delta': [
+                {'insert': 'AppFlowy'},
+              ],
             },
-            'delta': [
-              {'insert': 'AppFlowy'},
-            ],
           },
         ],
       });
       expect(
-        textNodeWithChildren.copyWith().toJson(),
-        textNodeWithChildren.toJson(),
+        nodeWithChildren.copyWith().toJson(),
+        nodeWithChildren.toJson(),
       );
     });
 
@@ -196,11 +196,6 @@ void main() async {
       expect(node.children.length, 1);
       expect(node.children.first.type, 'example');
       expect(node.children.first.attributes, {'example': 'example'});
-    });
-
-    test('test toPlainText', () {
-      final textNode = TextNode.empty()..delta = (Delta()..insert('AppFlowy'));
-      expect(textNode.toPlainText(), 'AppFlowy');
     });
   });
 }

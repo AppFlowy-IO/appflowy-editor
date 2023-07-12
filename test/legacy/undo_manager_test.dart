@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,25 +7,13 @@ void main() async {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  Node createEmptyEditorRoot() {
-    return Node(
-      type: 'editor',
-      children: LinkedList(),
-      attributes: {},
-    );
-  }
-
-  test("HistoryItem #1", () {
-    final document = Document(root: createEmptyEditorRoot());
-    final editorState = EditorState(document: document);
+  test('HistoryItem #1', () {
+    final editorState = EditorState.blank();
 
     final historyItem = HistoryItem();
-    historyItem
-        .add(DeleteOperation([0], [TextNode(delta: Delta()..insert('0'))]));
-    historyItem
-        .add(DeleteOperation([0], [TextNode(delta: Delta()..insert('1'))]));
-    historyItem
-        .add(DeleteOperation([0], [TextNode(delta: Delta()..insert('2'))]));
+    historyItem.add(DeleteOperation([0], [paragraphNode(text: '0')]));
+    historyItem.add(DeleteOperation([0], [paragraphNode(text: '1')]));
+    historyItem.add(DeleteOperation([0], [paragraphNode(text: '2')]));
 
     final transaction = historyItem.toTransaction(editorState);
     assert(isInsertAndPathEqual(transaction.operations[0], [0], '2'));
@@ -34,17 +21,15 @@ void main() async {
     assert(isInsertAndPathEqual(transaction.operations[2], [0], '0'));
   });
 
-  test("HistoryItem #2", () {
-    final document = Document(root: createEmptyEditorRoot());
-    final editorState = EditorState(document: document);
+  test('HistoryItem #2', () {
+    final editorState = EditorState.blank();
 
     final historyItem = HistoryItem();
+    historyItem.add(DeleteOperation([0], [paragraphNode(text: '0')]));
     historyItem
-        .add(DeleteOperation([0], [TextNode(delta: Delta()..insert('0'))]));
-    historyItem
-        .add(UpdateOperation([0], {"subType": "number"}, {"subType": null}));
-    historyItem.add(DeleteOperation([0], [TextNode.empty(), TextNode.empty()]));
-    historyItem.add(DeleteOperation([0], [TextNode.empty()]));
+        .add(UpdateOperation([0], {'subType': 'number'}, {'subType': null}));
+    historyItem.add(DeleteOperation([0], [paragraphNode(), paragraphNode()]));
+    historyItem.add(DeleteOperation([0], [paragraphNode()]));
 
     final transaction = historyItem.toTransaction(editorState);
     assert(isInsertAndPathEqual(transaction.operations[0], [0]));
@@ -53,13 +38,9 @@ void main() async {
     assert(isInsertAndPathEqual(transaction.operations[3], [0], '0'));
   });
 
-  test("HistoryItem sealed", () {
+  test('HistoryItem sealed', () {
     final historyItem = HistoryItem();
-
-    historyItem.add(
-      DeleteOperation([0], [TextNode(delta: Delta()..insert('0'))]),
-    );
-
+    historyItem.add(DeleteOperation([0], [paragraphNode(text: '0')]));
     historyItem.seal();
     expect(historyItem.sealed, true);
   });
@@ -74,8 +55,8 @@ bool isInsertAndPathEqual(Operation operation, Path path, [String? content]) {
     return false;
   }
 
-  final firstNode = operation.nodes.first;
-  if (firstNode is! TextNode) {
+  final delta = operation.nodes.first.delta;
+  if (delta == null) {
     return false;
   }
 
@@ -83,5 +64,5 @@ bool isInsertAndPathEqual(Operation operation, Path path, [String? content]) {
     return true;
   }
 
-  return firstNode.delta.toPlainText() == content;
+  return delta.toPlainText() == content;
 }
