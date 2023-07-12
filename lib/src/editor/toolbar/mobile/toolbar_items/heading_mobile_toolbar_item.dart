@@ -47,6 +47,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarStyle.of(context);
+    final size = MediaQuery.sizeOf(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
       final node =
@@ -54,38 +55,46 @@ class _HeadingMenuState extends State<_HeadingMenu> {
       final isSelected = node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == currentHeading.level;
 
-      return MobileToolbarItemMenuBtn(
-        icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
-        label: Text(currentHeading.label),
-        isSelected: isSelected,
-        onPressed: () {
-          setState(() {
-            widget.editorState.formatNode(
-              widget.selection,
-              (node) => node.copyWith(
-                type: isSelected
-                    ? ParagraphBlockKeys.type
-                    : HeadingBlockKeys.type,
-                attributes: {
-                  HeadingBlockKeys.level: currentHeading.level,
-                  HeadingBlockKeys.backgroundColor:
-                      node.attributes[blockComponentBackgroundColor],
-                  ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
-                },
-              ),
-            );
-          });
-        },
+      return ConstrainedBox(
+        constraints: BoxConstraints.tightFor(
+          // 3 buttons in a row
+          width: (size.width - 4 * style.buttonSpacing) / 3,
+        ),
+        child: MobileToolbarItemMenuBtn(
+          icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
+          label: Text(
+            currentHeading.label,
+            maxLines: 2,
+          ),
+          isSelected: isSelected,
+          onPressed: () {
+            setState(() {
+              widget.editorState.formatNode(
+                widget.selection,
+                (node) => node.copyWith(
+                  type: isSelected
+                      ? ParagraphBlockKeys.type
+                      : HeadingBlockKeys.type,
+                  attributes: {
+                    HeadingBlockKeys.level: currentHeading.level,
+                    HeadingBlockKeys.backgroundColor:
+                        node.attributes[blockComponentBackgroundColor],
+                    ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
+                  },
+                ),
+              );
+            });
+          },
+        ),
       );
     }).toList();
 
-    return GridView(
-      shrinkWrap: true,
-      gridDelegate: buildMobileToolbarMenuGridDelegate(
-        mobileToolbarStyle: style,
-        crossAxisCount: 3,
+    return ConstrainedBox(
+      constraints: BoxConstraints.tightFor(width: size.width),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: btnList,
       ),
-      children: btnList,
     );
   }
 }
