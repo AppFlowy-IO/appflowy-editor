@@ -118,21 +118,50 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                   editorState: widget.editorState,
                   selection: widget.selection,
                   toolbarItems: widget.toolbarItems,
-                  itemOnPressed: (selectedItemIndex) {
+                  closeMenu: () {
+                    if (_showItemMenu) {
+                      setState(() {
+                        _showItemMenu = false;
+                      });
+                    }
+                  },
+                  itemWithMenuOnPressed: (selectedItemIndex) {
                     setState(() {
                       // If last selected item is selected again, toggle item menu
                       if (_selectedToolbarItemIndex == selectedItemIndex) {
                         _showItemMenu = !_showItemMenu;
                       } else {
+                        _selectedToolbarItemIndex = selectedItemIndex;
                         // If not, show item menu
                         _showItemMenu = true;
+                        // close keyboard when menu pop up
+                        widget.editorState.service.keyboardService
+                            ?.closeKeyboard();
                       }
-                      _selectedToolbarItemIndex = selectedItemIndex;
                     });
                   },
                 ),
               ),
-              _CloseKeyboardBtn(widget.editorState),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: VerticalDivider(),
+              ),
+              _showItemMenu
+                  ? IconButton(
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.centerLeft,
+                      onPressed: () {
+                        setState(() {
+                          _showItemMenu = false;
+                          widget.editorState.service.keyboardService!
+                              .enableKeyBoard(widget.selection);
+                        });
+                      },
+                      icon: const AFMobileIcon(
+                        afMobileIcons: AFMobileIcons.close,
+                      ),
+                    )
+                  : _QuitEditingBtn(widget.editorState),
             ],
           ),
         ),
@@ -153,14 +182,16 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
   }
 }
 
-class _CloseKeyboardBtn extends StatelessWidget {
-  const _CloseKeyboardBtn(this.editorState);
+class _QuitEditingBtn extends StatelessWidget {
+  const _QuitEditingBtn(this.editorState);
 
   final EditorState editorState;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      padding: EdgeInsets.zero,
+      alignment: Alignment.centerLeft,
       onPressed: () {
         // clear selection to close keyboard and toolbar
         editorState.selectionService.updateSelection(null);
@@ -173,13 +204,15 @@ class _CloseKeyboardBtn extends StatelessWidget {
 class _ToolbarItemListView extends StatelessWidget {
   const _ToolbarItemListView({
     Key? key,
-    required this.itemOnPressed,
+    required this.itemWithMenuOnPressed,
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
+    required this.closeMenu,
   }) : super(key: key);
 
-  final Function(int index) itemOnPressed;
+  final Function(int index) itemWithMenuOnPressed;
+  final Function() closeMenu;
   final List<MobileToolbarItem> toolbarItems;
   final EditorState editorState;
   final Selection selection;
@@ -194,8 +227,10 @@ class _ToolbarItemListView extends StatelessWidget {
           onPressed: () {
             if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
-              itemOnPressed.call(index);
+              itemWithMenuOnPressed.call(index);
             } else {
+              // close menu if other item's menu is still on the screen
+              closeMenu.call();
               toolbarItems[index].actionHandler?.call(
                     editorState,
                     selection,

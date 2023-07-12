@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 /// [AppFlowyKeyboardService] is responsible for processing shortcut keys,
@@ -34,4 +35,14 @@ abstract class AppFlowyKeyboardService {
     bool showCursor = false,
     UnfocusDisposition disposition = UnfocusDisposition.scope,
   });
+
+  /// Closes the keyboard
+  ///
+  /// Used in mobile
+  void closeKeyboard();
+
+  /// Enable the keyboard in mobile
+  ///
+  /// Used in mobile
+  void enableKeyBoard(Selection selection);
 }

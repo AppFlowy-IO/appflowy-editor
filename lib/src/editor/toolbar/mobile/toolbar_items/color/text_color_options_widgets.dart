@@ -73,6 +73,8 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
                       e.colorHex,
                     );
                   });
+                } else {
+                  // TODO(yijing): handle when no text is selected
                 }
               },
               isSelected: isSelected,
