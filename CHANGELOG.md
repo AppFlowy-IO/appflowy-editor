@@ -1,3 +1,17 @@
+## 1.2.0
+
+_If you are upgrading: please see [`UPGRADING.md`](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/migration.md)._
+
+* feat: added support for RTL and AUTO direction by @zoli in ([#191](https://github.com/AppFlowy-IO/appflowy-editor/pull/191))
+* feat: added support for customizing href behavior by @LucasXu0 in ([#293](https://github.com/AppFlowy-IO/appflowy-editor/pull/293))
+* feat: added support for delete key shortcut by @MayurSMahajan in ([#272](https://github.com/AppFlowy-IO/appflowy-editor/pull/272))
+* feat: added support customize the font family by @LucasXu0 in ([#300](https://github.com/AppFlowy-IO/appflowy-editor/pull/300))
+* fix: slash menu keyword not shows up the option by @johansutrisno in ([#268](https://github.com/AppFlowy-IO/appflowy-editor/pull/268))
+* fix: unable to access the slash menu on web platform by @LucasXu0 in ([#303](https://github.com/AppFlowy-IO/appflowy-editor/pull/303))
+* chore: change windows and linux command for redo by @MayurSMahajan in ([#294](https://github.com/AppFlowy-IO/appflowy-editor/pull/294))
+* chore: optimize the textSpan decorator by @LucasXu0 in ([#290](https://github.com/AppFlowy-IO/appflowy-editor/pull/290))
+* chore: remove the reference of the deprecated values by @LucasXu0 in ([#304](https://github.com/AppFlowy-IO/appflowy-editor/pull/304))
+
 ## 1.1.0
 * feat: support IME by @LucasXu0 in ([#253](https://github.com/AppFlowy-IO/appflowy-editor/pull/253))
 * feat: support text and background color in mobile toolbar by @hyj1204 in ([#233](https://github.com/AppFlowy-IO/appflowy-editor/pull/233))

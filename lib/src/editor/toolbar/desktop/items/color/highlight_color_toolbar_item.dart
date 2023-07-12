@@ -17,7 +17,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
           return highlightColorHex != null;
         });
       });
-      return IconItemWidget(
+      return SVGIconItemWidget(
         iconName: 'toolbar/highlight_color',
         iconSize: const Size.square(14),
         isHighlight: isHighlight,

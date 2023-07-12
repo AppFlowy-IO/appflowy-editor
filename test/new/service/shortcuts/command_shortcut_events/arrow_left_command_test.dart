@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,18 +8,6 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('arrowLeft - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -30,22 +17,19 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     testWidgets('press the left arrow key at the beginning of the document',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
-      await editor.startTesting();
-
-      final selection = Selection.collapse(
-        [0],
-        0,
+      final arrowLeftTest = ArrowTest(
+        text: text,
+        initialSel: Selection.collapse(
+          [0],
+          0,
+        ),
+        expSel: Selection.collapse(
+          [0],
+          0,
+        ),
       );
-      await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
-      expect(editor.selection, selection);
-
-      await editor.dispose();
+      await runArrowLeftTest(tester, arrowLeftTest);
     });
 
     // Before
@@ -54,23 +38,18 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     testWidgets('press the left arrow key at the collapsed selection',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
-      await editor.startTesting();
-
       final selection = Selection.single(
         path: [0],
         startOffset: 0,
         endOffset: 'Welcome'.length,
       );
-      await editor.updateSelection(selection);
+      final arrowLeftTest = ArrowTest(
+        text: text,
+        initialSel: selection,
+        expSel: selection.collapse(atStart: true),
+      );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
-      expect(editor.selection, selection.collapse(atStart: true));
-
-      await editor.dispose();
+      await runArrowLeftTest(tester, arrowLeftTest);
     });
 
     // Before
@@ -114,6 +93,62 @@ void main() async {
       expect(editor.selection, Selection.collapse([0], 0));
 
       await editor.dispose();
+    });
+
+    testWidgets('rtl text', (tester) async {
+      final List<ArrowTest> tests = [
+        ArrowTest(
+          text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
+          }),
+          initialSel: Selection.collapse(
+            [0],
+            0,
+          ),
+          expSel: Selection.collapse(
+            [0],
+            1,
+          ),
+        ),
+        ArrowTest(
+          text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
+          }),
+          initialSel: Selection.collapse(
+            [0],
+            'به ویرایشگر Appflowy خوش آمدید 🔥!'.length,
+          ),
+          expSel: Selection.collapse(
+            [0],
+            'به ویرایشگر Appflowy خوش آمدید 🔥!'.length,
+          ),
+        ),
+        ArrowTest(
+          text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
+          }),
+          initialSel: Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: 'به ویرایشگ'.length,
+          ),
+          expSel: Selection.collapse(
+            [0],
+            'به ویرایشگ'.length,
+          ),
+        ),
+      ];
+
+      for (var i = 0; i < tests.length; i++) {
+        await runArrowLeftTest(
+          tester,
+          tests[i],
+          "Test $i: text='${tests[i].text}'",
+        );
+      }
     });
   });
 }

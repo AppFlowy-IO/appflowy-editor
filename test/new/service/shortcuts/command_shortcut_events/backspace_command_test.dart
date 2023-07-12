@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,18 +9,6 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('backspaceCommand - unit test', () {
     group('backspaceCommand - collapsed selection', () {
       const text = 'Welcome to AppFlowy Editor 🔥!';
@@ -151,6 +138,38 @@ void main() async {
           Selection.collapsed(
             Position(path: [1], offset: 0),
           ),
+        );
+      });
+
+      test("backspace convert bullet list to paragraph but keep direction",
+          () async {
+        String rtlText = 'سلام';
+        final document = Document.blank().addNode(
+          BulletedListBlockKeys.type,
+          initialText: rtlText,
+          decorator: (index, node) => node.updateAttributes(
+            {
+              blockComponentTextDirection: blockComponentTextDirectionRTL,
+            },
+          ),
+        );
+        final editorState = EditorState(document: document);
+
+        // Welcome to AppFlowy Editor 🔥!
+        // |Welcome to AppFlowy Editor 🔥!
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: 0),
+        );
+        editorState.selection = selection;
+
+        final result = convertToParagraphCommand.execute(editorState);
+        expect(result, KeyEventResult.handled);
+
+        final node = editorState.getNodeAtPath([0])!;
+        expect(node.type, ParagraphBlockKeys.type);
+        expect(
+          node.attributes[ParagraphBlockKeys.textDirection],
+          blockComponentTextDirectionRTL,
         );
       });
     });

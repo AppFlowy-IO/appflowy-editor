@@ -44,6 +44,7 @@ extension TextStyleExtensions on TextStyle {
     }
 
     return copyWith(
+      inherit: other.inherit,
       color: other.color,
       backgroundColor: other.backgroundColor,
       fontSize: other.fontSize,
@@ -59,6 +60,7 @@ extension TextStyleExtensions on TextStyle {
       background: other.background,
       shadows: other.shadows,
       fontFeatures: other.fontFeatures,
+      fontVariations: other.fontVariations,
       decoration: TextDecoration.combine([
         if (decoration != null) decoration!,
         if (other.decoration != null) other.decoration!,
@@ -66,6 +68,8 @@ extension TextStyleExtensions on TextStyle {
       decorationColor: other.decorationColor,
       decorationStyle: other.decorationStyle,
       decorationThickness: other.decorationThickness,
+      debugLabel: other.debugLabel,
+      fontFamily: other.fontFamily,
       fontFamilyFallback: other.fontFamilyFallback,
       overflow: other.overflow,
     );

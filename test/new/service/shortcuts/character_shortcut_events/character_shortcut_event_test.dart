@@ -41,7 +41,7 @@ void main() async {
       final myEvent =
           CharacterShortcutEvent(key: "test", character: "a", handler: handler);
 
-      await myEvent.execute(EditorState.empty());
+      await myEvent.execute(EditorState.blank());
 
       expect(handlerCalled, true);
     });

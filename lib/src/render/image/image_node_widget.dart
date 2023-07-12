@@ -137,6 +137,11 @@ class ImageNodeWidgetState extends State<ImageNodeWidget> with SelectableMixin {
     );
   }
 
+  @override
+  TextDirection textDirection() {
+    return TextDirection.ltr;
+  }
+
   Widget _buildResizableImage(BuildContext context) {
     final networkImage = Image.network(
       widget.src,

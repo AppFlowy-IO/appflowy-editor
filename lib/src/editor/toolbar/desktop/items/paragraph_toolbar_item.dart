@@ -8,7 +8,8 @@ final ToolbarItem paragraphItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'paragraph';
-    return IconItemWidget(
+    final delta = (node.delta ?? Delta()).toJson();
+    return SVGIconItemWidget(
       iconName: 'toolbar/text',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
@@ -18,9 +19,11 @@ final ToolbarItem paragraphItem = ToolbarItem(
         (node) => node.copyWith(
           type: ParagraphBlockKeys.type,
           attributes: {
-            'delta': (node.delta ?? Delta()).toJson(),
-            ParagraphBlockKeys.backgroundColor:
+            blockComponentDelta: delta,
+            blockComponentBackgroundColor:
                 node.attributes[blockComponentBackgroundColor],
+            blockComponentTextDirection:
+                node.attributes[blockComponentTextDirection],
           },
         ),
       ),

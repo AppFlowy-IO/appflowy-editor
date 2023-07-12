@@ -11,11 +11,18 @@ class TodoListBlockKeys {
   ///
   /// The value is a boolean.
   static const String checked = 'checked';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node todoListNode({
   required bool checked,
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
@@ -23,8 +30,9 @@ Node todoListNode({
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
-      TodoListBlockKeys.checked: checked,
       ...attributes,
+      TodoListBlockKeys.checked: checked,
+      if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -94,8 +102,9 @@ class _TodoListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -112,12 +121,18 @@ class _TodoListBlockComponentWidgetState
 
   @override
   Widget buildComponent(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: textDirection,
         children: [
           widget.iconBuilder != null
               ? widget.iconBuilder!(context, node)
@@ -131,6 +146,7 @@ class _TodoListBlockComponentWidgetState
               node: widget.node,
               editorState: editorState,
               placeholderText: placeholderText,
+              textDirection: textDirection,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle).updateTextStyle(
                         widget.textStyleBuilder?.call(checked) ??
@@ -154,7 +170,13 @@ class _TodoListBlockComponentWidgetState
       );
     }
 
-    return child;
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
+    );
   }
 
   Future<void> checkOrUncheck() async {

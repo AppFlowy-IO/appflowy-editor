@@ -14,7 +14,7 @@ final highlightItem = ToolbarItem(
         (attributes) => attributes['href'] != null,
       );
     });
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/link',
       isHighlight: isHighlight,
       highlightColor: highlightColor,

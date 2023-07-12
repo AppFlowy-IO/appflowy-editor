@@ -8,7 +8,7 @@ final ToolbarItem bulletedListItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'bulleted_list';
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/bulleted_list',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
