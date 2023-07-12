@@ -212,7 +212,7 @@ void main() async {
 
       await editor.pressKey(
         key: LogicalKeyboardKey.arrowLeft,
-        isControlPressed: !Platform.isMacOS,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
       );
 
@@ -246,7 +246,7 @@ void main() async {
 
       await editor.pressKey(
         key: LogicalKeyboardKey.arrowLeft,
-        isControlPressed: !Platform.isMacOS,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
         isMetaPressed: Platform.isMacOS,
         isShiftPressed: true,
       );
