@@ -32,7 +32,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 6,
           isActive: onlyShowInTextType,
-          builder: (context, editorState) {
+          builder: (context, editorState, highlightColor) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every(
@@ -42,9 +42,10 @@ class _TextDirectionToolbarItem extends ToolbarItem {
               iconBuilder: (_) => Icon(
                 icon,
                 size: 16,
-                color: isHighlight ? Colors.lightBlue : Colors.white,
+                color: isHighlight ? highlightColor : Colors.white,
               ),
               isHighlight: isHighlight,
+              highlightColor: highlightColor,
               tooltip: tooltip,
               onPressed: () => editorState.formatNode(
                 selection,

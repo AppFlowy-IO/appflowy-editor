@@ -8,12 +8,14 @@ class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
     this.backgroundColor = Colors.black,
+    required this.toolbarActiveColor,
     required this.items,
     required this.editorState,
   });
 
   final List<ToolbarItem> items;
   final Color backgroundColor;
+  final Color toolbarActiveColor;
   final EditorState editorState;
 
   @override
@@ -40,7 +42,11 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
             children: activeItems.map((item) {
               final builder = item.builder;
               return Center(
-                child: builder!(context, widget.editorState),
+                child: builder!(
+                  context,
+                  widget.editorState,
+                  widget.toolbarActiveColor,
+                ),
               );
             }).toList(growable: false),
           ),

@@ -4,7 +4,7 @@ final ToolbarItem paragraphItem = ToolbarItem(
   id: 'editor.paragraph',
   group: 1,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState) {
+  builder: (context, editorState, highlightColor) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'paragraph';
@@ -12,6 +12,7 @@ final ToolbarItem paragraphItem = ToolbarItem(
     return SVGIconItemWidget(
       iconName: 'toolbar/text',
       isHighlight: isHighlight,
+      highlightColor: highlightColor,
       tooltip: AppFlowyEditorLocalizations.current.text,
       onPressed: () => editorState.formatNode(
         selection,

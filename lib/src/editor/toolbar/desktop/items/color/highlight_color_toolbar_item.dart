@@ -6,7 +6,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
     id: 'editor.highlightColor',
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState) {
+    builder: (context, editorState, highlightColor) {
       String? highlightColorHex;
 
       final selection = editorState.selection!;
@@ -21,6 +21,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
         iconName: 'toolbar/highlight_color',
         iconSize: const Size.square(14),
         isHighlight: isHighlight,
+        highlightColor: highlightColor,
         tooltip: AppFlowyEditorLocalizations.current.highlightColor,
         onPressed: () {
           showColorMenu(
