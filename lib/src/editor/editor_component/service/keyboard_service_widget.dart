@@ -251,7 +251,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     // clear the selection when the focus is lost.
     if (!focusNode.hasFocus) {
-      if (PlatformExtension.isDesktop) {
+      if (PlatformExtension.isDesktopOrWeb) {
         if (keepEditorFocusNotifier.value > 0) {
           return;
         }
