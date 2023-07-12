@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/internal_key_event_handlers/whitespace_handler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../new/infra/testable_editor.dart';
@@ -132,7 +131,7 @@ void main() async {
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      for (final symbol in unCheckboxListSymbols) {
+      for (final symbol in ['[]', '-[]']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
@@ -152,7 +151,7 @@ void main() async {
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      for (final symbol in checkboxListSymbols) {
+      for (final symbol in ['[x]', '-[x]']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
@@ -170,7 +169,7 @@ void main() async {
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      for (final symbol in bulletedListSymbols) {
+      for (final symbol in ['*', '-']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );

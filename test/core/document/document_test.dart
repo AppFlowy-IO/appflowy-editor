@@ -49,12 +49,12 @@ void main() async {
 
     test('updateText', () {
       final delta = Delta()..insert('Editor');
-      final textNode = TextNode(delta: delta);
-      final document = Document(root: Node(type: 'root'));
+      final textNode = paragraphNode(delta: delta);
+      final document = Document.blank();
       document.insert([0], [textNode]);
       document.updateText([0], Delta()..insert('AppFlowy'));
       expect(
-        (document.nodeAtPath([0]) as TextNode).toPlainText(),
+        document.nodeAtPath([0])?.delta?.toPlainText(),
         'AppFlowyEditor',
       );
     });
