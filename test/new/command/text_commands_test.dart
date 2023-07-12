@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('formatDelta', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -175,6 +162,29 @@ void main() async {
         text.substring(welcome.length),
       );
       expect(editorState.getNodeAtPath([1, 0])?.delta?.toPlainText(), text);
+    });
+
+    test('insert new line preserve direction', () async {
+      final document = Document.blank().addParagraph(
+        initialText: text,
+        decorator: (index, node) => node.updateAttributes(
+          {ParagraphBlockKeys.textDirection: blockComponentTextDirectionRTL},
+        ),
+      );
+      final editorState = EditorState(document: document);
+
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+      await editorState.insertNewLine();
+
+      final textDirection = editorState
+          .getNodeAtPath([1])?.attributes[ParagraphBlockKeys.textDirection];
+      expect(
+        textDirection,
+        blockComponentTextDirectionRTL,
+      );
     });
   });
 

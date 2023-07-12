@@ -6,24 +6,28 @@ class ParagraphBlockKeys {
 
   static const String type = 'paragraph';
 
-  static const String delta = 'delta';
+  static const String delta = blockComponentDelta;
 
   static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node paragraphNode({
   String? text,
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
-  attributes ??= {
-    ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? ''))).toJson(),
-  };
   return Node(
     type: ParagraphBlockKeys.type,
     attributes: {
-      ...attributes,
+      ParagraphBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      if (attributes != null) ...attributes,
+      if (textDirection != null)
+        ParagraphBlockKeys.textDirection: textDirection,
     },
     children: children,
   );
@@ -77,8 +81,9 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -91,21 +96,39 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget buildComponent(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
-      child: AppFlowyRichText(
-        key: forwardKey,
-        node: widget.node,
-        editorState: editorState,
-        placeholderText: placeholderText,
-        textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-          textStyle,
-        ),
-        placeholderTextSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-          placeholderTextStyle,
-        ),
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        textDirection: textDirection,
+        children: [
+          AppFlowyRichText(
+            key: forwardKey,
+            node: widget.node,
+            editorState: editorState,
+            placeholderText: placeholderText,
+            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+              textStyle,
+            ),
+            placeholderTextSpanDecorator: (textSpan) =>
+                textSpan.updateTextStyle(
+              placeholderTextStyle,
+            ),
+            textDirection: textDirection,
+          ),
+        ],
       ),
     );
     if (showActions) {
@@ -115,6 +138,13 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         child: child,
       );
     }
-    return child;
+
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
+    );
   }
 }

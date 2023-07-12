@@ -1,4 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// Show the slash menu
 ///
@@ -49,7 +51,9 @@ Future<bool> _showSlashMenu(
   }
 
   // delete the selection
-  await editorState.deleteSelection(editorState.selection!);
+  if (!selection.isCollapsed) {
+    await editorState.deleteSelection(selection);
+  }
 
   final afterSelection = editorState.selection;
   if (afterSelection == null || !afterSelection.isCollapsed) {
@@ -59,7 +63,16 @@ Future<bool> _showSlashMenu(
 
   // insert the slash character
   if (shouldInsertSlash) {
-    await editorState.insertTextAtPosition('/', position: selection.start);
+    if (kIsWeb) {
+      // Have no idea why the focus will lose after inserting on web.
+      keepEditorFocusNotifier.value += 1;
+      await editorState.insertTextAtPosition('/', position: selection.start);
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => keepEditorFocusNotifier.value -= 1,
+      );
+    } else {
+      await editorState.insertTextAtPosition('/', position: selection.start);
+    }
   }
 
   // show the slash menu

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,18 +10,6 @@ import '../../../util/util.dart';
 // single | means the cursor
 // double | means the selection
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('arrowRight - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -32,22 +19,19 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!|
     testWidgets('press the right arrow key at the ending of the document',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
-      await editor.startTesting();
-
-      final selection = Selection.collapse(
-        [0],
-        text.length,
+      final arrowLeftTest = ArrowTest(
+        text: text,
+        initialSel: Selection.collapse(
+          [0],
+          text.length,
+        ),
+        expSel: Selection.collapse(
+          [0],
+          text.length,
+        ),
       );
-      await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
-      expect(editor.selection, selection);
-
-      await editor.dispose();
+      await runArrowRightTest(tester, arrowLeftTest);
     });
 
     // Before
@@ -56,23 +40,18 @@ void main() async {
     // Welcome| to AppFlowy Editor 🔥!
     testWidgets('press the right arrow key at the collapsed selection',
         (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
-      await editor.startTesting();
-
       final selection = Selection.single(
         path: [0],
         startOffset: 0,
         endOffset: 'Welcome'.length,
       );
-      await editor.updateSelection(selection);
+      final arrowLeftTest = ArrowTest(
+        text: text,
+        initialSel: selection,
+        expSel: selection.collapse(atStart: false),
+      );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
-      expect(editor.selection, selection.collapse(atStart: false));
-
-      await editor.dispose();
+      await runArrowRightTest(tester, arrowLeftTest);
     });
 
     // Before
@@ -116,6 +95,48 @@ void main() async {
       expect(editor.selection, Selection.collapse([1], text.length));
 
       await editor.dispose();
+    });
+
+    testWidgets('rtl text', (tester) async {
+      final List<ArrowTest> tests = [
+        ArrowTest(
+          text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
+          }),
+          initialSel: Selection.collapse(
+            [0],
+            0,
+          ),
+          expSel: Selection.collapse(
+            [0],
+            0,
+          ),
+        ),
+        ArrowTest(
+          text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionRTL,
+          }),
+          initialSel: Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: 'به ویرایشگ'.length,
+          ),
+          expSel: Selection.collapse(
+            [0],
+            0,
+          ),
+        ),
+      ];
+
+      for (var i = 0; i < tests.length; i++) {
+        await runArrowRightTest(
+          tester,
+          tests[i],
+          "Test $i: text='${tests[i].text}'",
+        );
+      }
     });
 
     // Before

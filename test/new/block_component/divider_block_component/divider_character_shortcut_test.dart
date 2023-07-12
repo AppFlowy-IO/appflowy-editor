@@ -1,28 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../util/util.dart';
 import '../test_character_shortcut.dart';
 
 void main() async {
   group(
     'divider_character_shortcut.dart',
     () {
-      setUpAll(() {
-        if (kDebugMode) {
-          activateLog();
-        }
-      });
-
-      tearDownAll(
-        () {
-          if (kDebugMode) {
-            deactivateLog();
-          }
-        },
-      );
-
       // Before
       // --
       // After

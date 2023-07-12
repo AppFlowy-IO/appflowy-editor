@@ -30,7 +30,11 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
     assert(false, 'arrow right key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.character);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.character);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.character);
+  }
   return KeyEventResult.handled;
 };
 
@@ -48,7 +52,11 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
     assert(false, 'arrow right key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.line);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.line);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.line);
+  }
   return KeyEventResult.handled;
 };
 
@@ -67,7 +75,11 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.word);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.word);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.word);
+  }
   return KeyEventResult.handled;
 };
 
@@ -86,10 +98,14 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+  var forward = false;
+  if (isRTL(editorState)) {
+    forward = true;
+  }
   final end = selection.end.moveHorizontal(
     editorState,
     selectionRange: SelectionRange.word,
-    moveLeft: false,
+    forward: forward,
   );
   if (end == null) {
     return KeyEventResult.ignored;
@@ -115,7 +131,11 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.moveHorizontal(editorState, moveLeft: false);
+  var forward = false;
+  if (isRTL(editorState)) {
+    forward = true;
+  }
+  final end = selection.end.moveHorizontal(editorState, forward: forward);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -144,7 +164,9 @@ CommandShortcutEventHandler _moveCursorEndSelectCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
   var end = selection.end;
-  final position = nodes.last.selectable?.end();
+  final position = isRTL(editorState)
+      ? nodes.last.selectable?.start()
+      : nodes.last.selectable?.end();
   if (position != null) {
     end = position;
   }

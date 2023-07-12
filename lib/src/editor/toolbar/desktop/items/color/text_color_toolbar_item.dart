@@ -8,7 +8,7 @@ ToolbarItem buildTextColorItem({
     id: 'editor.textColor',
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState) {
+    builder: (context, editorState, highlightColor) {
       String? textColorHex;
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
@@ -18,9 +18,10 @@ ToolbarItem buildTextColorItem({
           return (textColorHex != null);
         });
       });
-      return IconItemWidget(
+      return SVGIconItemWidget(
         iconName: 'toolbar/text_color',
         isHighlight: isHighlight,
+        highlightColor: highlightColor,
         iconSize: const Size.square(14),
         tooltip: AppFlowyEditorLocalizations.current.textColor,
         onPressed: () {

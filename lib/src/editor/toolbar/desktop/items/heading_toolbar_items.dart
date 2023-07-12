@@ -12,14 +12,16 @@ class _HeadingToolbarItem extends ToolbarItem {
           id: 'editor.h$level',
           group: 1,
           isActive: onlyShowInSingleSelectionAndTextType,
-          builder: (context, editorState) {
+          builder: (context, editorState, highlightColor) {
             final selection = editorState.selection!;
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =
                 node.type == 'heading' && node.attributes['level'] == level;
-            return IconItemWidget(
+            final delta = (node.delta ?? Delta()).toJson();
+            return SVGIconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
+              highlightColor: highlightColor,
               tooltip: levelToTooltips(level),
               onPressed: () => editorState.formatNode(
                 selection,
@@ -29,9 +31,11 @@ class _HeadingToolbarItem extends ToolbarItem {
                       : HeadingBlockKeys.type,
                   attributes: {
                     HeadingBlockKeys.level: level,
-                    HeadingBlockKeys.backgroundColor:
+                    blockComponentBackgroundColor:
                         node.attributes[blockComponentBackgroundColor],
-                    'delta': (node.delta ?? Delta()).toJson(),
+                    blockComponentTextDirection:
+                        node.attributes[blockComponentTextDirection],
+                    blockComponentDelta: delta,
                   },
                 ),
               ),
