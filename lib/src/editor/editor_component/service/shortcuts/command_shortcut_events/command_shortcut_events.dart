@@ -15,3 +15,4 @@ export 'show_link_menu_command.dart';
 export 'copy_command.dart';
 export 'paste_command.dart';
 export 'delete_command.dart';
+export 'remove_word_command.dart';
