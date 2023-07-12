@@ -6,7 +6,7 @@ final highlightItem = ToolbarItem(
   id: 'editor.highlight',
   group: 5,
   isActive: (editorState) => editorState.selection?.isSingle ?? false,
-  builder: (context, editorState) {
+  builder: (context, editorState, highlightColor) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
     final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
@@ -17,6 +17,7 @@ final highlightItem = ToolbarItem(
     return SVGIconItemWidget(
       iconName: 'toolbar/link',
       isHighlight: isHighlight,
+      highlightColor: highlightColor,
       tooltip:
           '${AppFlowyEditorLocalizations.current.link}${shortcutTooltips("⌘ + K", "CTRL + K", "CTRL + K")}',
       onPressed: () {},
