@@ -771,21 +771,21 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `RTL`
-  String get rtl {
-    return Intl.message(
-      'RTL',
-      name: 'rtl',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `LTR`
   String get ltr {
     return Intl.message(
       'LTR',
       name: 'ltr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RTL`
+  String get rtl {
+    return Intl.message(
+      'RTL',
+      name: 'rtl',
       desc: '',
       args: [],
     );

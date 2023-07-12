@@ -108,5 +108,8 @@
   "customColor": "Custom color",
   "hexValue": "Hex value",
   "opacity": "Opacity",
-  "resetToDefaultColor": "Reset to default color"
+  "resetToDefaultColor": "Reset to default color",
+  "ltr": "LTR",
+  "rtl": "RTL",
+  "auto": "Auto"
 }
