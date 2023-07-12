@@ -84,5 +84,43 @@ void main() async {
 
       await editor.dispose();
     });
+
+    //shift+home is only supported in windows and linux
+    // Before
+    // Welcome to AppFlowy Editor 🔥!|
+    // After
+    // |Welcome to AppFlowy Editor 🔥!|
+    testWidgets('press the shift + home to select till beginning of line',
+        (tester) async {
+      if (!Platform.isMacOS) {
+        final editor = tester.editor
+          ..addParagraph(
+            initialText: text,
+          );
+        await editor.startTesting();
+
+        final selection = Selection.collapse(
+          [0],
+          text.length,
+        );
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.home,
+          isShiftPressed: true,
+        );
+
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [0],
+            startOffset: text.length,
+            endOffset: 0,
+          ),
+        );
+
+        await editor.dispose();
+      }
+    });
   });
 }
