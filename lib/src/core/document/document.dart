@@ -119,16 +119,17 @@ class Document {
     return true;
   }
 
-  /// Updates the [TextNode] at the given [Path]
+  /// Updates the [Node] with [Delta] at the given [Path]
   bool updateText(Path path, Delta delta) {
     if (path.isEmpty) {
       return false;
     }
     final target = nodeAtPath(path);
-    if (target == null || target is! TextNode) {
+    final targetDelta = target?.delta;
+    if (target == null || targetDelta == null) {
       return false;
     }
-    target.delta = target.delta.compose(delta);
+    target.updateAttributes({'delta': (targetDelta.compose(delta)).toJson()});
     return true;
   }
 

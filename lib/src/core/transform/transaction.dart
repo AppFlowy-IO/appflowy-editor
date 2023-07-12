@@ -125,12 +125,6 @@ class Transaction {
     insertNode(path, node, deepCopy: false);
   }
 
-  /// Update the [TextNode]s with the given [Delta].
-  void updateText(TextNode textNode, Delta delta) {
-    final inverted = delta.invert(textNode.delta);
-    add(UpdateTextOperation(textNode.path, delta, inverted));
-  }
-
   /// Returns the JSON representation of the transaction.
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -551,126 +545,6 @@ extension TextTransaction on Transaction {
     markNeedsComposing = true;
     _composeMap.putIfAbsent(node, () => []).add(delta);
   }
-
-  // the below code is deprecated.
-  void splitText(TextNode textNode, int offset) {
-    final delta = textNode.delta;
-    final second = delta.slice(offset, delta.length);
-    final path = textNode.path.next;
-    deleteText(textNode, offset, delta.length);
-    insertNode(
-      path,
-      TextNode(
-        attributes: textNode.attributes,
-        delta: second,
-      ),
-    );
-    afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: 0,
-      ),
-    );
-  }
-
-  /// Inserts the text content at a specified index.
-  ///
-  /// Optionally, you may specify formatting attributes that are applied to the inserted string.
-  /// By default, the formatting attributes before the insert position will be reused.
-  // void insertText(
-  //   TextNode textNode,
-  //   int index,
-  //   String text, {
-  //   Attributes? attributes,
-  // }) {
-  //   var newAttributes = attributes;
-  //   if (index != 0 && attributes == null) {
-  //     newAttributes =
-  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-  //     if (newAttributes != null) {
-  //       newAttributes = {...newAttributes}; // make a copy
-  //     }
-  //   }
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..insert(text, attributes: newAttributes),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(path: textNode.path, offset: index + text.length),
-  //   );
-  // }
-
-  /// Assigns a formatting attributes to a range of text.
-  // void formatText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  //   Attributes attributes,
-  // ) {
-  //   afterSelection = beforeSelection;
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..retain(length, attributes: attributes),
-  //   );
-  // }
-
-  // /// Deletes the text of specified length starting at index.
-  // void deleteText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  // ) {
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..delete(length),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(path: textNode.path, offset: index),
-  //   );
-  // }
-
-  /// Replaces the text of specified length starting at index.
-  ///
-  /// Optionally, you may specify formatting attributes that are applied to the inserted string.
-  /// By default, the formatting attributes before the insert position will be reused.
-  // void replaceText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  //   String text, {
-  //   Attributes? attributes,
-  // }) {
-  //   var newAttributes = attributes;
-  //   if (index != 0 && attributes == null) {
-  //     newAttributes =
-  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-  //     if (newAttributes == null) {
-  //       final slicedDelta = textNode.delta.slice(index, index + length);
-  //       if (slicedDelta.isNotEmpty) {
-  //         newAttributes = slicedDelta.first.attributes;
-  //       }
-  //     }
-  //   }
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..delete(length)
-  //       ..insert(text, attributes: {...newAttributes ?? {}}),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(
-  //       path: textNode.path,
-  //       offset: index + text.length,
-  //     ),
-  //   );
-  // }
 }
 
 extension on Delta {

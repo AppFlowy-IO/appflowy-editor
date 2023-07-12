@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/src/infra/log.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'test_editor.dart';
+
+import '../new/infra/testable_editor.dart';
 
 void main() async {
   group('log.dart', () {

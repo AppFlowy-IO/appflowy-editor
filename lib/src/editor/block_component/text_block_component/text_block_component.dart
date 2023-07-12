@@ -20,13 +20,12 @@ Node paragraphNode({
   Attributes? attributes,
   Iterable<Node> children = const [],
 }) {
-  attributes ??= {
-    ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? ''))).toJson(),
-  };
   return Node(
     type: ParagraphBlockKeys.type,
     attributes: {
-      ...attributes,
+      ParagraphBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      if (attributes != null) ...attributes,
       if (textDirection != null)
         ParagraphBlockKeys.textDirection: textDirection,
     },
