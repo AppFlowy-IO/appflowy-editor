@@ -1,23 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../new/infra/testable_editor.dart';
-import '../../new/util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   group('enter_without_shift_in_text_node_handler.dart', () {
     testWidgets('Presses enter key in empty document', (tester) async {

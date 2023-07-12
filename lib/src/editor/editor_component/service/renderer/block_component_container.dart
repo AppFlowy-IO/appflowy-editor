@@ -28,7 +28,7 @@ class BlockComponentContainer extends StatefulWidget {
 class BlockComponentContainerState extends State<BlockComponentContainer> {
   @override
   Widget build(BuildContext context) {
-    Widget child = ChangeNotifierProvider<Node>.value(
+    return ChangeNotifierProvider<Node>.value(
       value: widget.node,
       child: Consumer<Node>(
         builder: (_, __, ___) {
@@ -39,13 +39,6 @@ class BlockComponentContainerState extends State<BlockComponentContainer> {
           );
         },
       ),
-    );
-
-    // TODO: move the padding to each block component.
-    final padding = widget.configuration.padding(widget.node);
-    return Padding(
-      padding: padding,
-      child: child,
     );
   }
 }

@@ -6,18 +6,27 @@ class BulletedListBlockKeys {
   BulletedListBlockKeys._();
 
   static const String type = 'bulleted_list';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node bulletedListNode({
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
+  attributes ??= {BulletedListBlockKeys.delta: (delta ?? Delta()).toJson()};
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null)
+        BulletedListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -77,8 +86,9 @@ class _BulletedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -91,14 +101,23 @@ class _BulletedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  String? lastStartText;
+  TextDirection? lastDirection;
+
   @override
   Widget buildComponent(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: textDirection,
         children: [
           widget.iconBuilder != null
               ? widget.iconBuilder!(context, node)
@@ -119,6 +138,7 @@ class _BulletedListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              textDirection: textDirection,
             ),
           ),
         ],
@@ -133,7 +153,13 @@ class _BulletedListBlockComponentWidgetState
       );
     }
 
-    return child;
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
+    );
   }
 }
 

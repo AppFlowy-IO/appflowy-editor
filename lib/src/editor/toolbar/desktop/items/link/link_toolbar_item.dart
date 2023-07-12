@@ -16,7 +16,7 @@ final linkItem = ToolbarItem(
       );
     });
 
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/link',
       isHighlight: isHref,
       tooltip: AppFlowyEditorLocalizations.current.link,

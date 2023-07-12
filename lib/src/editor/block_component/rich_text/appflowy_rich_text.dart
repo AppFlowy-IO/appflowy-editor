@@ -33,6 +33,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textSpanDecorator,
     this.placeholderText = ' ',
     this.placeholderTextSpanDecorator,
+    this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
     required this.node,
     required this.editorState,
@@ -69,6 +70,7 @@ class AppFlowyRichText extends StatefulWidget {
   /// You can use this to customize the text span for custom attributes
   ///   or override the existing one.
   final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
+  final TextDirection textDirection;
 
   @override
   State<AppFlowyRichText> createState() => _AppFlowyRichTextState();
@@ -128,6 +130,14 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             Rect.zero,
           ) ??
           Offset.zero;
+      if (textDirection() == TextDirection.rtl) {
+        if (widget.placeholderText.trim().isNotEmpty) {
+          cursorOffset = cursorOffset.translate(
+            _placeholderRenderParagraph?.size.width ?? 0,
+            0,
+          );
+        }
+      }
     }
     if (widget.cursorHeight != null && cursorHeight != null) {
       cursorOffset = Offset(
@@ -208,6 +218,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return _renderParagraph.localToGlobal(offset);
   }
 
+  @override
+  TextDirection textDirection() {
+    return widget.textDirection;
+  }
+
   Widget _buildPlaceholderText(BuildContext context) {
     final textSpan = getPlaceholderTextSpan();
     return RichText(
@@ -219,6 +234,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
+      textDirection: textDirection(),
     );
   }
 
@@ -233,6 +249,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       text: widget.textSpanDecorator != null
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
+      textDirection: textDirection(),
     );
   }
 
@@ -361,7 +378,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 }
 
-extension FlowyRichTextAttributes on Attributes {
+extension AppFlowyRichTextAttributes on Attributes {
   bool get bold => this[AppFlowyRichTextKeys.bold] == true;
 
   bool get italic => this[AppFlowyRichTextKeys.italic] == true;

@@ -352,9 +352,7 @@ const nestedDelta = {
         'type': 'image',
         'data': {
           'url': 'https://richtexteditor.com/images/editor-image.png',
-          'align': 'center',
-          'height': null,
-          'width': null,
+          'align': 'center'
         }
       },
       {
@@ -403,9 +401,7 @@ const nestedDelta = {
             'type': 'image',
             'data': {
               'url': 'https://richtexteditor.com/images/editor-image.png',
-              'align': 'center',
-              'height': null,
-              'width': null,
+              'align': 'center'
             }
           }
         ],

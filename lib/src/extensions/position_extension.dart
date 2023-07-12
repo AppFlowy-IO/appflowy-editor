@@ -9,7 +9,7 @@ enum SelectionRange {
 extension PositionExtension on Position {
   Position? moveHorizontal(
     EditorState editorState, {
-    bool moveLeft = true,
+    bool forward = true,
     SelectionRange selectionRange = SelectionRange.character,
   }) {
     final node = editorState.document.nodeAtPath(path);
@@ -17,13 +17,13 @@ extension PositionExtension on Position {
       return null;
     }
 
-    if (moveLeft && offset == 0) {
+    if (forward && offset == 0) {
       final previousEnd = node.previous?.selectable?.end();
       if (previousEnd != null) {
         return previousEnd;
       }
       return null;
-    } else if (!moveLeft) {
+    } else if (!forward) {
       final end = node.selectable?.end();
       if (end != null && offset >= end.offset) {
         return node.next?.selectable?.start();
@@ -36,7 +36,7 @@ extension PositionExtension on Position {
         if (delta != null) {
           return Position(
             path: path,
-            offset: moveLeft
+            offset: forward
                 ? delta.prevRunePosition(offset)
                 : delta.nextRunePosition(offset),
           );
@@ -46,7 +46,7 @@ extension PositionExtension on Position {
       case SelectionRange.word:
         final delta = node.delta;
         if (delta != null) {
-          final result = moveLeft
+          final result = forward
               ? node.selectable?.getWordBoundaryInPosition(
                   Position(
                     path: path,
@@ -55,7 +55,7 @@ extension PositionExtension on Position {
                 )
               : node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
-            return moveLeft ? result.start : result.end;
+            return forward ? result.start : result.end;
           }
         }
 

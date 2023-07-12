@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../../util/util.dart';
 
 void main() async {
   group('format italic', () {
-    setUpAll(() {
-      if (kDebugMode) {
-        activateLog();
-      }
-    });
-
-    tearDownAll(() {
-      if (kDebugMode) {
-        deactivateLog();
-      }
-    });
-
     group('by wrapping with single underscore', () {
       // Before
       // _AppFlowy|

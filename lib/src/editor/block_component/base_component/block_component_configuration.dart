@@ -5,13 +5,24 @@ import 'package:flutter/material.dart';
 class BlockComponentConfiguration {
   const BlockComponentConfiguration({
     this.padding = _padding,
+    this.indentPadding = _indentPadding,
     this.placeholderText = _placeholderText,
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
   });
 
   /// The padding of a block component.
+  ///
+  /// It works only for the block component itself, not for the children.
   final EdgeInsets Function(Node node) padding;
+
+  /// The padding of a block component.
+  ///
+  /// It works only for the block that needs to be indented.
+  final EdgeInsets Function(
+    Node node,
+    TextDirection textDirection,
+  ) indentPadding;
 
   /// The text style of a block component.
   final TextStyle Function(Node node) textStyle;
@@ -55,6 +66,15 @@ mixin BlockComponentConfigurable<T extends StatefulWidget> on State<T> {
 
 EdgeInsets _padding(Node node) {
   return const EdgeInsets.symmetric(vertical: 4.0);
+}
+
+EdgeInsets _indentPadding(Node node, TextDirection textDirection) {
+  switch (textDirection) {
+    case TextDirection.ltr:
+      return const EdgeInsets.only(left: 30.0);
+    case TextDirection.rtl:
+      return const EdgeInsets.only(right: 30.0);
+  }
 }
 
 TextStyle _textStyle(Node node) {

@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class IconItemWidget extends StatelessWidget {
-  const IconItemWidget({
+class SVGIconItemWidget extends StatelessWidget {
+  const SVGIconItemWidget({
     super.key,
     this.size = const Size.square(30.0),
     this.iconSize = const Size.square(18.0),

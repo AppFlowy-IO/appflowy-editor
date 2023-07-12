@@ -47,10 +47,19 @@ extension TextTransforms on EditorState {
     }
 
     final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
+    final Map<String, dynamic> attributes = {
+      'delta': slicedDelta.toJson(),
+    };
+
+    // Copy the text direction from the current node.
+    final textDirection =
+        node.attributes[blockComponentTextDirection] as String?;
+    if (textDirection != null) {
+      attributes[blockComponentTextDirection] = textDirection;
+    }
+
     final insertedNode = paragraphNode(
-      attributes: {
-        'delta': slicedDelta.toJson(),
-      },
+      attributes: attributes,
       children: children,
     );
     nodeBuilder ??= (node) => node.copyWith();

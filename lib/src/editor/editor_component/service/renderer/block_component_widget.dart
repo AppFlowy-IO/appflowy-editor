@@ -68,7 +68,8 @@ class _BlockComponentStatefulWidgetState
 }
 
 mixin NestedBlockComponentStatefulWidgetMixin<
-    T extends BlockComponentStatefulWidget> on State<T>, BackgroundColorMixin {
+        T extends BlockComponentStatefulWidget>
+    on State<T>, BlockComponentBackgroundColorMixin {
   late final editorState = Provider.of<EditorState>(context, listen: false);
   bool get showActions => widget.showActions && widget.actionBuilder != null;
 

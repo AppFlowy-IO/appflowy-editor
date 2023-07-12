@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('deleteSelection', () {
     test('the selection is collapsed', () async {
       final document = Document.blank().addParagraphs(

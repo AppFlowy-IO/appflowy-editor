@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../../util/util.dart';
 
 void main() async {
   group('format the text surrounded by single tilde to strikethrough', () {
-    setUpAll(() {
-      if (kDebugMode) {
-        activateLog();
-      }
-    });
-
-    tearDownAll(() {
-      if (kDebugMode) {
-        deactivateLog();
-      }
-    });
-
     // Before
     // ~AppFlowy|
     // After

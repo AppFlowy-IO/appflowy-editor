@@ -13,22 +13,27 @@ class HeadingBlockKeys {
   /// The value is a int.
   static const String level = 'level';
 
-  static const String delta = 'delta';
+  static const String delta = blockComponentDelta;
 
-  static const backgroundColor = blockComponentBackgroundColor;
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node headingNode({
   required int level,
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
 }) {
+  assert(level >= 1 && level <= 6);
   attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: HeadingBlockKeys.type,
     attributes: {
-      HeadingBlockKeys.level: level,
       ...attributes,
+      HeadingBlockKeys.level: level,
+      if (textDirection != null) HeadingBlockKeys.textDirection: textDirection,
     },
   );
 }
@@ -92,7 +97,8 @@ class _HeadingBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BlockComponentBackgroundColorMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -111,8 +117,13 @@ class _HeadingBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: AppFlowyRichText(
         key: forwardKey,
         node: widget.node,
@@ -130,6 +141,7 @@ class _HeadingBlockComponentWidgetState
             .updateTextStyle(
               widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
             ),
+        textDirection: textDirection,
       ),
     );
 
@@ -141,7 +153,13 @@ class _HeadingBlockComponentWidgetState
       );
     }
 
-    return child;
+    final indentPadding = configuration.indentPadding(node, textDirection);
+    return BlockComponentPadding(
+      node: node,
+      padding: padding,
+      indentPadding: indentPadding,
+      child: child,
+    );
   }
 
   TextStyle? defaultTextStyle(int level) {

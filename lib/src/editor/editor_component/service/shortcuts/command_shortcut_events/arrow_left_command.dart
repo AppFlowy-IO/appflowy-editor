@@ -30,7 +30,11 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
     assert(false, 'arrow left key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.character);
+  if (isRTL(editorState)) {
+    editorState.moveCursorBackward(SelectionMoveRange.character);
+  } else {
+    editorState.moveCursorForward(SelectionMoveRange.character);
+  }
   return KeyEventResult.handled;
 };
 
@@ -48,7 +52,11 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
     assert(false, 'arrow left key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.line);
+  if (isRTL(editorState)) {
+    editorState.moveCursorBackward(SelectionMoveRange.line);
+  } else {
+    editorState.moveCursorForward(SelectionMoveRange.line);
+  }
   return KeyEventResult.handled;
 };
 
@@ -66,7 +74,11 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.word);
+  if (isRTL(editorState)) {
+    editorState.moveCursorBackward(SelectionMoveRange.word);
+  } else {
+    editorState.moveCursorForward(SelectionMoveRange.word);
+  }
   return KeyEventResult.handled;
 };
 
@@ -84,9 +96,14 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+  var forward = true;
+  if (isRTL(editorState)) {
+    forward = false;
+  }
   final end = selection.end.moveHorizontal(
     editorState,
     selectionRange: SelectionRange.word,
+    forward: forward,
   );
   if (end == null) {
     return KeyEventResult.ignored;
@@ -112,7 +129,11 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.moveHorizontal(editorState);
+  var forward = true;
+  if (isRTL(editorState)) {
+    forward = false;
+  }
+  final end = selection.end.moveHorizontal(editorState, forward: forward);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -142,7 +163,9 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
     return KeyEventResult.ignored;
   }
   var end = selection.end;
-  final position = nodes.last.selectable?.start();
+  final position = isRTL(editorState)
+      ? nodes.last.selectable?.end()
+      : nodes.last.selectable?.start();
   if (position != null) {
     end = position;
   }
@@ -152,3 +175,11 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
   );
   return KeyEventResult.handled;
 };
+
+bool isRTL(EditorState editorState) {
+  if (editorState.selection != null) {
+    final node = editorState.getNodeAtPath(editorState.selection!.end.path);
+    return node?.selectable?.textDirection() == TextDirection.rtl;
+  }
+  return false;
+}
