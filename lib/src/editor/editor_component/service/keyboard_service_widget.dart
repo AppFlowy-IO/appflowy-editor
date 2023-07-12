@@ -108,13 +108,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   @override
   void closeKeyboard() {
-    assert(PlatformExtension.isMobile, 'only support mobile platform');
     textInputService.close();
   }
 
   @override
   void enableKeyBoard(Selection selection) {
-    assert(PlatformExtension.isMobile, 'only support mobile platform');
     _attachTextInputService(selection);
   }
 
