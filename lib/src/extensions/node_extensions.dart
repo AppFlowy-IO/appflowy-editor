@@ -9,6 +9,19 @@ extension NodeExtensions on Node {
   SelectableMixin? get selectable =>
       key.currentState?.unwrapOrNull<SelectableMixin>();
 
+  /// Level of the node in the document tree.
+  ///
+  /// The root node has a level of 0.
+  int get level {
+    var level = 0;
+    var parent = this.parent;
+    while (parent != null) {
+      level++;
+      parent = parent.parent;
+    }
+    return level;
+  }
+
   bool inSelection(Selection selection) {
     if (selection.start.path <= selection.end.path) {
       return selection.start.path <= path && path <= selection.end.path;

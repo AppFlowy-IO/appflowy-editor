@@ -8,7 +8,7 @@ final ToolbarItem quoteItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'quote';
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/quote',
       isHighlight: isHighlight,
       tooltip: AppFlowyEditorLocalizations.current.quote,
@@ -16,9 +16,6 @@ final ToolbarItem quoteItem = ToolbarItem(
         selection,
         (node) => node.copyWith(
           type: isHighlight ? 'paragraph' : 'quote',
-          attributes: {
-            'delta': (node.delta ?? Delta()).toJson(),
-          },
         ),
       ),
     );

@@ -37,6 +37,7 @@ export 'base_component/convert_to_paragraph_command.dart';
 export 'base_component/insert_newline_in_type_command.dart';
 export 'base_component/indent_command.dart';
 export 'base_component/outdent_command.dart';
+export 'base_component/block_component_padding.dart';
 export 'base_component/widget/full_screen_overlay_entry.dart';
 export 'base_component/widget/ignore_parent_pointer.dart';
 
@@ -48,8 +49,10 @@ export 'rich_text/appflowy_rich_text_keys.dart';
 export 'base_component/block_component_configuration.dart';
 export 'base_component/text_style_configuration.dart';
 export 'base_component/background_color_mixin.dart';
+export 'base_component/text_direction_mixin.dart';
 export 'base_component/markdown_format_helper.dart';
 export 'base_component/widget/nested_list_widget.dart';
 export 'base_component/block_component_action_wrapper.dart';
 
 export 'standard_block_components.dart';
+export 'base_component_keys.dart';

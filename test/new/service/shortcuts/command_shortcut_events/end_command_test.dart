@@ -1,26 +1,12 @@
 import 'dart:io' show Platform;
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../infra/testable_editor.dart';
-import '../../../util/util.dart';
 
 // single | means the cursor
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('end - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 

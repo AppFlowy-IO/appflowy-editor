@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 class NestedListWidget extends StatelessWidget {
   const NestedListWidget({
     super.key,
-    this.padding = const EdgeInsets.only(left: 30.0),
     required this.child,
     required this.children,
   });
 
-  final EdgeInsets padding;
   final Widget child;
   final List<Widget> children;
 
@@ -20,14 +18,11 @@ class NestedListWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         child,
-        Padding(
-          padding: padding,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
         ),
       ],
     );
