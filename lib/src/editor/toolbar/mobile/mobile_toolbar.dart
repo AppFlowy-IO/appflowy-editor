@@ -14,6 +14,9 @@ class MobileToolbar extends StatelessWidget {
     this.itemOutlineColor = const Color(0xFFE3E3E3),
     this.tabbarSelectedBackgroundColor = const Color(0x23808080),
     this.tabbarSelectedForegroundColor = Colors.black,
+    this.primaryColor = const Color(0xff1F71AC),
+    this.onPrimaryColor = Colors.white,
+    this.outlineColor = const Color(0xFFE3E3E3),
     this.toolbarHeight = 50.0,
     this.borderRadius = 6.0,
     this.buttonHeight = 40.0,
@@ -31,6 +34,9 @@ class MobileToolbar extends StatelessWidget {
   final Color itemOutlineColor;
   final Color tabbarSelectedBackgroundColor;
   final Color tabbarSelectedForegroundColor;
+  final Color primaryColor;
+  final Color onPrimaryColor;
+  final Color outlineColor;
   final double toolbarHeight;
   final double borderRadius;
   final double buttonHeight;
@@ -54,6 +60,9 @@ class MobileToolbar extends StatelessWidget {
           itemOutlineColor: itemOutlineColor,
           tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
           tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+          primaryColor: primaryColor,
+          onPrimaryColor: onPrimaryColor,
+          outlineColor: outlineColor,
           toolbarHeight: toolbarHeight,
           borderRadius: borderRadius,
           buttonHeight: buttonHeight,

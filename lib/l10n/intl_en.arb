@@ -75,6 +75,7 @@
   "backgroundColorRed": "Red background",
   "@backgroundColorRed": {},
   "done": "Done",
+  "cancel": "Cancel",
   "tint1": "Tint 1",
   "tint2": "Tint 2",
   "tint3": "Tint 3",

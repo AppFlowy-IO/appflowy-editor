@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Yellow background"),
         "bold": MessageLookupByLibrary.simpleMessage("Bold"),
         "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
