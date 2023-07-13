@@ -11,12 +11,10 @@ class DeltaHtmlEncoder extends Converter<Delta, List<dom.Node>> {
   @override
   List<dom.Node> convert(Delta input) {
     final childNodes = <dom.Node>[];
-    final iterator = input.iterator;
-    while (iterator.moveNext()) {
-      final op = iterator.current;
+
+    for (final op in input) {
       if (op is TextInsert) {
         final attributes = op.attributes;
-
         if (attributes != null) {
           if (attributes.length == 1) {
             final element = _applyAttributes(attributes, text: op.text);

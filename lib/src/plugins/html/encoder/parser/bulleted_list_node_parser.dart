@@ -2,7 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
 import '../delta_html_encoder.dart';
-import 'htmlparser.dart';
 
 class HtmlBulletedListNodeParser extends HtmlNodeParser {
   const HtmlBulletedListNodeParser();
@@ -49,6 +48,6 @@ class HtmlBulletedListNodeParser extends HtmlNodeParser {
       '',
       (previousValue, element) => previousValue + stringify(element),
     );
-    return copyString.replaceAll("\n", "");
+    return copyString;
   }
 }

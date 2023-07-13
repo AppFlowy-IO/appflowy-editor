@@ -8,4 +8,5 @@ export 'markdown/encoder/document_markdown_encoder.dart';
 export 'markdown/encoder/parser/image_node_parser.dart';
 export 'markdown/encoder/parser/node_parser.dart';
 export 'markdown/encoder/parser/text_node_parser.dart';
+export 'html/encoder/parser/htmlparser.dart';
 export 'quill_delta/quill_delta_encoder.dart';

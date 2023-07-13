@@ -23,11 +23,11 @@ void main() async {
           width: 100,
           editable: true,
           node: Node(
-            type: 'image',
+            type: ImageBlockKeys.type,
             children: LinkedList(),
             attributes: {
-              'image_src': src,
-              'align': 'center',
+              ImageBlockKeys.url: src,
+              ImageBlockKeys.align: 'center',
             },
           ),
           alignment: Alignment.center,
@@ -75,11 +75,11 @@ void main() async {
           width: 100,
           editable: true,
           node: Node(
-            type: 'image',
+            type: ImageBlockKeys.type,
             children: LinkedList(),
             attributes: {
-              'image_src': src,
-              'align': 'center',
+              ImageBlockKeys.url: src,
+              ImageBlockKeys.align: 'center',
             },
           ),
           alignment: Alignment.center,
@@ -142,11 +142,11 @@ void main() async {
           width: 100,
           editable: false,
           node: Node(
-            type: 'image',
+            type: ImageBlockKeys.type,
             children: LinkedList(),
             attributes: {
-              'image_src': src,
-              'align': 'center',
+              ImageBlockKeys.url: src,
+              ImageBlockKeys.align: 'center',
             },
           ),
           alignment: Alignment.center,
