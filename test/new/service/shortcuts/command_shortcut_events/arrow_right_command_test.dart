@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -135,6 +137,132 @@ void main() async {
           "Test $i: text='${tests[i].text}'",
         );
       }
+    });
+
+    // Before
+    // Welcom|e to AppFlowy Editor 🔥!
+    // After
+    // Welcom|e| to AppFlowy Editor 🔥!
+    testWidgets('press shift + arrow right to select right character',
+        (tester) async {
+      final editor = tester.editor
+        ..addParagraph(
+          initialText: text,
+        );
+      await editor.startTesting();
+
+      const initialOffset = 'Welcom'.length;
+      final selection = Selection.collapse([0], initialOffset);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isShiftPressed: true,
+      );
+
+      expect(
+        editor.selection,
+        Selection.single(
+          path: [0],
+          startOffset: initialOffset,
+          endOffset: initialOffset + 1,
+        ),
+      );
+
+      await editor.dispose();
+    });
+
+    // Before
+    // |Welcome to AppFlowy Editor 🔥!
+    // After on Mac
+    // Welcome to AppFlowy Editor 🔥!|
+    // After on Windows & Linux
+    // Welcome| to AppFlowy Editor 🔥!
+    testWidgets('''press the ctrl+arrow right key, 
+         on windows & linux it should move to the end of a word,
+         on mac it should move the cursor to the end of the line
+         ''', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          2,
+          initialText: text,
+        );
+      await editor.startTesting();
+
+      final selection = Selection.collapse(
+        [1],
+        0,
+      );
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+      );
+
+      const expectedOffset = 'Welcome'.length;
+      if (Platform.isMacOS) {
+        expect(editor.selection, Selection.collapse([1], text.length));
+      } else {
+        expect(editor.selection, Selection.collapse([1], expectedOffset));
+      }
+
+      await editor.dispose();
+    });
+
+    // Before
+    // |Welcome to AppFlowy Editor 🔥!
+    // After on Mac
+    // |Welcome to AppFlowy Editor 🔥!|
+    // After on Windows & Linux
+    // |Welcome| to AppFlowy Editor 🔥!
+    testWidgets('''press the ctrl+shift+arrow right key, 
+         on windows & linux it should move to the end of a word and select it,
+         on mac it should move the cursor to the end of the line and select it
+         ''', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          2,
+          initialText: text,
+        );
+      await editor.startTesting();
+
+      final selection = Selection.collapse(
+        [1],
+        0,
+      );
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowRight,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+        isShiftPressed: true,
+      );
+
+      const expectedOffset = 'Welcome'.length;
+      if (Platform.isMacOS) {
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [1],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+      } else {
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [1],
+            startOffset: 0,
+            endOffset: expectedOffset,
+          ),
+        );
+      }
+
+      await editor.dispose();
     });
   });
 }
