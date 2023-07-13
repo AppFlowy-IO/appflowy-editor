@@ -7,7 +7,7 @@ class HtmlTextNodeParser extends HtmlNodeParser {
   const HtmlTextNodeParser();
 
   @override
-  String get id => 'paragraph';
+  String get id => ParagraphBlockKeys.type;
 
   @override
   String transform(Node node) {

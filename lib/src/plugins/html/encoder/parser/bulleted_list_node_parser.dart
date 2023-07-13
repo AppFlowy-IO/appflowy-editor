@@ -3,15 +3,16 @@ import 'package:html/dom.dart' as dom;
 
 import '../delta_html_encoder.dart';
 import 'htmlparser.dart';
+
 class HtmlBulletedListNodeParser extends HtmlNodeParser {
   const HtmlBulletedListNodeParser();
 
   @override
-  String get id => 'bulleted_list';
+  String get id => BulletedListBlockKeys.type;
 
   @override
   String transform(Node node) {
-    assert(node.type == 'bulleted_list');
+    assert(node.type == BulletedListBlockKeys.type);
     final List<dom.Node> result = [];
     final delta = node.delta;
     if (delta == null) {

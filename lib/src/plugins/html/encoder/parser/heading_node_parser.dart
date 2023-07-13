@@ -8,7 +8,7 @@ class HtmlHeadingNodeParser extends HtmlNodeParser {
   const HtmlHeadingNodeParser();
 
   @override
-  String get id => 'heading';
+  String get id => HeadingBlockKeys.type;
 
   @override
   String transform(Node node) {

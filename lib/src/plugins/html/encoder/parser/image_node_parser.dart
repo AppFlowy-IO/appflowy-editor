@@ -5,7 +5,7 @@ class HtmlImageNodeParser extends HtmlNodeParser {
   const HtmlImageNodeParser();
 
   @override
-  String get id => 'image';
+  String get id => ImageBlockKeys.type;
 
   @override
   String transform(Node node) {
