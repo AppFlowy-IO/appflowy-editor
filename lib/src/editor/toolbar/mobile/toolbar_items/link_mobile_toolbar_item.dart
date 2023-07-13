@@ -5,7 +5,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
   itemIcon: const AFMobileIcon(
     afMobileIcons: AFMobileIcons.link,
   ),
-  itemMenuBuilder: (editorState, selection, service) {
+  itemMenuBuilder: (editorState, selection, itemMenuService) {
     final String? linkText = editorState.getDeltaAttributeValueInSelection(
       AppFlowyRichTextKeys.href,
       selection,
@@ -20,7 +20,8 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
             AppFlowyRichTextKeys.href: value,
           });
         }
-        service.closeItemMenu();
+        itemMenuService.closeItemMenu();
+        editorState.service.keyboardService?.closeKeyboard();
       },
     );
   },
@@ -43,19 +44,18 @@ class _MobileLinkMenu extends StatefulWidget {
 
 class _MobileLinkMenuState extends State<_MobileLinkMenu> {
   late TextEditingController _textEditingController;
-  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
+    widget.editorState.service.keyboardService?.disable();
     _textEditingController = TextEditingController(text: widget.linkText ?? '');
-    _focusNode = FocusNode()..requestFocus();
   }
 
   @override
   void dispose() {
     _textEditingController.dispose();
-    _focusNode.dispose();
+    widget.editorState.service.keyboardService?.enable();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
               child: SizedBox(
                 height: 42,
                 child: TextField(
-                  focusNode: _focusNode,
+                  autofocus: true,
                   controller: _textEditingController,
                   keyboardType: TextInputType.url,
                   onSubmitted: widget.onSubmitted,
@@ -114,7 +114,9 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
               height: 40,
               child: ElevatedButton(
                 onPressed: () {
+                  // TODO(yijing):  refresh toolbar to remove _QuitEditingBtn
                   widget.onSubmitted.call(_textEditingController.text);
+                  widget.editorState.service.keyboardService?.closeKeyboard();
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(
