@@ -52,6 +52,7 @@ class SVGIconItemWidget extends StatelessWidget {
         textAlign: TextAlign.center,
         preferBelow: false,
         message: tooltip,
+        waitDuration: const Duration(milliseconds: 500),
         child: child,
       );
     }
