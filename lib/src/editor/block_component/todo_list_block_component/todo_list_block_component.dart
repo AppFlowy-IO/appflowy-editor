@@ -112,10 +112,23 @@ class _TodoListBlockComponentWidgetState
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
 
   @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: TodoListBlockKeys.type,
+  );
+
+  @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
   @override
   Node get node => widget.node;
+
+  @override
+  EdgeInsets get indentPadding => configuration.indentPadding(
+        node,
+        calculateTextDirection(
+          defaultTextDirection: Directionality.maybeOf(context),
+        ),
+      );
 
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
@@ -162,6 +175,12 @@ class _TodoListBlockComponentWidgetState
       ),
     );
 
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -170,13 +189,7 @@ class _TodoListBlockComponentWidgetState
       );
     }
 
-    final indentPadding = configuration.indentPadding(node, textDirection);
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      indentPadding: indentPadding,
-      child: child,
-    );
+    return child;
   }
 
   Future<void> checkOrUncheck() async {

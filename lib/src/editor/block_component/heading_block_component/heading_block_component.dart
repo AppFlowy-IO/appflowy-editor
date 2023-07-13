@@ -106,6 +106,11 @@ class _HeadingBlockComponentWidgetState
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
 
   @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: HeadingBlockKeys.type,
+  );
+
+  @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
   @override
@@ -145,6 +150,12 @@ class _HeadingBlockComponentWidgetState
       ),
     );
 
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -153,13 +164,7 @@ class _HeadingBlockComponentWidgetState
       );
     }
 
-    final indentPadding = configuration.indentPadding(node, textDirection);
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      indentPadding: indentPadding,
-      child: child,
-    );
+    return child;
   }
 
   TextStyle? defaultTextStyle(int level) {
