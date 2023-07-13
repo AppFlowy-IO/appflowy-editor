@@ -52,7 +52,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   Node _convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
-
+    final assetRegex = RegExp(r'\!\[.*\]\(.*\)');
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -91,6 +91,18 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
       return _codeBlockNodeFromMarkdown(line, decoder);
+    } else if(assetRegex.hasMatch(line)){
+      var match = assetRegex.firstMatch(line);
+      String? filepath =  match?.group(1);
+      //checking if filepath is present or if the filepath is an image or not
+      if(filepath == null || (!filepath.endsWith('.png') && !filepath.endsWith('.jpg') && !filepath.endsWith('.jpeg') )){
+        return paragraphNode(
+          attributes: {'delta': decoder.convert(line).toJson()},
+        );
+      }
+      else{
+        return imageNode(url: filepath);
+      }
     }
 
     if (line.isNotEmpty) {
