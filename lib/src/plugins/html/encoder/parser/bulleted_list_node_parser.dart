@@ -1,8 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-import '../delta_html_encoder.dart';
-
 class HtmlBulletedListNodeParser extends HtmlNodeParser {
   const HtmlBulletedListNodeParser();
 

@@ -1,8 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-import '../delta_html_encoder.dart';
-
 class HtmlTextNodeParser extends HtmlNodeParser {
   const HtmlTextNodeParser();
 
@@ -18,6 +16,7 @@ class HtmlTextNodeParser extends HtmlNodeParser {
       return '';
     }
     final convertedNodes = DeltaHtmlEncoder().convert(delta);
+
     const tagName = HTMLTags.paragraph;
 
     final element = insertText(tagName, childNodes: convertedNodes);

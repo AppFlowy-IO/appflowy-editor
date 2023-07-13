@@ -1,17 +1,15 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-import '../delta_html_encoder.dart';
-
 class HtmlTodoListNodeParser extends HtmlNodeParser {
   const HtmlTodoListNodeParser();
 
   @override
-  String get id => NumberedListBlockKeys.type;
+  String get id => TodoListBlockKeys.type;
 
   @override
   String transform(Node node) {
-    assert(node.type == NumberedListBlockKeys.type);
+    assert(node.type == TodoListBlockKeys.type);
     final List<dom.Node> result = [];
     final delta = node.delta;
     if (delta == null) {

@@ -15,6 +15,7 @@ class DeltaHtmlEncoder extends Converter<Delta, List<dom.Node>> {
     for (final op in input) {
       if (op is TextInsert) {
         final attributes = op.attributes;
+
         if (attributes != null) {
           if (attributes.length == 1) {
             final element = _applyAttributes(attributes, text: op.text);

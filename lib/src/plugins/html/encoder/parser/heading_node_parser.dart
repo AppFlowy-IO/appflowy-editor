@@ -1,8 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-import '../delta_html_encoder.dart';
-
 class HtmlHeadingNodeParser extends HtmlNodeParser {
   const HtmlHeadingNodeParser();
 
@@ -19,14 +17,7 @@ class HtmlHeadingNodeParser extends HtmlNodeParser {
       return '';
     }
     final convertedNodes = DeltaHtmlEncoder().convert(delta);
-    late String tagName;
-    if (attribute[HeadingBlockKeys.level] == 1) {
-      tagName = HTMLTags.h1;
-    } else if (attribute[HeadingBlockKeys.level] == 2) {
-      tagName = HTMLTags.h2;
-    } else if (attribute[HeadingBlockKeys.level] == 3) {
-      tagName = HTMLTags.h3;
-    }
+    String tagName = "h${attribute[HeadingBlockKeys.level]}";
 
     final element = insertText(tagName, childNodes: convertedNodes);
     result.add(element);
