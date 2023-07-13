@@ -33,12 +33,13 @@ and the Flutter guide for
 ## Key Features
 
 * Build rich, intuitive editors
-* Design and modify an ever expanding list of customizable features including
-  * components (such as form input controls, numbered lists, and rich text widgets)
+* Design and modify an ever-expanding list of customizable features including
+  * block components (such as form input controls, numbered lists, and rich text widgets)
   * shortcut events
   * themes
-  * menu options (**coming soon!**)
-* [Test-coverage](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/testing.md) and ongoing maintenance by AppFlowy's core team and community of more than 1,000 builders
+  * selection menu
+  * toolbar menu
+* [Test Coverage](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/testing.md) and ongoing maintenance by AppFlowy's core team and community of more than 1,000 builders
 
 ## Getting Started
 
@@ -54,28 +55,28 @@ flutter pub get
 Start by creating a new empty AppFlowyEditor object.
 
 ```dart
-final editorState = EditorState.empty(); // an empty state
+final editorState = EditorState.blank(withInitialText: true); // with an empty paragraph
 final editor = AppFlowyEditor(
-    editorState: editorState,
+  editorState: editorState,
 );
 ```
 
 You can also create an editor from a JSON object in order to configure your initial state. Or you can [create an editor from Markdown or Quill Delta](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/importing.md).
 
 ```dart
-final json = ...;
-final editorState = EditorState(Document.fromJson(data));
+final json = jsonDecode('YOUR INPUT JSON STRING');
+final editorState = EditorState(document: Document.fromJson(json));
 final editor = AppFlowyEditor(
-    editorState: editorState,
+  editorState: editorState,
 );
 ```
 
 > Note: The parameters `localizationsDelegates` need to be assigned in MaterialApp widget
 ```dart
 MaterialApp(
-    localizationsDelegates: const [
-        AppFlowyEditorLocalizations.delegate,
-    ]，
+  localizationsDelegates: const [
+    AppFlowyEditorLocalizations.delegate,
+  ]，
 );
 ```
 
@@ -89,15 +90,21 @@ flutter run
 
 ## Customizing Your Editor
 
-### Customizing Components
+### Customizing theme
+
+Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing theme](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md#customizing-a-theme).
+
+ * See further examples of [how AppFlowy custom the theme](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/appflowy_flutter/lib/plugins/document/presentation/editor_style.dart)
+
+### Customizing Block Components
 
 Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing components](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md#customize-a-component).
 
 Below are some examples of component customizations:
 
- * [Checkbox Text](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/render/rich_text/checkbox_text.dart) demonstrates how to extend new styles based on existing rich text components
- * [Image](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/example/lib/plugin/network_image_node_widget.dart) demonstrates how to extend a new node and render it
- * See further examples of [rich-text plugins](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/render/rich_text)
+ * [Todo List Block Component](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/editor/block_component/todo_list_block_component/todo_list_block_component.dart) demonstrates how to extend new styles based on existing rich text components
+ * [Divider Block Component](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/editor/block_component/divider_block_component/divider_block_component.dart) demonstrates how to extend a new block component and render it
+ * See further examples of [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy/blob/main/frontend/appflowy_flutter/lib/plugins/document/presentation/editor_page.dart)
 
 ### Customizing Shortcut Events
 
@@ -105,9 +112,11 @@ Please refer to our documentation on customizing AppFlowy for a detailed discuss
 
 Below are some examples of shortcut event customizations:
 
- * [BIUS](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/service/internal_key_event_handlers/format_style_handler.dart) demonstrates how to make text bold/italic/underline/strikethrough through shortcut keys
- * [Paste HTML](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/service/internal_key_event_handlers/copy_paste_handler.dart) gives you an idea on how to handle pasted styles through shortcut keys
- * Need more examples? Check out [Internal key event handlers](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/lib/src/service/internal_key_event_handlers)
+ * [BIUS](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_single_character) demonstrates how to make text bold/italic/underline/strikethrough through shortcut keys
+ * Need more examples? Check out [shortcuts](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/editor_component/service/shortcuts)
+
+## Migration Guide
+Please refer to the [migration documentation]((https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/migration.md)).
 
 ## Glossary
 Please refer to the API documentation.

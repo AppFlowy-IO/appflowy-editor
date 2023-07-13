@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class FlowySvg extends StatelessWidget {
-  const FlowySvg({
+class EditorSvg extends StatelessWidget {
+  const EditorSvg({
     super.key,
     this.name,
     this.width,

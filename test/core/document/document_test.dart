@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('documemnt.dart', () {
     test('insert', () {
-      final document = Document.empty();
+      final document = Document.blank();
 
       expect(document.insert([-1], []), false);
       expect(document.insert([100], []), false);
@@ -49,12 +49,12 @@ void main() async {
 
     test('updateText', () {
       final delta = Delta()..insert('Editor');
-      final textNode = TextNode(delta: delta);
-      final document = Document(root: Node(type: 'root'));
+      final textNode = paragraphNode(delta: delta);
+      final document = Document.blank();
       document.insert([0], [textNode]);
       document.updateText([0], Delta()..insert('AppFlowy'));
       expect(
-        (document.nodeAtPath([0]) as TextNode).toPlainText(),
+        document.nodeAtPath([0])?.delta?.toPlainText(),
         'AppFlowyEditor',
       );
     });
@@ -64,12 +64,9 @@ void main() async {
         'document': {
           'type': 'editor',
           'children': [
-            {
-              'type': 'text',
-              'delta': [],
-            }
+            {'type': 'text'}
           ],
-          'attributes': {'a': 'a'}
+          'data': {'a': 'a'}
         }
       };
       final document = Document.fromJson(json);
@@ -81,11 +78,13 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'page',
             'children': [
               {
-                'type': 'text',
-                'delta': [],
+                'type': 'paragraph',
+                'data': {
+                  'delta': [],
+                }
               }
             ],
           }
@@ -96,7 +95,7 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'page',
             'children': [],
           }
         }).isEmpty,
@@ -106,13 +105,15 @@ void main() async {
         true,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'page',
             'children': [
               {
-                'type': 'text',
-                'delta': [
-                  {'insert': ''}
-                ],
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {'insert': ''}
+                  ],
+                }
               }
             ],
           }
@@ -123,13 +124,15 @@ void main() async {
         false,
         Document.fromJson({
           'document': {
-            'type': 'editor',
+            'type': 'page',
             'children': [
               {
-                'type': 'text',
-                'delta': [
-                  {'insert': 'Welcome to AppFlowy!'}
-                ],
+                'type': 'paragraph',
+                'data': {
+                  'delta': [
+                    {'insert': 'Welcome to AppFlowy!'}
+                  ],
+                }
               }
             ],
           }

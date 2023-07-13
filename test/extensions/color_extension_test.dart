@@ -15,25 +15,25 @@ void main() {
     });
 
     test('tryFromRgbaString', () {
-      final color = ColorExtension.tryFromRgbaString(blueRgba);
+      final color = ColorExtension2.tryFromRgbaString(blueRgba);
       expect(color, const Color.fromARGB(255, 0, 15, 255));
     });
 
     test('tryFromRgbaString - wrong rgba format return null', () {
       const wrongRgba = 'abc(1,2,3,4)';
-      final color = ColorExtension.tryFromRgbaString(wrongRgba);
+      final color = ColorExtension2.tryFromRgbaString(wrongRgba);
       expect(color, null);
     });
 
     test('tryFromRgbaString - wrong length return null', () {
       const wrongRgba = 'rgba(0, 15, 255)';
-      final color = ColorExtension.tryFromRgbaString(wrongRgba);
+      final color = ColorExtension2.tryFromRgbaString(wrongRgba);
       expect(color, null);
     });
 
     test('tryFromRgbaString - wrong values return null', () {
       const wrongRgba = 'rgba(-12, 999, 1234, 619)';
-      final color = ColorExtension.tryFromRgbaString(wrongRgba);
+      final color = ColorExtension2.tryFromRgbaString(wrongRgba);
       expect(color, null);
     });
   });

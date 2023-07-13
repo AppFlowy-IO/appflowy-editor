@@ -9,7 +9,7 @@ enum SelectionRange {
 extension PositionExtension on Position {
   Position? moveHorizontal(
     EditorState editorState, {
-    bool moveLeft = true,
+    bool forward = true,
     SelectionRange selectionRange = SelectionRange.character,
   }) {
     final node = editorState.document.nodeAtPath(path);
@@ -17,13 +17,13 @@ extension PositionExtension on Position {
       return null;
     }
 
-    if (moveLeft && offset == 0) {
+    if (forward && offset == 0) {
       final previousEnd = node.previous?.selectable?.end();
       if (previousEnd != null) {
         return previousEnd;
       }
       return null;
-    } else if (!moveLeft) {
+    } else if (!forward) {
       final end = node.selectable?.end();
       if (end != null && offset >= end.offset) {
         return node.next?.selectable?.start();
@@ -32,28 +32,30 @@ extension PositionExtension on Position {
 
     switch (selectionRange) {
       case SelectionRange.character:
-        if (node is TextNode) {
+        final delta = node.delta;
+        if (delta != null) {
           return Position(
             path: path,
-            offset: moveLeft
-                ? node.delta.prevRunePosition(offset)
-                : node.delta.nextRunePosition(offset),
+            offset: forward
+                ? delta.prevRunePosition(offset)
+                : delta.nextRunePosition(offset),
           );
         }
 
         return Position(path: path, offset: offset);
       case SelectionRange.word:
-        if (node is TextNode) {
-          final result = moveLeft
+        final delta = node.delta;
+        if (delta != null) {
+          final result = forward
               ? node.selectable?.getWordBoundaryInPosition(
                   Position(
                     path: path,
-                    offset: node.delta.prevRunePosition(offset),
+                    offset: delta.prevRunePosition(offset),
                   ),
                 )
               : node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
-            return moveLeft ? result.start : result.end;
+            return forward ? result.start : result.end;
           }
         }
 
@@ -65,9 +67,8 @@ extension PositionExtension on Position {
     EditorState editorState, {
     bool upwards = true,
   }) {
-    final selection =
-        editorState.service.selectionService.currentSelection.value;
-    final rects = editorState.service.selectionService.selectionRects;
+    final selection = editorState.selection;
+    final rects = editorState.selectionRects();
     if (rects.isEmpty || selection == null) {
       return null;
     }
@@ -79,14 +80,14 @@ extension PositionExtension on Position {
       );
       offset = upwards
           ? rect.topRight.translate(0, -rect.height)
-          : rect.bottomRight.translate(0, rect.height);
+          : rect.centerRight.translate(0, rect.height);
     } else {
       final rect = rects.reduce(
         (current, next) => current.top <= next.top ? current : next,
       );
       offset = upwards
           ? rect.topLeft.translate(0, -rect.height)
-          : rect.bottomLeft.translate(0, rect.height);
+          : rect.centerLeft.translate(0, rect.height);
     }
 
     return editorState.service.selectionService.getPositionInOffset(offset);

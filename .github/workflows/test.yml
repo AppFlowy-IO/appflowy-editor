@@ -4,26 +4,32 @@ on:
   push:
     branches:
       - "main"
-      - "release/*"
 
   pull_request:
     branches:
       - "main"
-      - "release/*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  FLUTTER_VERSION: "3.7.5"
+  FLUTTER_VERSION: "3.10.1"
 
+# 3 jobs are configured.
+# The first one runs tests on desktop OSs.
+# The second runs tests on iOS simulator.
+# The third runs tests on Android emulator.
 jobs:
-  tests:
+  desktop:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-13, macos-12, macos-11, ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: subosito/flutter-action@v2
         with:
@@ -38,8 +44,92 @@ jobs:
           dart format --set-exit-if-changed .
           flutter test --coverage
 
-      - uses: codecov/codecov-action@v3
+      - name: Upload coverage to Codecov
+        uses: Wandalen/wretry.action@v1.0.36
         with:
-          env_vars: ${{ matrix.os }}
-          fail_ci_if_error: true
-          verbose: true
+          action: codecov/codecov-action@v3
+          with: |
+            fail_ci_if_error: true
+            verbose: true
+            os: ${{ matrix.os }}
+          attempt_limit: 10
+          attempt_delay: 10000
+  ios:
+    strategy:
+      matrix:
+        device:
+          # The available simulators are listed by the "xcrun xctrace list devices" command
+          - "iPhone 11 Simulator (15.2)" 
+      fail-fast: true
+    runs-on: macos-11
+    steps:
+      - name: "List all simulators"
+        run: "xcrun xctrace list devices"
+      - name: "Start Simulator"
+        # the command "xcrun simctl boot" expects a device identifier
+        # the assignment of the UDID variable consists of retrieving the ID of the simulator
+        # by extracting it from the command "xcrun xctrace list devices"
+        run: |
+          UDID=$(xcrun xctrace list devices | grep "^${{ matrix.device }}" | awk '{gsub(/[()]/,""); print $NF}')
+          echo $UDID
+          xcrun simctl boot "${UDID:?No Simulator with this name found}"
+      # Similar steps as the desktop job
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Run all the tests under test/mobile
+        run: |
+          flutter pub get
+          flutter analyze .
+          dart format --set-exit-if-changed .
+          flutter test test/mobile --coverage
+      
+      - name: Upload coverage to Codecov
+        uses: Wandalen/wretry.action@v1.0.36
+        with:
+          action: codecov/codecov-action@v3
+          with: |
+            fail_ci_if_error: true
+            verbose: true
+            os: ${{ matrix.device }}
+          attempt_limit: 10
+          attempt_delay: 10000   
+  android:
+    strategy:
+      matrix:
+        api-level:
+          - 30
+      fail-fast: true
+    runs-on: macos-11
+    steps:
+      # Similar steps as the desktop job
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Run all the tests under test/mobile
+        run: |
+          flutter pub get
+          flutter analyze .
+          dart format --set-exit-if-changed .
+          flutter test test/mobile --coverage
+      
+      - name: Upload coverage to Codecov
+        uses: Wandalen/wretry.action@v1.0.36
+        with:
+          action: codecov/codecov-action@v3
+          with: |
+            fail_ci_if_error: true
+            verbose: true
+            os: ${{ matrix.api-level }}
+          attempt_limit: 10
+          attempt_delay: 10000

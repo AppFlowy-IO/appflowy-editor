@@ -15,6 +15,7 @@ class ToolbarWidget extends StatefulWidget {
     required this.editorState,
     required this.layerLink,
     required this.offset,
+    required this.highlightColor,
     required this.items,
     this.alignment = Alignment.topLeft,
   }) : super(key: key);
@@ -22,6 +23,7 @@ class ToolbarWidget extends StatefulWidget {
   final EditorState editorState;
   final LayerLink layerLink;
   final Offset offset;
+  final Color highlightColor;
 
   final List<ToolbarItem> items;
 
@@ -44,7 +46,7 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
         showWhenUnlinked: true,
         offset: widget.offset,
         followerAnchor: widget.alignment,
-        child: _buildToolbar(context),
+        child: _buildToolbar(context, widget.highlightColor),
       ),
     );
   }
@@ -55,11 +57,9 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
     _listToolbarOverlay = null;
   }
 
-  Widget _buildToolbar(BuildContext context) {
+  Widget _buildToolbar(BuildContext context, Color highlightColor) {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
-      color: widget.editorState.editorStyle.toolbarColor,
-      elevation: widget.editorState.editorStyle.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: SizedBox(
@@ -69,19 +69,23 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
             children: widget.items
                 .map(
                   (item) => Center(
-                    child:
+                    child: item.builder?.call(
+                          context,
+                          widget.editorState,
+                          highlightColor,
+                        ) ??
                         item.itemBuilder?.call(context, widget.editorState) ??
-                            ToolbarItemWidget(
-                              item: item,
-                              isHighlight: item.highlightCallback
-                                      ?.call(widget.editorState) ??
-                                  false,
-                              onPressed: () {
-                                item.handler?.call(widget.editorState, context);
-                                widget.editorState.service.keyboardService
-                                    ?.enable();
-                              },
-                            ),
+                        ToolbarItemWidget(
+                          item: item,
+                          isHighlight: item.highlightCallback
+                                  ?.call(widget.editorState) ??
+                              false,
+                          onPressed: () {
+                            item.handler?.call(widget.editorState, context);
+                            widget.editorState.service.keyboardService
+                                ?.enable();
+                          },
+                        ),
                   ),
                 )
                 .toList(growable: false),

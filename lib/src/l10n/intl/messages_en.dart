@@ -22,6 +22,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "addYourLink": MessageLookupByLibrary.simpleMessage("Add your link"),
+        "auto": MessageLookupByLibrary.simpleMessage("Auto"),
+        "backgroundColor":
+            MessageLookupByLibrary.simpleMessage("Background Color"),
         "backgroundColorBlue":
             MessageLookupByLibrary.simpleMessage("Blue background"),
         "backgroundColorBrown":
@@ -45,7 +49,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "bold": MessageLookupByLibrary.simpleMessage("Bold"),
         "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
+        "clearHighlightColor":
+            MessageLookupByLibrary.simpleMessage("Clear highlight color"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
+        "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
+        "customColor": MessageLookupByLibrary.simpleMessage("Custom color"),
+        "done": MessageLookupByLibrary.simpleMessage("Done"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Embed Code"),
         "fontColorBlue": MessageLookupByLibrary.simpleMessage("Blue"),
         "fontColorBrown": MessageLookupByLibrary.simpleMessage("Brown"),
@@ -60,7 +69,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "heading1": MessageLookupByLibrary.simpleMessage("H1"),
         "heading2": MessageLookupByLibrary.simpleMessage("H2"),
         "heading3": MessageLookupByLibrary.simpleMessage("H3"),
+        "hexValue": MessageLookupByLibrary.simpleMessage("Hex value"),
         "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
+        "highlightColor":
+            MessageLookupByLibrary.simpleMessage("Highlight color"),
         "image": MessageLookupByLibrary.simpleMessage("Image"),
         "italic": MessageLookupByLibrary.simpleMessage("Italic"),
         "lightLightTint1": MessageLookupByLibrary.simpleMessage("Purple"),
@@ -73,10 +85,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "lightLightTint8": MessageLookupByLibrary.simpleMessage("Aqua"),
         "lightLightTint9": MessageLookupByLibrary.simpleMessage("Blue"),
         "link": MessageLookupByLibrary.simpleMessage("Link"),
+        "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
+        "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
+        "mobileHeading2": MessageLookupByLibrary.simpleMessage("Heading 2"),
+        "mobileHeading3": MessageLookupByLibrary.simpleMessage("Heading 3"),
         "numberedList": MessageLookupByLibrary.simpleMessage("Numbered List"),
+        "opacity": MessageLookupByLibrary.simpleMessage("Opacity"),
+        "openLink": MessageLookupByLibrary.simpleMessage("Open link"),
         "quote": MessageLookupByLibrary.simpleMessage("Quote"),
+        "removeLink": MessageLookupByLibrary.simpleMessage("Remove link"),
+        "resetToDefaultColor":
+            MessageLookupByLibrary.simpleMessage("Reset to default color"),
+        "rtl": MessageLookupByLibrary.simpleMessage("RTL"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
+        "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
         "tint2": MessageLookupByLibrary.simpleMessage("Tint 2"),
         "tint3": MessageLookupByLibrary.simpleMessage("Tint 3"),
@@ -86,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint7": MessageLookupByLibrary.simpleMessage("Tint 7"),
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
-        "underline": MessageLookupByLibrary.simpleMessage("Underline")
+        "underline": MessageLookupByLibrary.simpleMessage("Underline"),
+        "urlHint": MessageLookupByLibrary.simpleMessage("URL")
       };
 }

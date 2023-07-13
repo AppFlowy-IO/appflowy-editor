@@ -1,54 +1,27 @@
 /// AppFlowyEditor library
 library appflowy_editor;
 
-export 'src/infra/log.dart';
-export 'src/render/style/editor_style.dart';
-export 'src/core/document/node.dart';
-export 'src/core/document/path.dart';
-export 'src/core/location/position.dart';
-export 'src/core/location/selection.dart';
-export 'src/core/document/document.dart';
-export 'src/core/document/text_delta.dart';
-export 'src/core/document/attributes.dart';
-export 'src/core/legacy/built_in_attribute_keys.dart';
+// core part, including document, node, selection, etc.
+export 'src/core/core.dart';
+// editor part, including editor component, block component, etc.
+export 'src/editor/editor.dart';
+export 'src/editor/selection_menu/selection_menu.dart';
+// editor state
 export 'src/editor_state.dart';
-export 'src/core/transform/operation.dart';
-export 'src/core/transform/transaction.dart';
-export 'src/render/selection/selectable.dart';
-export 'src/render/selection_menu/selection_menu_service.dart';
-export 'src/service/editor_service.dart';
-export 'src/service/render_plugin_service.dart';
-export 'src/service/service.dart';
-export 'src/service/selection_service.dart';
-export 'src/service/scroll_service.dart';
-export 'src/service/toolbar_service.dart';
-export 'src/service/keyboard_service.dart';
-export 'src/service/input_service.dart';
-export 'src/service/shortcut_event/keybinding.dart';
-export 'src/service/shortcut_event/shortcut_event.dart';
-export 'src/service/shortcut_event/shortcut_event_handler.dart';
-export 'src/render/rich_text/default_selectable.dart';
-export 'src/render/rich_text/flowy_rich_text.dart';
-export 'src/render/selection_menu/selection_menu_widget.dart';
-export 'src/render/selection_menu/selection_menu_item_widget.dart';
-export 'src/l10n/l10n.dart';
-export 'src/render/style/plugin_styles.dart';
-export 'src/plugins/markdown/encoder/delta_markdown_encoder.dart';
-export 'src/plugins/markdown/encoder/document_markdown_encoder.dart';
-export 'src/plugins/markdown/encoder/parser/node_parser.dart';
-export 'src/plugins/markdown/encoder/parser/text_node_parser.dart';
-export 'src/plugins/markdown/encoder/parser/image_node_parser.dart';
-export 'src/plugins/markdown/decoder/delta_markdown_decoder.dart';
-export 'src/plugins/markdown/document_markdown.dart';
-export 'src/plugins/quill_delta/delta_document_encoder.dart';
-export 'src/commands/text/text_commands.dart';
-export 'src/commands/command_extension.dart';
-export 'src/render/toolbar/toolbar_item.dart';
-export 'src/render/action_menu/action_menu.dart';
-export 'src/render/action_menu/action_menu_item.dart';
-export 'src/core/document/node_iterator.dart';
-export 'src/infra/flowy_svg.dart';
+// extension
 export 'src/extensions/extensions.dart';
-export 'src/service/default_text_operations/format_rich_text_style.dart';
+export 'src/infra/flowy_svg.dart';
 export 'src/infra/html_converter.dart';
-export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
+export 'src/infra/log.dart';
+export 'src/infra/mobile/mobile.dart';
+export 'src/l10n/l10n.dart';
+// plugins part, including decoder and encoder.
+export 'src/plugins/plugins.dart';
+// legacy
+export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
+export 'src/editor/block_component/rich_text/appflowy_rich_text.dart';
+export 'src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
+export 'src/render/selection/selectable.dart';
+export 'src/render/toolbar/toolbar_item.dart';
+export 'src/service/shortcut_event/key_mapping.dart';
+export 'src/service/shortcut_event/keybinding.dart';

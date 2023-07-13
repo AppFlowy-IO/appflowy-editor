@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,14 +6,13 @@ void main() async {
     test('test node copyWith', () {
       final node = Node(
         type: 'example',
-        children: LinkedList(),
         attributes: {
           'example': 'example',
         },
       );
       expect(node.toJson(), {
         'type': 'example',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
       });
@@ -26,20 +23,20 @@ void main() async {
 
       final nodeWithChildren = Node(
         type: 'example',
-        children: LinkedList()..add(node),
+        children: [node],
         attributes: {
           'example': 'example',
         },
       );
       expect(nodeWithChildren.toJson(), {
         'type': 'example',
-        'attributes': {
+        'data': {
           'example': 'example',
         },
         'children': [
           {
             'type': 'example',
-            'attributes': {
+            'data': {
               'example': 'example',
             },
           },
@@ -52,89 +49,68 @@ void main() async {
     });
 
     test('test textNode copyWith', () {
-      final textNode = TextNode(
-        children: LinkedList(),
+      final node = paragraphNode(
+        delta: Delta()..insert('AppFlowy'),
         attributes: {
           'example': 'example',
         },
-        delta: Delta()..insert('AppFlowy'),
       );
-      expect(textNode.toJson(), {
-        'type': 'text',
-        'attributes': {
+      expect(node.toJson(), {
+        'type': 'paragraph',
+        'data': {
           'example': 'example',
+          'delta': [
+            {'insert': 'AppFlowy'},
+          ],
         },
-        'delta': [
-          {'insert': 'AppFlowy'},
-        ],
       });
       expect(
-        textNode.copyWith().toJson(),
-        textNode.toJson(),
+        node.copyWith().toJson(),
+        node.toJson(),
       );
 
-      final textNodeWithChildren = TextNode(
-        children: LinkedList()..add(textNode),
+      final nodeWithChildren = paragraphNode(
+        delta: Delta()..insert('AppFlowy'),
+        children: [node],
         attributes: {
           'example': 'example',
         },
-        delta: Delta()..insert('AppFlowy'),
       );
-      expect(textNodeWithChildren.toJson(), {
-        'type': 'text',
-        'attributes': {
+      expect(nodeWithChildren.toJson(), {
+        'type': 'paragraph',
+        'data': {
           'example': 'example',
+          'delta': [
+            {'insert': 'AppFlowy'},
+          ],
         },
-        'delta': [
-          {'insert': 'AppFlowy'},
-        ],
         'children': [
           {
-            'type': 'text',
-            'attributes': {
+            'type': 'paragraph',
+            'data': {
               'example': 'example',
+              'delta': [
+                {'insert': 'AppFlowy'},
+              ],
             },
-            'delta': [
-              {'insert': 'AppFlowy'},
-            ],
           },
         ],
       });
       expect(
-        textNodeWithChildren.copyWith().toJson(),
-        textNodeWithChildren.toJson(),
+        nodeWithChildren.copyWith().toJson(),
+        nodeWithChildren.toJson(),
       );
-    });
-
-    test('test node path', () {
-      Node previous = Node(
-        type: 'example',
-        attributes: {},
-        children: LinkedList(),
-      );
-      const len = 10;
-      for (var i = 0; i < len; i++) {
-        final node = Node(
-          type: 'example_$i',
-          attributes: {},
-          children: LinkedList(),
-        );
-        previous.children.add(node..parent = previous);
-        previous = node;
-      }
-      expect(previous.path, List.filled(len, 0));
     });
 
     test('test copy with', () {
       final child = Node(
         type: 'child',
         attributes: {},
-        children: LinkedList(),
       );
       final base = Node(
         type: 'base',
         attributes: {},
-        children: LinkedList()..add(child),
+        children: [child],
       );
       final node = base.copyWith(
         type: 'node',
@@ -155,7 +131,7 @@ void main() async {
       );
       base.insert(childA);
       expect(
-        identical(base.childAtIndex(0), childA),
+        identical(base.childAtIndexOrNull(0), childA),
         true,
       );
 
@@ -165,7 +141,7 @@ void main() async {
       );
       base.insert(childB, index: -1);
       expect(
-        identical(base.childAtIndex(0), childB),
+        identical(base.childAtIndexOrNull(0), childB),
         true,
       );
 
@@ -175,7 +151,7 @@ void main() async {
       );
       base.insert(childC, index: 1000);
       expect(
-        identical(base.childAtIndex(base.children.length - 1), childC),
+        identical(base.childAtIndexOrNull(base.children.length - 1), childC),
         true,
       );
 
@@ -185,7 +161,7 @@ void main() async {
       );
       base.insert(childD);
       expect(
-        identical(base.childAtIndex(base.children.length - 1), childD),
+        identical(base.childAtIndexOrNull(base.children.length - 1), childD),
         true,
       );
 
@@ -195,7 +171,7 @@ void main() async {
       );
       base.insert(childE, index: 1);
       expect(
-        identical(base.childAtIndex(1), childE),
+        identical(base.childAtIndexOrNull(1), childE),
         true,
       );
     });
@@ -209,42 +185,17 @@ void main() async {
         'children': [
           {
             'type': 'example',
-            'attributes': {
+            'data': {
               'example': 'example',
             },
           },
         ],
       });
       expect(node.type, 'text');
-      expect(node is TextNode, true);
-      expect((node as TextNode).delta.toPlainText(), 'example');
       expect(node.attributes, {});
       expect(node.children.length, 1);
       expect(node.children.first.type, 'example');
       expect(node.children.first.attributes, {'example': 'example'});
-    });
-
-    test('test toPlainText', () {
-      final textNode = TextNode.empty()..delta = (Delta()..insert('AppFlowy'));
-      expect(textNode.toPlainText(), 'AppFlowy');
-    });
-    test('test node id', () {
-      final nodeA = Node(
-        type: 'example',
-        children: LinkedList(),
-        attributes: {},
-      );
-      final nodeAId = nodeA.id;
-      expect(nodeAId, 'example');
-      final nodeB = Node(
-        type: 'example',
-        children: LinkedList(),
-        attributes: {
-          'subtype': 'exampleSubtype',
-        },
-      );
-      final nodeBId = nodeB.id;
-      expect(nodeBId, 'example/exampleSubtype');
     });
   });
 }

@@ -1,8 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/internal_key_event_handlers/whitespace_handler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../infra/test_editor.dart';
+import '../../new/infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -32,7 +31,7 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor;
       for (var i = 1; i <= maxSignCount; i++) {
-        editor.insertTextNode('${'#' * i}$text');
+        editor.addParagraph(initialText: '${'#' * i}$text');
       }
       await editor.startTesting();
 
@@ -40,14 +39,14 @@ void main() async {
         await editor.updateSelection(
           Selection.single(path: [i - 1], startOffset: i),
         );
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
 
-        final textNode = (editor.nodeAtPath([i - 1]) as TextNode);
-
-        expect(textNode.subtype, BuiltInAttributeKey.heading);
-        // BuiltInAttributeKey.h1 ~ BuiltInAttributeKey.h6
-        expect(textNode.attributes.heading, 'h$i');
+        final node = editor.nodeAtPath([i - 1])!;
+        expect(node.type, 'heading');
+        expect(node.attributes[HeadingBlockKeys.level], i);
       }
+
+      await editor.dispose();
     });
 
     // Before
@@ -72,7 +71,7 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor;
       for (var i = 1; i <= maxSignCount; i++) {
-        editor.insertTextNode('${'###' * i}$text');
+        editor.addParagraph(initialText: '${'###' * i}$text');
       }
       await editor.startTesting();
 
@@ -80,15 +79,17 @@ void main() async {
         await editor.updateSelection(
           Selection.single(path: [i - 1], startOffset: i),
         );
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
 
-        final textNode = (editor.nodeAtPath([i - 1]) as TextNode);
+        final node = editor.nodeAtPath([i - 1])!;
 
-        expect(textNode.subtype, BuiltInAttributeKey.heading);
+        expect(node.type, 'heading');
         // BuiltInAttributeKey.h1 ~ BuiltInAttributeKey.h6
-        expect(textNode.attributes.heading, 'h$i');
-        expect(textNode.toPlainText().startsWith('##'), true);
+        expect(node.attributes[HeadingBlockKeys.level], i);
+        expect(node.delta!.toPlainText().startsWith('##'), true);
       }
+
+      await editor.dispose();
     });
 
     // Before
@@ -101,7 +102,7 @@ void main() async {
     testWidgets('Presses whitespace key in heading styled text',
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
 
       await editor.startTesting();
 
@@ -111,184 +112,209 @@ void main() async {
           Selection.single(path: [0], startOffset: 0),
         );
 
-        final textNode = (editor.nodeAtPath([0]) as TextNode);
+        var node = editor.nodeAtPath([0])!;
+        await editor.editorState.insertText(0, '#' * i, node: node);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        node = editor.nodeAtPath([0])!;
 
-        await editor.insertText(textNode, '#' * i, 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-
-        expect(textNode.subtype, BuiltInAttributeKey.heading);
+        expect(node.type, 'heading');
         // BuiltInAttributeKey.h2 ~ BuiltInAttributeKey.h6
-        expect(textNode.attributes.heading, 'h$i');
+        expect(node.attributes[HeadingBlockKeys.level], i);
       }
+
+      await editor.dispose();
     });
 
     testWidgets('Presses whitespace key after (un)checkbox symbols',
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      final textNode = editor.nodeAtPath([0]) as TextNode;
-      for (final symbol in unCheckboxListSymbols) {
+      for (final symbol in ['[]', '-[]']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        await editor.insertText(textNode, symbol, 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-        expect(textNode.subtype, BuiltInAttributeKey.checkbox);
-        expect(textNode.attributes.check, false);
+        await editor.pressKey(character: symbol);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        final node = editor.nodeAtPath([0])!;
+        expect(node.type, 'todo_list');
+        expect(node.attributes.check, false);
       }
+
+      await editor.dispose();
     });
 
     testWidgets('Presses whitespace key after checkbox symbols',
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      final textNode = editor.nodeAtPath([0]) as TextNode;
-      for (final symbol in checkboxListSymbols) {
+      for (final symbol in ['[x]', '-[x]']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        await editor.insertText(textNode, symbol, 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-        expect(textNode.subtype, BuiltInAttributeKey.checkbox);
-        expect(textNode.attributes.check, true);
+        await editor.pressKey(character: symbol);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        final node = editor.nodeAtPath([0])!;
+        expect(node.type, 'todo_list');
+        expect(node.attributes[TodoListBlockKeys.checked], true);
       }
+      await editor.dispose();
     });
 
     testWidgets('Presses whitespace key after bulleted list', (tester) async {
       const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      final textNode = editor.nodeAtPath([0]) as TextNode;
-      for (final symbol in bulletedListSymbols) {
+      for (final symbol in ['*', '-']) {
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        await editor.insertText(textNode, symbol, 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-        expect(textNode.subtype, BuiltInAttributeKey.bulletedList);
+        await editor.pressKey(character: symbol);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        final node = editor.nodeAtPath([0])!;
+        expect(node.type, 'bulleted_list');
       }
+      await editor.dispose();
     });
 
     testWidgets('Presses whitespace key in edge cases', (tester) async {
       const text = '';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      final textNode = editor.nodeAtPath([0]) as TextNode;
+      var node = editor.nodeAtPath([0])!;
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: 0),
       );
 
-      await editor.insertText(textNode, '>', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.quote);
+      await editor.editorState.insertText(0, '"', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'quote');
 
-      await editor.insertText(textNode, '*', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.bulletedList);
+      await editor.editorState.insertText(0, '*', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'bulleted_list');
 
-      await editor.insertText(textNode, '[]', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.checkbox);
-      expect(textNode.attributes.check, false);
+      await editor.editorState.insertText(0, '[]', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'todo_list');
+      expect(node.attributes.check, false);
 
-      await editor.insertText(textNode, '1.', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.numberList);
+      await editor.editorState.insertText(0, '1.', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'numbered_list');
 
-      await editor.insertText(textNode, '#', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.heading);
+      await editor.editorState.insertText(0, '#', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'heading');
 
-      await editor.insertText(textNode, '[x]', 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.checkbox);
-      expect(textNode.attributes.check, true);
+      await editor.editorState.insertText(0, '[x]', node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'todo_list');
+      expect(node.attributes[TodoListBlockKeys.checked], true);
 
       const insertedText = '[]AppFlowy';
-      await editor.insertText(textNode, insertedText, 0);
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, BuiltInAttributeKey.checkbox);
-      expect(textNode.attributes.check, true);
-      expect(textNode.toPlainText(), insertedText);
+      await editor.editorState.insertText(0, insertedText, node: node);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      node = editor.nodeAtPath([0])!;
+      expect(node.type, 'todo_list');
+      expect(node.attributes[TodoListBlockKeys.checked], true);
+      expect(node.delta!.toPlainText(), '$insertedText ');
+
+      await editor.dispose();
     });
 
     testWidgets('Presses # at the end of the text', (tester) async {
       const text = 'Welcome to Appflowy 😁 #';
-      final editor = tester.editor..insertTextNode(text);
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
-      final textNode = editor.nodeAtPath([0]) as TextNode;
+      final node = editor.nodeAtPath([0])!;
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: text.length),
       );
-      await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-      expect(textNode.subtype, null);
-      expect(textNode.toPlainText(), text);
+      await editor.pressKey(key: LogicalKeyboardKey.space);
+      expect(node.type, 'paragraph');
+      expect(node.delta!.toPlainText(), '$text ');
+
+      await editor.dispose();
     });
 
-    group('convert geater to blockquote', () {
-      testWidgets('> AppFlowy to blockquote AppFlowy', (tester) async {
+    group('convert double quote to blockquote', () {
+      testWidgets('" AppFlowy to blockquote AppFlowy', (tester) async {
         const text = 'AppFlowy';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
 
-        final textNode = editor.nodeAtPath([0]) as TextNode;
-        await editor.insertText(textNode, '>', 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-        expect(textNode.subtype, BuiltInAttributeKey.quote);
+        var node = editor.nodeAtPath([0])!;
+        await editor.editorState.insertText(0, '"', node: node);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        node = editor.nodeAtPath([0])!;
+        expect(node.type, 'quote');
         for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+          await editor.editorState.insertText(i, text[i], node: node);
         }
-        expect(textNode.toPlainText(), 'AppFlowy');
+        expect(node.delta!.toPlainText(), 'AppFlowy');
+
+        await editor.dispose();
       });
 
       testWidgets('AppFlowy > nothing changes', (tester) async {
         const text = 'AppFlowy >';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
 
-        final textNode = editor.nodeAtPath([0]) as TextNode;
+        final node = editor.nodeAtPath([0])!;
         for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+          await editor.editorState.insertText(i, text[i], node: node);
         }
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
-        final isQuote = textNode.subtype == BuiltInAttributeKey.quote;
+        await editor.pressKey(key: LogicalKeyboardKey.space);
+        final isQuote = node.type == 'quote';
         expect(isQuote, false);
-        expect(textNode.toPlainText(), text);
+        expect(node.delta!.toPlainText(), '$text ');
+
+        await editor.dispose();
       });
 
-      testWidgets('> in front of text to blockquote', (tester) async {
+      testWidgets('" in front of text to blockquote', (tester) async {
         const text = 'AppFlowy';
-        final editor = tester.editor..insertTextNode('');
+        final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        final textNode = editor.nodeAtPath([0]) as TextNode;
+        var node = editor.nodeAtPath([0])!;
         for (var i = 0; i < text.length; i++) {
-          await editor.insertText(textNode, text[i], i);
+          await editor.editorState.insertText(i, text[i], node: node);
         }
         await editor.updateSelection(
           Selection.single(path: [0], startOffset: 0),
         );
-        await editor.insertText(textNode, '>', 0);
-        await editor.pressLogicKey(key: LogicalKeyboardKey.space);
+        await editor.editorState.insertText(0, '"', node: node);
+        await editor.pressKey(key: LogicalKeyboardKey.space);
 
-        final isQuote = textNode.subtype == BuiltInAttributeKey.quote;
+        node = editor.nodeAtPath([0])!;
+        final isQuote = node.type == 'quote';
         expect(isQuote, true);
-        expect(textNode.toPlainText(), text);
+        expect(node.delta!.toPlainText(), text);
+
+        await editor.dispose();
       });
     });
   });

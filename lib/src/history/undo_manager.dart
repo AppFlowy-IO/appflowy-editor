@@ -9,7 +9,7 @@ import 'package:appflowy_editor/src/editor_state.dart';
 /// A [HistoryItem] contains list of operations committed by users.
 /// If a [HistoryItem] is not sealed, operations can be added sequentially.
 /// Otherwise, the operations should be added to a new [HistoryItem].
-class HistoryItem extends LinkedListEntry<HistoryItem> {
+final class HistoryItem extends LinkedListEntry<HistoryItem> {
   final List<Operation> operations = [];
   Selection? beforeSelection;
   Selection? afterSelection;

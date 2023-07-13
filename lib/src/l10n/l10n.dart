@@ -421,6 +421,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Done`
+  String get done {
+    return Intl.message(
+      'Done',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tint 1`
   String get tint1 {
     return Intl.message(
@@ -596,6 +606,196 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Blue',
       name: 'lightLightTint9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL`
+  String get urlHint {
+    return Intl.message(
+      'URL',
+      name: 'urlHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 1`
+  String get mobileHeading1 {
+    return Intl.message(
+      'Heading 1',
+      name: 'mobileHeading1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 2`
+  String get mobileHeading2 {
+    return Intl.message(
+      'Heading 2',
+      name: 'mobileHeading2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading 3`
+  String get mobileHeading3 {
+    return Intl.message(
+      'Heading 3',
+      name: 'mobileHeading3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Color`
+  String get textColor {
+    return Intl.message(
+      'Text Color',
+      name: 'textColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Background Color`
+  String get backgroundColor {
+    return Intl.message(
+      'Background Color',
+      name: 'backgroundColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your link`
+  String get addYourLink {
+    return Intl.message(
+      'Add your link',
+      name: 'addYourLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open link`
+  String get openLink {
+    return Intl.message(
+      'Open link',
+      name: 'openLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy link`
+  String get copyLink {
+    return Intl.message(
+      'Copy link',
+      name: 'copyLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove link`
+  String get removeLink {
+    return Intl.message(
+      'Remove link',
+      name: 'removeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Highlight color`
+  String get highlightColor {
+    return Intl.message(
+      'Highlight color',
+      name: 'highlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear highlight color`
+  String get clearHighlightColor {
+    return Intl.message(
+      'Clear highlight color',
+      name: 'clearHighlightColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom color`
+  String get customColor {
+    return Intl.message(
+      'Custom color',
+      name: 'customColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hex value`
+  String get hexValue {
+    return Intl.message(
+      'Hex value',
+      name: 'hexValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opacity`
+  String get opacity {
+    return Intl.message(
+      'Opacity',
+      name: 'opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset to default color`
+  String get resetToDefaultColor {
+    return Intl.message(
+      'Reset to default color',
+      name: 'resetToDefaultColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LTR`
+  String get ltr {
+    return Intl.message(
+      'LTR',
+      name: 'ltr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RTL`
+  String get rtl {
+    return Intl.message(
+      'RTL',
+      name: 'rtl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto`
+  String get auto {
+    return Intl.message(
+      'Auto',
+      name: 'auto',
       desc: '',
       args: [],
     );
