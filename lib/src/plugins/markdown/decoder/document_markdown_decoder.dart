@@ -52,7 +52,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   Node _convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
-    final assetRegex = RegExp(r'\!\[.*\]\(.*\)');
+    final assetRegex = RegExp(r'^!\[.*\]\(.*\)$');
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -91,9 +91,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
       return _codeBlockNodeFromMarkdown(line, decoder);
-    } else if(assetRegex.hasMatch(line)){
-      var match = assetRegex.firstMatch(line);
-      String? filepath =  match?.group(1);
+    } else if(assetRegex.hasMatch(line.trim())){
+      
+      String? filepath =  extractImagePath(line.trim());
       //checking if filepath is present or if the filepath is an image or not
       if(filepath == null || (!filepath.endsWith('.png') && !filepath.endsWith('.jpg') && !filepath.endsWith('.jpeg') )){
         return paragraphNode(
@@ -115,7 +115,18 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       attributes: {'delta': Delta().toJson()},
     );
   }
-
+  String? extractImagePath(String text) {
+  const startDelimiter = "![";
+  const endDelimiter = "](";
+  final startIndex = text.indexOf(startDelimiter);
+  final endIndex = text.indexOf(endDelimiter, startIndex + startDelimiter.length);
+  
+  if (startIndex != -1 && endIndex != -1) {
+    return text.substring(endIndex + endDelimiter.length, text.length - 1);
+  } else {
+    return null;
+  }
+}
   Node _codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
