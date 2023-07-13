@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -149,6 +151,128 @@ void main() async {
           "Test $i: text='${tests[i].text}'",
         );
       }
+    });
+
+    // Before
+    // Welcome| to AppFlowy Editor 🔥!
+    // After
+    // Welcom|e| to AppFlowy Editor 🔥!
+    testWidgets('press shift + arrow left to select left character',
+        (tester) async {
+      final editor = tester.editor
+        ..addParagraph(
+          initialText: text,
+        );
+      await editor.startTesting();
+
+      const initialOffset = 'Welcome'.length;
+      final selection = Selection.collapse([0], initialOffset);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isShiftPressed: true,
+      );
+
+      expect(
+        editor.selection,
+        Selection.single(
+          path: [0],
+          startOffset: initialOffset,
+          endOffset: initialOffset - 1,
+        ),
+      );
+
+      await editor.dispose();
+    });
+
+    // Before
+    // Welcome to AppFlowy Editor| 🔥!
+    // After on Mac
+    // |Welcome to AppFlowy Editor 🔥!
+    // After on Windows & Linux
+    // Welcome to AppFlowy |Editor 🔥!
+    testWidgets('''press the ctrl+arrow left key, 
+         on windows & linux it should move to the start of a word,
+         on mac it should move the cursor to the start of the line
+         ''', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          2,
+          initialText: text,
+        );
+      await editor.startTesting();
+
+      const initialOffset = 26;
+      final selection = Selection.collapse(
+        [1],
+        initialOffset,
+      );
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+      );
+
+      const expectedOffset = initialOffset - "Editor".length;
+      if (Platform.isMacOS) {
+        expect(editor.selection, Selection.collapse([1], 0));
+      } else {
+        expect(editor.selection, Selection.collapse([1], expectedOffset));
+      }
+
+      await editor.dispose();
+    });
+
+    testWidgets('''press the ctrl+shift+arrow left key, 
+         on windows & linux it should move to the start of a word and select it,
+         on mac it should move the cursor to the start of the line and select it
+         ''', (tester) async {
+      final editor = tester.editor
+        ..addParagraphs(
+          2,
+          initialText: text,
+        );
+      await editor.startTesting();
+      const initialOffset = 26;
+
+      final selection = Selection.collapse(
+        [1],
+        initialOffset,
+      );
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.arrowLeft,
+        isControlPressed: Platform.isWindows || Platform.isLinux,
+        isMetaPressed: Platform.isMacOS,
+        isShiftPressed: true,
+      );
+
+      const expectedOffset = initialOffset - "Editor".length;
+      if (Platform.isMacOS) {
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [1],
+            startOffset: initialOffset,
+            endOffset: 0,
+          ),
+        );
+      } else {
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [1],
+            startOffset: initialOffset,
+            endOffset: expectedOffset,
+          ),
+        );
+      }
+
+      await editor.dispose();
     });
   });
 }
