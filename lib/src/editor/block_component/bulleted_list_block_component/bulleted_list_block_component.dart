@@ -98,13 +98,23 @@ class _BulletedListBlockComponentWidgetState
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
 
   @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: BulletedListBlockKeys.type,
+  );
+
+  @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
   @override
   Node get node => widget.node;
 
-  String? lastStartText;
-  TextDirection? lastDirection;
+  @override
+  EdgeInsets get indentPadding => configuration.indentPadding(
+        node,
+        calculateTextDirection(
+          defaultTextDirection: Directionality.maybeOf(context),
+        ),
+      );
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -147,6 +157,12 @@ class _BulletedListBlockComponentWidgetState
       ),
     );
 
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -155,13 +171,7 @@ class _BulletedListBlockComponentWidgetState
       );
     }
 
-    final indentPadding = configuration.indentPadding(node, textDirection);
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      indentPadding: indentPadding,
-      child: child,
-    );
+    return child;
   }
 }
 

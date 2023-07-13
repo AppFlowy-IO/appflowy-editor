@@ -69,5 +69,43 @@ void main() async {
 
       await editor.dispose();
     });
+
+    //shift+end is only supported in windows and linux
+    // Before
+    // |Welcome to AppFlowy Editor 🔥!
+    // After
+    // |Welcome to AppFlowy Editor 🔥!|
+    testWidgets('press the shift + home to select till beginning of line',
+        (tester) async {
+      if (!Platform.isMacOS) {
+        final editor = tester.editor
+          ..addParagraph(
+            initialText: text,
+          );
+        await editor.startTesting();
+
+        final selection = Selection.collapse(
+          [0],
+          0,
+        );
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.end,
+          isShiftPressed: true,
+        );
+
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+
+        await editor.dispose();
+      }
+    });
   });
 }
