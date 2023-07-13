@@ -94,6 +94,11 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
 
   @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: QuoteBlockKeys.type,
+  );
+
+  @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
   @override
@@ -141,6 +146,12 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       ),
     );
 
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -149,13 +160,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       );
     }
 
-    final indentPadding = configuration.indentPadding(node, textDirection);
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      indentPadding: indentPadding,
-      child: child,
-    );
+    return child;
   }
 }
 

@@ -143,7 +143,6 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final height = attributes[ImageBlockKeys.height]?.toDouble();
 
     Widget child = ResizableImage(
-      key: imageKey,
       src: src,
       width: width,
       height: height,
@@ -156,6 +155,12 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
           });
         editorState.apply(transaction);
       },
+    );
+
+    child = Padding(
+      key: imageKey,
+      padding: padding,
+      child: child,
     );
 
     if (widget.showActions && widget.actionBuilder != null) {
@@ -191,11 +196,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       );
     }
 
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      child: child,
-    );
+    return child;
   }
 
   @override
@@ -212,6 +213,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
 
   @override
   CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
+  Rect getBlockRect() {
+    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+  }
 
   @override
   Rect? getCursorRectInPosition(Position position) {

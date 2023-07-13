@@ -82,7 +82,6 @@ class _DividerBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     Widget child = Container(
-      key: dividerKey,
       height: widget.height,
       alignment: Alignment.center,
       child: Divider(
@@ -91,19 +90,21 @@ class _DividerBlockComponentWidgetState
       ),
     );
 
+    child = Padding(
+      key: dividerKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
-        node: widget.node,
+        node: node,
         actionBuilder: widget.actionBuilder!,
         child: child,
       );
     }
 
-    return BlockComponentPadding(
-      node: node,
-      padding: padding,
-      child: child,
-    );
+    return child;
   }
 
   @override
@@ -120,6 +121,11 @@ class _DividerBlockComponentWidgetState
 
   @override
   CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
+  Rect getBlockRect() {
+    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+  }
 
   @override
   Rect? getCursorRectInPosition(Position position) {

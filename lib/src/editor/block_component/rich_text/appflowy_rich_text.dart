@@ -116,6 +116,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       );
 
   @override
+  Rect getBlockRect() {
+    throw UnimplementedError();
+  }
+
+  @override
   Rect? getCursorRectInPosition(Position position) {
     final textPosition = TextPosition(offset: position.offset);
 

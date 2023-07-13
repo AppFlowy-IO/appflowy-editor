@@ -73,8 +73,6 @@ class CustomImageMenu extends StatelessWidget {
             child: AppFlowyEditor(
               editorState: editorState,
               blockComponentBuilders: customBlockComponentBuilders,
-              commandShortcutEvents: standardCommandShortcutEvents,
-              characterShortcutEvents: standardCharacterShortcutEvents,
             ),
           ),
         ),
