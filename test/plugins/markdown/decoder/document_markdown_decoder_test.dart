@@ -191,6 +191,35 @@ void main() async {
         "data": {
           "delta": []
         }
+      },
+      {
+          "type": "paragraph",
+            "data": {
+                "delta": [
+                  {
+                    "insert": "This file is cuurently not supported : [Example file.pdf](path/to/file.pdf)"
+                  }
+                ]
+              }
+      },      
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+            "url": "path/to/image.png",
+            "align": "center"
+          }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
       }
     ]
   }
@@ -334,6 +363,10 @@ You can also use ***AppFlowy Editor*** as a component to build your own app.
 * Select text to trigger to the toolbar to format your notes.
 
 If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!
+
+[Example file.pdf](path/to/file.pdf)
+
+![Example image](path/to/image.png)
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = jsonDecode(example);
