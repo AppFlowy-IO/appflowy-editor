@@ -52,7 +52,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   Node _convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
-    final assetRegex = RegExp(r'^!\[.*\]\(.*\)$');
+    final imageRegex = RegExp(r'^!\[.*\]\(.*\)$');
+    final assetRegex = RegExp(r'^\[.*\]\(.*\)$');
+    final htmlRegex = RegExp('^(http|https)://');
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -91,17 +93,30 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
       return _codeBlockNodeFromMarkdown(line, decoder);
-    } else if(assetRegex.hasMatch(line.trim())){
-      
-      String? filepath =  extractImagePath(line.trim());
+    } else if (imageRegex.hasMatch(line.trim())) {
+      String? filepath = extractImagePath(line.trim());
       //checking if filepath is present or if the filepath is an image or not
-      if(filepath == null || (!filepath.endsWith('.png') && !filepath.endsWith('.jpg') && !filepath.endsWith('.jpeg') )){
+      if (filepath == null ||
+          (!filepath.endsWith('.png') &&
+              !filepath.endsWith('.jpg') &&
+              !filepath.endsWith('.jpeg'))) {
         return paragraphNode(
           attributes: {'delta': decoder.convert(line).toJson()},
         );
-      }
-      else{
+      } else {
         return imageNode(url: filepath);
+      }
+    } else if (assetRegex.hasMatch(line.trim())) {
+      //this might be a url or a file like pdf,videos,etc
+      String? filepath = extractFilePath(line.trim());
+      if (filepath != null && !htmlRegex.hasMatch(filepath)) {
+        return paragraphNode(
+          text: "This file is cuurently not supported : $line",
+        );
+      } else {
+        return paragraphNode(
+          attributes: {'delta': decoder.convert(line).toJson()},
+        );
       }
     }
 
@@ -115,18 +130,35 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       attributes: {'delta': Delta().toJson()},
     );
   }
+
   String? extractImagePath(String text) {
-  const startDelimiter = "![";
-  const endDelimiter = "](";
-  final startIndex = text.indexOf(startDelimiter);
-  final endIndex = text.indexOf(endDelimiter, startIndex + startDelimiter.length);
-  
-  if (startIndex != -1 && endIndex != -1) {
-    return text.substring(endIndex + endDelimiter.length, text.length - 1);
-  } else {
-    return null;
+    const startDelimiter = "![";
+    const endDelimiter = "](";
+    final startIndex = text.indexOf(startDelimiter);
+    final endIndex =
+        text.indexOf(endDelimiter, startIndex + startDelimiter.length);
+
+    if (startIndex != -1 && endIndex != -1) {
+      return text.substring(endIndex + endDelimiter.length, text.length - 1);
+    } else {
+      return null;
+    }
   }
-}
+
+  String? extractFilePath(String text) {
+    const startDelimiter = "[";
+    const endDelimiter = "](";
+    final startIndex = text.indexOf(startDelimiter);
+    final endIndex =
+        text.indexOf(endDelimiter, startIndex + startDelimiter.length);
+
+    if (startIndex != -1 && endIndex != -1) {
+      return text.substring(endIndex + endDelimiter.length, text.length - 1);
+    } else {
+      return null;
+    }
+  }
+
   Node _codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
