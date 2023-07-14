@@ -8,20 +8,31 @@ class HtmlHeadingNodeParser extends HtmlNodeParser {
   String get id => HeadingBlockKeys.type;
 
   @override
-  String transform(Node node) {
+  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
+    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+  }
+
+  @override
+  List<dom.Node> htmlNodes(
+    Node node, {
+    required List<HtmlNodeParser> encodeParsers,
+  }) {
     final delta = node.delta;
     final attribute = node.attributes;
     final List<dom.Node> result = [];
     if (delta == null) {
       assert(false, 'Delta is null');
-      return '';
     }
-    final convertedNodes = DeltaHtmlEncoder().convert(delta);
+    final convertedNodes = DeltaHtmlEncoder().convert(delta!);
+    if (node.children.isNotEmpty) {
+      convertedNodes.addAll(
+        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      );
+    }
     String tagName = "h${attribute[HeadingBlockKeys.level]}";
 
     final element = insertText(tagName, childNodes: convertedNodes);
     result.add(element);
-
-    return toHTMLString(result);
+    return result;
   }
 }

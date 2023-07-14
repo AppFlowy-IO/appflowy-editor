@@ -8,8 +8,17 @@ class HtmlNumberedListNodeParser extends HtmlNodeParser {
   String get id => NumberedListBlockKeys.type;
 
   @override
-  String transform(Node node) {
+  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
     assert(node.type == NumberedListBlockKeys.type);
+
+    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+  }
+
+  @override
+  List<dom.Node> htmlNodes(
+    Node node, {
+    required List<HtmlNodeParser> encodeParsers,
+  }) {
     final List<dom.Node> result = [];
     final delta = node.delta;
     if (delta == null) {
@@ -17,7 +26,11 @@ class HtmlNumberedListNodeParser extends HtmlNodeParser {
     }
     final convertedNodes = DeltaHtmlEncoder().convert(delta);
     const tagName = HTMLTags.list;
-
+    if (node.children.isNotEmpty) {
+      convertedNodes.addAll(
+        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      );
+    }
     final element = insertText(tagName, childNodes: convertedNodes);
 
     final stashListContainer = dom.Element.tag(
@@ -25,7 +38,6 @@ class HtmlNumberedListNodeParser extends HtmlNodeParser {
     );
     stashListContainer.append(element);
     result.add(stashListContainer);
-
-    return toHTMLString(result);
+    return result;
   }
 }

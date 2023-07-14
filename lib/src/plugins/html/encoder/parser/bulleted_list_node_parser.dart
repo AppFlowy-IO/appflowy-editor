@@ -8,8 +8,17 @@ class HtmlBulletedListNodeParser extends HtmlNodeParser {
   String get id => BulletedListBlockKeys.type;
 
   @override
-  String transform(Node node) {
+  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
     assert(node.type == BulletedListBlockKeys.type);
+
+    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+  }
+
+  @override
+  List<dom.Node> htmlNodes(
+    Node node, {
+    required List<HtmlNodeParser> encodeParsers,
+  }) {
     final List<dom.Node> result = [];
     final delta = node.delta;
     if (delta == null) {
@@ -17,35 +26,18 @@ class HtmlBulletedListNodeParser extends HtmlNodeParser {
     }
     final convertedNodes = DeltaHtmlEncoder().convert(delta);
     const tagName = HTMLTags.list;
-
-    final element = _insertText(tagName, childNodes: convertedNodes);
+    if (node.children.isNotEmpty) {
+      convertedNodes.addAll(
+        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      );
+    }
+    final element = insertText(tagName, childNodes: convertedNodes);
 
     final stashListContainer = dom.Element.tag(
       HTMLTags.unorderedList,
     );
     stashListContainer.append(element);
     result.add(stashListContainer);
-
-    return toHTMLString(result);
-  }
-
-  dom.Element _insertText(
-    String tagName, {
-    required List<dom.Node> childNodes,
-  }) {
-    final p = dom.Element.tag(tagName);
-    for (final node in childNodes) {
-      p.append(node);
-    }
-    return p;
-  }
-
-  String toHTMLString(List<dom.Node> nodes) {
-    final elements = nodes;
-    final copyString = elements.fold<String>(
-      '',
-      (previousValue, element) => previousValue + stringify(element),
-    );
-    return copyString;
+    return result;
   }
 }

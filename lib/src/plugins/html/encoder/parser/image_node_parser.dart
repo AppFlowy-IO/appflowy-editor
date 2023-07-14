@@ -8,7 +8,15 @@ class HtmlImageNodeParser extends HtmlNodeParser {
   String get id => ImageBlockKeys.type;
 
   @override
-  String transform(Node node) {
+  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
+    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+  }
+
+  @override
+  List<dom.Node> htmlNodes(
+    Node node, {
+    required List<HtmlNodeParser> encodeParsers,
+  }) {
     final List<dom.Node> result = [];
 
     final anchor = dom.Element.tag(HTMLTags.image);
@@ -22,9 +30,13 @@ class HtmlImageNodeParser extends HtmlNodeParser {
     if (node.attributes[ImageBlockKeys.align] != null) {
       anchor.attributes["align"] = node.attributes[ImageBlockKeys.align];
     }
+    result.add(insertText(HTMLTags.span, childNodes: [anchor]));
 
-    result.add(anchor);
-
-    return toHTMLString(result);
+    if (node.children.isNotEmpty) {
+      result.addAll(
+        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      );
+    }
+    return result;
   }
 }

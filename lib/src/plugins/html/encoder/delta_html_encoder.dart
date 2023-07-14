@@ -4,9 +4,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 
-/// A [Delta] encoder that encodes a [Delta] to Markdown.
+/// A [Delta] encoder that encodes a [Delta] to html.
 ///
-/// Only support inline styles, like bold, italic, underline, strike, code.
+/// supported nested styles.
 class DeltaHtmlEncoder extends Converter<Delta, List<dom.Node>> {
   @override
   List<dom.Node> convert(Delta input) {
