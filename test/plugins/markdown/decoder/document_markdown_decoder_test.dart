@@ -379,8 +379,7 @@ void main() async {
       {
         "type": "code",
         "data": {
-          "delta": [],
-          "language": null
+          "delta": []
         }
       },
       {
@@ -396,8 +395,7 @@ void main() async {
             {
               "insert": "hello world"
             }
-          ],
-          "language": null
+          ]
         }
       },
       {

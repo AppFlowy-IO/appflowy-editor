@@ -1,26 +1,13 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../new/infra/testable_editor.dart';
-import '../../new/util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   group('arrow_keys_handler.dart', () {
     testWidgets('Presses arrow right key, move the cursor from left to right',
@@ -129,8 +116,10 @@ void main() async {
     await editor.dispose();
   });
 
-  testWidgets('Presses alt + arrow right key, move the cursor one word right',
-      (tester) async {
+  testWidgets('''move the cursor one word right
+  MacOS: presses alt + arrow right key, 
+  Windows & Linux: presses ctrl + arrow right key, 
+  ''', (tester) async {
     const text = 'Welcome to Appflowy';
     final editor = tester.editor..addParagraphs(2, initialText: text);
     await editor.startTesting();
@@ -140,10 +129,7 @@ void main() async {
       selection,
     );
 
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowRight,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor);
 
     expect(
       editor.selection,
@@ -156,10 +142,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
     );
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowRight,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor);
+
     expect(
       editor.selection,
       Selection.collapse(
@@ -171,10 +155,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
     );
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowRight,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor);
+
     expect(
       editor.selection,
       Selection.collapse(
@@ -186,8 +168,10 @@ void main() async {
     await editor.dispose();
   });
 
-  testWidgets('Presses alt + arrow left key, move the cursor one word left',
-      (tester) async {
+  testWidgets('''move the cursor one word left
+  MacOS: presses alt + arrow left key, 
+  Windows & Linux: presses ctrl + arrow left key, 
+  ''', (tester) async {
     const text = 'Welcome to Appflowy';
     final editor = tester.editor..addParagraphs(2, initialText: text);
     await editor.startTesting();
@@ -197,10 +181,8 @@ void main() async {
       selection,
     );
 
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowLeft,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor, toRight: false);
+
     expect(
       editor.selection,
       Selection.collapse(
@@ -212,10 +194,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
     );
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowLeft,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor, toRight: false);
+
     expect(
       editor.selection,
       Selection.collapse(
@@ -227,10 +207,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
     );
-    await editor.pressKey(
-      key: LogicalKeyboardKey.arrowLeft,
-      isAltPressed: true,
-    );
+    await _pressShortcutToNavigateAroundWord(editor, toRight: false);
+
     expect(
       editor.selection,
       Selection.collapse(
@@ -471,6 +449,17 @@ void main() async {
     await editor.dispose();
   });
 
+  //Before:
+  //Welcome |to Appflowy 😁
+  //Welcome to Appflowy 😁
+  //After On Mac
+  //Welcome |to Appflowy 😁
+  //Welcome to Appflowy 😁|
+  //expands the selection to include till end of line
+  //After On Windows
+  //Welcome |to Appflowy 😁
+  //Welcome to| Appflowy 😁
+  //expands the selection to include till end of next word
   testWidgets('Presses shift + arrow down and meta/ctrl + shift + right',
       (tester) async {
     const text = 'Welcome to Appflowy 😁';
@@ -488,15 +477,35 @@ void main() async {
       isControlPressed: Platform.isWindows || Platform.isLinux,
       isMetaPressed: Platform.isMacOS,
     );
-    expect(
-      editor.selection,
-      selection.copyWith(
-        end: Position(path: [1], offset: text.length),
-      ),
-    );
+    if (Platform.isMacOS) {
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [1], offset: text.length),
+        ),
+      );
+    } else {
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [1], offset: 'Welcome to'.length),
+        ),
+      );
+    }
     await editor.dispose();
   });
 
+  //Before:
+  //Welcome to Appflowy 😁
+  //Welcome |to Appflowy 😁
+  //After On Mac
+  //|Welcome to Appflowy 😁
+  //Welcome |to Appflowy 😁
+  //expands the selection to include till end of line
+  //After On Windows
+  //Welcome| to Appflowy 😁
+  //Welcome |to Appflowy 😁
+  //expands the selection to include till end of next word
   testWidgets('Presses shift + arrow up and meta/ctrl + shift + left',
       (tester) async {
     const text = 'Welcome to Appflowy 😁';
@@ -514,16 +523,27 @@ void main() async {
       isControlPressed: Platform.isWindows || Platform.isLinux,
       isMetaPressed: Platform.isMacOS,
     );
-    expect(
-      editor.selection,
-      selection.copyWith(
-        end: Position(path: [0], offset: 0),
-      ),
-    );
+    if (Platform.isMacOS) {
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: 0),
+        ),
+      );
+    } else {
+      expect(
+        editor.selection,
+        selection.copyWith(
+          end: Position(path: [0], offset: 'Welcome'.length),
+        ),
+      );
+    }
     await editor.dispose();
   });
 
-  testWidgets('Presses shift + alt + arrow left to select a word',
+  // press alt on MacOS to select a word
+  // press ctrl on Windows and Linux to select a word
+  testWidgets('Presses shift + alt/ctrl + arrow left to select a word',
       (tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(2, initialText: text);
@@ -533,7 +553,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // <to>
     expect(
@@ -545,7 +566,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // < to>
     expect(
@@ -557,7 +579,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // <Welcome to>
     expect(
@@ -569,7 +592,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowLeft,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // <😁>
     // <Welcome to>
@@ -582,7 +606,9 @@ void main() async {
     await editor.dispose();
   });
 
-  testWidgets('Presses shift + alt + arrow right to select a word',
+  // press alt on MacOS to select a word
+  // press ctrl on Windows and Linux to select a word
+  testWidgets('Presses shift + alt/ctrl + arrow right to select a word',
       (tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(2, initialText: text);
@@ -592,7 +618,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // < >
     expect(
@@ -604,7 +631,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // < Appflowy>
     expect(
@@ -616,12 +644,14 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // < Appflowy 😁>
     expect(
@@ -633,7 +663,8 @@ void main() async {
     await editor.pressKey(
       key: LogicalKeyboardKey.arrowRight,
       isShiftPressed: true,
-      isAltPressed: true,
+      isAltPressed: Platform.isMacOS,
+      isControlPressed: Platform.isWindows || Platform.isLinux,
     );
     // < Appflowy 😁>
     // <>
@@ -656,12 +687,14 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   final editor = tester.editor..addParagraphs(2, initialText: text);
   await editor.startTesting();
 
+  final initialSelection = Selection.single(path: [0], startOffset: 8);
+  final selectionAtBeginning = Selection.single(path: [0], startOffset: 0);
+  final selectionAtEnd = Selection.single(path: [0], startOffset: text.length);
+  final selectionAtEndOfWelcome = Selection.single(path: [0], startOffset: 7);
+
   Selection selection;
   if (isSingle) {
-    selection = Selection.single(
-      path: [0],
-      startOffset: 8,
-    );
+    selection = initialSelection;
   } else {
     if (isBackward) {
       selection = Selection.single(
@@ -677,6 +710,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
       );
     }
   }
+
   await editor.updateSelection(selection);
 
   await editor.pressKey(
@@ -685,10 +719,15 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  expect(
-    editor.selection,
-    Selection.single(path: [0], startOffset: 0),
-  );
+  if (Platform.isMacOS) {
+    expect(editor.selection, selectionAtBeginning);
+  } else if (isSingle) {
+    expect(editor.selection, selectionAtEndOfWelcome);
+  } else {
+    expect(editor.selection, initialSelection);
+  }
+
+  await editor.updateSelection(selectionAtBeginning);
 
   await editor.pressKey(
     key: LogicalKeyboardKey.arrowRight,
@@ -696,10 +735,13 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  expect(
-    editor.selection,
-    Selection.single(path: [0], startOffset: text.length),
-  );
+  if (Platform.isMacOS) {
+    expect(editor.selection, selectionAtEnd);
+  } else {
+    expect(editor.selection, selectionAtEndOfWelcome);
+  }
+
+  await editor.updateSelection(selectionAtEnd);
 
   await editor.pressKey(
     key: LogicalKeyboardKey.arrowUp,
@@ -709,7 +751,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
 
   expect(
     editor.selection,
-    Selection.single(path: [0], startOffset: 0),
+    selectionAtBeginning,
   );
 
   await editor.pressKey(
@@ -749,4 +791,15 @@ Future<void> _testPressArrowKeyInNotCollapsedSelection(
   expect(editor.selection?.end, end);
 
   await editor.dispose();
+}
+
+Future<void> _pressShortcutToNavigateAroundWord(
+  TestableEditor editor, {
+  bool toRight = true,
+}) async {
+  await editor.pressKey(
+    key: toRight ? LogicalKeyboardKey.arrowRight : LogicalKeyboardKey.arrowLeft,
+    isAltPressed: Platform.isMacOS,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+  );
 }

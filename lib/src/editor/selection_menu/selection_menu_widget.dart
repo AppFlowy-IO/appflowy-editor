@@ -195,6 +195,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.onSelectionUpdate,
     required this.selectionMenuStyle,
     required this.itemCountFilter,
+    required this.deleteSlashByDefault,
   }) : super(key: key);
 
   final List<SelectionMenuItem> items;
@@ -209,6 +210,8 @@ class SelectionMenuWidget extends StatefulWidget {
 
   final SelectionMenuStyle selectionMenuStyle;
 
+  final bool deleteSlashByDefault;
+
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
 }
@@ -218,6 +221,8 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
   int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
+
+  int _searchCounter = 0;
 
   String _keyword = '';
   String get keyword => _keyword;
@@ -241,12 +246,18 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     Log.ui.debug('$items');
 
-    if (keyword.length >= maxKeywordLength + 2) {
-      widget.onExit();
+    if (keyword.length >= maxKeywordLength + 2 &&
+        !(widget.deleteSlashByDefault && _searchCounter < 2)) {
+      return widget.onExit();
+    }
+    setState(() {
+      _showingItems = items;
+    });
+
+    if (_showingItems.isEmpty) {
+      _searchCounter++;
     } else {
-      setState(() {
-        _showingItems = items;
-      });
+      _searchCounter = 0;
     }
   }
 
@@ -390,6 +401,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       widget.onExit();
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      if (_searchCounter > 0) {
+        _searchCounter--;
+      }
       if (keyword.isEmpty) {
         widget.onExit();
       } else {

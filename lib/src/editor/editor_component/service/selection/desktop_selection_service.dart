@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
@@ -11,11 +10,11 @@ import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
-    Key? key,
+    super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final Color cursorColor;
@@ -181,10 +180,6 @@ class _DesktopSelectionServiceWidgetState
     _selectionAreas
       ..forEach((overlay) => overlay.remove())
       ..clear();
-    // clear cursor areas
-
-    // hide toolbar
-    // editorState.service.toolbarService?.hide();
 
     // clear context menu
     _clearContextMenu();
@@ -283,12 +278,12 @@ class _DesktopSelectionServiceWidgetState
 
   void _onSecondaryTapDown(TapDownDetails details) {
     // if selection is null, or
-    // selection.isCollapsedand and the selected node is TextNode.
+    // selection.isCollapsed and the selected node is TextNode.
     // try to select the word.
     final selection = currentSelection.value;
     if (selection == null ||
         (selection.isCollapsed == true &&
-            currentSelectedNodes.first is TextNode)) {
+            currentSelectedNodes.first.delta != null)) {
       _onDoubleTapDown(details);
     }
 
@@ -333,20 +328,20 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateBlockSelectionAreas(Selection selection) {
     assert(editorState.selectionType == SelectionType.block);
-    final nodes = editorState.getNodesInSelection(selection).normalized;
+    final nodes = editorState.getNodesInSelection(selection.normalized);
+    if (nodes.isEmpty) {
+      return;
+    }
 
     currentSelectedNodes = nodes;
-
     final node = nodes.first;
-    var offset = Offset.zero;
-    var size = node.rect.size;
-    final builder = editorState.renderer.blockComponentBuilder(node.type);
-    if (builder != null && builder.showActions(node)) {
-      offset = offset.translate(blockComponentActionContainerWidth, 0);
-      size = Size(size.width - blockComponentActionContainerWidth, size.height);
-    }
-    final rect = offset & size;
+    final selectable = node.selectable;
 
+    if (selectable == null) {
+      return;
+    }
+
+    final rect = selectable.getBlockRect();
     final overlay = OverlayEntry(
       builder: (context) => SelectionWidget(
         color: widget.selectionColor,
@@ -526,7 +521,7 @@ class _DesktopSelectionServiceWidgetState
     _clearContextMenu();
 
     // For now, only support the text node.
-    if (!currentSelectedNodes.every((element) => element is TextNode)) {
+    if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
     }
 

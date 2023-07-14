@@ -68,14 +68,20 @@ class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class _DividerBlockComponentWidgetState
-    extends State<DividerBlockComponentWidget> with SelectableMixin {
+    extends State<DividerBlockComponentWidget>
+    with SelectableMixin, BlockComponentConfigurable {
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   final dividerKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   @override
   Widget build(BuildContext context) {
     Widget child = Container(
-      key: dividerKey,
       height: widget.height,
       alignment: Alignment.center,
       child: Divider(
@@ -84,9 +90,15 @@ class _DividerBlockComponentWidgetState
       ),
     );
 
+    child = Padding(
+      key: dividerKey,
+      padding: padding,
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
-        node: widget.node,
+        node: node,
         actionBuilder: widget.actionBuilder!,
         child: child,
       );
@@ -109,6 +121,11 @@ class _DividerBlockComponentWidgetState
 
   @override
   CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
+  Rect getBlockRect() {
+    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+  }
 
   @override
   Rect? getCursorRectInPosition(Position position) {
@@ -138,4 +155,9 @@ class _DividerBlockComponentWidgetState
 
   @override
   Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+
+  @override
+  TextDirection textDirection() {
+    return TextDirection.ltr;
+  }
 }

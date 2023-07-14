@@ -199,7 +199,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
           .toList(growable: false);
     }
     if (attributes.isNotEmpty) {
-      map['data'] = attributes;
+      // filter the null value
+      map['data'] = attributes..removeWhere((_, value) => value == null);
     }
     return map;
   }

@@ -9,12 +9,19 @@ class NumberedListBlockKeys {
   static const String type = 'numbered_list';
 
   static const String number = 'number';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node numberedListNode({
   Delta? delta,
   Attributes? attributes,
   int? number,
+  String? textDirection,
   Iterable<Node>? children,
 }) {
   attributes ??= {
@@ -25,6 +32,8 @@ Node numberedListNode({
     type: NumberedListBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null)
+        NumberedListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -84,13 +93,19 @@ class _NumberedListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
   @override
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: NumberedListBlockKeys.type,
+  );
 
   @override
   BlockComponentConfiguration get configuration => widget.configuration;
@@ -99,19 +114,34 @@ class _NumberedListBlockComponentWidgetState
   Node get node => widget.node;
 
   @override
+  EdgeInsets get indentPadding => configuration.indentPadding(
+        node,
+        calculateTextDirection(
+          defaultTextDirection: Directionality.maybeOf(context),
+        ),
+      );
+
+  @override
   Widget buildComponent(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: textDirection,
         children: [
           widget.iconBuilder != null
               ? widget.iconBuilder!(context, node)
               : _NumberedListIcon(
                   node: node,
                   textStyle: textStyle,
+                  direction: textDirection,
                 ),
           Flexible(
             child: AppFlowyRichText(
@@ -126,10 +156,17 @@ class _NumberedListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              textDirection: textDirection,
             ),
           ),
         ],
       ),
+    );
+
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
     );
 
     if (widget.showActions && widget.actionBuilder != null) {
@@ -148,10 +185,12 @@ class _NumberedListIcon extends StatelessWidget {
   const _NumberedListIcon({
     required this.node,
     required this.textStyle,
+    required this.direction,
   });
 
   final Node node;
   final TextStyle textStyle;
+  final TextDirection direction;
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +205,7 @@ class _NumberedListIcon extends StatelessWidget {
           applyHeightToLastDescent: false,
         ),
         TextSpan(text: '$level.', style: text.combine(textStyle)),
+        textDirection: direction,
       ),
     );
   }

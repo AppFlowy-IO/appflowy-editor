@@ -30,7 +30,11 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
     assert(false, 'arrow right key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.character);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.character);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.character);
+  }
   return KeyEventResult.handled;
 };
 
@@ -38,7 +42,7 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
 // move the cursor to the end of the block
 final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
   key: 'move the cursor to the end of line',
-  command: 'ctrl+arrow right,end',
+  command: 'end',
   macOSCommand: 'cmd+arrow right',
   handler: _moveCursorToEndCommandHandler,
 );
@@ -48,7 +52,11 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
     assert(false, 'arrow right key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.line);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.line);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.line);
+  }
   return KeyEventResult.handled;
 };
 
@@ -56,7 +64,8 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
 // move the cursor to the right word
 final CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the right word',
-  command: 'alt+arrow right',
+  command: 'ctrl+arrow right',
+  macOSCommand: 'alt+arrow right',
   handler: _moveCursorToRightWordCommandHandler,
 );
 
@@ -66,7 +75,11 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorBackward(SelectionMoveRange.word);
+  if (isRTL(editorState)) {
+    editorState.moveCursorForward(SelectionMoveRange.word);
+  } else {
+    editorState.moveCursorBackward(SelectionMoveRange.word);
+  }
   return KeyEventResult.handled;
 };
 
@@ -74,7 +87,8 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
 final CommandShortcutEvent moveCursorRightWordSelectCommand =
     CommandShortcutEvent(
   key: 'move the cursor to select the right word',
-  command: 'alt+shift+arrow right',
+  command: 'ctrl+shift+arrow right',
+  macOSCommand: 'alt+shift+arrow right',
   handler: _moveCursorRightWordSelectCommandHandler,
 );
 
@@ -84,10 +98,14 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+  var forward = false;
+  if (isRTL(editorState)) {
+    forward = true;
+  }
   final end = selection.end.moveHorizontal(
     editorState,
     selectionRange: SelectionRange.word,
-    moveLeft: false,
+    forward: forward,
   );
   if (end == null) {
     return KeyEventResult.ignored;
@@ -100,7 +118,7 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
 };
 
 // arrow right key + shift
-//
+// selects only one character
 final CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
   key: 'move the cursor right select',
   command: 'shift+arrow right',
@@ -113,7 +131,11 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.moveHorizontal(editorState, moveLeft: false);
+  var forward = false;
+  if (isRTL(editorState)) {
+    forward = true;
+  }
+  final end = selection.end.moveHorizontal(editorState, forward: forward);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -126,8 +148,8 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
 
 // arrow right key + shift + ctrl or cmd
 final CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
-  key: 'move the cursor right select',
-  command: 'ctrl+shift+arrow right',
+  key: 'move cursor to select till end of line',
+  command: 'shift+end',
   macOSCommand: 'cmd+shift+arrow right',
   handler: _moveCursorEndSelectCommandHandler,
 );
@@ -142,7 +164,9 @@ CommandShortcutEventHandler _moveCursorEndSelectCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
   var end = selection.end;
-  final position = nodes.last.selectable?.end();
+  final position = isRTL(editorState)
+      ? nodes.last.selectable?.start()
+      : nodes.last.selectable?.end();
   if (position != null) {
     end = position;
   }

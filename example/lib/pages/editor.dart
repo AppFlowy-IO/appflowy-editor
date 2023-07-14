@@ -45,7 +45,8 @@ class Editor extends StatelessWidget {
                 numberedListItem,
                 linkItem,
                 buildTextColorItem(),
-                buildHighlightColorItem()
+                buildHighlightColorItem(),
+                ...textDirectionItems
               ],
               editorState: editorState,
               scrollController: scrollController,

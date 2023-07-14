@@ -14,80 +14,12 @@ final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   handler: _backspaceCommandHandler,
 );
 
-final CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
-  key: 'delete the left word',
-  command: 'ctrl+backspace',
-  macOSCommand: 'alt+backspace',
-  handler: _deleteLeftWordCommandHandler,
-);
-
 final CommandShortcutEvent deleteLeftSentenceCommand = CommandShortcutEvent(
   key: 'delete the left word',
   command: 'ctrl+alt+backspace',
   macOSCommand: 'cmd+backspace',
   handler: _deleteLeftSentenceCommandHandler,
 );
-
-CommandShortcutEventHandler _deleteLeftWordCommandHandler = (editorState) {
-  final selection = editorState.selection;
-  if (selection == null || !selection.isSingle) {
-    return KeyEventResult.ignored;
-  }
-
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final delta = node?.delta;
-  if (node == null || delta == null) {
-    return KeyEventResult.ignored;
-  }
-
-  // we store the position where the current word starts.
-  var startOfWord = selection.end.moveHorizontal(
-    editorState,
-    selectionRange: SelectionRange.word,
-  );
-
-  if (startOfWord == null) {
-    return KeyEventResult.ignored;
-  }
-
-  //check if the selected word is whitespace
-  final selectedWord = delta.toPlainText().substring(
-        startOfWord.offset,
-        selection.end.offset,
-      );
-
-  // if it is whitespace then we have to update the selection to include
-  //  the left word from the whitespace.
-  if (selectedWord.trim().isEmpty) {
-    //make a new selection from the left of the whitespace.
-    final newSelection = Selection.single(
-      path: startOfWord.path,
-      startOffset: startOfWord.offset,
-    );
-
-    //we need to check if this position is not null
-    final newStartOfWord = newSelection.end.moveHorizontal(
-      editorState,
-      selectionRange: SelectionRange.word,
-    );
-
-    //this handles the edge case where the textNode only consists single space.
-    if (newStartOfWord != null) {
-      startOfWord = newStartOfWord;
-    }
-  }
-
-  final transaction = editorState.transaction;
-  transaction.deleteText(
-    node,
-    startOfWord.offset,
-    selection.end.offset - startOfWord.offset,
-  );
-
-  editorState.apply(transaction);
-
-  return KeyEventResult.handled;
-};
 
 CommandShortcutEventHandler _deleteLeftSentenceCommandHandler = (editorState) {
   final selection = editorState.selection;

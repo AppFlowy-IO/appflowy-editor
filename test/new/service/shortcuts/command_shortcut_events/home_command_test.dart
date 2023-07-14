@@ -1,26 +1,12 @@
 import 'dart:io' show Platform;
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../infra/testable_editor.dart';
-import '../../../util/util.dart';
 
 // single | means the cursor
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('home - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -83,6 +69,44 @@ void main() async {
       //will not be updated.
 
       await editor.dispose();
+    });
+
+    //shift+home is only supported in windows and linux
+    // Before
+    // Welcome to AppFlowy Editor 🔥!|
+    // After
+    // |Welcome to AppFlowy Editor 🔥!|
+    testWidgets('press the shift + home to select till beginning of line',
+        (tester) async {
+      if (!Platform.isMacOS) {
+        final editor = tester.editor
+          ..addParagraph(
+            initialText: text,
+          );
+        await editor.startTesting();
+
+        final selection = Selection.collapse(
+          [0],
+          text.length,
+        );
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.home,
+          isShiftPressed: true,
+        );
+
+        expect(
+          editor.selection,
+          Selection.single(
+            path: [0],
+            startOffset: text.length,
+            endOffset: 0,
+          ),
+        );
+
+        await editor.dispose();
+      }
     });
   });
 }

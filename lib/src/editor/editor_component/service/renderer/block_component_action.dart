@@ -1,8 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const double blockComponentActionContainerWidth = 50;
-
 class BlockComponentActionContainer extends StatelessWidget {
   const BlockComponentActionContainer({
     super.key,
@@ -18,12 +16,15 @@ class BlockComponentActionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.centerRight,
-      width: blockComponentActionContainerWidth,
-      height: 25, // TODO: magic number, change it to the height of the block
-      color: Colors
-          .transparent, // have to set the color to transparent to make the MouseRegion work
-      child: !showActions ? const SizedBox.shrink() : actionBuilder(context),
+      // Set the color to transparent to make the MouseRegion work
+      color: Colors.transparent,
+      child: Visibility(
+        maintainSize: true,
+        maintainAnimation: true,
+        maintainState: true,
+        visible: showActions,
+        child: actionBuilder(context),
+      ),
     );
   }
 }
