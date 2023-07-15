@@ -23,7 +23,7 @@ void main() async {
       final result =
           const HtmlImageNodeParser().transform(node, encodeParsers: parser);
 
-      expect(result, '<span><img src="https://appflowy.io"></span>');
+      expect(result, '<img src="https://appflowy.io">');
     });
 
     test('ImageNodeParser id getter', () {

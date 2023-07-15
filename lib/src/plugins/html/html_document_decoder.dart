@@ -203,20 +203,23 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final delta = Delta();
     final nodes = <Node>[];
     final children = element.nodes.toList();
+
     for (final child in children) {
       if (child is dom.Element) {
         if (child.children.isNotEmpty) {
-          for (final seocondChild in child.children) {
+          nodes.addAll(_parseElement(child.children));
+        } else {
+          if (HTMLTags.specialElements.contains(child.localName)) {
             nodes.addAll(
               _parseSpecialElements(
-                seocondChild,
+                child,
                 type: ParagraphBlockKeys.type,
               ),
             );
+          } else {
+            final attributes = _parserFormattingElementAttributes(child);
+            delta.insert(child.text, attributes: attributes);
           }
-        } else {
-          final attributes = _parserFormattingElementAttributes(child);
-          delta.insert(child.text, attributes: attributes);
         }
       } else {
         delta.insert(child.text ?? '');

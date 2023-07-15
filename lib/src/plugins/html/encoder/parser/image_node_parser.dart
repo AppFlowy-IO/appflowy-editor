@@ -30,7 +30,7 @@ class HtmlImageNodeParser extends HtmlNodeParser {
     if (node.attributes[ImageBlockKeys.align] != null) {
       anchor.attributes["align"] = node.attributes[ImageBlockKeys.align];
     }
-    result.add(insertText(HTMLTags.span, childNodes: [anchor]));
+    result.add(anchor);
 
     if (node.children.isNotEmpty) {
       result.addAll(
