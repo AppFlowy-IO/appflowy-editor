@@ -467,5 +467,48 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets("clear text but keep the old direction", (tester) async {
+      final editor = tester.editor
+        ..addNode(
+          paragraphNode(
+            text: 'Hello',
+            textDirection: blockComponentTextDirectionLTR,
+          ),
+        )
+        ..addNode(
+          paragraphNode(
+            text: 'س',
+            textDirection: blockComponentTextDirectionAuto,
+          ),
+        );
+      await editor.startTesting();
+
+      Node node = editor.nodeAtPath([1])!;
+      expect(
+        node.selectable?.textDirection().name,
+        blockComponentTextDirectionRTL,
+      );
+
+      final selection = Selection.collapsed(
+        Position(path: [1], offset: 1),
+      );
+      await editor.updateSelection(selection);
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
+
+      node = editor.nodeAtPath([1])!;
+      expect(
+        node.delta?.toPlainText().isEmpty,
+        true,
+      );
+      expect(
+        node.selectable?.textDirection().name,
+        blockComponentTextDirectionRTL,
+      );
+
+      await editor.dispose();
+    });
   });
 }
