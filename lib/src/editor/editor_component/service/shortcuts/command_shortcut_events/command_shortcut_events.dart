@@ -16,3 +16,4 @@ export 'copy_command.dart';
 export 'paste_command.dart';
 export 'delete_command.dart';
 export 'remove_word_command.dart';
+export 'find_replace_command.dart';
