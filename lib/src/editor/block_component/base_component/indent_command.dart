@@ -1,11 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const indentableBlockTypes = {
-  'bulleted_list',
-  'numbered_list',
-  'todo_list',
-  'paragraph',
+final indentableBlockTypes = {
+  BulletedListBlockKeys.type,
+  NumberedListBlockKeys.type,
+  TodoListBlockKeys.type,
+  ParagraphBlockKeys.type,
 };
 
 /// Indent the current block
