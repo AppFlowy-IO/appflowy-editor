@@ -203,7 +203,7 @@ TextSpan mobileTextSpanDecoratorForAttribute(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Edit Link'),
+              title: Text(AppFlowyEditorLocalizations.current.editLink),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
@@ -272,12 +272,12 @@ class _LinkEditFormState extends State<LinkEditForm> {
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter text';
+                return AppFlowyEditorLocalizations.current.linkTextHint;
               }
               return null;
             },
             decoration: InputDecoration(
-              hintText: 'Text',
+              hintText: AppFlowyEditorLocalizations.current.linkText,
               suffixIcon: IconButton(
                 icon: const Icon(
                   Icons.clear_rounded,
@@ -292,12 +292,12 @@ class _LinkEditFormState extends State<LinkEditForm> {
             keyboardType: TextInputType.url,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter URL';
+                return AppFlowyEditorLocalizations.current.linkAddressHint;
               }
               return null;
             },
             decoration: InputDecoration(
-              hintText: 'URL',
+              hintText: AppFlowyEditorLocalizations.current.urlHint,
               suffixIcon: IconButton(
                 icon: const Icon(
                   Icons.clear_rounded,
@@ -313,7 +313,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
             children: [
               TextButton(
                 child: Text(
-                  'Remove Link',
+                  AppFlowyEditorLocalizations.current.removeLink,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
                 onPressed: () async {
@@ -333,7 +333,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                 style: TextButton.styleFrom(
                   textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-                child: const Text('Done'),
+                child: Text(AppFlowyEditorLocalizations.current.done),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final bool textChanged =

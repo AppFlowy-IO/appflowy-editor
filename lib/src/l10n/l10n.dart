@@ -721,6 +721,46 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Edit link`
+  String get editLink {
+    return Intl.message(
+      'Edit link',
+      name: 'editLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get linkText {
+    return Intl.message(
+      'Text',
+      name: 'linkText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter text`
+  String get linkTextHint {
+    return Intl.message(
+      'Please enter text',
+      name: 'linkTextHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter URL`
+  String get linkAddressHint {
+    return Intl.message(
+      'Please enter URL',
+      name: 'linkAddressHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Highlight color`
   String get highlightColor {
     return Intl.message(
