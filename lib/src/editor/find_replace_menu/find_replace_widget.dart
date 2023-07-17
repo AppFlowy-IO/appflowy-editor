@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/find_replace_menu/search_service.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart';
 import 'package:flutter/material.dart';
 
 class FindMenuWidget extends StatefulWidget {

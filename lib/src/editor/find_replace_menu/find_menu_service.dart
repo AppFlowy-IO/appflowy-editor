@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/find_replace_menu/find_replace_widget.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
 import 'package:flutter/material.dart';
 import '../../editor_state.dart';
 
@@ -61,8 +61,7 @@ class FindReplaceMenu implements FindReplaceService {
             borderRadius: BorderRadius.circular(8.0),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: editorState.editorStyle.selectionMenuBackgroundColor ??
-                    Colors.white,
+                color: editorState.editorStyle.selectionColor,
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 5,

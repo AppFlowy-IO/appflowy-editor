@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/find_replace_menu/search_algorithm.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
 
 class SearchService {
   SearchService({
@@ -101,7 +101,7 @@ class SearchService {
     _selectWordAtPosition(matchedPosition);
 
     //unhighlight the selected word before it is replaced
-    formatHighlight(
+    formatHighlightColor(
       editorState,
       '0x6000BCF0',
     );
@@ -152,9 +152,9 @@ class SearchService {
       Position start = Position(path: path, offset: match);
       _selectWordAtPosition(start);
 
-      formatHighlight(
+      formatHighlightColor(
         editorState,
-        editorState.editorStyle.findHighlightColorHex!,
+        '0x6000BCF0',
       );
       editorState.undoManager.forgetRecentUndo();
     }
@@ -166,6 +166,6 @@ class SearchService {
       offset: start.offset + queriedPattern.length,
     );
 
-    editorState.updateCursorSelection(Selection(start: start, end: end));
+    editorState.updateSelectionWithReason(Selection(start: start, end: end));
   }
 }
