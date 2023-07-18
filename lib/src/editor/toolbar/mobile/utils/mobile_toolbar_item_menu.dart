@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class MobileToolbarItemMenu extends StatefulWidget {
+class MobileToolbarItemMenu extends StatelessWidget {
   const MobileToolbarItemMenu({
     super.key,
     required this.editorState,
@@ -12,11 +12,6 @@ class MobileToolbarItemMenu extends StatefulWidget {
   final Widget Function() itemMenuBuilder;
 
   @override
-  State<MobileToolbarItemMenu> createState() => _MobileToolbarItemMenuState();
-}
-
-class _MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
-  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final style = MobileToolbarStyle.of(context);
@@ -25,7 +20,7 @@ class _MobileToolbarItemMenuState extends State<MobileToolbarItemMenu> {
       width: size.width,
       color: style.backgroundColor,
       padding: const EdgeInsets.all(8),
-      child: widget.itemMenuBuilder(),
+      child: itemMenuBuilder(),
     );
   }
 }
