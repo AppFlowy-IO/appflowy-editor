@@ -1,3 +1,6 @@
+## 1.2.2
+* chore: minor updates to documentation.
+
 ## 1.2.1
 * feat: support collapsed list by @LucasXu0 in ([#319](https://github.com/AppFlowy-IO/appflowy-editor/pull/319))
 * feat: improve keyboard behavior in mobile toolbar by @hyj1204 in ([#287](https://github.com/AppFlowy-IO/appflowy-editor/pull/287))
