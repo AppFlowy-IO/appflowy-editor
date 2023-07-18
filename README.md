@@ -116,7 +116,7 @@ Below are some examples of shortcut event customizations:
  * Need more examples? Check out [shortcuts](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/editor_component/service/shortcuts)
 
 ## Migration Guide
-Please refer to the [migration documentation]((https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/migration.md)).
+Please refer to the [migration documentation](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/migration.md).
 
 ## Glossary
 Please refer to the API documentation.
