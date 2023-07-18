@@ -83,6 +83,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   String? _localImagePath;
 
+  bool isUrlValid = true;
+
   @override
   void initState() {
     super.initState();
@@ -183,6 +185,13 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 
+  Widget _buildInvalidLinkText() {
+    return const Text(
+      'Incorrect Link',
+      style: TextStyle(color: Colors.red, fontSize: 12),
+    );
+  }
+
   Widget _buildUploadButton(
     BuildContext context,
   ) {
@@ -203,10 +212,15 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             widget.onUpload(
               _localImagePath!,
             );
-          } else if (_textEditingController.text.isNotEmpty) {
+          } else if (_textEditingController.text.isNotEmpty &&
+              Uri.tryParse(_textEditingController.text)!.hasAbsolutePath) {
             widget.onUpload(
               _textEditingController.text,
             );
+          } else {
+            setState(() {
+              isUrlValid = false;
+            });
           }
         },
         child: Text(
@@ -226,6 +240,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       children: [
         const SizedBox(height: 16.0),
         _buildInput(),
+        const SizedBox(height: 18.0),
+        if (!isUrlValid) _buildInvalidLinkText(),
         const SizedBox(height: 18.0),
         Align(
           alignment: Alignment.centerRight,
