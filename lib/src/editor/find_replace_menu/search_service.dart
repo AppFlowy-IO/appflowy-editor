@@ -31,11 +31,11 @@ class SearchService {
     if (contents.isEmpty || pattern.isEmpty) return;
 
     final firstNode = contents.firstWhere(
-      (element) => element is TextNode,
+      (el) => el.delta != null,
     );
 
     final lastNode = contents.lastWhere(
-      (element) => element is TextNode,
+      (el) => el.delta != null,
     );
 
     //iterate within all the text nodes of the document.
@@ -47,11 +47,11 @@ class SearchService {
 
     //traversing all the nodes
     for (final n in nodes) {
-      if (n is TextNode) {
+      if (n.delta != null) {
         //matches list will contain the offsets where the desired word,
         //is found.
         List<int> matches =
-            searchAlgorithm.boyerMooreSearch(pattern, n.toPlainText());
+            searchAlgorithm.boyerMooreSearch(pattern, n.delta!.toPlainText());
         //we will store this list of offsets along with their path,
         //in a list of positions.
         for (int matchedOffset in matches) {
@@ -74,16 +74,14 @@ class SearchService {
       selectedIndex =
           selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
 
-      final match = matchedPositions[selectedIndex];
+      Position match = matchedPositions[selectedIndex];
       _selectWordAtPosition(match);
-      //FIXME: selecting a word should scroll editor automatically.
     } else {
       selectedIndex =
           (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
 
       final match = matchedPositions[selectedIndex];
       _selectWordAtPosition(match);
-      //FIXME: selecting a word should scroll editor automatically.
     }
   }
 
@@ -107,9 +105,8 @@ class SearchService {
     );
     editorState.undoManager.forgetRecentUndo();
 
-    final textNode = editorState.service.selectionService.currentSelectedNodes
-        .whereType<TextNode>()
-        .first;
+    final textNodes = editorState.service.selectionService.currentSelectedNodes;
+    final textNode = textNodes.firstWhere((t) => t.delta != null);
 
     final transaction = editorState.transaction;
 

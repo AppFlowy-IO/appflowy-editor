@@ -41,9 +41,9 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
         Row(
           children: [
             IconButton(
-              onPressed: () => setState(() {
-                replaceFlag = !replaceFlag;
-              }),
+              onPressed: () => setState(
+                () => replaceFlag = !replaceFlag,
+              ),
               icon: replaceFlag
                   ? const Icon(Icons.expand_less)
                   : const Icon(Icons.expand_more),
