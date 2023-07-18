@@ -1,12 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const convertibleBlockTypes = [
-  'bulleted_list',
-  'numbered_list',
-  'todo_list',
-  'quote',
-  'heading',
+final convertibleBlockTypes = [
+  BulletedListBlockKeys.type,
+  NumberedListBlockKeys.type,
+  TodoListBlockKeys.type,
+  QuoteBlockKeys.type,
+  HeadingBlockKeys.type,
 ];
 
 /// Convert to paragraph command.
