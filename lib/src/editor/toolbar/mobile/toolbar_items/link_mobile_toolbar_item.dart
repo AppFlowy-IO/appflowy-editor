@@ -114,7 +114,6 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO(yijing):  refresh toolbar to remove _QuitEditingBtn
                       widget.onCancel.call();
                     },
                     style: ButtonStyle(
@@ -144,7 +143,6 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO(yijing):  refresh toolbar to remove _QuitEditingBtn
                       widget.onSubmitted.call(_textEditingController.text);
                       widget.editorState.service.keyboardService
                           ?.closeKeyboard();
@@ -171,7 +169,6 @@ class _MobileLinkMenuState extends State<_MobileLinkMenu> {
                 ),
               ],
             )
-            // TODO(yijing): edit link?
           ],
         ),
       ),

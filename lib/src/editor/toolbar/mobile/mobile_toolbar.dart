@@ -82,6 +82,12 @@ class MobileToolbar extends StatelessWidget {
   }
 }
 
+/// To update the state of the [MobileToolbarWidget]
+abstract class MobileToolbarWidgetService {
+  /// close item menu and enable keyboard
+  void closeItemMenu();
+}
+
 class MobileToolbarWidget extends StatefulWidget {
   const MobileToolbarWidget({
     super.key,
@@ -95,12 +101,22 @@ class MobileToolbarWidget extends StatefulWidget {
   final Selection selection;
 
   @override
-  State<MobileToolbarWidget> createState() => _MobileToolbarWidgetState();
+  State<MobileToolbarWidget> createState() => MobileToolbarWidgetState();
 }
 
-class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
+class MobileToolbarWidgetState extends State<MobileToolbarWidget>
+    implements MobileToolbarWidgetService {
   bool _showItemMenu = false;
   int? _selectedToolbarItemIndex;
+
+  @override
+  void closeItemMenu() {
+    if (_showItemMenu) {
+      setState(() {
+        _showItemMenu = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +143,7 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
                   editorState: widget.editorState,
                   selection: widget.selection,
                   toolbarItems: widget.toolbarItems,
-                  closeMenu: () {
-                    if (_showItemMenu) {
-                      setState(() {
-                        _showItemMenu = false;
-                      });
-                    }
-                  },
+                  toolbarWidgetService: this,
                   itemWithMenuOnPressed: (selectedItemIndex) {
                     setState(() {
                       // If last selected item is selected again, toggle item menu
@@ -176,15 +186,12 @@ class _MobileToolbarWidgetState extends State<MobileToolbarWidget> {
         ),
         // only for MobileToolbarItem.withMenu
         if (_showItemMenu && _selectedToolbarItemIndex != null)
-          // MobileToolbarItemMenuState implements MobileToolbarItemMenuService
           MobileToolbarItemMenu(
             editorState: widget.editorState,
-            itemMenuBuilder: (mobileToolbarItemMenuState) => widget
-                .toolbarItems[_selectedToolbarItemIndex!].itemMenuBuilder!(
-              widget.editorState,
-              widget.selection,
-              mobileToolbarItemMenuState,
-            ),
+            itemMenuBuilder: () => widget
+                .toolbarItems[_selectedToolbarItemIndex!]
+                // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
+                .itemMenuBuilder!(widget.editorState, widget.selection, this),
           )
       ],
     );
@@ -217,14 +224,14 @@ class _ToolbarItemListView extends StatelessWidget {
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
-    required this.closeMenu,
+    required this.toolbarWidgetService,
   }) : super(key: key);
 
   final Function(int index) itemWithMenuOnPressed;
-  final Function() closeMenu;
   final List<MobileToolbarItem> toolbarItems;
   final EditorState editorState;
   final Selection selection;
+  final MobileToolbarWidgetService toolbarWidgetService;
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +246,7 @@ class _ToolbarItemListView extends StatelessWidget {
               itemWithMenuOnPressed.call(index);
             } else {
               // close menu if other item's menu is still on the screen
-              closeMenu.call();
+              toolbarWidgetService.closeItemMenu();
               toolbarItems[index].actionHandler?.call(
                     editorState,
                     selection,
