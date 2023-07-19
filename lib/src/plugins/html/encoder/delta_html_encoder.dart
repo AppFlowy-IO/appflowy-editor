@@ -67,7 +67,23 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
     Attributes attributes,
   ) {
     //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
+    final element = hrefEdgeCaseAttributes(text, attributes);
+    if (element != null) {
+      return element;
+    }
+    final span = dom.Element.tag(HTMLTags.span);
+    final cssString = convertAttributesToCssStyle(attributes);
+    if (cssString.isNotEmpty) {
+      span.attributes['style'] = cssString;
+    }
+    span.append(dom.Text(text));
+    return span;
+  }
 
+  dom.Element? hrefEdgeCaseAttributes(
+    String text,
+    Attributes attributes,
+  ) {
     if (attributes[AppFlowyRichTextKeys.href] != null) {
       final element = dom.Element.tag(HTMLTags.anchor)
         ..attributes['href'] = attributes[AppFlowyRichTextKeys.href];
@@ -106,13 +122,7 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
 
       return element;
     }
-    final span = dom.Element.tag(HTMLTags.span);
-    final cssString = convertAttributesToCssStyle(attributes);
-    if (cssString.isNotEmpty) {
-      span.attributes['style'] = cssString;
-    }
-    span.append(dom.Text(text));
-    return span;
+    return null;
   }
 
   String convertAttributesToCssStyle(Map<String, dynamic> attributes) {
