@@ -2,6 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart';
 import 'package:flutter/material.dart';
 
+const double _iconSize = 20;
+
 class FindMenuWidget extends StatefulWidget {
   const FindMenuWidget({
     super.key,
@@ -48,37 +50,38 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   ? const Icon(Icons.expand_less)
                   : const Icon(Icons.expand_more),
             ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: SizedBox(
-                width: 200,
-                height: 50,
-                child: TextField(
-                  key: const Key('findTextField'),
-                  autofocus: true,
-                  controller: findController,
-                  onSubmitted: (_) => _searchPattern(),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter text to search',
-                  ),
+            SizedBox(
+              width: 200,
+              height: 30,
+              child: TextField(
+                key: const Key('findTextField'),
+                autofocus: true,
+                controller: findController,
+                onSubmitted: (_) => _searchPattern(),
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                  border: OutlineInputBorder(),
+                  hintText: 'Find',
                 ),
               ),
             ),
             IconButton(
               key: const Key('previousMatchButton'),
+              iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: 'Previous Match',
             ),
             IconButton(
               key: const Key('nextMatchButton'),
+              iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: 'Next Match',
             ),
             IconButton(
               key: const Key('closeButton'),
+              iconSize: _iconSize,
               onPressed: () {
                 widget.dismiss();
                 searchService.findAndHighlight(queriedPattern);
@@ -92,32 +95,32 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
         replaceFlag
             ? Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: SizedBox(
-                      width: 200,
-                      height: 50,
-                      child: TextField(
-                        key: const Key('replaceTextField'),
-                        autofocus: false,
-                        controller: replaceController,
-                        onSubmitted: (_) => _replaceSelectedWord(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Replace',
-                        ),
+                  SizedBox(
+                    width: 200,
+                    height: 30,
+                    child: TextField(
+                      key: const Key('replaceTextField'),
+                      autofocus: false,
+                      controller: replaceController,
+                      onSubmitted: (_) => _replaceSelectedWord(),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                        border: OutlineInputBorder(),
+                        hintText: 'Replace',
                       ),
                     ),
                   ),
                   IconButton(
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
+                    iconSize: _iconSize,
                     tooltip: 'Replace',
                   ),
                   IconButton(
                     key: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
+                    iconSize: _iconSize,
                     tooltip: 'Replace All',
                   ),
                 ],
