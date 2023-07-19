@@ -18,48 +18,34 @@ class SearchService {
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
-  void findAndHighlight(String pattern) {
+  void findAndHighlight(String pattern, {bool unhighlight = false}) {
     if (queriedPattern != pattern) {
       //this means we have a new pattern, but before we highlight the new matches,
       //lets unhiglight the old pattern
-      findAndHighlight(queriedPattern);
+      findAndHighlight(queriedPattern, unhighlight: true);
       queriedPattern = pattern;
     }
 
-    final contents = editorState.document.root.children;
-
-    if (contents.isEmpty || pattern.isEmpty) return;
-
-    final firstNode = contents.firstWhere(
-      (el) => el.delta != null,
-    );
-
-    final lastNode = contents.lastWhere(
-      (el) => el.delta != null,
-    );
-
-    //iterate within all the text nodes of the document.
-    final nodes = NodeIterator(
-      document: editorState.document,
-      startNode: firstNode,
-      endNode: lastNode,
-    ).toList();
+    if (pattern.isEmpty) return;
 
     //traversing all the nodes
-    for (final n in nodes) {
-      if (n.delta != null) {
-        //matches list will contain the offsets where the desired word,
-        //is found.
-        List<int> matches =
-            searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText());
-        //we will store this list of offsets along with their path,
-        //in a list of positions.
-        for (int matchedOffset in matches) {
-          matchedPositions.add(Position(path: n.path, offset: matchedOffset));
-        }
-        //finally we will highlight all the mathces.
-        _highlightMatches(n.path, matches, pattern.length);
+    for (final n in _getAllTextNodes()) {
+      //matches list will contain the offsets where the desired word,
+      //is found.
+      List<int> matches =
+          searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText());
+      //we will store this list of offsets along with their path,
+      //in a list of positions.
+      for (int matchedOffset in matches) {
+        matchedPositions.add(Position(path: n.path, offset: matchedOffset));
       }
+      //finally we will highlight all the mathces.
+      _highlightMatches(
+        n.path,
+        matches,
+        pattern.length,
+        unhighlight: unhighlight,
+      );
     }
 
     selectedIndex = matchedPositions.length - 1;
@@ -144,15 +130,29 @@ class SearchService {
   ///
   /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
   /// that the word is located on path 1 from [1,10] to [1,14]
-  void _highlightMatches(Path path, List<int> matches, int patternLength) {
+  void _highlightMatches(
+    Path path,
+    List<int> matches,
+    int patternLength, {
+    bool unhighlight = false,
+  }) {
     for (final match in matches) {
       Position start = Position(path: path, offset: match);
       _selectWordAtPosition(start);
 
-      formatHighlightColor(
-        editorState,
-        '0x6000BCF0',
-      );
+      if (unhighlight) {
+        final selection = editorState.selection!;
+        editorState.formatDelta(
+          selection,
+          {AppFlowyRichTextKeys.highlightColor: null},
+        );
+      } else {
+        formatHighlightColor(
+          editorState,
+          '0x6000BCF0',
+        );
+      }
+
       editorState.undoManager.forgetRecentUndo();
     }
   }
@@ -164,5 +164,30 @@ class SearchService {
     );
 
     editorState.updateSelectionWithReason(Selection(start: start, end: end));
+  }
+
+  List<Node> _getAllTextNodes() {
+    final contents = editorState.document.root.children;
+
+    if (contents.isEmpty) return [];
+
+    final firstNode = contents.firstWhere(
+      (el) => el.delta != null,
+    );
+
+    final lastNode = contents.lastWhere(
+      (el) => el.delta != null,
+    );
+
+    //iterate within all the text nodes of the document.
+    final nodes = NodeIterator(
+      document: editorState.document,
+      startNode: firstNode,
+      endNode: lastNode,
+    ).toList();
+
+    nodes.removeWhere((node) => node.delta == null);
+
+    return nodes;
   }
 }

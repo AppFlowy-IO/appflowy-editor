@@ -80,7 +80,10 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               iconSize: _iconSize,
               onPressed: () {
                 widget.dismiss();
-                searchService.findAndHighlight(queriedPattern);
+                searchService.findAndHighlight(
+                  queriedPattern,
+                  unhighlight: true,
+                );
                 setState(() => queriedPattern = '');
               },
               icon: const Icon(Icons.close),
