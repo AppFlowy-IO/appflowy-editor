@@ -7,6 +7,29 @@ void main() {
   group('mobile_text_span_decorator_for_attribute.dart', () {
     group('Link attribute', () {
       testWidgets(
+        'Check if link can be launched through [safeLaunchUrl] method',
+        (widgetTester) async {
+          const text = 'Appflowy website';
+          const address = 'https://appflowy.com/';
+          final editor = widgetTester.editor;
+          //create a link [Appflowy website](https://appflowy.com/)
+          editor.addParagraph(
+            builder: (index) => Delta()
+              ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          );
+          await editor.startTesting(inMobile: true, editable: false);
+          await widgetTester.pumpAndSettle();
+
+          final finder = find.text(text, findRichText: true);
+          expect(finder, findsOneWidget);
+          await widgetTester.tap(finder);
+          await widgetTester.pumpAndSettle();
+
+          // test the method only
+          expect(() => safeLaunchUrl(address), returnsNormally);
+        },
+      );
+      testWidgets(
         'Show edit link dialog after long tap the link',
         (WidgetTester tester) async {
           const text = 'Appflowy website';
