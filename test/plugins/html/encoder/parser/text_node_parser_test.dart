@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
-  List<HtmlNodeParser> parser = [
+  List<HTMLNodeParser> parser = [
     const HtmlTextNodeParser(),
     const HtmlBulletedListNodeParser(),
     const HtmlNumberedListNodeParser(),
@@ -23,7 +23,8 @@ void main() async {
           },
         );
         expect(
-          const HtmlHeadingNodeParser().transform(node, encodeParsers: parser),
+          const HtmlHeadingNodeParser()
+              .transformNodeToHTMLString(node, encodeParsers: parser),
           '<h$i>Welcome to AppFlowy</h$i>',
         );
       }
@@ -37,7 +38,7 @@ void main() async {
       );
       expect(
         const HtmlBulletedListNodeParser()
-            .transform(node, encodeParsers: parser),
+            .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ul><li>Welcome to AppFlowy</li></ul>',
       );
     });
@@ -50,7 +51,7 @@ void main() async {
       );
       expect(
         const HtmlNumberedListNodeParser()
-            .transform(node, encodeParsers: parser),
+            .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ol><li>Welcome to AppFlowy</li></ol>',
       );
     });
@@ -70,12 +71,12 @@ void main() async {
       );
       expect(
         const HtmlTodoListNodeParser()
-            .transform(checkedNode, encodeParsers: parser),
+            .transformNodeToHTMLString(checkedNode, encodeParsers: parser),
         '<div>Welcome to AppFlowy<input type="checkbox" checked="true"></div>',
       );
       expect(
         const HtmlTodoListNodeParser()
-            .transform(uncheckedNode, encodeParsers: parser),
+            .transformNodeToHTMLString(uncheckedNode, encodeParsers: parser),
         '<div>Welcome to AppFlowy<input type="checkbox" checked="false"></div>',
       );
     });
@@ -87,7 +88,8 @@ void main() async {
         },
       );
       expect(
-        const HtmlQuoteNodeParser().transform(node, encodeParsers: parser),
+        const HtmlQuoteNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
         '<blockquote>Welcome to AppFlowy</blockquote>',
       );
     });
@@ -106,7 +108,8 @@ void main() async {
         },
       );
       expect(
-        const HtmlTextNodeParser().transform(node, encodeParsers: parser),
+        const HtmlTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
         "<p><strong>Welcome to AppFlowy</strong></p>",
       );
     });

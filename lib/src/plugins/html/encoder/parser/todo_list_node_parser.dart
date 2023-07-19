@@ -1,45 +1,40 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlTodoListNodeParser extends HtmlNodeParser {
+class HtmlTodoListNodeParser extends HTMLNodeParser {
   const HtmlTodoListNodeParser();
 
   @override
   String get id => TodoListBlockKeys.type;
 
   @override
-  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
+  String transformNodeToHTMLString(
+    Node node, {
+    required List<HTMLNodeParser> encodeParsers,
+  }) {
     assert(node.type == TodoListBlockKeys.type);
 
-    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+    return toHTMLString(
+      transformNodeToDomNodes(node, encodeParsers: encodeParsers),
+    );
   }
 
   @override
-  List<dom.Node> htmlNodes(
+  List<dom.Node> transformNodeToDomNodes(
     Node node, {
-    required List<HtmlNodeParser> encodeParsers,
+    required List<HTMLNodeParser> encodeParsers,
   }) {
-    final List<dom.Node> result = [];
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
-    }
-    final convertedNodes = DeltaHtmlEncoder().convert(delta);
-
-    final elemntnode = dom.Element.html('<input type="checkbox" />');
-
-    elemntnode.attributes['checked'] =
+    final delta = node.delta ?? Delta();
+    final domNodes = deltaHTMLEncoder.convert(delta);
+    final elementNode = dom.Element.html('<input type="checkbox" />');
+    elementNode.attributes['checked'] =
         node.attributes[TodoListBlockKeys.checked].toString();
+    domNodes.add(elementNode);
+    domNodes.addAll(
+      childrenNodes(node.children, encodeParsers: encodeParsers),
+    );
 
-    const tagName = HTMLTags.div;
-    convertedNodes.add(elemntnode);
-    if (node.children.isNotEmpty) {
-      convertedNodes.addAll(
-        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
-      );
-    }
-    final element = insertText(tagName, childNodes: convertedNodes);
-    result.add(element);
-    return result;
+    final element = insertText(HTMLTags.div, childNodes: domNodes);
+    return [element];
   }
 }

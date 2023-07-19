@@ -6,7 +6,7 @@ import 'package:appflowy_editor/src/core/document/document.dart';
 import 'package:appflowy_editor/src/plugins/html/html_document_decoder.dart';
 import 'package:appflowy_editor/src/plugins/html/html_document_encoder.dart';
 
-import 'encoder/parser/htmlparser.dart';
+import 'encoder/parser/html_parser.dart';
 
 /// Converts a html to [Document].
 Document htmlToDocument(String html) {
@@ -16,7 +16,7 @@ Document htmlToDocument(String html) {
 /// Converts a [Document] to html.
 String documentToHTML(
   Document document, {
-  List<HtmlNodeParser> customParsers = const [],
+  List<HTMLNodeParser> customParsers = const [],
 }) {
   return AppFlowyEditorHTMLCodec(
     encodeParsers: [
@@ -37,7 +37,7 @@ class AppFlowyEditorHTMLCodec extends Codec<Document, String> {
     this.encodeParsers = const [],
   });
 
-  final List<HtmlNodeParser> encodeParsers;
+  final List<HTMLNodeParser> encodeParsers;
 
   @override
   Converter<String, Document> get decoder => DocumentHTMLDecoder();

@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
+final deltaHTMLEncoder = DeltaHTMLEncoder();
+
 /// A [Delta] encoder that encodes a [Delta] to html.
 ///
 /// supported nested styles.
-class DeltaHtmlEncoder extends Converter<Delta, List<dom.Node>> {
+class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
   @override
   List<dom.Node> convert(Delta input) {
     return input

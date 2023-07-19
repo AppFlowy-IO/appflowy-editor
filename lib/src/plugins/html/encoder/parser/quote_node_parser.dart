@@ -1,39 +1,36 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlQuoteNodeParser extends HtmlNodeParser {
+class HtmlQuoteNodeParser extends HTMLNodeParser {
   const HtmlQuoteNodeParser();
 
   @override
   String get id => QuoteBlockKeys.type;
 
   @override
-  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
+  String transformNodeToHTMLString(
+    Node node, {
+    required List<HTMLNodeParser> encodeParsers,
+  }) {
     assert(node.type == QuoteBlockKeys.type);
 
-    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+    return toHTMLString(
+      transformNodeToDomNodes(node, encodeParsers: encodeParsers),
+    );
   }
 
   @override
-  List<dom.Node> htmlNodes(
+  List<dom.Node> transformNodeToDomNodes(
     Node node, {
-    required List<HtmlNodeParser> encodeParsers,
+    required List<HTMLNodeParser> encodeParsers,
   }) {
-    final List<dom.Node> result = [];
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
-    }
-    final convertedNodes = DeltaHtmlEncoder().convert(delta);
-    if (node.children.isNotEmpty) {
-      convertedNodes.addAll(
-        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
-      );
-    }
-    const tagName = HTMLTags.blockQuote;
+    final delta = node.delta ?? Delta();
+    final domNodes = deltaHTMLEncoder.convert(delta);
+    domNodes.addAll(
+      childrenNodes(node.children, encodeParsers: encodeParsers),
+    );
 
-    final element = insertText(tagName, childNodes: convertedNodes);
-    result.add(element);
-    return result;
+    final element = insertText(HTMLTags.blockQuote, childNodes: domNodes);
+    return [element];
   }
 }

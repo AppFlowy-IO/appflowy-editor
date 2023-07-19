@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
-  List<HtmlNodeParser> parser = [
+  List<HTMLNodeParser> parser = [
     const HtmlTextNodeParser(),
     const HtmlBulletedListNodeParser(),
     const HtmlNumberedListNodeParser(),
@@ -20,8 +20,8 @@ void main() async {
         },
       );
 
-      final result =
-          const HtmlImageNodeParser().transform(node, encodeParsers: parser);
+      final result = const HtmlImageNodeParser()
+          .transformNodeToHTMLString(node, encodeParsers: parser);
 
       expect(result, '<img src="https://appflowy.io">');
     });

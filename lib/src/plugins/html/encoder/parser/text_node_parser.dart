@@ -1,38 +1,34 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlTextNodeParser extends HtmlNodeParser {
+class HtmlTextNodeParser extends HTMLNodeParser {
   const HtmlTextNodeParser();
 
   @override
   String get id => ParagraphBlockKeys.type;
 
   @override
-  String transform(Node node, {required List<HtmlNodeParser> encodeParsers}) {
-    return toHTMLString(htmlNodes(node, encodeParsers: encodeParsers));
+  String transformNodeToHTMLString(
+    Node node, {
+    required List<HTMLNodeParser> encodeParsers,
+  }) {
+    return toHTMLString(
+      transformNodeToDomNodes(node, encodeParsers: encodeParsers),
+    );
   }
 
   @override
-  List<dom.Node> htmlNodes(
+  List<dom.Node> transformNodeToDomNodes(
     Node node, {
-    required List<HtmlNodeParser> encodeParsers,
+    required List<HTMLNodeParser> encodeParsers,
   }) {
-    final delta = node.delta;
-    final List<dom.Node> result = [];
-    if (delta == null) {
-      assert(false, 'Delta is null');
-    }
-    final convertedNodes = DeltaHtmlEncoder().convert(delta!);
-    if (node.children.isNotEmpty) {
-      convertedNodes.addAll(
-        childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
-      );
-    }
+    final delta = node.delta ?? Delta();
+    final domNodes = deltaHTMLEncoder.convert(delta);
+    domNodes.addAll(
+      childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+    );
 
-    const tagName = HTMLTags.paragraph;
-
-    final element = insertText(tagName, childNodes: convertedNodes);
-    result.add(element);
-    return result;
+    final element = insertText(HTMLTags.paragraph, childNodes: domNodes);
+    return [element];
   }
 }

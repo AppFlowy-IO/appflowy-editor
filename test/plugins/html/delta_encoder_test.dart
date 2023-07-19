@@ -17,7 +17,7 @@ void main() async {
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -50,7 +50,7 @@ void main() async {
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -78,12 +78,15 @@ void main() async {
             'AppFlowy',
             attributes: {
               BuiltInAttributeKey.underline: true,
+              BuiltInAttributeKey.bold: true,
+              BuiltInAttributeKey.italic: true,
+              BuiltInAttributeKey.code: true,
             },
           ),
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -116,7 +119,7 @@ void main() async {
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -149,7 +152,7 @@ void main() async {
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -184,7 +187,7 @@ void main() async {
         ],
       );
       final childNodes = <dom.Node>[];
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       childNodes.add(dom.Text('Welcome to '));
 
@@ -238,7 +241,7 @@ void main() async {
           ),
         ],
       );
-      final result = DeltaHtmlEncoder().convert(delta);
+      final result = DeltaHTMLEncoder().convert(delta);
 
       expect(
         result.first.attributes.toString(),
