@@ -11,7 +11,7 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
-  SearchAlgorithm searchAlgorithm = SearchAlgorithm();
+  SearchAlgorithm searchAlgorithm = BoyerMoore();
   String queriedPattern = '';
   int selectedIndex = 0;
 
@@ -51,7 +51,7 @@ class SearchService {
         //matches list will contain the offsets where the desired word,
         //is found.
         List<int> matches =
-            searchAlgorithm.boyerMooreSearch(pattern, n.delta!.toPlainText());
+            searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText());
         //we will store this list of offsets along with their path,
         //in a list of positions.
         for (int matchedOffset in matches) {

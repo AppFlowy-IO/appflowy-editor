@@ -1,10 +1,19 @@
 import 'dart:math' as math;
 
-class SearchAlgorithm {
+/// If someone wants to use their own implementation for the search algorithm
+/// They can do so by extending this abstract class and overriding its
+/// `searchMethod(String pattern, String text)`, here `pattern` is the sequence of
+/// characters that are to be searched within the `text`.
+abstract class SearchAlgorithm {
+  List<int> searchMethod(String pattern, String text);
+}
+
+class BoyerMoore extends SearchAlgorithm {
   //This is a standard algorithm used for searching patterns in long text samples
   //It is more efficient than brute force searching because it is able to skip
   //characters that will never possibly match with required pattern.
-  List<int> boyerMooreSearch(String pattern, String text) {
+  @override
+  List<int> searchMethod(String pattern, String text) {
     int m = pattern.length;
     int n = text.length;
 
