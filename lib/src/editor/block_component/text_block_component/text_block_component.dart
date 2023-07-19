@@ -102,14 +102,6 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   Node get node => widget.node;
 
   @override
-  EdgeInsets get indentPadding => configuration.indentPadding(
-        node,
-        calculateTextDirection(
-          defaultTextDirection: Directionality.maybeOf(context),
-        ),
-      );
-
-  @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
       defaultTextDirection: Directionality.maybeOf(context),

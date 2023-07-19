@@ -71,7 +71,19 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     on State<T>, BlockComponentBackgroundColorMixin {
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
-  EdgeInsets get indentPadding;
+  BlockComponentConfiguration get configuration;
+
+  EdgeInsets get indentPadding {
+    TextDirection direction =
+        Directionality.maybeOf(context) ?? TextDirection.ltr;
+    if (node.children.isNotEmpty) {
+      direction = calculateNodeDirection(
+        node: node.children.first,
+        defaultTextDirection: direction,
+      );
+    }
+    return configuration.indentPadding(node, direction);
+  }
 
   double? cachedLeft;
 

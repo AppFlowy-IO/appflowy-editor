@@ -122,14 +122,6 @@ class _TodoListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  @override
-  EdgeInsets get indentPadding => configuration.indentPadding(
-        node,
-        calculateTextDirection(
-          defaultTextDirection: Directionality.maybeOf(context),
-        ),
-      );
-
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
   @override
