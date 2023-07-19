@@ -58,11 +58,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 autofocus: true,
                 controller: findController,
                 onSubmitted: (_) => _searchPattern(),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                  border: OutlineInputBorder(),
-                  hintText: 'Find',
-                ),
+                decoration: _buildInputDecoration("Find"),
               ),
             ),
             IconButton(
@@ -103,11 +99,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                       autofocus: false,
                       controller: replaceController,
                       onSubmitted: (_) => _replaceSelectedWord(),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        border: OutlineInputBorder(),
-                        hintText: 'Replace',
-                      ),
+                      decoration: _buildInputDecoration("Replace"),
                     ),
                   ),
                   IconButton(
@@ -147,5 +139,13 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
       _searchPattern();
     }
     searchService.replaceAllMatches(replaceController.text);
+  }
+
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      border: const OutlineInputBorder(),
+      hintText: hintText,
+    );
   }
 }
