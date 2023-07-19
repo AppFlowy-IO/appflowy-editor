@@ -8,6 +8,8 @@ abstract class FindReplaceService {
   void dismiss();
 }
 
+OverlayEntry? _findReplaceMenuEntry;
+
 class FindReplaceMenu implements FindReplaceService {
   FindReplaceMenu({
     required this.context,
@@ -21,7 +23,6 @@ class FindReplaceMenu implements FindReplaceService {
   final double topOffset = 52;
   final double rightOffset = 40;
 
-  OverlayEntry? _findReplaceMenuEntry;
   bool _selectionUpdateByInner = false;
 
   @override
@@ -44,7 +45,9 @@ class FindReplaceMenu implements FindReplaceService {
 
   @override
   void show() {
-    dismiss();
+    if (_findReplaceMenuEntry != null) {
+      dismiss();
+    }
 
     final selectionService = editorState.service.selectionService;
     final selectionRects = selectionService.selectionRects;
