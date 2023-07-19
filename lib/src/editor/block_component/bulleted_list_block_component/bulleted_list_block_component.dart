@@ -109,19 +109,6 @@ class _BulletedListBlockComponentWidgetState
   Node get node => widget.node;
 
   @override
-  EdgeInsets get indentPadding {
-    TextDirection direction =
-        Directionality.maybeOf(context) ?? TextDirection.ltr;
-    if (node.children.isNotEmpty) {
-      direction = calculateNodeDirection(
-        node: node.children.first,
-        defaultTextDirection: direction,
-      );
-    }
-    return configuration.indentPadding(node, direction);
-  }
-
-  @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
       defaultTextDirection: Directionality.maybeOf(context),

@@ -18,7 +18,7 @@ mixin BlockComponentTextDirectionMixin {
   TextDirection calculateTextDirection({
     TextDirection? defaultTextDirection,
   }) {
-    defaultTextDirection = defaultTextDirection ?? TextDirection.ltr;
+    defaultTextDirection ??= TextDirection.ltr;
 
     final direction = calculateNodeDirection(
       node: node,
@@ -50,12 +50,12 @@ mixin BlockComponentTextDirectionMixin {
 // If the textDirection attribute is not set we will use defaultTextDirection.
 // If the textDirection is ltr or rtl we will apply that.
 // If the textDirection is auto we go by these priorities:
-// 1. Determine the direction by first charachter with strong directionality
+// 1. Determine the direction by first character with strong directionality
 // 2. lastDirection which is the node last determined direction
 // 3. previous line direction
 // 4. defaultTextDirection
 // We will move from first priority when for example the node text is empty or
-// it only has charachters without strong directionality e.g. '@'.
+// it only has characters without strong directionality e.g. '@'.
 TextDirection calculateNodeDirection({
   required Node node,
   required TextDirection defaultTextDirection,
