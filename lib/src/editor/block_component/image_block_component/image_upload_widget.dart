@@ -80,6 +80,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _filePicker = FilePicker();
+  final _regex = RegExp('^(http|https)://');
 
   String? _localImagePath;
 
@@ -162,7 +163,15 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       style: const TextStyle(fontSize: 14.0),
       textAlign: TextAlign.left,
       controller: _textEditingController,
-      onSubmitted: widget.onSubmitted,
+      onSubmitted: (text) {
+        if (validateUrl(text)) {
+          widget.onSubmitted(text);
+        } else {
+          setState(() {
+            isUrlValid = false;
+          });
+        }
+      },
       decoration: InputDecoration(
         hintText: 'URL',
         hintStyle: const TextStyle(fontSize: 14.0),
@@ -212,8 +221,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             widget.onUpload(
               _localImagePath!,
             );
-          } else if (_textEditingController.text.isNotEmpty &&
-              Uri.tryParse(_textEditingController.text)!.hasAbsolutePath) {
+          } else if (validateUrl(_textEditingController.text)) {
             widget.onUpload(
               _textEditingController.text,
             );
@@ -324,6 +332,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         ),
       ),
     );
+  }
+
+  bool validateUrl(String url) {
+    return url.isNotEmpty && _regex.hasMatch(url);
   }
 }
 
