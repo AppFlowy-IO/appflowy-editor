@@ -31,3 +31,5 @@ export 'service/renderer/block_component_context.dart';
 
 // style
 export 'style/editor_style.dart';
+export 'style/default_text_span_decorator_for_attribute.dart';
+export 'style/mobile_text_span_decorator_for_attribute.dart';

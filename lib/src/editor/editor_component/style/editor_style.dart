@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/style/default_text_span_decorator_for_attribute.dart';
-import 'package:appflowy_editor/src/editor/editor_component/style/mobile_text_span_decorator_for_attribute.dart';
 
 import 'package:flutter/material.dart';
 
