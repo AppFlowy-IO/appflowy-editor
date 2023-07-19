@@ -116,6 +116,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
+            key: const Key('Text TextFormField'),
             autofocus: true,
             controller: hrefTextTextEditingController,
             keyboardType: TextInputType.text,
@@ -137,6 +138,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
             ),
           ),
           TextFormField(
+            key: const Key('Url TextFormField'),
             controller: hrefAddressTextEditingController,
             keyboardType: TextInputType.url,
             validator: (value) {
