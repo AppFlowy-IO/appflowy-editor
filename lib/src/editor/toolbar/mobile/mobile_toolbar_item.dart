@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 typedef MobileToolbarItemMenuBuilder = Widget Function(
   EditorState editorState,
   Selection selection,
-  MobileToolbarItemMenuService service,
+  // To accees to the state of MobileToolbarWidget
+  MobileToolbarWidgetService service,
 );
 
 typedef MobileToolbarItemActionHandler = void Function(

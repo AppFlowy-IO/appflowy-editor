@@ -15,6 +15,9 @@ class MobileToolbarStyle extends InheritedWidget {
   final Color itemOutlineColor;
   final Color tabbarSelectedBackgroundColor;
   final Color tabbarSelectedForegroundColor;
+  final Color primaryColor;
+  final Color onPrimaryColor;
+  final Color outlineColor;
   final double toolbarHeight;
   final double borderRadius;
   final double buttonHeight;
@@ -31,6 +34,9 @@ class MobileToolbarStyle extends InheritedWidget {
     required this.itemOutlineColor,
     required this.tabbarSelectedBackgroundColor,
     required this.tabbarSelectedForegroundColor,
+    required this.primaryColor,
+    required this.onPrimaryColor,
+    required this.outlineColor,
     required this.toolbarHeight,
     required this.borderRadius,
     required this.buttonHeight,
@@ -57,6 +63,9 @@ class MobileToolbarStyle extends InheritedWidget {
             oldWidget.tabbarSelectedBackgroundColor ||
         tabbarSelectedForegroundColor !=
             oldWidget.tabbarSelectedForegroundColor ||
+        primaryColor != oldWidget.primaryColor ||
+        onPrimaryColor != oldWidget.onPrimaryColor ||
+        outlineColor != oldWidget.outlineColor ||
         toolbarHeight != oldWidget.toolbarHeight ||
         borderRadius != oldWidget.borderRadius ||
         buttonHeight != oldWidget.buttonHeight ||

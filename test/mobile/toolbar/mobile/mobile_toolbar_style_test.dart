@@ -12,6 +12,9 @@ void main() {
     const itemOutlineColor = Color(0xFFE3E3E3);
     const tabbarSelectedBackgroundColor = Color(0x23808080);
     const tabbarSelectedForegroundColor = Colors.black;
+    const primaryColor = Color(0xff1F71AC);
+    const onPrimaryColor = Colors.white;
+    const outlineColor = Color(0xFFE3E3E3);
     const toolbarHeight = 50.0;
     const borderRadius = 6.0;
     const buttonHeight = 40.0;
@@ -28,6 +31,9 @@ void main() {
         itemOutlineColor: itemOutlineColor,
         tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
         tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+        primaryColor: primaryColor,
+        onPrimaryColor: onPrimaryColor,
+        outlineColor: outlineColor,
         toolbarHeight: toolbarHeight,
         borderRadius: borderRadius,
         buttonHeight: buttonHeight,
