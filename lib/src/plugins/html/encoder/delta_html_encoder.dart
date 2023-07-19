@@ -88,7 +88,7 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
       final element = dom.Element.tag(HTMLTags.anchor)
         ..attributes['href'] = attributes[AppFlowyRichTextKeys.href];
       dom.Element? newElement;
-      dom.Element? appendElement;
+      dom.Element? nestedElemnt;
 
       attributes.forEach((key, value) {
         if (key != AppFlowyRichTextKeys.href) {
@@ -98,25 +98,25 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
               {key: value},
             );
           } else {
-            appendElement ??= convertSingleAttributeTextInsertToDomNode(
-              "",
-              {key: value},
-            );
-
-            if (appendElement != null) {
-              appendElement = appendElement!..append(newElement!);
-            } else {
-              appendElement = convertSingleAttributeTextInsertToDomNode(
+            if (nestedElemnt == null) {
+              nestedElemnt = convertSingleAttributeTextInsertToDomNode(
                 "",
                 {key: value},
               );
+              nestedElemnt = nestedElemnt!..append(newElement!);
+            } else {
+              final appendElement = convertSingleAttributeTextInsertToDomNode(
+                "",
+                {key: value},
+              );
+              nestedElemnt = appendElement..append(nestedElemnt!);
             }
           }
         }
       });
-      if (appendElement != null) {
-        element.append(appendElement!);
-      } else if (newElement != null && appendElement == null) {
+      if (nestedElemnt != null) {
+        element.append(nestedElemnt!);
+      } else if (newElement != null && nestedElemnt == null) {
         element.append(newElement!);
       }
 

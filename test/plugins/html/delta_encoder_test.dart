@@ -237,6 +237,7 @@ void main() async {
               BuiltInAttributeKey.href: 'https://appflowy.io',
               BuiltInAttributeKey.bold: true,
               BuiltInAttributeKey.italic: true,
+              BuiltInAttributeKey.underline: true
             },
           ),
         ],
@@ -278,7 +279,7 @@ void main() async {
       final anchorChildElement = element.children.first;
       expect(
         anchorChildElement.localName,
-        "i",
+        "u",
       );
       expect(
         element.children.first.children.length,
@@ -286,10 +287,20 @@ void main() async {
       );
       expect(
         element.children.first.children.first.localName,
-        "strong",
+        "i",
+      );
+
+      expect(
+        element.children.first.children.first.children.length,
+        1,
       );
       expect(
-        element.children.first.children.first.text,
+        element.children.first.children.first.children.first.localName,
+        "strong",
+      );
+
+      expect(
+        element.children.first.children.first.children.first.text,
         "AppFlowy",
       );
     });
