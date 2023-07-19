@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 
 /// A [Delta] encoder that encodes a [Delta] to html.
@@ -10,110 +9,97 @@ import 'package:html/dom.dart' as dom;
 class DeltaHtmlEncoder extends Converter<Delta, List<dom.Node>> {
   @override
   List<dom.Node> convert(Delta input) {
-    final childNodes = <dom.Node>[];
-
-    for (final op in input) {
-      if (op is TextInsert) {
-        final attributes = op.attributes;
-
-        if (attributes != null) {
-          if (attributes.length == 1) {
-            final element = _applyAttributes(attributes, text: op.text);
-            childNodes.add(element);
-          } else {
-            final span = dom.Element.tag(HTMLTags.span);
-            final cssString = _attributesToCssStyle(attributes);
-            if (cssString.isNotEmpty) {
-              span.attributes['style'] = cssString;
-            }
-            span.append(dom.Text(op.text));
-            childNodes.add(span);
-          }
-        } else {
-          childNodes.add(dom.Text(op.text));
-        }
-      }
-    }
-    return childNodes;
+    return input
+        .whereType<TextInsert>()
+        .map(convertTextInsertToDomNode)
+        .toList();
   }
 
-  dom.Element _applyAttributes(Attributes attributes, {required String text}) {
-    if (attributes[AppFlowyRichTextKeys.bold] == true) {
-      final strong = dom.Element.tag(HTMLTags.strong);
-      strong.append(dom.Text(text));
-      return strong;
-    } else if (attributes[AppFlowyRichTextKeys.underline] == true) {
-      final underline = dom.Element.tag(HTMLTags.underline);
-      underline.append(dom.Text(text));
-      return underline;
-    } else if (attributes[AppFlowyRichTextKeys.italic] == true) {
-      final italic = dom.Element.tag(HTMLTags.italic);
-      italic.append(dom.Text(text));
-      return italic;
-    } else if (attributes[AppFlowyRichTextKeys.strikethrough] == true) {
-      final del = dom.Element.tag(HTMLTags.del);
-      del.append(dom.Text(text));
-      return del;
-    } else if (attributes[AppFlowyRichTextKeys.code] == true) {
-      final code = dom.Element.tag(HTMLTags.code);
-      code.append(dom.Text(text));
-      return code;
-    } else if (attributes[AppFlowyRichTextKeys.href] != null) {
-      final anchor = dom.Element.tag(HTMLTags.anchor);
-      anchor.attributes['href'] = attributes[AppFlowyRichTextKeys.href];
-      anchor.append(dom.Text(text));
-      return anchor;
-    } else {
-      final paragraph = dom.Element.tag(HTMLTags.paragraph);
+  dom.Node convertTextInsertToDomNode(TextInsert textInsert) {
+    final text = textInsert.text;
+    final attributes = textInsert.attributes;
 
-      paragraph.append(dom.Text(text));
-      return paragraph;
+    if (attributes == null) {
+      return dom.Text(text);
     }
+
+    // if there is only one attribute, we can use the tag directly
+    if (attributes.length == 1) {
+      return convertSingleAttributeTextInsertToDomNode(text, attributes);
+    }
+
+    return convertMultipleAttributeTextInsertToDomNode(text, attributes);
   }
 
-  String _attributesToCssStyle(Map<String, dynamic> attributes) {
+  dom.Element convertSingleAttributeTextInsertToDomNode(
+    String text,
+    Attributes attributes,
+  ) {
+    assert(attributes.length == 1);
+
+    final domText = dom.Text(text);
+
+    // href is a special case, it should be an anchor tag
+    final href = attributes.href;
+    if (href != null) {
+      return dom.Element.tag(HTMLTags.anchor)
+        ..attributes['href'] = href
+        ..append(domText);
+    }
+
+    final keyToTag = {
+      AppFlowyRichTextKeys.bold: HTMLTags.strong,
+      AppFlowyRichTextKeys.italic: HTMLTags.italic,
+      AppFlowyRichTextKeys.underline: HTMLTags.underline,
+      AppFlowyRichTextKeys.strikethrough: HTMLTags.del,
+      AppFlowyRichTextKeys.code: HTMLTags.code,
+      null: HTMLTags.paragraph,
+    };
+
+    final tag = keyToTag[attributes.keys.first];
+    return dom.Element.tag(tag)..append(domText);
+  }
+
+  dom.Element convertMultipleAttributeTextInsertToDomNode(
+    String text,
+    Attributes attributes,
+  ) {
+    final span = dom.Element.tag(HTMLTags.span);
+    final cssString = convertAttributesToCssStyle(attributes);
+    if (cssString.isNotEmpty) {
+      span.attributes['style'] = cssString;
+    }
+    span.append(dom.Text(text));
+    return span;
+  }
+
+  String convertAttributesToCssStyle(Map<String, dynamic> attributes) {
     final cssMap = <String, String>{};
-    if (attributes[BuiltInAttributeKey.highlightColor] != null) {
-      final color = Color(
-        int.tryParse(attributes[BuiltInAttributeKey.highlightColor]) ??
-            0xFFFFFFFF,
-      );
 
-      cssMap['background-color'] = color.toRgbaString();
-    }
-    if (attributes[BuiltInAttributeKey.textColor] != null) {
-      final color = Color(
-        int.parse(attributes[BuiltInAttributeKey.textColor]),
-      );
-      cssMap['color'] = color.toRgbaString();
-    }
-    if (attributes[BuiltInAttributeKey.bold] == true) {
+    if (attributes.bold) {
       cssMap['font-weight'] = 'bold';
     }
-    final textDecoration = _textDecorationsFromAttributes(attributes);
-    if (textDecoration.isNotEmpty) {
-      cssMap['text-decoration'] = textDecoration;
+
+    if (attributes.underline) {
+      cssMap['text-decoration'] = 'underline';
+    } else if (attributes.strikethrough) {
+      cssMap['text-decoration'] = 'line-through';
     }
 
-    if (attributes[BuiltInAttributeKey.italic] == true) {
+    if (attributes.italic) {
       cssMap['font-style'] = 'italic';
     }
-    return _cssMapToCssStyle(cssMap);
-  }
 
-  String _cssMapToCssStyle(Map<String, String> cssMap) {
+    final backgroundColor = attributes.backgroundColor;
+    if (backgroundColor != null) {
+      cssMap['background-color'] = backgroundColor.toRgbaString();
+    }
+
+    final color = attributes.color;
+    if (color != null) {
+      cssMap['color'] = color.toRgbaString();
+    }
+
     return cssMap.entries.map((e) => '${e.key}: ${e.value}').join('; ');
-  }
-
-  String _textDecorationsFromAttributes(Attributes attributes) {
-    final List<String> textDecoration = [];
-    if (attributes[BuiltInAttributeKey.strikethrough] == true) {
-      textDecoration.add('line-through');
-    }
-    if (attributes[BuiltInAttributeKey.underline] == true) {
-      textDecoration.add('underline');
-    }
-
-    return textDecoration.join(' ');
   }
 }
