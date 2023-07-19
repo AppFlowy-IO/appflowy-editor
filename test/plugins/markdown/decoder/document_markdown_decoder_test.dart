@@ -197,11 +197,11 @@ void main() async {
             "data": {
                 "delta": [
                   {
-                    "insert": "This file is cuurently not supported : [Example file.pdf](path/to/file.pdf)"
+                    "insert": "[Example file.pdf](path/to/file.pdf)"
                   }
                 ]
               }
-      },      
+      },
       {
         "type": "paragraph",
         "data": {
