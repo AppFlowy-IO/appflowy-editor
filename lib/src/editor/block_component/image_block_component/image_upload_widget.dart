@@ -80,8 +80,11 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _filePicker = FilePicker();
+  final _regex = RegExp('^(http|https)://');
 
   String? _localImagePath;
+
+  bool isUrlValid = true;
 
   @override
   void initState() {
@@ -160,7 +163,15 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       style: const TextStyle(fontSize: 14.0),
       textAlign: TextAlign.left,
       controller: _textEditingController,
-      onSubmitted: widget.onSubmitted,
+      onSubmitted: (text) {
+        if (validateUrl(text)) {
+          widget.onSubmitted(text);
+        } else {
+          setState(() {
+            isUrlValid = false;
+          });
+        }
+      },
       decoration: InputDecoration(
         hintText: 'URL',
         hintStyle: const TextStyle(fontSize: 14.0),
@@ -180,6 +191,13 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           borderSide: BorderSide(color: Color(0xFFBDBDBD)),
         ),
       ),
+    );
+  }
+
+  Widget _buildInvalidLinkText() {
+    return const Text(
+      'Incorrect Link',
+      style: TextStyle(color: Colors.red, fontSize: 12),
     );
   }
 
@@ -203,10 +221,14 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             widget.onUpload(
               _localImagePath!,
             );
-          } else if (_textEditingController.text.isNotEmpty) {
+          } else if (validateUrl(_textEditingController.text)) {
             widget.onUpload(
               _textEditingController.text,
             );
+          } else {
+            setState(() {
+              isUrlValid = false;
+            });
           }
         },
         child: Text(
@@ -226,6 +248,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       children: [
         const SizedBox(height: 16.0),
         _buildInput(),
+        const SizedBox(height: 18.0),
+        if (!isUrlValid) _buildInvalidLinkText(),
         const SizedBox(height: 18.0),
         Align(
           alignment: Alignment.centerRight,
@@ -308,6 +332,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
         ),
       ),
     );
+  }
+
+  bool validateUrl(String url) {
+    return url.isNotEmpty && _regex.hasMatch(url);
   }
 }
 
