@@ -66,6 +66,46 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
     String text,
     Attributes attributes,
   ) {
+    //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
+
+    if (attributes[AppFlowyRichTextKeys.href] != null) {
+      final element = dom.Element.tag(HTMLTags.anchor)
+        ..attributes['href'] = attributes[AppFlowyRichTextKeys.href];
+      dom.Element? newElement;
+      dom.Element? appendElement;
+
+      attributes.forEach((key, value) {
+        if (key != AppFlowyRichTextKeys.href) {
+          if (newElement == null) {
+            newElement = convertSingleAttributeTextInsertToDomNode(
+              text,
+              {key: value},
+            );
+          } else {
+            appendElement ??= convertSingleAttributeTextInsertToDomNode(
+              "",
+              {key: value},
+            );
+
+            if (appendElement != null) {
+              appendElement = appendElement!..append(newElement!);
+            } else {
+              appendElement = convertSingleAttributeTextInsertToDomNode(
+                "",
+                {key: value},
+              );
+            }
+          }
+        }
+      });
+      if (appendElement != null) {
+        element.append(appendElement!);
+      } else if (newElement != null && appendElement == null) {
+        element.append(newElement!);
+      }
+
+      return element;
+    }
     final span = dom.Element.tag(HTMLTags.span);
     final cssString = convertAttributesToCssStyle(attributes);
     if (cssString.isNotEmpty) {

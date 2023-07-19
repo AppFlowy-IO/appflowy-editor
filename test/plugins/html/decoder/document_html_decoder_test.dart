@@ -293,7 +293,7 @@ const example = {
   }
 };
 const nestedHTML =
-    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</blockquote><img src="https://richtexteditor.com/images/editor-image.png" align="center"><p>Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!</p><p></p><p>If you'd like to find out more about Lexical, you can:</p><ul><li>Visit the <a href="https://lexical.dev/">Lexical website</a> for documentation and more information.</li></ul><ul><li><img src="https://richtexteditor.com/images/editor-image.png" align="center"></li></ul><ul><li>Check out the code on our <a href="https://github.com/facebook/lexical">GitHub repository</a>.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><ul><li>Join our <a href="https://discord.com/invite/KmG4wQnnD9">Discord Server</a> and chat with the team.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><p>Lastly, we're constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.</p><p></p>''';
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <a href="https://appflowy.io"><i><strong>some text</strong></i></a> with <i>different</i> formats.</blockquote><img src="https://richtexteditor.com/images/editor-image.png" align="center"><p>Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!</p><p></p><p>If you'd like to find out more about Lexical, you can:</p><ul><li>Visit the <a href="https://lexical.dev/">Lexical website</a> for documentation and more information.</li></ul><ul><li><img src="https://richtexteditor.com/images/editor-image.png" align="center"></li></ul><ul><li>Check out the code on our <a href="https://github.com/facebook/lexical">GitHub repository</a>.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><ul><li>Join our <a href="https://discord.com/invite/KmG4wQnnD9">Discord Server</a> and chat with the team.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><p>Lastly, we're constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.</p><p></p>''';
 const nestedDelta = {
   'document': {
     'type': 'page',
@@ -322,7 +322,11 @@ const nestedDelta = {
             {'insert': '. Try typing in '},
             {
               'insert': 'some text',
-              'attributes': {'bold': true}
+              'attributes': {
+                'bold': true,
+                "italic": true,
+                'href': 'https://appflowy.io'
+              }
             },
             {'insert': ' with '},
             {

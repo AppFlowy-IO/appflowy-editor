@@ -260,12 +260,36 @@ void main() async {
         result[2].text,
         "to",
       );
-      expect(
-        result[4].attributes.toString(),
-        '''{style: font-weight: bold; font-style: italic}''',
-      );
+
       expect(
         result[4].text,
+        "AppFlowy",
+      );
+      final element = result[4] as dom.Element;
+      expect(
+        element.localName,
+        "a",
+      );
+
+      expect(
+        element.children.length,
+        1,
+      );
+      final anchorChildElement = element.children.first;
+      expect(
+        anchorChildElement.localName,
+        "i",
+      );
+      expect(
+        element.children.first.children.length,
+        1,
+      );
+      expect(
+        element.children.first.children.first.localName,
+        "strong",
+      );
+      expect(
+        element.children.first.children.first.text,
         "AppFlowy",
       );
     });

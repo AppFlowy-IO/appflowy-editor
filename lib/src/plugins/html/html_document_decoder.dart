@@ -206,7 +206,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
 
     for (final child in children) {
       if (child is dom.Element) {
-        if (child.children.isNotEmpty) {
+        if (child.children.isNotEmpty &&
+            HTMLTags.formattingElements.contains(child.localName) == false) {
+          //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
+
           nodes.addAll(_parseElement(child.children));
         } else {
           if (HTMLTags.specialElements.contains(child.localName)) {
