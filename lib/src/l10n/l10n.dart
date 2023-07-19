@@ -431,6 +431,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tint 1`
   String get tint1 {
     return Intl.message(
@@ -706,6 +716,46 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Remove link',
       name: 'removeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit link`
+  String get editLink {
+    return Intl.message(
+      'Edit link',
+      name: 'editLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get linkText {
+    return Intl.message(
+      'Text',
+      name: 'linkText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter text`
+  String get linkTextHint {
+    return Intl.message(
+      'Please enter text',
+      name: 'linkTextHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter URL`
+  String get linkAddressHint {
+    return Intl.message(
+      'Please enter URL',
+      name: 'linkAddressHint',
       desc: '',
       args: [],
     );

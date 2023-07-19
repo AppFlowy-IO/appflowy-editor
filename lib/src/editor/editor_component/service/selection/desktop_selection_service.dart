@@ -571,13 +571,16 @@ class _DesktopSelectionServiceWidgetState
     }
 
     final node = filteredNodes[min];
-    if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
+    if (node.children.isNotEmpty &&
+        node.children.first.renderBox != null &&
+        node.children.first.rect.top <= offset.dy) {
       final children = node.children.toList(growable: false)
         ..sort(
           (a, b) => a.rect.bottom != b.rect.bottom
               ? a.rect.bottom.compareTo(b.rect.bottom)
               : a.rect.left.compareTo(b.rect.left),
         );
+
       return _getNodeInOffset(
         children,
         offset,

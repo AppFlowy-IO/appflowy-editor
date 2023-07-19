@@ -2,6 +2,11 @@ import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
+import 'package:path/path.dart' as p;
+
+final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
+final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
+final htmlRegex = RegExp('^(http|https)://');
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
   @override
@@ -49,7 +54,6 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   static Node convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
-
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -88,6 +92,20 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
       return codeBlockNodeFromMarkdown(line, decoder);
+    } else if (imageRegex.hasMatch(line.trim())) {
+      final filePath = extractImagePath(line.trim());
+      // checking if filepath is present or if the filepath is an image or not
+      if (filePath == null ||
+          !['.png', '.jpg', 'jpeg'].contains(p.extension(filePath))) {
+        return paragraphNode(text: line.trim());
+      }
+      return imageNode(url: filePath);
+    } else if (assetRegex.hasMatch(line.trim())) {
+      // this might be a url or a file like pdf, videos, etc
+      final filepath = extractFilePath(line.trim());
+      if (filepath != null && !htmlRegex.hasMatch(filepath)) {
+        return paragraphNode(text: line);
+      }
     }
 
     if (line.isNotEmpty) {
@@ -99,6 +117,16 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return paragraphNode(
       attributes: {'delta': Delta().toJson()},
     );
+  }
+
+  static String? extractImagePath(String text) {
+    final match = imageRegex.firstMatch(text);
+    return match?.group(1);
+  }
+
+  static String? extractFilePath(String text) {
+    final match = assetRegex.firstMatch(text);
+    return match?.group(1);
   }
 
   static Node codeBlockNodeFromMarkdown(

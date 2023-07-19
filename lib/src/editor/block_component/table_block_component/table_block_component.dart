@@ -112,7 +112,21 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   bool get shouldCursorBlink => false;
 
   @override
+  CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
   Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+
+  @override
+  Rect getBlockRect() {
+    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+  }
+
+  @override
+  Rect? getCursorRectInPosition(Position position) {
+    final size = _renderBox.size;
+    return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
+  }
 }
 
 SelectionMenuItem tableMenuItem = SelectionMenuItem(
