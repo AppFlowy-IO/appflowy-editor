@@ -111,7 +111,6 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   //
   toggleTodoListCommand,
   ...toggleMarkdownCommands,
-  toggleHighlightCommand,
   showLinkMenuCommand,
 
   //

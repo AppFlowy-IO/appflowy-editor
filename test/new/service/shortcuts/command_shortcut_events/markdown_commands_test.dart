@@ -57,6 +57,16 @@ void main() async {
         LogicalKeyboardKey.keyE,
       );
     });
+
+    testWidgets('Presses Command + Shift + H to update text style',
+        (tester) async {
+      await _testUpdateTextStyleByCommandX(
+        tester,
+        AppFlowyRichTextKeys.highlightColor,
+        defaultHighlightColor,
+        LogicalKeyboardKey.keyH,
+      );
+    });
   });
 }
 
