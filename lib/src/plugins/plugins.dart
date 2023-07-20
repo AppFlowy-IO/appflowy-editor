@@ -1,3 +1,5 @@
+export 'html/encoder/delta_html_encoder.dart';
+export 'html/encoder/parser/html_parser.dart';
 export 'html/html_document.dart';
 export 'html/html_document_decoder.dart';
 export 'html/html_document_encoder.dart';
