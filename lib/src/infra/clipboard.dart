@@ -5,14 +5,16 @@ import 'package:rich_clipboard/rich_clipboard.dart';
 
 class AppFlowyClipboardData {
   const AppFlowyClipboardData({
-    required this.text,
-    required this.html,
+    this.text,
+    this.html,
   });
   final String? text;
   final String? html;
 }
 
 class AppFlowyClipboard {
+  static AppFlowyClipboardData? _mockData;
+
   static Future<void> setData({
     String? text,
     String? html,
@@ -35,6 +37,10 @@ class AppFlowyClipboard {
   }
 
   static Future<AppFlowyClipboardData> getData() async {
+    if (_mockData != null) {
+      return _mockData!;
+    }
+
     final data = await RichClipboard.getData();
     final text = data.text;
     var html = data.html;
@@ -51,5 +57,10 @@ class AppFlowyClipboard {
       text: text,
       html: html,
     );
+  }
+
+  @visibleForTesting
+  static void mockSetData(AppFlowyClipboardData? data) {
+    _mockData = data;
   }
 }
