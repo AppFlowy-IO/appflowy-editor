@@ -85,14 +85,14 @@ class SearchService {
     _selectWordAtPosition(matchedPosition);
 
     //unhighlight the selected word before it is replaced
-    formatHighlightColor(
-      editorState,
-      '0x6000BCF0',
+    final selection = editorState.selection!;
+    editorState.formatDelta(
+      selection,
+      {AppFlowyRichTextKeys.highlightColor: null},
     );
     editorState.undoManager.forgetRecentUndo();
 
-    final textNodes = editorState.service.selectionService.currentSelectedNodes;
-    final textNode = textNodes.firstWhere((t) => t.delta != null);
+    final textNode = editorState.getNodeAtPath(matchedPosition.path)!;
 
     final transaction = editorState.transaction;
 
@@ -152,7 +152,6 @@ class SearchService {
           '0x6000BCF0',
         );
       }
-
       editorState.undoManager.forgetRecentUndo();
     }
   }

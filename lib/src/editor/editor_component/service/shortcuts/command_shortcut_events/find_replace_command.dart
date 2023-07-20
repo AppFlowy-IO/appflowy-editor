@@ -2,6 +2,11 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.dart';
 import 'package:flutter/material.dart';
 
+final List<CommandShortcutEvent> findAndReplaceCommands = [
+  openFindDialog,
+  openReplaceDialog,
+];
+
 /// Show the slash menu
 ///
 /// - support
@@ -12,15 +17,26 @@ final CommandShortcutEvent openFindDialog = CommandShortcutEvent(
   key: 'show the find dialog',
   command: 'ctrl+f',
   macOSCommand: 'cmd+f',
-  handler: (editorState) => _showFindDialog(
+  handler: (editorState) => _showFindAndReplaceDialog(
     editorState,
   ),
 );
 
+final CommandShortcutEvent openReplaceDialog = CommandShortcutEvent(
+  key: 'show the find and replace dialog',
+  command: 'ctrl+h',
+  macOSCommand: 'cmd+h',
+  handler: (editorState) => _showFindAndReplaceDialog(
+    editorState,
+    openReplace: true,
+  ),
+);
+
 FindReplaceService? _findReplaceService;
-KeyEventResult _showFindDialog(
-  EditorState editorState,
-) {
+KeyEventResult _showFindAndReplaceDialog(
+  EditorState editorState, {
+  bool openReplace = false,
+}) {
   if (PlatformExtension.isMobile) {
     return KeyEventResult.ignored;
   }
@@ -50,7 +66,7 @@ KeyEventResult _showFindDialog(
       _findReplaceService = FindReplaceMenu(
         context: context,
         editorState: editorState,
-        replaceFlag: false,
+        replaceFlag: openReplace,
       );
       _findReplaceService?.show();
     }

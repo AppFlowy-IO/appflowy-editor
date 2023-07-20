@@ -118,8 +118,9 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   outdentCommand,
 
   //
-  openFindDialog,
+  ...findAndReplaceCommands,
 
+  //
   exitEditingCommand,
 
   //
