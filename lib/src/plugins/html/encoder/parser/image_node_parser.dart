@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlImageNodeParser extends HTMLNodeParser {
-  const HtmlImageNodeParser();
+class HTMLImageNodeParser extends HTMLNodeParser {
+  const HTMLImageNodeParser();
 
   @override
   String get id => ImageBlockKeys.type;
@@ -42,7 +42,10 @@ class HtmlImageNodeParser extends HTMLNodeParser {
 
     return [
       anchor,
-      ...childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      ...processChildrenNodes(
+        node.children.toList(),
+        encodeParsers: encodeParsers,
+      ),
     ];
   }
 }

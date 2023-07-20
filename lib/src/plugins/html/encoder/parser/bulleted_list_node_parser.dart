@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlBulletedListNodeParser extends HTMLNodeParser {
-  const HtmlBulletedListNodeParser();
+class HTMLBulletedListNodeParser extends HTMLNodeParser {
+  const HTMLBulletedListNodeParser();
 
   @override
   String get id => BulletedListBlockKeys.type;
@@ -27,13 +27,14 @@ class HtmlBulletedListNodeParser extends HTMLNodeParser {
     final delta = node.delta ?? Delta();
     final domNodes = deltaHTMLEncoder.convert(delta);
     domNodes.addAll(
-      childrenNodes(
+      processChildrenNodes(
         node.children,
         encodeParsers: encodeParsers,
       ),
     );
 
-    final element = insertText(HTMLTags.list, childNodes: domNodes);
+    final element =
+        wrapChildrenNodesWithTagName(HTMLTags.list, childNodes: domNodes);
     return [
       dom.Element.tag(HTMLTags.unorderedList)..append(element),
     ];

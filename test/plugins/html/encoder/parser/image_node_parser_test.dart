@@ -3,13 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   List<HTMLNodeParser> parser = [
-    const HtmlTextNodeParser(),
-    const HtmlBulletedListNodeParser(),
-    const HtmlNumberedListNodeParser(),
-    const HtmlTodoListNodeParser(),
-    const HtmlQuoteNodeParser(),
-    const HtmlHeadingNodeParser(),
-    const HtmlImageNodeParser(),
+    const HTMLTextNodeParser(),
+    const HTMLBulletedListNodeParser(),
+    const HTMLNumberedListNodeParser(),
+    const HTMLTodoListNodeParser(),
+    const HTMLQuoteNodeParser(),
+    const HTMLHeadingNodeParser(),
+    const HTMLImageNodeParser(),
   ];
   group('html_image_node_parser.dart', () {
     test('parser image node', () {
@@ -20,7 +20,7 @@ void main() async {
         },
       );
 
-      final result = const HtmlImageNodeParser()
+      final result = const HTMLImageNodeParser()
           .transformNodeToHTMLString(node, encodeParsers: parser);
 
       expect(result, '<img src="https://appflowy.io">');

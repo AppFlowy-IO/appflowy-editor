@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlQuoteNodeParser extends HTMLNodeParser {
-  const HtmlQuoteNodeParser();
+class HTMLQuoteNodeParser extends HTMLNodeParser {
+  const HTMLQuoteNodeParser();
 
   @override
   String get id => QuoteBlockKeys.type;
@@ -27,10 +27,11 @@ class HtmlQuoteNodeParser extends HTMLNodeParser {
     final delta = node.delta ?? Delta();
     final domNodes = deltaHTMLEncoder.convert(delta);
     domNodes.addAll(
-      childrenNodes(node.children, encodeParsers: encodeParsers),
+      processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
 
-    final element = insertText(HTMLTags.blockQuote, childNodes: domNodes);
+    final element =
+        wrapChildrenNodesWithTagName(HTMLTags.blockQuote, childNodes: domNodes);
     return [element];
   }
 }

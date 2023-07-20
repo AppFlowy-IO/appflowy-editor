@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlHeadingNodeParser extends HTMLNodeParser {
-  const HtmlHeadingNodeParser();
+class HTMLHeadingNodeParser extends HTMLNodeParser {
+  const HTMLHeadingNodeParser();
 
   @override
   String get id => HeadingBlockKeys.type;
@@ -25,10 +25,11 @@ class HtmlHeadingNodeParser extends HTMLNodeParser {
     final delta = node.delta ?? Delta();
     final convertedNodes = deltaHTMLEncoder.convert(delta);
     convertedNodes.addAll(
-      childrenNodes(node.children, encodeParsers: encodeParsers),
+      processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
     final tagName = 'h${node.attributes[HeadingBlockKeys.level]}';
-    final element = insertText(tagName, childNodes: convertedNodes);
+    final element =
+        wrapChildrenNodesWithTagName(tagName, childNodes: convertedNodes);
     return [element];
   }
 }

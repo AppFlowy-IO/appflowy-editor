@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlTodoListNodeParser extends HTMLNodeParser {
-  const HtmlTodoListNodeParser();
+class HTMLTodoListNodeParser extends HTMLNodeParser {
+  const HTMLTodoListNodeParser();
 
   @override
   String get id => TodoListBlockKeys.type;
@@ -31,10 +31,11 @@ class HtmlTodoListNodeParser extends HTMLNodeParser {
         node.attributes[TodoListBlockKeys.checked].toString();
     domNodes.add(elementNode);
     domNodes.addAll(
-      childrenNodes(node.children, encodeParsers: encodeParsers),
+      processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
 
-    final element = insertText(HTMLTags.div, childNodes: domNodes);
+    final element =
+        wrapChildrenNodesWithTagName(HTMLTags.div, childNodes: domNodes);
     return [element];
   }
 }

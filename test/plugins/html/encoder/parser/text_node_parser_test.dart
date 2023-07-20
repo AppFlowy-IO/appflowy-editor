@@ -3,13 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   List<HTMLNodeParser> parser = [
-    const HtmlTextNodeParser(),
-    const HtmlBulletedListNodeParser(),
-    const HtmlNumberedListNodeParser(),
-    const HtmlTodoListNodeParser(),
-    const HtmlQuoteNodeParser(),
-    const HtmlHeadingNodeParser(),
-    const HtmlImageNodeParser(),
+    const HTMLTextNodeParser(),
+    const HTMLBulletedListNodeParser(),
+    const HTMLNumberedListNodeParser(),
+    const HTMLTodoListNodeParser(),
+    const HTMLQuoteNodeParser(),
+    const HTMLHeadingNodeParser(),
+    const HTMLImageNodeParser(),
   ];
   group('html_text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
@@ -23,7 +23,7 @@ void main() async {
           },
         );
         expect(
-          const HtmlHeadingNodeParser()
+          const HTMLHeadingNodeParser()
               .transformNodeToHTMLString(node, encodeParsers: parser),
           '<h$i>Welcome to AppFlowy</h$i>',
         );
@@ -37,7 +37,7 @@ void main() async {
         },
       );
       expect(
-        const HtmlBulletedListNodeParser()
+        const HTMLBulletedListNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ul><li>Welcome to AppFlowy</li></ul>',
       );
@@ -50,7 +50,7 @@ void main() async {
         },
       );
       expect(
-        const HtmlNumberedListNodeParser()
+        const HTMLNumberedListNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ol><li>Welcome to AppFlowy</li></ol>',
       );
@@ -70,12 +70,12 @@ void main() async {
         },
       );
       expect(
-        const HtmlTodoListNodeParser()
+        const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(checkedNode, encodeParsers: parser),
         '<div>Welcome to AppFlowy<input type="checkbox" checked="true"></div>',
       );
       expect(
-        const HtmlTodoListNodeParser()
+        const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(uncheckedNode, encodeParsers: parser),
         '<div>Welcome to AppFlowy<input type="checkbox" checked="false"></div>',
       );
@@ -88,7 +88,7 @@ void main() async {
         },
       );
       expect(
-        const HtmlQuoteNodeParser()
+        const HTMLQuoteNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<blockquote>Welcome to AppFlowy</blockquote>',
       );
@@ -108,7 +108,7 @@ void main() async {
         },
       );
       expect(
-        const HtmlTextNodeParser()
+        const HTMLTextNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         "<p><strong>Welcome to AppFlowy</strong></p>",
       );

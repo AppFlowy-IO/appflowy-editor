@@ -3,13 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   List<HTMLNodeParser> parser = [
-    const HtmlTextNodeParser(),
-    const HtmlBulletedListNodeParser(),
-    const HtmlNumberedListNodeParser(),
-    const HtmlTodoListNodeParser(),
-    const HtmlQuoteNodeParser(),
-    const HtmlHeadingNodeParser(),
-    const HtmlImageNodeParser(),
+    const HTMLTextNodeParser(),
+    const HTMLBulletedListNodeParser(),
+    const HTMLNumberedListNodeParser(),
+    const HTMLTodoListNodeParser(),
+    const HTMLQuoteNodeParser(),
+    const HTMLHeadingNodeParser(),
+    const HTMLImageNodeParser(),
   ];
   group('document_html_encoder_test.dart', () {
     setUpAll(() {

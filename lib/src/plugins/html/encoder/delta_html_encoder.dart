@@ -84,45 +84,40 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
     String text,
     Attributes attributes,
   ) {
-    if (attributes[AppFlowyRichTextKeys.href] != null) {
-      final element = dom.Element.tag(HTMLTags.anchor)
-        ..attributes['href'] = attributes[AppFlowyRichTextKeys.href];
-      dom.Element? newElement;
-      dom.Element? nestedElemnt;
+    final href = attributes[AppFlowyRichTextKeys.href];
+    if (href == null) {
+      return null;
+    }
+    final element = dom.Element.tag(HTMLTags.anchor)..attributes['href'] = href;
+    dom.Element? newElement;
+    dom.Element? nestedElement;
 
-      attributes.forEach((key, value) {
-        if (key != AppFlowyRichTextKeys.href) {
-          if (newElement == null) {
-            newElement = convertSingleAttributeTextInsertToDomNode(
-              text,
-              {key: value},
-            );
-          } else {
-            if (nestedElemnt == null) {
-              nestedElemnt = convertSingleAttributeTextInsertToDomNode(
-                "",
-                {key: value},
-              );
-              nestedElemnt = nestedElemnt!..append(newElement!);
-            } else {
-              final appendElement = convertSingleAttributeTextInsertToDomNode(
-                "",
-                {key: value},
-              );
-              nestedElemnt = appendElement..append(nestedElemnt!);
-            }
-          }
-        }
-      });
-      if (nestedElemnt != null) {
-        element.append(nestedElemnt!);
-      } else if (newElement != null && nestedElemnt == null) {
-        element.append(newElement!);
+    for (final entry in attributes.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      if (key == AppFlowyRichTextKeys.href) {
+        continue;
       }
 
-      return element;
+      final appendElement = convertSingleAttributeTextInsertToDomNode(
+        newElement == null ? text : '',
+        {key: value},
+      );
+
+      if (newElement == null) {
+        newElement = appendElement;
+      } else {
+        nestedElement = appendElement..append(newElement);
+        newElement = nestedElement;
+      }
     }
-    return null;
+
+    if (newElement != null) {
+      element.append(newElement);
+    }
+
+    return element;
   }
 
   String convertAttributesToCssStyle(Map<String, dynamic> attributes) {

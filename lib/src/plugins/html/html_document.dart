@@ -21,13 +21,13 @@ String documentToHTML(
   return AppFlowyEditorHTMLCodec(
     encodeParsers: [
       ...customParsers,
-      const HtmlTextNodeParser(),
-      const HtmlBulletedListNodeParser(),
-      const HtmlNumberedListNodeParser(),
-      const HtmlTodoListNodeParser(),
-      const HtmlQuoteNodeParser(),
-      const HtmlHeadingNodeParser(),
-      const HtmlImageNodeParser(),
+      const HTMLTextNodeParser(),
+      const HTMLBulletedListNodeParser(),
+      const HTMLNumberedListNodeParser(),
+      const HTMLTodoListNodeParser(),
+      const HTMLQuoteNodeParser(),
+      const HTMLHeadingNodeParser(),
+      const HTMLImageNodeParser(),
     ],
   ).encode(document);
 }

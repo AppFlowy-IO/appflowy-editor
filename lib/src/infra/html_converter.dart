@@ -177,7 +177,7 @@ class HTMLToNodesConverter {
     return result;
   }
 
-  Attributes? _getDeltaAttributesFromHtmlAttributes(
+  Attributes? _getDeltaAttributesFromHTMLAttributes(
     LinkedHashMap<Object, String> htmlAttributes,
   ) {
     final attrs = <String, dynamic>{};
@@ -231,7 +231,7 @@ class HTMLToNodesConverter {
     if (element.localName == HTMLTag.span) {
       delta.insert(
         element.text,
-        attributes: _getDeltaAttributesFromHtmlAttributes(element.attributes),
+        attributes: _getDeltaAttributesFromHTMLAttributes(element.attributes),
       );
     } else if (element.localName == HTMLTag.anchor) {
       final hyperLink = element.attributes['href'];
@@ -542,7 +542,7 @@ class NodesToHTMLConverter {
   /// ```html
   /// <span style='...'>Text</span>
   /// ```
-  // html.Element _deltaToHtml(
+  // html.Element _deltaToHTML(
   //   Delta delta, {
   //   String? subType,
   //   String? heading,

@@ -22,7 +22,7 @@ abstract class HTMLNodeParser {
     required List<HTMLNodeParser> encodeParsers,
   });
 
-  dom.Element insertText(
+  dom.Element wrapChildrenNodesWithTagName(
     String tagName, {
     required List<dom.Node> childNodes,
   }) {
@@ -33,8 +33,8 @@ abstract class HTMLNodeParser {
     return p;
   }
 
-  //iterate over its children if exist
-  List<dom.Node> childrenNodes(
+  // iterate over its children if exist
+  List<dom.Node> processChildrenNodes(
     Iterable<Node> nodes, {
     required List<HTMLNodeParser> encodeParsers,
   }) {

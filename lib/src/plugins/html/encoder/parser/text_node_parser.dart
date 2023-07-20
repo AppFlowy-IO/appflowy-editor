@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
-class HtmlTextNodeParser extends HTMLNodeParser {
-  const HtmlTextNodeParser();
+class HTMLTextNodeParser extends HTMLNodeParser {
+  const HTMLTextNodeParser();
 
   @override
   String get id => ParagraphBlockKeys.type;
@@ -25,10 +25,14 @@ class HtmlTextNodeParser extends HTMLNodeParser {
     final delta = node.delta ?? Delta();
     final domNodes = deltaHTMLEncoder.convert(delta);
     domNodes.addAll(
-      childrenNodes(node.children.toList(), encodeParsers: encodeParsers),
+      processChildrenNodes(
+        node.children.toList(),
+        encodeParsers: encodeParsers,
+      ),
     );
 
-    final element = insertText(HTMLTags.paragraph, childNodes: domNodes);
+    final element =
+        wrapChildrenNodesWithTagName(HTMLTags.paragraph, childNodes: domNodes);
     return [element];
   }
 }

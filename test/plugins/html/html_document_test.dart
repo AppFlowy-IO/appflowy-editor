@@ -13,12 +13,12 @@ void main() {
     });
   });
   group('document_html_test.dart tests', () {
-    test('documentToHtml()', () {
+    test('documentToHTML()', () {
       final document = documentToHTML(Document.fromJson(data));
 
       expect(document, rawHTML);
     });
-    test('nesteddocumentToHtml()', () {
+    test('nesteddocumentToHTML()', () {
       final document = documentToHTML(Document.fromJson(nestedDelta));
 
       expect(document, nestedHTML);
