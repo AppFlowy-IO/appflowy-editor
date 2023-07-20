@@ -1,27 +1,39 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
+  List<HTMLNodeParser> parser = [
+    const HTMLTextNodeParser(),
+    const HTMLBulletedListNodeParser(),
+    const HTMLNumberedListNodeParser(),
+    const HTMLTodoListNodeParser(),
+    const HTMLQuoteNodeParser(),
+    const HTMLHeadingNodeParser(),
+    const HTMLImageNodeParser(),
+  ];
   group('document_html_encoder_test.dart', () {
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
     test('parser document', () async {
-      final result = DocumentHTMLEncoder().convert(Document.fromJson(delta));
+      final result = DocumentHTMLEncoder(
+        encodeParsers: parser,
+      ).convert(Document.fromJson(delta));
 
       expect(result, example);
     });
     test('nested parser document', () async {
-      final result =
-          DocumentHTMLEncoder().convert(Document.fromJson(nestedDelta));
+      final result = DocumentHTMLEncoder(
+        encodeParsers: parser,
+      ).convert(Document.fromJson(nestedDelta));
 
-      expect(result, nestedhtml);
+      expect(result, nestedHTML);
     });
   });
 }
 
 const example =
-    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
+    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li></ul><ul><li>[x] Test-covered</li></ul><ul><li>[ ] more to come!</li></ul><ul><li>First item</li></ul><ul><li>Second item</li></ul><ul><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
 
 const delta = {
   'document': {
@@ -293,8 +305,8 @@ const delta = {
     ]
   }
 };
-const nestedhtml =
-    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <strong>some text</strong> with <i>different</i> formats.</blockquote><p>\t</p><img src="https://richtexteditor.com/images/editor-image.png"><p>Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!</p><p></p><p>If you'd like to find out more about Lexical, you can:</p><ul><li>Visit the <a href="https://lexical.dev/">Lexical website</a> for documentation and more information.</li><li>\t<span><img src="https://richtexteditor.com/images/editor-image.png"></span></li><li>Check out the code on our <a href="https://github.com/facebook/lexical">GitHub repository</a>.</li><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li><li>Join our <a href="https://discord.com/invite/KmG4wQnnD9">Discord Server</a> and chat with the team.</li><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><p>Lastly, we're constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.</p><p></p>''';
+const nestedHTML =
+    '''<h1>Welcome to the playground</h1><blockquote>In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with <code>@lexical/react</code>. Try typing in <a href="https://appflowy.io"><i><strong>some text</strong></i></a> with <i>different</i> formats.</blockquote><img src="https://richtexteditor.com/images/editor-image.png" align="center"><p>Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!</p><p></p><p>If you'd like to find out more about Lexical, you can:</p><ul><li>Visit the <a href="https://lexical.dev/">Lexical website</a> for documentation and more information.</li></ul><ul><li><img src="https://richtexteditor.com/images/editor-image.png" align="center"></li></ul><ul><li>Check out the code on our <a href="https://github.com/facebook/lexical">GitHub repository</a>.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><ul><li>Join our <a href="https://discord.com/invite/KmG4wQnnD9">Discord Server</a> and chat with the team.</li></ul><ul><li>Playground code can be found <a href="https://github.com/facebook/lexical/tree/main/packages/lexical-playground">here</a>.</li></ul><p>Lastly, we're constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.</p><p></p>''';
 const nestedDelta = {
   'document': {
     'type': 'page',
@@ -323,7 +335,11 @@ const nestedDelta = {
             {'insert': '. Try typing in '},
             {
               'insert': 'some text',
-              'attributes': {'bold': true}
+              'attributes': {
+                'bold': true,
+                "italic": true,
+                'href': 'https://appflowy.io'
+              }
             },
             {'insert': ' with '},
             {
@@ -335,20 +351,10 @@ const nestedDelta = {
         }
       },
       {
-        'type': 'paragraph',
-        'data': {
-          'delta': [
-            {'insert': '\t'}
-          ]
-        }
-      },
-      {
         'type': 'image',
         'data': {
           'url': 'https://richtexteditor.com/images/editor-image.png',
           'align': 'center',
-          'height': null,
-          'width': null,
         }
       },
       {
@@ -398,16 +404,10 @@ const nestedDelta = {
             'data': {
               'url': 'https://richtexteditor.com/images/editor-image.png',
               'align': 'center',
-              'height': null,
-              'width': null,
             }
           }
         ],
-        'data': {
-          'delta': [
-            {'insert': '\t'}
-          ]
-        }
+        'data': {'delta': []}
       },
       {
         'type': 'bulleted_list',
