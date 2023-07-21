@@ -7,6 +7,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
   final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
   final htmlRegex = RegExp('^(http|https)://');
+  final numberedlistRegex = RegExp(r'^\d+\. ');
 
   @override
   Document convert(String input) {
@@ -109,6 +110,13 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       if (filepath != null && !htmlRegex.hasMatch(filepath)) {
         return paragraphNode(text: line);
       }
+    } else if (numberedlistRegex.hasMatch(line)) {
+      return numberedListNode(
+        attributes: {
+          'delta':
+              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson()
+        },
+      );
     }
 
     if (line.isNotEmpty) {
