@@ -219,6 +219,32 @@ void main() async {
         }
       },
       {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "1 list item 1"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "2 list item 2"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
           "type": "paragraph",
             "data": {
                 "delta": [
@@ -392,6 +418,9 @@ If you have questions or feedback, please submit an issue on Github or join the 
 
 1. list item 1
 2. list item 2
+
+1 list item 1
+2 list item 2
 
 [Example file.pdf](path/to/file.pdf)
 
