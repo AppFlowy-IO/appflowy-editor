@@ -126,6 +126,9 @@ void handleCopy(EditorState editorState) async {
   }
   final text = editorState.getTextInSelection(selection).join('\n');
   final nodes = editorState.getSelectedNodes(selection);
+  if (nodes.isEmpty) {
+    return;
+  }
   final html = documentToHTML(
     Document(
       root: Node(

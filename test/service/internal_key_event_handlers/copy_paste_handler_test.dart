@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -7,44 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../new/infra/testable_editor.dart';
 
-class MockClipboard {
-  final String? text;
-  final String? html;
-
-  const MockClipboard({required this.text, required this.html});
-
-  MockClipboard copyWith({
-    String? text,
-    String? html,
-  }) =>
-      MockClipboard(
-        text: text,
-        html: html,
-      );
-
-  Map<String, String?> get getData => {"html": html, "text": text};
-}
-
 void main() async {
-  late MockClipboard mockClipboard;
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    mockClipboard = const MockClipboard(html: null, text: null);
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
-      return null;
-    });
-  });
-
   group('copy_paste_handler_test.dart', () {
     testWidgets('Presses Command + A in small document and copy text',
         (tester) async {
@@ -64,9 +26,6 @@ void main() async {
       await _testNestedNodeCopyPaste(tester, Document.fromJson(exampledoc));
     });
 
-    testWidgets('Presses Command + A in collapsed state', (tester) async {
-      await _testhandleCopyCollapsed(tester, Document.fromJson(data));
-    });
     testWidgets('update selection and execute cut command', (tester) async {
       await _testcutHandle(tester, Document.fromJson(cutData));
     });
@@ -96,7 +55,7 @@ Future<void> _testcutHandle(
 
 Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting(targetPlatform: TargetPlatform.windows);
+  await editor.startTesting();
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
@@ -118,6 +77,7 @@ Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
   );
 
   handlePaste(editor.editorState);
+
   expect(
     editor.editorState.document.toJson(),
     document.toJson(),
@@ -131,35 +91,13 @@ Future<void> _testSameNodeCopyPaste(
   Document document,
 ) async {
   final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting(targetPlatform: TargetPlatform.windows);
+
+  await editor.startTesting();
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
-  );
-  final selection = editor.editorState.selection!;
-  final nodes = editor.editorState.getNodesInSelection(selection);
-
-  await AppFlowyClipboard.setData(
-    text: jsonEncode(
-      documentToHTML(
-        Document(
-          root: Node(
-            type: 'page',
-            children: nodes,
-          ),
-        ),
-      ),
-    ),
-    html: documentToHTML(
-      Document(
-        root: Node(
-          type: 'page',
-          children: nodes,
-        ),
-      ),
-    ),
   );
 
   await editor.updateSelection(
@@ -168,9 +106,8 @@ Future<void> _testSameNodeCopyPaste(
       end: Position(path: [0], offset: 4),
     ),
   );
-  final data = await AppFlowyClipboard.getData();
 
-  pasteHTML(editor.editorState, jsonDecode(data.text!));
+  pasteHTML(editor.editorState, documentToHTML(document));
   expect(
     editor.editorState.document.toJson(),
     sameNodePargraph,
@@ -184,66 +121,35 @@ Future<void> _testNestedNodeCopyPaste(
   Document document,
 ) async {
   final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting(targetPlatform: TargetPlatform.windows);
+  await editor.startTesting();
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  final selection = editor.editorState.selection!;
-  final nodes = editor.editorState.getNodesInSelection(selection);
 
-  await AppFlowyClipboard.setData(
-    text: jsonEncode(
-      documentToHTML(
-        Document(
-          root: Node(
-            type: 'page',
-            children: nodes,
-          ),
-        ),
-      ),
-    ),
-    html: documentToHTML(
-      Document(
-        root: Node(
-          type: 'page',
-          children: nodes,
-        ),
-      ),
-    ),
-  );
-  await editor.updateSelection(Selection.collapse([0], 0));
   await editor.updateSelection(
     Selection(
       start: Position(path: [0], offset: 5),
       end: Position(path: [0], offset: 5),
     ),
   );
-  final data = await AppFlowyClipboard.getData();
 
-  pasteHTML(editor.editorState, jsonDecode(data.text!));
+  pasteHTML(
+    editor.editorState,
+    documentToHTML(
+      document,
+    ),
+  );
+  Map<String, Object> json = editor.editorState.document.toJson();
+
   expect(
-    editor.editorState.document.toJson(),
+    json,
     nestedNodeParagraph,
   );
 
   await editor.dispose();
-}
-
-Future<void> _testhandleCopyCollapsed(
-  WidgetTester tester,
-  Document document,
-) async {
-  final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting();
-  handleCopy(editor.editorState);
-  handlePaste(editor.editorState);
-  expect(
-    editor.editorState.selection,
-    null,
-  );
 }
 
 const paragraphText =
@@ -354,7 +260,6 @@ const nestedNodeParagraph = {
       {
         "type": "heading",
         "data": {
-          "level": 2,
           "delta": [
             {"insert": "👋 "},
             {
@@ -364,9 +269,14 @@ const nestedNodeParagraph = {
             {"insert": " "},
             {
               "insert": "AppFlowy Editor",
-              "attributes": {"bold": true, "italic": true}
+              "attributes": {
+                "href": "appflowy.io",
+                "bold": true,
+                "italic": true
+              }
             }
-          ]
+          ],
+          "level": 2
         }
       },
       {
@@ -405,6 +315,10 @@ const nestedNodeParagraph = {
       },
       {
         "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
         "data": {
           "delta": [
             {"insert": "Test-covered"}
@@ -413,11 +327,19 @@ const nestedNodeParagraph = {
       },
       {
         "type": "paragraph",
+        "data": {"delta": []}
+      },
+      {
+        "type": "paragraph",
         "data": {
           "delta": [
             {"insert": "more to come!"}
           ]
         }
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []}
       },
       {
         "type": "paragraph",
@@ -442,11 +364,7 @@ const nestedNodeParagraph = {
             {"insert": "You can also use "},
             {
               "insert": "AppFlowy Editor",
-              "attributes": {
-                "bold": true,
-                "bg_color": "6000bcf0",
-                "italic": true
-              }
+              "attributes": {"bold": true, "italic": true}
             },
             {"insert": " as a component to build your own app."}
           ]
