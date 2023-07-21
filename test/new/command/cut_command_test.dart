@@ -12,12 +12,12 @@ void main() async {
   });
   group('cut_command_test.dart', () {
     testWidgets('update selection and execute cut command', (tester) async {
-      await _testcutHandle(tester, Document.fromJson(paragraphdata));
+      await _testCutHandle(tester, Document.fromJson(paragraphdata));
     });
   });
 }
 
-Future<void> _testcutHandle(
+Future<void> _testCutHandle(
   WidgetTester tester,
   Document document,
 ) async {

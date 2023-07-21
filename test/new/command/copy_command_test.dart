@@ -4,24 +4,44 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../infra/clipboard_test.dart';
 import '../../new/infra/testable_editor.dart';
 
 void main() async {
-  setUpAll(() {
+  late MockClipboard mockClipboard;
+
+  setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    mockClipboard = const MockClipboard(html: null, text: null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (message) async {
+      switch (message.method) {
+        case "Clipboard.getData":
+          return mockClipboard.getData;
+        case "Clipboard.setData":
+          final args = message.arguments as Map<String, dynamic>;
+          mockClipboard = mockClipboard.copyWith(
+            text: args['text'],
+          );
+      }
+      return null;
+    });
   });
 
   group('copy_command_test.dart', () {
     testWidgets('Presses Command + A in small document and copy text',
         (tester) async {
-      await _testhandleCopy(tester, Document.fromJson(paragraphdata));
+      await _testHandleCopy(tester);
     });
   });
 }
 
-Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
-  final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting();
+Future<void> _testHandleCopy(
+  WidgetTester tester,
+) async {
+  final editor = tester.editor
+    ..initializeWithDocment(Document.fromJson(paragraphdata));
+  await editor.startTesting(platform: TargetPlatform.windows);
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
@@ -33,25 +53,24 @@ Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
+  deleteSelectedContent(editor.editorState);
+  expect(editor.document.root.children.length, 1);
+  expect(editor.document.root.children.first.delta!.isEmpty, true);
   await editor.pressKey(
-    key: LogicalKeyboardKey.backspace,
+    key: LogicalKeyboardKey.keyC,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyP,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
-  expect(
-    editor.editorState.document.toJson(),
-    document.toJson(),
-  );
+  final clipBoardData = await AppFlowyClipboard.getData();
+  //this will be null because html content is not testable
+  expect(clipBoardData.html, null);
+  expect(clipBoardData.text, copiedText);
+
   await editor.dispose();
 }
 
-const paragraphText =
-    '''AppFlowy Editor is a highly customizable   rich-text editor''';
+const copiedText =
+    "AppFlowy Editor is a highly customizable   rich-text editor";
 const paragraphdata = {
   "document": {
     "type": "page",

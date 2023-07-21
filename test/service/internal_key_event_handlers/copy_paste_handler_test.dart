@@ -4,13 +4,33 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../infra/clipboard_test.dart';
 import '../../new/infra/testable_editor.dart';
 
 void main() async {
+  late MockClipboard mockClipboard;
+
+  setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    mockClipboard = const MockClipboard(html: null, text: null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (message) async {
+      switch (message.method) {
+        case "Clipboard.getData":
+          return mockClipboard.getData;
+        case "Clipboard.setData":
+          final args = message.arguments as Map<String, dynamic>;
+          mockClipboard = mockClipboard.copyWith(
+            text: args['text'],
+          );
+      }
+      return null;
+    });
+  });
   group('copy_paste_handler_test.dart', () {
     testWidgets('Presses Command + A in small document and copy text',
         (tester) async {
-      await _testhandleCopy(tester, Document.fromJson(paragraphdata));
+      await _testHandleCopy(tester, Document.fromJson(paragraphdata));
     });
     testWidgets('Presses Command + A in small document and copy text same node',
         (tester) async {
@@ -18,7 +38,7 @@ void main() async {
     });
     testWidgets('Presses Command + A in nested docment and copy text',
         (tester) async {
-      await _testhandleCopy(tester, Document.fromJson(data));
+      await _testHandleCopy(tester, Document.fromJson(data));
     });
     testWidgets(
         'Presses Command + A in nested docment and copy text nestednode',
@@ -27,17 +47,17 @@ void main() async {
     });
 
     testWidgets('update selection and execute cut command', (tester) async {
-      await _testcutHandle(tester, Document.fromJson(cutData));
+      await _testCutHandle(tester, Document.fromJson(cutData));
     });
   });
 }
 
-Future<void> _testcutHandle(
+Future<void> _testCutHandle(
   WidgetTester tester,
   Document document,
 ) async {
   final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting();
+
   await editor.updateSelection(
     Selection(
       start: Position(path: [2], offset: 0),
@@ -53,35 +73,22 @@ Future<void> _testcutHandle(
   await editor.dispose();
 }
 
-Future<void> _testhandleCopy(WidgetTester tester, Document document) async {
+Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting();
+  await editor.startTesting(platform: TargetPlatform.windows);
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
+  final text =
+      editor.editorState.getTextInSelection(editor.selection).join('\n');
   handleCopy(editor.editorState);
-  await editor.pressKey(
-    key: LogicalKeyboardKey.delete,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
-
-  await editor.updateSelection(
-    Selection(
-      start: editor.editorState.selection!.end,
-      end: editor.editorState.selection!.end,
-    ),
-  );
-
-  handlePaste(editor.editorState);
-
-  expect(
-    editor.editorState.document.toJson(),
-    document.toJson(),
-  );
+  final clipBoardData = await AppFlowyClipboard.getData();
+  //this will be null because html content is not testable
+  expect(clipBoardData.html, null);
+  expect(clipBoardData.text, text);
 
   await editor.dispose();
 }
@@ -152,8 +159,6 @@ Future<void> _testNestedNodeCopyPaste(
   await editor.dispose();
 }
 
-const paragraphText =
-    '''AppFlowy Editor is a highly customizable   rich-text editor ''';
 const plainText = '''AppFlowyEditor 
 👋 Welcome to   AppFlowy Editor 
 AppFlowy Editor is a highly customizable   rich-text editor 
