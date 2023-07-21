@@ -39,6 +39,7 @@ class TestableEditor {
     bool inMobile = false,
     ScrollController? scrollController,
     Widget Function(Widget child)? wrapper,
+    TargetPlatform? targetPlatform,
   }) async {
     await AppFlowyEditorLocalizations.load(locale);
 
@@ -101,6 +102,7 @@ class TestableEditor {
     }
     await tester.pumpWidget(
       MaterialApp(
+        theme: ThemeData(platform: targetPlatform),
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -125,6 +127,12 @@ class TestableEditor {
   void initialize() {
     _editorState = EditorState(
       document: Document.blank(),
+    );
+  }
+
+  void initializeWithDocment(Document document) {
+    _editorState = EditorState(
+      document: document,
     );
   }
 

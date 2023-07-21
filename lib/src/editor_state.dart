@@ -280,6 +280,37 @@ class EditorState {
     // If we don't have both nodes, we can't find the nodes in the selection.
     return [];
   }
+  List<Node> getSelectedNodes([
+    Selection? selection,
+  ]) {
+    final List<Node> res = [];
+    selection ??= this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return res;
+    }
+    final nodes = getNodesInSelection(selection);
+    for (final node in nodes) {
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      final startIndex = node == nodes.first ? selection.startIndex : 0;
+      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
+      final Attributes attributes = node.attributes;
+      attributes.remove(ParagraphBlockKeys.delta);
+      attributes.addAll(
+        {ParagraphBlockKeys.delta: delta.slice(startIndex, endIndex).toJson()},
+      );
+      final copyNode = Node(
+        type: node.type,
+        attributes: attributes,
+        children: node.children,
+      );
+      res.add(copyNode);
+    }
+
+    return res;
+  }
 
   Node? getNodeAtPath(Path path) {
     return document.nodeAtPath(path);
