@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
 
+const foundSelectedColor = '0x6000BCF0';
+
 class SearchService {
   SearchService({
     required this.editorState,
@@ -149,7 +151,7 @@ class SearchService {
       } else {
         formatHighlightColor(
           editorState,
-          '0x6000BCF0',
+          foundSelectedColor,
         );
       }
       editorState.undoManager.forgetRecentUndo();
