@@ -79,7 +79,7 @@ void handlePastePlainText(EditorState editorState, String plainText) {
 
 void pasteHTML(EditorState editorState, String html) {
   final selection = editorState.selection?.normalized;
-  if (selection == null || selection.isCollapsed) {
+  if (selection == null || !selection.isCollapsed) {
     return;
   }
 

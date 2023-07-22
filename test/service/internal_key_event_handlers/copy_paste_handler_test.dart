@@ -113,7 +113,6 @@ Future<void> _testSameNodeCopyPaste(
       end: Position(path: [0], offset: 4),
     ),
   );
-
   pasteHTML(editor.editorState, documentToHTML(document));
   expect(
     editor.editorState.document.toJson(),
@@ -149,7 +148,7 @@ Future<void> _testNestedNodeCopyPaste(
       document,
     ),
   );
-  Map<String, Object> json = editor.editorState.document.toJson();
+  final Map<String, Object> json = editor.editorState.document.toJson();
 
   expect(
     json,
