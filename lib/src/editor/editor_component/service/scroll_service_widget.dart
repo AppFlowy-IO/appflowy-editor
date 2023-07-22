@@ -121,7 +121,11 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          startAutoScroll(endTouchPoint, edgeOffset: 100);
+          if (editorState.selectionType == SelectionType.block) {
+            scrollController.jumpTo(endTouchPoint.dy - 100);
+          } else {
+            startAutoScroll(endTouchPoint, edgeOffset: 100);
+          }
         }
       } else {
         startAutoScroll(endTouchPoint);
