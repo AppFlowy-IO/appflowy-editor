@@ -1,13 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/widgets.dart';
 
-int _textLengthOfNode(Node node) {
-  if (node.delta != null) {
-    return node.delta!.length;
-  }
-
-  return 0;
-}
+int _textLengthOfNode(Node node) => node.delta?.length ?? 0;
 
 void _pasteSingleLine(
   EditorState editorState,
@@ -85,11 +79,9 @@ void handlePastePlainText(EditorState editorState, String plainText) {
 
 void pasteHTML(EditorState editorState, String html) {
   final selection = editorState.selection?.normalized;
-  if (selection == null) {
+  if (selection == null || selection.isCollapsed) {
     return;
   }
-
-  assert(selection.isCollapsed);
 
   Log.keyboard.debug('paste html: $html');
   final htmltoNodes = htmlToDocument(html);
@@ -113,7 +105,7 @@ Selection _computeSelectionAfterPasteMultipleNodes(
   final currentCursor = currentSelection.start;
   final currentPath = [...currentCursor.path];
   currentPath[currentPath.length - 1] += nodes.length;
-  int lenOfLastNode = _textLengthOfNode(nodes.last);
+  final int lenOfLastNode = _textLengthOfNode(nodes.last);
   return Selection.collapsed(
     Position(path: currentPath, offset: lenOfLastNode),
   );
@@ -137,11 +129,10 @@ void handleCopy(EditorState editorState) async {
       ),
     ),
   );
-  AppFlowyClipboard.setData(
+  return AppFlowyClipboard.setData(
     text: text,
     html: html.isEmpty ? null : html,
   );
-  return;
 }
 
 void _pasteMultipleLinesInText(
@@ -149,7 +140,7 @@ void _pasteMultipleLinesInText(
   int offset,
   List<Node> nodes,
 ) {
-  final tb = editorState.transaction;
+  final transaction = editorState.transaction;
   final selection = editorState.selection;
   final afterSelection =
       _computeSelectionAfterPasteMultipleNodes(editorState, nodes);
@@ -157,16 +148,15 @@ void _pasteMultipleLinesInText(
   final selectionNode = editorState.getNodesInSelection(selection!);
   if (selectionNode.length == 1) {
     final node = selectionNode.first;
-    final delta = node.delta;
-    if (delta == null) {
-      tb.afterSelection = afterSelection;
-      tb.insertNodes(afterSelection.end.path, nodes);
-      editorState.apply(tb);
+    if (node.delta == null) {
+      transaction.afterSelection = afterSelection;
+      transaction.insertNodes(afterSelection.end.path, nodes);
+      editorState.apply(transaction);
     }
 
     final (firstnode, afternode) = sliceNode(node, offset);
     if (nodes.length == 1 && nodes.first.type == node.type) {
-      tb.deleteNode(node);
+      transaction.deleteNode(node);
       final List<dynamic> newdelta = firstnode.delta != null
           ? firstnode.delta!.toJson()
           : Delta().toJson();
@@ -186,7 +176,7 @@ void _pasteMultipleLinesInText(
         childrens.addAll(afternode.children);
       }
 
-      tb.insertNodes(afterSelection.end.path, [
+      transaction.insertNodes(afterSelection.end.path, [
         Node(
           type: firstnode.type,
           children: childrens,
@@ -197,12 +187,12 @@ void _pasteMultipleLinesInText(
             ),
         )
       ]);
-      editorState.apply(tb);
+      editorState.apply(transaction);
       return;
     }
     final path = node.path;
-    tb.deleteNode(node);
-    tb.insertNodes([
+    transaction.deleteNode(node);
+    transaction.insertNodes([
       path.first + 1
     ], [
       firstnode,
@@ -212,27 +202,26 @@ void _pasteMultipleLinesInText(
           afternode.delta!.isNotEmpty)
         afternode,
     ]);
-    editorState.apply(tb);
+    editorState.apply(transaction);
     return;
   }
 
-  tb.afterSelection = afterSelection;
-  tb.insertNodes(afterSelection.end.path, nodes);
-  editorState.apply(tb);
+  transaction.afterSelection = afterSelection;
+  transaction.insertNodes(afterSelection.end.path, nodes);
+  editorState.apply(transaction);
 }
 
 void handlePaste(EditorState editorState) async {
   final data = await AppFlowyClipboard.getData();
 
   if (editorState.selection?.isCollapsed ?? false) {
-    _pastRichClipboard(editorState, data);
-    return;
+    return _pasteRichClipboard(editorState, data);
   }
 
   deleteSelectedContent(editorState);
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    _pastRichClipboard(editorState, data);
+    _pasteRichClipboard(editorState, data);
   });
 }
 
@@ -268,7 +257,7 @@ void handlePaste(EditorState editorState) async {
   );
 }
 
-void _pastRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
+void _pasteRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
   if (data.html != null) {
     pasteHTML(editorState, data.html!);
     return;
@@ -294,5 +283,4 @@ void deleteSelectedContent(EditorState editorState) async {
   await editorState.deleteSelection(selection);
   tb.afterSelection = Selection.collapsed(selection.start);
   editorState.apply(tb);
-  return;
 }
