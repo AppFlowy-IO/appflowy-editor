@@ -1,242 +1,245 @@
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-// import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
-// import 'package:appflowy_editor/appflowy_editor.dart';
-// import '../../infra/test_editor.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
-// void main() async {
-//   setUpAll(() {
-//     TestWidgetsFlutterBinding.ensureInitialized();
-//   });
+import '../infra/testable_editor.dart';
+import 'find_replace_menu_utils.dart';
 
-//   group('find_replace_menu.dart replaceMenu', () {
-//     testWidgets('replace menu appears properly', (tester) async {
-//       await _prepare(tester, lines: 3);
+void main() async {
+  setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+  });
 
-//       //the prepare method only checks if FindMenuWidget is present
-//       //so here we also check if FindMenuWidget contains TextField
-//       //and IconButtons or not.
-//       //and whether there are two textfields for replace menu as well.
-//       expect(find.byType(TextField), findsNWidgets(2));
-//       expect(find.byType(IconButton), findsAtLeastNWidgets(6));
-//     });
+  group('find_replace_menu.dart replaceMenu', () {
+    testWidgets('replace menu appears properly', (tester) async {
+      await prepareFindAndReplaceDialog(tester, openReplace: true);
 
-//     testWidgets('replace menu disappears when close is called', (tester) async {
-//       await _prepare(tester, lines: 3);
+      //the prepare method only checks if FindMenuWidget is present
+      //so here we also check if FindMenuWidget contains TextField
+      //and IconButtons or not.
+      //and whether there are two textfields for replace menu as well.
+      expect(find.byType(TextField), findsNWidgets(2));
+      expect(find.byType(IconButton), findsAtLeastNWidgets(6));
+    });
 
-//       await tester.tap(find.byKey(const Key('closeButton')));
-//       await tester.pumpAndSettle();
+    testWidgets('replace menu disappears when close is called', (tester) async {
+      await prepareFindAndReplaceDialog(tester, openReplace: true);
 
-//       expect(find.byType(FindMenuWidget), findsNothing);
-//       expect(find.byType(TextField), findsNothing);
-//       expect(find.byType(IconButton), findsNothing);
-//     });
+      await tester.tap(find.byKey(const Key('closeButton')));
+      await tester.pumpAndSettle();
 
-//     testWidgets('replace menu does not work when find is not called',
-//         (tester) async {
-//       const textInputKey = Key('replaceTextField');
-//       const pattern = 'Flutter';
-//       final editor = await _prepare(tester);
+      expect(find.byType(FindMenuWidget), findsNothing);
+      expect(find.byType(TextField), findsNothing);
+      expect(find.byType(IconButton), findsNothing);
+    });
 
-//       await tester.tap(find.byKey(textInputKey));
-//       await tester.enterText(find.byKey(textInputKey), pattern);
-//       await tester.pumpAndSettle();
-//       await tester.testTextInput.receiveAction(TextInputAction.done);
-//       await tester.pumpAndSettle();
+    testWidgets('replace menu does not work when find is not called',
+        (tester) async {
+      const pattern = 'Flutter';
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: text);
 
-//       //pressing enter should trigger the replaceSelected method
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.enter,
-//       );
-//       await tester.pumpAndSettle();
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-//       //note our document only has one node
-//       final textNode = editor.nodeAtPath([0]) as TextNode;
-//       const expectedText = 'Welcome to Appflowy 😁';
-//       expect(textNode.toPlainText(), expectedText);
-//     });
+      await pressFindAndReplaceCommand(editor, openReplace: true);
 
-//     testWidgets('replace does not change text when no match is found',
-//         (tester) async {
-//       const textInputKey = Key('replaceTextField');
-//       const pattern = 'Flutter';
+      await tester.pumpAndSettle();
 
-//       final editor = await _prepareWithTextInputForFind(
-//         tester,
-//         lines: 1,
-//         pattern: pattern,
-//       );
+      expect(find.byType(FindMenuWidget), findsOneWidget);
 
-//       await tester.tap(find.byKey(textInputKey));
-//       await tester.enterText(find.byKey(textInputKey), pattern);
-//       await tester.pumpAndSettle();
-//       await tester.testTextInput.receiveAction(TextInputAction.done);
-//       await tester.pumpAndSettle();
+      await enterInputIntoFindDialog(tester, pattern, isReplaceField: true);
 
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.enter,
-//       );
-//       await tester.pumpAndSettle();
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
 
-//       final textNode = editor.nodeAtPath([0]) as TextNode;
-//       const expectedText = 'Welcome to Appflowy 😁';
-//       expect(textNode.toPlainText(), expectedText);
-//     });
+      //if nothing is replaced then the original text will remain as it is
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), text);
 
-//     testWidgets('found selected match is replaced properly', (tester) async {
-//       const patternToBeFound = 'Welcome';
-//       const replacePattern = 'Salute';
-//       const textInputKey = Key('replaceTextField');
+      await editor.dispose();
+    });
 
-//       final editor = await _prepareWithTextInputForFind(
-//         tester,
-//         lines: 3,
-//         pattern: patternToBeFound,
-//       );
+    testWidgets('replace does not change text when no match is found',
+        (tester) async {
+      const pattern = 'Flutter';
 
-//       //check if matches are not yet replaced
-//       var textNode = editor.nodeAtPath([2]) as TextNode;
-//       var expectedText = '$patternToBeFound to Appflowy 😁';
-//       expect(textNode.toPlainText(), expectedText);
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: text);
 
-//       //we select the replace text field and provide replacePattern
-//       await tester.tap(find.byKey(textInputKey));
-//       await tester.enterText(find.byKey(textInputKey), replacePattern);
-//       await tester.pumpAndSettle();
-//       await tester.testTextInput.receiveAction(TextInputAction.done);
-//       await tester.pumpAndSettle();
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-//       await editor.pressLogicKey(
-//         key: LogicalKeyboardKey.enter,
-//       );
+      await pressFindAndReplaceCommand(editor, openReplace: true);
 
-//       await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
 
-//       //we know that the findAndHighlight method selects the last
-//       //matched occurance in the editor document.
-//       textNode = editor.nodeAtPath([2]) as TextNode;
-//       expectedText = '$replacePattern to Appflowy 😁';
-//       expect(textNode.toPlainText(), expectedText);
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, pattern);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
 
-//       //also check if other matches are not yet replaced
-//       textNode = editor.nodeAtPath([1]) as TextNode;
-//       expectedText = '$patternToBeFound to Appflowy 😁';
-//       expect(textNode.toPlainText(), expectedText);
-//     });
+      //now we input some text into the replace text field and try to replace
+      await enterInputIntoFindDialog(tester, pattern, isReplaceField: true);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
 
-//     testWidgets('replace all on found matches', (tester) async {
-//       const patternToBeFound = 'Welcome';
-//       const replacePattern = 'Salute';
-//       const expectedText = '$replacePattern to Appflowy 😁';
-//       const lines = 3;
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), text);
+      await editor.dispose();
+    });
 
-//       const textInputKey = Key('replaceTextField');
-//       const replaceAllBtn = Key('replaceAllButton');
+    //Before:
+    //Welcome to Appflowy 😁
+    //After:
+    //Salute to Appflowy 😁
+    testWidgets('found selected match is replaced properly', (tester) async {
+      const patternToBeFound = 'Welcome';
+      const replacePattern = 'Salute';
+      final expectedText = '$replacePattern${text.substring(7)}';
 
-//       final editor = await _prepareWithTextInputForFind(
-//         tester,
-//         lines: lines,
-//         pattern: patternToBeFound,
-//       );
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: text);
 
-//       //check if matches are not yet replaced
-//       var textNode = editor.nodeAtPath([2]) as TextNode;
-//       var originalText = '$patternToBeFound to Appflowy 😁';
-//       expect(textNode.toPlainText(), originalText);
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-//       await tester.tap(find.byKey(textInputKey));
-//       await tester.enterText(find.byKey(textInputKey), replacePattern);
-//       await tester.pumpAndSettle();
-//       await tester.testTextInput.receiveAction(TextInputAction.done);
-//       await tester.pumpAndSettle();
+      await pressFindAndReplaceCommand(editor, openReplace: true);
 
-//       await tester.tap(find.byKey(replaceAllBtn));
-//       await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
 
-//       //all matches should be replaced
-//       for (var i = 0; i < lines; i++) {
-//         textNode = editor.nodeAtPath([i]) as TextNode;
-//         expect(textNode.toPlainText(), expectedText);
-//       }
-//     });
-//   });
-// }
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
 
-// Future<EditorWidgetTester> _prepare(
-//   WidgetTester tester, {
-//   int lines = 1,
-// }) async {
-//   const text = 'Welcome to Appflowy 😁';
-//   final editor = tester.editor;
-//   for (var i = 0; i < lines; i++) {
-//     editor.insertTextNode(text);
-//   }
-//   await editor.startTesting();
-//   await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+      //we expect the found pattern to be highlighted
+      final node = editor.nodeAtPath([0]);
+      final selection =
+          Selection.single(path: [0], startOffset: 0, endOffset: text.length);
 
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.keyH,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.keyH,
-//       isMetaPressed: true,
-//     );
-//   }
+      checkIfNotHighlighted(node!, selection, expectedResult: false);
 
-//   await tester.pumpAndSettle(const Duration(milliseconds: 1000));
+      //now we input some text into the replace text field and try to replace
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
 
-//   expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(node.delta!.toPlainText(), expectedText);
 
-//   return Future.value(editor);
-// }
+      await editor.dispose();
+    });
 
-// Future<EditorWidgetTester> _prepareWithTextInputForFind(
-//   WidgetTester tester, {
-//   int lines = 1,
-//   String pattern = "Welcome",
-// }) async {
-//   const text = 'Welcome to Appflowy 😁';
-//   const textInputKey = Key('findTextField');
-//   final editor = tester.editor;
-//   for (var i = 0; i < lines; i++) {
-//     editor.insertTextNode(text);
-//   }
-//   await editor.startTesting();
-//   await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+    testWidgets('''within multiple matched patterns replace 
+      should only replace the currently selected match''', (tester) async {
+      const patternToBeFound = 'Welcome';
+      const replacePattern = 'Salute';
+      final expectedText = '$replacePattern${text.substring(7)}';
 
-//   if (Platform.isWindows || Platform.isLinux) {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.keyH,
-//       isControlPressed: true,
-//     );
-//   } else {
-//     await editor.pressLogicKey(
-//       key: LogicalKeyboardKey.keyH,
-//       isMetaPressed: true,
-//     );
-//   }
+      final editor = tester.editor;
+      editor.addParagraphs(3, initialText: text);
 
-//   await tester.pumpAndSettle(const Duration(milliseconds: 1000));
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-//   expect(find.byType(FindMenuWidget), findsOneWidget);
+      await pressFindAndReplaceCommand(editor, openReplace: true);
 
-//   await tester.tap(find.byKey(textInputKey));
-//   await tester.enterText(find.byKey(textInputKey), pattern);
-//   await tester.pumpAndSettle();
-//   await tester.testTextInput.receiveAction(TextInputAction.done);
-//   await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
 
-//   //pressing enter should trigger the findAndHighlight method, which
-//   //will find the pattern inside the editor.
-//   await editor.pressLogicKey(
-//     key: LogicalKeyboardKey.enter,
-//   );
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
 
-//   return Future.value(editor);
-// }
+      //lets check after find operation, the last match is selected.
+      checkCurrentSelection(editor, [2], 0, patternToBeFound.length);
+
+      //now we input some text into the replace text field and try to replace
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      //only the node at path 2 should get replaced, all other nodes should stay as before.
+      final lastNode = editor.nodeAtPath([2]);
+      expect(lastNode!.delta!.toPlainText(), expectedText);
+
+      final middleNode = editor.nodeAtPath([1]);
+      expect(middleNode!.delta!.toPlainText(), text);
+
+      final firstNode = editor.nodeAtPath([0]);
+      expect(firstNode!.delta!.toPlainText(), text);
+
+      await editor.dispose();
+    });
+
+    testWidgets('replace all on found matches', (tester) async {
+      const patternToBeFound = 'Welcome';
+      const replacePattern = 'Salute';
+      final expectedText = '$replacePattern${text.substring(7)}';
+      const replaceAllBtn = Key('replaceAllButton');
+      const lines = 3;
+
+      final editor = tester.editor;
+      editor.addParagraphs(lines, initialText: text);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+
+      await tester.tap(find.byKey(replaceAllBtn));
+      await tester.pumpAndSettle();
+
+      //all matches should be replaced
+      for (var i = 0; i < lines; i++) {
+        final node = editor.nodeAtPath([i]);
+        expect(node!.delta!.toPlainText(), expectedText);
+      }
+      await editor.dispose();
+    });
+  });
+}

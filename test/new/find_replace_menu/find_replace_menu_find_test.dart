@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,8 +6,7 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../infra/testable_editor.dart';
-
-const text = 'Welcome to Appflowy 😁';
+import 'find_replace_menu_utils.dart';
 
 void main() async {
   setUpAll(() {
@@ -17,7 +15,7 @@ void main() async {
 
   group('find_replace_menu.dart findMenu', () {
     testWidgets('appears properly', (tester) async {
-      await _prepareFindDialog(tester, lines: 3);
+      await prepareFindAndReplaceDialog(tester);
 
       //the prepareFindDialog method only checks if FindMenuWidget is present
       //so here we also check if FindMenuWidget contains TextField
@@ -29,7 +27,7 @@ void main() async {
     });
 
     testWidgets('disappears when close is called', (tester) async {
-      await _prepareFindDialog(tester, lines: 3);
+      await prepareFindAndReplaceDialog(tester);
 
       //lets check if find menu disappears if the close button is tapped.
       await tester.tap(find.byKey(const Key('closeButton')));
@@ -67,13 +65,13 @@ void main() async {
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-      await _pressFindAndReplaceCommand(editor);
+      await pressFindAndReplaceCommand(editor);
 
       await tester.pumpAndSettle();
 
       expect(find.byType(FindMenuWidget), findsOneWidget);
 
-      await _enterInputIntoFindDialog(tester, pattern);
+      await enterInputIntoFindDialog(tester, pattern);
 
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
@@ -104,75 +102,50 @@ void main() async {
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-      await _pressFindAndReplaceCommand(editor);
+      await pressFindAndReplaceCommand(editor);
 
       await tester.pumpAndSettle();
 
       expect(find.byType(FindMenuWidget), findsOneWidget);
 
-      await _enterInputIntoFindDialog(tester, pattern);
+      await enterInputIntoFindDialog(tester, pattern);
 
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
       );
 
       //checking if current selection consists an occurance of matched pattern.
-      var selection =
-          editor.editorState.service.selectionService.currentSelection.value;
-
       //we expect the last occurance of the pattern to be found, thus that should
       //be the current selection.
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [1], offset: 0));
-      expect(selection.end, Position(path: [1], offset: pattern.length));
+      checkCurrentSelection(editor, [1], 0, pattern.length);
 
       //now pressing the icon button for previous match should select
       //node at path [0].
       await tester.tap(find.byKey(previousBtnKey));
       await tester.pumpAndSettle();
 
-      selection =
-          editor.editorState.service.selectionService.currentSelection.value;
-
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [0], offset: 0));
-      expect(selection.end, Position(path: [0], offset: pattern.length));
+      checkCurrentSelection(editor, [0], 0, pattern.length);
 
       //now pressing the icon button for previous match should select
       //node at path [1], since there is no node before node at [0].
       await tester.tap(find.byKey(previousBtnKey));
       await tester.pumpAndSettle();
 
-      selection =
-          editor.editorState.service.selectionService.currentSelection.value;
-
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [1], offset: 0));
-      expect(selection.end, Position(path: [1], offset: pattern.length));
+      checkCurrentSelection(editor, [1], 0, pattern.length);
 
       //now pressing the icon button for next match should select
       //node at path[0], since there is no node after node at [1].
       await tester.tap(find.byKey(nextBtnKey));
       await tester.pumpAndSettle();
 
-      selection =
-          editor.editorState.service.selectionService.currentSelection.value;
-
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [0], offset: 0));
-      expect(selection.end, Position(path: [0], offset: pattern.length));
+      checkCurrentSelection(editor, [0], 0, pattern.length);
 
       //now pressing the icon button for next match should select
       //node at path [1].
       await tester.tap(find.byKey(nextBtnKey));
       await tester.pumpAndSettle();
 
-      selection =
-          editor.editorState.service.selectionService.currentSelection.value;
-
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [1], offset: 0));
-      expect(selection.end, Position(path: [1], offset: pattern.length));
+      checkCurrentSelection(editor, [1], 0, pattern.length);
 
       await editor.dispose();
     });
@@ -188,13 +161,13 @@ void main() async {
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-      await _pressFindAndReplaceCommand(editor);
+      await pressFindAndReplaceCommand(editor);
 
       await tester.pumpAndSettle();
 
       expect(find.byType(FindMenuWidget), findsOneWidget);
 
-      await _enterInputIntoFindDialog(tester, pattern);
+      await enterInputIntoFindDialog(tester, pattern);
 
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
@@ -208,7 +181,7 @@ void main() async {
       expect(node, isNotNull);
 
       //node is highlighted while menu is active
-      _checkIfNotHighlighted(node!, selection!, expectedResult: false);
+      checkIfNotHighlighted(node!, selection!, expectedResult: false);
 
       //presses the close button
       await tester.tap(find.byKey(closeBtnKey));
@@ -218,7 +191,7 @@ void main() async {
       expect(find.byType(FindMenuWidget), findsNothing);
 
       //we expect that the current selected node is NOT highlighted.
-      _checkIfNotHighlighted(node, selection, expectedResult: true);
+      checkIfNotHighlighted(node, selection, expectedResult: true);
 
       await editor.dispose();
     });
@@ -236,11 +209,11 @@ void main() async {
       await editor.startTesting();
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-      await _pressFindAndReplaceCommand(editor);
+      await pressFindAndReplaceCommand(editor);
 
       await tester.pumpAndSettle();
 
-      await _enterInputIntoFindDialog(tester, pattern);
+      await enterInputIntoFindDialog(tester, pattern);
 
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
@@ -257,11 +230,11 @@ void main() async {
       expect(node, isNotNull);
 
       //we expect that the current node at path 1 to be NOT highlighted.
-      _checkIfNotHighlighted(node!, selectionAtNode1, expectedResult: true);
+      checkIfNotHighlighted(node!, selectionAtNode1, expectedResult: true);
 
       //now we will change the pattern to Flutter and search it
       pattern = 'Flutter';
-      await _enterInputIntoFindDialog(tester, pattern);
+      await enterInputIntoFindDialog(tester, pattern);
 
       //finds the pattern Flutter
       await editor.pressKey(
@@ -269,7 +242,7 @@ void main() async {
       );
 
       //we expect that the current selected node is highlighted.
-      _checkIfNotHighlighted(node, selectionAtNode1, expectedResult: false);
+      checkIfNotHighlighted(node, selectionAtNode1, expectedResult: false);
 
       final selectionAtNode0 = Selection.single(
         path: [0],
@@ -280,30 +253,11 @@ void main() async {
       expect(node, isNotNull);
 
       //we expect that the current node at path 0 to be NOT highlighted.
-      _checkIfNotHighlighted(node!, selectionAtNode0, expectedResult: true);
+      checkIfNotHighlighted(node!, selectionAtNode0, expectedResult: true);
 
       await editor.dispose();
     });
   });
-}
-
-Future<void> _prepareFindDialog(
-  WidgetTester tester, {
-  int lines = 1,
-}) async {
-  const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor;
-  for (var i = 0; i < lines; i++) {
-    editor.addParagraph(initialText: text);
-  }
-  await editor.startTesting();
-  await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-
-  await _pressFindAndReplaceCommand(editor);
-
-  await tester.pumpAndSettle(const Duration(milliseconds: 1000));
-
-  expect(find.byType(FindMenuWidget), findsOneWidget);
 }
 
 Future<void> _prepareFindAndInputPattern(
@@ -317,13 +271,13 @@ Future<void> _prepareFindAndInputPattern(
   await editor.startTesting();
   await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
-  await _pressFindAndReplaceCommand(editor);
+  await pressFindAndReplaceCommand(editor);
 
   await tester.pumpAndSettle();
 
   expect(find.byType(FindMenuWidget), findsOneWidget);
 
-  await _enterInputIntoFindDialog(tester, pattern);
+  await enterInputIntoFindDialog(tester, pattern);
   //pressing enter should trigger the findAndHighlight method, which
   //will find the pattern inside the editor.
   await editor.pressKey(
@@ -338,48 +292,7 @@ Future<void> _prepareFindAndInputPattern(
   final node = editor.nodeAtPath([0]);
   expect(node, isNotNull);
 
-  _checkIfNotHighlighted(node!, selection, expectedResult: expectedResult);
+  checkIfNotHighlighted(node!, selection, expectedResult: expectedResult);
 
   await editor.dispose();
-}
-
-Future<void> _pressFindAndReplaceCommand(
-  TestableEditor editor, {
-  bool openReplace = false,
-}) async {
-  await editor.pressKey(
-    key: openReplace ? LogicalKeyboardKey.keyH : LogicalKeyboardKey.keyF,
-    isMetaPressed: Platform.isMacOS,
-    isControlPressed: !Platform.isMacOS,
-  );
-}
-
-void _checkIfNotHighlighted(
-  Node node,
-  Selection selection, {
-  bool expectedResult = true,
-}) {
-  //if the expectedResult is true:
-  //we expect that nothing is highlighted in our current document.
-  //otherwise: we expect that something is highlighted.
-  expect(
-    node.allSatisfyInSelection(selection, (delta) {
-      return delta.whereType<TextInsert>().every(
-            (el) => el.attributes?[AppFlowyRichTextKeys.highlightColor] == null,
-          );
-    }),
-    expectedResult,
-  );
-}
-
-Future<void> _enterInputIntoFindDialog(
-  WidgetTester tester,
-  String pattern,
-) async {
-  const textInputKey = Key('findTextField');
-  await tester.tap(find.byKey(textInputKey));
-  await tester.enterText(find.byKey(textInputKey), pattern);
-  await tester.pumpAndSettle();
-  await tester.testTextInput.receiveAction(TextInputAction.done);
-  await tester.pumpAndSettle();
 }
