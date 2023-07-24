@@ -244,9 +244,7 @@ class EditorState {
     }
 
     // TODO: execute this line after the UI has been updated.
-    {
-      completer.complete();
-    }
+    completer.complete();
 
     return completer.future;
   }

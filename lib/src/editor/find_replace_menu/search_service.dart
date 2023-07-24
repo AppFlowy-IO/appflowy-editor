@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
-import 'package:flutter/foundation.dart';
 
 const foundSelectedColor = '0x6000BCF0';
 
@@ -111,8 +110,6 @@ class SearchService {
   }
 
   void _selectWordAtPosition(Position start, [bool isNavigating = false]) {
-    debugPrint("REACHED HERE: $isNavigating");
-
     Position end = Position(
       path: start.path,
       offset: start.offset + queriedPattern.length,
