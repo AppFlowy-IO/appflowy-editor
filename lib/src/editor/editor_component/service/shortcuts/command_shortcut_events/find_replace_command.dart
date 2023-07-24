@@ -2,10 +2,31 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.dart';
 import 'package:flutter/material.dart';
 
-final List<CommandShortcutEvent> findAndReplaceCommands = [
-  openFindDialog,
-  openReplaceDialog,
-];
+List<CommandShortcutEvent> findAndReplaceCommands(
+  FindReplaceLocalizations localizations,
+) =>
+    [
+      openFindDialog(localizations: localizations),
+      openReplaceDialog(localizations: localizations),
+    ];
+
+class FindReplaceLocalizations {
+  FindReplaceLocalizations({
+    required this.find,
+    required this.previousMatch,
+    required this.nextMatch,
+    required this.close,
+    required this.replace,
+    required this.replaceAll,
+  });
+
+  final String find;
+  final String previousMatch;
+  final String nextMatch;
+  final String close;
+  final String replace;
+  final String replaceAll;
+}
 
 /// Show the slash menu
 ///
@@ -13,28 +34,37 @@ final List<CommandShortcutEvent> findAndReplaceCommands = [
 ///   - desktop
 ///   - web
 ///
-final CommandShortcutEvent openFindDialog = CommandShortcutEvent(
-  key: 'show the find dialog',
-  command: 'ctrl+f',
-  macOSCommand: 'cmd+f',
-  handler: (editorState) => _showFindAndReplaceDialog(
-    editorState,
-  ),
-);
+CommandShortcutEvent openFindDialog({
+  required FindReplaceLocalizations localizations,
+}) =>
+    CommandShortcutEvent(
+      key: 'show the find dialog',
+      command: 'ctrl+f',
+      macOSCommand: 'cmd+f',
+      handler: (editorState) => _showFindAndReplaceDialog(
+        editorState,
+        localizations: localizations,
+      ),
+    );
 
-final CommandShortcutEvent openReplaceDialog = CommandShortcutEvent(
-  key: 'show the find and replace dialog',
-  command: 'ctrl+h',
-  macOSCommand: 'cmd+h',
-  handler: (editorState) => _showFindAndReplaceDialog(
-    editorState,
-    openReplace: true,
-  ),
-);
+CommandShortcutEvent openReplaceDialog({
+  required FindReplaceLocalizations localizations,
+}) =>
+    CommandShortcutEvent(
+      key: 'show the find and replace dialog',
+      command: 'ctrl+h',
+      macOSCommand: 'cmd+h',
+      handler: (editorState) => _showFindAndReplaceDialog(
+        editorState,
+        localizations: localizations,
+        openReplace: true,
+      ),
+    );
 
 FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(
   EditorState editorState, {
+  required FindReplaceLocalizations localizations,
   bool openReplace = false,
 }) {
   if (PlatformExtension.isMobile) {
@@ -67,7 +97,9 @@ KeyEventResult _showFindAndReplaceDialog(
         context: context,
         editorState: editorState,
         replaceFlag: openReplace,
+        localizations: localizations,
       );
+
       _findReplaceService?.show();
     }
   }();

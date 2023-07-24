@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
+import 'package:flutter/foundation.dart';
 
 const foundSelectedColor = '0x6000BCF0';
 
@@ -50,7 +51,79 @@ class SearchService {
       );
     }
 
-    selectedIndex = matchedPositions.length - 1;
+    selectedIndex = 0;
+  }
+
+  List<Node> _getAllTextNodes() {
+    final contents = editorState.document.root.children;
+
+    if (contents.isEmpty) return [];
+
+    final firstNode = contents.firstWhere(
+      (el) => el.delta != null,
+    );
+
+    final lastNode = contents.lastWhere(
+      (el) => el.delta != null,
+    );
+
+    //iterate within all the text nodes of the document.
+    final nodes = NodeIterator(
+      document: editorState.document,
+      startNode: firstNode,
+      endNode: lastNode,
+    ).toList();
+
+    nodes.removeWhere((node) => node.delta == null);
+
+    return nodes;
+  }
+
+  /// This method takes in the TextNode's path, matches is a list of offsets,
+  /// patternLength is the length of the word which is being searched.
+  ///
+  /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
+  /// that the word is located on path 1 from [1,10] to [1,14]
+  void _highlightMatches(
+    Path path,
+    List<int> matches,
+    int patternLength, {
+    bool unhighlight = false,
+  }) {
+    for (final match in matches) {
+      Position start = Position(path: path, offset: match);
+      _selectWordAtPosition(start);
+
+      if (unhighlight) {
+        final selection = editorState.selection!;
+        editorState.formatDelta(
+          selection,
+          {AppFlowyRichTextKeys.highlightColor: null},
+        );
+      } else {
+        formatHighlightColor(
+          editorState,
+          foundSelectedColor,
+        );
+      }
+      editorState.undoManager.forgetRecentUndo();
+    }
+  }
+
+  void _selectWordAtPosition(Position start, [bool isNavigating = false]) {
+    debugPrint("REACHED HERE: $isNavigating");
+
+    Position end = Position(
+      path: start.path,
+      offset: start.offset + queriedPattern.length,
+    );
+
+    editorState.updateSelectionWithReason(
+      Selection(start: start, end: end),
+      reason: isNavigating
+          ? SelectionUpdateReason.searchNavigate
+          : SelectionUpdateReason.searchHighlight,
+    );
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
@@ -58,18 +131,19 @@ class SearchService {
   /// Otherwise the match below the current selected match is newly selected.
   void navigateToMatch({bool moveUp = false}) {
     if (matchedPositions.isEmpty) return;
+
     if (moveUp) {
       selectedIndex =
           selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
 
       Position match = matchedPositions[selectedIndex];
-      _selectWordAtPosition(match);
+      _selectWordAtPosition(match, true);
     } else {
       selectedIndex =
           (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
 
       final match = matchedPositions[selectedIndex];
-      _selectWordAtPosition(match);
+      _selectWordAtPosition(match, true);
     }
   }
 
@@ -125,70 +199,5 @@ class SearchService {
     for (int i = 0; i < matchesLength; i++) {
       replaceSelectedWord(replaceText);
     }
-  }
-
-  /// This method takes in the TextNode's path, matches is a list of offsets,
-  /// patternLength is the length of the word which is being searched.
-  ///
-  /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
-  /// that the word is located on path 1 from [1,10] to [1,14]
-  void _highlightMatches(
-    Path path,
-    List<int> matches,
-    int patternLength, {
-    bool unhighlight = false,
-  }) {
-    for (final match in matches) {
-      Position start = Position(path: path, offset: match);
-      _selectWordAtPosition(start);
-
-      if (unhighlight) {
-        final selection = editorState.selection!;
-        editorState.formatDelta(
-          selection,
-          {AppFlowyRichTextKeys.highlightColor: null},
-        );
-      } else {
-        formatHighlightColor(
-          editorState,
-          foundSelectedColor,
-        );
-      }
-      editorState.undoManager.forgetRecentUndo();
-    }
-  }
-
-  void _selectWordAtPosition(Position start) {
-    Position end = Position(
-      path: start.path,
-      offset: start.offset + queriedPattern.length,
-    );
-
-    editorState.updateSelectionWithReason(Selection(start: start, end: end));
-  }
-
-  List<Node> _getAllTextNodes() {
-    final contents = editorState.document.root.children;
-
-    if (contents.isEmpty) return [];
-
-    final firstNode = contents.firstWhere(
-      (el) => el.delta != null,
-    );
-
-    final lastNode = contents.lastWhere(
-      (el) => el.delta != null,
-    );
-
-    //iterate within all the text nodes of the document.
-    final nodes = NodeIterator(
-      document: editorState.document,
-      startNode: firstNode,
-      endNode: lastNode,
-    ).toList();
-
-    nodes.removeWhere((node) => node.delta == null);
-
-    return nodes;
   }
 }

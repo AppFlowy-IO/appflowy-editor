@@ -27,6 +27,8 @@ enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
   selectAll,
+  searchHighlight, // Highlighting search results
+  searchNavigate, // Navigate to a search result
 }
 
 enum SelectionType {

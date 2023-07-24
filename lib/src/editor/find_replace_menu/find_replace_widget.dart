@@ -10,17 +10,20 @@ class FindMenuWidget extends StatefulWidget {
     required this.dismiss,
     required this.editorState,
     required this.replaceFlag,
+    required this.localizations,
   });
 
   final VoidCallback dismiss;
   final EditorState editorState;
   final bool replaceFlag;
+  final FindReplaceLocalizations localizations;
 
   @override
   State<FindMenuWidget> createState() => _FindMenuWidgetState();
 }
 
 class _FindMenuWidgetState extends State<FindMenuWidget> {
+  final focusNode = FocusNode();
   final findController = TextEditingController();
   final replaceController = TextEditingController();
   String queriedPattern = '';
@@ -34,6 +37,19 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
     searchService = SearchService(
       editorState: widget.editorState,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNode.requestFocus();
+    });
+
+    findController.addListener(_searchPattern);
+  }
+
+  @override
+  void dispose() {
+    findController.removeListener(_searchPattern);
+    focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,25 +71,31 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               height: 30,
               child: TextField(
                 key: const Key('findTextField'),
-                autofocus: true,
+                focusNode: focusNode,
                 controller: findController,
-                onSubmitted: (_) => _searchPattern(),
-                decoration: _buildInputDecoration("Find"),
+                onSubmitted: (_) => searchService.navigateToMatch(),
+                decoration: _buildInputDecoration(widget.localizations.find),
               ),
             ),
             IconButton(
               key: const Key('previousMatchButton'),
               iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(moveUp: true),
+              onPressed: () {
+                searchService.navigateToMatch(moveUp: true);
+                focusNode.requestFocus();
+              },
               icon: const Icon(Icons.arrow_upward),
-              tooltip: 'Previous Match',
+              tooltip: widget.localizations.previousMatch,
             ),
             IconButton(
               key: const Key('nextMatchButton'),
               iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(),
+              onPressed: () {
+                searchService.navigateToMatch();
+                focusNode.requestFocus();
+              },
               icon: const Icon(Icons.arrow_downward),
-              tooltip: 'Next Match',
+              tooltip: widget.localizations.nextMatch,
             ),
             IconButton(
               key: const Key('closeButton'),
@@ -84,10 +106,10 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   queriedPattern,
                   unhighlight: true,
                 );
-                setState(() => queriedPattern = '');
+                queriedPattern = '';
               },
               icon: const Icon(Icons.close),
-              tooltip: 'Close',
+              tooltip: widget.localizations.close,
             ),
           ],
         ),
@@ -102,21 +124,22 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                       autofocus: false,
                       controller: replaceController,
                       onSubmitted: (_) => _replaceSelectedWord(),
-                      decoration: _buildInputDecoration("Replace"),
+                      decoration:
+                          _buildInputDecoration(widget.localizations.replace),
                     ),
                   ),
                   IconButton(
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
-                    tooltip: 'Replace',
+                    tooltip: widget.localizations.replace,
                   ),
                   IconButton(
                     key: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     iconSize: _iconSize,
-                    tooltip: 'Replace All',
+                    tooltip: widget.localizations.replaceAll,
                   ),
                 ],
               )
