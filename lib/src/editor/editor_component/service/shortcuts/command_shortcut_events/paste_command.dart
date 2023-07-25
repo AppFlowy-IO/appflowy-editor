@@ -60,7 +60,7 @@ CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
     if (text != null && text.isNotEmpty) {
-      handlePastePlainText(editorState, data.text!);
+      handlePastePlainText(editorState, text);
     }
   }();
 
