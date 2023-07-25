@@ -143,14 +143,15 @@ class _ColorPickerState extends State<ColorPicker> {
 
   String? _convertHexToOpacity(String? colorHex) {
     if (colorHex == null) return null;
-    final opacityHex = colorHex.substring(2, 4);
+    // colorHex is ff9e9e9e
+    final opacityHex = colorHex.substring(0, 2);
     final opacity = int.parse(opacityHex, radix: 16) / 2.55;
     return opacity.toStringAsFixed(0);
   }
 
   String? _extractColorHex(String? colorHex) {
     if (colorHex == null) return null;
-    return colorHex.substring(4);
+    return colorHex.substring(2);
   }
 }
 
