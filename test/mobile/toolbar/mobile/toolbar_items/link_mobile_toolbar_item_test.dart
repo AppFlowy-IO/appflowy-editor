@@ -1,5 +1,3 @@
-@TestOn('android || ios')
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
