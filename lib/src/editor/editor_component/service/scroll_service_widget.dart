@@ -121,7 +121,23 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          startAutoScroll(endTouchPoint, edgeOffset: 100);
+          if (editorState.selectionType == SelectionType.block) {
+            final box = editorState.renderBox;
+            final editorOffset = box?.localToGlobal(Offset.zero);
+            final editorHeight = box?.size.height;
+            double offset = 100;
+            if (editorOffset != null && editorHeight != null) {
+              // try to center the highlight area
+              offset = editorOffset.dy + editorHeight / 2.0;
+            }
+            startAutoScroll(
+              endTouchPoint,
+              edgeOffset: offset,
+              duration: Duration.zero,
+            );
+          } else {
+            startAutoScroll(endTouchPoint, edgeOffset: 100);
+          }
         }
       } else {
         startAutoScroll(endTouchPoint);
@@ -159,11 +175,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     Offset offset, {
     double edgeOffset = 100,
     AxisDirection? direction,
+    Duration? duration,
   }) =>
       forward.startAutoScroll(
         offset,
         edgeOffset: edgeOffset,
         direction: direction,
+        duration: duration,
       );
 
   @override
