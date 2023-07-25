@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/editor/block_component/base_component/widget/ignore_parent_pointer.dart';
 import 'package:flutter/material.dart';
 
 class FullScreenOverlayEntry {
@@ -29,33 +28,31 @@ class FullScreenOverlayEntry {
         final size = MediaQuery.of(context).size;
         return SizedBox.fromSize(
           size: size,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              if (tapToDismiss) {
-                // remove this from the overlay when tapped the opaque layer
-                _entry?.remove();
-                _entry = null;
-                dismissCallback?.call();
-              }
-            },
-            child: Stack(
-              children: [
-                Positioned(
-                  top: top,
-                  bottom: bottom,
-                  left: left,
-                  right: right,
-                  child: IgnoreParentPointer(
-                    child: Material(
-                      // Avoid background color behind the child, so the child can fully control the overlay style
-                      color: Colors.transparent,
-                      child: builder(context),
-                    ),
-                  ),
+          child: Stack(
+            children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  if (tapToDismiss) {
+                    // remove this from the overlay when tapped the opaque layer
+                    _entry?.remove();
+                    _entry = null;
+                    dismissCallback?.call();
+                  }
+                },
+              ),
+              Positioned(
+                top: top,
+                bottom: bottom,
+                left: left,
+                right: right,
+                child: Material(
+                  // Avoid background color behind the child, so the child can fully control the overlay style
+                  color: Colors.transparent,
+                  child: builder(context),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

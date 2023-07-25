@@ -38,7 +38,6 @@ export 'base_component/insert_newline_in_type_command.dart';
 export 'base_component/indent_command.dart';
 export 'base_component/outdent_command.dart';
 export 'base_component/widget/full_screen_overlay_entry.dart';
-export 'base_component/widget/ignore_parent_pointer.dart';
 
 // rich text
 export 'rich_text/default_selectable_mixin.dart';
