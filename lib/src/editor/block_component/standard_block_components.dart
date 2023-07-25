@@ -126,7 +126,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   //
   selectAllCommand,
 
-  // copy and paste
+  // copy paste and cut
   copyCommand,
   ...pasteCommands,
 ];
