@@ -90,11 +90,15 @@ class SearchService {
     bool unhighlight = false,
   }) {
     for (final match in matches) {
-      Position start = Position(path: path, offset: match);
-      _selectWordAtPosition(start);
+      final start = Position(path: path, offset: match);
+      final end = Position(
+        path: start.path,
+        offset: start.offset + queriedPattern.length,
+      );
+
+      final selection = Selection(start: start, end: end);
 
       if (unhighlight) {
-        final selection = editorState.selection!;
         editorState.formatDelta(
           selection,
           {AppFlowyRichTextKeys.highlightColor: null},
@@ -102,6 +106,7 @@ class SearchService {
       } else {
         formatHighlightColor(
           editorState,
+          selection,
           foundSelectedColor,
         );
       }
