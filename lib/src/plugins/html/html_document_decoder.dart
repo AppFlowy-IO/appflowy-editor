@@ -345,12 +345,12 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
-    HTMLTag.div,
+    HTMLTags.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTag.image
+    HTMLTags.image
   ];
 
   static bool isTopLevel(String tag) {
