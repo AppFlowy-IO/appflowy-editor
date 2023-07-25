@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../../new/infra/testable_editor.dart';

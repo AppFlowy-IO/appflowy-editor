@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
-import 'package:appflowy_editor/src/service/internal_key_event_handlers/copy_paste_handler.dart';
 import 'package:flutter/material.dart';
 
 /// Paste.
@@ -45,10 +43,7 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     final text = data.text;
     final html = data.html;
     if (html != null && html.isNotEmpty) {
-      final nodes = htmlToDocument(html).root.children;
-      final transaction = editorState.transaction
-        ..insertNodes(selection!.end.path, nodes);
-      await editorState.apply(transaction);
+      pasteHTML(editorState, html);
     } else if (text != null && text.isNotEmpty) {
       handlePastePlainText(editorState, data.text!);
     }

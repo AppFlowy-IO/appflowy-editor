@@ -55,3 +55,15 @@ abstract class HTMLNodeParser {
   String toHTMLString(List<dom.Node> nodes) =>
       nodes.map((e) => stringify(e)).join().replaceAll('\n', '');
 }
+
+String stringify(dom.Node node) {
+  if (node is dom.Element) {
+    return node.outerHtml;
+  }
+
+  if (node is dom.Text) {
+    return node.text;
+  }
+
+  return '';
+}
