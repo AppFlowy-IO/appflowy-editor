@@ -87,11 +87,13 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     Offset offset, {
     double edgeOffset = 200,
     AxisDirection? direction,
+    Duration? duration,
   }) {
     widget.autoScroller.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
       direction: direction,
+      duration: duration,
     );
   }
 

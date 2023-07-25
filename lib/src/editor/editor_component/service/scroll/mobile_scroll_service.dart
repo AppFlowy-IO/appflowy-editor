@@ -80,6 +80,7 @@ class _MobileScrollServiceState extends State<MobileScrollService>
     Offset offset, {
     double edgeOffset = 200,
     AxisDirection? direction,
+    Duration? duration,
   }) {
     widget.autoScroller.startAutoScroll(
       offset,
