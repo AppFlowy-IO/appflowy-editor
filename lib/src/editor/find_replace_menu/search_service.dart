@@ -1,14 +1,24 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
+import 'package:flutter/material.dart';
 
-const foundSelectedColor = '0x6000BCF0';
+class SearchStyle {
+  SearchStyle({
+    this.highlightColor = const Color(0x6000BCF0),
+  });
+
+  final Color highlightColor;
+}
 
 class SearchService {
   SearchService({
     required this.editorState,
+    required this.style,
   });
 
   final EditorState editorState;
+  final SearchStyle style;
+
   //matchedPositions will contain a list of positions of the matched patterns
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
@@ -25,6 +35,7 @@ class SearchService {
       //this means we have a new pattern, but before we highlight the new matches,
       //lets unhiglight the old pattern
       findAndHighlight(queriedPattern, unhighlight: true);
+      matchedPositions.clear();
       queriedPattern = pattern;
     }
 
@@ -104,34 +115,40 @@ class SearchService {
           {AppFlowyRichTextKeys.highlightColor: null},
         );
       } else {
-        formatHighlightColor(
-          editorState,
+        editorState.formatDelta(
           selection,
-          foundSelectedColor,
+          {AppFlowyRichTextKeys.highlightColor: style.highlightColor.toHex()},
+          false,
         );
       }
       editorState.undoManager.forgetRecentUndo();
     }
   }
 
-  void _selectWordAtPosition(Position start, [bool isNavigating = false]) {
+  Future<void> _selectWordAtPosition(
+    Position start, [
+    bool isNavigating = false,
+  ]) async {
     Position end = Position(
       path: start.path,
       offset: start.offset + queriedPattern.length,
     );
 
-    editorState.updateSelectionWithReason(
+    await editorState.updateSelectionWithReason(
       Selection(start: start, end: end),
       reason: isNavigating
           ? SelectionUpdateReason.searchNavigate
           : SelectionUpdateReason.searchHighlight,
     );
+
+    editorState.service.keyboardService?.disable();
+    editorState.service.selectionService.clearCursor();
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
   /// the match located above the current selected match is newly selected.
   /// Otherwise the match below the current selected match is newly selected.
-  void navigateToMatch({bool moveUp = false}) {
+  void navigateToMatch({bool moveUp = false, bool keepFocus = false}) {
     if (matchedPositions.isEmpty) return;
 
     if (moveUp) {

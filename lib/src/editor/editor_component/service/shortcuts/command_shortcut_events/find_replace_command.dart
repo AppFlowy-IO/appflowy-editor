@@ -2,13 +2,28 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.dart';
 import 'package:flutter/material.dart';
 
-List<CommandShortcutEvent> findAndReplaceCommands(
-  FindReplaceLocalizations localizations,
-) =>
+List<CommandShortcutEvent> findAndReplaceCommands({
+  required FindReplaceLocalizations localizations,
+  FindReplaceStyle? style,
+}) =>
     [
-      openFindDialog(localizations: localizations),
-      openReplaceDialog(localizations: localizations),
+      openFindDialog(
+        localizations: localizations,
+        style: style ?? FindReplaceStyle(),
+      ),
+      openReplaceDialog(
+        localizations: localizations,
+        style: style ?? FindReplaceStyle(),
+      ),
     ];
+
+class FindReplaceStyle {
+  FindReplaceStyle({
+    this.highlightColor = const Color(0x6000BCF0),
+  });
+
+  final Color highlightColor;
+}
 
 class FindReplaceLocalizations {
   FindReplaceLocalizations({
@@ -36,6 +51,7 @@ class FindReplaceLocalizations {
 ///
 CommandShortcutEvent openFindDialog({
   required FindReplaceLocalizations localizations,
+  required FindReplaceStyle style,
 }) =>
     CommandShortcutEvent(
       key: 'show the find dialog',
@@ -44,11 +60,13 @@ CommandShortcutEvent openFindDialog({
       handler: (editorState) => _showFindAndReplaceDialog(
         editorState,
         localizations: localizations,
+        style: style,
       ),
     );
 
 CommandShortcutEvent openReplaceDialog({
   required FindReplaceLocalizations localizations,
+  required FindReplaceStyle style,
 }) =>
     CommandShortcutEvent(
       key: 'show the find and replace dialog',
@@ -57,6 +75,7 @@ CommandShortcutEvent openReplaceDialog({
       handler: (editorState) => _showFindAndReplaceDialog(
         editorState,
         localizations: localizations,
+        style: style,
         openReplace: true,
       ),
     );
@@ -65,6 +84,7 @@ FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(
   EditorState editorState, {
   required FindReplaceLocalizations localizations,
+  required FindReplaceStyle style,
   bool openReplace = false,
 }) {
   if (PlatformExtension.isMobile) {
@@ -98,6 +118,7 @@ KeyEventResult _showFindAndReplaceDialog(
         editorState: editorState,
         replaceFlag: openReplace,
         localizations: localizations,
+        style: style,
       );
 
       _findReplaceService?.show();

@@ -118,18 +118,6 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   outdentCommand,
 
   //
-  ...findAndReplaceCommands(
-    FindReplaceLocalizations(
-      find: 'Find',
-      previousMatch: 'Previous match',
-      nextMatch: 'Next match',
-      close: 'Close',
-      replace: 'Replace',
-      replaceAll: 'Replace all',
-    ),
-  ),
-
-  //
   exitEditingCommand,
 
   //

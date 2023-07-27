@@ -11,12 +11,14 @@ class FindMenuWidget extends StatefulWidget {
     required this.editorState,
     required this.replaceFlag,
     required this.localizations,
+    required this.style,
   });
 
   final VoidCallback dismiss;
   final EditorState editorState;
   final bool replaceFlag;
   final FindReplaceLocalizations localizations;
+  final FindReplaceStyle style;
 
   @override
   State<FindMenuWidget> createState() => _FindMenuWidgetState();
@@ -36,6 +38,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
     replaceFlag = widget.replaceFlag;
     searchService = SearchService(
       editorState: widget.editorState,
+      style: SearchStyle(highlightColor: widget.style.highlightColor),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -80,20 +83,14 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
             IconButton(
               key: const Key('previousMatchButton'),
               iconSize: _iconSize,
-              onPressed: () {
-                searchService.navigateToMatch(moveUp: true);
-                focusNode.requestFocus();
-              },
+              onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: widget.localizations.previousMatch,
             ),
             IconButton(
               key: const Key('nextMatchButton'),
               iconSize: _iconSize,
-              onPressed: () {
-                searchService.navigateToMatch();
-                focusNode.requestFocus();
-              },
+              onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: widget.localizations.nextMatch,
             ),
