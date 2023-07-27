@@ -64,7 +64,8 @@ void checkIfNotHighlighted(
   expect(
     node.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-            (el) => el.attributes?[AppFlowyRichTextKeys.highlightColor] == null,
+            (e) =>
+                e.attributes?[AppFlowyRichTextKeys.findBackgroundColor] == null,
           );
     }),
     expectedResult,

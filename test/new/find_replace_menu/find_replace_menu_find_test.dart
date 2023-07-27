@@ -210,11 +210,9 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      await enterInputIntoFindDialog(tester, pattern);
+      expect(find.byType(FindMenuWidget), findsOneWidget);
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await enterInputIntoFindDialog(tester, pattern);
 
       //since node at path [1] does not contain match, we expect it
       //to be not highlighted.
@@ -232,11 +230,6 @@ void main() async {
       //now we will change the pattern to Flutter and search it
       pattern = 'Flutter';
       await enterInputIntoFindDialog(tester, pattern);
-
-      //finds the pattern Flutter
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
 
       //we expect that the current selected node is highlighted.
       checkIfNotHighlighted(node, selectionAtNode1, expectedResult: false);

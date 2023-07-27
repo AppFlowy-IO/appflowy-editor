@@ -52,6 +52,19 @@ class TestableEditor {
       autoFocus: autoFocus,
       shrinkWrap: shrinkWrap,
       scrollController: scrollController,
+      commandShortcutEvents: [
+        ...standardCommandShortcutEvents,
+        ...findAndReplaceCommands(
+          localizations: FindReplaceLocalizations(
+            find: 'Find',
+            previousMatch: 'Previous match',
+            nextMatch: 'Next match',
+            close: 'Close',
+            replace: 'Replace',
+            replaceAll: 'Replace all',
+          ),
+        ),
+      ],
       editorStyle:
           inMobile ? const EditorStyle.mobile() : const EditorStyle.desktop(),
     );

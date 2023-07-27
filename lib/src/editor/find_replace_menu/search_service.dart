@@ -112,12 +112,15 @@ class SearchService {
       if (unhighlight) {
         editorState.formatDelta(
           selection,
-          {AppFlowyRichTextKeys.highlightColor: null},
+          {AppFlowyRichTextKeys.findBackgroundColor: null},
         );
       } else {
         editorState.formatDelta(
           selection,
-          {AppFlowyRichTextKeys.highlightColor: style.highlightColor.toHex()},
+          {
+            AppFlowyRichTextKeys.findBackgroundColor:
+                style.highlightColor.toHex()
+          },
           false,
         );
       }
