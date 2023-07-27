@@ -172,8 +172,8 @@ void main() async {
       );
       await tester.pumpAndSettle();
 
-      //lets check after find operation, the last match is selected.
-      checkCurrentSelection(editor, [2], 0, patternToBeFound.length);
+      //lets check after find operation, the second match is selected.
+      checkCurrentSelection(editor, [1], 0, patternToBeFound.length);
 
       //now we input some text into the replace text field and try to replace
       await enterInputIntoFindDialog(
@@ -187,10 +187,10 @@ void main() async {
       await tester.pumpAndSettle();
 
       //only the node at path 2 should get replaced, all other nodes should stay as before.
-      final lastNode = editor.nodeAtPath([2]);
+      final lastNode = editor.nodeAtPath([1]);
       expect(lastNode!.delta!.toPlainText(), expectedText);
 
-      final middleNode = editor.nodeAtPath([1]);
+      final middleNode = editor.nodeAtPath([2]);
       expect(middleNode!.delta!.toPlainText(), text);
 
       final firstNode = editor.nodeAtPath([0]);

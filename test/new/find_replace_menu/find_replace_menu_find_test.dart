@@ -73,19 +73,16 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
-
       //checking if current selection consists an occurance of matched pattern.
       final selection =
           editor.editorState.service.selectionService.currentSelection.value;
 
-      //we expect the last occurance of the pattern to be found and selected,
-      //thus that should be the current selection.
+      //we expect the second occurance of the pattern to be found and selected,
+      //this is because we send a testTextInput.receiveAction(TextInputAction.done)
+      //event during submitting our text input, thus the second match is selected.
       expect(selection != null, true);
-      expect(selection!.start, Position(path: [2], offset: 0));
-      expect(selection.end, Position(path: [2], offset: pattern.length));
+      expect(selection!.start, Position(path: [1], offset: 0));
+      expect(selection.end, Position(path: [1], offset: pattern.length));
 
       await editor.dispose();
     });
