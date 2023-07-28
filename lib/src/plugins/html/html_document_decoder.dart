@@ -1,8 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
 
 class DocumentHTMLDecoder extends Converter<String, Document> {
   DocumentHTMLDecoder();
@@ -202,20 +203,26 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final delta = Delta();
     final nodes = <Node>[];
     final children = element.nodes.toList();
+
     for (final child in children) {
       if (child is dom.Element) {
-        if (child.children.isNotEmpty) {
-          for (final seocondChild in child.children) {
+        if (child.children.isNotEmpty &&
+            HTMLTags.formattingElements.contains(child.localName) == false) {
+          //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
+
+          nodes.addAll(_parseElement(child.children));
+        } else {
+          if (HTMLTags.specialElements.contains(child.localName)) {
             nodes.addAll(
               _parseSpecialElements(
-                seocondChild,
+                child,
                 type: ParagraphBlockKeys.type,
               ),
             );
+          } else {
+            final attributes = _parserFormattingElementAttributes(child);
+            delta.insert(child.text, attributes: attributes);
           }
-        } else {
-          final attributes = _parserFormattingElementAttributes(child);
-          delta.insert(child.text, attributes: attributes);
         }
       } else {
         delta.insert(child.text ?? '');
@@ -338,12 +345,12 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
-    HTMLTag.div,
+    HTMLTags.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTag.image
+    HTMLTags.image
   ];
 
   static bool isTopLevel(String tag) {
