@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../find_replace_menu/find_replace_menu_utils.dart';
 import '../util/util.dart';
 
 class TestableEditor {
@@ -54,16 +55,7 @@ class TestableEditor {
       scrollController: scrollController,
       commandShortcutEvents: [
         ...standardCommandShortcutEvents,
-        ...findAndReplaceCommands(
-          localizations: FindReplaceLocalizations(
-            find: 'Find',
-            previousMatch: 'Previous match',
-            nextMatch: 'Next match',
-            close: 'Close',
-            replace: 'Replace',
-            replaceAll: 'Replace all',
-          ),
-        ),
+        ...TestableFindAndReplaceCommands().testableFindAndReplaceCommands,
       ],
       editorStyle:
           inMobile ? const EditorStyle.mobile() : const EditorStyle.desktop(),

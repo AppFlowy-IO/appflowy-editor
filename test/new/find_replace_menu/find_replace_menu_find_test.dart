@@ -107,13 +107,13 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
+      //this will call naviateToMatch and select the second match
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
       );
 
       //checking if current selection consists an occurance of matched pattern.
-      //we expect the last occurance of the pattern to be found, thus that should
-      //be the current selection.
+      //we expect the second occurance of the pattern to be found and selected
       checkCurrentSelection(editor, [1], 0, pattern.length);
 
       //now pressing the icon button for previous match should select
@@ -143,6 +143,56 @@ void main() async {
       await tester.pumpAndSettle();
 
       checkCurrentSelection(editor, [1], 0, pattern.length);
+
+      await editor.dispose();
+    });
+
+    testWidgets('''navigating - selected match is highlighted uniquely
+     than unselected matches''', (tester) async {
+      const pattern = 'Welcome';
+      const previousBtnKey = Key('previousMatchButton');
+
+      final editor = tester.editor;
+      editor.addParagraphs(3, initialText: text);
+
+      await editor.startTesting();
+
+      final node0 = editor.nodeAtPath([0]);
+      final selection0 = getSelectionAtPath([0], 0, pattern.length);
+      final node1 = editor.nodeAtPath([1]);
+      final selection1 = getSelectionAtPath([1], 0, pattern.length);
+      final node2 = editor.nodeAtPath([2]);
+      final selection2 = getSelectionAtPath([2], 0, pattern.length);
+
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor);
+
+      await tester.pumpAndSettle();
+
+      await enterInputIntoFindDialog(tester, pattern);
+
+      //this will call naviateToMatch and select the second match
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+
+      //we expect the second occurance of the pattern to be found and selected
+      checkCurrentSelection(editor, [1], 0, pattern.length);
+
+      // now lets check if the current selected match is highlighted properly
+      checkIfHighlightedWithProperColors(node1!, selection1, kSelectedHCHex);
+      // unselected matches are highlighted with different color
+      checkIfHighlightedWithProperColors(node2!, selection2, kUnselectedHCHex);
+      checkIfHighlightedWithProperColors(node0!, selection0, kUnselectedHCHex);
+
+      //press the icon button for previous match should select node at path [0]
+      await tester.tap(find.byKey(previousBtnKey));
+
+      checkCurrentSelection(editor, [0], 0, pattern.length);
+      checkIfHighlightedWithProperColors(node0, selection0, kSelectedHCHex);
+      checkIfHighlightedWithProperColors(node1, selection1, kUnselectedHCHex);
+      checkIfHighlightedWithProperColors(node2, selection2, kUnselectedHCHex);
 
       await editor.dispose();
     });

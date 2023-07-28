@@ -9,6 +9,36 @@ import 'package:flutter_test/flutter_test.dart';
 import '../infra/testable_editor.dart';
 
 const text = 'Welcome to Appflowy 😁';
+const Color kSelectedHighlightColor = Colors.yellow;
+const Color kUnselectedHighlightColor = Colors.lightGreen;
+String kSelectedHCHex = kSelectedHighlightColor.toHex();
+String kUnselectedHCHex = kUnselectedHighlightColor.toHex();
+
+class TestableFindAndReplaceCommands {
+  TestableFindAndReplaceCommands({
+    this.selectedHighlightColor = kSelectedHighlightColor,
+    this.unselectedHighlightColor = kUnselectedHighlightColor,
+  });
+
+  final Color selectedHighlightColor;
+  final Color unselectedHighlightColor;
+
+  List<CommandShortcutEvent> get testableFindAndReplaceCommands =>
+      findAndReplaceCommands(
+        localizations: FindReplaceLocalizations(
+          find: 'Find',
+          previousMatch: 'Previous match',
+          nextMatch: 'Next match',
+          close: 'Close',
+          replace: 'Replace',
+          replaceAll: 'Replace all',
+        ),
+        style: FindReplaceStyle(
+          selectedHighlightColor: selectedHighlightColor,
+          unselectedHighlightColor: unselectedHighlightColor,
+        ),
+      );
+}
 
 Future<void> prepareFindAndReplaceDialog(
   WidgetTester tester, {
@@ -72,6 +102,23 @@ void checkIfNotHighlighted(
   );
 }
 
+void checkIfHighlightedWithProperColors(
+  Node node,
+  Selection selection,
+  String expectedColor,
+) {
+  expect(
+    node.allSatisfyInSelection(selection, (delta) {
+      return delta.whereType<TextInsert>().every(
+            (e) =>
+                e.attributes?[AppFlowyRichTextKeys.findBackgroundColor] ==
+                expectedColor,
+          );
+    }),
+    true,
+  );
+}
+
 void checkCurrentSelection(
   TestableEditor editor,
   Path path,
@@ -84,4 +131,11 @@ void checkCurrentSelection(
   expect(selection != null, true);
   expect(selection!.start, Position(path: path, offset: startOffset));
   expect(selection.end, Position(path: path, offset: endOffset));
+}
+
+Selection getSelectionAtPath(Path path, int startOffset, int endOffset) {
+  return Selection(
+    start: Position(path: path, offset: startOffset),
+    end: Position(path: path, offset: endOffset),
+  );
 }
