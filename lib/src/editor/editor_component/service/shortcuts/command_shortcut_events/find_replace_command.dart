@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 
 List<CommandShortcutEvent> findAndReplaceCommands({
   required FindReplaceLocalizations localizations,
+  required BuildContext context,
   FindReplaceStyle? style,
 }) =>
     [
       openFindDialog(
         localizations: localizations,
+        context: context,
         style: style ?? FindReplaceStyle(),
       ),
       openReplaceDialog(
         localizations: localizations,
+        context: context,
         style: style ?? FindReplaceStyle(),
       ),
     ];
@@ -55,6 +58,7 @@ class FindReplaceLocalizations {
 ///
 CommandShortcutEvent openFindDialog({
   required FindReplaceLocalizations localizations,
+  required BuildContext context,
   required FindReplaceStyle style,
 }) =>
     CommandShortcutEvent(
@@ -62,6 +66,7 @@ CommandShortcutEvent openFindDialog({
       command: 'ctrl+f',
       macOSCommand: 'cmd+f',
       handler: (editorState) => _showFindAndReplaceDialog(
+        context,
         editorState,
         localizations: localizations,
         style: style,
@@ -70,6 +75,7 @@ CommandShortcutEvent openFindDialog({
 
 CommandShortcutEvent openReplaceDialog({
   required FindReplaceLocalizations localizations,
+  required BuildContext context,
   required FindReplaceStyle style,
 }) =>
     CommandShortcutEvent(
@@ -77,6 +83,7 @@ CommandShortcutEvent openReplaceDialog({
       command: 'ctrl+h',
       macOSCommand: 'cmd+h',
       handler: (editorState) => _showFindAndReplaceDialog(
+        context,
         editorState,
         localizations: localizations,
         style: style,
@@ -86,6 +93,7 @@ CommandShortcutEvent openReplaceDialog({
 
 FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(
+  BuildContext context,
   EditorState editorState, {
   required FindReplaceLocalizations localizations,
   required FindReplaceStyle style,
@@ -95,39 +103,15 @@ KeyEventResult _showFindAndReplaceDialog(
     return KeyEventResult.ignored;
   }
 
-  final selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.ignored;
-  }
+  _findReplaceService = FindReplaceMenu(
+    context: context,
+    editorState: editorState,
+    replaceFlag: openReplace,
+    localizations: localizations,
+    style: style,
+  );
 
-  // // delete the selection
-  // if (!selection.isCollapsed) {
-  //   await editorState.deleteSelection(selection);
-  // }
-
-  final afterSelection = editorState.selection;
-  if (afterSelection == null || !afterSelection.isCollapsed) {
-    assert(false, 'the selection should be collapsed');
-    return KeyEventResult.handled;
-  }
-
-  // show the slash menu
-  () {
-    // this code is copied from the the old editor.
-    // TODO: refactor this code
-    final context = editorState.getNodeAtPath(selection.start.path)?.context;
-    if (context != null) {
-      _findReplaceService = FindReplaceMenu(
-        context: context,
-        editorState: editorState,
-        replaceFlag: openReplace,
-        localizations: localizations,
-        style: style,
-      );
-
-      _findReplaceService?.show();
-    }
-  }();
+  _findReplaceService?.show();
 
   return KeyEventResult.handled;
 }

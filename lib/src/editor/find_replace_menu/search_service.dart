@@ -143,15 +143,12 @@ class SearchService {
           ? SelectionUpdateReason.searchNavigate
           : SelectionUpdateReason.searchHighlight,
     );
-
-    editorState.service.keyboardService?.disable();
-    editorState.service.selectionService.clearCursor();
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
   /// the match located above the current selected match is newly selected.
   /// Otherwise the match below the current selected match is newly selected.
-  void navigateToMatch({bool moveUp = false, bool keepFocus = false}) {
+  void navigateToMatch({bool moveUp = false}) {
     if (matchedPositions.isEmpty) return;
 
     //lets change the highlight color to indicate that the current match is
@@ -168,16 +165,12 @@ class SearchService {
     if (moveUp) {
       selectedIndex =
           selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
-
-      Position match = matchedPositions[selectedIndex];
-      _selectWordAtPosition(match, true);
     } else {
       selectedIndex =
           (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
-
-      final match = matchedPositions[selectedIndex];
-      _selectWordAtPosition(match, true);
     }
+    final match = matchedPositions[selectedIndex];
+    _selectWordAtPosition(match, true);
   }
 
   /// Replaces the current selected word with replaceText.

@@ -16,15 +16,18 @@ String kUnselectedHCHex = kUnselectedHighlightColor.toHex();
 
 class TestableFindAndReplaceCommands {
   TestableFindAndReplaceCommands({
+    required this.context,
     this.selectedHighlightColor = kSelectedHighlightColor,
     this.unselectedHighlightColor = kUnselectedHighlightColor,
   });
 
   final Color selectedHighlightColor;
   final Color unselectedHighlightColor;
+  final BuildContext context;
 
   List<CommandShortcutEvent> get testableFindAndReplaceCommands =>
       findAndReplaceCommands(
+        context: context,
         localizations: FindReplaceLocalizations(
           find: 'Find',
           previousMatch: 'Previous match',

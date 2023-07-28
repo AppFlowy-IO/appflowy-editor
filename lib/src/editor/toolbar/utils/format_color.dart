@@ -18,7 +18,7 @@ void formatFontColor(
   String color,
 ) {
   editorState.formatDelta(
-    editorState.selection,
+    selection,
     {AppFlowyRichTextKeys.textColor: color},
     false,
   );

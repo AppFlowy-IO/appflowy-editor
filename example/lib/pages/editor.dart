@@ -127,6 +127,7 @@ class Editor extends StatelessWidget {
       commandShortcutEvents: [
         ...standardCommandShortcutEvents,
         ...findAndReplaceCommands(
+          context: context,
           localizations: FindReplaceLocalizations(
             find: 'Find',
             previousMatch: 'Previous match',

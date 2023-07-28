@@ -47,18 +47,24 @@ class TestableEditor {
     if (withFloatingToolbar) {
       scrollController ??= ScrollController();
     }
-    Widget editor = AppFlowyEditor(
-      editorState: editorState,
-      editable: editable,
-      autoFocus: autoFocus,
-      shrinkWrap: shrinkWrap,
-      scrollController: scrollController,
-      commandShortcutEvents: [
-        ...standardCommandShortcutEvents,
-        ...TestableFindAndReplaceCommands().testableFindAndReplaceCommands,
-      ],
-      editorStyle:
-          inMobile ? const EditorStyle.mobile() : const EditorStyle.desktop(),
+    Widget editor = Builder(
+      builder: (context) {
+        return AppFlowyEditor(
+          editorState: editorState,
+          editable: editable,
+          autoFocus: autoFocus,
+          shrinkWrap: shrinkWrap,
+          scrollController: scrollController,
+          commandShortcutEvents: [
+            ...standardCommandShortcutEvents,
+            ...TestableFindAndReplaceCommands(context: context)
+                .testableFindAndReplaceCommands,
+          ],
+          editorStyle: inMobile
+              ? const EditorStyle.mobile()
+              : const EditorStyle.desktop(),
+        );
+      },
     );
     if (withFloatingToolbar) {
       if (inMobile) {
