@@ -19,10 +19,14 @@ List<CommandShortcutEvent> findAndReplaceCommands({
 
 class FindReplaceStyle {
   FindReplaceStyle({
-    this.highlightColor = const Color(0x6000BCF0),
+    this.selectedHighlightColor = const Color(0xFFFFB931),
+    this.unselectedHighlightColor = const Color(0x60ECBC5F),
   });
 
-  final Color highlightColor;
+  //selected highlight color is used as background color on the selected found pattern.
+  final Color selectedHighlightColor;
+  //unselected highlight color is used on every other found pattern which can be selected.
+  final Color unselectedHighlightColor;
 }
 
 class FindReplaceLocalizations {

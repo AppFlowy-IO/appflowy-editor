@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 
 class SearchStyle {
   SearchStyle({
-    this.highlightColor = const Color(0x6000BCF0),
+    this.selectedHighlightColor = const Color(0xFFFFB931),
+    this.unselectedHighlightColor = const Color(0x60ECBC5F),
   });
 
-  final Color highlightColor;
+  //selected highlight color is used as background color on the selected found pattern.
+  final Color selectedHighlightColor;
+  //unselected highlight color is used on every other found pattern which can be selected.
+  final Color unselectedHighlightColor;
 }
 
 class SearchService {
@@ -115,14 +119,7 @@ class SearchService {
           {AppFlowyRichTextKeys.findBackgroundColor: null},
         );
       } else {
-        editorState.formatDelta(
-          selection,
-          {
-            AppFlowyRichTextKeys.findBackgroundColor:
-                style.highlightColor.toHex()
-          },
-          false,
-        );
+        _applySelectedHighlightColor(selection);
       }
       editorState.undoManager.forgetRecentUndo();
     }
@@ -137,8 +134,11 @@ class SearchService {
       offset: start.offset + queriedPattern.length,
     );
 
+    final selection = Selection(start: start, end: end);
+    _applySelectedHighlightColor(selection, isSelected: true);
+
     await editorState.updateSelectionWithReason(
-      Selection(start: start, end: end),
+      selection,
       reason: isNavigating
           ? SelectionUpdateReason.searchNavigate
           : SelectionUpdateReason.searchHighlight,
@@ -153,6 +153,17 @@ class SearchService {
   /// Otherwise the match below the current selected match is newly selected.
   void navigateToMatch({bool moveUp = false, bool keepFocus = false}) {
     if (matchedPositions.isEmpty) return;
+
+    //lets change the highlight color to indicate that the current match is
+    //not selected.
+    final currentMatch = matchedPositions[selectedIndex];
+    Position end = Position(
+      path: currentMatch.path,
+      offset: currentMatch.offset + queriedPattern.length,
+    );
+
+    final selection = Selection(start: currentMatch, end: end);
+    _applySelectedHighlightColor(selection);
 
     if (moveUp) {
       selectedIndex =
@@ -186,7 +197,7 @@ class SearchService {
     final selection = editorState.selection!;
     editorState.formatDelta(
       selection,
-      {AppFlowyRichTextKeys.highlightColor: null},
+      {AppFlowyRichTextKeys.findBackgroundColor: null},
     );
     editorState.undoManager.forgetRecentUndo();
 
@@ -221,5 +232,21 @@ class SearchService {
     for (int i = 0; i < matchesLength; i++) {
       replaceSelectedWord(replaceText);
     }
+  }
+
+  void _applySelectedHighlightColor(
+    Selection selection, {
+    bool isSelected = false,
+  }) {
+    final color = isSelected
+        ? style.selectedHighlightColor.toHex()
+        : style.unselectedHighlightColor.toHex();
+    editorState.formatDelta(
+      selection,
+      {
+        AppFlowyRichTextKeys.findBackgroundColor: color,
+      },
+      false,
+    );
   }
 }

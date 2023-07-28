@@ -38,7 +38,10 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
     replaceFlag = widget.replaceFlag;
     searchService = SearchService(
       editorState: widget.editorState,
-      style: SearchStyle(highlightColor: widget.style.highlightColor),
+      style: SearchStyle(
+        selectedHighlightColor: widget.style.selectedHighlightColor,
+        unselectedHighlightColor: widget.style.unselectedHighlightColor,
+      ),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
