@@ -85,7 +85,8 @@ class SelectionMenuItem {
     required String name,
     required IconData iconData,
     required List<String> keywords,
-    required Node Function(EditorState editorState) nodeBuilder,
+    required Node Function(EditorState editorState, BuildContext context)
+        nodeBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
@@ -105,7 +106,7 @@ class SelectionMenuItem {
         size: 18.0,
       ),
       keywords: keywords,
-      handler: (editorState, _, __) {
+      handler: (editorState, _, context) {
         final selection = editorState.selection;
         if (selection == null || !selection.isCollapsed) {
           return;
@@ -115,7 +116,7 @@ class SelectionMenuItem {
         if (node == null || delta == null) {
           return;
         }
-        final newNode = nodeBuilder(editorState);
+        final newNode = nodeBuilder(editorState, context);
         final transaction = editorState.transaction;
         final bReplace = replace?.call(editorState, node) ?? false;
         final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
