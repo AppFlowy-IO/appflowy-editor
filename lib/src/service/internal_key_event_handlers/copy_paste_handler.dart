@@ -84,16 +84,16 @@ void pasteHTML(EditorState editorState, String html) {
   }
 
   Log.keyboard.debug('paste html: $html');
-  final htmltoNodes = htmlToDocument(html);
 
-  if (htmltoNodes.isEmpty) {
+  final htmlToNodes = htmlToDocument(html);
+  if (htmlToNodes.isEmpty) {
     return;
   }
 
   _pasteMultipleLinesInText(
     editorState,
     selection.start.offset,
-    htmltoNodes.root.children.toList(),
+    htmlToNodes.root.children.toList(),
   );
 }
 
@@ -154,36 +154,36 @@ void _pasteMultipleLinesInText(
       editorState.apply(transaction);
     }
 
-    final (firstnode, afternode) = sliceNode(node, offset);
+    final (firstNode, afterNode) = sliceNode(node, offset);
     if (nodes.length == 1 && nodes.first.type == node.type) {
       transaction.deleteNode(node);
-      final List<dynamic> newdelta = firstnode.delta != null
-          ? firstnode.delta!.toJson()
+      final List<dynamic> newDelta = firstNode.delta != null
+          ? firstNode.delta!.toJson()
           : Delta().toJson();
-      final List<Node> childrens = [];
-      childrens.addAll(firstnode.children);
+      final List<Node> children = [];
+      children.addAll(firstNode.children);
 
       if (nodes.first.delta != null &&
           nodes.first.delta != null &&
           nodes.first.delta!.isNotEmpty) {
-        newdelta.addAll(nodes.first.delta!.toJson());
-        childrens.addAll(nodes.first.children);
+        newDelta.addAll(nodes.first.delta!.toJson());
+        children.addAll(nodes.first.children);
       }
-      if (afternode != null &&
-          afternode.delta != null &&
-          afternode.delta!.isNotEmpty) {
-        newdelta.addAll(afternode.delta!.toJson());
-        childrens.addAll(afternode.children);
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty) {
+        newDelta.addAll(afterNode.delta!.toJson());
+        children.addAll(afterNode.children);
       }
 
       transaction.insertNodes(afterSelection.end.path, [
         Node(
-          type: firstnode.type,
-          children: childrens,
-          attributes: firstnode.attributes
+          type: firstNode.type,
+          children: children,
+          attributes: firstNode.attributes
             ..remove(ParagraphBlockKeys.delta)
             ..addAll(
-              {ParagraphBlockKeys.delta: Delta.fromJson(newdelta).toJson()},
+              {ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson()},
             ),
         )
       ]);
@@ -195,12 +195,12 @@ void _pasteMultipleLinesInText(
     transaction.insertNodes([
       path.first + 1
     ], [
-      firstnode,
+      firstNode,
       ...nodes,
-      if (afternode != null &&
-          afternode.delta != null &&
-          afternode.delta!.isNotEmpty)
-        afternode,
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty)
+        afterNode,
     ]);
     editorState.apply(transaction);
     return;

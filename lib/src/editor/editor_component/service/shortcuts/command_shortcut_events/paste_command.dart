@@ -37,7 +37,6 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   }
   assert(selection.isCollapsed);
 
-  // TODO: paste the rich text.
   () async {
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
