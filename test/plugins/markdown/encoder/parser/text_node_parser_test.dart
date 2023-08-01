@@ -70,7 +70,7 @@ void main() async {
 
     test('code block style', () {
       final node = Node(
-        type: 'code_block',
+        type: 'code',
         attributes: {
           'delta': (Delta()..insert(text)).toJson(),
         },
