@@ -28,21 +28,13 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   // plain text.
   final text = editorState.getTextInSelection(selection).join('\n');
 
-  // rich text.
-  // TODO: support rich text. the below code is not working.
-
+  // html
   final nodes = editorState.getSelectedNodes(selection);
+  final document = Document.blank()..insert([0], nodes);
+  final html = documentToHTML(document);
 
-  final html = documentToHTML(
-    Document(
-      root: Node(
-        type: 'page',
-        children: nodes,
-      ),
-    ),
-  );
   AppFlowyClipboard.setData(
-    text: text,
+    text: text.isEmpty ? null : text,
     html: html.isEmpty ? null : html,
   );
 
