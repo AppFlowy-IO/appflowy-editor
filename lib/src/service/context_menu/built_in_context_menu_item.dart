@@ -1,21 +1,29 @@
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 
+import '../internal_key_event_handlers/copy_paste_handler.dart';
+
 final builtInContextMenuItems = [
   [
     // cut
     ContextMenuItem(
       name: 'Cut',
-      onPressed: (editorState) {},
+      onPressed: (editorState) {
+        handleCut(editorState);
+      },
     ),
     // copy
     ContextMenuItem(
       name: 'Copy',
-      onPressed: (editorState) {},
+      onPressed: (editorState) {
+        handleCopy(editorState);
+      },
     ),
     // Paste
     ContextMenuItem(
       name: 'Paste',
-      onPressed: (editorState) {},
+      onPressed: (editorState) {
+        handlePaste(editorState);
+      },
     ),
   ],
 ];
