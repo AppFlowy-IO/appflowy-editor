@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Because the flutter's [DoubleTapGestureRecognizer] will block the [TapGestureRecognizer]
 /// for a while. So we need to implement our own GestureDetector.
 @immutable
-class SelectionGestureDetector extends StatefulWidget {
-  const SelectionGestureDetector({
+class DesktopSelectionGestureDetector extends StatefulWidget {
+  const DesktopSelectionGestureDetector({
     Key? key,
     this.child,
     this.onTapDown,
@@ -20,8 +20,8 @@ class SelectionGestureDetector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SelectionGestureDetector> createState() =>
-      SelectionGestureDetectorState();
+  State<DesktopSelectionGestureDetector> createState() =>
+      DesktopSelectionGestureDetectorState();
 
   final Widget? child;
 
@@ -34,7 +34,8 @@ class SelectionGestureDetector extends StatefulWidget {
   final GestureDragEndCallback? onPanEnd;
 }
 
-class SelectionGestureDetectorState extends State<SelectionGestureDetector> {
+class DesktopSelectionGestureDetectorState
+    extends State<DesktopSelectionGestureDetector> {
   bool _isDoubleTap = false;
   Timer? _doubleTapTimer;
   int _tripleTabCount = 0;

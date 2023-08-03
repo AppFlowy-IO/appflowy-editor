@@ -6,7 +6,7 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
-import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:appflowy_editor/src/service/selection/desktop_selection_gesture_detector.dart';
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -88,7 +88,7 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return SelectionGestureDetector(
+    return DesktopSelectionGestureDetector(
       onPanStart: _onPanStart,
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
