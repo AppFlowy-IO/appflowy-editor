@@ -9,6 +9,11 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   final htmlRegex = RegExp('^(http|https)://');
   final numberedlistRegex = RegExp(r'^\d+\. ');
 
+  // Reference: https://stackoverflow.com/a/6041965
+  final linkRegExp = RegExp(
+    r"(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])",
+  );
+
   @override
   Document convert(String input) {
     final lines = input.split('\n');
@@ -62,36 +67,32 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     if (line.startsWith('### ')) {
       return headingNode(
         level: 3,
-        attributes: {'delta': decoder.convert(line.substring(4)).toJson()},
+        delta: decoder.convert(line.substring(4)),
       );
     } else if (line.startsWith('## ')) {
       return headingNode(
         level: 2,
-        attributes: {'delta': decoder.convert(line.substring(3)).toJson()},
+        delta: decoder.convert(line.substring(3)),
       );
     } else if (line.startsWith('# ')) {
       return headingNode(
         level: 1,
-        attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
+        delta: decoder.convert(line.substring(2)),
       );
     } else if (line.startsWith('- [ ] ')) {
       return todoListNode(
         checked: false,
-        attributes: {'delta': decoder.convert(line.substring(6)).toJson()},
+        delta: decoder.convert(line.substring(6)),
       );
     } else if (line.startsWith('- [x] ')) {
       return todoListNode(
         checked: true,
-        attributes: {'delta': decoder.convert(line.substring(6)).toJson()},
+        delta: decoder.convert(line.substring(6)),
       );
     } else if (line.startsWith('> ')) {
-      return quoteNode(
-        attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
-      );
+      return quoteNode(delta: decoder.convert(line.substring(2)));
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
-      return bulletedListNode(
-        attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
-      );
+      return bulletedListNode(delta: decoder.convert(line.substring(2)));
     } else if (line.isNotEmpty && RegExp('^-*').stringMatch(line) == line) {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
@@ -112,22 +113,18 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       }
     } else if (numberedlistRegex.hasMatch(line)) {
       return numberedListNode(
-        attributes: {
-          'delta':
-              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson()
-        },
+        delta: decoder.convert(line.substring(line.indexOf('.') + 1)),
       );
+    } else if (linkRegExp.hasMatch(line)) {
+      final delta = deltaFromLineWithLinks(line);
+      return paragraphNode(delta: delta);
     }
 
     if (line.isNotEmpty) {
-      return paragraphNode(
-        attributes: {'delta': decoder.convert(line).toJson()},
-      );
+      return paragraphNode(delta: decoder.convert(line));
     }
 
-    return paragraphNode(
-      attributes: {'delta': Delta().toJson()},
-    );
+    return paragraphNode(delta: Delta());
   }
 
   String? extractImagePath(String text) {
@@ -140,6 +137,29 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return match?.group(1);
   }
 
+  Delta deltaFromLineWithLinks(String line, [Delta? delta]) {
+    final matches = linkRegExp.allMatches(line).toList();
+    final nodeDelta = delta ?? Delta();
+
+    int lastUrlOffset = 0;
+    for (final match in matches) {
+      if (lastUrlOffset < match.start) {
+        nodeDelta.insert(line.substring(lastUrlOffset, match.start));
+      }
+
+      final link = line.substring(match.start, match.end);
+      nodeDelta.insert(link, attributes: {AppFlowyRichTextKeys.href: link});
+      lastUrlOffset = match.end;
+    }
+
+    final lastMatch = matches.last;
+    if (lastMatch.end - 1 < line.length - 1) {
+      nodeDelta.insert(line.substring(lastMatch.end));
+    }
+
+    return nodeDelta;
+  }
+
   Node _codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
@@ -149,9 +169,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // so this is treated like a normal paragraph
     if (!markdown.contains('\n') &&
         markdown.split('`').length - 1 == markdown.length) {
-      return paragraphNode(
-        attributes: {'delta': decoder.convert(markdown).toJson()},
-      );
+      return paragraphNode(delta: decoder.convert(markdown));
     }
     const codeMarker = '```';
     int codeStartIndex = markdown.indexOf(codeMarker);
@@ -162,9 +180,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // This if condition is for handling cases like ```\n`
     // In this case codeStartIndex = 0 and codeEndIndex = -1
     if (codeEndIndex < codeStartIndex) {
-      return paragraphNode(
-        attributes: {'delta': decoder.convert(markdown).toJson()},
-      );
+      return paragraphNode(delta: decoder.convert(markdown));
     }
     String codeBlock = markdown.substring(
       codeStartIndex + codeMarker.length,

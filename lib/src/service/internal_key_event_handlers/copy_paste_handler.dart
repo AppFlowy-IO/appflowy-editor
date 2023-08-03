@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
 import 'package:flutter/widgets.dart';
 
 int _textLengthOfNode(Node node) => node.delta?.length ?? 0;
@@ -9,15 +10,27 @@ void _pasteSingleLine(
   String line,
 ) {
   assert(selection.isCollapsed);
+
+  final markdownDecoder = DocumentMarkdownDecoder();
+  final transaction = editorState.transaction;
   final node = editorState.getNodeAtPath(selection.end.path)!;
-  final transaction = editorState.transaction
-    ..insertText(node, selection.startIndex, line)
-    ..afterSelection = (Selection.collapsed(
-      Position(
-        path: selection.end.path,
-        offset: selection.startIndex + line.length,
-      ),
-    ));
+
+  if (markdownDecoder.linkRegExp.hasMatch(line)) {
+    final delta = markdownDecoder.deltaFromLineWithLinks(line, node.delta);
+    transaction.insertNode(
+      node.path,
+      paragraphNode(delta: delta),
+    );
+  } else {
+    transaction.insertText(node, selection.startIndex, line);
+  }
+
+  transaction.afterSelection = Selection.collapsed(
+    Position(
+      path: selection.end.path,
+      offset: selection.startIndex + line.length,
+    ),
+  );
   editorState.apply(transaction);
 }
 

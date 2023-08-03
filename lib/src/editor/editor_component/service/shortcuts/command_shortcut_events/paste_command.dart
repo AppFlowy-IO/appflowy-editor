@@ -95,7 +95,7 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     if (html != null && html.isNotEmpty) {
       pasteHTML(editorState, html);
     } else if (text != null && text.isNotEmpty) {
-      handlePastePlainText(editorState, data.text!);
+      handlePastePlainText(editorState, text);
     }
   }();
 
