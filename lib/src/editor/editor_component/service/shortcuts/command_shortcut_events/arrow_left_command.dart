@@ -75,9 +75,39 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+
   if (isRTL(editorState)) {
+    var endOfWord = selection.end.moveHorizontal(
+      editorState,
+      forward: false,
+      selectionRange: SelectionRange.word,
+    );
+    final selectedLine = delta?.toPlainText();
+    final selectedWord = selectedLine?.substring(
+      selection.end.offset,
+      endOfWord?.offset,
+    );
+    // check if the selected word is whitespace
+    if (selectedWord!.trim().isEmpty) {
+      editorState.moveCursorBackward(SelectionMoveRange.word);
+    }
     editorState.moveCursorBackward(SelectionMoveRange.word);
   } else {
+    var startOfWord = selection.end.moveHorizontal(
+      editorState,
+      selectionRange: SelectionRange.word,
+    );
+    final selectedWord = delta?.toPlainText().substring(
+          startOfWord!.offset,
+          selection.end.offset,
+        );
+    // check if the selected word is whitespace
+    if (selectedWord!.trim().isEmpty) {
+      editorState.moveCursorForward(SelectionMoveRange.word);
+    }
     editorState.moveCursorForward(SelectionMoveRange.word);
   }
   return KeyEventResult.handled;
