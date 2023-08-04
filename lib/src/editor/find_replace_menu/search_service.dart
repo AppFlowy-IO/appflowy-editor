@@ -65,7 +65,7 @@ class SearchService {
       );
     }
 
-    selectedIndex = 0;
+    selectedIndex = -1;
   }
 
   List<Node> _getAllTextNodes() {
@@ -153,14 +153,16 @@ class SearchService {
 
     //lets change the highlight color to indicate that the current match is
     //not selected.
-    final currentMatch = matchedPositions[selectedIndex];
-    Position end = Position(
-      path: currentMatch.path,
-      offset: currentMatch.offset + queriedPattern.length,
-    );
+    if (selectedIndex > -1) {
+      final currentMatch = matchedPositions[selectedIndex];
+      Position end = Position(
+        path: currentMatch.path,
+        offset: currentMatch.offset + queriedPattern.length,
+      );
 
-    final selection = Selection(start: currentMatch, end: end);
-    _applySelectedHighlightColor(selection);
+      final selection = Selection(start: currentMatch, end: end);
+      _applySelectedHighlightColor(selection);
+    }
 
     if (moveUp) {
       selectedIndex =
