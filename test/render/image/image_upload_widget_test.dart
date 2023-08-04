@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../new/infra/testable_editor.dart';
 
 void main() {

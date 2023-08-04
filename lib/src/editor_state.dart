@@ -1,9 +1,9 @@
 import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:appflowy_editor/src/history/undo_manager.dart';
 
 class ApplyOptions {
   /// This flag indicates that
@@ -274,11 +274,41 @@ class EditorState {
         startNode: startNode,
         endNode: endNode,
       ).toList();
+
       return selection.isForward ? nodes.reversed.toList() : nodes;
     }
 
     // If we don't have both nodes, we can't find the nodes in the selection.
     return [];
+  }
+
+  List<Node> getSelectedNodes([
+    Selection? selection,
+  ]) {
+    final List<Node> res = [];
+    selection ??= this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return res;
+    }
+    final nodes = getNodesInSelection(selection);
+    for (final node in nodes) {
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      final startIndex = node == nodes.first ? selection.startIndex : 0;
+      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
+      res.add(
+        node.copyWith(
+          attributes: {
+            ...node.attributes,
+            blockComponentDelta: delta.slice(startIndex, endIndex).toJson()
+          },
+        ),
+      );
+    }
+
+    return res;
   }
 
   Node? getNodeAtPath(Path path) {

@@ -193,6 +193,58 @@ void main() async {
         }
       },
       {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert": " list item 1"
+            }
+          ]
+        }
+      },
+      {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert": " list item 2"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "1 list item 1"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "2 list item 2"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
           "type": "paragraph",
             "data": {
                 "delta": [
@@ -363,6 +415,12 @@ You can also use ***AppFlowy Editor*** as a component to build your own app.
 * Select text to trigger to the toolbar to format your notes.
 
 If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!
+
+1. list item 1
+2. list item 2
+
+1 list item 1
+2 list item 2
 
 [Example file.pdf](path/to/file.pdf)
 
