@@ -11,63 +11,23 @@ void main() async {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  group('markdown_commands.dart', () {
-    testWidgets('Presses Command + B to update text style', (tester) async {
-      await _testUpdateTextStyleByCommandX(
-        tester,
-        BuiltInAttributeKey.bold,
-        true,
-        LogicalKeyboardKey.keyB,
-      );
-    });
-
-    testWidgets('Presses Command + I to update text style', (tester) async {
-      await _testUpdateTextStyleByCommandX(
-        tester,
-        BuiltInAttributeKey.italic,
-        true,
-        LogicalKeyboardKey.keyI,
-      );
-    });
-
-    testWidgets('Presses Command + U to update text style', (tester) async {
-      await _testUpdateTextStyleByCommandX(
-        tester,
-        BuiltInAttributeKey.underline,
-        true,
-        LogicalKeyboardKey.keyU,
-      );
-    });
-
-    testWidgets('Presses Command + Shift + S to update text style',
+  group('toggle_color_commands.dart', () {
+    testWidgets('Presses Command + Shift + H to update text style - highlight',
         (tester) async {
-      await _testUpdateTextStyleByCommandX(
+      await _testUpdateTextColorByCommandX(
         tester,
-        BuiltInAttributeKey.strikethrough,
-        true,
-        LogicalKeyboardKey.keyS,
-      );
-    });
-
-    testWidgets('Presses Command + E to update text style', (tester) async {
-      await _testUpdateTextStyleByCommandX(
-        tester,
-        BuiltInAttributeKey.code,
-        true,
-        LogicalKeyboardKey.keyE,
+        AppFlowyRichTextKeys.highlightColor,
+        LogicalKeyboardKey.keyH,
       );
     });
   });
 }
 
-Future<void> _testUpdateTextStyleByCommandX(
+Future<void> _testUpdateTextColorByCommandX(
   WidgetTester tester,
   String matchStyle,
-  dynamic matchValue,
   LogicalKeyboardKey key,
 ) async {
-  final isShiftPressed =
-      key == LogicalKeyboardKey.keyS || key == LogicalKeyboardKey.keyH;
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor..addParagraphs(3, initialText: text);
   await editor.startTesting();
@@ -80,17 +40,16 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
-    isShiftPressed: isShiftPressed,
+    isShiftPressed: true,
     isMetaPressed: Platform.isMacOS,
     isControlPressed: Platform.isWindows || Platform.isLinux,
   );
-
   var node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta
           .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] == matchValue);
+          .every((element) => element.attributes?[matchStyle] != null);
     }),
     true,
   );
@@ -103,7 +62,7 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
-    isShiftPressed: isShiftPressed,
+    isShiftPressed: true,
     isMetaPressed: Platform.isMacOS,
     isControlPressed: Platform.isWindows || Platform.isLinux,
   );
@@ -112,7 +71,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta
           .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] == matchValue);
+          .every((element) => element.attributes?[matchStyle] != null);
     }),
     true,
   );
@@ -121,7 +80,7 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
-    isShiftPressed: isShiftPressed,
+    isShiftPressed: true,
     isMetaPressed: Platform.isMacOS,
     isControlPressed: Platform.isWindows || Platform.isLinux,
   );
@@ -130,7 +89,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta
           .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] != matchValue);
+          .every((element) => element.attributes?[matchStyle] == null);
     }),
     true,
   );
@@ -141,7 +100,7 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
-    isShiftPressed: isShiftPressed,
+    isShiftPressed: true,
     isMetaPressed: Platform.isMacOS,
     isControlPressed: Platform.isWindows || Platform.isLinux,
   );
@@ -152,7 +111,7 @@ Future<void> _testUpdateTextStyleByCommandX(
       node.allSatisfyInSelection(selection, (delta) {
         return delta
             .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] == matchValue);
+            .every((element) => element.attributes?[matchStyle] != null);
       }),
       true,
     );
@@ -161,7 +120,7 @@ Future<void> _testUpdateTextStyleByCommandX(
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
-    isShiftPressed: isShiftPressed,
+    isShiftPressed: true,
     isMetaPressed: Platform.isMacOS,
     isControlPressed: Platform.isWindows || Platform.isLinux,
   );
@@ -172,7 +131,7 @@ Future<void> _testUpdateTextStyleByCommandX(
       node.allSatisfyInSelection(selection, (delta) {
         return delta
             .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] != matchValue);
+            .every((element) => element.attributes?[matchStyle] == null);
       }),
       true,
     );
