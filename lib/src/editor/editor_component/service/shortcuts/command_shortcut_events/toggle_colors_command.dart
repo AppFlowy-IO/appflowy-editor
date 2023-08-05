@@ -13,7 +13,7 @@ List<CommandShortcutEvent> toggleColorCommands({
   ToggleColorsStyle? style,
 }) =>
     [
-      toggleHighlightCommand(
+      customToggleHighlightCommand(
         style: style ?? ToggleColorsStyle(),
       ),
     ];
@@ -26,7 +26,17 @@ class ToggleColorsStyle {
   final Color highlightColor;
 }
 
-CommandShortcutEvent toggleHighlightCommand({
+final CommandShortcutEvent toggleHighlightCommand = CommandShortcutEvent(
+  key: 'toggle highlight',
+  command: 'ctrl+shift+h',
+  macOSCommand: 'cmd+shift+h',
+  handler: (editorState) => _toggleHighlight(
+    editorState,
+    style: ToggleColorsStyle(),
+  ),
+);
+
+CommandShortcutEvent customToggleHighlightCommand({
   required ToggleColorsStyle style,
 }) =>
     CommandShortcutEvent(
@@ -46,13 +56,13 @@ KeyEventResult _toggleHighlight(
   }
 
   final selection = editorState.selection;
-  if (selection == null) {
+  if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }
 
   //check if already highlighted
   final nodes = editorState.getNodesInSelection(selection);
-  final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
+  final isHighlighted = nodes.allSatisfyInSelection(selection, (delta) {
     return delta.everyAttributes(
       (attributes) => attributes[AppFlowyRichTextKeys.highlightColor] != null,
     );
@@ -62,7 +72,7 @@ KeyEventResult _toggleHighlight(
     selection,
     {
       AppFlowyRichTextKeys.highlightColor:
-          isHighlight ? null : style.highlightColor.toHex(),
+          isHighlighted ? null : style.highlightColor.toHex(),
     },
   );
 
