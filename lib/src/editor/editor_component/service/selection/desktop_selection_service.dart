@@ -1,9 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
@@ -358,7 +357,7 @@ class _DesktopSelectionServiceWidgetState
     );
     _selectionAreas.add(overlay);
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    Overlay.of(context).insertAll(_selectionAreas);
   }
 
   void _updateSelectionAreas(Selection selection) {
@@ -475,7 +474,7 @@ class _DesktopSelectionServiceWidgetState
     }
 
     final overlay = Overlay.of(context);
-    overlay?.insertAll(
+    overlay.insertAll(
       _selectionAreas,
     );
   }
@@ -510,7 +509,7 @@ class _DesktopSelectionServiceWidgetState
 
       _cursorAreas.add(cursorArea);
       selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
+      Overlay.of(context).insertAll(_cursorAreas);
 
       _forceShowCursor();
     }
@@ -541,7 +540,7 @@ class _DesktopSelectionServiceWidgetState
     );
 
     _contextMenuAreas.add(contextMenu);
-    Overlay.of(context)?.insert(contextMenu);
+    Overlay.of(context).insert(contextMenu);
   }
 
   Node? _getNodeInOffset(

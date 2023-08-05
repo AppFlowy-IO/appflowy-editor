@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/toolbar_service.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry, OverlayState;
+import 'package:flutter/material.dart';
 
 class EditorService {
   // selection service
