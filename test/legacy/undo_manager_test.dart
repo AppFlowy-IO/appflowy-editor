@@ -26,8 +26,9 @@ void main() async {
 
     final historyItem = HistoryItem();
     historyItem.add(DeleteOperation([0], [paragraphNode(text: '0')]));
-    historyItem
-        .add(UpdateOperation([0], {'subType': 'number'}, {'subType': null}));
+    historyItem.add(
+      const UpdateOperation([0], {'subType': 'number'}, {'subType': null}),
+    );
     historyItem.add(DeleteOperation([0], [paragraphNode(), paragraphNode()]));
     historyItem.add(DeleteOperation([0], [paragraphNode()]));
 
