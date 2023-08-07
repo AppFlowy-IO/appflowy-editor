@@ -5,6 +5,102 @@ import '../../new/util/util.dart';
 
 void main() async {
   group('transaction.dart', () {
+    test('set operations', () {
+      final document = Document.blank().addParagraphs(
+        4,
+        initialText: 'example',
+      );
+
+      final transaction = Transaction(document: document);
+
+      expect(transaction.operations.length, 0);
+
+      final node = Node(type: 'paragraph');
+      transaction.add(InsertOperation([0], [node]));
+
+      expect(transaction.operations.length, 1);
+
+      transaction.operations = [];
+      expect(transaction.operations.length, 0);
+    });
+
+    test('deleteNodes', () async {
+      final n1 = Node(type: 'paragraph-1');
+      final n2 = Node(type: 'paragraph-2');
+      final n3 = Node(type: 'paragraph-3');
+      final document = Document.blank()..insert([0], [n1, n2, n3]);
+
+      final editorState = EditorState(document: document);
+
+      expect(document.first!.type, 'paragraph-1');
+      expect(document.last!.type, 'paragraph-3');
+      expect(editorState.document.root.children.length, 3);
+
+      final transaction = editorState.transaction;
+      transaction.deleteNodes([n1, n3]);
+      await editorState.apply(transaction);
+
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.document.first!.type, 'paragraph-2');
+    });
+
+    test('moveNode', () async {
+      final n1 = Node(type: 'paragraph-1');
+      final n2 = Node(type: 'paragraph-2');
+      final n3 = Node(type: 'paragraph-3');
+      final document = Document.blank()..insert([0], [n1, n2, n3]);
+
+      final editorState = EditorState(document: document);
+
+      expect(document.first!.type, 'paragraph-1');
+      expect(document.last!.type, 'paragraph-3');
+      expect(editorState.document.root.children.length, 3);
+
+      final transaction = editorState.transaction;
+      transaction.moveNode([0], n3);
+      await editorState.apply(transaction);
+
+      expect(editorState.document.first!.type, 'paragraph-3');
+      expect(editorState.document.last!.type, 'paragraph-2');
+    });
+
+    test('toJson', () {
+      final beforeSelection = Selection.collapsed(Position(path: [0]));
+      final afterSelection =
+          Selection.collapsed(Position(path: [0], offset: 'paragraph'.length));
+      final io = InsertOperation([0], [Node(type: 'paragraph')]);
+
+      final empty = {};
+
+      final withOperation = {
+        "operations": [
+          io.toJson(),
+        ]
+      };
+
+      final withAfterSelection = {
+        ...withOperation,
+        "after_selection": afterSelection.toJson(),
+      };
+
+      final withBeforeSelection = {
+        ...withAfterSelection,
+        "before_selection": beforeSelection.toJson(),
+      };
+
+      final transaction = Transaction(document: Document.blank());
+      expect(transaction.toJson(), empty);
+
+      transaction.add(io);
+      expect(transaction.toJson(), withOperation);
+
+      transaction.afterSelection = afterSelection;
+      expect(transaction.toJson(), withAfterSelection);
+
+      transaction.beforeSelection = beforeSelection;
+      expect(transaction.toJson(), withBeforeSelection);
+    });
+
     test('test replaceTexts, textNodes.length == texts.length', () async {
       final document = Document.blank().addParagraphs(
         4,
