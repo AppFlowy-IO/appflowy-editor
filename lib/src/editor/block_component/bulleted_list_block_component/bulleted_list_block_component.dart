@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/block_
 import 'package:flutter/material.dart';
 
 class BulletedListBlockKeys {
-  BulletedListBlockKeys._();
+  const BulletedListBlockKeys._();
 
   static const String type = 'bulleted_list';
 

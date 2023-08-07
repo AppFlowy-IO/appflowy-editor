@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'resizable_image.dart';
 
 class ImageBlockKeys {
-  ImageBlockKeys._();
+  const ImageBlockKeys._();
 
   static const String type = 'image';
 
