@@ -119,7 +119,7 @@ class Transaction {
     add(DeleteOperation(path, nodes));
   }
 
-  /// move the node
+  /// Moves a [Node] to the provided [Path]
   void moveNode(Path path, Node node) {
     deleteNode(node);
     insertNode(path, node, deepCopy: false);
@@ -571,21 +571,5 @@ extension TextTransaction on Transaction {
   void addDeltaToComposeMap(Node node, Delta delta) {
     markNeedsComposing = true;
     _composeMap.putIfAbsent(node, () => []).add(delta);
-  }
-}
-
-extension on Delta {
-  Attributes? sliceAttributes(int index) {
-    if (index <= 0) {
-      return null;
-    }
-    final attributes = slice(index - 1, index).first.attributes;
-    if (attributes == null ||
-        !attributes.keys.every(
-          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-        )) {
-      return null;
-    }
-    return attributes;
   }
 }
