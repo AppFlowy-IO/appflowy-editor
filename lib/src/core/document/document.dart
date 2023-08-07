@@ -2,16 +2,40 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// [Document] represents a AppFlowy Editor document structure.
+/// [Document] represents an AppFlowy Editor document structure.
 ///
 /// It stores the root of the document.
 ///
-/// DO NOT directly mutate the properties of a [Document] object.
+/// **DO NOT** directly mutate the properties of a [Document] object.
+///
 class Document {
   Document({
     required this.root,
   });
 
+  /// Constructs a [Document] from a JSON strcuture.
+  ///
+  /// _Example of a [Document] in JSON format:_
+  /// ```
+  /// {
+  ///   'document': {
+  ///     'type': 'page',
+  ///     'children': [
+  ///       {
+  ///         'type': 'paragraph',
+  ///         'data': {
+  ///           'delta': [
+  ///             { 'insert': 'Welcome ' },
+  ///             { 'insert': 'to ' },
+  ///             { 'insert': 'AppFlowy!' }
+  ///           ]
+  ///         }
+  ///       }
+  ///     ]
+  ///   }
+  /// }
+  /// ```
+  ///
   factory Document.fromJson(Map<String, dynamic> json) {
     assert(json['document'] is Map);
 
@@ -32,6 +56,11 @@ class Document {
     );
   }
 
+  /// Creates a blank [Document] containing an empty root [Node].
+  ///
+  /// If [withInitialText] is true, the document will contain an empty
+  /// paragraph [Node].
+  ///
   factory Document.blank({bool withInitialText = false}) {
     final root = Node(
       type: 'page',
@@ -42,12 +71,13 @@ class Document {
     );
   }
 
+  /// The root [Node] of the [Document]
   final Node root;
 
-  /// first node of the document.
+  /// First node of the document.
   Node? get first => root.children.first;
 
-  /// last node of the document.
+  /// Last node of the document.
   Node? get last {
     var last = root.children.last;
     while (last.children.isNotEmpty) {
@@ -133,6 +163,9 @@ class Document {
     return true;
   }
 
+  /// Returns whether the root [Node] does not contain
+  /// any text.
+  ///
   bool get isEmpty {
     if (root.children.isEmpty) {
       return true;
@@ -151,6 +184,8 @@ class Document {
     return false;
   }
 
+  /// Encodes the [Document] into a JSON structure.
+  ///
   Map<String, Object> toJson() {
     return {
       'document': root.toJson(),
