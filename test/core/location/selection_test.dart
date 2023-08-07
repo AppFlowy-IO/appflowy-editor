@@ -5,6 +5,25 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   group('selection.dart', () {
+    test('Selection.invalid', () {
+      final invalid = Selection.invalid();
+      final invalidPosition = Position.invalid();
+
+      expect(invalid, Selection(start: invalidPosition, end: invalidPosition));
+    });
+
+    test('Selection.toString()', () {
+      final selection = Selection(
+        start: Position(path: [0, 1], offset: 4),
+        end: Position(path: [1], offset: 8),
+      );
+
+      const str =
+          "start = path = [0, 1], offset = 4, end = path = [1], offset = 8";
+
+      expect(selection.toString(), str);
+    });
+
     test('test selection equality', () {
       final position = Position(path: [0, 1, 2], offset: 3);
       final selectionA = Selection(start: position, end: position);

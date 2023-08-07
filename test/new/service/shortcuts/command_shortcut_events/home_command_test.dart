@@ -23,10 +23,8 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse(
-        [0],
-        text.length,
-      );
+      final selection =
+          Selection.collapsed(Position(path: [0], offset: text.length));
       await editor.updateSelection(selection);
 
       await simulateKeyDownEvent(LogicalKeyboardKey.home);
@@ -51,10 +49,8 @@ void main() async {
 
       expect(editor.documentRootLen, 10);
 
-      final selection = Selection.collapse(
-        [5],
-        text.length,
-      );
+      final selection =
+          Selection.collapsed(Position(path: [5], offset: text.length));
       await editor.updateSelection(selection);
 
       await simulateKeyDownEvent(LogicalKeyboardKey.home);
@@ -85,10 +81,8 @@ void main() async {
           );
         await editor.startTesting();
 
-        final selection = Selection.collapse(
-          [0],
-          text.length,
-        );
+        final selection =
+            Selection.collapsed(Position(path: [0], offset: text.length));
         await editor.updateSelection(selection);
 
         await editor.pressKey(

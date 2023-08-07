@@ -38,7 +38,7 @@ void main() async {
           );
         await editor.startTesting();
 
-        final selection = Selection.collapse([0], 0);
+        final selection = Selection.collapsed(Position(path: [0]));
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -70,7 +70,8 @@ void main() async {
 
         // Welcome| to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection = Selection.collapse([0], welcome.length);
+        final selection =
+            Selection.collapsed(Position(path: [0], offset: welcome.length));
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -102,7 +103,9 @@ void main() async {
 
         // Welcome| to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection = Selection.collapse([0], welcome.length + 1);
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: welcome.length + 1),
+        );
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -134,7 +137,8 @@ void main() async {
           );
         await editor.startTesting();
 
-        final selection = Selection.collapse([0], text.length);
+        final selection =
+            Selection.collapsed(Position(path: [0], offset: text.length));
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -166,7 +170,7 @@ void main() async {
 
         // |Welcome to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection = Selection.collapse([0], 0);
+        final selection = Selection.collapsed(Position(path: [0]));
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -198,7 +202,8 @@ void main() async {
 
         // Welcome| to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection = Selection.collapse([0], welcome.length);
+        final selection =
+            Selection.collapsed(Position(path: [0], offset: welcome.length));
         await editor.updateSelection(selection);
 
         await editor.pressKey(

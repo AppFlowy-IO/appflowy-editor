@@ -50,7 +50,7 @@ Future<void> _testHandleCopyMultiplePaste(
 ) async {
   final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting();
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -93,7 +93,7 @@ Future<void> _testHandleCopyPaste(
 ) async {
   final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting(platform: TargetPlatform.windows);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -101,7 +101,7 @@ Future<void> _testHandleCopyPaste(
   );
   handleCopy(editor.editorState);
   deleteSelectedContent(editor.editorState);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyP,
     isControlPressed: Platform.isWindows || Platform.isLinux,

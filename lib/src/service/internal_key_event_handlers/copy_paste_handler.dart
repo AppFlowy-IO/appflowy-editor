@@ -49,10 +49,8 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   final offset = document.root.children.lastOrNull?.delta?.length ?? 0;
   transaction
     ..insertNodes(path, document.root.children)
-    ..afterSelection = Selection.collapse(
-      afterPath,
-      offset,
-    );
+    ..afterSelection =
+        Selection.collapsed(Position(path: afterPath, offset: offset));
   editorState.apply(transaction);
 }
 
