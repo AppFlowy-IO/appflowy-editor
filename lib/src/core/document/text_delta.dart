@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:flutter/services.dart';
 
+import '../../editor/block_component/rich_text/appflowy_rich_text_keys.dart';
+
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
 
@@ -438,6 +440,22 @@ class Delta extends Iterable<TextOperation> {
     }
 
     return operation;
+  }
+
+  Attributes? sliceAttributes(int index) {
+    if (index <= 0) {
+      return null;
+    }
+
+    final attributes = slice(index - 1, index).first.attributes;
+    if (attributes == null ||
+        !attributes.keys.every(
+          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+        )) {
+      return null;
+    }
+
+    return attributes;
   }
 }
 
