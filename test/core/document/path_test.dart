@@ -29,6 +29,7 @@ void main() async {
       expect(p2 <= p1, true);
       expect(p1.equals(p2), true);
     });
+
     test(
       "test path next, previous and parent getters",
       () {
@@ -67,5 +68,12 @@ void main() async {
         expect(p2.parent.equals(p1), false);
       },
     );
+  });
+
+  test('isParentOf', () {
+    const p1 = [1, 0, 1];
+    const p2 = [1, 0];
+
+    expect(p2.isParentOf(p1), true);
   });
 }
