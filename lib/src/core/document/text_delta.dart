@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
 
-abstract class TextOperation {
+sealed class TextOperation {
   Attributes? get attributes;
   int get length;
 
@@ -488,22 +488,18 @@ class _OpIterator {
     } else {
       _offset += length;
     }
-    if (nextOp is TextDelete) {
-      return TextDelete(length: length);
-    }
 
-    if (nextOp is TextRetain) {
-      return TextRetain(length, attributes: nextOp.attributes);
+    switch (nextOp) {
+      case TextDelete _:
+        return TextDelete(length: length);
+      case TextRetain _:
+        return TextRetain(length, attributes: nextOp.attributes);
+      case TextInsert _:
+        return TextInsert(
+          nextOp.text.substring(offset, offset + length),
+          attributes: nextOp.attributes,
+        );
     }
-
-    if (nextOp is TextInsert) {
-      return TextInsert(
-        nextOp.text.substring(offset, offset + length),
-        attributes: nextOp.attributes,
-      );
-    }
-
-    return TextRetain(_maxInt);
   }
 
   List<TextOperation> rest() {
