@@ -388,7 +388,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
 
-        await editor.updateSelection(Selection.collapse([0], 0));
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
         for (final c in text.characters) {
           await editor.ime.insertText(c);
         }
@@ -456,7 +456,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
 
-        await editor.updateSelection(Selection.collapse([0], 0));
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
         for (final c in text.characters) {
           await editor.ime.insertText(c);
         }
@@ -533,7 +533,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
 
-        await editor.updateSelection(Selection.collapse([0], 0));
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
         for (final c in text.characters) {
           await editor.ime.insertText(c);
         }
@@ -607,7 +607,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
 
-        await editor.updateSelection(Selection.collapse([0], 0));
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
         for (final c in text.characters) {
           await editor.ime.insertText(c);
         }

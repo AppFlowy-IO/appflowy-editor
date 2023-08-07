@@ -24,7 +24,7 @@ SelectionMenuItem dividerMenuItem = SelectionMenuItem(
     final transaction = editorState.transaction
       ..insertNode(insertedPath, dividerNode())
       ..insertNode(insertedPath, paragraphNode())
-      ..afterSelection = Selection.collapse(insertedPath.next, 0);
+      ..afterSelection = Selection.collapsed(Position(path: insertedPath.next));
     editorState.apply(transaction);
   },
 );

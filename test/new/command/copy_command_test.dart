@@ -42,7 +42,7 @@ Future<void> _testHandleCopy(
   final editor = tester.editor
     ..initializeWithDocument(Document.fromJson(paragraphdata));
   await editor.startTesting(platform: TargetPlatform.windows);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,

@@ -67,7 +67,7 @@ void main() async {
 
         await editor.startTesting();
 
-        final selection = Selection.collapse([1], 0);
+        final selection = Selection.collapsed(Position(path: [1]));
         await editor.updateSelection(selection);
         await editor.pressKey(key: LogicalKeyboardKey.tab);
 
@@ -85,7 +85,7 @@ void main() async {
 
         expect(
           editor.selection,
-          Selection.collapse([0, 1], 0),
+          Selection.collapsed(Position(path: [0, 1])),
         );
         expect(
           editor.nodeAtPath([0])!.type,

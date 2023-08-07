@@ -59,17 +59,13 @@ bool insertNodeAfterSelection(
     transaction
       ..insertNode(selection.end.path, node)
       ..deleteNode(currentNode)
-      ..afterSelection = Selection.collapse(
-        selection.end.path,
-        0,
-      );
+      ..afterSelection =
+          Selection.collapsed(Position(path: selection.end.path));
   } else {
     final next = selection.end.path.next;
     transaction
       ..insertNode(next, node)
-      ..afterSelection = Selection.collapsed(
-        Position(path: next, offset: 0),
-      );
+      ..afterSelection = Selection.collapsed(Position(path: next));
   }
 
   editorState.apply(transaction);

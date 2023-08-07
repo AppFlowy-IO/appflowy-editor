@@ -21,13 +21,11 @@ void main() async {
         (tester) async {
       final arrowLeftTest = ArrowTest(
         text: text,
-        initialSel: Selection.collapse(
-          [0],
-          text.length,
+        initialSel: Selection.collapsed(
+          Position(path: [0], offset: text.length),
         ),
-        expSel: Selection.collapse(
-          [0],
-          text.length,
+        expSel: Selection.collapsed(
+          Position(path: [0], offset: text.length),
         ),
       );
 
@@ -70,10 +68,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse(
-        [0],
-        0,
-      );
+      final selection = Selection.collapsed(Position(path: [0]));
       await editor.updateSelection(selection);
 
       // move the cursor to the ending of node 0
@@ -81,18 +76,24 @@ void main() async {
         await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
       }
-      expect(editor.selection, Selection.collapse([0], text.length));
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [0], offset: text.length)),
+      );
 
       // move the cursor to the beginning of node 1
       await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
-      expect(editor.selection, Selection.collapse([1], 0));
+      expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
       // move the cursor to the ending of node 1
       for (var i = 1; i < text.length; i++) {
         await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
       }
-      expect(editor.selection, Selection.collapse([1], text.length));
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [1], offset: text.length)),
+      );
 
       await editor.dispose();
     });
@@ -104,14 +105,8 @@ void main() async {
           decorator: (i, n) => n.updateAttributes({
             blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
-          initialSel: Selection.collapse(
-            [0],
-            0,
-          ),
-          expSel: Selection.collapse(
-            [0],
-            0,
-          ),
+          initialSel: Selection.collapsed(Position(path: [0])),
+          expSel: Selection.collapsed(Position(path: [0])),
         ),
         ArrowTest(
           text: 'به ویرایشگر Appflowy خوش آمدید 🔥!',
@@ -123,10 +118,7 @@ void main() async {
             startOffset: 0,
             endOffset: 'به ویرایشگ'.length,
           ),
-          expSel: Selection.collapse(
-            [0],
-            0,
-          ),
+          expSel: Selection.collapsed(Position(path: [0])),
         ),
       ];
 
@@ -152,7 +144,8 @@ void main() async {
       await editor.startTesting();
 
       const initialOffset = 'Welcom'.length;
-      final selection = Selection.collapse([0], initialOffset);
+      final selection =
+          Selection.collapsed(Position(path: [0], offset: initialOffset));
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -189,10 +182,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse(
-        [1],
-        0,
-      );
+      final selection = Selection.collapsed(Position(path: [1]));
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -202,11 +192,15 @@ void main() async {
       );
 
       const expectedOffset = 'Welcome'.length;
-      if (Platform.isMacOS) {
-        expect(editor.selection, Selection.collapse([1], text.length));
-      } else {
-        expect(editor.selection, Selection.collapse([1], expectedOffset));
-      }
+      final expectedPosition = Position(
+        path: [1],
+        offset: Platform.isMacOS ? text.length : expectedOffset,
+      );
+
+      expect(
+        editor.selection,
+        Selection.collapsed(expectedPosition),
+      );
 
       await editor.dispose();
     });
@@ -228,10 +222,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse(
-        [1],
-        0,
-      );
+      final selection = Selection.collapsed(Position(path: [1]));
       await editor.updateSelection(selection);
 
       await editor.pressKey(

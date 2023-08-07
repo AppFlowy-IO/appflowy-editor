@@ -26,7 +26,10 @@ void main() async {
       await editor.updateSelection(selection);
       await editor.ime.typeText('a');
 
-      expect(editor.selection, Selection.collapse([0], 1));
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [0], offset: 1)),
+      );
       expect(
         editor.nodeAtPath([0])!.delta!.toPlainText(),
         'a to AppFlowy Editor 🔥!',
@@ -58,7 +61,10 @@ void main() async {
 
       await editor.ime.typeText('a');
 
-      expect(editor.selection, Selection.collapse([0], welcomeLength + 1));
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [0], offset: welcomeLength + 1)),
+      );
       expect(
         editor.nodeAtPath([0])!.delta!.toPlainText(),
         'Welcomea to AppFlowy Editor 🔥!',

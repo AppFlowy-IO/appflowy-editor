@@ -10,7 +10,7 @@ void main() async {
     testWidgets('paste single line text', (tester) async {
       final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = 'Hello World!';
       AppFlowyClipboard.mockSetData(
@@ -27,7 +27,7 @@ void main() async {
     testWidgets('paste multiple lines text', (tester) async {
       final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = 'Hello World!';
       const texts = '''$text

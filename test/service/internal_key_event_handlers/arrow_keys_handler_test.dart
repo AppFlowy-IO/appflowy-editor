@@ -89,7 +89,7 @@ void main() async {
       );
     }
 
-    final selection = Selection.collapse([1], 7);
+    final selection = Selection.collapsed(Position(path: [1], offset: 7));
 
     // Welcome| to Appflowy
     await editor.updateSelection(
@@ -124,7 +124,7 @@ void main() async {
     final editor = tester.editor..addParagraphs(2, initialText: text);
     await editor.startTesting();
 
-    final selection = Selection.collapse([0], 0);
+    final selection = Selection.collapsed(Position(path: [0]));
     await editor.updateSelection(
       selection,
     );
@@ -133,10 +133,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        'Welcome'.length,
-      ),
+      Selection.collapsed(Position(path: [0], offset: 'Welcome'.length)),
     );
 
     await editor.pressKey(
@@ -146,10 +143,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        'Welcome to'.length,
-      ),
+      Selection.collapsed(Position(path: [0], offset: 'Welcome to'.length)),
     );
 
     await editor.pressKey(
@@ -159,10 +153,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        text.length,
-      ),
+      Selection.collapsed(Position(path: [0], offset: text.length)),
     );
 
     await editor.dispose();
@@ -176,7 +167,8 @@ void main() async {
     final editor = tester.editor..addParagraphs(2, initialText: text);
     await editor.startTesting();
 
-    final selection = Selection.collapse([0], text.length);
+    final selection =
+        Selection.collapsed(Position(path: [0], offset: text.length));
     await editor.updateSelection(
       selection,
     );
@@ -185,10 +177,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        11,
-      ),
+      Selection.collapsed(Position(path: [0], offset: 11)),
     );
 
     await editor.pressKey(
@@ -198,10 +187,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        8,
-      ),
+      Selection.collapsed(Position(path: [0], offset: 8)),
     );
 
     await editor.pressKey(
@@ -211,10 +197,7 @@ void main() async {
 
     expect(
       editor.selection,
-      Selection.collapse(
-        [0],
-        0,
-      ),
+      Selection.collapsed(Position(path: [0])),
     );
 
     await editor.dispose();

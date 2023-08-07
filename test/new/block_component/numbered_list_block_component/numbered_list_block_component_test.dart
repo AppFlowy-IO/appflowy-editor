@@ -56,7 +56,7 @@ void main() async {
       expect(find.text('100.', findRichText: true), findsOneWidget);
       expect(find.text('101.', findRichText: true), findsOneWidget);
 
-      final selection = Selection.collapse([0], 0);
+      final selection = Selection.collapsed(Position(path: [0]));
       await editor.updateSelection(selection);
 
       await editor.ime.typeText('1.');
@@ -101,7 +101,7 @@ void main() async {
       expect(find.text('100.', findRichText: true), findsOneWidget);
       expect(find.text('101.', findRichText: true), findsOneWidget);
 
-      final selection = Selection.collapse([1], 0);
+      final selection = Selection.collapsed(Position(path: [1]));
       await editor.updateSelection(selection);
 
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
