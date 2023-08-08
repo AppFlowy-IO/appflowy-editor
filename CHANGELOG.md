@@ -1,3 +1,19 @@
+## 1.2.3
+* feat: add edit link menu on mobile by @hyj1204 in ([#320](https://github.com/AppFlowy-IO/appflowy-editor/pull/320))
+* feat: html encode parser added by @alihassan143 in ([#314](https://github.com/AppFlowy-IO/appflowy-editor/pull/314))
+* feat: support scroll without animation by @LucasXu0 in ([#343](https://github.com/AppFlowy-IO/appflowy-editor/pull/343))
+* feat: expose context in nodeBuilder by @hyj1204 in ([#350](https://github.com/AppFlowy-IO/appflowy-editor/pull/350))
+* feat: paste plaintext shortcut by @MayurSMahajan in ([#338](https://github.com/AppFlowy-IO/appflowy-editor/pull/338))
+* fix: indent padding from left when rtl by @zoli in ([#318](https://github.com/AppFlowy-IO/appflowy-editor/pull/318))
+* fix: fixed numbered list being treated as a paragraph by @Mukund-Tandon in ([#335](https://github.com/AppFlowy-IO/appflowy-editor/pull/335))
+* fix: copy handler migrated to latest api by @alihassan143 in ([#240](https://github.com/AppFlowy-IO/appflowy-editor/pull/240))
+* fix: improve performance on editor overlays by @richardshiue in ([#336](https://github.com/AppFlowy-IO/appflowy-editor/pull/336))
+* fix: fixed the issue of code block not being exported in markdown by @Mukund-Tandon in ([#347](https://github.com/AppFlowy-IO/appflowy-editor/pull/347))
+* fix: fixed unresponsive behavior of context menu items by @Mukund-Tandon in ([#349](https://github.com/AppFlowy-IO/appflowy-editor/pull/349))
+* fix: selection reason should be ui event when clicking by @LucasXu0 in ([#359](https://github.com/AppFlowy-IO/appflowy-editor/pull/359))
+* fix: show selection menu at left by @zoli in([#361](https://github.com/AppFlowy-IO/appflowy-editor/pull/361))
+* fix: selection menu respect current node direction by @zoli in ([#359](https://github.com/AppFlowy-IO/appflowy-editor/pull/360))
+
 ## 1.2.2
 * chore: minor updates to documentation.
 
