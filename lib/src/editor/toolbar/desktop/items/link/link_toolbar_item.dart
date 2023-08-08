@@ -37,6 +37,15 @@ void showLinkMenu(
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
   final rect = editorState.selectionRects().first;
 
+  // get link address if the selection is already a link
+  String? linkText;
+  if (isHref) {
+    linkText = editorState.getDeltaAttributeValueInSelection(
+      BuiltInAttributeKey.href,
+      selection,
+    );
+  }
+
   // should abstract this logic to a method
   // ----
   final left = rect.left + 10;
@@ -45,7 +54,8 @@ void showLinkMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - 150;
+  final threshold =
+      editorOffset.dy + editorHeight - (linkText != null ? 244 : 150);
   if (offset.dy > threshold) {
     bottom = editorOffset.dy + editorHeight - rect.top - 5;
   } else {
@@ -61,14 +71,6 @@ void showLinkMenu(
   final index = selection.normalized.startIndex;
   final length = selection.length;
 
-  // get link address if the selection is already a link
-  String? linkText;
-  if (isHref) {
-    linkText = editorState.getDeltaAttributeValueInSelection(
-      BuiltInAttributeKey.href,
-      selection,
-    );
-  }
   OverlayEntry? overlay;
 
   void dismissOverlay() {

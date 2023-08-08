@@ -39,6 +39,6 @@ extension ColorExtension on String {
 
 extension HexExtension on Color {
   String toHex() {
-    return value.toRadixString(16);
+    return '0x${value.toRadixString(16)}';
   }
 }
