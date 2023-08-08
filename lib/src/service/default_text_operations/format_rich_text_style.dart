@@ -48,6 +48,11 @@ bool insertNodeAfterSelection(
   if (currentNode == null) {
     return false;
   }
+  node.updateAttributes({
+    blockComponentTextDirection:
+        currentNode.attributes[blockComponentTextDirection]
+  });
+
   final transaction = editorState.transaction;
   final delta = currentNode.delta;
   if (delta != null && delta.isEmpty) {
