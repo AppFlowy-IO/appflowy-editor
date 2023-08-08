@@ -54,7 +54,8 @@ void showLinkMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - (linkText != null ? 244 : 150);
+  final threshold =
+      editorOffset.dy + editorHeight - (linkText != null ? 244 : 150);
   if (offset.dy > threshold) {
     bottom = editorOffset.dy + editorHeight - rect.top - 5;
   } else {
