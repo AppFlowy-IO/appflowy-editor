@@ -690,7 +690,6 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   final initialSelection = Selection.single(path: [0], startOffset: 8);
   final selectionAtBeginning = Selection.single(path: [0], startOffset: 0);
   final selectionAtEnd = Selection.single(path: [0], startOffset: text.length);
-  final selectionAtEndOfWelcome = Selection.single(path: [0], startOffset: 7);
 
   Selection selection;
   if (isSingle) {
@@ -719,7 +718,23 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  expect(editor.selection, selectionAtBeginning);
+  if (Platform.isMacOS) {
+    expect(editor.selection, selectionAtBeginning);
+  } else if (isSingle) {
+    expect(editor.selection, initialSelection);
+  } else if (isBackward) {
+    expect(
+      editor.selection,
+      initialSelection.copyWith(end: Position(path: [0], offset: text.length)),
+    );
+  } else {
+    expect(
+      editor.selection,
+      initialSelection.copyWith(
+        start: Position(path: [0], offset: text.length),
+      ),
+    );
+  }
 
   await editor.updateSelection(selectionAtBeginning);
 
@@ -732,7 +747,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   if (Platform.isMacOS) {
     expect(editor.selection, selectionAtEnd);
   } else {
-    expect(editor.selection, selectionAtEndOfWelcome);
+    expect(editor.selection, selectionAtBeginning);
   }
 
   await editor.updateSelection(selectionAtEnd);
@@ -743,10 +758,17 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  expect(
-    editor.selection,
-    selectionAtBeginning,
-  );
+  if (Platform.isMacOS) {
+    expect(
+      editor.selection,
+      selectionAtBeginning,
+    );
+  } else {
+    expect(
+      editor.selection,
+      selectionAtEnd,
+    );
+  }
 
   await editor.pressKey(
     key: LogicalKeyboardKey.arrowDown,
@@ -754,10 +776,17 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  expect(
-    editor.selection,
-    Selection.single(path: [1], startOffset: text.length),
-  );
+  if (Platform.isMacOS) {
+    expect(
+      editor.selection,
+      Selection.single(path: [1], startOffset: text.length),
+    );
+  } else {
+    expect(
+      editor.selection,
+      selectionAtEnd,
+    );
+  }
 
   await editor.dispose();
 }
