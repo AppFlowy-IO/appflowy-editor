@@ -719,13 +719,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  if (Platform.isMacOS) {
-    expect(editor.selection, selectionAtBeginning);
-  } else if (isSingle) {
-    expect(editor.selection, selectionAtEndOfWelcome);
-  } else {
-    expect(editor.selection, initialSelection);
-  }
+  expect(editor.selection, selectionAtBeginning);
 
   await editor.updateSelection(selectionAtBeginning);
 
