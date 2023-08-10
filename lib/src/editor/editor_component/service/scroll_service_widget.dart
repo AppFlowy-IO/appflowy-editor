@@ -104,17 +104,28 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
-        editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
+        [SelectionUpdateReason.selectAll, SelectionUpdateReason.searchHighlight]
+            .contains(editorState.selectionUpdateReason)) {
       return;
     }
+
     final updateReason = editorState.selectionUpdateReason;
     final selectionType = editorState.selectionType;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
         return;
       }
+
       final endTouchPoint = selectionRect.last.centerRight;
+
+      if (editorState.selectionUpdateReason ==
+          SelectionUpdateReason.searchNavigate) {
+        scrollController.jumpTo(endTouchPoint.dy - 100);
+        return;
+      }
+
       if (selection.isCollapsed) {
         if (PlatformExtension.isMobile) {
           // soft keyboard
