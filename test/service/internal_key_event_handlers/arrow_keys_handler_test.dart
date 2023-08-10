@@ -690,6 +690,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   final initialSelection = Selection.single(path: [0], startOffset: 8);
   final selectionAtBeginning = Selection.single(path: [0], startOffset: 0);
   final selectionAtEnd = Selection.single(path: [0], startOffset: text.length);
+  final selectionAtEndOfWelcome = Selection.single(path: [0], startOffset: 7);
 
   Selection selection;
   if (isSingle) {
@@ -721,19 +722,11 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   if (Platform.isMacOS) {
     expect(editor.selection, selectionAtBeginning);
   } else if (isSingle) {
-    expect(editor.selection, initialSelection);
+    expect(editor.selection, selectionAtBeginning);
   } else if (isBackward) {
-    expect(
-      editor.selection,
-      initialSelection.copyWith(end: Position(path: [0], offset: text.length)),
-    );
+    expect(editor.selection, initialSelection);
   } else {
-    expect(
-      editor.selection,
-      initialSelection.copyWith(
-        start: Position(path: [0], offset: text.length),
-      ),
-    );
+    expect(editor.selection, selectionAtEndOfWelcome);
   }
 
   await editor.updateSelection(selectionAtBeginning);

@@ -80,7 +80,7 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
   final delta = node?.delta;
 
   if (isRTL(editorState)) {
-    var endOfWord = selection.end.moveHorizontal(
+    final endOfWord = selection.end.moveHorizontal(
       editorState,
       forward: false,
       selectionRange: SelectionRange.word,
@@ -96,7 +96,7 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
     }
     editorState.moveCursorBackward(SelectionMoveRange.word);
   } else {
-    var startOfWord = selection.end.moveHorizontal(
+    final startOfWord = selection.end.moveHorizontal(
       editorState,
       selectionRange: SelectionRange.word,
     );
