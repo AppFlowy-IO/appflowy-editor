@@ -40,7 +40,7 @@ Future<void> _testHandleCopy(
   WidgetTester tester,
 ) async {
   final editor = tester.editor
-    ..initializeWithDocment(Document.fromJson(paragraphdata));
+    ..initializeWithDocument(Document.fromJson(paragraphdata));
   await editor.startTesting(platform: TargetPlatform.windows);
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(

@@ -72,6 +72,7 @@ class _BackgroundColorOptionsWidgetsState
                   setState(() {
                     formatHighlightColor(
                       widget.editorState,
+                      widget.editorState.selection,
                       e.colorHex,
                     );
                   });

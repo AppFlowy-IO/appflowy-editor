@@ -131,9 +131,11 @@ class _DesktopSelectionServiceWidgetState
 
   void _updateSelection() {
     final selection = editorState.selection;
+
     // TODO: why do we need to check this?
     if (currentSelection.value == selection &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
+        [SelectionUpdateReason.uiEvent, SelectionUpdateReason.searchHighlight]
+            .contains(editorState.selectionUpdateReason) &&
         editorState.selectionType != SelectionType.block) {
       return;
     }
