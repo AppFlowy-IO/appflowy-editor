@@ -751,17 +751,10 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  if (Platform.isMacOS) {
-    expect(
-      editor.selection,
-      selectionAtBeginning,
-    );
-  } else {
-    expect(
-      editor.selection,
-      selectionAtBeginning,
-    );
-  }
+  expect(
+    editor.selection,
+    selectionAtBeginning,
+  );
 
   await editor.pressKey(
     key: LogicalKeyboardKey.arrowDown,
@@ -769,17 +762,10 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
     isMetaPressed: Platform.isMacOS,
   );
 
-  if (Platform.isMacOS) {
-    expect(
-      editor.selection,
-      Selection.single(path: [1], startOffset: text.length),
-    );
-  } else {
-    expect(
-      editor.selection,
-      selectionAtEnd,
-    );
-  }
+  expect(
+    editor.selection,
+    Selection.single(path: [1], startOffset: text.length),
+  );
 
   await editor.dispose();
 }
