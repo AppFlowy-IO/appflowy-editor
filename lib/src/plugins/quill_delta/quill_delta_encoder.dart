@@ -63,6 +63,10 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
       }
     }
 
+    if (index == 0) {
+      document.insert([index], [node]);
+    }
+
     return document;
   }
 

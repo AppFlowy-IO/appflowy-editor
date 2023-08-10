@@ -5,10 +5,21 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   group('delta_document_encoder.dart', () {
-    test('', () {
+    test('built-in json', () {
       final json = jsonDecode(quillDeltaSample.replaceAll('\\\\\n', '\\n'));
       final document = quillDeltaEncoder.convert(Delta.fromJson(json));
       expect(jsonEncode(document.toJson()), documentSample);
+    });
+
+    test('issues 356', () {
+      const plainText =
+          'How many digits are there in the smallest number which is composed entirely of fives (e.g.5555) and which is divisible by 99?';
+      final json = jsonDecode(
+        '[{"insert": "$plainText"}]',
+      );
+      final document = quillDeltaEncoder.convert(Delta.fromJson(json));
+      expect(document.root.children.length, 1);
+      expect(document.nodeAtPath([0])!.delta!.toPlainText(), plainText);
     });
   });
 }
