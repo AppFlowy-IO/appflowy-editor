@@ -123,7 +123,6 @@ Future<void> _testSameNodeCopyPaste(
   await editor.dispose();
 }
 
-<<<<<<< HEAD
 // Future<void> _testNestedNodeCopyPaste(
 //   WidgetTester tester,
 //   Document document,
@@ -136,20 +135,6 @@ Future<void> _testSameNodeCopyPaste(
 //     isControlPressed: Platform.isWindows || Platform.isLinux,
 //     isMetaPressed: Platform.isMacOS,
 //   );
-=======
-Future<void> _testNestedNodeCopyPaste(
-  WidgetTester tester,
-  Document document,
-) async {
-  final editor = tester.editor..initializeWithDocment(document);
-  await editor.startTesting();
-  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-  await editor.pressKey(
-    key: LogicalKeyboardKey.keyA,
-    isControlPressed: Platform.isWindows || Platform.isLinux,
-    isMetaPressed: Platform.isMacOS,
-  );
->>>>>>> 58b56fa (chore: deprecate Selection.collapse + coverage for selection.dart)
 
 //   await editor.updateSelection(
 //     Selection(
