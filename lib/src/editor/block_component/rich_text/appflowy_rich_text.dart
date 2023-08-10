@@ -302,6 +302,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             TextStyle(backgroundColor: attributes.backgroundColor),
           );
         }
+        if (attributes.findBackgroundColor != null) {
+          textStyle = textStyle.combine(
+            TextStyle(backgroundColor: attributes.findBackgroundColor),
+          );
+        }
         if (attributes.color != null) {
           textStyle = textStyle.combine(
             TextStyle(color: attributes.color),
@@ -405,6 +410,12 @@ extension AppFlowyRichTextAttributes on Attributes {
   Color? get backgroundColor {
     final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
     return highlightColor?.toColor();
+  }
+
+  Color? get findBackgroundColor {
+    final findBackgroundColor =
+        this[AppFlowyRichTextKeys.findBackgroundColor] as String?;
+    return findBackgroundColor?.toColor();
   }
 
   String? get href {

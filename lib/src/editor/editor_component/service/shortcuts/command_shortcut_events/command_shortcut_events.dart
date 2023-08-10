@@ -14,6 +14,7 @@ export 'page_down_command.dart';
 export 'page_up_command.dart';
 export 'paste_command.dart';
 export 'remove_word_command.dart';
+export 'find_replace_command.dart';
 export 'select_all_command.dart';
 export 'show_link_menu_command.dart';
 export 'undo_redo_command.dart';

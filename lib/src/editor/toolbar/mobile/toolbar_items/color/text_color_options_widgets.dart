@@ -70,6 +70,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
                   setState(() {
                     formatFontColor(
                       widget.editorState,
+                      widget.editorState.selection,
                       e.colorHex,
                     );
                   });

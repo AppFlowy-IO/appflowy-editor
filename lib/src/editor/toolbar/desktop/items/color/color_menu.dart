@@ -52,10 +52,12 @@ void showColorMenu(
           isTextColor
               ? formatFontColor(
                   editorState,
+                  editorState.selection,
                   color,
                 )
               : formatHighlightColor(
                   editorState,
+                  editorState.selection,
                   color,
                 );
           dismissOverlay();
