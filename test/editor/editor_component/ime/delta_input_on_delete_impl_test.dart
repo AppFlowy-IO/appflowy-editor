@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_in
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../new/util/util.dart';
+import '../../../new/util/util.dart';
 
 void main() {
   group('DeltaInputOnDelete', () {
