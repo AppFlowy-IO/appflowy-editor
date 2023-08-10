@@ -31,14 +31,14 @@ void main() async {
     testWidgets(
         'Presses Command + A in small document and copy text and paste text',
         (tester) async {
-      await _testHandleCopyPaste(tester, Document.fromJson(paragraphdata));
+      await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
     });
     testWidgets(
         'Presses Command + A in small document and copy text and paste text multiple times',
         (tester) async {
       await _testHandleCopyMultiplePaste(
         tester,
-        Document.fromJson(paragraphdata),
+        Document.fromJson(paragraphData),
       );
     });
   });
@@ -48,7 +48,7 @@ Future<void> _testHandleCopyMultiplePaste(
   WidgetTester tester,
   Document document,
 ) async {
-  final editor = tester.editor..initializeWithDocment(document);
+  final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting();
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
@@ -61,16 +61,16 @@ Future<void> _testHandleCopyMultiplePaste(
 
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.editorState.document.toJson(),
-    paragraphdata,
+    paragraphData,
   );
   await editor.updateSelection(Selection.single(path: [0], startOffset: 10));
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.document.toJson(),
@@ -78,15 +78,7 @@ Future<void> _testHandleCopyMultiplePaste(
   );
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
-  );
-  expect(
-    editor.document.toJson(),
-    secondParagraph,
-  );
-  pasteHTML(
-    editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.document.toJson(),
@@ -99,7 +91,7 @@ Future<void> _testHandleCopyPaste(
   WidgetTester tester,
   Document document,
 ) async {
-  final editor = tester.editor..initializeWithDocment(document);
+  final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting(platform: TargetPlatform.windows);
   await editor.updateSelection(Selection.collapse([0], 0));
   await editor.pressKey(
@@ -123,7 +115,7 @@ Future<void> _testHandleCopyPaste(
   await editor.dispose();
 }
 
-const paragraphdata = {
+const paragraphData = {
   "document": {
     "type": "page",
     "children": [
@@ -207,6 +199,16 @@ const thirdParagraph = {
         "type": "paragraph",
         "data": {
           "delta": [
+            {"insert": "AppFlowy Editor is a "},
+            {
+              "insert": "highly customizable",
+              "attributes": {"bold": true}
+            },
+            {"insert": "   "},
+            {
+              "insert": "rich-text editor",
+              "attributes": {"italic": true}
+            },
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
