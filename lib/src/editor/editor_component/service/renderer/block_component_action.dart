@@ -51,7 +51,7 @@ class BlockComponentActionList extends StatelessWidget {
             Icons.add,
             size: 18,
           ),
-          onTap: () {},
+          onTap: onTapAdd,
         ),
         const SizedBox(
           width: 5,
@@ -61,7 +61,7 @@ class BlockComponentActionList extends StatelessWidget {
             Icons.apps,
             size: 18,
           ),
-          onTap: () {},
+          onTap: onTapOption,
         ),
       ],
     );

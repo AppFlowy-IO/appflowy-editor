@@ -65,14 +65,15 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     return AutoScrollableWidget(
       shrinkWrap: widget.shrinkWrap,
       scrollController: scrollController,
-      builder: ((context, autoScroller) {
+      builder: (context, autoScroller) {
         if (PlatformExtension.isDesktopOrWeb) {
           return _buildDesktopScrollService(context, autoScroller);
         } else if (PlatformExtension.isMobile) {
           return _buildMobileScrollService(context, autoScroller);
         }
+
         throw UnimplementedError();
-      }),
+      },
     );
   }
 
