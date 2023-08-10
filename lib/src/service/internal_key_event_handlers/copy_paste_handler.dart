@@ -84,17 +84,31 @@ void pasteHTML(EditorState editorState, String html) {
   }
 
   Log.keyboard.debug('paste html: $html');
-  final htmltoNodes = htmlToDocument(html);
 
-  if (htmltoNodes.isEmpty) {
+  final htmlToNodes = htmlToDocument(html).root.children.where((element) {
+    final delta = element.delta;
+    if (delta == null) {
+      return true;
+    }
+    return delta.isNotEmpty;
+  });
+  if (htmlToNodes.isEmpty) {
     return;
   }
 
-  _pasteMultipleLinesInText(
-    editorState,
-    selection.start.offset,
-    htmltoNodes.root.children.toList(),
-  );
+  if (htmlToNodes.length == 1) {
+    _pasteSingleLineInText(
+      editorState,
+      selection.startIndex,
+      htmlToNodes.first,
+    );
+  } else {
+    _pasteMultipleLinesInText(
+      editorState,
+      selection.start.offset,
+      htmlToNodes.toList(),
+    );
+  }
 }
 
 Selection _computeSelectionAfterPasteMultipleNodes(
@@ -135,6 +149,38 @@ void handleCopy(EditorState editorState) async {
   );
 }
 
+void _pasteSingleLineInText(
+  EditorState editorState,
+  int offset,
+  Node insertedNode,
+) {
+  final transaction = editorState.transaction;
+  final selection = editorState.selection;
+  if (selection == null || !selection.isCollapsed) {
+    return;
+  }
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+  if (node == null || delta == null) {
+    return;
+  }
+  final insertedDelta = insertedNode.delta;
+  if (delta.isEmpty || insertedDelta == null) {
+    transaction.insertNode(selection.end.path.next, insertedNode);
+    transaction.deleteNode(node);
+    final length = insertedNode.delta?.length ?? 0;
+    transaction.afterSelection = Selection.collapse(selection.end.path, length);
+    editorState.apply(transaction);
+  } else {
+    transaction.insertTextDelta(
+      node,
+      offset,
+      insertedDelta,
+    );
+    editorState.apply(transaction);
+  }
+}
+
 void _pasteMultipleLinesInText(
   EditorState editorState,
   int offset,
@@ -154,39 +200,40 @@ void _pasteMultipleLinesInText(
       editorState.apply(transaction);
     }
 
-    final (firstnode, afternode) = sliceNode(node, offset);
+    final (firstNode, afterNode) = sliceNode(node, offset);
     if (nodes.length == 1 && nodes.first.type == node.type) {
       transaction.deleteNode(node);
-      final List<dynamic> newdelta = firstnode.delta != null
-          ? firstnode.delta!.toJson()
+      final List<dynamic> newDelta = firstNode.delta != null
+          ? firstNode.delta!.toJson()
           : Delta().toJson();
-      final List<Node> childrens = [];
-      childrens.addAll(firstnode.children);
+      final List<Node> children = [];
+      children.addAll(firstNode.children);
 
       if (nodes.first.delta != null &&
           nodes.first.delta != null &&
           nodes.first.delta!.isNotEmpty) {
-        newdelta.addAll(nodes.first.delta!.toJson());
-        childrens.addAll(nodes.first.children);
+        newDelta.addAll(nodes.first.delta!.toJson());
+        children.addAll(nodes.first.children);
       }
-      if (afternode != null &&
-          afternode.delta != null &&
-          afternode.delta!.isNotEmpty) {
-        newdelta.addAll(afternode.delta!.toJson());
-        childrens.addAll(afternode.children);
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty) {
+        newDelta.addAll(afterNode.delta!.toJson());
+        children.addAll(afterNode.children);
       }
 
       transaction.insertNodes(afterSelection.end.path, [
         Node(
-          type: firstnode.type,
-          children: childrens,
-          attributes: firstnode.attributes
+          type: firstNode.type,
+          children: children,
+          attributes: firstNode.attributes
             ..remove(ParagraphBlockKeys.delta)
             ..addAll(
-              {ParagraphBlockKeys.delta: Delta.fromJson(newdelta).toJson()},
+              {ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson()},
             ),
         )
       ]);
+      transaction.afterSelection = afterSelection;
       editorState.apply(transaction);
       return;
     }
@@ -195,13 +242,14 @@ void _pasteMultipleLinesInText(
     transaction.insertNodes([
       path.first + 1
     ], [
-      firstnode,
+      firstNode,
       ...nodes,
-      if (afternode != null &&
-          afternode.delta != null &&
-          afternode.delta!.isNotEmpty)
-        afternode,
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty)
+        afterNode,
     ]);
+    transaction.afterSelection = afterSelection;
     editorState.apply(transaction);
     return;
   }

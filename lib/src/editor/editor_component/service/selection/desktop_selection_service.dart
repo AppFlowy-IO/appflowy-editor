@@ -123,7 +123,10 @@ class _DesktopSelectionServiceWidgetState
     }
 
     currentSelection.value = selection;
-    editorState.selection = selection;
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
   }
 
   void _updateSelection() {
@@ -241,16 +244,18 @@ class _DesktopSelectionServiceWidgetState
       clearSelection();
       return;
     }
-    if (selectable.cursorStyle == CursorStyle.verticalLine) {
-      editorState.selection = Selection.collapsed(
-        selectable.getPositionInOffset(offset),
-      );
-    } else {
-      editorState.selection = Selection(
-        start: selectable.start(),
-        end: selectable.end(),
-      );
-    }
+    final selection = selectable.cursorStyle == CursorStyle.verticalLine
+        ? Selection.collapsed(
+            selectable.getPositionInOffset(offset),
+          )
+        : Selection(
+            start: selectable.start(),
+            end: selectable.end(),
+          );
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
