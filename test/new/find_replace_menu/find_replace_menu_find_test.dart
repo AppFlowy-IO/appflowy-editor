@@ -17,9 +17,9 @@ void main() async {
     testWidgets('appears properly', (tester) async {
       await prepareFindAndReplaceDialog(tester);
 
-      //the prepareFindDialog method only checks if FindMenuWidget is present
-      //so here we also check if FindMenuWidget contains TextField
-      //and IconButtons or not.
+      // The prepareFindDialog method only checks if FindMenuWidget is present
+      // so here we also check if FindMenuWidget contains TextField
+      // and IconButtons or not.
       expect(find.byType(TextField), findsOneWidget);
       expect(find.byType(IconButton), findsAtLeastNWidgets(4));
 
@@ -29,7 +29,7 @@ void main() async {
     testWidgets('disappears when close is called', (tester) async {
       await prepareFindAndReplaceDialog(tester);
 
-      //lets check if find menu disappears if the close button is tapped.
+      // Check if find menu disappears if the close button is tapped.
       await tester.tap(find.byKey(const Key('closeButton')));
       await tester.pumpAndSettle();
 
@@ -42,17 +42,17 @@ void main() async {
 
     testWidgets('does not highlight anything when empty string searched',
         (tester) async {
-      //we expect nothing to be highlighted
+      // We expect nothing to be highlighted
       await _prepareFindAndInputPattern(tester, '', true);
     });
 
     testWidgets('works properly when match is not found', (tester) async {
-      //we expect nothing to be highlighted
+      // We expect nothing to be highlighted
       await _prepareFindAndInputPattern(tester, 'Flutter', true);
     });
 
     testWidgets('highlights properly when match is found', (tester) async {
-      //we expect something to be highlighted
+      // We expect something to be highlighted
       await _prepareFindAndInputPattern(tester, 'Welcome', false);
     });
 
@@ -73,16 +73,16 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      //checking if current selection consists an occurance of matched pattern.
+      // Checking if current selection consists an occurance of matched pattern.
       final selection =
           editor.editorState.service.selectionService.currentSelection.value;
 
-      //we expect the second occurance of the pattern to be found and selected,
-      //this is because we send a testTextInput.receiveAction(TextInputAction.done)
-      //event during submitting our text input, thus the second match is selected.
+      // We expect the first occurance of the pattern to be found and selected,
+      // this is because we send a testTextInput.receiveAction(TextInputAction.done)
+      // event during submitting our text input, thus the second match is selected.
       expect(selection != null, true);
-      expect(selection!.start, Position(path: [1], offset: 0));
-      expect(selection.end, Position(path: [1], offset: pattern.length));
+      expect(selection!.start, Position(path: [0], offset: 0));
+      expect(selection.end, Position(path: [0], offset: pattern.length));
 
       await editor.dispose();
     });
@@ -107,42 +107,36 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      //this will call naviateToMatch and select the second match
+      // This will call naviateToMatch and select the first match
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
       );
 
-      //checking if current selection consists an occurance of matched pattern.
-      //we expect the second occurance of the pattern to be found and selected
-      checkCurrentSelection(editor, [1], 0, pattern.length);
-
-      //now pressing the icon button for previous match should select
-      //node at path [0].
-      await tester.tap(find.byKey(previousBtnKey));
-      await tester.pumpAndSettle();
-
+      // Checking if current selection consists an occurance of matched pattern.
+      // we expect the first occurance of the pattern to be found and selected
       checkCurrentSelection(editor, [0], 0, pattern.length);
 
-      //now pressing the icon button for previous match should select
-      //node at path [1], since there is no node before node at [0].
+      // Now pressing the icon button for previous match should select
+      // node at path [1].
       await tester.tap(find.byKey(previousBtnKey));
       await tester.pumpAndSettle();
 
       checkCurrentSelection(editor, [1], 0, pattern.length);
 
-      //now pressing the icon button for next match should select
-      //node at path[0], since there is no node after node at [1].
-      await tester.tap(find.byKey(nextBtnKey));
+      await tester.tap(find.byKey(previousBtnKey));
       await tester.pumpAndSettle();
 
       checkCurrentSelection(editor, [0], 0, pattern.length);
 
-      //now pressing the icon button for next match should select
-      //node at path [1].
       await tester.tap(find.byKey(nextBtnKey));
       await tester.pumpAndSettle();
 
       checkCurrentSelection(editor, [1], 0, pattern.length);
+
+      await tester.tap(find.byKey(nextBtnKey));
+      await tester.pumpAndSettle();
+
+      checkCurrentSelection(editor, [0], 0, pattern.length);
 
       await editor.dispose();
     });
@@ -172,27 +166,28 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      //this will call naviateToMatch and select the second match
+      // This will call naviateToMatch and select the first match
       await editor.pressKey(
         key: LogicalKeyboardKey.enter,
       );
 
-      //we expect the second occurance of the pattern to be found and selected
-      checkCurrentSelection(editor, [1], 0, pattern.length);
+      // We expect the first occurance of the pattern to be found and selected
+      checkCurrentSelection(editor, [0], 0, pattern.length);
 
-      // now lets check if the current selected match is highlighted properly
-      checkIfHighlightedWithProperColors(node1!, selection1, kSelectedHCHex);
-      // unselected matches are highlighted with different color
-      checkIfHighlightedWithProperColors(node2!, selection2, kUnselectedHCHex);
-      checkIfHighlightedWithProperColors(node0!, selection0, kUnselectedHCHex);
+      // Check if the current selected match is highlighted properly
+      checkIfHighlightedWithProperColors(node0!, selection1, kSelectedHCHex);
 
-      //press the icon button for previous match should select node at path [0]
+      // Unselected matches are highlighted with different color
+      checkIfHighlightedWithProperColors(node1!, selection2, kUnselectedHCHex);
+      checkIfHighlightedWithProperColors(node2!, selection0, kUnselectedHCHex);
+
+      // Press the icon button for previous match should select node at path [2] (last match)
       await tester.tap(find.byKey(previousBtnKey));
 
-      checkCurrentSelection(editor, [0], 0, pattern.length);
-      checkIfHighlightedWithProperColors(node0, selection0, kSelectedHCHex);
-      checkIfHighlightedWithProperColors(node1, selection1, kUnselectedHCHex);
-      checkIfHighlightedWithProperColors(node2, selection2, kUnselectedHCHex);
+      checkCurrentSelection(editor, [2], 0, pattern.length);
+      checkIfHighlightedWithProperColors(node2, selection0, kSelectedHCHex);
+      checkIfHighlightedWithProperColors(node0, selection1, kUnselectedHCHex);
+      checkIfHighlightedWithProperColors(node1, selection2, kUnselectedHCHex);
 
       await editor.dispose();
     });
@@ -227,17 +222,17 @@ void main() async {
       final node = editor.nodeAtPath([2]);
       expect(node, isNotNull);
 
-      //node is highlighted while menu is active
+      // Node is highlighted while menu is active
       checkIfNotHighlighted(node!, selection!, expectedResult: false);
 
-      //presses the close button
+      // Presses the close button
       await tester.tap(find.byKey(closeBtnKey));
       await tester.pumpAndSettle();
 
-      //closes the findMenuWidget
+      // Closes the findMenuWidget
       expect(find.byType(FindMenuWidget), findsNothing);
 
-      //we expect that the current selected node is NOT highlighted.
+      // We expect that the current selected node is NOT highlighted.
       checkIfNotHighlighted(node, selection, expectedResult: true);
 
       await editor.dispose();
@@ -264,24 +259,24 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      //since node at path [1] does not contain match, we expect it
-      //to be not highlighted.
+      // Since node at path [1] does not contain match, we expect it to not be highlighted.
       final selectionAtNode1 = Selection.single(
         path: [1],
         startOffset: 0,
         endOffset: textLine2.length,
       );
-      var node = editor.nodeAtPath([1]);
+
+      Node? node = editor.nodeAtPath([1]);
       expect(node, isNotNull);
 
-      //we expect that the current node at path 1 to be NOT highlighted.
+      // We expect that the current node at path 1 to be NOT highlighted.
       checkIfNotHighlighted(node!, selectionAtNode1, expectedResult: true);
 
-      //now we will change the pattern to Flutter and search it
+      // Change the pattern to Flutter and search
       pattern = 'Flutter';
       await enterInputIntoFindDialog(tester, pattern);
 
-      //we expect that the current selected node is highlighted.
+      // We expect that the current selected node is highlighted.
       checkIfNotHighlighted(node, selectionAtNode1, expectedResult: false);
 
       final selectionAtNode0 = Selection.single(
@@ -292,7 +287,7 @@ void main() async {
       node = editor.nodeAtPath([0]);
       expect(node, isNotNull);
 
-      //we expect that the current node at path 0 to be NOT highlighted.
+      // We expect that the current node at path 0 to be NOT highlighted.
       checkIfNotHighlighted(node!, selectionAtNode0, expectedResult: true);
 
       await editor.dispose();
@@ -318,14 +313,15 @@ Future<void> _prepareFindAndInputPattern(
   expect(find.byType(FindMenuWidget), findsOneWidget);
 
   await enterInputIntoFindDialog(tester, pattern);
-  //pressing enter should trigger the findAndHighlight method, which
-  //will find the pattern inside the editor.
+
+  // Pressing enter should trigger the findAndHighlight method, which
+  // will find the pattern inside the editor.
   await editor.pressKey(
     key: LogicalKeyboardKey.enter,
   );
 
-  //since the method will not select anything as searched pattern is
-  //empty, the current selection should be equal to previous selection.
+  // Since the method will not select anything as searched pattern is
+  // empty, the current selection should be equal to previous selection.
   final selection =
       Selection.single(path: [0], startOffset: 0, endOffset: text.length);
 

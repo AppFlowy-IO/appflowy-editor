@@ -17,10 +17,10 @@ void main() async {
     testWidgets('replace menu appears properly', (tester) async {
       await prepareFindAndReplaceDialog(tester, openReplace: true);
 
-      //the prepare method only checks if FindMenuWidget is present
-      //so here we also check if FindMenuWidget contains TextField
-      //and IconButtons or not.
-      //and whether there are two textfields for replace menu as well.
+      // The prepare method only checks if FindMenuWidget is present
+      // so here we also check if FindMenuWidget contains TextField
+      // and IconButtons or not.
+      // and whether there are two textfields for replace menu as well.
       expect(find.byType(TextField), findsNWidgets(2));
       expect(find.byType(IconButton), findsAtLeastNWidgets(6));
     });
@@ -165,17 +165,15 @@ void main() async {
       await tester.pumpAndSettle();
       expect(find.byType(FindMenuWidget), findsOneWidget);
 
-      //we put the pattern in the find dialog and press enter
+      // we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
-      //lets check after find operation, the second match is selected.
-      checkCurrentSelection(editor, [1], 0, patternToBeFound.length);
+      // lets check after find operation, the first match is selected.
+      checkCurrentSelection(editor, [0], 0, patternToBeFound.length);
 
-      //now we input some text into the replace text field and try to replace
+      // now we input some text into the replace text field and try to replace
       await enterInputIntoFindDialog(
         tester,
         replacePattern,
@@ -186,14 +184,14 @@ void main() async {
       );
       await tester.pumpAndSettle();
 
-      //only the node at path 2 should get replaced, all other nodes should stay as before.
-      final lastNode = editor.nodeAtPath([1]);
+      //only the node at path 0 should get replaced, all other nodes should stay as before.
+      final lastNode = editor.nodeAtPath([0]);
       expect(lastNode!.delta!.toPlainText(), expectedText);
 
-      final middleNode = editor.nodeAtPath([2]);
+      final middleNode = editor.nodeAtPath([1]);
       expect(middleNode!.delta!.toPlainText(), text);
 
-      final firstNode = editor.nodeAtPath([0]);
+      final firstNode = editor.nodeAtPath([2]);
       expect(firstNode!.delta!.toPlainText(), text);
 
       await editor.dispose();

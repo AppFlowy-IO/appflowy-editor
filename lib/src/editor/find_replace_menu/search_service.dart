@@ -178,15 +178,20 @@ class SearchService {
   /// Replaces the current selected word with replaceText.
   /// After replacing the selected word, this method selects the next
   /// matched word if that exists.
-  void replaceSelectedWord(String replaceText) {
+  void replaceSelectedWord(String replaceText, [bool fromFirst = false]) {
     if (replaceText.isEmpty ||
         queriedPattern.isEmpty ||
         matchedPositions.isEmpty) {
       return;
     }
 
-    final matchedPosition = matchedPositions[selectedIndex];
-    _selectWordAtPosition(matchedPosition);
+    if (selectedIndex == -1) {
+      selectedIndex++;
+    }
+
+    final position =
+        fromFirst ? matchedPositions.first : matchedPositions[selectedIndex];
+    _selectWordAtPosition(position);
 
     //unhighlight the selected word before it is replaced
     final selection = editorState.selection!;
@@ -196,21 +201,33 @@ class SearchService {
     );
     editorState.undoManager.forgetRecentUndo();
 
-    final textNode = editorState.getNodeAtPath(matchedPosition.path)!;
+    final textNode = editorState.getNodeAtPath(position.path)!;
 
     final transaction = editorState.transaction;
 
     transaction.replaceText(
       textNode,
-      matchedPosition.offset,
+      position.offset,
       queriedPattern.length,
       replaceText,
     );
 
     editorState.apply(transaction);
 
-    matchedPositions.removeAt(selectedIndex);
-    navigateToMatch(moveUp: false);
+    if (fromFirst) {
+      matchedPositions.removeAt(0);
+    } else {
+      matchedPositions.removeAt(selectedIndex);
+      --selectedIndex;
+
+      if (matchedPositions.isNotEmpty) {
+        if (selectedIndex == -1) {
+          selectedIndex = 0;
+        }
+
+        _selectWordAtPosition(matchedPositions[selectedIndex]);
+      }
+    }
   }
 
   /// Replaces all the found occurances of pattern with replaceText
@@ -218,14 +235,14 @@ class SearchService {
     if (replaceText.isEmpty || queriedPattern.isEmpty) {
       return;
     }
-    //we need to create a final variable matchesLength here, because
-    //when we replaceSelectedWord we reduce the length of matchedPositions
-    //list, this causes the value to shrink dynamically and thus it may
-    //result in pretermination.
+    // We need to create a final variable matchesLength here, because
+    // when we replaceSelectedWord we reduce the length of matchedPositions
+    // list, this causes the value to shrink dynamically and thus it may
+    // result in pretermination.
     final int matchesLength = matchedPositions.length;
 
     for (int i = 0; i < matchesLength; i++) {
-      replaceSelectedWord(replaceText);
+      replaceSelectedWord(replaceText, true);
     }
   }
 
@@ -238,9 +255,7 @@ class SearchService {
         : style.unselectedHighlightColor.toHex();
     editorState.formatDelta(
       selection,
-      {
-        AppFlowyRichTextKeys.findBackgroundColor: color,
-      },
+      {AppFlowyRichTextKeys.findBackgroundColor: color},
       false,
     );
   }
