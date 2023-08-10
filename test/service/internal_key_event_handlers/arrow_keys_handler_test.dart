@@ -759,7 +759,7 @@ Future<void> _testPressArrowKeyWithMetaInSelection(
   } else {
     expect(
       editor.selection,
-      selectionAtEnd,
+      selectionAtBeginning,
     );
   }
 
