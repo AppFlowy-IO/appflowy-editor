@@ -292,6 +292,9 @@ class EditorState {
     }
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
+      if (node.level > 1) {
+        continue;
+      }
       final delta = node.delta;
       if (delta == null) {
         continue;

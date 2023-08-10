@@ -21,7 +21,7 @@ Future<void> _testCutHandle(
   WidgetTester tester,
   Document document,
 ) async {
-  final editor = tester.editor..initializeWithDocment(document);
+  final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting();
   await editor.updateSelection(
     Selection(

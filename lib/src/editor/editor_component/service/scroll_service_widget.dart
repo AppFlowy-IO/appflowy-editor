@@ -107,6 +107,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
       return;
     }
+    final updateReason = editorState.selectionUpdateReason;
+    final selectionType = editorState.selectionType;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
@@ -121,7 +123,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          if (editorState.selectionType == SelectionType.block) {
+          if (selectionType == SelectionType.block ||
+              updateReason == SelectionUpdateReason.transaction) {
             final box = editorState.renderBox;
             final editorOffset = box?.localToGlobal(Offset.zero);
             final editorHeight = box?.size.height;

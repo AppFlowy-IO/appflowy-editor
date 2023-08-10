@@ -130,7 +130,7 @@ class TestableEditor {
     );
   }
 
-  void initializeWithDocment(Document document) {
+  void initializeWithDocument(Document document) {
     _editorState = EditorState(
       document: document,
     );

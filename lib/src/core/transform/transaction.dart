@@ -220,6 +220,33 @@ extension TextTransaction on Transaction {
     );
   }
 
+  void insertTextDelta(
+    Node node,
+    int index,
+    Delta insertedDelta,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index <= delta.length && index >= 0,
+      'The index($index) is out of range or negative.',
+    );
+
+    final insert = Delta()
+      ..retain(index)
+      ..addAll(insertedDelta);
+
+    addDeltaToComposeMap(node, insert);
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index + insertedDelta.length),
+    );
+  }
+
   /// Deletes the [length] characters at the given [index].
   void deleteText(
     Node node,
