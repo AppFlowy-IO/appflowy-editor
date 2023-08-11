@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// for a while. So we need to implement our own GestureDetector.
 class MobileSelectionGestureDetector extends StatefulWidget {
   const MobileSelectionGestureDetector({
-    Key? key,
+    super.key,
     this.child,
     this.onTapDown,
     this.onDoubleTapDown,
@@ -16,7 +16,7 @@ class MobileSelectionGestureDetector extends StatefulWidget {
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,
-  }) : super(key: key);
+  });
 
   @override
   State<MobileSelectionGestureDetector> createState() =>
@@ -37,8 +37,8 @@ class MobileSelectionGestureDetectorState
     extends State<MobileSelectionGestureDetector> {
   bool _isDoubleTap = false;
   Timer? _doubleTapTimer;
-  int _tripleTabCount = 0;
-  Timer? _tripleTabTimer;
+  int _tripleTapCount = 0;
+  Timer? _tripleTapTimer;
 
   final kTripleTapTimeout = const Duration(milliseconds: 500);
 
@@ -80,10 +80,10 @@ class MobileSelectionGestureDetectorState
   }
 
   void _tapDownDelegate(TapDownDetails tapDownDetails) {
-    if (_tripleTabCount == 2) {
-      _tripleTabCount = 0;
-      _tripleTabTimer?.cancel();
-      _tripleTabTimer = null;
+    if (_tripleTapCount == 2) {
+      _tripleTapCount = 0;
+      _tripleTapTimer?.cancel();
+      _tripleTapTimer = null;
       if (widget.onTripleTapDown != null) {
         widget.onTripleTapDown!(tapDownDetails);
       }
@@ -94,7 +94,7 @@ class MobileSelectionGestureDetectorState
       if (widget.onDoubleTapDown != null) {
         widget.onDoubleTapDown!(tapDownDetails);
       }
-      _tripleTabCount++;
+      _tripleTapCount++;
     } else {
       if (widget.onTapDown != null) {
         widget.onTapDown!(tapDownDetails);
@@ -107,11 +107,11 @@ class MobileSelectionGestureDetectorState
         _doubleTapTimer = null;
       });
 
-      _tripleTabCount = 1;
-      _tripleTabTimer?.cancel();
-      _tripleTabTimer = Timer(kTripleTapTimeout, () {
-        _tripleTabCount = 0;
-        _tripleTabTimer = null;
+      _tripleTapCount = 1;
+      _tripleTapTimer?.cancel();
+      _tripleTapTimer = Timer(kTripleTapTimeout, () {
+        _tripleTapCount = 0;
+        _tripleTapTimer = null;
       });
     }
   }
@@ -119,7 +119,7 @@ class MobileSelectionGestureDetectorState
   @override
   void dispose() {
     _doubleTapTimer?.cancel();
-    _tripleTabTimer?.cancel();
+    _tripleTapTimer?.cancel();
     super.dispose();
   }
 }
