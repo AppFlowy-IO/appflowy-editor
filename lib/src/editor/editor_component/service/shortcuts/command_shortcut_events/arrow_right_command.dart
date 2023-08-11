@@ -79,17 +79,24 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
   final node = editorState.getNodeAtPath(selection.end.path);
   final delta = node?.delta;
 
+  if (node == null || delta == null) {
+    return KeyEventResult.ignored;
+  }
+
   if (isRTL(editorState)) {
-    var startOfWord = selection.end.moveHorizontal(
+    final startOfWord = selection.end.moveHorizontal(
       editorState,
       selectionRange: SelectionRange.word,
     );
-    final selectedWord = delta?.toPlainText().substring(
-          startOfWord!.offset,
+    if (startOfWord == null) {
+      return KeyEventResult.ignored;
+    }
+    final selectedWord = delta.toPlainText().substring(
+          startOfWord.offset,
           selection.end.offset,
         );
     // check if the selected word is whitespace
-    if (selectedWord!.trim().isEmpty) {
+    if (selectedWord.trim().isEmpty) {
       editorState.moveCursorForward(SelectionMoveRange.word);
     }
     editorState.moveCursorForward(SelectionMoveRange.word);
@@ -99,13 +106,13 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
       forward: false,
       selectionRange: SelectionRange.word,
     );
-    final selectedLine = delta?.toPlainText();
-    final selectedWord = selectedLine?.substring(
+    final selectedLine = delta.toPlainText();
+    final selectedWord = selectedLine.substring(
       selection.end.offset,
       endOfWord?.offset,
     );
     // check if the selected word is whitespace
-    if (selectedWord!.trim().isEmpty) {
+    if (selectedWord.trim().isEmpty) {
       editorState.moveCursorBackward(SelectionMoveRange.word);
     }
     editorState.moveCursorBackward(SelectionMoveRange.word);
