@@ -106,10 +106,13 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
       forward: false,
       selectionRange: SelectionRange.word,
     );
+    if (endOfWord == null) {
+      return KeyEventResult.handled;
+    }
     final selectedLine = delta.toPlainText();
     final selectedWord = selectedLine.substring(
       selection.end.offset,
-      endOfWord?.offset,
+      endOfWord.offset,
     );
     // check if the selected word is whitespace
     if (selectedWord.trim().isEmpty) {
