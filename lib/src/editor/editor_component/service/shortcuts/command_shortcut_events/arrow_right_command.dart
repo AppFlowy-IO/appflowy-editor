@@ -101,7 +101,7 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
     }
     editorState.moveCursorForward(SelectionMoveRange.word);
   } else {
-    var endOfWord = selection.end.moveHorizontal(
+    final endOfWord = selection.end.moveHorizontal(
       editorState,
       forward: false,
       selectionRange: SelectionRange.word,
