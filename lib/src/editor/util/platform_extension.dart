@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+// TODO(Xazin): Refactor to honor `Theme.platform`
 extension PlatformExtension on Platform {
   static bool get isDesktopOrWeb {
     if (kIsWeb) {
