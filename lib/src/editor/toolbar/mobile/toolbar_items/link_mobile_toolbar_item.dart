@@ -11,7 +11,7 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
       selection,
     );
 
-    return _MobileLinkMenu(
+    return MobileLinkMenu(
       editorState: editorState,
       linkText: linkText,
       onSubmitted: (value) async {
@@ -28,8 +28,9 @@ final linkMobileToolbarItem = MobileToolbarItem.withMenu(
   },
 );
 
-class _MobileLinkMenu extends StatefulWidget {
-  const _MobileLinkMenu({
+class MobileLinkMenu extends StatefulWidget {
+  const MobileLinkMenu({
+    super.key,
     this.linkText,
     required this.editorState,
     required this.onSubmitted,
@@ -42,10 +43,10 @@ class _MobileLinkMenu extends StatefulWidget {
   final void Function() onCancel;
 
   @override
-  State<_MobileLinkMenu> createState() => _MobileLinkMenuState();
+  State<MobileLinkMenu> createState() => _MobileLinkMenuState();
 }
 
-class _MobileLinkMenuState extends State<_MobileLinkMenu> {
+class _MobileLinkMenuState extends State<MobileLinkMenu> {
   late TextEditingController _textEditingController;
 
   @override
