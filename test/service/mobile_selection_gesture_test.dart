@@ -25,7 +25,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(SizedBox));
+      await tester.tap(find.byType(SizedBox), warnIfMissed: false);
       await tester.pumpAndSettle();
 
       expect(onTapDown, true);

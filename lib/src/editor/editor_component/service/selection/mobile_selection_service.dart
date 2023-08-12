@@ -23,11 +23,11 @@ enum MobileSelectionHandlerType {
 
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
-    Key? key,
+    super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final Color cursorColor;
