@@ -5,7 +5,6 @@ export 'items/bulleted_list_toolbar_item.dart';
 export 'items/color/color.dart';
 export 'items/format_toolbar_items.dart';
 export 'items/heading_toolbar_items.dart';
-export 'items/highlight_toolbar_item.dart';
 export 'items/icon_item_widget.dart';
 export 'items/link/link_toolbar_item.dart';
 export 'items/numbered_list_toolbar_item.dart';
