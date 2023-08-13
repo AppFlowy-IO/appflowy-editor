@@ -9,14 +9,14 @@ final CommandShortcutEvent showLinkMenuCommand = CommandShortcutEvent(
   key: 'link menu',
   command: 'ctrl+k',
   macOSCommand: 'cmd+k',
-  handler: (editorState) => _showLinkMenu(editorState),
+  handler: _showLinkMenu,
 );
 
 KeyEventResult _showLinkMenu(
   EditorState editorState,
 ) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'homeCommand is not supported on mobile platform.');
+    assert(false, 'showLinkMenuCommand is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
 
@@ -32,7 +32,7 @@ KeyEventResult _showLinkMenu(
   final nodes = editorState.getNodesInSelection(selection);
   final isHref = nodes.allSatisfyInSelection(selection, (delta) {
     return delta.everyAttributes(
-      (attributes) => attributes['href'] != null,
+      (attributes) => attributes[BuiltInAttributeKey.href] != null,
     );
   });
 
