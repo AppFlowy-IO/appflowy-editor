@@ -129,24 +129,34 @@ class _HeadingBlockComponentWidgetState
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
-      child: AppFlowyRichText(
-        key: forwardKey,
-        node: widget.node,
-        editorState: editorState,
-        textSpanDecorator: (textSpan) => textSpan
-            .updateTextStyle(textStyle)
-            .updateTextStyle(
-              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
+      // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
+      // make the width of the rich text as small as possible to avoid
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: AppFlowyRichText(
+              key: forwardKey,
+              node: widget.node,
+              editorState: editorState,
+              textSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(textStyle).updateTextStyle(
+                        widget.textStyleBuilder?.call(level) ??
+                            defaultTextStyle(level),
+                      ),
+              placeholderText: placeholderText,
+              placeholderTextSpanDecorator: (textSpan) => textSpan
+                  .updateTextStyle(
+                    placeholderTextStyle,
+                  )
+                  .updateTextStyle(
+                    widget.textStyleBuilder?.call(level) ??
+                        defaultTextStyle(level),
+                  ),
+              textDirection: textDirection,
             ),
-        placeholderText: placeholderText,
-        placeholderTextSpanDecorator: (textSpan) => textSpan
-            .updateTextStyle(
-              placeholderTextStyle,
-            )
-            .updateTextStyle(
-              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
-            ),
-        textDirection: textDirection,
+          ),
+        ],
       ),
     );
 
