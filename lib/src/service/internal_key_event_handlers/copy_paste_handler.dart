@@ -2,6 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/widgets.dart';
 
 int _textLengthOfNode(Node node) => node.delta?.length ?? 0;
+RegExp _linkRegex = RegExp(
+  r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
+);
 
 void _pasteSingleLine(
   EditorState editorState,
@@ -9,9 +12,17 @@ void _pasteSingleLine(
   String line,
 ) {
   assert(selection.isCollapsed);
+
+  // handle link
+  final Attributes attributes = _linkRegex.hasMatch(line)
+      ? {
+          AppFlowyRichTextKeys.href: line,
+        }
+      : {};
+
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
-    ..insertText(node, selection.startIndex, line)
+    ..insertText(node, selection.startIndex, line, attributes: attributes)
     ..afterSelection = (Selection.collapsed(
       Position(
         path: selection.end.path,

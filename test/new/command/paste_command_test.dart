@@ -27,12 +27,43 @@ void main() async {
       return null;
     });
   });
+
   group('paste_command_test.dart', () {
+    testWidgets(
+      'Copy link',
+      (tester) async {
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+        await editor.updateSelection(Selection.collapse([0], 0));
+
+        const link = 'https://appflowy.io/';
+        AppFlowyClipboard.mockSetData(
+          const AppFlowyClipboardData(text: link),
+        );
+
+        pasteCommand.execute(editor.editorState);
+        await tester.pumpAndSettle();
+
+        final delta = editor.nodeAtPath([0])!.delta!;
+        expect(delta.toPlainText(), link);
+        expect(
+          delta.everyAttributes(
+            (element) => element[AppFlowyRichTextKeys.href] == link,
+          ),
+          true,
+        );
+
+        AppFlowyClipboard.mockSetData(null);
+        await editor.dispose();
+      },
+    );
+
     testWidgets(
         'Presses Command + A in small document and copy text and paste text',
         (tester) async {
       await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
     });
+
     testWidgets(
         'Presses Command + A in small document and copy text and paste text multiple times',
         (tester) async {
