@@ -23,7 +23,7 @@ void showColorMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - 200;
+  final threshold = editorOffset.dy + editorHeight - 250;
   if (offset.dy > threshold) {
     bottom = editorOffset.dy + editorHeight - rect.top - 5;
   } else {
@@ -52,10 +52,12 @@ void showColorMenu(
           isTextColor
               ? formatFontColor(
                   editorState,
+                  editorState.selection,
                   color,
                 )
               : formatHighlightColor(
                   editorState,
+                  editorState.selection,
                   color,
                 );
           dismissOverlay();

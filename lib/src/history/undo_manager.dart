@@ -149,4 +149,11 @@ class UndoManager {
       ),
     );
   }
+
+  void forgetRecentUndo() {
+    Log.editor.debug('forgetRecentUndo');
+    if (state != null) {
+      undoStack.pop();
+    }
+  }
 }

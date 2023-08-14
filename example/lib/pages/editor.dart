@@ -130,10 +130,23 @@ class Editor extends StatelessWidget {
             highlightColor: Theme.of(context).highlightColor,
           ),
         ),
-        ...standardCommandShortcutEvents
-          ..removeWhere(
-            (el) => el == toggleHighlightCommand,
+        ...[
+          ...standardCommandShortcutEvents
+            ..removeWhere(
+              (el) => el == toggleHighlightCommand,
+            ),
+        ],
+        ...findAndReplaceCommands(
+          context: context,
+          localizations: FindReplaceLocalizations(
+            find: 'Find',
+            previousMatch: 'Previous match',
+            nextMatch: 'Next match',
+            close: 'Close',
+            replace: 'Replace',
+            replaceAll: 'Replace all',
           ),
+        ),
       ],
       characterShortcutEvents: standardCharacterShortcutEvents,
     );

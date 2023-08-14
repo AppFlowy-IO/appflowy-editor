@@ -118,6 +118,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   indentCommand,
   outdentCommand,
 
+  //
   exitEditingCommand,
 
   //
