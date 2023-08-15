@@ -78,9 +78,6 @@ void main() async {
             'AppFlowy',
             attributes: {
               BuiltInAttributeKey.underline: true,
-              BuiltInAttributeKey.bold: true,
-              BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.code: true,
             },
           ),
         ],

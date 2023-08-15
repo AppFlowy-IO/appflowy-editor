@@ -113,5 +113,28 @@ void main() async {
         "<p><strong>Welcome to AppFlowy</strong></p>",
       );
     });
+    test('multiple attributes Test', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        "<p><span style=\"font-weight: bold; text-decoration: underline line-through; font-style: italic\">Welcome to AppFlowy</span></p>",
+      );
+    });
   });
 }
