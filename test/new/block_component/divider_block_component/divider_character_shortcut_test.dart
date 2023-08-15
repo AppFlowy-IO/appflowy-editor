@@ -17,11 +17,11 @@ void main() async {
           convertMinusesToDivider,
           '--',
           2,
-          (result,before,after,editorState) {
+          (result, before, after, editorState) {
             expect(result, true);
             expect(after.delta, null);
             expect(after.type, DividerBlockKeys.type);
-            expect(after.next, isNotNull );
+            expect(after.next, isNotNull);
             expect(after.next!.type, ParagraphBlockKeys.type);
             final nextNode = editorState.getNodeAtPath(after.next!.path);
             expect(nextNode!.path, editorState.selection!.end.path);
@@ -40,7 +40,7 @@ void main() async {
           convertStarsToDivider,
           '**',
           2,
-          (result, before, after,editorState) {
+          (result, before, after, editorState) {
             expect(result, true);
             expect(after.delta, null);
             expect(after.type, DividerBlockKeys.type);
@@ -59,7 +59,7 @@ void main() async {
           convertUnderscoreToDivider,
           '__',
           2,
-          (result, before, after,editorState) {
+          (result, before, after, editorState) {
             expect(result, true);
             expect(after.delta, null);
             expect(after.type, DividerBlockKeys.type);

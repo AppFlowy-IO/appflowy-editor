@@ -7,7 +7,8 @@ Future<void> testFormatCharacterShortcut(
   CharacterShortcutEvent event,
   String prefix,
   int index,
-  void Function(bool result, Node before, Node after,EditorState editorState) test, {
+  void Function(bool result, Node before, Node after, EditorState editorState)
+      test, {
   String text = 'Welcome to AppFlowy Editor 🔥!',
 }) async {
   final document = Document.blank().addParagraph(
@@ -23,5 +24,5 @@ Future<void> testFormatCharacterShortcut(
   final result = await event.execute(editorState);
   final after = editorState.getNodesInSelection(selection).first;
 
-  test(result, before, after,editorState);
+  test(result, before, after, editorState);
 }
