@@ -96,13 +96,13 @@ class _DividerBlockComponentWidgetState
       child: child,
     );
 
-    if (widget.showActions && widget.actionBuilder != null) {
-      child = BlockComponentActionWrapper(
-        node: node,
-        actionBuilder: widget.actionBuilder!,
-        child: child,
-      );
-    }
+    // if (widget.showActions && widget.actionBuilder != null) {
+    //   child = BlockComponentActionWrapper(
+    //     node: node,
+    //     actionBuilder: widget.actionBuilder!,
+    //     child: child,
+    //   );
+    // }
 
     return child;
   }
@@ -120,7 +120,7 @@ class _DividerBlockComponentWidgetState
   bool get shouldCursorBlink => false;
 
   @override
-  CursorStyle get cursorStyle => CursorStyle.cover;
+  CursorStyle get cursorStyle => CursorStyle.borderLine;
 
   @override
   Rect getBlockRect() {

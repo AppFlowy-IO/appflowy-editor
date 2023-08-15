@@ -17,7 +17,7 @@ void main() async {
           formatEmptyBracketsToUncheckedBox,
           '[]',
           2,
-          (result, before, after) {
+          (result, before, after,editorState) {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, 'todo_list');
@@ -37,7 +37,7 @@ void main() async {
           formatHyphenEmptyBracketsToUncheckedBox,
           '-[]',
           3,
-          (result, before, after) {
+          (result, before, after,editorState) {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, 'todo_list');
@@ -57,7 +57,7 @@ void main() async {
           formatFilledBracketsToCheckedBox,
           '[x]',
           3,
-          (result, before, after) {
+          (result, before, after,editorState) {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, 'todo_list');
@@ -77,7 +77,7 @@ void main() async {
           formatHyphenFilledBracketsToCheckedBox,
           '-[x]',
           4,
-          (result, before, after) {
+          (result, before, after,editorState) {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, 'todo_list');

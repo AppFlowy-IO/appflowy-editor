@@ -16,7 +16,7 @@ void main() async {
         formatNumberToNumberedList,
         '1',
         1,
-        (result, before, after) {
+        (result, before, after, editorState) {
           // nothing happens
           expect(result, false);
           expect(before.toJson(), after.toJson());
@@ -36,7 +36,7 @@ void main() async {
         formatNumberToNumberedList,
         '1.',
         2,
-        (result, before, after) {
+        (result, before, after, editorState) {
           expect(result, true);
           expect(after.delta!.toPlainText(), text);
           expect(after.type, NumberedListBlockKeys.type);
@@ -54,7 +54,7 @@ void main() async {
         formatNumberToNumberedList,
         '1.',
         3,
-        (result, before, after) {
+        (result, before, after, editorState) {
           // nothing happens
           expect(result, false);
           expect(before.toJson(), after.toJson());
