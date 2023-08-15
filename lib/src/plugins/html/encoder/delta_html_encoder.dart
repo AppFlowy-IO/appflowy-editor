@@ -48,6 +48,9 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
         ..attributes['href'] = href
         ..append(domText);
     }
+    if (attributes.backgroundColor != null || attributes.color != null) {
+      return convertMultipleAttributeTextInsertToDomNode(text, attributes);
+    }
 
     final keyToTag = {
       AppFlowyRichTextKeys.bold: HTMLTags.strong,

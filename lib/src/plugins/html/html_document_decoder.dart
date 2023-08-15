@@ -277,6 +277,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
       }
     }
+    final color = css['color'];
+    if (color != null) {
+      final highlightColor = color.tryToColor()?.toHex();
+      if (highlightColor != null) {
+        attributes[AppFlowyRichTextKeys.textColor] = highlightColor;
+      }
+    }
 
     // italic
     final fontStyle = css['font-style'];
