@@ -48,6 +48,7 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
         ..attributes['href'] = href
         ..append(domText);
     }
+    //backgroud color and attribute color is added than that was ignoring now all attributes handled accordingly
     if (attributes.backgroundColor != null || attributes.color != null) {
       return convertMultipleAttributeTextInsertToDomNode(text, attributes);
     }
