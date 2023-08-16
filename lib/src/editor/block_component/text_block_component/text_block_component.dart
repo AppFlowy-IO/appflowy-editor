@@ -101,6 +101,41 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  bool _showPlaceholder = false;
+
+  @override
+  void initState() {
+    super.initState();
+    editorState.selectionService.currentSelection
+        .addListener(_onSelectionChange);
+    _onSelectionChange();
+  }
+
+  @override
+  void dispose() {
+    editorState.selectionService.currentSelection
+        .removeListener(_onSelectionChange);
+    super.dispose();
+  }
+
+  void _onSelectionChange() {
+    setState(() {
+      final selection = editorState.selectionService.currentSelection.value;
+      if (selection == null) {
+        _showPlaceholder = false;
+        return;
+      }
+
+      final selectedNodes = editorState.getNodesInSelection(selection);
+      if (selectedNodes.length == 1 && selectedNodes.contains(node)) {
+        _showPlaceholder = true;
+        return;
+      }
+
+      _showPlaceholder = false;
+    });
+  }
+
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
@@ -120,14 +155,11 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
             key: forwardKey,
             node: widget.node,
             editorState: editorState,
-            placeholderText: placeholderText,
-            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-              textStyle,
-            ),
+            placeholderText: _showPlaceholder ? placeholderText : ' ',
+            textSpanDecorator: (textSpan) =>
+                textSpan.updateTextStyle(textStyle),
             placeholderTextSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(
-              placeholderTextStyle,
-            ),
+                textSpan.updateTextStyle(placeholderTextStyle),
             textDirection: textDirection,
           ),
         ],
