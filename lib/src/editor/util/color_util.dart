@@ -10,7 +10,11 @@ extension ColorExtension on String {
   }
 
   Color? tryToColor() {
-    final reg = RegExp(r'rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)');
+    if (startsWith('#') || startsWith('0x')) {
+      return toColor();
+    }
+
+    final reg = RegExp(r'rgba\((\d+),(\d+),(\d+),([\d.]+)\)');
     final match = reg.firstMatch(this);
     if (match == null) {
       return null;
@@ -27,13 +31,13 @@ extension ColorExtension on String {
     final red = redStr != null ? int.tryParse(redStr) : null;
     final green = greenStr != null ? int.tryParse(greenStr) : null;
     final blue = blueStr != null ? int.tryParse(blueStr) : null;
-    final alpha = alphaStr != null ? int.tryParse(alphaStr) : null;
+    final alpha = alphaStr != null ? double.tryParse(alphaStr) ?? 1.0 : 1.0;
 
-    if (red == null || green == null || blue == null || alpha == null) {
+    if (red == null || green == null || blue == null) {
       return null;
     }
 
-    return Color.fromARGB(alpha, red, green, blue);
+    return Color.fromARGB((alpha * 255).toInt(), red, green, blue);
   }
 }
 
