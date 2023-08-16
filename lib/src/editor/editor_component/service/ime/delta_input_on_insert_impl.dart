@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
 import 'package:flutter/services.dart';
 
 Future<void> onInsert(
@@ -9,16 +10,14 @@ Future<void> onInsert(
   Log.input.debug('onInsert: $insertion');
 
   // character events
-  final character = insertion.textInserted;
-  if (character.length == 1) {
-    final execution = await _executeCharacterShortcutEvent(
-      editorState,
-      character,
-      characterShortcutEvents,
-    );
-    if (execution) {
-      return;
-    }
+  final execution = await executeCharacterShortcutEvent(
+    editorState,
+    insertion.textInserted,
+    characterShortcutEvents,
+  );
+
+  if (execution) {
+    return;
   }
 
   var selection = editorState.selection;
@@ -50,18 +49,4 @@ Future<void> onInsert(
       insertion.textInserted,
     );
   return editorState.apply(transaction);
-}
-
-Future<bool> _executeCharacterShortcutEvent(
-  EditorState editorState,
-  String character,
-  List<CharacterShortcutEvent> characterShortcutEvents,
-) async {
-  for (final shortcutEvent in characterShortcutEvents) {
-    if (shortcutEvent.character == character &&
-        await shortcutEvent.handler(editorState)) {
-      return true;
-    }
-  }
-  return false;
 }
