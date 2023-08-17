@@ -34,7 +34,9 @@ void main() async {
       (tester) async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
-        await editor.updateSelection(Selection.collapse([0], 0));
+        await editor.updateSelection(
+          Selection.collapsed(Position(path: [0], offset: 0)),
+        );
 
         const link = 'https://appflowy.io/';
         AppFlowyClipboard.mockSetData(

@@ -160,7 +160,7 @@ void main() {
       final Attributes attribute = {
         'font_color': 'hello123',
       };
-      expect(attribute.color, const Color(0XFFFFFFFF));
+      expect(attribute.color, null);
     });
 
     test('backgroundColor', () {
@@ -181,7 +181,7 @@ void main() {
       final Attributes attribute = {
         'bg_color': 'hello123',
       };
-      expect(attribute.backgroundColor, const Color(0XFFFFFFFF));
+      expect(attribute.backgroundColor, null);
     });
 
     test('href', () {

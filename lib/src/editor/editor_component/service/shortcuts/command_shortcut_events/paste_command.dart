@@ -131,9 +131,11 @@ extension on EditorState {
     if (delta.isEmpty || insertedDelta == null) {
       transaction.insertNode(selection.end.path.next, insertedNode);
       transaction.deleteNode(node);
-      transaction.afterSelection = Selection.collapse(
-        selection.end.path,
-        insertedDelta?.length ?? 0,
+      transaction.afterSelection = Selection.collapsed(
+        Position(
+          path: selection.end.path,
+          offset: insertedDelta?.length ?? 0,
+        ),
       );
     } else {
       // if the node is not empty, insert the delta from inserted node after the selection.
@@ -189,9 +191,11 @@ extension on EditorState {
     for (var i = 0; i < nodes.length; i++) {
       path = path.next;
     }
-    transaction.afterSelection = Selection.collapse(
-      path.previous, // because a node is deleted.
-      lastNodeLength,
+    transaction.afterSelection = Selection.collapsed(
+      Position(
+        path: path.previous, // because a node is deleted.
+        offset: lastNodeLength,
+      ),
     );
 
     await apply(transaction);

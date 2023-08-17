@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 extension ColorExtension on String {
-  Color toColor() {
+  Color? toColor() {
     var hexString = replaceFirst('0x', '');
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.tryParse(buffer.toString(), radix: 16) ?? 0xFFFFFFFF);
+    final value = int.tryParse(buffer.toString(), radix: 16);
+    return value != null ? Color(value) : null;
   }
 
   Color? tryToColor() {
@@ -15,7 +16,7 @@ extension ColorExtension on String {
     }
 
     final reg = RegExp(r'rgba\((\d+),(\d+),(\d+),([\d.]+)\)');
-    final match = reg.firstMatch(this);
+    final match = reg.firstMatch(replaceAll(' ', ''));
     if (match == null) {
       return null;
     }
