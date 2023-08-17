@@ -17,6 +17,23 @@ final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   ),
 );
 
+CharacterShortcutEvent customSlashCommand(
+  List<SelectionMenuItem> items, {
+  bool shouldInsertSlash = true,
+  SelectionMenuStyle style = SelectionMenuStyle.light,
+}) {
+  return CharacterShortcutEvent(
+    key: 'show the slash menu',
+    character: '/',
+    handler: (editorState) => _showSlashMenu(
+      editorState,
+      items,
+      shouldInsertSlash: shouldInsertSlash,
+      style: style,
+    ),
+  );
+}
+
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
   EditorState editorState,
