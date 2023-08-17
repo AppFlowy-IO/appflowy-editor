@@ -49,7 +49,7 @@ Future<bool> _convertSyntaxToDivider(
     ..insertNode(path, dividerNode())
     ..insertNode(path, paragraphNode())
     ..deleteNode(node)
-    ..afterSelection = Selection.collapse(path.next, 0);
+    ..afterSelection = Selection.collapsed(Position(path: path.next));
   editorState.apply(transaction);
   return true;
 }
