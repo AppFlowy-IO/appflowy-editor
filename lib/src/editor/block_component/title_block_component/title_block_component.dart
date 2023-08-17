@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:collection/collection.dart';
 
 class TitleBlockKeys {
   const TitleBlockKeys._();
@@ -139,16 +138,6 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
         ],
       ),
     );
-
-/*
-    if (widget.showActions && widget.actionBuilder != null) {
-      child = BlockComponentActionWrapper(
-        node: node,
-        actionBuilder: widget.actionBuilder!,
-        child: child,
-      );
-    }
-    */
   }
 
   TextStyle? defaultTextStyle() {
