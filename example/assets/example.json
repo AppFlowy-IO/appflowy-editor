@@ -1,11 +1,13 @@
 {
   "document": {
     "type": "page",
-    "children": [{
-        "type": "heading",
+    "children": [
+      {
+        "type": "title",
         "data": {
           "level": 2,
-          "delta": [{
+          "delta": [
+            {
               "insert": "👋 "
             },
             {
@@ -31,13 +33,8 @@
       {
         "type": "paragraph",
         "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [{
+          "delta": [
+            {
               "insert": "AppFlowy Editor is a"
             },
             {
@@ -74,27 +71,33 @@
         "type": "todo_list",
         "data": {
           "checked": true,
-          "delta": [{
-            "insert": "Customizable"
-          }]
+          "delta": [
+            {
+              "insert": "Customizable"
+            }
+          ]
         }
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
-          "delta": [{
-            "insert": "Test-covered"
-          }]
+          "delta": [
+            {
+              "insert": "Test-covered"
+            }
+          ]
         }
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
-          "delta": [{
-            "insert": "more to come!"
-          }]
+          "delta": [
+            {
+              "insert": "more to come!"
+            }
+          ]
         }
       },
       {
@@ -106,9 +109,11 @@
       {
         "type": "quote",
         "data": {
-          "delta": [{
-            "insert": "Here is an example you can give a try"
-          }]
+          "delta": [
+            {
+              "insert": "Here is an example you can give a try"
+            }
+          ]
         }
       },
       {
@@ -120,7 +125,8 @@
       {
         "type": "paragraph",
         "data": {
-          "delta": [{
+          "delta": [
+            {
               "insert": "You can also use "
             },
             {
@@ -147,19 +153,22 @@
       {
         "type": "bulleted_list",
         "data": {
-          "delta": [{
-            "insert": "Use / to insert blocks"
-          }]
+          "delta": [
+            {
+              "insert": "Use / to insert blocks"
+            }
+          ]
         }
       },
       {
         "type": "bulleted_list",
         "data": {
-          "delta": [{
-            "insert": "Select text to trigger to the toolbar to format your notes."
-          }]
+          "delta": [
+            {
+              "insert": "Select text to trigger to the toolbar to format your notes."
+            }
+          ]
         }
-
       },
       {
         "type": "paragraph",
@@ -170,9 +179,11 @@
       {
         "type": "paragraph",
         "data": {
-          "delta": [{
-            "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-          }]
+          "delta": [
+            {
+              "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+            }
+          ]
         }
       }
     ]

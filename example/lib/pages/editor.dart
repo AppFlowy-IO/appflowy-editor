@@ -110,6 +110,12 @@ class Editor extends StatelessWidget {
   ) {
     final customBlockComponentBuilders = {
       ...standardBlockComponentBuilderMap,
+      TitleBlockKeys.type: TitleBlockComponentBuilder(
+        configuration: standardBlockComponentConfiguration.copyWith(
+          placeholderText: (node) => 'Untitled',
+          padding: (_) => const EdgeInsets.symmetric(vertical: 20),
+        ),
+      ),
       ImageBlockKeys.type: ImageBlockComponentBuilder(
         showMenu: true,
         menuBuilder: (node, _) {
