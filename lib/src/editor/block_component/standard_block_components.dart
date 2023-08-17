@@ -34,6 +34,11 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
           'Heading ${node.attributes[HeadingBlockKeys.level]}',
     ),
   ),
+  TitleBlockKeys.type: TitleBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (node) => 'Untitled',
+    ),
+  ),
   ImageBlockKeys.type: ImageBlockComponentBuilder(),
   DividerBlockKeys.type: DividerBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(

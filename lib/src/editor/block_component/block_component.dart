@@ -22,6 +22,9 @@ export 'quote_block_component/quote_character_shortcut.dart';
 export 'heading_block_component/heading_block_component.dart';
 export 'heading_block_component/heading_character_shortcut.dart';
 
+//Title
+export 'title_block_component/title_block_component.dart';
+
 // image
 export 'image_block_component/image_block_component.dart';
 export 'image_block_component/image_upload_widget.dart';
