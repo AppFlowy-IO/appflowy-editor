@@ -106,33 +106,21 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   void initState() {
     super.initState();
-    editorState.selectionService.currentSelection
-        .addListener(_onSelectionChange);
+    editorState.selectionNotifier.addListener(_onSelectionChange);
     _onSelectionChange();
   }
 
   @override
   void dispose() {
-    editorState.selectionService.currentSelection
-        .removeListener(_onSelectionChange);
+    editorState.selectionNotifier.removeListener(_onSelectionChange);
     super.dispose();
   }
 
   void _onSelectionChange() {
     setState(() {
-      final selection = editorState.selectionService.currentSelection.value;
-      if (selection == null) {
-        _showPlaceholder = false;
-        return;
-      }
-
-      final selectedNodes = editorState.getNodesInSelection(selection);
-      if (selectedNodes.length == 1 && selectedNodes.contains(node)) {
-        _showPlaceholder = true;
-        return;
-      }
-
-      _showPlaceholder = false;
+      final selection = editorState.selection;
+      _showPlaceholder = selection != null &&
+          (selection.isSingle && selection.start.path.equals(node.path));
     });
   }
 
