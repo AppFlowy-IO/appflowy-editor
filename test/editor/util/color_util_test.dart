@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ColorExtension', () {
     test('tryToColor', () {
-      const validRgba = "rgba(255, 255, 255, 255)";
+      const validRgba = "rgba(255, 255, 255, 1)";
       const invalidRgba = "rgba(255, 255, 0)";
 
       expect(validRgba.tryToColor(), const Color.fromARGB(255, 255, 255, 255));
