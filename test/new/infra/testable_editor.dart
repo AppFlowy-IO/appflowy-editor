@@ -11,9 +11,11 @@ import '../util/util.dart';
 class TestableEditor {
   TestableEditor({
     required this.tester,
+    this.additionalBlockBuilders,
   });
 
   final WidgetTester tester;
+  final Map<String, BlockComponentBuilder>? additionalBlockBuilders;
 
   EditorState get editorState => _editorState;
   late EditorState _editorState;
@@ -55,6 +57,10 @@ class TestableEditor {
           autoFocus: autoFocus,
           shrinkWrap: shrinkWrap,
           scrollController: scrollController,
+          blockComponentBuilders: {
+            ...?additionalBlockBuilders,
+            ...standardBlockComponentBuilderMap,
+          },
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
             ...TestableFindAndReplaceCommands(context: context)
@@ -257,6 +263,14 @@ class TestableEditor {
 
 extension TestableEditorExtension on WidgetTester {
   TestableEditor get editor => TestableEditor(tester: this)..initialize();
+
+  TestableEditor editorWithCustomBlock({
+    required Map<String, BlockComponentBuilder> builders,
+  }) =>
+      TestableEditor(
+        tester: this,
+        additionalBlockBuilders: builders,
+      )..initialize();
 
   EditorState get editorState => editor.editorState;
 }
