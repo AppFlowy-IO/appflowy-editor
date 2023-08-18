@@ -316,13 +316,15 @@ class MockIMEInput {
 
   Future<void> replaceText(String text) async {
     final selection = editorState.selection?.normalized;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null || selection.isCollapsed || !selection.isSingle) {
       return;
     }
-    final texts = editorState.getTextInSelection(selection).join('\n');
+    final oldText =
+        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
+
     await imeInput.apply([
       TextEditingDeltaReplacement(
-        oldText: ' $texts',
+        oldText: ' $oldText',
         replacementText: text,
         replacedRange: TextSelection(
           baseOffset: selection.startIndex + 1,

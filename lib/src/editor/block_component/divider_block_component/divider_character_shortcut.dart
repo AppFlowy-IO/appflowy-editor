@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// insert divider into a document by typing three minuses(-).
+/// insert divider into a document by typing three dashes (-)
+/// or one em dash (—) and one dash (-)
 ///
 /// - support
 ///   - desktop
