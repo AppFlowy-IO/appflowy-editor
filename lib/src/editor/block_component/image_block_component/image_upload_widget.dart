@@ -54,7 +54,6 @@ void showImageMenu(
   container.insert(imageMenuEntry);
 }
 
-
 class UploadImageMenu extends StatefulWidget {
   const UploadImageMenu({
     Key? key,
@@ -160,7 +159,6 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 }
-
 
 extension InsertImage on EditorState {
   Future<void> insertImageNode(
