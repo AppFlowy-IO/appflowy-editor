@@ -116,6 +116,7 @@ class _HeadingBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
@@ -123,7 +124,7 @@ class _HeadingBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(

@@ -79,7 +79,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     if (node.children.isNotEmpty) {
       direction = calculateNodeDirection(
         node: node.children.first,
-        defaultTextDirection: direction,
+        layoutDirection: direction,
       );
     }
     return configuration.indentPadding(node, direction);
