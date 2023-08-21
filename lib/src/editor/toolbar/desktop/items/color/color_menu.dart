@@ -36,6 +36,8 @@ void showColorMenu(
     overlay = null;
   }
 
+  keepEditorFocusNotifier.value += 1;
+  final editorSelection = editorState.selection;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
@@ -52,15 +54,16 @@ void showColorMenu(
           isTextColor
               ? formatFontColor(
                   editorState,
-                  editorState.selection,
+                  editorSelection,
                   color,
                 )
               : formatHighlightColor(
                   editorState,
-                  editorState.selection,
+                  editorSelection,
                   color,
                 );
           dismissOverlay();
+          keepEditorFocusNotifier.value -= 1;
         },
         onDismiss: dismissOverlay,
       );
