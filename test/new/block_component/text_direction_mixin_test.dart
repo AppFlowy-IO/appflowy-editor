@@ -8,7 +8,6 @@ class TextDirectionTest with BlockComponentTextDirectionMixin {
   TextDirectionTest({
     required this.node,
     String? defaultTextDirection,
-    this.lastDirection,
   }) {
     editorState.editorStyle =
         EditorStyle.desktop(defaultTextDirection: defaultTextDirection);
@@ -19,9 +18,6 @@ class TextDirectionTest with BlockComponentTextDirectionMixin {
 
   @override
   final EditorState editorState = EditorState.blank(withInitialText: false);
-
-  @override
-  TextDirection? lastDirection;
 }
 
 void main() {
@@ -68,11 +64,10 @@ void main() {
       final node = paragraphNode(
         text: 'سلام',
       );
-      final direction = TextDirectionTest(
-        node: node,
-        defaultTextDirection: "rtl",
-        lastDirection: TextDirection.ltr,
-      ).calculateTextDirection();
+      final textDirectionTest =
+          TextDirectionTest(node: node, defaultTextDirection: "rtl");
+      textDirectionTest.lastDirection = TextDirection.ltr;
+      final direction = textDirectionTest.calculateTextDirection();
       expect(direction, TextDirection.rtl);
     });
 
