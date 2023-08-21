@@ -10,3 +10,4 @@ export 'format_single_character/format_strikethrough.dart';
 export 'format_double_characters/format_double_characters.dart';
 export 'format_double_characters/format_bold.dart';
 export 'format_double_characters/format_strikethrough.dart';
+export 'format_double_characters/format_double_hyphen.dart';

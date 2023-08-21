@@ -29,4 +29,7 @@ final List<CharacterShortcutEvent> markdownSyntaxShortcutEvents = [
   // format bold, **bold** or __bold__
   formatDoubleAsterisksToBold,
   formatDoubleUnderscoresToBold,
+
+  // format -- into em dash
+  formatDoubleHyphenEmDash,
 ];
