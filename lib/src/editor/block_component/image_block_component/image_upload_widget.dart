@@ -20,7 +20,7 @@ void showImageMenu(
 }) {
   menuService.dismiss();
 
-  final (left, top, bottom) = menuService.getPosition();
+  final (left, top, right, bottom) = menuService.getPosition();
 
   late final OverlayEntry imageMenuEntry;
 
@@ -40,6 +40,7 @@ void showImageMenu(
   keepEditorFocusNotifier.value += 1;
   imageMenuEntry = FullScreenOverlayEntry(
     left: left,
+    right: right,
     top: top,
     bottom: bottom,
     dismissCallback: () => keepEditorFocusNotifier.value -= 1,

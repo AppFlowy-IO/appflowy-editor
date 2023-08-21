@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
 /// Copy.
@@ -29,17 +28,14 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   // plain text.
   final text = editorState.getTextInSelection(selection).join('\n');
 
-  // rich text.
-  // TODO: support rich text. the below code is not working.
-  // final nodes = editorState.getNodesInSelection(selection);
-  // final html = NodesToHTMLConverter(
-  //   nodes: nodes,
-  //   startOffset: selection.startIndex,
-  //   endOffset: selection.endIndex,
-  // ).toHTMLString();
+  // html
+  final nodes = editorState.getSelectedNodes(selection);
+  final document = Document.blank()..insert([0], nodes);
+  final html = documentToHTML(document);
 
   AppFlowyClipboard.setData(
-    text: text,
+    text: text.isEmpty ? null : text,
+    html: html.isEmpty ? null : html,
   );
 
   return KeyEventResult.handled;

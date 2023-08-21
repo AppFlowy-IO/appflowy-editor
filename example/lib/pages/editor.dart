@@ -124,7 +124,20 @@ class Editor extends StatelessWidget {
       editorState: editorState,
       scrollController: scrollController,
       blockComponentBuilders: customBlockComponentBuilders,
-      commandShortcutEvents: standardCommandShortcutEvents,
+      commandShortcutEvents: [
+        ...standardCommandShortcutEvents,
+        ...findAndReplaceCommands(
+          context: context,
+          localizations: FindReplaceLocalizations(
+            find: 'Find',
+            previousMatch: 'Previous match',
+            nextMatch: 'Next match',
+            close: 'Close',
+            replace: 'Replace',
+            replaceAll: 'Replace all',
+          ),
+        ),
+      ],
       characterShortcutEvents: standardCharacterShortcutEvents,
     );
   }

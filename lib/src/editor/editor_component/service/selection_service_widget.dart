@@ -37,15 +37,14 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
         selectionColor: widget.selectionColor,
         child: widget.child,
       );
-    } else if (PlatformExtension.isMobile) {
-      return MobileSelectionServiceWidget(
-        key: forwardKey,
-        cursorColor: widget.cursorColor,
-        selectionColor: widget.selectionColor,
-        child: widget.child,
-      );
     }
-    throw UnimplementedError();
+
+    return MobileSelectionServiceWidget(
+      key: forwardKey,
+      cursorColor: widget.cursorColor,
+      selectionColor: widget.selectionColor,
+      child: widget.child,
+    );
   }
 
   @override

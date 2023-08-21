@@ -63,6 +63,9 @@ class NodeIterator implements Iterator<Node> {
     return _currentNode != null;
   }
 
+  /// Transforms the [NodeIterator] into an
+  /// [Iterable] containing all of the relevant [Node]'s
+  ///
   List<Node> toList() {
     final List<Node> result = [];
     while (moveNext()) {

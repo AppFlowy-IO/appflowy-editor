@@ -6,10 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:flutter/services.dart';
 
+import '../../editor/block_component/rich_text/appflowy_rich_text_keys.dart';
+
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
 
-abstract class TextOperation {
+sealed class TextOperation {
   Attributes? get attributes;
   int get length;
 
@@ -439,6 +441,22 @@ class Delta extends Iterable<TextOperation> {
 
     return operation;
   }
+
+  Attributes? sliceAttributes(int index) {
+    if (index <= 0) {
+      return null;
+    }
+
+    final attributes = slice(index - 1, index).first.attributes;
+    if (attributes == null ||
+        !attributes.keys.every(
+          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+        )) {
+      return null;
+    }
+
+    return attributes;
+  }
 }
 
 class _OpIterator {
@@ -488,22 +506,18 @@ class _OpIterator {
     } else {
       _offset += length;
     }
-    if (nextOp is TextDelete) {
-      return TextDelete(length: length);
-    }
 
-    if (nextOp is TextRetain) {
-      return TextRetain(length, attributes: nextOp.attributes);
+    switch (nextOp) {
+      case TextDelete _:
+        return TextDelete(length: length);
+      case TextRetain _:
+        return TextRetain(length, attributes: nextOp.attributes);
+      case TextInsert _:
+        return TextInsert(
+          nextOp.text.substring(offset, offset + length),
+          attributes: nextOp.attributes,
+        );
     }
-
-    if (nextOp is TextInsert) {
-      return TextInsert(
-        nextOp.text.substring(offset, offset + length),
-        attributes: nextOp.attributes,
-      );
-    }
-
-    return TextRetain(_maxInt);
   }
 
   List<TextOperation> rest() {

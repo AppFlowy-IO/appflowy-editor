@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 
 void showColorMenu(
@@ -16,7 +15,21 @@ void showColorMenu(
   final rect = editorState.selectionRects().first;
   OverlayEntry? overlay;
 
-  final (top, bottom, left) = positionFromRect(rect, editorState);
+  // should abstract this logic to a method
+  // ----
+  final left = rect.left + 10;
+  double? top;
+  double? bottom;
+  final offset = rect.center;
+  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
+  final editorHeight = editorState.renderBox!.size.height;
+  final threshold = editorOffset.dy + editorHeight - 250;
+  if (offset.dy > threshold) {
+    bottom = editorOffset.dy + editorHeight - rect.top - 5;
+  } else {
+    top = rect.bottom + 5;
+  }
+  // ----
 
   void dismissOverlay() {
     overlay?.remove();
@@ -40,11 +53,13 @@ void showColorMenu(
           isTextColor
               ? formatFontColor(
                   editorState,
-                  color,
+                  editorState.selection,
+                  color ?? Colors.black.toHex(),
                 )
               : formatHighlightColor(
                   editorState,
-                  color,
+                  editorState.selection,
+                  color ?? Colors.transparent.toHex(),
                 );
           dismissOverlay();
         },

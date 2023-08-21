@@ -1,10 +1,10 @@
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_menu.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_menu.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TableCellBlockKeys {
   const TableCellBlockKeys._();
@@ -52,20 +52,20 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
   });
 
   @override
-  State<TableCelBlockWidget> createState() => _TableCeBlockeWidgetState();
+  State<TableCelBlockWidget> createState() => _TableCeBlockWidgetState();
 }
 
-class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
+class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
   late final editorState = Provider.of<EditorState>(context, listen: false);
-  bool _rowActionVisiblity = false;
+  bool _rowActionVisibility = false;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         MouseRegion(
-          onEnter: (_) => setState(() => _rowActionVisiblity = true),
-          onExit: (_) => setState(() => _rowActionVisiblity = false),
+          onEnter: (_) => setState(() => _rowActionVisibility = true),
+          onExit: (_) => setState(() => _rowActionVisibility = false),
           child: Container(
             constraints: BoxConstraints(
               minHeight: context.select((Node n) => n.attributes['height']),
@@ -88,7 +88,7 @@ class _TableCeBlockeWidgetState extends State<TableCelBlockWidget> {
           ),
         ),
         TableActionHandler(
-          visible: _rowActionVisiblity,
+          visible: _rowActionVisibility,
           node: widget.node.parent!,
           editorState: editorState,
           position: widget.node.attributes['rowPosition'],

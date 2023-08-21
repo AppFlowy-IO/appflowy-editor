@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/flutter/scrollable_helpers.dart';
+import 'package:flutter/material.dart' hide EdgeDraggingAutoScroller;
 
 abstract class AutoScrollerService {
   void startAutoScroll(
     Offset offset, {
     double edgeOffset = 200,
     AxisDirection? direction,
+    Duration? duration,
   });
 
   void stopAutoScroll();
@@ -27,22 +29,26 @@ class AutoScroller extends EdgeDraggingAutoScroller
     Offset offset, {
     double edgeOffset = 200,
     AxisDirection? direction,
+    Duration? duration,
   }) {
-    if (direction != null) {
-      if (direction == AxisDirection.up) {
-        startAutoScrollIfNecessary(
-          offset & Size(1, edgeOffset),
-        );
-      }
-    } else {
-      lastOffset = offset;
-      final dragTarget = Rect.fromCenter(
-        center: offset,
-        width: edgeOffset,
-        height: edgeOffset,
+    if (direction != null && direction == AxisDirection.up) {
+      return startAutoScrollIfNecessary(
+        offset & Size(1, edgeOffset),
+        duration: duration,
       );
-      startAutoScrollIfNecessary(dragTarget);
     }
+
+    lastOffset = offset;
+    final dragTarget = Rect.fromCenter(
+      center: offset,
+      width: edgeOffset,
+      height: edgeOffset,
+    );
+
+    startAutoScrollIfNecessary(
+      dragTarget,
+      duration: duration,
+    );
   }
 
   @override
