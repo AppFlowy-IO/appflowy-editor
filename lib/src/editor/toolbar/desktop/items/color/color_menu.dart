@@ -36,6 +36,8 @@ void showColorMenu(
     overlay = null;
   }
 
+  keepEditorFocusNotifier.value += 1;
+  final editorSelection = editorState.selection;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
@@ -62,6 +64,7 @@ void showColorMenu(
                   color ?? Colors.transparent.toHex(),
                 );
           dismissOverlay();
+          keepEditorFocusNotifier.value -= 1;
         },
         resetText: isTextColor
             ? AppFlowyEditorLocalizations.current.resetToDefaultColor

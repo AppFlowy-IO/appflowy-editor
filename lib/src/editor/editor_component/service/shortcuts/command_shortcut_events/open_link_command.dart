@@ -1,47 +1,50 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-/// Cmd / Ctrl + K: show link menu
+/// Option/Alt + Enter: to open inline link
 /// - support
 ///   - desktop
 ///   - web
-final CommandShortcutEvent showLinkMenuCommand = CommandShortcutEvent(
-  key: 'link menu',
-  command: 'ctrl+k',
-  macOSCommand: 'cmd+k',
-  handler: _showLinkMenu,
+///
+final CommandShortcutEvent openInlineLinkCommand = CommandShortcutEvent(
+  key: 'open inline link',
+  command: 'alt+enter',
+  handler: _openInlineLink,
 );
 
-KeyEventResult _showLinkMenu(
+KeyEventResult _openInlineLink(
   EditorState editorState,
 ) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'showLinkMenuCommand is not supported on mobile platform.');
+    assert(false, 'open inline link is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
 
+  //TODO:If selection is collapsed, isHref is false.
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }
-  final context =
-      editorState.getNodeAtPath(selection.end.path)?.key.currentContext;
-  if (context == null) {
-    return KeyEventResult.ignored;
-  }
+
   final nodes = editorState.getNodesInSelection(selection);
+
   final isHref = nodes.allSatisfyInSelection(selection, (delta) {
     return delta.everyAttributes(
       (attributes) => attributes[BuiltInAttributeKey.href] != null,
     );
   });
 
-  showLinkMenu(
-    context,
-    editorState,
-    selection,
-    isHref,
-  );
+  String? linkText;
+  if (isHref) {
+    linkText = editorState.getDeltaAttributeValueInSelection(
+      BuiltInAttributeKey.href,
+      selection,
+    );
+  }
+
+  if (linkText != null) {
+    safeLaunchUrl(linkText);
+  }
 
   return KeyEventResult.handled;
 }
