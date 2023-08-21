@@ -315,10 +315,18 @@ class MockIMEInput {
   }
 
   Future<void> replaceText(String text) async {
-    final selection = editorState.selection?.normalized;
-    if (selection == null || selection.isCollapsed || !selection.isSingle) {
+    var selection = editorState.selection?.normalized;
+    if (selection == null) {
       return;
     }
+    if (!selection.isSingle || !selection.isCollapsed) {
+      await editorState.deleteSelection(selection);
+    }
+    selection = editorState.selection?.normalized;
+    if (selection == null) {
+      return;
+    }
+
     final oldText =
         editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
 
