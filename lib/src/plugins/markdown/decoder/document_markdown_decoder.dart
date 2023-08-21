@@ -1,9 +1,14 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:path/path.dart' as p;
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
+  DocumentMarkdownDecoder({
+    this.customParsers = const [],
+  });
+  final List<CustomNodeParser> customParsers;
   final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
   final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
   final htmlRegex = RegExp('^(http|https)://');
@@ -58,6 +63,12 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   Node _convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
+    for(final parser in customParsers){
+      final Node? node = parser.transform(line);
+      if(node != null){
+        return node;
+      } 
+    }
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
