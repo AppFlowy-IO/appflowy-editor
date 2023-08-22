@@ -58,9 +58,17 @@ void main() {
       expect(direction, TextDirection.rtl);
     });
 
-    test(
-        'fallback to default text direction even if we have last direction (only fallback to last direction when node textDirection is auto)',
-        () {
+    test('fallback to default text direction auto', () {
+      final node = paragraphNode(
+        text: 'سلام',
+      );
+      final direction =
+          TextDirectionTest(node: node, defaultTextDirection: "auto")
+              .calculateTextDirection();
+      expect(direction, TextDirection.rtl);
+    });
+
+    test('if not auto don\'t fallback to last direction', () {
       final node = paragraphNode(
         text: 'سلام',
       );

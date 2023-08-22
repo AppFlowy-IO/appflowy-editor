@@ -66,7 +66,8 @@ TextDirection calculateNodeDirection({
 }) {
   // if the block component has a text direction attribute which is not auto,
   // use it
-  final value = node.attributes[blockComponentTextDirection] as String?;
+  final value = (node.attributes[blockComponentTextDirection] as String?) ??
+      defaultTextDirection;
   if (value != null && value != blockComponentTextDirectionAuto) {
     final direction = value.toTextDirection();
     if (direction != null) {
