@@ -285,7 +285,7 @@ class EditorState {
   List<Node> getSelectedNodes([
     Selection? selection,
   ]) {
-    final List<Node> res = [];
+    List<Node> res = [];
     selection ??= this.selection;
     if (selection == null || selection.isCollapsed) {
       return res;
@@ -297,6 +297,8 @@ class EditorState {
       }
       res.add(node);
     }
+
+    res = res.map((e) => e.copyWith()).toList();
 
     if (res.isNotEmpty) {
       var delta = res.first.delta;
