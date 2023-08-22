@@ -290,7 +290,7 @@ class EditorState {
     if (selection == null || selection.isCollapsed) {
       return res;
     }
-    final nodes = getNodesInSelection(selection).map((e) => e.copyWith());
+    final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
       if (res.any((element) => element.path.isParentOf(node.path))) {
         continue;
