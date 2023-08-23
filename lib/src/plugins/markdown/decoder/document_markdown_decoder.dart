@@ -50,12 +50,16 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         if (i == lines.length) {
           i = tempLinePointer;
           document.insert(
-              [i], [_convertLineToNode(lines[i], customInlineSyntaxes)]);
+            [i],
+            [_convertLineToNode(lines[i], customInlineSyntaxes)],
+          );
           i++;
         } else {
           codeBlock += lines[i];
-          document.insert([tempLinePointer],
-              [_convertLineToNode(codeBlock, customInlineSyntaxes)]);
+          document.insert(
+            [tempLinePointer],
+            [_convertLineToNode(codeBlock, customInlineSyntaxes)],
+          );
           i++;
         }
       } else {
@@ -69,7 +73,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   }
 
   Node _convertLineToNode(
-      String line, List<md.InlineSyntax> customInlineSyntaxes) {
+    String line,
+    List<md.InlineSyntax> customInlineSyntaxes,
+  ) {
     final decoder =
         DeltaMarkdownDecoder(customInlineSyntaxes: customInlineSyntaxes);
     for (final parser in customNodeParsers) {
