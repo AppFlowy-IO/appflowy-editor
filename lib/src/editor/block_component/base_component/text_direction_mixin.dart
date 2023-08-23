@@ -47,8 +47,8 @@ mixin BlockComponentTextDirectionMixin {
 }
 
 /// Calculate the text direction of a node.
-// If the textDirection attribute is not set we will use defaultTextDirection
-//  if set. If not will use layoutDirection.
+// If the textDirection attribute is not set, we will use defaultTextDirection if
+// it has a value (defaultTextDirection != null). If not will use layoutDirection.
 // If the textDirection is ltr or rtl we will apply that.
 // If the textDirection is auto we go by these priorities:
 // 1. Determine the direction by first character with strong directionality
