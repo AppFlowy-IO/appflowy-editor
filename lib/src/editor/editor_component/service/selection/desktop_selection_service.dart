@@ -68,11 +68,12 @@ class _DesktopSelectionServiceWidgetState
     super.didChangeMetrics();
 
     // Need to refresh the selection when the metrics changed.
-    if (currentSelection.value != null) {
+    // For example, user change the size of window or turn the direction of phone.
+    if (editorState.selection != null) {
       Debounce.debounce(
         'didChangeMetrics - update selection ',
         const Duration(milliseconds: 100),
-        () => updateSelection(currentSelection.value!),
+        () => _updateSelection(),
       );
     }
   }
@@ -101,50 +102,13 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  void updateSelection(Selection? selection) {
-    if (currentSelection.value == selection) {
-      return;
-    }
-
-    selectionRects.clear();
-    _clearSelection();
-
-    if (selection != null) {
-      if (selection.isCollapsed) {
-        // updates cursor area.
-        Log.selection.debug('update cursor area, $selection');
-        _forceShowCursor();
-        _updateCursorAreas(selection.start);
-      } else {
-        // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
-        _updateSelectionAreas(selection);
-      }
-    }
-
-    currentSelection.value = selection;
-    editorState.updateSelectionWithReason(
-      selection,
-      reason: SelectionUpdateReason.uiEvent,
-    );
-  }
+  void updateSelection(Selection? selection) {}
 
   void _updateSelection() {
     final selection = editorState.selection;
-
-    // TODO: why do we need to check this?
-    if (currentSelection.value == selection &&
-        [SelectionUpdateReason.uiEvent, SelectionUpdateReason.searchHighlight]
-            .contains(editorState.selectionUpdateReason) &&
-        editorState.selectionType != SelectionType.block) {
-      return;
-    }
-
-    currentSelection.value = selection;
-
-    void updateSelection() {
+    void updateSelectionLayers() {
       selectionRects.clear();
-      _clearSelection();
+      clearSelection();
 
       if (selection != null) {
         if (editorState.selectionType == SelectionType.block) {
@@ -164,23 +128,16 @@ class _DesktopSelectionServiceWidgetState
     }
 
     if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
-      updateSelection();
+      updateSelectionLayers();
     } else {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        updateSelection();
+        updateSelectionLayers();
       });
     }
   }
 
   @override
   void clearSelection() {
-    currentSelectedNodes = [];
-    currentSelection.value = null;
-
-    _clearSelection();
-  }
-
-  void _clearSelection() {
     clearCursor();
     // clear selection areas
     _selectionAreas
@@ -266,7 +223,8 @@ class _DesktopSelectionServiceWidgetState
       clearSelection();
       return;
     }
-    updateSelection(selection);
+    editorState.selection = selection;
+    _updateSelection();
   }
 
   void _onTripleTapDown(TapDownDetails details) {
@@ -281,14 +239,15 @@ class _DesktopSelectionServiceWidgetState
       start: selectable.start(),
       end: selectable.end(),
     );
-    updateSelection(selection);
+    editorState.selection = selection;
+    _updateSelection();
   }
 
   void _onSecondaryTapDown(TapDownDetails details) {
     // if selection is null, or
     // selection.isCollapsed and the selected node is TextNode.
     // try to select the word.
-    final selection = currentSelection.value;
+    final selection = editorState.selection;
     if (selection == null ||
         (selection.isCollapsed == true &&
             currentSelectedNodes.first.delta != null)) {
@@ -326,7 +285,8 @@ class _DesktopSelectionServiceWidgetState
           first.getSelectionInRange(panStartOffset, panEndOffset).start;
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
       final selection = Selection(start: start, end: end);
-      updateSelection(selection);
+      editorState.selection = selection;
+      _updateSelection();
     }
 
     _showDebugLayerIfNeeded(offset: panEndOffset);
@@ -371,7 +331,7 @@ class _DesktopSelectionServiceWidgetState
   void _updateSelectionAreas(Selection selection) {
     final nodes = editorState.getNodesInSelection(selection);
 
-    currentSelectedNodes = nodes;
+    // currentSelectedNodes = nodes;
 
     // TODO: need to be refactored.
     Offset? toolbarOffset;

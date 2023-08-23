@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -7,16 +6,13 @@ import 'package:flutter/material.dart';
 /// for a while. So we need to implement our own GestureDetector.
 class MobileSelectionGestureDetector extends StatefulWidget {
   const MobileSelectionGestureDetector({
-    super.key,
+    Key? key,
     this.child,
-    this.onTapDown,
+    this.onTapUp,
+    this.onTap,
     this.onDoubleTapDown,
-    this.onTripleTapDown,
-    this.onSecondaryTapDown,
-    this.onPanStart,
-    this.onPanUpdate,
-    this.onPanEnd,
-  });
+    this.onDoubleTap,
+  }) : super(key: key);
 
   @override
   State<MobileSelectionGestureDetector> createState() =>
@@ -24,102 +20,46 @@ class MobileSelectionGestureDetector extends StatefulWidget {
 
   final Widget? child;
 
-  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCallback? onTap;
   final GestureTapDownCallback? onDoubleTapDown;
-  final GestureTapDownCallback? onTripleTapDown;
-  final GestureTapDownCallback? onSecondaryTapDown;
-  final GestureDragStartCallback? onPanStart;
-  final GestureDragUpdateCallback? onPanUpdate;
-  final GestureDragEndCallback? onPanEnd;
+  final GestureDoubleTapCallback? onDoubleTap;
 }
 
 class MobileSelectionGestureDetectorState
     extends State<MobileSelectionGestureDetector> {
-  bool _isDoubleTap = false;
-  Timer? _doubleTapTimer;
-  int _tripleTapCount = 0;
-  Timer? _tripleTapTimer;
-
-  final kTripleTapTimeout = const Duration(milliseconds: 500);
-
   @override
   Widget build(BuildContext context) {
-    return RawGestureDetector(
-      behavior: HitTestBehavior.opaque,
-      gestures: {
-        PanGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-          () => PanGestureRecognizer(
-            supportedDevices: {
-              //   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
-              //   PointerDeviceKind.trackpad,
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-              PointerDeviceKind.stylus,
-              PointerDeviceKind.invertedStylus,
-            },
-          ),
-          (recognizer) {
-            recognizer
-              ..onStart = widget.onPanStart
-              ..onUpdate = widget.onPanUpdate
-              ..onEnd = widget.onPanEnd;
-          },
-        ),
-        TapGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-          () => TapGestureRecognizer(),
-          (recognizer) {
-            recognizer.onTapDown = _tapDownDelegate;
-            recognizer.onSecondaryTapDown = widget.onSecondaryTapDown;
-          },
-        ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTapDown: (tapdetail) => Log.selection.debug(
+        'onTapDown global: ${tapdetail.globalPosition} local :${tapdetail.localPosition} }',
+      ),
+      onTapUp: widget.onTapUp,
+      onTap: widget.onTap,
+      onDoubleTapDown: widget.onDoubleTapDown,
+      onDoubleTap: widget.onDoubleTap,
+      onDoubleTapCancel: () => Log.selection.debug('onDoubleTapCancel'),
+      onPanStart: (details) {
+        Log.selection.debug(
+          'onPanStart global: ${details.globalPosition} local :${details.localPosition} }',
+        );
+      },
+      onPanUpdate: (details) {
+        Log.selection.debug(
+          'onPanUpdate global: ${details.globalPosition} local :${details.localPosition}',
+        );
+      },
+      onPanDown: (details) => Log.selection.debug(
+        'onPanDown global: ${details.globalPosition} local :${details.localPosition} }',
+      ),
+      onPanEnd: (details) => Log.selection.debug(
+        'onPanEnd velocity: ${details.velocity}, local :${details.primaryVelocity}',
+      ),
+      onLongPress: () {
+        Log.selection.debug('onLongPress');
       },
       child: widget.child,
     );
-  }
-
-  void _tapDownDelegate(TapDownDetails tapDownDetails) {
-    if (_tripleTapCount == 2) {
-      _tripleTapCount = 0;
-      _tripleTapTimer?.cancel();
-      _tripleTapTimer = null;
-      if (widget.onTripleTapDown != null) {
-        widget.onTripleTapDown!(tapDownDetails);
-      }
-    } else if (_isDoubleTap) {
-      _isDoubleTap = false;
-      _doubleTapTimer?.cancel();
-      _doubleTapTimer = null;
-      if (widget.onDoubleTapDown != null) {
-        widget.onDoubleTapDown!(tapDownDetails);
-      }
-      _tripleTapCount++;
-    } else {
-      if (widget.onTapDown != null) {
-        widget.onTapDown!(tapDownDetails);
-      }
-
-      _isDoubleTap = true;
-      _doubleTapTimer?.cancel();
-      _doubleTapTimer = Timer(kDoubleTapTimeout, () {
-        _isDoubleTap = false;
-        _doubleTapTimer = null;
-      });
-
-      _tripleTapCount = 1;
-      _tripleTapTimer?.cancel();
-      _tripleTapTimer = Timer(kTripleTapTimeout, () {
-        _tripleTapCount = 0;
-        _tripleTapTimer = null;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _doubleTapTimer?.cancel();
-    _tripleTapTimer?.cancel();
-    super.dispose();
   }
 }

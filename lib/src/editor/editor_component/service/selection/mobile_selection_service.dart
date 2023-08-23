@@ -5,7 +5,6 @@ import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture_d
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:provider/provider.dart';
 
 enum MobileSelectionDragMode {
@@ -26,12 +25,14 @@ class MobileSelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.selectionHandleColor = const Color(0xFF00BCF0),
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
+  final Color selectionHandleColor;
 
   @override
   State<MobileSelectionServiceWidget> createState() =>
@@ -42,12 +43,14 @@ class _MobileSelectionServiceWidgetState
     extends State<MobileSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
-  final _cursorKey = GlobalKey(debugLabel: 'cursor');
+  final _cursorKey = GlobalKey<CursorWidgetState>(debugLabel: 'mobile_cursor');
+
+  // Since we need to remove the selection, these variables are used to record the selection [OverlayEntry] before we remove them.
+  final List<OverlayEntry> _selectionOverlayEntries = [];
+  OverlayEntry? _cursorOverlayEntry;
 
   @override
   final List<Rect> selectionRects = [];
-  final List<OverlayEntry> _selectionAreas = [];
-  final List<OverlayEntry> _cursorAreas = [];
 
   @override
   ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
@@ -57,12 +60,13 @@ class _MobileSelectionServiceWidgetState
 
   final List<SelectionGestureInterceptor> _interceptors = [];
 
-  /// Pan
-  Offset? _panStartOffset;
-  double? _panStartScrollDy;
-  Selection? _panStartSelection;
+  /// The global position when the user [onTap]
+  Offset? _tapUpOffset;
 
-  MobileSelectionDragMode dragMode = MobileSelectionDragMode.none;
+  /// The global position when the user [onDoubleTap]
+  Offset? _doubleTapDownOffset;
+
+  // MobileSelectionDragMode dragMode = MobileSelectionDragMode.none;
 
   late EditorState editorState = Provider.of<EditorState>(
     context,
@@ -74,80 +78,70 @@ class _MobileSelectionServiceWidgetState
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-    editorState.selectionNotifier.addListener(_updateSelection);
+    editorState.selectionNotifier.addListener(_updateSelectionLayers);
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    // Need to rebuild the selection when the metrics change.
+    // For example, when users rotate the device from vertical to horizontal, we need to rebuild the new selection layers on horizontal direction.
+    if (editorState.selection != null) {
+      Debounce.debounce(
+        'didChangeMetrics - update selection ',
+        const Duration(milliseconds: 100),
+        () => _updateSelectionLayers(),
+      );
+    }
   }
 
   @override
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
-    editorState.selectionNotifier.removeListener(_updateSelection);
+    editorState.selectionNotifier.removeListener(_updateSelectionLayers);
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // User's gestures will lead to the change of [editorState.selection]. By listening to the change of [editorState.selection], we rebuild/insert the selection layers(like cirsor and selection with handles) .
     return MobileSelectionGestureDetector(
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTap: _onTap,
       onDoubleTapDown: _onDoubleTapDown,
-      onTripleTapDown: _onTripleTapDown,
+      onDoubleTap: _onDoubleTap,
       child: widget.child,
     );
   }
 
   @override
   void updateSelection(Selection? selection) {
-    if (currentSelection.value == selection) {
-      return;
-    }
-
-    selectionRects.clear();
-    _clearSelection();
-
-    if (selection != null) {
-      if (selection.isCollapsed) {
-        // updates cursor area.
-        Log.selection.debug('update cursor area, $selection');
-        _forceShowCursor();
-        _updateCursorAreas(selection.start);
-      } else {
-        // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
-        _updateSelectionAreas(selection);
-      }
-    }
-
-    currentSelection.value = selection;
-    editorState.selection = selection;
+    Log.selection.debug('updateSelection');
   }
 
   @override
+
+  /// Remove all the overlay entries on the page
   void clearSelection() {
-    currentSelectedNodes = [];
-    currentSelection.value = null;
-
-    _clearSelection();
-  }
-
-  void _clearSelection() {
+    Log.selection.debug('clearSelection');
     clearCursor();
     // clear selection areas
-    _selectionAreas
+    _selectionOverlayEntries
       ..forEach((overlay) => overlay.remove())
       ..clear();
-    // clear cursor areas
   }
 
   @override
+
+  /// Remove the cursor overlay entry on the page
   void clearCursor() {
-    // clear cursor areas
-    _cursorAreas
-      ..forEach((overlay) => overlay.remove())
-      ..clear();
+    Log.selection.debug('clearCursor');
+    if (_cursorOverlayEntry != null) {
+      _cursorOverlayEntry!.remove();
+      _cursorOverlayEntry = null;
+    }
   }
 
   @override
@@ -183,275 +177,125 @@ class _MobileSelectionServiceWidgetState
     _interceptors.removeWhere((element) => element.key == key);
   }
 
-  void _updateSelection() {
+  /// Update the selection layers UI(cursors and selection hanlders)
+  /// base on different type of selection in editorState.
+  void _updateSelectionLayers() {
     final selection = editorState.selection;
-    // TODO: why do we need to check this?
-    if (currentSelection.value == selection &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
-        editorState.selectionType != SelectionType.block) {
-      return;
-    }
 
-    currentSelection.value = selection;
-
-    void updateSelection() {
-      selectionRects.clear();
-      _clearSelection();
-
-      if (selection != null) {
-        if (editorState.selectionType == SelectionType.block) {
-          // updates selection area.
-          Log.selection.debug('update block selection area, $selection');
-          _updateBlockSelectionAreas(selection);
-        } else if (selection.isCollapsed) {
-          // updates cursor area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateCursorAreas(selection.start);
-        } else {
-          // updates selection area.
-          Log.selection.debug('update selection area, $selection');
-          _updateSelectionAreas(selection);
-        }
+    void renderSelectionLayers() {
+      if (selection == null) return;
+      if (selection.isCollapsed) {
+        Log.selection.debug('update cursor area, $selection');
+        clearSelection();
+        _updateCursor(selection.start);
+      } else {
+        // updates selection area.
+        Log.selection.debug('update selection area, $selection');
+        clearSelection();
+        _updateSelectionAreas(selection);
       }
     }
 
     if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
-      updateSelection();
+      renderSelectionLayers();
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        updateSelection();
-      });
+      WidgetsBinding.instance
+          .addPostFrameCallback((timeStamp) => renderSelectionLayers());
     }
   }
 
-  void _onTapDown(TapDownDetails details) {
-    final canTap = _interceptors.every(
-      (element) => element.canTap?.call(details) ?? true,
-    );
-    if (!canTap) return;
-
-    // clear old state.
-    _panStartOffset = null;
-
-    final position = getPositionInOffset(details.globalPosition);
-    if (position == null) {
-      return;
-    }
-
-    // updateSelection(selection);
-    editorState.selection = Selection.collapsed(position);
-  }
-
-  void _onDoubleTapDown(TapDownDetails details) {
-    final offset = details.globalPosition;
-    final node = getNodeInOffset(offset);
-    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
-    if (selection == null) {
-      clearSelection();
-      return;
-    }
-    updateSelection(selection);
-  }
-
-  void _onTripleTapDown(TapDownDetails details) {
-    final offset = details.globalPosition;
-    final node = getNodeInOffset(offset);
-    final selectable = node?.selectable;
-    if (selectable == null) {
-      clearSelection();
-      return;
-    }
-    Selection selection = Selection(
-      start: selectable.start(),
-      end: selectable.end(),
-    );
-    updateSelection(selection);
-  }
-
-  void _onPanStart(DragStartDetails details) {
-    _panStartOffset = details.globalPosition.translate(-3.0, 0);
-    _panStartScrollDy = editorState.service.scrollService?.dy;
-
-    final position = details.globalPosition;
-    final selection = editorState.selection;
-    _panStartSelection = selection;
-    if (selection == null) {
-      dragMode = MobileSelectionDragMode.none;
-    } else if (selection.isCollapsed &&
-        _isOverlayOnHandler(
-          position,
-          MobileSelectionHandlerType.cursorHandler,
-        )) {
-      dragMode = MobileSelectionDragMode.cursor;
-    } else if (_isOverlayOnHandler(
-      position,
-      MobileSelectionHandlerType.leftHandler,
-    )) {
-      dragMode = MobileSelectionDragMode.leftSelectionHandler;
-    } else if (_isOverlayOnHandler(
-      position,
-      MobileSelectionHandlerType.rightHandler,
-    )) {
-      dragMode = MobileSelectionDragMode.rightSelectionHandler;
-    } else {
-      dragMode = MobileSelectionDragMode.none;
-    }
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    if (_panStartOffset == null || _panStartScrollDy == null) {
-      return;
-    }
-
-    // only support selection mode now.
-    final selection = editorState.selection;
-    if (selection == null || dragMode == MobileSelectionDragMode.none) {
-      return;
-    }
-
-    final panEndOffset = details.globalPosition;
-
-    final dy = editorState.service.scrollService?.dy;
-    final panStartOffset = dy == null
-        ? _panStartOffset!
-        : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-    final end = getNodeInOffset(panEndOffset)
-        ?.selectable
-        ?.getSelectionInRange(panStartOffset, panEndOffset)
-        .end;
-
-    if (end != null) {
-      if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
-        updateSelection(
-          selection.copyWith(
-            end: end,
-            start: _panStartSelection?.normalized.end,
-          ),
-        );
-      } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
-        updateSelection(
-          selection.copyWith(end: end),
-        );
-      } else if (dragMode == MobileSelectionDragMode.cursor) {
-        updateSelection(
-          Selection.collapsed(end),
-        );
-      }
-    }
-  }
-
-  void _onPanEnd(DragEndDetails details) {
-    // do nothing
-  }
-
-  void _updateBlockSelectionAreas(Selection selection) {
-    assert(editorState.selectionType == SelectionType.block);
-    final nodes = editorState.getNodesInSelection(selection).normalized;
-
-    currentSelectedNodes = nodes;
-
-    final node = nodes.first;
-    var offset = Offset.zero;
-    var size = node.rect.size;
-    final rect = offset & size;
-
-    final overlay = OverlayEntry(
-      builder: (context) => MobileSelectionWidget(
-        color: widget.selectionColor,
-        layerLink: node.layerLink,
-        rect: rect,
-        decoration: BoxDecoration(
-          color: widget.selectionColor,
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-    );
-    _selectionAreas.add(overlay);
-
-    Overlay.of(context)?.insertAll(_selectionAreas);
-  }
-
+  /// Render selection with handles
   void _updateSelectionAreas(Selection selection) {
     final nodes = editorState.getNodesInSelection(selection);
-
-    currentSelectedNodes = nodes;
+    Log.selection.debug(' _updateSelectionAreas nodes: $nodes');
 
     final backwardNodes =
         selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
-
     Log.selection.debug('update selection areas, $normalizedSelection');
 
-    if (editorState.selectionType == SelectionType.block) {
-      final node = backwardNodes.first;
-      final rect = Offset.zero & node.rect.size;
-      final overlay = OverlayEntry(
-        builder: (context) => SelectionWidget(
-          color: widget.selectionColor,
-          layerLink: node.layerLink,
-          rect: rect,
-        ),
-      );
-      _selectionAreas.add(overlay);
-    } else {
-      for (var i = 0; i < backwardNodes.length; i++) {
-        final node = backwardNodes[i];
+    for (var i = 0; i < backwardNodes.length; i++) {
+      final node = backwardNodes[i];
 
-        final selectable = node.selectable;
-        if (selectable == null) {
-          continue;
+      final selectable = node.selectable;
+      if (selectable == null) {
+        continue;
+      }
+
+      var newSelection = normalizedSelection.copyWith();
+
+      /// In the case of multiple selections,
+      ///  we need to return a new selection for each selected node individually.
+      ///
+      /// < > means selected.
+      /// text: abcd<ef
+      /// text: ghijkl
+      /// text: mn>opqr
+      ///
+      if (!normalizedSelection.isSingle) {
+        if (i == 0) {
+          newSelection = newSelection.copyWith(end: selectable.end());
+        } else if (i == nodes.length - 1) {
+          newSelection = newSelection.copyWith(start: selectable.start());
+        } else {
+          newSelection = Selection(
+            start: selectable.start(),
+            end: selectable.end(),
+          );
         }
+      }
 
-        var newSelection = normalizedSelection.copyWith();
+      // Get all the rects from selection
+      final selectionRects = selectable.getRectsInSelection(newSelection);
+      for (final selectionRect in selectionRects) {
+        // Build selection rectangle area
+        final overlay = OverlayEntry(
+          builder: (context) => MobileSelectionWidget(
+            selectionColor: widget.selectionColor,
+            selectionHandleColor: widget.selectionHandleColor,
+            layerLink: node.layerLink,
+            selectionRect: selectionRect,
+            handleType: HandleType.none,
+          ),
+        );
+        _selectionOverlayEntries.add(overlay);
 
-        /// In the case of multiple selections,
-        ///  we need to return a new selection for each selected node individually.
-        ///
-        /// < > means selected.
-        /// text: abcd<ef
-        /// text: ghijkl
-        /// text: mn>opqr
-        ///
-        if (!normalizedSelection.isSingle) {
-          if (i == 0) {
-            newSelection = newSelection.copyWith(end: selectable.end());
-          } else if (i == nodes.length - 1) {
-            newSelection = newSelection.copyWith(start: selectable.start());
-          } else {
-            newSelection = Selection(
-              start: selectable.start(),
-              end: selectable.end(),
-            );
-          }
-        }
-
-        final rects = selectable.getRectsInSelection(newSelection);
-        for (final (j, rect) in rects.indexed) {
-          final selectionRect = selectable.transformRectToGlobal(rect);
-          selectionRects.add(selectionRect);
-          final overlay = OverlayEntry(
+        // Add selection handles when we build the first and last rect.
+        if (selectionRect == selectionRects.first) {
+          final leftHandlerOverlay = OverlayEntry(
             builder: (context) => MobileSelectionWidget(
-              color: widget.selectionColor,
+              selectionColor: widget.selectionColor,
+              selectionHandleColor: widget.selectionHandleColor,
               layerLink: node.layerLink,
-              rect: rect,
-              showLeftHandler: i == 0 && j == 0,
-              showRightHandler:
-                  i == backwardNodes.length - 1 && j == rects.length - 1,
+              selectionRect: selectionRect,
+              handleType: HandleType.up,
             ),
           );
-          _selectionAreas.add(overlay);
+          _selectionOverlayEntries.add(leftHandlerOverlay);
+        }
+        if (selectionRect == selectionRects.last) {
+          final leftHandlerOverlay = OverlayEntry(
+            builder: (context) => MobileSelectionWidget(
+              selectionColor: widget.selectionColor,
+              selectionHandleColor: widget.selectionHandleColor,
+              layerLink: node.layerLink,
+              selectionRect: selectionRect,
+              handleType: HandleType.down,
+            ),
+          );
+          _selectionOverlayEntries.add(leftHandlerOverlay);
         }
       }
     }
-
     final overlay = Overlay.of(context);
     overlay?.insertAll(
-      _selectionAreas,
+      _selectionOverlayEntries,
     );
   }
 
-  void _updateCursorAreas(Position position) {
+  /// Render cursor
+  void _updateCursor(Position position) {
     final node = editorState.document.root.childAtPath(position.path);
 
     if (node == null) {
@@ -459,16 +303,10 @@ class _MobileSelectionServiceWidgetState
       return;
     }
 
-    currentSelectedNodes = [node];
-
-    _showCursor(node, position);
-  }
-
-  void _showCursor(Node node, Position position) {
     final selectable = node.selectable;
     final cursorRect = selectable?.getCursorRectInPosition(position);
     if (selectable != null && cursorRect != null) {
-      final cursorArea = OverlayEntry(
+      final cursorEntry = OverlayEntry(
         builder: (context) => CursorWidget(
           key: _cursorKey,
           rect: cursorRect,
@@ -478,17 +316,12 @@ class _MobileSelectionServiceWidgetState
           cursorStyle: selectable.cursorStyle,
         ),
       );
+      _cursorOverlayEntry = cursorEntry;
+      Overlay.of(context)?.insert(cursorEntry);
 
-      _cursorAreas.add(cursorArea);
-      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
-
-      _forceShowCursor();
+      // Force cursor always show 100% opacity at the begining
+      _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
     }
-  }
-
-  void _forceShowCursor() {
-    _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
   }
 
   Node? _getNodeInOffset(
@@ -525,33 +358,44 @@ class _MobileSelectionServiceWidgetState
     return node;
   }
 
-  bool _isOverlayOnHandler(Offset point, MobileSelectionHandlerType type) {
-    if (selectionRects.isEmpty) {
-      return false;
-    }
+  void _onTapUp(TapUpDetails tapUpDetails) {
+    Log.selection.debug(
+      'onTapUp global: ${tapUpDetails.globalPosition} local :${tapUpDetails.localPosition} }',
+    );
+    _tapUpOffset = tapUpDetails.globalPosition;
+  }
 
-    const extend = 40.0;
-    switch (type) {
-      case MobileSelectionHandlerType.leftHandler:
-      case MobileSelectionHandlerType.cursorHandler:
-        final first = selectionRects.first;
-        final handlerRect = Rect.fromLTWH(
-          first.left - extend,
-          first.top - extend,
-          extend * 2,
-          first.height + 2 * extend,
-        );
-        return handlerRect.contains(point);
+  void _onTap() {
+    Log.selection.debug('onTap');
+    // update the selection in editor state base on user's tap position
+    if (_tapUpOffset == null) return;
+    final position = getPositionInOffset(_tapUpOffset!);
+    if (position == null) return;
+    editorState.selection = Selection.collapsed(position);
+    _tapUpOffset = null;
+  }
 
-      case MobileSelectionHandlerType.rightHandler:
-        final last = selectionRects.last;
-        final rightHandlerRect = Rect.fromLTWH(
-          last.right - extend,
-          last.top - extend,
-          extend * 2,
-          last.height + 2 * extend,
-        );
-        return rightHandlerRect.contains(point);
+  void _onDoubleTapDown(TapDownDetails doubleTapDownDetails) {
+    Log.selection.debug(
+      'onDoubleTapDown global: ${doubleTapDownDetails.globalPosition} local :${doubleTapDownDetails.localPosition}',
+    );
+    _doubleTapDownOffset = doubleTapDownDetails.globalPosition;
+  }
+
+  void _onDoubleTap() {
+    Log.selection.debug('onDoubleTap');
+    if (_doubleTapDownOffset == null) return;
+    // update the selection in editor state base on user's tap position
+    final node = getNodeInOffset(_doubleTapDownOffset!);
+    var selection =
+        node?.selectable?.getWordBoundaryInOffset(_doubleTapDownOffset!);
+    if (selection == null) {
+      clearSelection();
+      return;
     }
+    Log.selection.debug('input seleciton ${selection.isForward}');
+    // TODO(yijing): to avoid select a space when users double tapping
+    editorState.selection = selection;
+    _doubleTapDownOffset = null;
   }
 }
