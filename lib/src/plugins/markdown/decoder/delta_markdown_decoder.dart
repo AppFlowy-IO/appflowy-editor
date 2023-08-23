@@ -10,11 +10,15 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     with md.NodeVisitor {
   final _delta = Delta();
   final Attributes _attributes = {};
+  final List<md.InlineSyntax> customInlineSyntaxes;
+
+  DeltaMarkdownDecoder({this.customInlineSyntaxes = const []});
 
   @override
   Delta convert(String input) {
     final inlineSyntaxes = [
       UnderlineInlineSyntax(),
+      ...customInlineSyntaxes,
     ];
     final document = md.Document(
       extensionSet: md.ExtensionSet.gitHubWeb,
@@ -56,6 +60,12 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.href] = element.attributes['href'];
     } else if (element.tag == 'u') {
       _attributes[BuiltInAttributeKey.underline] = true;
+    } else {
+      for (final key in element.attributes.keys) {
+        if (element.attributes[key] != null) {
+          _attributes[key] = jsonDecode(element.attributes[key]!);
+        }
+      }
     }
   }
 
@@ -72,6 +82,10 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes.remove(BuiltInAttributeKey.href);
     } else if (element.tag == 'u') {
       _attributes.remove(BuiltInAttributeKey.underline);
+    } else {
+      for (var key in element.attributes.keys) {
+        _attributes.remove(key);
+      }
     }
   }
 }

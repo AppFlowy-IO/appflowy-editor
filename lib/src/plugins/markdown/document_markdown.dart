@@ -8,6 +8,7 @@ import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/image_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
+import 'package:markdown/markdown.dart' as md;
 
 /// Converts a markdown to [Document].
 ///
@@ -15,8 +16,12 @@ import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart'
 Document markdownToDocument(
   String markdown, {
   List<CustomNodeParser> customParsers = const [],
+  List<md.InlineSyntax> customInlineSyntaxes = const [],
 }) {
-  return const AppFlowyEditorMarkdownCodec().decode(markdown);
+  return AppFlowyEditorMarkdownCodec(
+          customInlineSyntaxes: customInlineSyntaxes,
+          customParsers: customParsers,)
+      .decode(markdown);
 }
 
 /// Converts a [Document] to markdown.
@@ -43,14 +48,20 @@ String documentToMarkdown(
 
 class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
   const AppFlowyEditorMarkdownCodec({
+    this.customParsers = const [],
+    this.customInlineSyntaxes = const [],
     this.encodeParsers = const [],
   });
 
   final List<NodeParser> encodeParsers;
-
+  final List<CustomNodeParser> customParsers;
+  final List<md.InlineSyntax> customInlineSyntaxes;
   // TODO: Add support for custom parsers
   @override
-  Converter<String, Document> get decoder => DocumentMarkdownDecoder();
+  Converter<String, Document> get decoder => DocumentMarkdownDecoder(
+        customNodeParsers: customParsers,
+        customInlineSyntaxes: customInlineSyntaxes,
+      );
 
   @override
   Converter<Document, String> get encoder => DocumentMarkdownEncoder(
