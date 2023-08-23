@@ -19,9 +19,9 @@ Document markdownToDocument(
   List<md.InlineSyntax> customInlineSyntaxes = const [],
 }) {
   return AppFlowyEditorMarkdownCodec(
-          customInlineSyntaxes: customInlineSyntaxes,
-          customParsers: customParsers,)
-      .decode(markdown);
+    customInlineSyntaxes: customInlineSyntaxes,
+    customParsers: customParsers,
+  ).decode(markdown);
 }
 
 /// Converts a [Document] to markdown.
