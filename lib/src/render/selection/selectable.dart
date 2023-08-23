@@ -14,6 +14,11 @@ enum CursorStyle {
 /// The widget returned by NodeWidgetBuilder must be with [SelectableMixin],
 ///   otherwise the [AppFlowySelectionService] will not work properly.
 mixin SelectableMixin<T extends StatefulWidget> on State<T> {
+  /// Returns the [Rect] representing the block selection in current widget.
+  ///
+  /// Normally, the rect should not include the action menu area.
+  Rect getBlockRect();
+
   /// Returns the [Selection] surrounded by start and end
   ///   in current widget.
   ///
@@ -71,5 +76,9 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   Rect transformRectToGlobal(Rect r) {
     final topLeft = localToGlobal(r.topLeft);
     return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
+  }
+
+  TextDirection textDirection() {
+    return TextDirection.ltr;
   }
 }

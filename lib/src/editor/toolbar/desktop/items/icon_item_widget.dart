@@ -1,15 +1,15 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-class IconItemWidget extends StatelessWidget {
-  const IconItemWidget({
+class SVGIconItemWidget extends StatelessWidget {
+  const SVGIconItemWidget({
     super.key,
     this.size = const Size.square(30.0),
     this.iconSize = const Size.square(18.0),
     this.iconName,
     this.iconBuilder,
     required this.isHighlight,
-    this.highlightColor = Colors.lightBlue,
+    required this.highlightColor,
     this.tooltip,
     this.onPressed,
   });
@@ -52,6 +52,7 @@ class IconItemWidget extends StatelessWidget {
         textAlign: TextAlign.center,
         preferBelow: false,
         message: tooltip,
+        waitDuration: const Duration(milliseconds: 500),
         child: child,
       );
     }

@@ -119,16 +119,10 @@ class Transaction {
     add(DeleteOperation(path, nodes));
   }
 
-  /// move the node
+  /// Moves a [Node] to the provided [Path]
   void moveNode(Path path, Node node) {
     deleteNode(node);
     insertNode(path, node, deepCopy: false);
-  }
-
-  /// Update the [TextNode]s with the given [Delta].
-  void updateText(TextNode textNode, Delta delta) {
-    final inverted = delta.invert(textNode.delta);
-    add(UpdateTextOperation(textNode.path, delta, inverted));
   }
 
   /// Returns the JSON representation of the transaction.
@@ -223,6 +217,33 @@ extension TextTransaction on Transaction {
 
     afterSelection = Selection.collapsed(
       Position(path: node.path, offset: index + text.length),
+    );
+  }
+
+  void insertTextDelta(
+    Node node,
+    int index,
+    Delta insertedDelta,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index <= delta.length && index >= 0,
+      'The index($index) is out of range or negative.',
+    );
+
+    final insert = Delta()
+      ..retain(index)
+      ..addAll(insertedDelta);
+
+    addDeltaToComposeMap(node, insert);
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index + insertedDelta.length),
     );
   }
 
@@ -550,141 +571,5 @@ extension TextTransaction on Transaction {
   void addDeltaToComposeMap(Node node, Delta delta) {
     markNeedsComposing = true;
     _composeMap.putIfAbsent(node, () => []).add(delta);
-  }
-
-  // the below code is deprecated.
-  void splitText(TextNode textNode, int offset) {
-    final delta = textNode.delta;
-    final second = delta.slice(offset, delta.length);
-    final path = textNode.path.next;
-    deleteText(textNode, offset, delta.length);
-    insertNode(
-      path,
-      TextNode(
-        attributes: textNode.attributes,
-        delta: second,
-      ),
-    );
-    afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: 0,
-      ),
-    );
-  }
-
-  /// Inserts the text content at a specified index.
-  ///
-  /// Optionally, you may specify formatting attributes that are applied to the inserted string.
-  /// By default, the formatting attributes before the insert position will be reused.
-  // void insertText(
-  //   TextNode textNode,
-  //   int index,
-  //   String text, {
-  //   Attributes? attributes,
-  // }) {
-  //   var newAttributes = attributes;
-  //   if (index != 0 && attributes == null) {
-  //     newAttributes =
-  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-  //     if (newAttributes != null) {
-  //       newAttributes = {...newAttributes}; // make a copy
-  //     }
-  //   }
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..insert(text, attributes: newAttributes),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(path: textNode.path, offset: index + text.length),
-  //   );
-  // }
-
-  /// Assigns a formatting attributes to a range of text.
-  // void formatText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  //   Attributes attributes,
-  // ) {
-  //   afterSelection = beforeSelection;
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..retain(length, attributes: attributes),
-  //   );
-  // }
-
-  // /// Deletes the text of specified length starting at index.
-  // void deleteText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  // ) {
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..delete(length),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(path: textNode.path, offset: index),
-  //   );
-  // }
-
-  /// Replaces the text of specified length starting at index.
-  ///
-  /// Optionally, you may specify formatting attributes that are applied to the inserted string.
-  /// By default, the formatting attributes before the insert position will be reused.
-  // void replaceText(
-  //   TextNode textNode,
-  //   int index,
-  //   int length,
-  //   String text, {
-  //   Attributes? attributes,
-  // }) {
-  //   var newAttributes = attributes;
-  //   if (index != 0 && attributes == null) {
-  //     newAttributes =
-  //         textNode.delta.slice(max(index - 1, 0), index).first.attributes;
-  //     if (newAttributes == null) {
-  //       final slicedDelta = textNode.delta.slice(index, index + length);
-  //       if (slicedDelta.isNotEmpty) {
-  //         newAttributes = slicedDelta.first.attributes;
-  //       }
-  //     }
-  //   }
-  //   updateText(
-  //     textNode,
-  //     Delta()
-  //       ..retain(index)
-  //       ..delete(length)
-  //       ..insert(text, attributes: {...newAttributes ?? {}}),
-  //   );
-  //   afterSelection = Selection.collapsed(
-  //     Position(
-  //       path: textNode.path,
-  //       offset: index + text.length,
-  //     ),
-  //   );
-  // }
-}
-
-extension on Delta {
-  Attributes? sliceAttributes(int index) {
-    if (index <= 0) {
-      return null;
-    }
-    final attributes = slice(index - 1, index).first.attributes;
-    if (attributes == null ||
-        !attributes.keys.every(
-          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-        )) {
-      return null;
-    }
-    return attributes;
   }
 }

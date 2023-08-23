@@ -1,22 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('allSatisfyInSelection - node', () {
     const welcome = 'Welcome ';
     const toAppFlowy = 'to AppFlowy';
@@ -38,9 +25,8 @@ void main() async {
       final editorState = EditorState(document: document);
 
       // Welcome |to AppFlowy| Editor 🔥!
-      final selection = Selection.collapse(
-        [0],
-        welcome.length,
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: welcome.length),
       );
       editorState.selection = selection;
       final node = editorState.getNodeAtPath([0]);

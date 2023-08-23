@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -365,6 +366,292 @@ void main() async {
         expect(node.delta?.toPlainText(), '****');
         await editor.dispose();
       }),
+    );
+
+    testWidgets(
+      '**bold and _nested_ italics**',
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics';
+        const text = doubleAsterisks +
+            firstBoldSegment +
+            underscore +
+            italicsSegment +
+            underscore +
+            secondBoldSegment +
+            singleAsterisk;
+
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
+        }
+
+        await insertAsterisk(editor);
+
+        final node = editor.nodeAtPath([0]);
+        final allTextBold = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+
+        final segmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length,
+            endOffset: firstBoldSegment.length + italicsSegment.length - 1,
+          ),
+        );
+
+        final lastSegmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length + italicsSegment.length,
+            endOffset: text.length,
+          ),
+        );
+
+        const plainText = firstBoldSegment + italicsSegment + secondBoldSegment;
+        final plainResult = node?.delta?.toPlainText();
+        expect(allTextBold, true);
+        expect(segmentItalic, true);
+        expect(lastSegmentItalic, true);
+        expect(plainText, plainResult);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'regular then **bold and _nested_ italics**',
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const regularSegment = 'regular then ';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics';
+        const text = regularSegment +
+            doubleAsterisks +
+            firstBoldSegment +
+            underscore +
+            italicsSegment +
+            underscore +
+            secondBoldSegment +
+            singleAsterisk;
+
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
+        }
+
+        await insertAsterisk(editor);
+
+        final node = editor.nodeAtPath([0]);
+        final textInAsterisksIsBold = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: regularSegment.length,
+            endOffset: text.length,
+          ),
+        );
+
+        final segmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: regularSegment.length + firstBoldSegment.length,
+            endOffset: regularSegment.length +
+                firstBoldSegment.length +
+                italicsSegment.length -
+                1,
+          ),
+        );
+
+        final lastSegmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: text.length - secondBoldSegment.length,
+            endOffset: text.length,
+          ),
+        );
+        const plainText = regularSegment +
+            firstBoldSegment +
+            italicsSegment +
+            secondBoldSegment;
+        final plainResult = node?.delta?.toPlainText();
+        expect(textInAsterisksIsBold, true);
+        expect(segmentItalic, true);
+        expect(lastSegmentItalic, true);
+        expect(plainText, plainResult);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      '**bold and _double_ _nested_ italics**',
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const firstItalicsSegment = 'double';
+        const underscore = '_';
+        const secondBoldSegment = ' ';
+        const secondItalicsSegment = 'nested';
+        const thirdBoldSegment = ' italics';
+        const text = doubleAsterisks +
+            firstBoldSegment +
+            underscore +
+            firstItalicsSegment +
+            underscore +
+            secondBoldSegment +
+            underscore +
+            secondItalicsSegment +
+            underscore +
+            thirdBoldSegment +
+            singleAsterisk;
+
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
+        }
+
+        await insertAsterisk(editor);
+
+        final node = editor.nodeAtPath([0]);
+
+        final allTextBold = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+
+        final firstSegmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length,
+            endOffset: firstBoldSegment.length + firstItalicsSegment.length - 1,
+          ),
+        );
+
+        const secondItalicsSegmentIndex = firstBoldSegment.length +
+            firstItalicsSegment.length +
+            secondBoldSegment.length;
+        final secondSegmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: secondItalicsSegmentIndex,
+            endOffset:
+                secondItalicsSegmentIndex + secondItalicsSegment.length - 1,
+          ),
+        );
+
+        const plainText = firstBoldSegment +
+            firstItalicsSegment +
+            secondBoldSegment +
+            secondItalicsSegment +
+            thirdBoldSegment;
+        final plainResult = node?.delta?.toPlainText();
+        expect(allTextBold, true);
+        expect(firstSegmentItalic, true);
+        expect(secondSegmentItalic, true);
+        expect(plainText, plainResult);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      '**bold and _nested_ italics with a _ unescaped**',
+      (tester) async {
+        const doubleAsterisks = '**';
+        const singleAsterisk = '*';
+        const firstBoldSegment = 'bold and ';
+        const underscore = '_';
+        const italicsSegment = 'nested';
+        const secondBoldSegment = ' italics with a _ unescaped';
+        const text = doubleAsterisks +
+            firstBoldSegment +
+            underscore +
+            italicsSegment +
+            underscore +
+            secondBoldSegment +
+            singleAsterisk;
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+
+        await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+        for (final c in text.characters) {
+          await editor.ime.insertText(c);
+        }
+
+        await insertAsterisk(editor);
+
+        final node = editor.nodeAtPath([0]);
+
+        final allTextBold = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: text.length,
+          ),
+        );
+
+        final segmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length,
+            endOffset: firstBoldSegment.length + italicsSegment.length - 1,
+          ),
+        );
+
+        final lastSegmentItalic = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: firstBoldSegment.length + italicsSegment.length,
+            endOffset: text.length,
+          ),
+        );
+
+        const plainText = firstBoldSegment + italicsSegment + secondBoldSegment;
+        final plainResult = node?.delta?.toPlainText();
+        expect(allTextBold, true);
+        expect(segmentItalic, true);
+        expect(lastSegmentItalic, true);
+        expect(plainText, plainResult);
+
+        await editor.dispose();
+      },
     );
   });
 

@@ -1,12 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const convertibleBlockTypes = [
-  'bulleted_list',
-  'numbered_list',
-  'todo_list',
-  'quote',
-  'heading',
+final convertibleBlockTypes = [
+  BulletedListBlockKeys.type,
+  NumberedListBlockKeys.type,
+  TodoListBlockKeys.type,
+  QuoteBlockKeys.type,
+  HeadingBlockKeys.type,
 ];
 
 /// Convert to paragraph command.
@@ -39,14 +39,16 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
   if (index >= 0) {
     return KeyEventResult.ignored;
   }
+  final textDirection = node.attributes[blockComponentTextDirection];
   final transaction = editorState.transaction;
   transaction
     ..insertNode(
       node.path,
       paragraphNode(
         attributes: {
-          'delta': delta.toJson(),
+          ParagraphBlockKeys.delta: delta.toJson(),
         },
+        textDirection: textDirection,
         children: node.children,
       ),
       deepCopy: true,

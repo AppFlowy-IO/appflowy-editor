@@ -72,9 +72,12 @@ class _BackgroundColorOptionsWidgetsState
                   setState(() {
                     formatHighlightColor(
                       widget.editorState,
+                      widget.editorState.selection,
                       e.colorHex,
                     );
                   });
+                } else {
+                  // TODO(yijing): handle when no text is selected
                 }
               },
               isSelected: isSelected,

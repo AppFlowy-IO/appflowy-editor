@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
@@ -24,11 +23,11 @@ enum MobileSelectionHandlerType {
 
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
-    Key? key,
+    super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final Color cursorColor;
@@ -354,11 +353,6 @@ class _MobileSelectionServiceWidgetState
     final node = nodes.first;
     var offset = Offset.zero;
     var size = node.rect.size;
-    final builder = editorState.renderer.blockComponentBuilder(node.type);
-    if (builder != null && builder.showActions(node)) {
-      offset = offset.translate(blockComponentActionContainerWidth, 0);
-      size = Size(size.width - blockComponentActionContainerWidth, size.height);
-    }
     final rect = offset & size;
 
     final overlay = OverlayEntry(

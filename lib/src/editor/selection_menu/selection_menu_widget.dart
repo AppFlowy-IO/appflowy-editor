@@ -85,7 +85,8 @@ class SelectionMenuItem {
     required String name,
     required IconData iconData,
     required List<String> keywords,
-    required Node Function(EditorState editorState) nodeBuilder,
+    required Node Function(EditorState editorState, BuildContext context)
+        nodeBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
@@ -105,7 +106,7 @@ class SelectionMenuItem {
         size: 18.0,
       ),
       keywords: keywords,
-      handler: (editorState, _, __) {
+      handler: (editorState, _, context) {
         final selection = editorState.selection;
         if (selection == null || !selection.isCollapsed) {
           return;
@@ -115,7 +116,7 @@ class SelectionMenuItem {
         if (node == null || delta == null) {
           return;
         }
-        final newNode = nodeBuilder(editorState);
+        final newNode = nodeBuilder(editorState, context);
         final transaction = editorState.transaction;
         final bReplace = replace?.call(editorState, node) ?? false;
         final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
@@ -195,6 +196,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.onSelectionUpdate,
     required this.selectionMenuStyle,
     required this.itemCountFilter,
+    required this.deleteSlashByDefault,
   }) : super(key: key);
 
   final List<SelectionMenuItem> items;
@@ -209,6 +211,8 @@ class SelectionMenuWidget extends StatefulWidget {
 
   final SelectionMenuStyle selectionMenuStyle;
 
+  final bool deleteSlashByDefault;
+
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
 }
@@ -218,6 +222,8 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
   int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
+
+  int _searchCounter = 0;
 
   String _keyword = '';
   String get keyword => _keyword;
@@ -241,12 +247,18 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     Log.ui.debug('$items');
 
-    if (keyword.length >= maxKeywordLength + 2) {
-      widget.onExit();
+    if (keyword.length >= maxKeywordLength + 2 &&
+        !(widget.deleteSlashByDefault && _searchCounter < 2)) {
+      return widget.onExit();
+    }
+    setState(() {
+      _showingItems = items;
+    });
+
+    if (_showingItems.isEmpty) {
+      _searchCounter++;
     } else {
-      setState(() {
-        _showingItems = items;
-      });
+      _searchCounter = 0;
     }
   }
 
@@ -390,6 +402,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       widget.onExit();
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      if (_searchCounter > 0) {
+        _searchCounter--;
+      }
       if (keyword.isEmpty) {
         widget.onExit();
       } else {

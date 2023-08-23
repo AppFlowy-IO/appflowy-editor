@@ -1,11 +1,10 @@
-import 'package:appflowy_editor/src/core/location/position.dart';
-import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 mixin DefaultSelectableMixin {
   GlobalKey get forwardKey;
   GlobalKey get containerKey;
+  GlobalKey get blockComponentKey;
 
   SelectableMixin<StatefulWidget> get forward =>
       forwardKey.currentState as SelectableMixin;
@@ -17,6 +16,17 @@ mixin DefaultSelectableMixin {
       return childBox.localToGlobal(Offset.zero, ancestor: parentBox);
     }
     return Offset.zero;
+  }
+
+  Rect getBlockRect() {
+    final parentBox = containerKey.currentContext?.findRenderObject();
+    final childBox = blockComponentKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && childBox is RenderBox) {
+      final offset = childBox.localToGlobal(Offset.zero, ancestor: parentBox);
+      final size = parentBox.size;
+      return offset & (size - offset as Size);
+    }
+    return Rect.zero;
   }
 
   Position getPositionInOffset(Offset start) =>
@@ -45,4 +55,6 @@ mixin DefaultSelectableMixin {
   Position start() => forward.start();
 
   Position end() => forward.end();
+
+  TextDirection textDirection() => forward.textDirection();
 }

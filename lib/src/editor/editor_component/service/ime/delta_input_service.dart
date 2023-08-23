@@ -33,14 +33,15 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     for (final delta in formattedDeltas) {
       _updateComposing(delta);
 
-      if (delta is TextEditingDeltaInsertion) {
-        await onInsert(delta);
-      } else if (delta is TextEditingDeltaDeletion) {
-        await onDelete(delta);
-      } else if (delta is TextEditingDeltaReplacement) {
-        await onReplace(delta);
-      } else if (delta is TextEditingDeltaNonTextUpdate) {
-        await onNonTextUpdate(delta);
+      switch (delta) {
+        case TextEditingDeltaInsertion _:
+          await onInsert(delta);
+        case TextEditingDeltaDeletion _:
+          await onDelete(delta);
+        case TextEditingDeltaReplacement _:
+          await onReplace(delta);
+        case TextEditingDeltaNonTextUpdate _:
+          await onNonTextUpdate(delta);
       }
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import 'ime/delta_input_impl.dart';
 
 // handle software keyboard and hardware keyboard
@@ -105,6 +106,18 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   @override
   void enable() => focusNode.requestFocus();
+
+  // Used in mobile only
+  @override
+  void closeKeyboard() {
+    textInputService.close();
+  }
+
+  // Used in mobile only
+  @override
+  void enableKeyBoard(Selection selection) {
+    _attachTextInputService(selection);
+  }
 
   @override
   KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
@@ -251,7 +264,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     // clear the selection when the focus is lost.
     if (!focusNode.hasFocus) {
-      if (PlatformExtension.isDesktop) {
+      if (PlatformExtension.isDesktopOrWeb) {
         if (keepEditorFocusNotifier.value > 0) {
           return;
         }

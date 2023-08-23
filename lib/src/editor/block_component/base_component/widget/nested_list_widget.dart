@@ -3,12 +3,21 @@ import 'package:flutter/material.dart';
 class NestedListWidget extends StatelessWidget {
   const NestedListWidget({
     super.key,
-    this.padding = const EdgeInsets.only(left: 30.0),
+    this.indentPadding = const EdgeInsets.only(left: 30),
     required this.child,
     required this.children,
   });
 
-  final EdgeInsets padding;
+  /// used to indent the nested list when the children's level is greater than 1.
+  ///
+  /// For example,
+  ///
+  /// Hello AppFlowy
+  ///   Hello AppFlowy
+  /// ↑
+  /// the indent padding is applied to the second line.
+  final EdgeInsets indentPadding;
+
   final Widget child;
   final List<Widget> children;
 
@@ -21,7 +30,7 @@ class NestedListWidget extends StatelessWidget {
       children: [
         child,
         Padding(
-          padding: padding,
+          padding: indentPadding,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,

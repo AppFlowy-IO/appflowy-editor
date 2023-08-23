@@ -16,8 +16,12 @@ concurrency:
 env:
   FLUTTER_VERSION: "3.10.1"
 
+# 3 jobs are configured.
+# The first one runs tests on desktop OSs.
+# The second runs tests on iOS simulator.
+# The third runs tests on Android emulator.
 jobs:
-  tests:
+  desktop:
     strategy:
       matrix:
         os: [macos-13, macos-12, macos-11, ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019]
@@ -48,5 +52,6 @@ jobs:
             fail_ci_if_error: true
             verbose: true
             os: ${{ matrix.os }}
+            token: ${{ secrets.CODECOV_TOKEN }}
           attempt_limit: 10
           attempt_delay: 10000

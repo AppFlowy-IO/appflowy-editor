@@ -431,6 +431,16 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tint 1`
   String get tint1 {
     return Intl.message(
@@ -711,6 +721,46 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Edit link`
+  String get editLink {
+    return Intl.message(
+      'Edit link',
+      name: 'editLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get linkText {
+    return Intl.message(
+      'Text',
+      name: 'linkText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter text`
+  String get linkTextHint {
+    return Intl.message(
+      'Please enter text',
+      name: 'linkTextHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter URL`
+  String get linkAddressHint {
+    return Intl.message(
+      'Please enter URL',
+      name: 'linkAddressHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Highlight color`
   String get highlightColor {
     return Intl.message(
@@ -766,6 +816,36 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Reset to default color',
       name: 'resetToDefaultColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LTR`
+  String get ltr {
+    return Intl.message(
+      'LTR',
+      name: 'ltr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RTL`
+  String get rtl {
+    return Intl.message(
+      'RTL',
+      name: 'rtl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto`
+  String get auto {
+    return Intl.message(
+      'Auto',
+      name: 'auto',
       desc: '',
       args: [],
     );

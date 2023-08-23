@@ -1,236 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
-import 'package:appflowy_editor/src/service/internal_key_event_handlers/number_list_helper.dart';
-import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event_handler.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-int _textLengthOfNode(Node node) {
-  if (node is TextNode) {
-    return node.delta.length;
-  }
-
-  return 0;
-}
-
-Selection _computeSelectionAfterPasteMultipleNodes(
-  EditorState editorState,
-  List<Node> nodes,
-) {
-  final currentSelection = editorState.cursorSelection!;
-  final currentCursor = currentSelection.start;
-  final currentPath = [...currentCursor.path];
-  currentPath[currentPath.length - 1] += nodes.length;
-  int lenOfLastNode = _textLengthOfNode(nodes.last);
-  return Selection.collapsed(
-    Position(path: currentPath, offset: lenOfLastNode),
-  );
-}
-
-void _handleCopy(EditorState editorState) async {
-  final selection = editorState.cursorSelection?.normalized;
-  if (selection == null || selection.isCollapsed) {
-    return;
-  }
-  if (selection.start.path.equals(selection.end.path)) {
-    final nodeAtPath = editorState.document.nodeAtPath(selection.end.path)!;
-    if (nodeAtPath.type == "text") {
-      final textNode = nodeAtPath as TextNode;
-      final htmlString = NodesToHTMLConverter(
-        nodes: [textNode],
-        startOffset: selection.start.offset,
-        endOffset: selection.end.offset,
-      ).toHTMLString();
-      final textString = textNode.toPlainText().substring(
-            selection.startIndex,
-            selection.endIndex,
-          );
-      Log.keyboard.debug('copy html: $htmlString');
-      AppFlowyClipboard.setData(
-        text: textString,
-        html: htmlString,
-      );
-    } else {
-      Log.keyboard.debug('unimplemented: copy non-text');
-    }
-    return;
-  }
-
-  final beginNode = editorState.document.nodeAtPath(selection.start.path)!;
-  final endNode = editorState.document.nodeAtPath(selection.end.path)!;
-
-  final nodes = NodeIterator(
-    document: editorState.document,
-    startNode: beginNode,
-    endNode: endNode,
-  ).toList();
-
-  final html = NodesToHTMLConverter(
-    nodes: nodes,
-    startOffset: selection.start.offset,
-    endOffset: selection.end.offset,
-  ).toHTMLString();
-  var text = '';
-  for (final node in nodes) {
-    if (node is TextNode) {
-      if (node.path == selection.start.path) {
-        text += node.toPlainText().substring(selection.start.offset);
-      } else if (node.path == selection.end.path) {
-        text += node.toPlainText().substring(0, selection.end.offset);
-      } else {
-        text += node.toPlainText();
-      }
-    }
-    text += '\n';
-  }
-  AppFlowyClipboard.setData(
-    text: text,
-    html: html,
-  );
-}
-
-void _pasteHTML(EditorState editorState, String html) {
-  final selection = editorState.cursorSelection?.normalized;
-  if (selection == null) {
-    return;
-  }
-
-  assert(selection.isCollapsed);
-
-  final path = [...selection.end.path];
-  if (path.isEmpty) {
-    return;
-  }
-
-  Log.keyboard.debug('paste html: $html');
-  final nodes = HTMLToNodesConverter(html).toNodes();
-
-  if (nodes.isEmpty) {
-    return;
-  } else if (nodes.length == 1) {
-    final firstNode = nodes[0];
-    final nodeAtPath = editorState.document.nodeAtPath(path)!;
-    final tb = editorState.transaction;
-    final startOffset = selection.start.offset;
-    if (nodeAtPath.type == "text" && firstNode.type == "text") {
-      final textNodeAtPath = nodeAtPath as TextNode;
-      final firstTextNode = firstNode as TextNode;
-      tb.updateText(
-        textNodeAtPath,
-        (Delta()..retain(startOffset)) + firstTextNode.delta,
-      );
-      tb.updateNode(textNodeAtPath, firstTextNode.attributes);
-      tb.afterSelection = (Selection.collapsed(
-        Position(
-          path: path,
-          offset: startOffset + firstTextNode.delta.length,
-        ),
-      ));
-      editorState.apply(tb);
-      return;
-    }
-  }
-
-  _pasteMultipleLinesInText(editorState, path, selection.start.offset, nodes);
-}
-
-void _pasteMultipleLinesInText(
-  EditorState editorState,
-  List<int> path,
-  int offset,
-  List<Node> nodes,
-) {
-  final tb = editorState.transaction;
-
-  final firstNode = nodes[0];
-  final nodeAtPath = editorState.document.nodeAtPath(path)!;
-
-  if (nodeAtPath.type == 'text' && firstNode.type == 'text') {
-    int? startNumber;
-    if (nodeAtPath.subtype == BuiltInAttributeKey.numberList) {
-      startNumber = nodeAtPath.attributes[BuiltInAttributeKey.number] as int;
-    }
-
-    // split and merge
-    final textNodeAtPath = nodeAtPath as TextNode;
-    final firstTextNode = firstNode as TextNode;
-    final remain = textNodeAtPath.delta.slice(offset);
-
-    tb.updateText(
-      textNodeAtPath,
-      (Delta()
-            ..retain(offset)
-            ..delete(remain.length)) +
-          firstTextNode.delta,
-    );
-    tb.updateNode(textNodeAtPath, firstTextNode.attributes);
-
-    final tailNodes = nodes.sublist(1);
-    final originalPath = [...path];
-    path[path.length - 1]++;
-
-    final afterSelection =
-        _computeSelectionAfterPasteMultipleNodes(editorState, tailNodes);
-
-    if (tailNodes.isNotEmpty) {
-      if (tailNodes.last.type == "text") {
-        final tailTextNode = tailNodes.last as TextNode;
-        tailTextNode.delta = tailTextNode.delta + remain;
-      } else if (remain.isNotEmpty) {
-        tailNodes.add(TextNode(delta: remain));
-      }
-    } else {
-      tailNodes.add(TextNode(delta: remain));
-    }
-
-    tb.afterSelection = afterSelection;
-    tb.insertNodes(path, tailNodes);
-    editorState.apply(tb);
-
-    if (startNumber != null) {
-      makeFollowingNodesIncremental(
-        editorState,
-        originalPath,
-        afterSelection,
-        beginNum: startNumber,
-      );
-    }
-    return;
-  }
-
-  final afterSelection =
-      _computeSelectionAfterPasteMultipleNodes(editorState, nodes);
-
-  path[path.length - 1]++;
-  tb.afterSelection = afterSelection;
-  tb.insertNodes(path, nodes);
-  editorState.apply(tb);
-}
-
-void _handlePaste(EditorState editorState) async {
-  final data = await AppFlowyClipboard.getData();
-
-  if (editorState.cursorSelection?.isCollapsed ?? false) {
-    _pastRichClipboard(editorState, data);
-    return;
-  }
-
-  _deleteSelectedContent(editorState);
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    _pastRichClipboard(editorState, data);
-  });
-}
-
-void _pastRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
-  if (data.html != null) {
-    _pasteHTML(editorState, data.html!);
-    return;
-  }
-  if (data.text != null) {
-    handlePastePlainText(editorState, data.text!);
-    return;
-  }
-}
+int _textLengthOfNode(Node node) => node.delta?.length ?? 0;
+RegExp _linkRegex = RegExp(
+  r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
+);
 
 void _pasteSingleLine(
   EditorState editorState,
@@ -238,9 +12,17 @@ void _pasteSingleLine(
   String line,
 ) {
   assert(selection.isCollapsed);
+
+  // handle link
+  final Attributes attributes = _linkRegex.hasMatch(line)
+      ? {
+          AppFlowyRichTextKeys.href: line,
+        }
+      : {};
+
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
-    ..insertText(node, selection.startIndex, line)
+    ..insertText(node, selection.startIndex, line, attributes: attributes)
     ..afterSelection = (Selection.collapsed(
       Position(
         path: selection.end.path,
@@ -250,36 +32,8 @@ void _pasteSingleLine(
   editorState.apply(transaction);
 }
 
-// TODO(Lucas): migrate to the new command
-/// parse url from the line text
-/// reference: https://stackoverflow.com/questions/59444837/flutter-dart-regex-to-extract-urls-from-a-string
-// Delta _lineContentToDelta(String lineContent) {
-//   final exp = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\#\w/\-?=%.]+');
-//   final Iterable<RegExpMatch> matches = exp.allMatches(lineContent);
-
-//   final delta = Delta();
-
-//   var lastUrlEndOffset = 0;
-
-//   for (final match in matches) {
-//     if (lastUrlEndOffset < match.start) {
-//       delta.insert(lineContent.substring(lastUrlEndOffset, match.start));
-//     }
-//     final linkContent = lineContent.substring(match.start, match.end);
-//     delta.insert(linkContent, attributes: {"href": linkContent});
-//     lastUrlEndOffset = match.end;
-//   }
-
-//   if (lastUrlEndOffset < lineContent.length) {
-//     delta.insert(lineContent.substring(lastUrlEndOffset, lineContent.length));
-//   }
-
-//   return delta;
-// }
-
 void _pasteMarkdown(EditorState editorState, String markdown) {
-  final selection =
-      editorState.service.selectionService.currentSelection.value?.normalized;
+  final selection = editorState.selection;
   if (selection == null) {
     return;
   }
@@ -293,7 +47,8 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
 
   var path = selection.end.path.next;
   final node = editorState.document.nodeAtPath(selection.end.path);
-  if (node is TextNode && node.toPlainText().isEmpty) {
+  final delta = node?.delta;
+  if (delta != null && delta.toPlainText().isEmpty) {
     path = selection.end.path;
   }
   final document = markdownToDocument(markdown);
@@ -305,10 +60,8 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   final offset = document.root.children.lastOrNull?.delta?.length ?? 0;
   transaction
     ..insertNodes(path, document.root.children)
-    ..afterSelection = Selection.collapse(
-      afterPath,
-      offset,
-    );
+    ..afterSelection =
+        Selection.collapsed(Position(path: afterPath, offset: offset));
   editorState.apply(transaction);
 }
 
@@ -333,77 +86,259 @@ void handlePastePlainText(EditorState editorState, String plainText) {
   }
 }
 
-/// 1. copy the selected content
-/// 2. delete selected content
-void _handleCut(EditorState editorState) {
-  _handleCopy(editorState);
-  _deleteSelectedContent(editorState);
+void pasteHTML(EditorState editorState, String html) {
+  final selection = editorState.selection?.normalized;
+  if (selection == null || !selection.isCollapsed) {
+    return;
+  }
+
+  Log.keyboard.debug('paste html: $html');
+
+  final htmlToNodes = htmlToDocument(html).root.children.where((element) {
+    final delta = element.delta;
+    if (delta == null) {
+      return true;
+    }
+    return delta.isNotEmpty;
+  });
+  if (htmlToNodes.isEmpty) {
+    return;
+  }
+
+  if (htmlToNodes.length == 1) {
+    _pasteSingleLineInText(
+      editorState,
+      selection.startIndex,
+      htmlToNodes.first,
+    );
+  } else {
+    _pasteMultipleLinesInText(
+      editorState,
+      selection.start.offset,
+      htmlToNodes.toList(),
+    );
+  }
 }
 
-void _deleteSelectedContent(EditorState editorState) {
-  final selection = editorState.cursorSelection?.normalized;
+Selection _computeSelectionAfterPasteMultipleNodes(
+  EditorState editorState,
+  List<Node> nodes,
+) {
+  final currentSelection = editorState.selection!;
+  final currentCursor = currentSelection.start;
+  final currentPath = [...currentCursor.path];
+  currentPath[currentPath.length - 1] += nodes.length;
+  final int lenOfLastNode = _textLengthOfNode(nodes.last);
+  return Selection.collapsed(
+    Position(path: currentPath, offset: lenOfLastNode),
+  );
+}
+
+void handleCopy(EditorState editorState) async {
+  final selection = editorState.selection?.normalized;
   if (selection == null || selection.isCollapsed) {
     return;
   }
-  final beginNode = editorState.document.nodeAtPath(selection.start.path)!;
-  final endNode = editorState.document.nodeAtPath(selection.end.path)!;
-  if (selection.start.path.equals(selection.end.path) &&
-      beginNode.type == "text") {
-    final textItem = beginNode as TextNode;
-    final tb = editorState.transaction;
-    final len = selection.end.offset - selection.start.offset;
-    tb.updateText(
-      textItem,
-      Delta()
-        ..retain(selection.start.offset)
-        ..delete(len),
-    );
-    tb.afterSelection = Selection.collapsed(selection.start);
-    editorState.apply(tb);
+  final text = editorState.getTextInSelection(selection).join('\n');
+  final nodes = editorState.getSelectedNodes(selection);
+  if (nodes.isEmpty) {
     return;
   }
-  final traverser = NodeIterator(
-    document: editorState.document,
-    startNode: beginNode,
-    endNode: endNode,
+  final html = documentToHTML(
+    Document(
+      root: Node(
+        type: 'page',
+        children: nodes,
+      ),
+    ),
   );
-  final tb = editorState.transaction;
-  while (traverser.moveNext()) {
-    final item = traverser.current;
-    if (item.type == "text" && beginNode == item) {
-      final textItem = item as TextNode;
-      final deleteLen = textItem.delta.length - selection.start.offset;
-      tb.updateText(textItem, () {
-        final delta = Delta()
-          ..retain(selection.start.offset)
-          ..delete(deleteLen);
+  return AppFlowyClipboard.setData(
+    text: text,
+    html: html.isEmpty ? null : html,
+  );
+}
 
-        if (endNode is TextNode) {
-          final remain = endNode.delta.slice(selection.end.offset);
-          delta.addAll(remain);
-        }
-
-        return delta;
-      }());
-    } else {
-      tb.deleteNode(item);
-    }
+void _pasteSingleLineInText(
+  EditorState editorState,
+  int offset,
+  Node insertedNode,
+) {
+  final transaction = editorState.transaction;
+  final selection = editorState.selection;
+  if (selection == null || !selection.isCollapsed) {
+    return;
   }
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+  if (node == null || delta == null) {
+    return;
+  }
+  final insertedDelta = insertedNode.delta;
+  if (delta.isEmpty || insertedDelta == null) {
+    transaction.insertNode(selection.end.path.next, insertedNode);
+    transaction.deleteNode(node);
+    final length = insertedNode.delta?.length ?? 0;
+    transaction.afterSelection =
+        Selection.collapsed(Position(path: selection.end.path, offset: length));
+    editorState.apply(transaction);
+  } else {
+    transaction.insertTextDelta(
+      node,
+      offset,
+      insertedDelta,
+    );
+    editorState.apply(transaction);
+  }
+}
+
+void _pasteMultipleLinesInText(
+  EditorState editorState,
+  int offset,
+  List<Node> nodes,
+) {
+  final transaction = editorState.transaction;
+  final selection = editorState.selection;
+  final afterSelection =
+      _computeSelectionAfterPasteMultipleNodes(editorState, nodes);
+
+  final selectionNode = editorState.getNodesInSelection(selection!);
+  if (selectionNode.length == 1) {
+    final node = selectionNode.first;
+    if (node.delta == null) {
+      transaction.afterSelection = afterSelection;
+      transaction.insertNodes(afterSelection.end.path, nodes);
+      editorState.apply(transaction);
+    }
+
+    final (firstNode, afterNode) = sliceNode(node, offset);
+    if (nodes.length == 1 && nodes.first.type == node.type) {
+      transaction.deleteNode(node);
+      final List<dynamic> newDelta = firstNode.delta != null
+          ? firstNode.delta!.toJson()
+          : Delta().toJson();
+      final List<Node> children = [];
+      children.addAll(firstNode.children);
+
+      if (nodes.first.delta != null &&
+          nodes.first.delta != null &&
+          nodes.first.delta!.isNotEmpty) {
+        newDelta.addAll(nodes.first.delta!.toJson());
+        children.addAll(nodes.first.children);
+      }
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty) {
+        newDelta.addAll(afterNode.delta!.toJson());
+        children.addAll(afterNode.children);
+      }
+
+      transaction.insertNodes(afterSelection.end.path, [
+        Node(
+          type: firstNode.type,
+          children: children,
+          attributes: firstNode.attributes
+            ..remove(ParagraphBlockKeys.delta)
+            ..addAll(
+              {ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson()},
+            ),
+        )
+      ]);
+      transaction.afterSelection = afterSelection;
+      editorState.apply(transaction);
+      return;
+    }
+    final path = node.path;
+    transaction.deleteNode(node);
+    transaction.insertNodes([
+      path.first + 1
+    ], [
+      firstNode,
+      ...nodes,
+      if (afterNode != null &&
+          afterNode.delta != null &&
+          afterNode.delta!.isNotEmpty)
+        afterNode,
+    ]);
+    transaction.afterSelection = afterSelection;
+    editorState.apply(transaction);
+    return;
+  }
+
+  transaction.afterSelection = afterSelection;
+  transaction.insertNodes(afterSelection.end.path, nodes);
+  editorState.apply(transaction);
+}
+
+void handlePaste(EditorState editorState) async {
+  final data = await AppFlowyClipboard.getData();
+
+  if (editorState.selection?.isCollapsed ?? false) {
+    return _pasteRichClipboard(editorState, data);
+  }
+
+  deleteSelectedContent(editorState);
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    _pasteRichClipboard(editorState, data);
+  });
+}
+
+(Node previousDelta, Node? nextDelta) sliceNode(
+  Node node,
+  int selectionIndex,
+) {
+  final delta = node.delta;
+  if (delta == null) {
+    return (node, null); // // Node doesn't have a delta
+  }
+
+  final previousDelta = delta.slice(0, selectionIndex);
+
+  final nextDelta = delta.slice(selectionIndex, delta.length);
+
+  return (
+    Node(
+      id: node.id,
+      parent: node.parent,
+      children: node.children,
+      type: node.type,
+      attributes: node.attributes
+        ..remove(ParagraphBlockKeys.delta)
+        ..addAll({ParagraphBlockKeys.delta: previousDelta.toJson()}),
+    ),
+    Node(
+      type: node.type,
+      attributes: node.attributes
+        ..remove(ParagraphBlockKeys.delta)
+        ..addAll({ParagraphBlockKeys.delta: nextDelta.toJson()}),
+    )
+  );
+}
+
+void _pasteRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
+  if (data.html != null) {
+    pasteHTML(editorState, data.html!);
+    return;
+  }
+  if (data.text != null) {
+    handlePastePlainText(editorState, data.text!);
+    return;
+  }
+}
+
+/// 2. delete selected content
+void handleCut(EditorState editorState) {
+  handleCopy(editorState);
+  deleteSelectedContent(editorState);
+}
+
+void deleteSelectedContent(EditorState editorState) async {
+  final selection = editorState.selection?.normalized;
+  if (selection == null || selection.isCollapsed) {
+    return;
+  }
+  final tb = editorState.transaction;
+  await editorState.deleteSelection(selection);
   tb.afterSelection = Selection.collapsed(selection.start);
   editorState.apply(tb);
 }
-
-ShortcutEventHandler copyEventHandler = (editorState, event) {
-  _handleCopy(editorState);
-  return KeyEventResult.handled;
-};
-
-ShortcutEventHandler pasteEventHandler = (editorState, event) {
-  _handlePaste(editorState);
-  return KeyEventResult.handled;
-};
-
-ShortcutEventHandler cutEventHandler = (editorState, event) {
-  _handleCut(editorState);
-  return KeyEventResult.handled;
-};

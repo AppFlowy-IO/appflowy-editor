@@ -1,13 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
-import 'package:appflowy_editor/src/infra/clipboard.dart';
 import 'package:flutter/material.dart';
 
 final linkItem = ToolbarItem(
   id: 'editor.link',
   group: 4,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState) {
+  builder: (context, editorState, highlightColor) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
     final isHref = nodes.allSatisfyInSelection(selection, (delta) {
@@ -16,9 +15,10 @@ final linkItem = ToolbarItem(
       );
     });
 
-    return IconItemWidget(
+    return SVGIconItemWidget(
       iconName: 'toolbar/link',
       isHighlight: isHref,
+      highlightColor: highlightColor,
       tooltip: AppFlowyEditorLocalizations.current.link,
       onPressed: () {
         showLinkMenu(context, editorState, selection, isHref);
@@ -37,6 +37,15 @@ void showLinkMenu(
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
   final rect = editorState.selectionRects().first;
 
+  // get link address if the selection is already a link
+  String? linkText;
+  if (isHref) {
+    linkText = editorState.getDeltaAttributeValueInSelection(
+      BuiltInAttributeKey.href,
+      selection,
+    );
+  }
+
   // should abstract this logic to a method
   // ----
   final left = rect.left + 10;
@@ -45,7 +54,8 @@ void showLinkMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - 150;
+  final threshold =
+      editorOffset.dy + editorHeight - (linkText != null ? 244 : 150);
   if (offset.dy > threshold) {
     bottom = editorOffset.dy + editorHeight - rect.top - 5;
   } else {
@@ -61,14 +71,6 @@ void showLinkMenu(
   final index = selection.normalized.startIndex;
   final length = selection.length;
 
-  // get link address if the selection is already a link
-  String? linkText;
-  if (isHref) {
-    linkText = editorState.getDeltaAttributeValueInSelection(
-      BuiltInAttributeKey.href,
-      selection,
-    );
-  }
   OverlayEntry? overlay;
 
   void dismissOverlay() {

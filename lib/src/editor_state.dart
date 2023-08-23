@@ -1,9 +1,9 @@
 import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:appflowy_editor/src/history/undo_manager.dart';
 
 class ApplyOptions {
   /// This flag indicates that
@@ -27,6 +27,8 @@ enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
   selectAll,
+  searchHighlight, // Highlighting search results
+  searchNavigate, // Navigate to a search result
 }
 
 enum SelectionType {
@@ -242,9 +244,7 @@ class EditorState {
     }
 
     // TODO: execute this line after the UI has been updated.
-    {
-      completer.complete();
-    }
+    completer.complete();
 
     return completer.future;
   }
@@ -274,11 +274,86 @@ class EditorState {
         startNode: startNode,
         endNode: endNode,
       ).toList();
+
       return selection.isForward ? nodes.reversed.toList() : nodes;
     }
 
     // If we don't have both nodes, we can't find the nodes in the selection.
     return [];
+  }
+
+  List<Node> getSelectedNodes([
+    Selection? selection,
+  ]) {
+    List<Node> res = [];
+    selection ??= this.selection;
+    if (selection == null || selection.isCollapsed) {
+      return res;
+    }
+    final nodes = getNodesInSelection(selection);
+    for (final node in nodes) {
+      if (res.any((element) => element.path.isParentOf(node.path))) {
+        continue;
+      }
+      res.add(node);
+    }
+
+    res = res.map((e) => e.copyWith()).toList();
+
+    if (res.isNotEmpty) {
+      var delta = res.first.delta;
+      if (delta != null) {
+        res.first.updateAttributes(
+          {
+            ...res.first.attributes,
+            blockComponentDelta: delta
+                .slice(
+                  selection.startIndex,
+                  delta.length,
+                )
+                .toJson()
+          },
+        );
+      }
+
+      var node = res.last;
+      while (node.children.isNotEmpty) {
+        node = node.children.last;
+      }
+      delta = node.delta;
+      if (delta != null) {
+        if (node.parent != null) {
+          node.insertBefore(
+            node.copyWith(
+              attributes: {
+                ...node.attributes,
+                blockComponentDelta: delta
+                    .slice(
+                      0,
+                      selection.endIndex,
+                    )
+                    .toJson()
+              },
+            ),
+          );
+          node.unlink();
+        } else {
+          node.updateAttributes(
+            {
+              ...node.attributes,
+              blockComponentDelta: delta
+                  .slice(
+                    0,
+                    selection.endIndex,
+                  )
+                  .toJson()
+            },
+          );
+        }
+      }
+    }
+
+    return res;
   }
 
   Node? getNodeAtPath(Path path) {

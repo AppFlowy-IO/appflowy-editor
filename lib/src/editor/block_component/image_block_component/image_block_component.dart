@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'resizable_image.dart';
 
 class ImageBlockKeys {
-  ImageBlockKeys._();
+  const ImageBlockKeys._();
 
   static const String type = 'image';
 
@@ -113,7 +113,13 @@ class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
-    with SelectableMixin {
+    with SelectableMixin, BlockComponentConfigurable {
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   final imageKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
@@ -137,7 +143,6 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final height = attributes[ImageBlockKeys.height]?.toDouble();
 
     Widget child = ResizableImage(
-      key: imageKey,
       src: src,
       width: width,
       height: height,
@@ -150,6 +155,12 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
           });
         editorState.apply(transaction);
       },
+    );
+
+    child = Padding(
+      key: imageKey,
+      padding: padding,
+      child: child,
     );
 
     if (widget.showActions && widget.actionBuilder != null) {
@@ -202,6 +213,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
 
   @override
   CursorStyle get cursorStyle => CursorStyle.cover;
+
+  @override
+  Rect getBlockRect() {
+    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+  }
 
   @override
   Rect? getCursorRectInPosition(Position position) {

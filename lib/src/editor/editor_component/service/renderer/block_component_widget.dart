@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/renderer/block_component_action.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,9 +67,37 @@ class _BlockComponentStatefulWidgetState
 }
 
 mixin NestedBlockComponentStatefulWidgetMixin<
-    T extends BlockComponentStatefulWidget> on State<T>, BackgroundColorMixin {
+        T extends BlockComponentStatefulWidget>
+    on State<T>, BlockComponentBackgroundColorMixin {
   late final editorState = Provider.of<EditorState>(context, listen: false);
-  bool get showActions => widget.showActions && widget.actionBuilder != null;
+
+  BlockComponentConfiguration get configuration;
+
+  EdgeInsets get indentPadding {
+    TextDirection direction =
+        Directionality.maybeOf(context) ?? TextDirection.ltr;
+    if (node.children.isNotEmpty) {
+      direction = calculateNodeDirection(
+        node: node.children.first,
+        defaultTextDirection: direction,
+      );
+    }
+    return configuration.indentPadding(node, direction);
+  }
+
+  double? cachedLeft;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final left = node.selectable?.getBlockRect().left;
+      if (cachedLeft != left) {
+        setState(() => cachedLeft = left);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,16 +107,16 @@ mixin NestedBlockComponentStatefulWidgetMixin<
   }
 
   Widget buildComponentWithChildren(BuildContext context) {
-    final left = showActions ? blockComponentActionContainerWidth : 0.0;
     return Stack(
       children: [
         Positioned.fill(
-          left: left,
+          left: cachedLeft,
           child: Container(
             color: backgroundColor,
           ),
         ),
         NestedListWidget(
+          indentPadding: indentPadding,
           child: buildComponent(context),
           children: editorState.renderer.buildList(
             context,

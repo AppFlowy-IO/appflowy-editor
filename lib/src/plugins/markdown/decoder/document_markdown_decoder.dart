@@ -1,8 +1,14 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:path/path.dart' as p;
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
+  final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
+  final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
+  final htmlRegex = RegExp('^(http|https)://');
+  final numberedlistRegex = RegExp(r'^\d+\. ');
+
   @override
   Document convert(String input) {
     final lines = input.split('\n');
@@ -52,7 +58,6 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   Node _convertLineToNode(String line) {
     final decoder = DeltaMarkdownDecoder();
-
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -91,6 +96,27 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
       return _codeBlockNodeFromMarkdown(line, decoder);
+    } else if (imageRegex.hasMatch(line.trim())) {
+      final filePath = extractImagePath(line.trim());
+      // checking if filepath is present or if the filepath is an image or not
+      if (filePath == null ||
+          !['.png', '.jpg', 'jpeg'].contains(p.extension(filePath))) {
+        return paragraphNode(text: line.trim());
+      }
+      return imageNode(url: filePath);
+    } else if (assetRegex.hasMatch(line.trim())) {
+      // this might be a url or a file like pdf, videos, etc
+      final filepath = extractFilePath(line.trim());
+      if (filepath != null && !htmlRegex.hasMatch(filepath)) {
+        return paragraphNode(text: line);
+      }
+    } else if (numberedlistRegex.hasMatch(line)) {
+      return numberedListNode(
+        attributes: {
+          'delta':
+              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson()
+        },
+      );
     }
 
     if (line.isNotEmpty) {
@@ -102,6 +128,16 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return paragraphNode(
       attributes: {'delta': Delta().toJson()},
     );
+  }
+
+  String? extractImagePath(String text) {
+    final match = imageRegex.firstMatch(text);
+    return match?.group(1);
+  }
+
+  String? extractFilePath(String text) {
+    final match = assetRegex.firstMatch(text);
+    return match?.group(1);
   }
 
   Node _codeBlockNodeFromMarkdown(

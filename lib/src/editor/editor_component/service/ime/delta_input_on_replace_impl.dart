@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
 import 'package:flutter/services.dart';
 
@@ -16,10 +17,21 @@ Future<void> onReplace(
   }
 
   if (selection.isSingle) {
+    final execution = await executeCharacterShortcutEvent(
+      editorState,
+      replacement.replacementText,
+      characterShortcutEvents,
+    );
+
+    if (execution) {
+      return;
+    }
+
     final node = editorState.getNodesInSelection(selection).first;
     final transaction = editorState.transaction;
     final start = replacement.replacedRange.start;
     final length = replacement.replacedRange.end - start;
+
     transaction.replaceText(node, start, length, replacement.replacementText);
     await editorState.apply(transaction);
   } else {

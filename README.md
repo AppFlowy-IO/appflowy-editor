@@ -115,6 +115,9 @@ Below are some examples of shortcut event customizations:
  * [BIUS](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/editor_component/service/shortcuts/character_shortcut_events/format_single_character) demonstrates how to make text bold/italic/underline/strikethrough through shortcut keys
  * Need more examples? Check out [shortcuts](https://github.com/AppFlowy-IO/appflowy-editor/tree/main/lib/src/editor/editor_component/service/shortcuts)
 
+## Migration Guide
+Please refer to the [migration documentation](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/migration.md).
+
 ## Glossary
 Please refer to the API documentation.
 

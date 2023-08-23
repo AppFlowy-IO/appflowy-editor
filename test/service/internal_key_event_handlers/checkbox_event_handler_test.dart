@@ -81,7 +81,8 @@ void main() async {
 
       await editor.startTesting();
 
-      final selection = Selection.collapse([0], text.length);
+      final selection =
+          Selection.collapsed(Position(path: [0], offset: text.length));
       await editor.updateSelection(selection);
 
       var nodes = editor.editorState.getNodesInSelection(selection);

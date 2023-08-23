@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/block_
 import 'package:flutter/material.dart';
 
 class TodoListBlockKeys {
-  TodoListBlockKeys._();
+  const TodoListBlockKeys._();
 
   static const String type = 'todo_list';
 
@@ -11,11 +11,18 @@ class TodoListBlockKeys {
   ///
   /// The value is a boolean.
   static const String checked = 'checked';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node todoListNode({
   required bool checked,
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
@@ -23,8 +30,9 @@ Node todoListNode({
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
-      TodoListBlockKeys.checked: checked,
       ...attributes,
+      TodoListBlockKeys.checked: checked,
+      if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -94,13 +102,19 @@ class _TodoListBlockComponentWidgetState
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin,
-        NestedBlockComponentStatefulWidgetMixin {
+        BlockComponentBackgroundColorMixin,
+        NestedBlockComponentStatefulWidgetMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
   @override
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: TodoListBlockKeys.type,
+  );
 
   @override
   BlockComponentConfiguration get configuration => widget.configuration;
@@ -112,12 +126,18 @@ class _TodoListBlockComponentWidgetState
 
   @override
   Widget buildComponent(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        textDirection: textDirection,
         children: [
           widget.iconBuilder != null
               ? widget.iconBuilder!(context, node)
@@ -131,6 +151,7 @@ class _TodoListBlockComponentWidgetState
               node: widget.node,
               editorState: editorState,
               placeholderText: placeholderText,
+              textDirection: textDirection,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle).updateTextStyle(
                         widget.textStyleBuilder?.call(checked) ??
@@ -144,6 +165,12 @@ class _TodoListBlockComponentWidgetState
           ),
         ],
       ),
+    );
+
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
     );
 
     if (widget.showActions && widget.actionBuilder != null) {

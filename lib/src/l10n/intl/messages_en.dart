@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addYourLink": MessageLookupByLibrary.simpleMessage("Add your link"),
+        "auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "backgroundColor":
             MessageLookupByLibrary.simpleMessage("Background Color"),
         "backgroundColorBlue":
@@ -47,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Yellow background"),
         "bold": MessageLookupByLibrary.simpleMessage("Bold"),
         "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
@@ -54,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
         "customColor": MessageLookupByLibrary.simpleMessage("Custom color"),
         "done": MessageLookupByLibrary.simpleMessage("Done"),
+        "editLink": MessageLookupByLibrary.simpleMessage("Edit link"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Embed Code"),
         "fontColorBlue": MessageLookupByLibrary.simpleMessage("Blue"),
         "fontColorBrown": MessageLookupByLibrary.simpleMessage("Brown"),
@@ -84,6 +87,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "lightLightTint8": MessageLookupByLibrary.simpleMessage("Aqua"),
         "lightLightTint9": MessageLookupByLibrary.simpleMessage("Blue"),
         "link": MessageLookupByLibrary.simpleMessage("Link"),
+        "linkAddressHint":
+            MessageLookupByLibrary.simpleMessage("Please enter URL"),
+        "linkText": MessageLookupByLibrary.simpleMessage("Text"),
+        "linkTextHint":
+            MessageLookupByLibrary.simpleMessage("Please enter text"),
+        "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
         "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
         "mobileHeading2": MessageLookupByLibrary.simpleMessage("Heading 2"),
         "mobileHeading3": MessageLookupByLibrary.simpleMessage("Heading 3"),
@@ -94,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "removeLink": MessageLookupByLibrary.simpleMessage("Remove link"),
         "resetToDefaultColor":
             MessageLookupByLibrary.simpleMessage("Reset to default color"),
+        "rtl": MessageLookupByLibrary.simpleMessage("RTL"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),

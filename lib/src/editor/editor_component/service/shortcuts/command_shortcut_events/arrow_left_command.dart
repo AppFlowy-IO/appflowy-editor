@@ -30,7 +30,11 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
     assert(false, 'arrow left key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.character);
+  if (isRTL(editorState)) {
+    editorState.moveCursorBackward(SelectionMoveRange.character);
+  } else {
+    editorState.moveCursorForward(SelectionMoveRange.character);
+  }
   return KeyEventResult.handled;
 };
 
@@ -38,7 +42,7 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
 // move the cursor to the beginning of the block
 final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
   key: 'move the cursor at the start of line',
-  command: 'ctrl+arrow left,home',
+  command: 'home',
   macOSCommand: 'cmd+arrow left',
   handler: _moveCursorToBeginCommandHandler,
 );
@@ -48,7 +52,11 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
     assert(false, 'arrow left key is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.line);
+  if (isRTL(editorState)) {
+    editorState.moveCursorBackward(SelectionMoveRange.line);
+  } else {
+    editorState.moveCursorForward(SelectionMoveRange.line);
+  }
   return KeyEventResult.handled;
 };
 
@@ -56,7 +64,8 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
 // move the cursor to the left word
 final CommandShortcutEvent moveCursorToLeftWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the left word',
-  command: 'alt+arrow left',
+  command: 'ctrl+arrow left',
+  macOSCommand: 'alt+arrow left',
   handler: _moveCursorToLeftWordCommandHandler,
 );
 
@@ -66,7 +75,47 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  editorState.moveCursorForward(SelectionMoveRange.word);
+
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+
+  if (node == null || delta == null) {
+    return KeyEventResult.ignored;
+  }
+
+  if (isRTL(editorState)) {
+    final endOfWord = selection.end.moveHorizontal(
+      editorState,
+      forward: false,
+      selectionRange: SelectionRange.word,
+    );
+    final selectedWord = delta.toPlainText().substring(
+          selection.end.offset,
+          endOfWord?.offset,
+        );
+    // check if the selected word is whitespace
+    if (selectedWord.trim().isEmpty) {
+      editorState.moveCursorBackward(SelectionMoveRange.word);
+    }
+    editorState.moveCursorBackward(SelectionMoveRange.word);
+  } else {
+    final startOfWord = selection.end.moveHorizontal(
+      editorState,
+      selectionRange: SelectionRange.word,
+    );
+    if (startOfWord == null) {
+      return KeyEventResult.handled;
+    }
+    final selectedWord = delta.toPlainText().substring(
+          startOfWord.offset,
+          selection.end.offset,
+        );
+    // check if the selected word is whitespace
+    if (selectedWord.trim().isEmpty) {
+      editorState.moveCursorForward(SelectionMoveRange.word);
+    }
+    editorState.moveCursorForward(SelectionMoveRange.word);
+  }
   return KeyEventResult.handled;
 };
 
@@ -74,7 +123,8 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
 final CommandShortcutEvent moveCursorLeftWordSelectCommand =
     CommandShortcutEvent(
   key: 'move the cursor to select the left word',
-  command: 'alt+shift+arrow left',
+  command: 'ctrl+shift+arrow left',
+  macOSCommand: 'alt+shift+arrow left',
   handler: _moveCursorLeftWordSelectCommandHandler,
 );
 
@@ -84,9 +134,14 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+  var forward = true;
+  if (isRTL(editorState)) {
+    forward = false;
+  }
   final end = selection.end.moveHorizontal(
     editorState,
     selectionRange: SelectionRange.word,
+    forward: forward,
   );
   if (end == null) {
     return KeyEventResult.ignored;
@@ -99,7 +154,7 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
 };
 
 // arrow left key + shift
-//
+// selects only one character
 final CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
   key: 'move the cursor left select',
   command: 'shift+arrow left',
@@ -112,7 +167,11 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final end = selection.end.moveHorizontal(editorState);
+  var forward = true;
+  if (isRTL(editorState)) {
+    forward = false;
+  }
+  final end = selection.end.moveHorizontal(editorState, forward: forward);
   if (end == null) {
     return KeyEventResult.ignored;
   }
@@ -123,10 +182,10 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
   return KeyEventResult.handled;
 };
 
-// arrow left key + shift + ctrl or cmd
+//
 final CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
-  key: 'move the cursor left select line',
-  command: 'ctrl+shift+arrow left',
+  key: 'move cursor to select till start of line',
+  command: 'shift+home',
   macOSCommand: 'cmd+shift+arrow left',
   handler: _moveCursorBeginSelectCommandHandler,
 );
@@ -142,7 +201,9 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
     return KeyEventResult.ignored;
   }
   var end = selection.end;
-  final position = nodes.last.selectable?.start();
+  final position = isRTL(editorState)
+      ? nodes.last.selectable?.end()
+      : nodes.last.selectable?.start();
   if (position != null) {
     end = position;
   }
@@ -152,3 +213,11 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
   );
   return KeyEventResult.handled;
 };
+
+bool isRTL(EditorState editorState) {
+  if (editorState.selection != null) {
+    final node = editorState.getNodeAtPath(editorState.selection!.end.path);
+    return node?.selectable?.textDirection() == TextDirection.rtl;
+  }
+  return false;
+}

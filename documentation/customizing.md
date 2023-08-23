@@ -247,3 +247,23 @@ Widget build(BuildContext context) {
 ```
 
 ![After](./images/customizing_a_theme_after.png)
+
+## Changing default text direction
+
+The text direction is LTR by default, but you can change it by wrapping AppFlowyEditor with Directionality.
+
+In code snippet below we set the default direction to RTL.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Directionality(
+      textDirection: TextDirection.rtl,
+      child: AppFlowyEditor(
+        editorState: EditorState.blank(),
+      ),
+    ),
+  );
+}
+```

@@ -1,8 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
 
 class DocumentHTMLDecoder extends Converter<String, Document> {
   DocumentHTMLDecoder();
@@ -22,7 +23,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       );
   }
 
-  Iterable<Node> _parseElement(Iterable<dom.Node> domNodes) {
+  Iterable<Node> _parseElement(
+    Iterable<dom.Node> domNodes, {
+    String? type,
+  }) {
     final delta = Delta();
     final List<Node> nodes = [];
     for (final domNode in domNodes) {
@@ -30,20 +34,23 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          nodes.add(
-            paragraphNode(
-              delta: Delta()..insert(domNode.text, attributes: attributes),
-            ),
-          );
+          delta.insert(domNode.text, attributes: attributes);
         } else if (HTMLTags.specialElements.contains(localName)) {
+          if (delta.isNotEmpty) {
+            nodes.add(paragraphNode(delta: delta));
+          }
           nodes.addAll(
             _parseSpecialElements(
               domNode,
-              type: ParagraphBlockKeys.type,
+              type: type ?? ParagraphBlockKeys.type,
             ),
           );
         }
       } else if (domNode is dom.Text) {
+        // skip the empty text node
+        if (domNode.text.trim().isEmpty) {
+          continue;
+        }
         delta.insert(domNode.text);
       } else {
         assert(false, 'Unknown node type: $domNode');
@@ -123,6 +130,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes = {AppFlowyRichTextKeys.href: href};
         }
         break;
+      case HTMLTags.strikethrough:
+        attributes = {AppFlowyRichTextKeys.strikethrough: true};
+        break;
       default:
         break;
     }
@@ -174,9 +184,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     dom.Element element, {
     required String type,
   }) {
-    final (delta, node) = _parseDeltaElement(element);
+    final (delta, node) = _parseDeltaElement(element, type: type);
     return Node(
-      type: type != ParagraphBlockKeys.type ? type : BulletedListBlockKeys.type,
+      type: type,
       children: node,
       attributes: {ParagraphBlockKeys.delta: delta.toJson()},
     );
@@ -198,27 +208,39 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     );
   }
 
-  (Delta, Iterable<Node>) _parseDeltaElement(dom.Element element) {
+  (Delta, Iterable<Node>) _parseDeltaElement(
+    dom.Element element, {
+    String? type,
+  }) {
     final delta = Delta();
     final nodes = <Node>[];
     final children = element.nodes.toList();
+
     for (final child in children) {
       if (child is dom.Element) {
-        if (child.children.isNotEmpty) {
-          for (final seocondChild in child.children) {
+        if (child.children.isNotEmpty &&
+            HTMLTags.formattingElements.contains(child.localName) == false) {
+          //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
+
+          nodes.addAll(_parseElement(child.children, type: type));
+        } else {
+          if (HTMLTags.specialElements.contains(child.localName)) {
             nodes.addAll(
               _parseSpecialElements(
-                seocondChild,
+                child,
                 type: ParagraphBlockKeys.type,
               ),
             );
+          } else {
+            final attributes = _parserFormattingElementAttributes(child);
+            delta.insert(
+              child.text.replaceAll(RegExp(r'\n+$'), ''),
+              attributes: attributes,
+            );
           }
-        } else {
-          final attributes = _parserFormattingElementAttributes(child);
-          delta.insert(child.text, attributes: attributes);
         }
       } else {
-        delta.insert(child.text ?? '');
+        delta.insert(child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '');
       }
     }
     return (delta, nodes);
@@ -271,6 +293,24 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       }
     }
 
+    // background
+    final background = css['background'];
+    if (background != null) {
+      final highlightColor = background.tryToColor()?.toHex();
+      if (highlightColor != null) {
+        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+      }
+    }
+
+    // color
+    final color = css['color'];
+    if (color != null) {
+      final textColor = color.tryToColor()?.toHex();
+      if (textColor != null) {
+        attributes[AppFlowyRichTextKeys.textColor] = textColor;
+      }
+    }
+
     // italic
     final fontStyle = css['font-style'];
     if (fontStyle == 'italic') {
@@ -311,6 +351,7 @@ class HTMLTags {
   static const em = 'em';
   static const bold = 'b';
   static const underline = 'u';
+  static const strikethrough = 's';
   static const del = 'del';
   static const strong = 'strong';
   static const checkbox = 'input';
@@ -330,6 +371,7 @@ class HTMLTags {
     HTMLTags.strong,
     HTMLTags.span,
     HTMLTags.code,
+    HTMLTags.strikethrough,
   ];
 
   static List<String> specialElements = [
@@ -338,12 +380,12 @@ class HTMLTags {
     HTMLTags.h3,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
-    HTMLTag.div,
+    HTMLTags.div,
     HTMLTags.list,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTag.image
+    HTMLTags.image
   ];
 
   static bool isTopLevel(String tag) {

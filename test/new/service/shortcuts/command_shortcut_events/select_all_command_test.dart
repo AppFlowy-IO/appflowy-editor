@@ -1,25 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:io';
 
 import '../../../infra/testable_editor.dart';
-import '../../../util/util.dart';
 
 void main() async {
-  setUpAll(() {
-    if (kDebugMode) {
-      activateLog();
-    }
-  });
-
-  tearDownAll(() {
-    if (kDebugMode) {
-      deactivateLog();
-    }
-  });
-
   group('select all - widget test', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -28,7 +14,7 @@ void main() async {
       final editor = tester.editor..addParagraphs(count, initialText: text);
       await editor.startTesting();
 
-      final selection = Selection.collapse([0], 0);
+      final selection = Selection.collapsed(Position(path: [0]));
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -71,7 +57,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse([0], 0);
+      final selection = Selection.collapsed(Position(path: [0]));
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -106,10 +92,8 @@ void main() async {
         );
       await editor.startTesting();
 
-      final selection = Selection.collapse(
-        [1],
-        text.length,
-      );
+      final selection =
+          Selection.collapsed(Position(path: [1], offset: text.length));
       await editor.updateSelection(selection);
 
       // move the cursor to the beginning of node 1
@@ -117,18 +101,21 @@ void main() async {
         await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
-      expect(editor.selection, Selection.collapse([1], 0));
+      expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
       // move the cursor to the ending of node 0
       await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
-      expect(editor.selection, Selection.collapse([0], text.length));
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [0], offset: text.length)),
+      );
 
       // move the cursor to the beginning of node 0
       for (var i = 1; i < text.length; i++) {
         await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
-      expect(editor.selection, Selection.collapse([0], 0));
+      expect(editor.selection, Selection.collapsed(Position(path: [0])));
 
       await editor.dispose();
     });

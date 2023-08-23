@@ -7,10 +7,17 @@ class QuoteBlockKeys {
   const QuoteBlockKeys._();
 
   static const String type = 'quote';
+
+  static const String delta = blockComponentDelta;
+
+  static const String backgroundColor = blockComponentBackgroundColor;
+
+  static const String textDirection = blockComponentTextDirection;
 }
 
 Node quoteNode({
   Delta? delta,
+  String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
@@ -19,6 +26,7 @@ Node quoteNode({
     type: QuoteBlockKeys.type,
     attributes: {
       ...attributes,
+      if (textDirection != null) QuoteBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
   );
@@ -77,12 +85,18 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         SelectableMixin,
         DefaultSelectableMixin,
         BlockComponentConfigurable,
-        BackgroundColorMixin {
+        BlockComponentBackgroundColorMixin,
+        BlockComponentTextDirectionMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
   @override
   GlobalKey<State<StatefulWidget>> get containerKey => widget.node.key;
+
+  @override
+  GlobalKey<State<StatefulWidget>> blockComponentKey = GlobalKey(
+    debugLabel: QuoteBlockKeys.type,
+  );
 
   @override
   BlockComponentConfiguration get configuration => widget.configuration;
@@ -94,13 +108,19 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = calculateTextDirection(
+      defaultTextDirection: Directionality.maybeOf(context),
+    );
+
     Widget child = Container(
       color: backgroundColor,
+      width: double.infinity,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
+          textDirection: textDirection,
           children: [
             widget.iconBuilder != null
                 ? widget.iconBuilder!(context, node)
@@ -118,11 +138,18 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                     textSpan.updateTextStyle(
                   placeholderTextStyle,
                 ),
+                textDirection: textDirection,
               ),
             ),
           ],
         ),
       ),
+    );
+
+    child = Padding(
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
     );
 
     if (widget.showActions && widget.actionBuilder != null) {

@@ -1,9 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-const blockComponentBackgroundColor = 'bgColor';
-
-mixin BackgroundColorMixin {
+mixin BlockComponentBackgroundColorMixin {
   Node get node;
 
   Color get backgroundColor {
@@ -12,6 +10,6 @@ mixin BackgroundColorMixin {
     if (colorString == null) {
       return Colors.transparent;
     }
-    return colorString.toColor();
+    return colorString.toColor() ?? Colors.transparent;
   }
 }

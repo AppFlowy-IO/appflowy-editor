@@ -75,6 +75,7 @@
   "backgroundColorRed": "Red background",
   "@backgroundColorRed": {},
   "done": "Done",
+  "cancel": "Cancel",
   "tint1": "Tint 1",
   "tint2": "Tint 2",
   "tint3": "Tint 3",
@@ -103,10 +104,17 @@
   "openLink": "Open link",
   "copyLink": "Copy link",
   "removeLink": "Remove link",
+  "editLink": "Edit link",
+  "linkText": "Text",
+  "linkTextHint": "Please enter text",
+  "linkAddressHint": "Please enter URL",
   "highlightColor": "Highlight color",
   "clearHighlightColor": "Clear highlight color",
   "customColor": "Custom color",
   "hexValue": "Hex value",
   "opacity": "Opacity",
-  "resetToDefaultColor": "Reset to default color"
+  "resetToDefaultColor": "Reset to default color",
+  "ltr": "LTR",
+  "rtl": "RTL",
+  "auto": "Auto"
 }

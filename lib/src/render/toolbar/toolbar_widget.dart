@@ -15,6 +15,7 @@ class ToolbarWidget extends StatefulWidget {
     required this.editorState,
     required this.layerLink,
     required this.offset,
+    required this.highlightColor,
     required this.items,
     this.alignment = Alignment.topLeft,
   }) : super(key: key);
@@ -22,6 +23,7 @@ class ToolbarWidget extends StatefulWidget {
   final EditorState editorState;
   final LayerLink layerLink;
   final Offset offset;
+  final Color highlightColor;
 
   final List<ToolbarItem> items;
 
@@ -44,7 +46,7 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
         showWhenUnlinked: true,
         offset: widget.offset,
         followerAnchor: widget.alignment,
-        child: _buildToolbar(context),
+        child: _buildToolbar(context, widget.highlightColor),
       ),
     );
   }
@@ -55,7 +57,7 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
     _listToolbarOverlay = null;
   }
 
-  Widget _buildToolbar(BuildContext context) {
+  Widget _buildToolbar(BuildContext context, Color highlightColor) {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
       child: Padding(
@@ -67,7 +69,11 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
             children: widget.items
                 .map(
                   (item) => Center(
-                    child: item.builder?.call(context, widget.editorState) ??
+                    child: item.builder?.call(
+                          context,
+                          widget.editorState,
+                          highlightColor,
+                        ) ??
                         item.itemBuilder?.call(context, widget.editorState) ??
                         ToolbarItemWidget(
                           item: item,

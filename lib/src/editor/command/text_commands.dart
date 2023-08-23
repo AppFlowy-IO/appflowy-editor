@@ -47,10 +47,19 @@ extension TextTransforms on EditorState {
     }
 
     final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
+    final Map<String, dynamic> attributes = {
+      'delta': slicedDelta.toJson(),
+    };
+
+    // Copy the text direction from the current node.
+    final textDirection =
+        node.attributes[blockComponentTextDirection] as String?;
+    if (textDirection != null) {
+      attributes[blockComponentTextDirection] = textDirection;
+    }
+
     final insertedNode = paragraphNode(
-      attributes: {
-        'delta': slicedDelta.toJson(),
-      },
+      attributes: attributes,
       children: children,
     );
     nodeBuilder ??= (node) => node.copyWith();
@@ -123,7 +132,11 @@ extension TextTransforms on EditorState {
   /// format the delta at the given selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.
-  Future<void> formatDelta(Selection? selection, Attributes attributes) async {
+  Future<void> formatDelta(
+    Selection? selection,
+    Attributes attributes, [
+    bool withUpdateSelection = true,
+  ]) async {
     selection ??= this.selection;
     selection = selection?.normalized;
 
@@ -155,7 +168,10 @@ extension TextTransforms on EditorState {
         ..afterSelection = transaction.beforeSelection;
     }
 
-    return apply(transaction);
+    return apply(
+      transaction,
+      withUpdateSelection: withUpdateSelection,
+    );
   }
 
   /// Toggles the given attribute on or off for the selected text.

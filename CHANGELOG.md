@@ -1,3 +1,43 @@
+## 1.2.3
+* feat: add edit link menu on mobile by @hyj1204 in ([#320](https://github.com/AppFlowy-IO/appflowy-editor/pull/320))
+* feat: html encode parser added by @alihassan143 in ([#314](https://github.com/AppFlowy-IO/appflowy-editor/pull/314))
+* feat: support scroll without animation by @LucasXu0 in ([#343](https://github.com/AppFlowy-IO/appflowy-editor/pull/343))
+* feat: expose context in nodeBuilder by @hyj1204 in ([#350](https://github.com/AppFlowy-IO/appflowy-editor/pull/350))
+* feat: paste plaintext shortcut by @MayurSMahajan in ([#338](https://github.com/AppFlowy-IO/appflowy-editor/pull/338))
+* fix: indent padding from left when rtl by @zoli in ([#318](https://github.com/AppFlowy-IO/appflowy-editor/pull/318))
+* fix: fixed numbered list being treated as a paragraph by @Mukund-Tandon in ([#335](https://github.com/AppFlowy-IO/appflowy-editor/pull/335))
+* fix: copy handler migrated to latest api by @alihassan143 in ([#240](https://github.com/AppFlowy-IO/appflowy-editor/pull/240))
+* fix: improve performance on editor overlays by @richardshiue in ([#336](https://github.com/AppFlowy-IO/appflowy-editor/pull/336))
+* fix: fixed the issue of code block not being exported in markdown by @Mukund-Tandon in ([#347](https://github.com/AppFlowy-IO/appflowy-editor/pull/347))
+* fix: fixed unresponsive behavior of context menu items by @Mukund-Tandon in ([#349](https://github.com/AppFlowy-IO/appflowy-editor/pull/349))
+* fix: selection reason should be ui event when clicking by @LucasXu0 in ([#359](https://github.com/AppFlowy-IO/appflowy-editor/pull/359))
+* fix: show selection menu at left by @zoli in([#361](https://github.com/AppFlowy-IO/appflowy-editor/pull/361))
+* fix: selection menu respect current node direction by @zoli in ([#359](https://github.com/AppFlowy-IO/appflowy-editor/pull/360))
+
+## 1.2.2
+* chore: minor updates to documentation.
+
+## 1.2.1
+* feat: support collapsed list by @LucasXu0 in ([#319](https://github.com/AppFlowy-IO/appflowy-editor/pull/319))
+* feat: improve keyboard behavior in mobile toolbar by @hyj1204 in ([#287](https://github.com/AppFlowy-IO/appflowy-editor/pull/287))
+* feat: support for shift + home/end keys by @MayurSMahajan in ([#306](https://github.com/AppFlowy-IO/appflowy-editor/pull/306))
+* feat: delete right word with ctrl+delete by @MayurSMahajan in ([#309](https://github.com/AppFlowy-IO/appflowy-editor/pull/309))
+* fix: fix overflow in heading mobile toolbar menu by @hyj1204 in ([#291](https://github.com/AppFlowy-IO/appflowy-editor/pull/291))
+* fix: allow active toolbar widget color to be customized by @garv-shah in ([#261](https://github.com/AppFlowy-IO/appflowy-editor/pull/261))
+* fix: block selection overflow by @LucasXu0 in ([#312](https://github.com/AppFlowy-IO/appflowy-editor/pull/312))
+* fix: toolbar item tooltips are too responsive by @johansutrisno in ([#315](https://github.com/AppFlowy-IO/appflowy-editor/pull/315))
+
+## 1.2.0
+* feat: added support for RTL and AUTO direction by @zoli in ([#191](https://github.com/AppFlowy-IO/appflowy-editor/pull/191))
+* feat: added support for customizing href behavior by @LucasXu0 in ([#293](https://github.com/AppFlowy-IO/appflowy-editor/pull/293))
+* feat: added support for delete key shortcut by @MayurSMahajan in ([#272](https://github.com/AppFlowy-IO/appflowy-editor/pull/272))
+* feat: added support customize the font family by @LucasXu0 in ([#300](https://github.com/AppFlowy-IO/appflowy-editor/pull/300))
+* fix: slash menu keyword not shows up the option by @johansutrisno in ([#268](https://github.com/AppFlowy-IO/appflowy-editor/pull/268))
+* fix: unable to access the slash menu on web platform by @LucasXu0 in ([#303](https://github.com/AppFlowy-IO/appflowy-editor/pull/303))
+* chore: change windows and linux command for redo by @MayurSMahajan in ([#294](https://github.com/AppFlowy-IO/appflowy-editor/pull/294))
+* chore: optimize the textSpan decorator by @LucasXu0 in ([#290](https://github.com/AppFlowy-IO/appflowy-editor/pull/290))
+* chore: remove the reference of the deprecated values by @LucasXu0 in ([#304](https://github.com/AppFlowy-IO/appflowy-editor/pull/304))
+
 ## 1.1.0
 * feat: support IME by @LucasXu0 in ([#253](https://github.com/AppFlowy-IO/appflowy-editor/pull/253))
 * feat: support text and background color in mobile toolbar by @hyj1204 in ([#233](https://github.com/AppFlowy-IO/appflowy-editor/pull/233))
