@@ -239,5 +239,44 @@ void main() async {
       }
       await editor.dispose();
     });
+
+    testWidgets('replace all on found matches in same path', (tester) async {
+      const patternToBeFound = 'a';
+      const replacePattern = 'AppFlowy';
+      const replaceAllBtn = Key('replaceAllButton');
+
+      final editor = tester.editor;
+      editor.addParagraph(initialText: patternToBeFound * 5);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+
+      await tester.tap(find.byKey(replaceAllBtn));
+      await tester.pumpAndSettle();
+
+      //all matches should be replaced
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), replacePattern * 5);
+      await editor.dispose();
+    });
   });
 }
