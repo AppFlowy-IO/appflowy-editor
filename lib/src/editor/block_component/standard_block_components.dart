@@ -6,7 +6,9 @@ const standardBlockComponentConfiguration = BlockComponentConfiguration();
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   PageBlockKeys.type: PageBlockComponentBuilder(),
   ParagraphBlockKeys.type: TextBlockComponentBuilder(
-    configuration: standardBlockComponentConfiguration,
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => 'Enter a / to insert a block, or start typing',
+    ),
   ),
   TodoListBlockKeys.type: TodoListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
@@ -112,6 +114,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   toggleTodoListCommand,
   ...toggleMarkdownCommands,
   showLinkMenuCommand,
+  openInlineLinkCommand,
 
   //
   indentCommand,

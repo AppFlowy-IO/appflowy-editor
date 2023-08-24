@@ -13,7 +13,7 @@ void main() async {
       final editor = tester.editor..addParagraph();
       await editor.startTesting();
 
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
           insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
@@ -29,7 +29,7 @@ void main() async {
       final editor = tester.editor..addNode(paragraphNode());
       await editor.startTesting();
 
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
           insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
@@ -52,7 +52,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
           insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
@@ -75,7 +75,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
           insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
@@ -100,7 +100,7 @@ void main() async {
         );
       await editor.startTesting();
 
-      await editor.updateSelection(Selection.collapse([0], 0));
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       insertHeadingAfterSelection(editor.editorState, 1);
       await tester.pumpAndSettle();
 

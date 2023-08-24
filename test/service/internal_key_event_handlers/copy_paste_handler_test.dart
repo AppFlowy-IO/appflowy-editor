@@ -77,7 +77,7 @@ Future<void> _testCutHandle(
 Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting(platform: TargetPlatform.windows);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -101,7 +101,7 @@ Future<void> _testSameNodeCopyPaste(
   final editor = tester.editor..initializeWithDocument(document);
 
   await editor.startTesting();
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,

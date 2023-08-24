@@ -25,9 +25,8 @@ void main() async {
       final editorState = EditorState(document: document);
 
       // Welcome |to AppFlowy| Editor 🔥!
-      final selection = Selection.collapse(
-        [0],
-        welcome.length,
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: welcome.length),
       );
       editorState.selection = selection;
       final node = editorState.getNodeAtPath([0]);

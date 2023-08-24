@@ -13,11 +13,14 @@ import 'package:nanoid/nanoid.dart';
 ///
 ///
 /// Json format:
+/// ```
 /// {
-///   'type': string,
+///   'type': String,
 ///   'data': Map<String, Object>
 ///   'children': List<Node>,
 /// }
+/// ```
+///
 final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node({
     required this.type,
@@ -38,6 +41,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     }
   }
 
+  /// Parses a [Map] into a [Node]
+  ///
   factory Node.fromJson(Map<String, Object> json) {
     final node = Node(
       type: json['type'] as String,
@@ -90,13 +95,15 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// Update the attributes of the node.
   ///
-  ///
   void updateAttributes(Attributes attributes) {
     _attributes = composeAttributes(this.attributes, attributes) ?? {};
 
     notifyListeners();
   }
 
+  /// Grabs the [Node] from this [Node]s children
+  /// at a given index, if the index exists.
+  ///
   Node? childAtIndexOrNull(int index) {
     if (children.length <= index || index < 0) {
       return null;
@@ -115,6 +122,11 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     return child?.childAtPath(path.sublist(1));
   }
 
+  /// Inserts a [Node] at a given [index]
+  ///
+  /// If no [index] is supplied, inserts at the
+  /// end of the [Node].
+  ///
   void insert(Node entry, {int? index}) {
     final length = _children.length;
     index ??= length;

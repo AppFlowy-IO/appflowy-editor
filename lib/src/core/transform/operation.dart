@@ -2,8 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 
 /// [Operation] represents a change to a [Document].
-abstract class Operation {
-  Operation(
+sealed class Operation {
+  const Operation(
     this.path,
   );
 
@@ -24,7 +24,7 @@ abstract class Operation {
 
 /// [InsertOperation] represents an insert operation.
 class InsertOperation extends Operation {
-  InsertOperation(
+  const InsertOperation(
     super.path,
     this.nodes,
   );
@@ -71,7 +71,7 @@ class InsertOperation extends Operation {
 
 /// [DeleteOperation] represents a delete operation.
 class DeleteOperation extends Operation {
-  DeleteOperation(
+  const DeleteOperation(
     super.path,
     this.nodes,
   );
@@ -118,7 +118,7 @@ class DeleteOperation extends Operation {
 
 /// [UpdateOperation] represents an attributes update operation.
 class UpdateOperation extends Operation {
-  UpdateOperation(
+  const UpdateOperation(
     super.path,
     this.attributes,
     this.oldAttributes,
@@ -181,7 +181,7 @@ class UpdateOperation extends Operation {
 
 /// [UpdateTextOperation] represents a text update operation.
 class UpdateTextOperation extends Operation {
-  UpdateTextOperation(
+  const UpdateTextOperation(
     super.path,
     this.delta,
     this.inverted,
