@@ -292,7 +292,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
       }
     }
-    //color
+    // color
     final color = css['color'];
     if (color != null) {
       final highlightColor = color.tryToColor()?.toHex();
