@@ -165,12 +165,12 @@ void main() async {
             'type': 'paragraph',
             'data': {
               'delta': [
-                {'insert': firstLine}
+                {'insert': firstLine},
               ],
-            }
+            },
           }
         ],
-      }
+      },
     });
 
     final first = document.first;
@@ -191,7 +191,7 @@ void main() async {
             'type': 'paragraph',
             'data': {
               'delta': [
-                {'insert': firstLine}
+                {'insert': firstLine},
               ],
             },
             'children': [
@@ -199,7 +199,7 @@ void main() async {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': firstChild}
+                    {'insert': firstChild},
                   ],
                 },
               },
@@ -207,14 +207,14 @@ void main() async {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': secondChild}
+                    {'insert': secondChild},
                   ],
                 },
               }
             ],
           }
         ],
-      }
+      },
     });
 
     final last = document.last!;
