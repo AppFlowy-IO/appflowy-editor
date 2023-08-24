@@ -279,6 +279,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 
+//NOTE: This widget causes memory leaks & causes the UI to hang
   Widget _buildFileUploadContainer(BuildContext context) {
     return Expanded(
       child: GestureDetector(
