@@ -46,7 +46,7 @@ class Editor extends StatelessWidget {
                 linkItem,
                 buildTextColorItem(),
                 buildHighlightColorItem(),
-                ...textDirectionItems
+                ...textDirectionItems,
               ],
               editorState: editorState,
               scrollController: scrollController,
@@ -118,7 +118,7 @@ class Editor extends StatelessWidget {
             child: Text('Sample Menu'),
           );
         },
-      )
+      ),
     };
     return AppFlowyEditor(
       editorState: editorState,

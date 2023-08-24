@@ -67,12 +67,12 @@ void main() async {
       expect(selection.toJson(), {
         'start': {
           'path': [0, 1, 2],
-          'offset': 3
+          'offset': 3,
         },
         'end': {
           'path': [1, 2, 3],
-          'offset': 3
-        }
+          'offset': 3,
+        },
       });
     });
 

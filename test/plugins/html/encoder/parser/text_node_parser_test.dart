@@ -123,7 +123,7 @@ void main() async {
                     'bold': true,
                     'italic': true,
                     "underline": true,
-                    "strikethrough": true
+                    "strikethrough": true,
                   },
                 ))
               .toJson(),
@@ -148,7 +148,7 @@ void main() async {
                     "underline": true,
                     "strikethrough": true,
                     "bg_color": "0x6000bcf0",
-                    "font_color": "0xff2196f3"
+                    "font_color": "0xff2196f3",
                   },
                 ))
               .toJson(),
@@ -196,7 +196,7 @@ void main() async {
                     'italic': true,
                     "underline": true,
                     "strikethrough": true,
-                    "font_color": "0xff2196f3"
+                    "font_color": "0xff2196f3",
                   },
                 ))
               .toJson(),

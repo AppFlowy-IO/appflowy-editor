@@ -103,7 +103,7 @@ class TestableEditor {
             numberedListItem,
             linkItem,
             buildTextColorItem(),
-            buildHighlightColorItem()
+            buildHighlightColorItem(),
           ],
           editorState: editorState,
           scrollController: scrollController!,
@@ -309,7 +309,7 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }
@@ -332,7 +332,7 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }

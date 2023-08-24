@@ -77,7 +77,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           _parseListElement(
             element,
             type: type,
-          )
+          ),
         ];
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
@@ -143,7 +143,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         level: level,
         delta: delta,
       ),
-      ...specialNodes
+      ...specialNodes,
     ];
   }
 
@@ -357,7 +357,7 @@ class HTMLTags {
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTags.image
+    HTMLTags.image,
   ];
 
   static bool isTopLevel(String tag) {

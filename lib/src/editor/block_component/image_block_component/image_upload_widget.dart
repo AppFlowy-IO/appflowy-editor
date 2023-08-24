@@ -257,7 +257,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           child: _buildUploadButton(
             context,
           ),
-        )
+        ),
       ],
     );
   }
@@ -274,7 +274,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           child: _buildUploadButton(
             context,
           ),
-        )
+        ),
       ],
     );
   }

@@ -62,7 +62,7 @@ class TextFieldAndEditor extends StatelessWidget {
                     editorStyle: const EditorStyle.mobile(),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

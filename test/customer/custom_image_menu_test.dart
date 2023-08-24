@@ -58,7 +58,7 @@ class CustomImageMenu extends StatelessWidget {
             child: Text(menu),
           );
         },
-      )
+      ),
     };
 
     final editorState = EditorState(document: document);

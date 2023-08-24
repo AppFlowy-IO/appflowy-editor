@@ -64,10 +64,10 @@ void main() async {
         'document': {
           'type': 'editor',
           'children': [
-            {'type': 'text'}
+            {'type': 'text'},
           ],
-          'data': {'a': 'a'}
-        }
+          'data': {'a': 'a'},
+        },
       };
       final document = Document.fromJson(json);
       expect(document.toJson(), json);
@@ -84,10 +84,10 @@ void main() async {
                 'type': 'paragraph',
                 'data': {
                   'delta': [],
-                }
+                },
               }
             ],
-          }
+          },
         }).isEmpty,
       );
 
@@ -97,7 +97,7 @@ void main() async {
           'document': {
             'type': 'page',
             'children': [],
-          }
+          },
         }).isEmpty,
       );
 
@@ -111,12 +111,12 @@ void main() async {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': ''}
+                    {'insert': ''},
                   ],
-                }
+                },
               }
             ],
-          }
+          },
         }).isEmpty,
       );
 
@@ -130,12 +130,12 @@ void main() async {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': 'Welcome to AppFlowy!'}
+                    {'insert': 'Welcome to AppFlowy!'},
                   ],
-                }
+                },
               }
             ],
-          }
+          },
         }).isEmpty,
       );
     });

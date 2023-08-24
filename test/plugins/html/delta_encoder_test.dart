@@ -234,7 +234,7 @@ void main() async {
               BuiltInAttributeKey.href: 'https://appflowy.io',
               BuiltInAttributeKey.bold: true,
               BuiltInAttributeKey.italic: true,
-              BuiltInAttributeKey.underline: true
+              BuiltInAttributeKey.underline: true,
             },
           ),
         ],

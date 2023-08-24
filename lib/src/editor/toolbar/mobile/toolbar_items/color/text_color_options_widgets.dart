@@ -80,7 +80,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
               },
               isSelected: isSelected,
             );
-          }).toList()
+          }).toList(),
         ],
       ),
     );

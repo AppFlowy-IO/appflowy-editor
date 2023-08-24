@@ -305,7 +305,7 @@ class EditorState {
         node.copyWith(
           attributes: {
             ...node.attributes,
-            blockComponentDelta: delta.slice(startIndex, endIndex).toJson()
+            blockComponentDelta: delta.slice(startIndex, endIndex).toJson(),
           },
         ),
       );

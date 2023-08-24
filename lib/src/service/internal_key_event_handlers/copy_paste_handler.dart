@@ -242,7 +242,7 @@ void _pasteMultipleLinesInText(
             ..addAll(
               {ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson()},
             ),
-        )
+        ),
       ]);
       transaction.afterSelection = afterSelection;
       editorState.apply(transaction);
@@ -251,7 +251,7 @@ void _pasteMultipleLinesInText(
     final path = node.path;
     transaction.deleteNode(node);
     transaction.insertNodes([
-      path.first + 1
+      path.first + 1,
     ], [
       firstNode,
       ...nodes,

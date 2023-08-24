@@ -77,7 +77,7 @@ class _LinkMenuState extends State<LinkMenu> {
               text: AppFlowyEditorLocalizations.current.removeLink,
               onPressed: widget.onRemoveLink,
             ),
-          ]
+          ],
         ],
       ),
     );

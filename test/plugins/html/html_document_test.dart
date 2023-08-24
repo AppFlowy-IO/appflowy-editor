@@ -35,9 +35,9 @@ const data = {
         'data': {
           'level': 1,
           'delta': [
-            {'insert': 'AppFlowyEditor'}
-          ]
-        }
+            {'insert': 'AppFlowyEditor'},
+          ],
+        },
       },
       {
         'type': 'heading',
@@ -47,15 +47,15 @@ const data = {
             {'insert': '👋 '},
             {
               'insert': 'Welcome to',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -64,15 +64,15 @@ const data = {
             {'insert': 'AppFlowy Editor is a '},
             {
               'insert': 'highly customizable',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'rich-text editor',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -81,16 +81,16 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Here',
-              'attributes': {'underline': true}
+              'attributes': {'underline': true},
             },
             {'insert': ' is an example '},
             {
               'insert': 'your',
-              'attributes': {'strikethrough': true}
+              'attributes': {'strikethrough': true},
             },
-            {'insert': ' you can give a try'}
-          ]
-        }
+            {'insert': ' you can give a try'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -99,10 +99,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -111,10 +111,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element two',
-              'attributes': {'underline': true}
+              'attributes': {'underline': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -123,10 +123,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element three',
-              'attributes': {'bold': true, 'strikethrough': true}
+              'attributes': {'bold': true, 'strikethrough': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -135,75 +135,75 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'This is an anchor tag!',
-              'attributes': {'href': 'https://appflowy.io'}
+              'attributes': {'href': 'https://appflowy.io'},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'heading',
         'data': {
           'level': 3,
           'delta': [
-            {'insert': 'Features!'}
-          ]
-        }
+            {'insert': 'Features!'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Customizable'}
-          ]
-        }
+            {'insert': '[x] Customizable'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Test-covered'}
-          ]
-        }
+            {'insert': '[x] Test-covered'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[ ] more to come!'}
-          ]
-        }
+            {'insert': '[ ] more to come!'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'First item'}
-          ]
-        }
+            {'insert': 'First item'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'Second item'}
-          ]
-        }
+            {'insert': 'Second item'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'List element'}
-          ]
-        }
+            {'insert': 'List element'},
+          ],
+        },
       },
       {
         'type': 'quote',
         'data': {
           'delta': [
-            {'insert': 'This is a quote!'}
-          ]
-        }
+            {'insert': 'This is a quote!'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -211,10 +211,10 @@ const data = {
           'delta': [
             {
               'insert': ' Code block',
-              'attributes': {'code': true}
+              'attributes': {'code': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -223,10 +223,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Italic one',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -235,10 +235,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Italic two',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -247,10 +247,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Bold tag',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -259,20 +259,20 @@ const data = {
             {'insert': 'You can also use '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             },
-            {'insert': ' as a component to build your own app. '}
-          ]
-        }
+            {'insert': ' as a component to build your own app. '},
+          ],
+        },
       },
       {
         'type': 'heading',
         'data': {
           'level': 3,
           'delta': [
-            {'insert': 'Awesome features'}
-          ]
-        }
+            {'insert': 'Awesome features'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -280,21 +280,21 @@ const data = {
           'delta': [
             {
               'insert':
-                  'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!'
+                  'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!',
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       }
-    ]
-  }
+    ],
+  },
 };
 const rawHTML =
     '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li></ul><ul><li>[x] Test-covered</li></ul><ul><li>[ ] more to come!</li></ul><ul><li>First item</li></ul><ul><li>Second item</li></ul><ul><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
@@ -310,9 +310,9 @@ const nestedDelta = {
         'data': {
           'level': 1,
           'delta': [
-            {'insert': 'Welcome to the playground'}
-          ]
-        }
+            {'insert': 'Welcome to the playground'},
+          ],
+        },
       },
       {
         'type': 'quote',
@@ -320,11 +320,11 @@ const nestedDelta = {
           'delta': [
             {
               'insert':
-                  'In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with '
+                  'In case you were wondering what the black box at the bottom is – it\'s the debug view, showing the current state of the editor. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting. The playground is a demo environment built with ',
             },
             {
               'insert': '@lexical/react',
-              'attributes': {'code': true}
+              'attributes': {'code': true},
             },
             {'insert': '. Try typing in '},
             {
@@ -332,24 +332,24 @@ const nestedDelta = {
               'attributes': {
                 'bold': true,
                 "italic": true,
-                'href': 'https://appflowy.io'
-              }
+                'href': 'https://appflowy.io',
+              },
             },
             {'insert': ' with '},
             {
               'insert': 'different',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             },
-            {'insert': ' formats.'}
-          ]
-        }
+            {'insert': ' formats.'},
+          ],
+        },
       },
       {
         'type': 'image',
         'data': {
           'url': 'https://richtexteditor.com/images/editor-image.png',
           'align': 'center',
-        }
+        },
       },
       {
         'type': 'paragraph',
@@ -357,14 +357,14 @@ const nestedDelta = {
           'delta': [
             {
               'insert':
-                  'Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!'
+                  'Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!',
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       },
       {
         'type': 'paragraph',
@@ -372,10 +372,10 @@ const nestedDelta = {
           'delta': [
             {
               'insert':
-                  'If you\'d like to find out more about Lexical, you can:'
+                  'If you\'d like to find out more about Lexical, you can:',
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
@@ -384,11 +384,11 @@ const nestedDelta = {
             {'insert': 'Visit the '},
             {
               'insert': 'Lexical website',
-              'attributes': {'href': 'https://lexical.dev/'}
+              'attributes': {'href': 'https://lexical.dev/'},
             },
-            {'insert': ' for documentation and more information.'}
-          ]
-        }
+            {'insert': ' for documentation and more information.'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
@@ -398,10 +398,10 @@ const nestedDelta = {
             'data': {
               'url': 'https://richtexteditor.com/images/editor-image.png',
               'align': 'center',
-            }
+            },
           }
         ],
-        'data': {'delta': []}
+        'data': {'delta': []},
       },
       {
         'type': 'bulleted_list',
@@ -410,11 +410,11 @@ const nestedDelta = {
             {'insert': 'Check out the code on our '},
             {
               'insert': 'GitHub repository',
-              'attributes': {'href': 'https://github.com/facebook/lexical'}
+              'attributes': {'href': 'https://github.com/facebook/lexical'},
             },
-            {'insert': '.'}
-          ]
-        }
+            {'insert': '.'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
@@ -425,12 +425,12 @@ const nestedDelta = {
               'insert': 'here',
               'attributes': {
                 'href':
-                    'https://github.com/facebook/lexical/tree/main/packages/lexical-playground'
-              }
+                    'https://github.com/facebook/lexical/tree/main/packages/lexical-playground',
+              },
             },
-            {'insert': '.'}
-          ]
-        }
+            {'insert': '.'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
@@ -439,11 +439,11 @@ const nestedDelta = {
             {'insert': 'Join our '},
             {
               'insert': 'Discord Server',
-              'attributes': {'href': 'https://discord.com/invite/KmG4wQnnD9'}
+              'attributes': {'href': 'https://discord.com/invite/KmG4wQnnD9'},
             },
-            {'insert': ' and chat with the team.'}
-          ]
-        }
+            {'insert': ' and chat with the team.'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
@@ -454,12 +454,12 @@ const nestedDelta = {
               'insert': 'here',
               'attributes': {
                 'href':
-                    'https://github.com/facebook/lexical/tree/main/packages/lexical-playground'
-              }
+                    'https://github.com/facebook/lexical/tree/main/packages/lexical-playground',
+              },
             },
-            {'insert': '.'}
-          ]
-        }
+            {'insert': '.'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -467,15 +467,15 @@ const nestedDelta = {
           'delta': [
             {
               'insert':
-                  'Lastly, we\'re constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.'
+                  'Lastly, we\'re constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.',
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       }
-    ]
-  }
+    ],
+  },
 };
