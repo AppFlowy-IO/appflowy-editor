@@ -2,7 +2,7 @@ import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 
 import '../internal_key_event_handlers/copy_paste_handler.dart';
 
-final builtInContextMenuItems = [
+final standardContextMenuItems = [
   [
     // cut
     ContextMenuItem(
