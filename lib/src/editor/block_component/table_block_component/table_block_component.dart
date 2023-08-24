@@ -59,51 +59,74 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
-    with SelectableMixin {
+    with SelectableMixin, BlockComponentConfigurable {
+  @override
+  BlockComponentConfiguration get configuration => widget.configuration;
+
+  @override
+  Node get node => widget.node;
+
   late final editorState = Provider.of<EditorState>(context, listen: false);
   final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
+    Widget child = Scrollbar(
       controller: _scrollController,
       child: SingleChildScrollView(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 30, top: 8),
-          child: TableView(
-            tableNode: widget.tableNode,
-            editorState: editorState,
-          ),
+        child: TableView(
+          tableNode: widget.tableNode,
+          editorState: editorState,
         ),
       ),
     );
+
+    child = Padding(
+      key: tableKey,
+      padding: padding,
+      child: child,
+    );
+
+    if (widget.showActions && widget.actionBuilder != null) {
+      child = BlockComponentActionWrapper(
+        node: node,
+        actionBuilder: widget.actionBuilder!,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
+  final tableKey = GlobalKey();
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   @override
-  Position start() => Position(path: widget.tableNode.node.path, offset: 0);
+  Position start() => Position(path: widget.node.path, offset: 0);
 
   @override
-  Position end() => Position(path: widget.tableNode.node.path, offset: 1);
+  Position end() => Position(path: widget.node.path, offset: 1);
 
   @override
   Position getPositionInOffset(Offset start) => end();
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) => [
-        Offset.zero &
-            Size(
-              widget.tableNode.tableWidth + 10,
-              widget.tableNode.colsHeight + 10,
-            )
+  List<Rect> getRectsInSelection(Selection selection) {
+    final parentBox = context.findRenderObject();
+    final tableBox = tableKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && tableBox is RenderBox) {
+      return [
+        tableBox.localToGlobal(Offset.zero, ancestor: parentBox) & tableBox.size
       ];
+    }
+    return [Offset.zero & _renderBox.size];
+  }
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) => Selection.single(
-        path: widget.tableNode.node.path,
+        path: widget.node.path,
         startOffset: 0,
         endOffset: 1,
       );

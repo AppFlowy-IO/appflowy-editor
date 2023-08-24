@@ -43,11 +43,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
     ),
   ),
   TableBlockKeys.type: TableBlockComponentBuilder(),
-  TableCellBlockKeys.type: TableCellBlockComponentBuilder(
-    configuration: BlockComponentConfiguration(
-      padding: (_) => const EdgeInsets.symmetric(vertical: 0.0),
-    ),
-  ),
+  TableCellBlockKeys.type: TableCellBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
