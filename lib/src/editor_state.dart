@@ -285,30 +285,72 @@ class EditorState {
   List<Node> getSelectedNodes([
     Selection? selection,
   ]) {
-    final List<Node> res = [];
+    List<Node> res = [];
     selection ??= this.selection;
     if (selection == null || selection.isCollapsed) {
       return res;
     }
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
-      if (node.level > 1) {
+      if (res.any((element) => element.path.isParentOf(node.path))) {
         continue;
       }
-      final delta = node.delta;
-      if (delta == null) {
-        continue;
-      }
-      final startIndex = node == nodes.first ? selection.startIndex : 0;
-      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
-      res.add(
-        node.copyWith(
-          attributes: {
-            ...node.attributes,
-            blockComponentDelta: delta.slice(startIndex, endIndex).toJson()
+      res.add(node);
+    }
+
+    res = res.map((e) => e.copyWith()).toList();
+
+    if (res.isNotEmpty) {
+      var delta = res.first.delta;
+      if (delta != null) {
+        res.first.updateAttributes(
+          {
+            ...res.first.attributes,
+            blockComponentDelta: delta
+                .slice(
+                  selection.startIndex,
+                  delta.length,
+                )
+                .toJson()
           },
-        ),
-      );
+        );
+      }
+
+      var node = res.last;
+      while (node.children.isNotEmpty) {
+        node = node.children.last;
+      }
+      delta = node.delta;
+      if (delta != null) {
+        if (node.parent != null) {
+          node.insertBefore(
+            node.copyWith(
+              attributes: {
+                ...node.attributes,
+                blockComponentDelta: delta
+                    .slice(
+                      0,
+                      selection.endIndex,
+                    )
+                    .toJson()
+              },
+            ),
+          );
+          node.unlink();
+        } else {
+          node.updateAttributes(
+            {
+              ...node.attributes,
+              blockComponentDelta: delta
+                  .slice(
+                    0,
+                    selection.endIndex,
+                  )
+                  .toJson()
+            },
+          );
+        }
+      }
     }
 
     return res;
