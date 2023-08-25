@@ -12,7 +12,9 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
   final Attributes _attributes = {};
   final List<md.InlineSyntax> customInlineSyntaxes;
 
-  DeltaMarkdownDecoder({this.customInlineSyntaxes = const []});
+  DeltaMarkdownDecoder({
+    this.customInlineSyntaxes = const [],
+  });
 
   @override
   Delta convert(String input) {
@@ -61,11 +63,9 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     } else if (element.tag == 'u') {
       _attributes[BuiltInAttributeKey.underline] = true;
     } else {
-      for (final key in element.attributes.keys) {
-        if (element.attributes[key] != null) {
-          _attributes[key] = jsonDecode(element.attributes[key]!);
-        }
-      }
+      element.attributes.forEach((key, value) {
+        _attributes[key] = jsonDecode(value);
+      });
     }
   }
 
@@ -83,7 +83,7 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     } else if (element.tag == 'u') {
       _attributes.remove(BuiltInAttributeKey.underline);
     } else {
-      for (var key in element.attributes.keys) {
+      for (final key in element.attributes.keys) {
         _attributes.remove(key);
       }
     }
