@@ -241,8 +241,8 @@ void main() async {
     });
 
     testWidgets('replace all on found matches in same path', (tester) async {
-      const patternToBeFound = 'a';
-      const replacePattern = 'AppFlowy';
+      const patternToBeFound = 'x';
+      const replacePattern = 'Mayur';
       const replaceAllBtn = Key('replaceAllButton');
 
       final editor = tester.editor;
@@ -258,16 +258,11 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
-      await tester.pumpAndSettle();
 
       //now we input some text into the replace text field and try replace all
-      await enterInputIntoFindDialog(
+      await enterInputIntoReplaceDialog(
         tester,
         replacePattern,
-        isReplaceField: true,
       );
 
       await tester.tap(find.byKey(replaceAllBtn));
