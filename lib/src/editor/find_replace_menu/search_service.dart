@@ -46,7 +46,7 @@ class SearchService {
     if (pattern.isEmpty) return;
 
     //traversing all the nodes
-    for (final n in _getAllTextNodes()) {
+    for (final n in _getAllNodes()) {
       //matches list will contain the offsets where the desired word,
       //is found.
       List<int> matches =
@@ -56,19 +56,14 @@ class SearchService {
       for (int matchedOffset in matches) {
         matchedPositions.add(Position(path: n.path, offset: matchedOffset));
       }
-      //finally we will highlight all the mathces.
-      _highlightMatches(
-        n.path,
-        matches,
-        pattern.length,
-        unhighlight: unhighlight,
-      );
     }
+    //finally we will highlight all the mathces.
+    _highlightAllMatches(pattern.length, unhighlight: unhighlight);
 
     selectedIndex = -1;
   }
 
-  List<Node> _getAllTextNodes() {
+  List<Node> _getAllNodes() {
     final contents = editorState.document.root.children;
 
     if (contents.isEmpty) return [];
@@ -93,22 +88,15 @@ class SearchService {
     return nodes;
   }
 
-  /// This method takes in the TextNode's path, matches is a list of offsets,
-  /// patternLength is the length of the word which is being searched.
-  ///
-  /// So for example: path= 1, offset= 10, and patternLength= 5 will mean
-  /// that the word is located on path 1 from [1,10] to [1,14]
-  void _highlightMatches(
-    Path path,
-    List<int> matches,
+  void _highlightAllMatches(
     int patternLength, {
     bool unhighlight = false,
   }) {
-    for (final match in matches) {
-      final start = Position(path: path, offset: match);
+    for (final match in matchedPositions) {
+      final start = Position(path: match.path, offset: match.offset);
       final end = Position(
-        path: start.path,
-        offset: start.offset + queriedPattern.length,
+        path: match.path,
+        offset: match.offset + patternLength,
       );
 
       final selection = Selection(start: start, end: end);
@@ -232,18 +220,27 @@ class SearchService {
 
   /// Replaces all the found occurances of pattern with replaceText
   void replaceAllMatches(String replaceText) {
-    if (replaceText.isEmpty || queriedPattern.isEmpty) {
+    if (replaceText.isEmpty ||
+        queriedPattern.isEmpty ||
+        matchedPositions.isEmpty) {
       return;
     }
-    // We need to create a final variable matchesLength here, because
-    // when we replaceSelectedWord we reduce the length of matchedPositions
-    // list, this causes the value to shrink dynamically and thus it may
-    // result in pretermination.
-    final int matchesLength = matchedPositions.length;
 
-    for (int i = 0; i < matchesLength; i++) {
-      replaceSelectedWord(replaceText, true);
+    _highlightAllMatches(queriedPattern.length, unhighlight: true);
+    for (final match in matchedPositions.reversed.toList()) {
+      final node = editorState.getNodeAtPath(match.path)!;
+
+      final transaction = editorState.transaction
+        ..replaceText(
+          node,
+          match.offset,
+          queriedPattern.length,
+          replaceText,
+        );
+
+      editorState.apply(transaction);
     }
+    matchedPositions.clear();
   }
 
   void _applySelectedHighlightColor(
