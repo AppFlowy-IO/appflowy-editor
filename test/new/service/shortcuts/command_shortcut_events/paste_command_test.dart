@@ -49,6 +49,11 @@ void main() async {
         isMetaPressed: Platform.isMacOS,
         isControlPressed: Platform.isWindows || Platform.isLinux,
       );
+      AppFlowyClipboard.mockSetData(
+        AppFlowyClipboardData(
+          text: editor.editorState.getTextInSelection(selection).join('\n'),
+        ),
+      );
 
       await editor.updateSelection(selection);
 
@@ -58,6 +63,8 @@ void main() async {
         isMetaPressed: Platform.isMacOS,
         isControlPressed: Platform.isWindows || Platform.isLinux,
       );
+
+      await tester.pumpAndSettle();
 
       await editor.updateSelection(selection);
       final node = editor.nodeAtPath([0]);
