@@ -529,6 +529,25 @@ class _DesktopSelectionServiceWidgetState
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
 
+    // only shows around the selection area.
+    if (selectionRects.isEmpty) {
+      return;
+    }
+
+    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
+        selectionRects.any((element) {
+          const threshold = 20;
+          final scaledArea = Rect.fromCenter(
+            center: element.center,
+            width: element.width + threshold,
+            height: element.height + threshold,
+          );
+          return scaledArea.contains(details.globalPosition);
+        });
+    if (!isHitSelectionAreas) {
+      return;
+    }
+
     // For now, only support the text node.
     if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
