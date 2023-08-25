@@ -534,15 +534,16 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    final isHitSelectionAreas = selectionRects.any((element) {
-      const threshold = 20;
-      final scaledArea = Rect.fromCenter(
-        center: element.center,
-        width: element.width + threshold,
-        height: element.height + threshold,
-      );
-      return scaledArea.contains(details.globalPosition);
-    });
+    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
+        selectionRects.any((element) {
+          const threshold = 20;
+          final scaledArea = Rect.fromCenter(
+            center: element.center,
+            width: element.width + threshold,
+            height: element.height + threshold,
+          );
+          return scaledArea.contains(details.globalPosition);
+        });
     if (!isHitSelectionAreas) {
       return;
     }
