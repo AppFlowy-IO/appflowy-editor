@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
-import '../../util/file_picker/file_picker_impl.dart';
 import 'package:file_picker/file_picker.dart' as fp;
+import 'package:flutter/material.dart';
+
+import '../../util/file_picker/file_picker_impl.dart';
 
 enum ImageFromFileStatus {
   notSelected,
@@ -47,7 +48,7 @@ void showImageMenu(
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
-      width: MediaQuery.of(context).size.width * 0.4,
+      width: MediaQuery.of(context).size.width * 0.3,
       onSubmitted: insertImage,
       onUpload: insertImage,
     ),
@@ -103,8 +104,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.width,
-      height: 300,
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+      height: 240,
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         boxShadow: [
@@ -123,7 +124,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
-                width: 300,
+                width: 260,
+                height: 36,
                 child: TabBar(
                   tabs: const [
                     Tab(text: 'Upload Image'),
@@ -207,7 +209,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   ) {
     return SizedBox(
       width: 170,
-      height: 48,
+      height: 36,
       child: TextButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
@@ -296,7 +298,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           }
         },
         child: Container(
-          height: 80,
+          height: 60,
           margin: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             border: Border.all(color: const Color(0xff00BCF0)),
