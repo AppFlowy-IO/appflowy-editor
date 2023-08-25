@@ -28,6 +28,7 @@ class SearchService {
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
   SearchAlgorithm searchAlgorithm = BoyerMoore();
+  Position? nextMatch;
   String queriedPattern = '';
   int selectedIndex = 0;
 
@@ -166,7 +167,7 @@ class SearchService {
   /// Replaces the current selected word with replaceText.
   /// After replacing the selected word, this method selects the next
   /// matched word if that exists.
-  void replaceSelectedWord(String replaceText, [bool fromFirst = false]) {
+  void replaceSelectedWord(String replaceText) {
     if (replaceText.isEmpty ||
         queriedPattern.isEmpty ||
         matchedPositions.isEmpty) {
@@ -177,8 +178,7 @@ class SearchService {
       selectedIndex++;
     }
 
-    final position =
-        fromFirst ? matchedPositions.first : matchedPositions[selectedIndex];
+    final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
     //unhighlight the selected word before it is replaced
@@ -190,32 +190,18 @@ class SearchService {
     editorState.undoManager.forgetRecentUndo();
 
     final textNode = editorState.getNodeAtPath(position.path)!;
-
-    final transaction = editorState.transaction;
-
-    transaction.replaceText(
-      textNode,
-      position.offset,
-      queriedPattern.length,
-      replaceText,
-    );
+    final transaction = editorState.transaction
+      ..replaceText(
+        textNode,
+        position.offset,
+        queriedPattern.length,
+        replaceText,
+      );
 
     editorState.apply(transaction);
 
-    if (fromFirst) {
-      matchedPositions.removeAt(0);
-    } else {
-      matchedPositions.removeAt(selectedIndex);
-      --selectedIndex;
-
-      if (matchedPositions.isNotEmpty) {
-        if (selectedIndex == -1) {
-          selectedIndex = 0;
-        }
-
-        _selectWordAtPosition(matchedPositions[selectedIndex]);
-      }
-    }
+    matchedPositions.clear();
+    findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurances of pattern with replaceText
