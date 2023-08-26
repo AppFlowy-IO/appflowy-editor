@@ -197,6 +197,44 @@ void main() async {
       await editor.dispose();
     });
 
+    testWidgets('replace match on multiple matches in same path',
+        (tester) async {
+      const patternToBeFound = 'a';
+      const replacePattern = 'test';
+      const replaceSelectedBtn = Key('replaceSelectedButton');
+      const multiplier = 5;
+
+      final editor = tester.editor;
+      editor.addParagraph(initialText: patternToBeFound * multiplier);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoReplaceDialog(
+        tester,
+        replacePattern,
+      );
+
+      for (int i = 0; i < multiplier; i++) {
+        await tester.tap(find.byKey(replaceSelectedBtn));
+        await tester.pumpAndSettle();
+      }
+
+      //all matches should be replaced
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), replacePattern * multiplier);
+      await editor.dispose();
+    });
+
     testWidgets('replace all on found matches', (tester) async {
       const patternToBeFound = 'Welcome';
       const replacePattern = 'Salute';
