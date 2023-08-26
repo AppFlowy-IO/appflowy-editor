@@ -28,7 +28,6 @@ class SearchService {
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Position> matchedPositions = [];
   SearchAlgorithm searchAlgorithm = BoyerMoore();
-  Position? nextMatch;
   String queriedPattern = '';
   int selectedIndex = 0;
 
