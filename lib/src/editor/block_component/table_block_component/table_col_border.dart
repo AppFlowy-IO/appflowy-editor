@@ -9,11 +9,16 @@ class TableColBorder extends StatefulWidget {
     required this.tableNode,
     required this.colIdx,
     required this.resizable,
+    required this.borderColor,
+    required this.borderHoverColor,
   }) : super(key: key);
 
   final bool resizable;
   final int colIdx;
   final TableNode tableNode;
+
+  final Color borderColor;
+  final Color borderHoverColor;
 
   @override
   State<TableColBorder> createState() => _TableColBorderState();
@@ -58,9 +63,12 @@ class _TableColBorderState extends State<TableColBorder> {
         },
         child: Container(
           key: _borderKey,
-          width: widget.tableNode.config.tableBorderWidth,
-          height: context.select((Node n) => n.attributes['colsHeight']),
-          color: _borderHovering || _borderDragging ? Colors.blue : Colors.grey,
+          width: widget.tableNode.config.borderWidth,
+          height: context
+              .select((Node n) => n.attributes[TableBlockKeys.colsHeight]),
+          color: _borderHovering || _borderDragging
+              ? widget.borderHoverColor
+              : widget.borderColor,
         ),
       ),
     );
@@ -68,8 +76,9 @@ class _TableColBorderState extends State<TableColBorder> {
 
   Container buildFixedBorder(BuildContext context) {
     return Container(
-      width: widget.tableNode.config.tableBorderWidth,
-      height: context.select((Node n) => n.attributes['colsHeight']),
+      width: widget.tableNode.config.borderWidth,
+      height:
+          context.select((Node n) => n.attributes[TableBlockKeys.colsHeight]),
       color: Colors.grey,
     );
   }

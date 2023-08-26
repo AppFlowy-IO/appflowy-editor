@@ -37,7 +37,6 @@ void showColorMenu(
   }
 
   keepEditorFocusNotifier.value += 1;
-  final editorSelection = editorState.selection;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,

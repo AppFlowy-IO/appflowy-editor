@@ -7,11 +7,13 @@ class TableActionButton extends StatefulWidget {
     required this.height,
     required this.padding,
     required this.onPressed,
+    required this.icon,
   }) : super(key: key);
 
   final double width, height;
   final EdgeInsetsGeometry padding;
   final Function onPressed;
+  final Widget icon;
 
   @override
   State<TableActionButton> createState() => _TableActionButtonState();
@@ -38,7 +40,7 @@ class _TableActionButtonState extends State<TableActionButton> {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () => widget.onPressed(),
-                  child: const Icon(Icons.add),
+                  child: widget.icon,
                 ),
               ),
             ),

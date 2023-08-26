@@ -5,14 +5,14 @@ void addCol(Node tableNode, int position, Transaction transaction) {
   assert(position >= 0);
 
   List<Node> cellNodes = [];
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
   if (position != colsLen) {
     for (var i = position; i < colsLen; i++) {
       for (var j = 0; j < rowsLen; j++) {
         final node = getCellNode(tableNode, i, j)!;
-        transaction.updateNode(node, {'colPosition': i + 1});
+        transaction.updateNode(node, {TableBlockKeys.colPosition: i + 1});
       }
     }
   }
@@ -21,8 +21,8 @@ void addCol(Node tableNode, int position, Transaction transaction) {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
-        'colPosition': position,
-        'rowPosition': i,
+        TableBlockKeys.colPosition: position,
+        TableBlockKeys.rowPosition: i,
       },
     );
     node.insert(paragraphNode());
@@ -39,20 +39,20 @@ void addCol(Node tableNode, int position, Transaction transaction) {
   // TODO(zoli): this calls notifyListener rowsLen+1 times. isn't there a better
   // way?
   transaction.insertNodes(insertPath, cellNodes);
-  transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 }
 
 void addRow(Node tableNode, int position, Transaction transaction) {
   assert(position >= 0);
 
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
   if (position != rowsLen) {
     for (var i = position; i < rowsLen; i++) {
       for (var j = 0; j < colsLen; j++) {
         final node = getCellNode(tableNode, j, i)!;
-        transaction.updateNode(node, {'rowPosition': i + 1});
+        transaction.updateNode(node, {TableBlockKeys.rowPosition: i + 1});
       }
     }
   }
@@ -61,8 +61,8 @@ void addRow(Node tableNode, int position, Transaction transaction) {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
-        'colPosition': i,
-        'rowPosition': position,
+        TableBlockKeys.colPosition: i,
+        TableBlockKeys.rowPosition: position,
       },
     );
     node.insert(paragraphNode());
@@ -78,12 +78,12 @@ void addRow(Node tableNode, int position, Transaction transaction) {
       newCellNode(tableNode, node),
     );
   }
-  transaction.updateNode(tableNode, {'rowsLen': rowsLen + 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
 }
 
 void removeCol(Node tableNode, int col, Transaction transaction) {
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
   for (var i = 0; i < rowsLen; i++) {
     nodes.add(getCellNode(tableNode, col, i)!);
@@ -92,12 +92,12 @@ void removeCol(Node tableNode, int col, Transaction transaction) {
 
   _updateCellPositions(tableNode, transaction, col + 1, 0, -1, 0);
 
-  transaction.updateNode(tableNode, {'colsLen': colsLen - 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen - 1});
 }
 
 void removeRow(Node tableNode, int row, Transaction transaction) {
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
   for (var i = 0; i < colsLen; i++) {
     nodes.add(getCellNode(tableNode, i, row)!);
@@ -106,12 +106,12 @@ void removeRow(Node tableNode, int row, Transaction transaction) {
 
   _updateCellPositions(tableNode, transaction, 0, row + 1, 0, -1);
 
-  transaction.updateNode(tableNode, {'rowsLen': rowsLen - 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
 }
 
 void duplicateCol(Node tableNode, int col, Transaction transaction) {
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
   for (var i = 0; i < rowsLen; i++) {
     final node = getCellNode(tableNode, col, i)!;
@@ -119,8 +119,8 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
       node.copyWith(
         attributes: {
           ...node.attributes,
-          'colPosition': col + 1,
-          'rowPosition': i,
+          TableBlockKeys.colPosition: col + 1,
+          TableBlockKeys.rowPosition: i,
         },
       ),
     );
@@ -132,12 +132,12 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
 
   _updateCellPositions(tableNode, transaction, col + 1, 0, 1, 0);
 
-  transaction.updateNode(tableNode, {'colsLen': colsLen + 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 }
 
 void duplicateRow(Node tableNode, int row, Transaction transaction) {
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   for (var i = 0; i < colsLen; i++) {
     final node = getCellNode(tableNode, i, row)!;
     transaction.insertNode(
@@ -145,8 +145,8 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
       node.copyWith(
         attributes: {
           ...node.attributes,
-          'rowPosition': row + 1,
-          'colPosition': i,
+          TableBlockKeys.rowPosition: row + 1,
+          TableBlockKeys.colPosition: i,
         },
       ),
     );
@@ -154,7 +154,7 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
 
   _updateCellPositions(tableNode, transaction, 0, row + 1, 0, 1);
 
-  transaction.updateNode(tableNode, {'rowsLen': rowsLen + 1});
+  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
 }
 
 void setColBgColor(
@@ -163,12 +163,12 @@ void setColBgColor(
   Transaction transaction,
   String? color,
 ) {
-  final rowslen = tableNode.attributes['rowsLen'];
+  final rowslen = tableNode.attributes[TableBlockKeys.rowsLen];
   for (var i = 0; i < rowslen; i++) {
     final node = getCellNode(tableNode, col, i)!;
     transaction.updateNode(
       node,
-      {'backgroundColor': color},
+      {TableBlockKeys.backgroundColor: color},
     );
   }
 }
@@ -179,12 +179,12 @@ void setRowBgColor(
   Transaction transaction,
   String? color,
 ) {
-  final colsLen = tableNode.attributes['colsLen'];
+  final colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   for (var i = 0; i < colsLen; i++) {
     final node = getCellNode(tableNode, i, row)!;
     transaction.updateNode(
       node,
-      {'backgroundColor': color},
+      {TableBlockKeys.backgroundColor: color},
     );
   }
 }
@@ -194,15 +194,12 @@ void clearCol(
   int col,
   Transaction transaction,
 ) {
-  final rowsLen = tableNode.attributes['rowsLen'];
+  final rowsLen = tableNode.attributes[TableBlockKeys.rowsLen];
   for (var i = 0; i < rowsLen; i++) {
     final node = getCellNode(tableNode, col, i)!;
     transaction.insertNode(
       node.children.first.path,
-      Node(
-        type: 'paragraph',
-        attributes: {'delta': (Delta()..insert('')).toJson()},
-      ),
+      paragraphNode(text: ''),
     );
   }
 }
@@ -212,49 +209,46 @@ void clearRow(
   int row,
   Transaction transaction,
 ) {
-  final colsLen = tableNode.attributes['colsLen'];
+  final colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   for (var i = 0; i < colsLen; i++) {
     final node = getCellNode(tableNode, i, row)!;
     transaction.insertNode(
       node.children.first.path,
-      Node(
-        type: 'paragraph',
-        attributes: {'delta': (Delta()..insert('')).toJson()},
-      ),
+      paragraphNode(text: ''),
     );
   }
 }
 
 dynamic newCellNode(Node tableNode, n) {
-  final row = n.attributes['rowPosition'] as int;
-  final col = n.attributes['colPosition'] as int;
-  final int rowsLen = tableNode.attributes['rowsLen'];
-  final int colsLen = tableNode.attributes['colsLen'];
+  final row = n.attributes[TableBlockKeys.rowPosition] as int;
+  final col = n.attributes[TableBlockKeys.colPosition] as int;
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen];
+  final int colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
-  if (!n.attributes.containsKey('height')) {
+  if (!n.attributes.containsKey(TableBlockKeys.height)) {
     double nodeHeight = double.tryParse(
-      tableNode.attributes['rowDefaultHeight'].toString(),
+      tableNode.attributes[TableBlockKeys.rowDefaultHeight].toString(),
     )!;
     if (row < rowsLen) {
       nodeHeight = double.tryParse(
-            getCellNode(tableNode, 0, row)!.attributes['height'].toString(),
+            getCellNode(tableNode, 0, row)!.attributes[TableBlockKeys.height].toString(),
           ) ??
           nodeHeight;
     }
-    n.updateAttributes({'height': nodeHeight});
+    n.updateAttributes({TableBlockKeys.height: nodeHeight});
   }
 
-  if (!n.attributes.containsKey('width')) {
+  if (!n.attributes.containsKey(TableBlockKeys.width)) {
     double nodeWidth = double.tryParse(
-      tableNode.attributes['colDefaultWidth'].toString(),
+      tableNode.attributes[TableBlockKeys.colDefaultWidth].toString(),
     )!;
     if (col < colsLen) {
       nodeWidth = double.tryParse(
-            getCellNode(tableNode, col, 0)!.attributes['width'].toString(),
+            getCellNode(tableNode, col, 0)!.attributes[TableBlockKeys.width].toString(),
           ) ??
           nodeWidth;
     }
-    n.updateAttributes({'width': nodeWidth});
+    n.updateAttributes({TableBlockKeys.width: nodeWidth});
   }
 
   return n;
@@ -268,14 +262,14 @@ void _updateCellPositions(
   int addToCol,
   int addToRow,
 ) {
-  final int rowsLen = tableNode.attributes['rowsLen'],
-      colsLen = tableNode.attributes['colsLen'];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
+      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
   for (var i = fromCol; i < colsLen; i++) {
     for (var j = fromRow; j < rowsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        'colPosition': i + addToCol,
-        'rowPosition': j + addToRow,
+        TableBlockKeys.colPosition: i + addToCol,
+        TableBlockKeys.rowPosition: j + addToRow,
       });
     }
   }

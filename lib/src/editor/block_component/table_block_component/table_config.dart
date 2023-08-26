@@ -1,13 +1,11 @@
-const defaultColWidth = 80.0,
-    defaultRowHeight = 40.0,
-    minimumColWidth = 40.0,
-    defaultBorderWidth = 2.0;
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 class TableConfig {
   const TableConfig({
-    this.colDefaultWidth = defaultColWidth,
-    this.rowDefaultHeight = defaultRowHeight,
-    this.colMinimumWidth = minimumColWidth,
+    this.colDefaultWidth = TableDefaults.colWidth,
+    this.rowDefaultHeight = TableDefaults.rowHeight,
+    this.colMinimumWidth = TableDefaults.colMinimumWidth,
+    this.borderWidth = TableDefaults.borderWidth,
   });
 
   static TableConfig fromJson(Map<String, dynamic> json) {
@@ -16,27 +14,23 @@ class TableConfig {
         : defaultVal;
 
     return TableConfig(
-      colDefaultWidth: func('colDefaultWidth', defaultColWidth),
-      rowDefaultHeight: func('rowDefaultHeight', defaultRowHeight),
-      colMinimumWidth: func('colMinimumWidth', minimumColWidth),
+      colDefaultWidth:
+          func(TableBlockKeys.colDefaultWidth, TableDefaults.colWidth),
+      rowDefaultHeight:
+          func(TableBlockKeys.rowDefaultHeight, TableDefaults.rowHeight),
+      colMinimumWidth:
+          func(TableBlockKeys.colMinimumWidth, TableDefaults.colMinimumWidth),
+      borderWidth: func(TableBlockKeys.borderWidth, TableDefaults.borderWidth),
     );
   }
 
   Map<String, Object> toJson() {
     return {
-      'colDefaultWidth': colDefaultWidth,
-      'rowDefaultHeight': rowDefaultHeight,
-      'colMinimumWidth': colMinimumWidth,
+      TableBlockKeys.colDefaultWidth: colDefaultWidth,
+      TableBlockKeys.rowDefaultHeight: rowDefaultHeight,
+      TableBlockKeys.colMinimumWidth: colMinimumWidth,
     };
   }
 
-  final double colDefaultWidth, rowDefaultHeight, colMinimumWidth;
-
-  final double tableBorderWidth = defaultBorderWidth;
-
-  TableConfig clone() => TableConfig(
-        colDefaultWidth: colDefaultWidth,
-        rowDefaultHeight: rowDefaultHeight,
-        colMinimumWidth: colMinimumWidth,
-      );
+  final double colDefaultWidth, rowDefaultHeight, colMinimumWidth, borderWidth;
 }

@@ -8,15 +8,69 @@ class TableBlockKeys {
   const TableBlockKeys._();
 
   static const String type = 'table';
+
+  static const String colDefaultWidth = 'colDefaultWidth';
+
+  static const String rowDefaultHeight = 'rowDefaultHeight';
+
+  static const String colMinimumWidth = 'colMinimumWidth';
+
+  static const String borderWidth = 'borderWidth';
+
+  static const String colsLen = 'colsLen';
+
+  static const String rowsLen = 'rowsLen';
+
+  static const String rowPosition = 'rowPosition';
+
+  static const String colPosition = 'colPosition';
+
+  static const String height = 'height';
+
+  static const String width = 'width';
+
+  static const String colsHeight = 'colsHeight';
+
+  static const String backgroundColor = 'backgroundColor';
+}
+
+class TableDefaults {
+  const TableDefaults._();
+
+  static const double colWidth = 80.0;
+
+  static const double rowHeight = 40.0;
+
+  static const double colMinimumWidth = 40.0;
+
+  static const double borderWidth = 2.0;
+
+  static const Widget addIcon = Icon(Icons.add);
+
+  static const Widget handlerIcon = Icon(Icons.drag_indicator);
+
+  static const Color borderColor = Colors.grey;
+
+  static const Color borderHoverColor = Colors.blue;
 }
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
+    this.addIcon = TableDefaults.addIcon,
+    this.handlerIcon = TableDefaults.handlerIcon,
+    this.borderColor = TableDefaults.borderColor,
+    this.borderHoverColor = TableDefaults.borderHoverColor,
   });
 
   @override
   final BlockComponentConfiguration configuration;
+
+  final Widget addIcon;
+  final Widget handlerIcon;
+
+  final Color borderColor;
+  final Color borderHoverColor;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -26,6 +80,10 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
       tableNode: TableNode(node: node),
       node: node,
       configuration: configuration,
+      addIcon: addIcon,
+      handlerIcon: handlerIcon,
+      borderColor: borderColor,
+      borderHoverColor: borderHoverColor,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -37,8 +95,8 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   @override
   bool validate(Node node) =>
       node.attributes.isNotEmpty &&
-      node.attributes.containsKey('colsLen') &&
-      node.attributes.containsKey('rowsLen');
+      node.attributes.containsKey(TableBlockKeys.colsLen) &&
+      node.attributes.containsKey(TableBlockKeys.rowsLen);
 }
 
 class TableBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -46,12 +104,22 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
     super.key,
     required this.tableNode,
     required super.node,
+    required this.addIcon,
+    required this.handlerIcon,
+    required this.borderColor,
+    required this.borderHoverColor,
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 
   final TableNode tableNode;
+
+  final Widget addIcon;
+  final Widget handlerIcon;
+
+  final Color borderColor;
+  final Color borderHoverColor;
 
   @override
   State<TableBlockComponentWidget> createState() =>
@@ -79,6 +147,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
         child: TableView(
           tableNode: widget.tableNode,
           editorState: editorState,
+          addIcon: widget.addIcon,
+          handlerIcon: widget.handlerIcon,
+          borderColor: widget.borderColor,
+          borderHoverColor: widget.borderHoverColor,
         ),
       ),
     );

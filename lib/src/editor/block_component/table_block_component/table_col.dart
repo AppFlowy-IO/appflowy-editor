@@ -14,11 +14,19 @@ class TableCol extends StatefulWidget {
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
+    required this.handlerIcon,
+    required this.borderColor,
+    required this.borderHoverColor,
   }) : super(key: key);
 
   final int colIdx;
   final EditorState editorState;
   final TableNode tableNode;
+
+  final Widget handlerIcon;
+
+  final Color borderColor;
+  final Color borderHoverColor;
 
   @override
   State<TableCol> createState() => _TableColState();
@@ -36,6 +44,8 @@ class _TableColState extends State<TableCol> {
           resizable: false,
           tableNode: widget.tableNode,
           colIdx: widget.colIdx,
+          borderColor: widget.borderColor,
+          borderHoverColor: widget.borderHoverColor,
         ),
       );
     }
@@ -43,7 +53,8 @@ class _TableColState extends State<TableCol> {
     children.addAll([
       SizedBox(
         width: context.select(
-          (Node n) => getCellNode(n, widget.colIdx, 0)?.attributes['width'],
+          (Node n) => getCellNode(n, widget.colIdx, 0)
+              ?.attributes[TableBlockKeys.width],
         ),
         child: Stack(
           children: [
@@ -61,7 +72,7 @@ class _TableColState extends State<TableCol> {
               alignment: Alignment.topCenter,
               icon: Transform.rotate(
                 angle: math.pi / 2,
-                child: const Icon(Icons.drag_indicator),
+                child: widget.handlerIcon,
               ),
               dir: TableDirection.col,
             )
@@ -72,6 +83,8 @@ class _TableColState extends State<TableCol> {
         resizable: true,
         tableNode: widget.tableNode,
         colIdx: widget.colIdx,
+        borderColor: widget.borderColor,
+        borderHoverColor: widget.borderHoverColor,
       )
     ]);
 
@@ -82,8 +95,8 @@ class _TableColState extends State<TableCol> {
     final rowsLen = widget.tableNode.rowsLen;
     final List<Widget> cells = [];
     final Widget cellBorder = Container(
-      height: widget.tableNode.config.tableBorderWidth,
-      color: Colors.grey,
+      height: widget.tableNode.config.borderWidth,
+      color: widget.borderColor,
     );
 
     for (var i = 0; i < rowsLen; i++) {

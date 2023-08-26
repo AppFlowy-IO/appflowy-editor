@@ -10,19 +10,19 @@ void main() {
       final tableNode = TableNode.fromJson({
         'type': TableBlockKeys.type,
         'data': {
-          'colsLen': 2,
-          'rowsLen': 2,
-          'colDefaultWidth': 60,
-          'rowDefaultHeight': 50,
-          'colMinimumWidth': 30,
+          TableBlockKeys.colsLen: 2,
+          TableBlockKeys.rowsLen: 2,
+          TableBlockKeys.colDefaultWidth: 60,
+          TableBlockKeys.rowDefaultHeight: 50,
+          TableBlockKeys.colMinimumWidth: 30,
         },
         'children': [
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 0,
-              'rowPosition': 0,
-              'width': 35,
+              TableBlockKeys.colPosition: 0,
+              TableBlockKeys.rowPosition: 0,
+              TableBlockKeys.width: 35,
             },
             'children': [
               {
@@ -39,8 +39,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 0,
-              'rowPosition': 1,
+              TableBlockKeys.colPosition: 0,
+              TableBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -59,8 +59,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 1,
-              'rowPosition': 0,
+              TableBlockKeys.colPosition: 1,
+              TableBlockKeys.rowPosition: 0,
             },
             'children': [
               {
@@ -79,8 +79,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 1,
-              'rowPosition': 1,
+              TableBlockKeys.colPosition: 1,
+              TableBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -150,19 +150,19 @@ void main() {
       final jsonData = {
         'type': TableBlockKeys.type,
         'data': {
-          'colsLen': 2,
-          'rowsLen': 2,
-          'colDefaultWidth': 60,
-          'rowDefaultHeight': 50,
-          'colMinimumWidth': 30,
+          TableBlockKeys.colsLen: 2,
+          TableBlockKeys.rowsLen: 2,
+          TableBlockKeys.colDefaultWidth: 60,
+          TableBlockKeys.rowDefaultHeight: 50,
+          TableBlockKeys.colMinimumWidth: 30,
         },
         'children': [
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 0,
-              'rowPosition': 0,
-              'width': 35,
+              TableBlockKeys.colPosition: 0,
+              TableBlockKeys.rowPosition: 0,
+              TableBlockKeys.width: 35,
             },
             'children': [
               {
@@ -179,8 +179,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 1,
-              'rowPosition': 0,
+              TableBlockKeys.colPosition: 1,
+              TableBlockKeys.rowPosition: 0,
             },
             'children': [
               {
@@ -199,8 +199,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              'colPosition': 1,
-              'rowPosition': 1,
+              TableBlockKeys.colPosition: 1,
+              TableBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -230,7 +230,7 @@ void main() {
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
       expect(tableNode.config.rowDefaultHeight, config.rowDefaultHeight);
       expect(
-        tableNode.node.attributes['colMinimumWidth'],
+        tableNode.node.attributes[TableBlockKeys.colMinimumWidth],
         config.colMinimumWidth,
       );
 
@@ -335,7 +335,7 @@ void main() {
       expect(
         tableNode.colsHeight,
         tableNode.config.rowDefaultHeight * 2 +
-            tableNode.config.tableBorderWidth * 3,
+            tableNode.config.borderWidth * 3,
       );
     });
   });

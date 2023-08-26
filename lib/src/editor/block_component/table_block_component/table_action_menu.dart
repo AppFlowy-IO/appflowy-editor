@@ -84,7 +84,7 @@ void showActionMenu(
                 top: top,
                 bottom: bottom,
                 left: left,
-                selectedColorHex: cell?.attributes['backgroundColor'],
+                selectedColorHex: cell?.attributes[TableBlockKeys.backgroundColor],
               );
               dismissOverlay();
             },

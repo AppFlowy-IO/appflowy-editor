@@ -10,10 +10,20 @@ class TableView extends StatefulWidget {
     Key? key,
     required this.editorState,
     required this.tableNode,
+    required this.addIcon,
+    required this.handlerIcon,
+    required this.borderColor,
+    required this.borderHoverColor,
   }) : super(key: key);
 
   final EditorState editorState;
   final TableNode tableNode;
+
+  final Widget addIcon;
+  final Widget handlerIcon;
+
+  final Color borderColor;
+  final Color borderHoverColor;
 
   @override
   State<TableView> createState() => _TableViewState();
@@ -32,6 +42,7 @@ class _TableViewState extends State<TableView> {
                 ..._buildColumns(context),
                 TableActionButton(
                   padding: const EdgeInsets.only(left: 1),
+                  icon: widget.addIcon,
                   width: 35,
                   height: widget.tableNode.colsHeight,
                   onPressed: () {
@@ -48,6 +59,7 @@ class _TableViewState extends State<TableView> {
             ),
             TableActionButton(
               padding: const EdgeInsets.only(top: 1, right: 32),
+              icon: widget.addIcon,
               height: 35,
               width: widget.tableNode.tableWidth,
               onPressed: () {
@@ -73,6 +85,9 @@ class _TableViewState extends State<TableView> {
         colIdx: i,
         editorState: widget.editorState,
         tableNode: widget.tableNode,
+        handlerIcon: widget.handlerIcon,
+        borderColor: widget.borderColor,
+        borderHoverColor: widget.borderHoverColor,
       ),
     );
   }
