@@ -1,6 +1,6 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import '../../infra/testable_editor.dart';
 
@@ -21,7 +21,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      removeCol(tableNode.node, 0, transaction);
+      TableActions.delete(tableNode.node, 0, transaction, TableDirection.col);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
@@ -52,7 +52,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      removeRow(tableNode.node, 0, transaction);
+      TableActions.delete(tableNode.node, 0, transaction, TableDirection.row);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
@@ -83,7 +83,12 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      duplicateCol(tableNode.node, 0, transaction);
+      TableActions.duplicate(
+        tableNode.node,
+        0,
+        transaction,
+        TableDirection.col,
+      );
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
@@ -109,7 +114,12 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      duplicateRow(tableNode.node, 0, transaction);
+      TableActions.duplicate(
+        tableNode.node,
+        0,
+        transaction,
+        TableDirection.row,
+      );
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);

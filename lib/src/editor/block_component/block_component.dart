@@ -35,6 +35,7 @@ export 'divider_block_component/divider_menu_item.dart';
 export 'table_block_component/table_block_component.dart';
 export 'table_block_component/table_cell_block_component.dart';
 export 'table_block_component/table_commands.dart';
+export 'table_block_component/table_action.dart';
 
 // base
 export 'base_component/convert_to_paragraph_command.dart';

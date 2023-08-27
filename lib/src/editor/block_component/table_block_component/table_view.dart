@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_add_button.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col.dart';
@@ -11,16 +10,17 @@ class TableView extends StatefulWidget {
     required this.editorState,
     required this.tableNode,
     required this.addIcon,
-    required this.handlerIcon,
     required this.borderColor,
     required this.borderHoverColor,
+    this.menuBuilder,
   }) : super(key: key);
 
   final EditorState editorState;
   final TableNode tableNode;
 
   final Widget addIcon;
-  final Widget handlerIcon;
+
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -47,10 +47,11 @@ class _TableViewState extends State<TableView> {
                   height: widget.tableNode.colsHeight,
                   onPressed: () {
                     final transaction = widget.editorState.transaction;
-                    addCol(
+                    TableActions.add(
                       widget.tableNode.node,
                       widget.tableNode.colsLen,
                       transaction,
+                      TableDirection.col,
                     );
                     widget.editorState.apply(transaction);
                   },
@@ -64,10 +65,11 @@ class _TableViewState extends State<TableView> {
               width: widget.tableNode.tableWidth,
               onPressed: () {
                 final transaction = widget.editorState.transaction;
-                addRow(
+                TableActions.add(
                   widget.tableNode.node,
                   widget.tableNode.rowsLen,
                   transaction,
+                  TableDirection.row,
                 );
                 widget.editorState.apply(transaction);
               },
@@ -85,7 +87,7 @@ class _TableViewState extends State<TableView> {
         colIdx: i,
         editorState: widget.editorState,
         tableNode: widget.tableNode,
-        handlerIcon: widget.handlerIcon,
+        menuBuilder: widget.menuBuilder,
         borderColor: widget.borderColor,
         borderHoverColor: widget.borderHoverColor,
       ),

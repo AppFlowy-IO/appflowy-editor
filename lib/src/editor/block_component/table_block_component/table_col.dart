@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -6,7 +5,6 @@ import 'package:appflowy_editor/src/editor/block_component/table_block_component
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
-import 'dart:math' as math;
 
 class TableCol extends StatefulWidget {
   const TableCol({
@@ -14,16 +12,16 @@ class TableCol extends StatefulWidget {
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
-    required this.handlerIcon,
     required this.borderColor,
     required this.borderHoverColor,
+    this.menuBuilder,
   }) : super(key: key);
 
   final int colIdx;
   final EditorState editorState;
   final TableNode tableNode;
 
-  final Widget handlerIcon;
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -70,10 +68,7 @@ class _TableColState extends State<TableCol> {
               position: widget.colIdx,
               transform: Matrix4.translationValues(0.0, -15.0, 0.0),
               alignment: Alignment.topCenter,
-              icon: Transform.rotate(
-                angle: math.pi / 2,
-                child: widget.handlerIcon,
-              ),
+              menuBuilder: widget.menuBuilder,
               dir: TableDirection.col,
             )
           ],

@@ -54,20 +54,31 @@ class TableDefaults {
   static const Color borderHoverColor = Colors.blue;
 }
 
+enum TableDirection { row, col }
+
+typedef TableBlockComponentMenuBuilder = Widget Function(
+  Node,
+  EditorState,
+  int,
+  TableDirection,
+  VoidCallback?,
+  VoidCallback?,
+);
+
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
     this.addIcon = TableDefaults.addIcon,
-    this.handlerIcon = TableDefaults.handlerIcon,
     this.borderColor = TableDefaults.borderColor,
     this.borderHoverColor = TableDefaults.borderHoverColor,
+    this.menuBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
   final Widget addIcon;
-  final Widget handlerIcon;
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -81,7 +92,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       configuration: configuration,
       addIcon: addIcon,
-      handlerIcon: handlerIcon,
+      menuBuilder: menuBuilder,
       borderColor: borderColor,
       borderHoverColor: borderHoverColor,
       showActions: showActions(node),
@@ -105,9 +116,9 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
     required this.tableNode,
     required super.node,
     required this.addIcon,
-    required this.handlerIcon,
     required this.borderColor,
     required this.borderHoverColor,
+    this.menuBuilder,
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
@@ -116,7 +127,7 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
   final TableNode tableNode;
 
   final Widget addIcon;
-  final Widget handlerIcon;
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -148,7 +159,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
           tableNode: widget.tableNode,
           editorState: editorState,
           addIcon: widget.addIcon,
-          handlerIcon: widget.handlerIcon,
+          menuBuilder: widget.menuBuilder,
           borderColor: widget.borderColor,
           borderHoverColor: widget.borderHoverColor,
         ),

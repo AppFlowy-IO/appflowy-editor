@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
-
-enum TableDirection { row, col }
 
 void showActionMenu(
   BuildContext context,
@@ -43,25 +40,25 @@ void showActionMenu(
         children: [
           _menuItem(context, 'Add after', Icons.last_page, () {
             final transaction = editorState.transaction;
-            _add(node, position + 1, transaction, dir);
+            TableActions.add(node, position + 1, transaction, dir);
             editorState.apply(transaction);
             dismissOverlay();
           }),
           _menuItem(context, 'Add before', Icons.first_page, () {
             final transaction = editorState.transaction;
-            _add(node, position, transaction, dir);
+            TableActions.add(node, position, transaction, dir);
             editorState.apply(transaction);
             dismissOverlay();
           }),
           _menuItem(context, 'Remove', Icons.delete, () {
             final transaction = editorState.transaction;
-            _remove(node, position, transaction, dir);
+            TableActions.delete(node, position, transaction, dir);
             editorState.apply(transaction);
             dismissOverlay();
           }),
           _menuItem(context, 'Duplicate', Icons.content_copy, () {
             final transaction = editorState.transaction;
-            _duplicate(node, position, transaction, dir);
+            TableActions.duplicate(node, position, transaction, dir);
             editorState.apply(transaction);
             dismissOverlay();
           }),
@@ -78,20 +75,27 @@ void showActionMenu(
                 context,
                 (color) {
                   final transaction = editorState.transaction;
-                  _setBgColor(node, position, transaction, color, dir);
+                  TableActions.setBgColor(
+                    node,
+                    position,
+                    transaction,
+                    color,
+                    dir,
+                  );
                   editorState.apply(transaction);
                 },
                 top: top,
                 bottom: bottom,
                 left: left,
-                selectedColorHex: cell?.attributes[TableBlockKeys.backgroundColor],
+                selectedColorHex:
+                    cell?.attributes[TableBlockKeys.backgroundColor],
               );
               dismissOverlay();
             },
           ),
           _menuItem(context, 'Clear Content', Icons.clear, () {
             final transaction = editorState.transaction;
-            _clear(node, position, transaction, dir);
+            TableActions.clear(node, position, transaction, dir);
             editorState.apply(transaction);
             dismissOverlay();
           }),
@@ -134,72 +138,6 @@ Widget _menuItem(
       ),
     ),
   );
-}
-
-void _add(
-  Node node,
-  int position,
-  Transaction transaction,
-  TableDirection dir,
-) {
-  if (dir == TableDirection.col) {
-    addCol(node, position, transaction);
-  } else {
-    addRow(node, position, transaction);
-  }
-}
-
-void _remove(
-  Node node,
-  int position,
-  Transaction transaction,
-  TableDirection dir,
-) {
-  if (dir == TableDirection.col) {
-    removeCol(node, position, transaction);
-  } else {
-    removeRow(node, position, transaction);
-  }
-}
-
-void _duplicate(
-  Node node,
-  int position,
-  Transaction transaction,
-  TableDirection dir,
-) {
-  if (dir == TableDirection.col) {
-    duplicateCol(node, position, transaction);
-  } else {
-    duplicateRow(node, position, transaction);
-  }
-}
-
-void _clear(
-  Node node,
-  int position,
-  Transaction transaction,
-  TableDirection dir,
-) {
-  if (dir == TableDirection.col) {
-    clearCol(node, position, transaction);
-  } else {
-    clearRow(node, position, transaction);
-  }
-}
-
-void _setBgColor(
-  Node node,
-  int position,
-  Transaction transaction,
-  String? color,
-  TableDirection dir,
-) {
-  if (dir == TableDirection.col) {
-    setColBgColor(node, position, transaction, color);
-  } else {
-    setRowBgColor(node, position, transaction, color);
-  }
 }
 
 void _showColorMenu(

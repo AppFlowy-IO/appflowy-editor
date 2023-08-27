@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import '../../infra/testable_editor.dart';
@@ -90,7 +89,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      addCol(tableNode.node, 2, transaction);
+      TableActions.add(tableNode.node, 2, transaction, TableDirection.col);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
@@ -118,7 +117,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final transaction = editor.editorState.transaction;
-      addRow(tableNode.node, 2, transaction);
+      TableActions.add(tableNode.node, 2, transaction, TableDirection.row);
       editor.editorState.apply(transaction);
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);

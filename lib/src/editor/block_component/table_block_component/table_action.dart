@@ -1,7 +1,77 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 
-void addCol(Node tableNode, int position, Transaction transaction) {
+class TableActions {
+  const TableActions._();
+
+  static void add(
+    Node node,
+    int position,
+    Transaction transaction,
+    TableDirection dir,
+  ) {
+    if (dir == TableDirection.col) {
+      _addCol(node, position, transaction);
+    } else {
+      _addRow(node, position, transaction);
+    }
+  }
+
+  static void delete(
+    Node node,
+    int position,
+    Transaction transaction,
+    TableDirection dir,
+  ) {
+    if (dir == TableDirection.col) {
+      _deleteCol(node, position, transaction);
+    } else {
+      _deleteRow(node, position, transaction);
+    }
+  }
+
+  static void duplicate(
+    Node node,
+    int position,
+    Transaction transaction,
+    TableDirection dir,
+  ) {
+    if (dir == TableDirection.col) {
+      _duplicateCol(node, position, transaction);
+    } else {
+      _duplicateRow(node, position, transaction);
+    }
+  }
+
+  static void clear(
+    Node node,
+    int position,
+    Transaction transaction,
+    TableDirection dir,
+  ) {
+    if (dir == TableDirection.col) {
+      _clearCol(node, position, transaction);
+    } else {
+      _clearRow(node, position, transaction);
+    }
+  }
+
+  static void setBgColor(
+    Node node,
+    int position,
+    Transaction transaction,
+    String? color,
+    TableDirection dir,
+  ) {
+    if (dir == TableDirection.col) {
+      _setColBgColor(node, position, transaction, color);
+    } else {
+      _setRowBgColor(node, position, transaction, color);
+    }
+  }
+}
+
+void _addCol(Node tableNode, int position, Transaction transaction) {
   assert(position >= 0);
 
   List<Node> cellNodes = [];
@@ -42,7 +112,7 @@ void addCol(Node tableNode, int position, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 }
 
-void addRow(Node tableNode, int position, Transaction transaction) {
+void _addRow(Node tableNode, int position, Transaction transaction) {
   assert(position >= 0);
 
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
@@ -81,7 +151,7 @@ void addRow(Node tableNode, int position, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
 }
 
-void removeCol(Node tableNode, int col, Transaction transaction) {
+void _deleteCol(Node tableNode, int col, Transaction transaction) {
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
@@ -95,7 +165,7 @@ void removeCol(Node tableNode, int col, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen - 1});
 }
 
-void removeRow(Node tableNode, int row, Transaction transaction) {
+void _deleteRow(Node tableNode, int row, Transaction transaction) {
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
@@ -109,7 +179,7 @@ void removeRow(Node tableNode, int row, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
 }
 
-void duplicateCol(Node tableNode, int col, Transaction transaction) {
+void _duplicateCol(Node tableNode, int col, Transaction transaction) {
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   List<Node> nodes = [];
@@ -135,7 +205,7 @@ void duplicateCol(Node tableNode, int col, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 }
 
-void duplicateRow(Node tableNode, int row, Transaction transaction) {
+void _duplicateRow(Node tableNode, int row, Transaction transaction) {
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
   for (var i = 0; i < colsLen; i++) {
@@ -157,7 +227,7 @@ void duplicateRow(Node tableNode, int row, Transaction transaction) {
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
 }
 
-void setColBgColor(
+void _setColBgColor(
   Node tableNode,
   int col,
   Transaction transaction,
@@ -173,7 +243,7 @@ void setColBgColor(
   }
 }
 
-void setRowBgColor(
+void _setRowBgColor(
   Node tableNode,
   int row,
   Transaction transaction,
@@ -189,7 +259,7 @@ void setRowBgColor(
   }
 }
 
-void clearCol(
+void _clearCol(
   Node tableNode,
   int col,
   Transaction transaction,
@@ -204,7 +274,7 @@ void clearCol(
   }
 }
 
-void clearRow(
+void _clearRow(
   Node tableNode,
   int row,
   Transaction transaction,
@@ -231,7 +301,9 @@ dynamic newCellNode(Node tableNode, n) {
     )!;
     if (row < rowsLen) {
       nodeHeight = double.tryParse(
-            getCellNode(tableNode, 0, row)!.attributes[TableBlockKeys.height].toString(),
+            getCellNode(tableNode, 0, row)!
+                .attributes[TableBlockKeys.height]
+                .toString(),
           ) ??
           nodeHeight;
     }
@@ -244,7 +316,9 @@ dynamic newCellNode(Node tableNode, n) {
     )!;
     if (col < colsLen) {
       nodeWidth = double.tryParse(
-            getCellNode(tableNode, col, 0)!.attributes[TableBlockKeys.width].toString(),
+            getCellNode(tableNode, col, 0)!
+                .attributes[TableBlockKeys.width]
+                .toString(),
           ) ??
           nodeWidth;
     }

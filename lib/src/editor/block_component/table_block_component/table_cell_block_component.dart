@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_menu.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +13,13 @@ class TableCellBlockKeys {
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
-    this.handlerIcon = TableDefaults.handlerIcon,
+    this.menuBuilder,
   });
 
   @override
   final BlockComponentConfiguration configuration;
 
-  final Widget handlerIcon;
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -29,7 +28,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       node: node,
       configuration: configuration,
-      handlerIcon: handlerIcon,
+      menuBuilder: menuBuilder,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -49,13 +48,13 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
   const TableCelBlockWidget({
     super.key,
     required super.node,
-    required this.handlerIcon,
+    this.menuBuilder,
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 
-  final Widget handlerIcon;
+  final TableBlockComponentMenuBuilder? menuBuilder;
 
   @override
   State<TableCelBlockWidget> createState() => _TableCeBlockWidgetState();
@@ -115,7 +114,7 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
           alignment: Alignment.centerLeft,
           height:
               context.select((Node n) => n.attributes[TableBlockKeys.height]),
-          icon: widget.handlerIcon,
+          menuBuilder: widget.menuBuilder,
           dir: TableDirection.row,
         ),
       ],
