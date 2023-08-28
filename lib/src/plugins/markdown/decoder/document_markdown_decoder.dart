@@ -1,60 +1,104 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:path/path.dart' as p;
 
-final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
-final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
-final htmlRegex = RegExp('^(http|https)://');
-final numberedlistRegex = RegExp(r'^\d+\. ');
-
 class DocumentMarkdownDecoder extends Converter<String, Document> {
+  DocumentMarkdownDecoder({
+    this.customNodeParsers = const [],
+    this.customInlineSyntaxes = const [],
+  });
+
+  final List<CustomNodeParser> customNodeParsers;
+  final List<md.InlineSyntax> customInlineSyntaxes;
+  final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
+  final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
+  final htmlRegex = RegExp('^(http|https)://');
+  final numberedListRegex = RegExp(r'^\d+\. ');
+
   @override
   Document convert(String input) {
     final lines = input.split('\n');
     final document = Document.blank();
-    int path = 0;
-    for (var i = 0; i < lines.length; i++) {
-      late Node node;
-      if (lines[i].startsWith("```") &&
-          (!lines[i].endsWith('```') || lines[i].length <= 3)) {
-        // if the line starts with ``` it means there are chances it may be a code block
-        // so it iterates through all the lines(using another loop) storing them in a
-        // string variable codeblock until it finds another ``` which marks the end of code
-        // block it then sends this to convert convertLineToNode function .
-        // If we reach the end of lines and we still haven't found ``` then we will treat the
-        // line starting with ``` as a regular paragraph and continue the main while loop from
-        // a temporary pointer which stored the line number of the line with starting ```
-        String codeBlock = "${lines[i]}\n";
-        var j = i + 1;
-        for (; j < lines.length && !lines[j].endsWith("```"); j++) {
-          codeBlock += "${lines[j]}\n";
+    // In the below while loop we iterate through each line of the input markdown
+    // if the line starts with ``` it means there are chances it may be a code block
+    // so it iterates through all the lines(using another while loop) storing them in a
+    // string variable codeblock until it finds another ``` which marks the end of code
+    // block it then sends this to convert _convertLineToNode function .
+    // If we reach the end of lines and we still haven't found ``` then we will treat the
+    // line starting with ``` as a regular paragraph and continue the main while loop from
+    // a temporary pointer which stored the line number of the line with starting ```
+    int i = 0;
+    while (i < lines.length) {
+      if (lines[i].startsWith('```') &&
+          lines[i].endsWith('```') &&
+          lines[i].length > 3) {
+        document.insert(
+          [i],
+          [convertLineToNode(lines[i], customInlineSyntaxes)],
+        );
+        i++;
+      } else if (lines[i].startsWith("```")) {
+        String codeBlock = "";
+        codeBlock += "${lines[i]}\n";
+        int tempLinePointer = i;
+        i++;
+        while (i < lines.length && !lines[i].endsWith("```")) {
+          codeBlock += "${lines[i]}\n";
+          i++;
         }
 
-        if (j == lines.length) {
-          node = convertLineToNode(lines[i]);
+        if (i == lines.length) {
+          i = tempLinePointer;
+          document.insert(
+            [i],
+            [convertLineToNode(lines[i], customInlineSyntaxes)],
+          );
+          i++;
         } else {
-          codeBlock += lines[j];
-          node = convertLineToNode(codeBlock);
-          i = j;
+          codeBlock += lines[i];
+          document.insert(
+            [tempLinePointer],
+            [convertLineToNode(codeBlock, customInlineSyntaxes)],
+          );
+          i++;
         }
       } else if (i + 1 < lines.length &&
           TableMarkdownDecoder.isTable(lines[i], lines[i + 1])) {
-        node = TableMarkdownDecoder().convert(lines.sublist(i));
+        final node = TableMarkdownDecoder().convert(lines.sublist(i));
         i += node.attributes['rowsLen'] as int;
-      } else {
-        node = convertLineToNode(lines[i]);
-      }
 
-      document.insert([path++], [node]);
+        document.insert([i], [node]);
+        i++;
+      } else {
+        document.insert(
+          [i],
+          [convertLineToNode(lines[i], customInlineSyntaxes)],
+        );
+        i++;
+      }
     }
 
     return document;
   }
 
-  static Node convertLineToNode(String line) {
-    final decoder = DeltaMarkdownDecoder();
+  Node convertLineToNode(
+    String line,
+    List<md.InlineSyntax> customInlineSyntaxes,
+  ) {
+    final decoder = DeltaMarkdownDecoder(
+      customInlineSyntaxes: customInlineSyntaxes,
+    );
+    for (final parser in customNodeParsers) {
+      final node = parser.transform(line);
+      if (node != null) {
+        return node;
+      }
+    }
+
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -107,7 +151,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       if (filepath != null && !htmlRegex.hasMatch(filepath)) {
         return paragraphNode(text: line);
       }
-    } else if (numberedlistRegex.hasMatch(line)) {
+    } else if (numberedListRegex.hasMatch(line)) {
       return numberedListNode(
         attributes: {
           'delta':
@@ -127,12 +171,12 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     );
   }
 
-  static String? extractImagePath(String text) {
+  String? extractImagePath(String text) {
     final match = imageRegex.firstMatch(text);
     return match?.group(1);
   }
 
-  static String? extractFilePath(String text) {
+  String? extractFilePath(String text) {
     final match = assetRegex.firstMatch(text);
     return match?.group(1);
   }

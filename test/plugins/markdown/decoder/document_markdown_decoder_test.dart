@@ -1,7 +1,12 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:markdown/markdown.dart' as md;
+
+import '../custom_parsers/test_custom_node_parsers.dart';
+import '../custom_parsers/test_custom_parser.dart';
 
 void main() async {
   group('document_markdown_decoder.dart', () {
@@ -489,6 +494,139 @@ void main() async {
   }
 }
 ''';
+    const example3 = '''
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "Welcome to AppFlowy"
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "void main(){\\nprint(\\"hello world\\");\\n}"
+            }
+          ],
+          "language": "dart"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "custom node"
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "Hello "
+            },
+            {
+              "insert": "\$",
+              "attributes": {
+                "mention": {
+                  "type": "page",
+                  "page_id": "[AppFlowy Subpage](123456789abcd)"
+                }
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "Hello",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "\$",
+              "attributes": {
+                "mention": {
+                  "type": "page",
+                  "page_id": "[AppFlowy Subpage](987654321abcd)"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "This is a test for custom "
+            },
+            {
+              "insert": "node",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " parser and custom "
+            },
+            {
+              "insert": "inline",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " syntaxes"
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      }
+    ]
+  }
+}
+''';
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
@@ -629,6 +767,38 @@ void main(){
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = Map<String, Object>.from(json.decode(expected));
+
+      expect(result.toJson(), data);
+    });
+
+    test('custom  parser', () async {
+      const markdown = '''
+# Welcome to AppFlowy
+
+```dart
+void main(){
+print("hello world");
+}
+```
+
+[Custom Node](AppFlowy Subpage 1);
+
+Hello [AppFlowy Subpage](123456789abcd) **Hello** [AppFlowy Subpage](987654321abcd)
+
+# This is a test for custom **node** parser and custom **inline** syntaxes
+''';
+      List<CustomNodeParser> customNodeParsers = [
+        TestCustomNodeParser(),
+      ];
+      List<md.InlineSyntax> customInlineSyntaxes = [
+        TestCustomInlineSyntaxes(),
+      ];
+      final result = DocumentMarkdownDecoder(
+        customNodeParsers: customNodeParsers,
+        customInlineSyntaxes: customInlineSyntaxes,
+      ).convert(markdown);
+      final data = jsonDecode(example3);
+
       expect(result.toJson(), data);
     });
   });

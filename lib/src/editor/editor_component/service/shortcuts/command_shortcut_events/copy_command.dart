@@ -33,10 +33,12 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   final document = Document.blank()..insert([0], nodes);
   final html = documentToHTML(document);
 
-  AppFlowyClipboard.setData(
-    text: text.isEmpty ? null : text,
-    html: html.isEmpty ? null : html,
-  );
+  () async {
+    await AppFlowyClipboard.setData(
+      text: text.isEmpty ? null : text,
+      html: html.isEmpty ? null : html,
+    );
+  }();
 
   return KeyEventResult.handled;
 };

@@ -22,7 +22,7 @@ class TableMarkdownDecoder {
       }
 
       for (var i = 0; i < row.length; i++) {
-        columns[i].add(DocumentMarkdownDecoder.convertLineToNode(row[i]));
+        columns[i].add(DocumentMarkdownDecoder().convertLineToNode(row[i], []));
       }
     }
 

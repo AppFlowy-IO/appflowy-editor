@@ -1,3 +1,15 @@
+## 1.2.4
+* feat: improve CJK IME support by @LucasXu0 in ([#412](https://github.com/AppFlowy-IO/appflowy-editor/pull/412))
+* feat: implement find dialog by @MayurSMahajan in ([#106](https://github.com/AppFlowy-IO/appflowy-editor/pull/106))
+* feat: improve functionality for pasting from html by @LucasXu0 in ([#391](https://github.com/AppFlowy-IO/appflowy-editor/pull/391))
+* feat: placeholder on paragraph when selected by @Xazin in ([#390](https://github.com/AppFlowy-IO/appflowy-editor/pull/390))
+* feat: double hyphen to em dash by @Xazin in ([#395](https://github.com/AppFlowy-IO/appflowy-editor/pull/395))
+* feat: skip whitespace between words while navigating with CTRL+ARROW keys by @johansutrisno in ([#363](https://github.com/AppFlowy-IO/appflowy-editor/pull/363))
+* feat: add support for context menu items to the editor by @LucasXu0 in ([#410](https://github.com/AppFlowy-IO/appflowy-editor/pull/410))
+* feat: add support for custom parser for markdown to document by @Mukund-Tandon in ([#403](https://github.com/AppFlowy-IO/appflowy-editor/pull/403))
+* fix: miss the nested node when copying by @LucasXu0 in ([#406](https://github.com/AppFlowy-IO/appflowy-editor/pull/406))
+* fix: refactor _onSelectionChange to update _showPlaceholder state more efficiently by @LucasXu0 in ([#409](https://github.com/AppFlowy-IO/appflowy-editor/pull/409))
+
 ## 1.2.3
 * feat: add edit link menu on mobile by @hyj1204 in ([#320](https://github.com/AppFlowy-IO/appflowy-editor/pull/320))
 * feat: html encode parser added by @alihassan143 in ([#314](https://github.com/AppFlowy-IO/appflowy-editor/pull/314))
