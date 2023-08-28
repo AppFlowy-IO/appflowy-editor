@@ -117,11 +117,12 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   }
 
   void _onSelectionChange() {
-    setState(() {
-      final selection = editorState.selection;
-      _showPlaceholder = selection != null &&
-          (selection.isSingle && selection.start.path.equals(node.path));
-    });
+    final selection = editorState.selection;
+    final showPlaceholder = selection != null &&
+        (selection.isSingle && selection.start.path.equals(node.path));
+    if (showPlaceholder != _showPlaceholder) {
+      setState(() => _showPlaceholder = showPlaceholder);
+    }
   }
 
   @override

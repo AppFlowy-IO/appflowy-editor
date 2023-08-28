@@ -1,9 +1,18 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:path/path.dart' as p;
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
+  DocumentMarkdownDecoder({
+    this.customNodeParsers = const [],
+    this.customInlineSyntaxes = const [],
+  });
+
+  final List<CustomNodeParser> customNodeParsers;
+  final List<md.InlineSyntax> customInlineSyntaxes;
   final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
   final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
   final htmlRegex = RegExp('^(http|https)://');
@@ -26,7 +35,10 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       if (lines[i].startsWith('```') &&
           lines[i].endsWith('```') &&
           lines[i].length > 3) {
-        document.insert([i], [_convertLineToNode(lines[i])]);
+        document.insert(
+          [i],
+          [_convertLineToNode(lines[i], customInlineSyntaxes)],
+        );
         i++;
       } else if (lines[i].startsWith("```")) {
         String codeBlock = "";
@@ -40,15 +52,24 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
         if (i == lines.length) {
           i = tempLinePointer;
-          document.insert([i], [_convertLineToNode(lines[i])]);
+          document.insert(
+            [i],
+            [_convertLineToNode(lines[i], customInlineSyntaxes)],
+          );
           i++;
         } else {
           codeBlock += lines[i];
-          document.insert([tempLinePointer], [_convertLineToNode(codeBlock)]);
+          document.insert(
+            [tempLinePointer],
+            [_convertLineToNode(codeBlock, customInlineSyntaxes)],
+          );
           i++;
         }
       } else {
-        document.insert([i], [_convertLineToNode(lines[i])]);
+        document.insert(
+          [i],
+          [_convertLineToNode(lines[i], customInlineSyntaxes)],
+        );
         i++;
       }
     }
@@ -56,8 +77,19 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return document;
   }
 
-  Node _convertLineToNode(String line) {
-    final decoder = DeltaMarkdownDecoder();
+  Node _convertLineToNode(
+    String line,
+    List<md.InlineSyntax> customInlineSyntaxes,
+  ) {
+    final decoder = DeltaMarkdownDecoder(
+      customInlineSyntaxes: customInlineSyntaxes,
+    );
+    for (final parser in customNodeParsers) {
+      final node = parser.transform(line);
+      if (node != null) {
+        return node;
+      }
+    }
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(

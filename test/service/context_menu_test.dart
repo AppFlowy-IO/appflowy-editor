@@ -1,8 +1,7 @@
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../infra/clipboard_test.dart';
 import '../new/infra/testable_editor.dart';
@@ -27,9 +26,10 @@ void main() async {
     });
   });
   group('context menu test', () {
-    void rightClick() {
+    void rightClickAt(Offset position) {
       GestureBinding.instance.handlePointerEvent(
-        const PointerDownEvent(
+        PointerDownEvent(
+          position: position,
           buttons: kSecondaryMouseButton,
         ),
       );
@@ -40,22 +40,26 @@ void main() async {
     }
 
     testWidgets('context menu test', (tester) async {
-      final editor = tester.editor
-        ..addParagraph(initialText: 'Welcome to AppFlowy');
+      const text = 'Welcome to AppFlowy';
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
       expect(find.byType(ContextMenu), findsNothing);
-      rightClick();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: 0, endOffset: text.length),
+      );
+      final position = tester.getCenter(find.text(text, findRichText: true));
+      rightClickAt(position);
       await tester.pump();
       expect(find.byType(ContextMenu), findsOneWidget);
       await editor.dispose();
     });
 
     testWidgets('context menu cut test ', (tester) async {
-      final editor = tester.editor
-        ..addParagraph(initialText: 'Welcome to AppFlowy');
+      const text = 'Welcome to AppFlowy';
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
       expect(
-        find.text('Welcome to AppFlowy', findRichText: true),
+        find.text(text, findRichText: true),
         findsOneWidget,
       );
       await editor.updateSelection(
@@ -64,9 +68,10 @@ void main() async {
           end: Position(path: [0], offset: 18),
         ),
       );
-      final text =
+      final copiedText =
           editor.editorState.getTextInSelection(editor.selection).join('/n');
-      rightClick();
+      final position = tester.getCenter(find.text(text, findRichText: true));
+      rightClickAt(position);
       await tester.pump();
       final cutButton = find.text('Cut');
       expect(cutButton, findsOneWidget);
@@ -77,17 +82,18 @@ void main() async {
         findsNothing,
       );
       final clipBoardData = await AppFlowyClipboard.getData();
-      expect(clipBoardData.text, text);
+      expect(clipBoardData.text, copiedText);
       await editor.dispose();
     });
 
     testWidgets('context menu copy and paste test', (tester) async {
+      const text = 'Welcome to AppFlowy';
       final editor = tester.editor
-        ..addParagraph(initialText: 'Welcome to AppFlowy');
-      editor.addParagraph(initialText: 'Hello');
+        ..addParagraph(initialText: text)
+        ..addParagraph(initialText: 'Hello');
       await editor.startTesting();
       expect(
-        find.text('Welcome to AppFlowy', findRichText: true),
+        find.text(text, findRichText: true),
         findsOneWidget,
       );
       await editor.updateSelection(
@@ -96,9 +102,10 @@ void main() async {
           end: Position(path: [1], offset: 5),
         ),
       );
-      final text =
+      final copiedText =
           editor.editorState.getTextInSelection(editor.selection).join('/n');
-      rightClick();
+      final position = tester.getCenter(find.text('Hello', findRichText: true));
+      rightClickAt(position);
       await tester.pump();
       final copyButton = find.text('Copy');
       expect(copyButton, findsOneWidget);
@@ -109,14 +116,16 @@ void main() async {
         findsOneWidget,
       );
       final clipBoardData = await AppFlowyClipboard.getData();
-      expect(clipBoardData.text, text);
+      expect(clipBoardData.text, copiedText);
       await editor.updateSelection(
         Selection(
           start: Position(path: [0], offset: 0),
           end: Position(path: [0], offset: 7),
         ),
       );
-      rightClick();
+      final newPosition =
+          tester.getTopLeft(find.text(text, findRichText: true));
+      rightClickAt(newPosition);
       await tester.pump();
       final pasteButton = find.text('Paste');
       expect(pasteButton, findsOneWidget);
