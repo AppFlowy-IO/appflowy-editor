@@ -75,6 +75,16 @@ Future<void> enterInputIntoFindDialog(
   await tester.pumpAndSettle();
 }
 
+Future<void> enterInputIntoReplaceDialog(
+  WidgetTester tester,
+  String pattern,
+) async {
+  const textInputKey = Key('replaceTextField');
+  await tester.tap(find.byKey(textInputKey));
+  await tester.enterText(find.byKey(textInputKey), pattern);
+  await tester.pumpAndSettle();
+}
+
 Future<void> pressFindAndReplaceCommand(
   TestableEditor editor, {
   bool openReplace = false,
