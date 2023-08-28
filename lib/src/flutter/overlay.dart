@@ -66,7 +66,6 @@ class OverlayEntry extends ChangeNotifier {
   /// [Overlay.of] and then call [OverlayState.insert]. To remove the entry,
   /// call [remove] on the overlay entry itself.
   OverlayEntry({
-    Key? key,
     required this.builder,
     bool opaque = false,
     bool maintainState = false,

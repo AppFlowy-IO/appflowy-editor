@@ -257,7 +257,7 @@ class _MobileSelectionServiceWidgetState
         );
         _selectionOverlayEntries.add(overlay);
 
-        // Add selection handles when we build the first and last rect.
+        // Add selection handles when we build the first rect in the first node and last rect in the last node.
         if (i == 0 && selectionRect == selectionRects.first) {
           final leftHandlerOverlay = OverlayEntry(
             builder: (context) => MobileSelectionWidget(
@@ -317,8 +317,8 @@ class _MobileSelectionServiceWidgetState
 
     if (selectable != null && cursorRect != null) {
       final cursorEntry = OverlayEntry(
-        key: _cursorKey,
         builder: (context) => CursorWidget(
+          key: _cursorKey,
           rect: cursorRect,
           color: widget.cursorColor,
           layerLink: node.layerLink,
@@ -381,8 +381,6 @@ class _MobileSelectionServiceWidgetState
     // update the selection in editor state base on user's tap position
     if (_tapUpOffset == null) return;
     final position = getPositionInOffset(_tapUpOffset!);
-    print('position');
-    print(position);
     if (position == null) return;
     editorState.selection = Selection.collapsed(position);
 
@@ -393,14 +391,8 @@ class _MobileSelectionServiceWidgetState
       return;
     }
     _cursorRect = node.selectable?.getCursorRectInPosition(position);
-    // _leftHandlerRect == null;
-    // _rightHandlerRect == null;
 
-    // print('selection');
-    // print(editorState.selection);
-    // print('selectionRects: ${editorState}');
-
-    // reset the offset [onTap]
+    // reset tapUp offset
     _tapUpOffset = null;
   }
 
@@ -426,7 +418,6 @@ class _MobileSelectionServiceWidgetState
     Log.selection.debug('input seleciton ${selection.isForward}');
     // TODO(yijing): to avoid select a space when users double tapping
     editorState.selection = selection;
-    // _cursorRect == null;
     _doubleTapDownOffset = null;
   }
 
@@ -494,10 +485,10 @@ class _MobileSelectionServiceWidgetState
     }
     // expand the sensing area for cursor
     final leftHandlerSensingRect = Rect.fromLTWH(
-      _leftHandlerRect!.left + 6,
+      _leftHandlerRect!.left - 6,
       _leftHandlerRect!.top + 6,
       14,
-      _leftHandlerRect!.height,
+      _leftHandlerRect!.height + 6,
     ).inflate(8);
 
     // get the local offset for the current point
