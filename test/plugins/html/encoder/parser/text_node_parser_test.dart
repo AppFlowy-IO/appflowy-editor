@@ -113,6 +113,67 @@ void main() async {
         "<p><strong>Welcome to AppFlowy</strong></p>",
       );
     });
+    test('underline', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'underline': true,
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        "<p><u>Welcome to AppFlowy</u></p>",
+      );
+    });
+    test('strikethrough', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'strikethrough': true,
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        "<p><del>Welcome to AppFlowy</del></p>",
+      );
+    });
+    test('underline and strikethrough', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'strikethrough': true,
+                    'underline': true,
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '''<p><span style="text-decoration: underline line-through">Welcome to AppFlowy</span></p>''',
+      );
+    });
     test('multiple attributes Test with background and text color', () {
       final node = paragraphNode(
         attributes: {
