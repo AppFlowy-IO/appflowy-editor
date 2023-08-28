@@ -7,10 +7,17 @@ import '../infra/testable_editor.dart';
 class TextDirectionTest with BlockComponentTextDirectionMixin {
   TextDirectionTest({
     required this.node,
-  });
+    String? defaultTextDirection,
+  }) {
+    editorState.editorStyle =
+        EditorStyle.desktop(defaultTextDirection: defaultTextDirection);
+  }
 
   @override
   final Node node;
+
+  @override
+  final EditorState editorState = EditorState.blank(withInitialText: false);
 }
 
 void main() {
@@ -33,6 +40,45 @@ void main() {
       expect(direction, TextDirection.ltr);
     });
 
+    test('fallback to layout direction', () {
+      final node = paragraphNode(
+        text: 'سلام',
+      );
+      final direction = TextDirectionTest(node: node).calculateTextDirection();
+      expect(direction, TextDirection.ltr);
+    });
+
+    test('fallback to default text direction', () {
+      final node = paragraphNode(
+        text: 'سلام',
+      );
+      final direction =
+          TextDirectionTest(node: node, defaultTextDirection: "rtl")
+              .calculateTextDirection();
+      expect(direction, TextDirection.rtl);
+    });
+
+    test('fallback to default text direction auto', () {
+      final node = paragraphNode(
+        text: 'سلام',
+      );
+      final direction =
+          TextDirectionTest(node: node, defaultTextDirection: "auto")
+              .calculateTextDirection();
+      expect(direction, TextDirection.rtl);
+    });
+
+    test('if not auto don\'t fallback to last direction', () {
+      final node = paragraphNode(
+        text: 'سلام',
+      );
+      final textDirectionTest =
+          TextDirectionTest(node: node, defaultTextDirection: "rtl");
+      textDirectionTest.lastDirection = TextDirection.ltr;
+      final direction = textDirectionTest.calculateTextDirection();
+      expect(direction, TextDirection.rtl);
+    });
+
     test('auto empty text', () {
       final node = paragraphNode(
         text: '',
@@ -50,7 +96,7 @@ void main() {
       final textDirectionTest = TextDirectionTest(node: node);
       textDirectionTest.lastDirection = TextDirection.rtl;
       final direction = textDirectionTest.calculateTextDirection(
-        defaultTextDirection: TextDirection.ltr,
+        layoutDirection: TextDirection.ltr,
       );
       expect(direction, TextDirection.rtl);
     });
@@ -114,7 +160,7 @@ void main() {
       );
       final direction =
           TextDirectionTest(node: node.children.last).calculateTextDirection(
-        defaultTextDirection: TextDirection.ltr,
+        layoutDirection: TextDirection.ltr,
       );
       expect(direction, TextDirection.rtl);
     });
@@ -133,7 +179,7 @@ void main() {
       );
       final direction =
           TextDirectionTest(node: node.children.last).calculateTextDirection(
-        defaultTextDirection: TextDirection.ltr,
+        layoutDirection: TextDirection.ltr,
       );
       expect(direction, TextDirection.ltr);
     });
@@ -155,7 +201,7 @@ void main() {
       );
       final direction =
           TextDirectionTest(node: node.children.last).calculateTextDirection(
-        defaultTextDirection: TextDirection.rtl,
+        layoutDirection: TextDirection.rtl,
       );
       expect(direction, TextDirection.ltr);
     });
@@ -180,7 +226,7 @@ void main() {
       textDirectionTest.lastDirection = TextDirection.ltr;
 
       final direction = textDirectionTest.calculateTextDirection(
-        defaultTextDirection: TextDirection.rtl,
+        layoutDirection: TextDirection.rtl,
       );
       expect(direction, TextDirection.ltr);
     });
