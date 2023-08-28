@@ -113,5 +113,78 @@ void main() async {
         "<p><strong>Welcome to AppFlowy</strong></p>",
       );
     });
+    test('multiple attributes Test with background and text color', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "bg_color": "0x6000bcf0",
+                    "font_color": "0xff2196f3",
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '''<p><span style="font-weight: bold; text-decoration: underline line-through; font-style: italic; background-color: rgba(0, 188, 240, 96); color: rgba(33, 150, 243, 255)">Welcome to AppFlowy</span></p>''',
+      );
+    });
+    test('multiple attributes Test with background', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "bg_color": "0x6000bcf0",
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '''<p><span style="font-weight: bold; text-decoration: underline line-through; font-style: italic; background-color: rgba(0, 188, 240, 96)">Welcome to AppFlowy</span></p>''',
+      );
+    });
+    test('multiple attributes Test with text color', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "font_color": "0xff2196f3",
+                  },
+                ))
+              .toJson(),
+        },
+      );
+
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '''<p><span style="font-weight: bold; text-decoration: underline line-through; font-style: italic; color: rgba(33, 150, 243, 255)">Welcome to AppFlowy</span></p>''',
+      );
+    });
   });
 }
