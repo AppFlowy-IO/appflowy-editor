@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,8 @@ class ResizableImage extends StatefulWidget {
   State<ResizableImage> createState() => _ResizableImageState();
 }
 
+const _kImageBlockComponentMinWidth = 30.0;
+
 class _ResizableImageState extends State<ResizableImage> {
   late double imageWidth;
 
@@ -48,7 +51,7 @@ class _ResizableImageState extends State<ResizableImage> {
     return Align(
       alignment: widget.alignment,
       child: SizedBox(
-        width: imageWidth - moveDistance,
+        width: max(_kImageBlockComponentMinWidth, imageWidth - moveDistance),
         height: widget.height,
         child: MouseRegion(
           onEnter: (event) => setState(() {
@@ -180,7 +183,8 @@ class _ResizableImageState extends State<ResizableImage> {
           }
         },
         onHorizontalDragEnd: (details) {
-          imageWidth = imageWidth - moveDistance;
+          imageWidth =
+              max(_kImageBlockComponentMinWidth, imageWidth - moveDistance);
           initialOffset = 0;
           moveDistance = 0;
 
