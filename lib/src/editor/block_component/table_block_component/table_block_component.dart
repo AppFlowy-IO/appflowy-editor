@@ -225,7 +225,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
 
   @override
   Rect getBlockRect() {
-    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+    return getRectsInSelection(Selection.invalid()).first;
   }
 
   @override
