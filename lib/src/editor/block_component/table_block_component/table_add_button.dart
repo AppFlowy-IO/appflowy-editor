@@ -35,7 +35,7 @@ class _TableActionButtonState extends State<TableActionButton> {
           child: Visibility(
             visible: _visible,
             child: Card(
-              elevation: 3.0,
+              elevation: 1.0,
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(

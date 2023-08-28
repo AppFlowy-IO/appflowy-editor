@@ -45,7 +45,7 @@ class TableDefaults {
 
   static const double borderWidth = 2.0;
 
-  static const Widget addIcon = Icon(Icons.add);
+  static const Widget addIcon = Icon(Icons.add, size: 20);
 
   static const Widget handlerIcon = Icon(Icons.drag_indicator);
 

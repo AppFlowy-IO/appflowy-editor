@@ -41,9 +41,9 @@ class _TableViewState extends State<TableView> {
               children: [
                 ..._buildColumns(context),
                 TableActionButton(
-                  padding: const EdgeInsets.only(left: 1),
+                  padding: const EdgeInsets.only(left: 0),
                   icon: widget.addIcon,
-                  width: 35,
+                  width: 28,
                   height: widget.tableNode.colsHeight,
                   onPressed: () {
                     final transaction = widget.editorState.transaction;
@@ -59,9 +59,9 @@ class _TableViewState extends State<TableView> {
               ],
             ),
             TableActionButton(
-              padding: const EdgeInsets.only(top: 1, right: 32),
+              padding: const EdgeInsets.only(top: 1, right: 30),
               icon: widget.addIcon,
-              height: 35,
+              height: 28,
               width: widget.tableNode.tableWidth,
               onPressed: () {
                 final transaction = widget.editorState.transaction;
