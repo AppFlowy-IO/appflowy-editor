@@ -129,6 +129,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     ),
                   ),
                   IconButton(
+                    key: const Key('replaceSelectedButton'),
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
