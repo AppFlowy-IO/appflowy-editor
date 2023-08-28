@@ -16,7 +16,7 @@ void main() async {
         formatDoubleQuoteToQuote,
         '"',
         1,
-        (result, before, after) {
+        (result, before, after, editorState) {
           expect(result, true);
           expect(after.delta!.toPlainText(), text);
           expect(after.type, 'quote');
@@ -34,7 +34,7 @@ void main() async {
         formatDoubleQuoteToQuote,
         '"',
         2,
-        (result, before, after) {
+        (result, before, after, editorState) {
           // nothing happens
           expect(result, false);
           expect(before.toJson(), after.toJson());
