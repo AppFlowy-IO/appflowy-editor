@@ -55,7 +55,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
 
   Widget buildEditor(EditorState editorState) {
     return Container(
-      color: Colors.black,
+      color: Colors.grey[900],
       child: AppFlowyEditor(
         editorState: editorState,
         editorStyle: customizeEditorStyle(),
@@ -134,11 +134,11 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
           ? const EdgeInsets.only(left: 100, right: 100, top: 20)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,
-      selectionColor: Colors.green,
+      selectionColor: Colors.green.withOpacity(0.5),
       textStyleConfiguration: TextStyleConfiguration(
         text: const TextStyle(
           fontSize: 18.0,
-          color: Colors.white54,
+          color: Colors.white,
         ),
         bold: const TextStyle(
           fontWeight: FontWeight.w900,
