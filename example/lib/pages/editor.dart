@@ -31,7 +31,7 @@ class Editor extends StatelessWidget {
           );
           editorState.logConfiguration
             ..handler = debugPrint
-            ..level = LogLevel.off;
+            ..level = LogLevel.debug;
           onEditorStateChange(editorState);
           final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {

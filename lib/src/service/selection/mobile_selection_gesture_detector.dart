@@ -12,6 +12,7 @@ class MobileSelectionGestureDetector extends StatefulWidget {
     this.onTap,
     this.onDoubleTapDown,
     this.onDoubleTap,
+    this.onLongPressMoveUpdate,
   }) : super(key: key);
 
   @override
@@ -24,12 +25,15 @@ class MobileSelectionGestureDetector extends StatefulWidget {
   final GestureTapCallback? onTap;
   final GestureTapDownCallback? onDoubleTapDown;
   final GestureDoubleTapCallback? onDoubleTap;
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
 }
 
 class MobileSelectionGestureDetectorState
     extends State<MobileSelectionGestureDetector> {
   @override
   Widget build(BuildContext context) {
+    // TODO(yijing):  Needs to refactor to add triple tap guesture, temporarily use GestureDetector here
+    // All the unused gesture is filled with debuging info for now.
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapDown: (tapdetail) => Log.selection.debug(
@@ -40,6 +44,7 @@ class MobileSelectionGestureDetectorState
       onDoubleTapDown: widget.onDoubleTapDown,
       onDoubleTap: widget.onDoubleTap,
       onDoubleTapCancel: () => Log.selection.debug('onDoubleTapCancel'),
+      onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
       onPanStart: (details) {
         Log.selection.debug(
           'onPanStart global: ${details.globalPosition} local :${details.localPosition} }',

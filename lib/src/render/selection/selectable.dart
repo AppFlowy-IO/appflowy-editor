@@ -48,6 +48,9 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   /// Return global offset from local offset.
   Offset localToGlobal(Offset offset);
 
+  /// Return local offset from global offset.
+  Offset globalToLocal(Offset offset);
+
   Position start();
   Position end();
 

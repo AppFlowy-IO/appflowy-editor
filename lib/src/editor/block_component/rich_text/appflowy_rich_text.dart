@@ -224,6 +224,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
+  Offset globalToLocal(Offset offset) {
+    return _renderParagraph.globalToLocal(offset);
+  }
+
+  @override
   TextDirection textDirection() {
     return widget.textDirection;
   }

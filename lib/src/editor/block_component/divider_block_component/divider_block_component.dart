@@ -157,6 +157,9 @@ class _DividerBlockComponentWidgetState
   Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
 
   @override
+  Offset globalToLocal(Offset offset) => _renderBox.globalToLocal(offset);
+
+  @override
   TextDirection textDirection() {
     return TextDirection.ltr;
   }

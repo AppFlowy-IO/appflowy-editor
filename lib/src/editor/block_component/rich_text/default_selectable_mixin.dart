@@ -46,6 +46,9 @@ mixin DefaultSelectableMixin {
   Offset localToGlobal(Offset offset) =>
       forward.localToGlobal(offset) - baseOffset;
 
+  Offset globalToLocal(Offset offset) =>
+      forward.globalToLocal(offset) + baseOffset;
+
   Selection? getWordBoundaryInOffset(Offset offset) =>
       forward.getWordBoundaryInOffset(offset);
 
