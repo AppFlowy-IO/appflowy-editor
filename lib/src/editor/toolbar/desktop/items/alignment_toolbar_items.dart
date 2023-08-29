@@ -1,42 +1,46 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-final List<ToolbarItem> textDirectionItems = [
-  _TextDirectionToolbarItem(
-    id: 'text_direction_auto',
-    name: blockComponentTextDirectionAuto,
-    tooltip: AppFlowyEditorLocalizations.current.auto,
-    icon: Icons.swap_horiz,
+final List<ToolbarItem> alignmentItems = [
+  _AlignmentToolbarItem(
+    id: 'align_left',
+    name: 'left',
+    tooltip: 'left',
+    icon: Icons.format_align_left,
+    align: 'left',
   ),
-  _TextDirectionToolbarItem(
-    id: 'text_direction_ltr',
-    name: blockComponentTextDirectionLTR,
-    tooltip: AppFlowyEditorLocalizations.current.ltr,
-    icon: Icons.format_textdirection_l_to_r,
+  _AlignmentToolbarItem(
+    id: 'align_center',
+    name: 'center',
+    tooltip: 'center',
+    icon: Icons.format_align_center,
+    align: 'center',
   ),
-  _TextDirectionToolbarItem(
-    id: 'text_direction_rtl',
-    name: blockComponentTextDirectionRTL,
-    tooltip: AppFlowyEditorLocalizations.current.rtl,
-    icon: Icons.format_textdirection_r_to_l,
+  _AlignmentToolbarItem(
+    id: 'align_right',
+    name: 'right',
+    tooltip: 'right',
+    icon: Icons.format_align_right,
+    align: 'right',
   ),
 ];
 
-class _TextDirectionToolbarItem extends ToolbarItem {
-  _TextDirectionToolbarItem({
+class _AlignmentToolbarItem extends ToolbarItem {
+  _AlignmentToolbarItem({
     required String id,
     required String name,
     required String tooltip,
     required IconData icon,
+    required String align,
   }) : super(
           id: 'editor.$id',
-          group: 7,
+          group: 6,
           isActive: onlyShowInTextType,
           builder: (context, editorState, highlightColor) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every(
-              (n) => n.attributes[blockComponentTextDirection] == name,
+              (n) => n.attributes[blockComponentAlign] == align,
             );
             return SVGIconItemWidget(
               iconBuilder: (_) => Icon(
@@ -52,7 +56,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
                 (node) => node.copyWith(
                   attributes: {
                     ...node.attributes,
-                    blockComponentTextDirection: isHighlight ? null : name,
+                    blockComponentAlign: align,
                   },
                 ),
               ),

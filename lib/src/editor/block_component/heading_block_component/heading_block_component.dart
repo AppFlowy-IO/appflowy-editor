@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:collection/collection.dart';
 
 class HeadingBlockKeys {
   const HeadingBlockKeys._();
@@ -98,7 +98,8 @@ class _HeadingBlockComponentWidgetState
         DefaultSelectableMixin,
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -130,6 +131,7 @@ class _HeadingBlockComponentWidgetState
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
       // make the width of the rich text as small as possible to avoid
       child: Row(
