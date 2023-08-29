@@ -125,7 +125,17 @@ class Editor extends StatelessWidget {
       scrollController: scrollController,
       blockComponentBuilders: customBlockComponentBuilders,
       commandShortcutEvents: [
-        ...standardCommandShortcutEvents,
+        customToggleHighlightCommand(
+          style: ToggleColorsStyle(
+            highlightColor: Theme.of(context).highlightColor,
+          ),
+        ),
+        ...[
+          ...standardCommandShortcutEvents
+            ..removeWhere(
+              (el) => el == toggleHighlightCommand,
+            ),
+        ],
         ...findAndReplaceCommands(
           context: context,
           localizations: FindReplaceLocalizations(
