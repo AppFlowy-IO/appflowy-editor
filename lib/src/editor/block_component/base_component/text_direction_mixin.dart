@@ -77,9 +77,8 @@ TextDirection calculateNodeDirection({
 
   if (value == blockComponentTextDirectionAuto) {
     // previous line direction
-    final previousNodeContainsTextDirection = node.previousNodeWhere(
-      (element) => element.attributes.containsKey(blockComponentTextDirection),
-    );
+    final previousNodeContainsTextDirection =
+        previousOrParentNodeWithTextDirection(node);
 
     if (lastDirection != null) {
       defaultTextDirection = lastDirection.name;
@@ -117,6 +116,21 @@ TextDirection calculateNodeDirection({
   }
 
   return defaultTextDirection?.toTextDirection() ?? layoutDirection;
+}
+
+Node? previousOrParentNodeWithTextDirection(Node node) {
+  bool textDirectionCheck(node) =>
+      node != null &&
+      node.attributes.containsKey(blockComponentTextDirection) &&
+      node.attributes[blockComponentTextDirection] != null;
+
+  if (textDirectionCheck(node.previous)) {
+    return node.previous;
+  } else if (textDirectionCheck(node.parent)) {
+    return node.parent;
+  }
+
+  return null;
 }
 
 extension on String {

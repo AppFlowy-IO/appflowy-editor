@@ -230,6 +230,109 @@ void main() {
       );
       expect(direction, TextDirection.ltr);
     });
+
+    test('auto empty text previous node direction null', () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            attributes: {blockComponentTextDirection: null},
+          ),
+          paragraphNode(
+            text: '\$',
+            textDirection: blockComponentTextDirectionAuto,
+          ),
+        ],
+      );
+
+      final direction =
+          TextDirectionTest(node: node.children.last).calculateTextDirection(
+        layoutDirection: TextDirection.ltr,
+      );
+
+      expect(direction, TextDirection.ltr);
+    });
+
+    test('auto empty text use parent node direction', () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            textDirection: "rtl",
+            children: [
+              paragraphNode(
+                text: '\$',
+                textDirection: blockComponentTextDirectionAuto,
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final direction =
+          TextDirectionTest(node: node.children.first.children.last)
+              .calculateTextDirection(
+        layoutDirection: TextDirection.ltr,
+      );
+
+      expect(direction, TextDirection.rtl);
+    });
+
+    test(
+        'auto empty text use parent node direction even if previous node has no direction attribute',
+        () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            textDirection: "rtl",
+            children: [
+              paragraphNode(
+                text: 'سلام',
+              ),
+              paragraphNode(
+                text: '\$',
+                textDirection: blockComponentTextDirectionAuto,
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final direction =
+          TextDirectionTest(node: node.children.first.children.last)
+              .calculateTextDirection(
+        layoutDirection: TextDirection.ltr,
+      );
+
+      expect(direction, TextDirection.rtl);
+    });
+
+    test('auto empty text don\'t use previous node if its not just before node',
+        () {
+      final node = pageNode(
+        children: [
+          paragraphNode(
+            text: 'سلام',
+            textDirection: "rtl",
+          ),
+          paragraphNode(
+            text: 'سلام',
+          ),
+          paragraphNode(
+            text: '\$',
+            textDirection: blockComponentTextDirectionAuto,
+          ),
+        ],
+      );
+
+      final direction =
+          TextDirectionTest(node: node.children.last).calculateTextDirection(
+        layoutDirection: TextDirection.ltr,
+      );
+
+      expect(direction, TextDirection.ltr);
+    });
   });
 
   group('text_direction_mixin - widget test', () {
