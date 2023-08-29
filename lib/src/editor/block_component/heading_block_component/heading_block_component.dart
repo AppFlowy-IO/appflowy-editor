@@ -142,6 +142,7 @@ class _HeadingBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              textAlign: alignment?.toTextAlign,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle).updateTextStyle(
                         widget.textStyleBuilder?.call(level) ??

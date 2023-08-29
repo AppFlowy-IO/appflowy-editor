@@ -35,6 +35,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.placeholderTextSpanDecorator,
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
+    this.textAlign,
     required this.node,
     required this.editorState,
   });
@@ -64,6 +65,8 @@ class AppFlowyRichText extends StatefulWidget {
 
   /// customize the text span for placeholder text
   final AppFlowyTextSpanDecorator? placeholderTextSpanDecorator;
+
+  final TextAlign? textAlign;
 
   /// customize the text span for custom attributes
   ///
@@ -247,6 +250,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     final textSpan = getTextSpan();
     return RichText(
       key: textKey,
+      textAlign: widget.textAlign ?? TextAlign.start,
       textHeightBehavior: const TextHeightBehavior(
         applyHeightToFirstAscent: false,
         applyHeightToLastDescent: false,
