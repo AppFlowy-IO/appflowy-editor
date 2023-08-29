@@ -151,7 +151,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     }
 
     final rect = _findSuitableRect(rects);
-    final (top, left, right) = calculateToolbarOffset(rect);
+    final (left, top, right) = calculateToolbarOffset(rect);
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
@@ -203,28 +203,27 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     return minRect;
   }
 
-  (double top, double? left, double? right) calculateToolbarOffset(Rect rect) {
+  (double? left, double top, double? right) calculateToolbarOffset(Rect rect) {
     final editorOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorSize = editorState.renderBox?.size ?? Size.zero;
     final editorRect = editorOffset & editorSize;
-    final editorCenter = editorRect.center;
-    final left = (rect.left - editorCenter.dx).abs();
-    final right = (rect.right - editorCenter.dx).abs();
+    final left = (rect.left - editorOffset.dx).abs();
+    final right = (rect.right - editorOffset.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
     final top = rect.top < floatingToolbarHeight
         ? rect.bottom + floatingToolbarHeight
         : rect.top;
-    if (rect.left >= threshold && rect.right <= threshold * 2.0) {
-      // show in center
-      return (top, threshold, null);
-    } else if (left >= right && rect.left <= threshold) {
+    if (left <= threshold) {
       // show in left
-      return (top, rect.left, null);
+      return (rect.left, top, null);
+    } else if (left >= threshold && right <= threshold * 2.0) {
+      // show in center
+      return (threshold, top, null);
     } else {
       // show in right
-      return (top, null, editorRect.right - rect.right);
+      return (null, top, editorRect.right - rect.right);
     }
   }
 }

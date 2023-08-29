@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -13,12 +10,14 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    required this.contextMenuItems,
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
+  final List<List<ContextMenuItem>> contextMenuItems;
 
   @override
   State<DesktopSelectionServiceWidget> createState() =>
@@ -122,14 +121,19 @@ class _DesktopSelectionServiceWidgetState
     }
 
     currentSelection.value = selection;
-    editorState.selection = selection;
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
   }
 
   void _updateSelection() {
     final selection = editorState.selection;
+
     // TODO: why do we need to check this?
     if (currentSelection.value == selection &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
+        [SelectionUpdateReason.uiEvent, SelectionUpdateReason.searchHighlight]
+            .contains(editorState.selectionUpdateReason) &&
         editorState.selectionType != SelectionType.block) {
       return;
     }
@@ -238,16 +242,18 @@ class _DesktopSelectionServiceWidgetState
       clearSelection();
       return;
     }
-    if (selectable.cursorStyle == CursorStyle.verticalLine) {
-      editorState.selection = Selection.collapsed(
-        selectable.getPositionInOffset(offset),
-      );
-    } else {
-      editorState.selection = Selection(
-        start: selectable.start(),
-        end: selectable.end(),
-      );
-    }
+    final selection = selectable.cursorStyle == CursorStyle.verticalLine
+        ? Selection.collapsed(
+            selectable.getPositionInOffset(offset),
+          )
+        : Selection(
+            start: selectable.start(),
+            end: selectable.end(),
+          );
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
@@ -522,6 +528,25 @@ class _DesktopSelectionServiceWidgetState
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
 
+    // only shows around the selection area.
+    if (selectionRects.isEmpty) {
+      return;
+    }
+
+    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
+        selectionRects.any((element) {
+          const threshold = 20;
+          final scaledArea = Rect.fromCenter(
+            center: element.center,
+            width: element.width + threshold,
+            height: element.height + threshold,
+          );
+          return scaledArea.contains(details.globalPosition);
+        });
+    if (!isHitSelectionAreas) {
+      return;
+    }
+
     // For now, only support the text node.
     if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
@@ -534,7 +559,7 @@ class _DesktopSelectionServiceWidgetState
       builder: (context) => ContextMenu(
         position: offset,
         editorState: editorState,
-        items: builtInContextMenuItems,
+        items: widget.contextMenuItems,
         onPressed: () => _clearContextMenu(),
       ),
     );

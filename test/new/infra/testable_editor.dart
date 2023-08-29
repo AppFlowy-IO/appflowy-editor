@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../find_replace_menu/find_replace_menu_utils.dart';
 import '../util/util.dart';
 
 class TestableEditor {
@@ -46,14 +47,24 @@ class TestableEditor {
     if (withFloatingToolbar) {
       scrollController ??= ScrollController();
     }
-    Widget editor = AppFlowyEditor(
-      editorState: editorState,
-      editable: editable,
-      autoFocus: autoFocus,
-      shrinkWrap: shrinkWrap,
-      scrollController: scrollController,
-      editorStyle:
-          inMobile ? const EditorStyle.mobile() : const EditorStyle.desktop(),
+    Widget editor = Builder(
+      builder: (context) {
+        return AppFlowyEditor(
+          editorState: editorState,
+          editable: editable,
+          autoFocus: autoFocus,
+          shrinkWrap: shrinkWrap,
+          scrollController: scrollController,
+          commandShortcutEvents: [
+            ...standardCommandShortcutEvents,
+            ...TestableFindAndReplaceCommands(context: context)
+                .testableFindAndReplaceCommands,
+          ],
+          editorStyle: inMobile
+              ? const EditorStyle.mobile()
+              : const EditorStyle.desktop(),
+        );
+      },
     );
     if (withFloatingToolbar) {
       if (inMobile) {
@@ -130,7 +141,7 @@ class TestableEditor {
     );
   }
 
-  void initializeWithDocment(Document document) {
+  void initializeWithDocument(Document document) {
     _editorState = EditorState(
       document: document,
     );
@@ -304,14 +315,24 @@ class MockIMEInput {
   }
 
   Future<void> replaceText(String text) async {
-    final selection = editorState.selection?.normalized;
-    if (selection == null || selection.isCollapsed) {
+    var selection = editorState.selection?.normalized;
+    if (selection == null) {
       return;
     }
-    final texts = editorState.getTextInSelection(selection).join('\n');
+    if (!selection.isSingle || !selection.isCollapsed) {
+      await editorState.deleteSelection(selection);
+    }
+    selection = editorState.selection?.normalized;
+    if (selection == null) {
+      return;
+    }
+
+    final oldText =
+        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
+
     await imeInput.apply([
       TextEditingDeltaReplacement(
-        oldText: ' $texts',
+        oldText: ' $oldText',
         replacementText: text,
         replacedRange: TextSelection(
           baseOffset: selection.startIndex + 1,

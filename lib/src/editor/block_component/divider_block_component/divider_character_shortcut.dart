@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// insert divider into a document by typing three minuses(-).
+/// insert divider into a document by typing three dashes (-)
+/// or one em dash (—) and one dash (-)
 ///
 /// - support
 ///   - desktop
@@ -49,7 +50,7 @@ Future<bool> _convertSyntaxToDivider(
     ..insertNode(path, dividerNode())
     ..insertNode(path, paragraphNode())
     ..deleteNode(node)
-    ..afterSelection = Selection.collapse(path, 0);
+    ..afterSelection = Selection.collapsed(Position(path: path.next));
   editorState.apply(transaction);
   return true;
 }

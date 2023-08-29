@@ -119,7 +119,7 @@ class Transaction {
     add(DeleteOperation(path, nodes));
   }
 
-  /// move the node
+  /// Moves a [Node] to the provided [Path]
   void moveNode(Path path, Node node) {
     deleteNode(node);
     insertNode(path, node, deepCopy: false);
@@ -217,6 +217,33 @@ extension TextTransaction on Transaction {
 
     afterSelection = Selection.collapsed(
       Position(path: node.path, offset: index + text.length),
+    );
+  }
+
+  void insertTextDelta(
+    Node node,
+    int index,
+    Delta insertedDelta,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      assert(false, 'The node must have a delta.');
+      return;
+    }
+
+    assert(
+      index <= delta.length && index >= 0,
+      'The index($index) is out of range or negative.',
+    );
+
+    final insert = Delta()
+      ..retain(index)
+      ..addAll(insertedDelta);
+
+    addDeltaToComposeMap(node, insert);
+
+    afterSelection = Selection.collapsed(
+      Position(path: node.path, offset: index + insertedDelta.length),
     );
   }
 
@@ -544,21 +571,5 @@ extension TextTransaction on Transaction {
   void addDeltaToComposeMap(Node node, Delta delta) {
     markNeedsComposing = true;
     _composeMap.putIfAbsent(node, () => []).add(delta);
-  }
-}
-
-extension on Delta {
-  Attributes? sliceAttributes(int index) {
-    if (index <= 0) {
-      return null;
-    }
-    final attributes = slice(index - 1, index).first.attributes;
-    if (attributes == null ||
-        !attributes.keys.every(
-          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-        )) {
-      return null;
-    }
-    return attributes;
   }
 }

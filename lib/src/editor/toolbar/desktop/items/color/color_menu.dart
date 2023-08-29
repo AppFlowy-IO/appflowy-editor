@@ -23,7 +23,7 @@ void showColorMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorHeight = editorState.renderBox!.size.height;
-  final threshold = editorOffset.dy + editorHeight - 200;
+  final threshold = editorOffset.dy + editorHeight - 250;
   if (offset.dy > threshold) {
     bottom = editorOffset.dy + editorHeight - rect.top - 5;
   } else {
@@ -36,6 +36,8 @@ void showColorMenu(
     overlay = null;
   }
 
+  keepEditorFocusNotifier.value += 1;
+  final editorSelection = editorState.selection;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
@@ -52,13 +54,16 @@ void showColorMenu(
           isTextColor
               ? formatFontColor(
                   editorState,
+                  editorSelection,
                   color,
                 )
               : formatHighlightColor(
                   editorState,
+                  editorSelection,
                   color,
                 );
           dismissOverlay();
+          keepEditorFocusNotifier.value -= 1;
         },
         onDismiss: dismissOverlay,
       );

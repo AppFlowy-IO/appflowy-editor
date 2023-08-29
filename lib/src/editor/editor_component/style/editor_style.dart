@@ -14,6 +14,7 @@ class EditorStyle {
     required this.selectionColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
+    this.defaultTextDirection,
   });
 
   /// The padding of the editor.
@@ -40,53 +41,51 @@ class EditorStyle {
   ///   or override the built-in text span.
   final TextSpanDecoratorForAttribute? textSpanDecorator;
 
+  final String? defaultTextDirection;
+
   const EditorStyle.desktop({
     EdgeInsets? padding,
-    Color? backgroundColor,
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
-  }) : this(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 100),
-          cursorColor: cursorColor ?? const Color(0xFF00BCF0),
-          selectionColor:
-              selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
-          textStyleConfiguration: textStyleConfiguration ??
-              const TextStyleConfiguration(
-                text: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-          textSpanDecorator:
-              textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
-        );
+    this.defaultTextDirection,
+  })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
+        cursorColor = cursorColor ?? const Color(0xFF00BCF0),
+        selectionColor =
+            selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        textStyleConfiguration = textStyleConfiguration ??
+            const TextStyleConfiguration(
+              text: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+        textSpanDecorator =
+            textSpanDecorator ?? defaultTextSpanDecoratorForAttribute;
 
   const EditorStyle.mobile({
     EdgeInsets? padding,
-    Color? backgroundColor,
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
-  }) : this(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
-          cursorColor: cursorColor ?? const Color(0xFF00BCF0),
-          selectionColor:
-              selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
-          textStyleConfiguration: textStyleConfiguration ??
-              const TextStyleConfiguration(
-                text: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-          textSpanDecorator:
-              textSpanDecorator ?? mobileTextSpanDecoratorForAttribute,
-        );
+    this.defaultTextDirection,
+  })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
+        cursorColor = cursorColor ?? const Color(0xFF00BCF0),
+        selectionColor =
+            selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        textStyleConfiguration = textStyleConfiguration ??
+            const TextStyleConfiguration(
+              text: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+        textSpanDecorator =
+            textSpanDecorator ?? mobileTextSpanDecoratorForAttribute;
 
   EditorStyle copyWith({
     EdgeInsets? padding,
-    Color? backgroundColor,
     Color? cursorColor,
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
+    String? defaultTextDirection,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -95,6 +94,7 @@ class EditorStyle {
       textStyleConfiguration:
           textStyleConfiguration ?? this.textStyleConfiguration,
       textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
+      defaultTextDirection: defaultTextDirection,
     );
   }
 }

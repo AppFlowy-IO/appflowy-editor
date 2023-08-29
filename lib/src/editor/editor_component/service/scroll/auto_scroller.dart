@@ -31,25 +31,24 @@ class AutoScroller extends EdgeDraggingAutoScroller
     AxisDirection? direction,
     Duration? duration,
   }) {
-    if (direction != null) {
-      if (direction == AxisDirection.up) {
-        startAutoScrollIfNecessary(
-          offset & Size(1, edgeOffset),
-          duration: duration,
-        );
-      }
-    } else {
-      lastOffset = offset;
-      final dragTarget = Rect.fromCenter(
-        center: offset,
-        width: edgeOffset,
-        height: edgeOffset,
-      );
-      startAutoScrollIfNecessary(
-        dragTarget,
+    if (direction != null && direction == AxisDirection.up) {
+      return startAutoScrollIfNecessary(
+        offset & Size(1, edgeOffset),
         duration: duration,
       );
     }
+
+    lastOffset = offset;
+    final dragTarget = Rect.fromCenter(
+      center: offset,
+      width: edgeOffset,
+      height: edgeOffset,
+    );
+
+    startAutoScrollIfNecessary(
+      dragTarget,
+      duration: duration,
+    );
   }
 
   @override

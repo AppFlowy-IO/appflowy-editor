@@ -17,7 +17,7 @@ void main() async {
         formatSignToHeading,
         '',
         0,
-        (result, before, after) {
+        (result, before, after, editorState) {
           expect(result, false);
           expect(before.delta!.toPlainText(), '');
           expect(after.delta!.toPlainText(), '');
@@ -37,7 +37,7 @@ void main() async {
           formatSignToHeading,
           '#' * i,
           i,
-          (result, before, after) {
+          (result, before, after, editorState) {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, 'heading');
@@ -56,7 +56,7 @@ void main() async {
         formatSignToHeading,
         '#' * 7,
         7,
-        (result, before, after) {
+        (result, before, after, editorState) {
           // nothing happens
           expect(result, false);
           expect(before.toJson(), after.toJson());
@@ -74,7 +74,7 @@ void main() async {
         formatSignToHeading,
         '#',
         2,
-        (result, before, after) {
+        (result, before, after, editorState) {
           // nothing happens
           expect(result, false);
           expect(before.toJson(), after.toJson());

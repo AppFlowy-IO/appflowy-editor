@@ -116,6 +116,7 @@ class _HeadingBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
@@ -123,30 +124,40 @@ class _HeadingBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
-      child: AppFlowyRichText(
-        key: forwardKey,
-        node: widget.node,
-        editorState: editorState,
-        textSpanDecorator: (textSpan) => textSpan
-            .updateTextStyle(textStyle)
-            .updateTextStyle(
-              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
+      // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
+      // make the width of the rich text as small as possible to avoid
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: AppFlowyRichText(
+              key: forwardKey,
+              node: widget.node,
+              editorState: editorState,
+              textSpanDecorator: (textSpan) =>
+                  textSpan.updateTextStyle(textStyle).updateTextStyle(
+                        widget.textStyleBuilder?.call(level) ??
+                            defaultTextStyle(level),
+                      ),
+              placeholderText: placeholderText,
+              placeholderTextSpanDecorator: (textSpan) => textSpan
+                  .updateTextStyle(
+                    placeholderTextStyle,
+                  )
+                  .updateTextStyle(
+                    widget.textStyleBuilder?.call(level) ??
+                        defaultTextStyle(level),
+                  ),
+              textDirection: textDirection,
             ),
-        placeholderText: placeholderText,
-        placeholderTextSpanDecorator: (textSpan) => textSpan
-            .updateTextStyle(
-              placeholderTextStyle,
-            )
-            .updateTextStyle(
-              widget.textStyleBuilder?.call(level) ?? defaultTextStyle(level),
-            ),
-        textDirection: textDirection,
+          ),
+        ],
       ),
     );
 

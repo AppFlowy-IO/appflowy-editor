@@ -48,6 +48,10 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
         ..attributes['href'] = href
         ..append(domText);
     }
+    //backgroud color and attribute color is added than that was ignoring now all attributes handled according to attributes
+    if (attributes.backgroundColor != null || attributes.color != null) {
+      return convertMultipleAttributeTextInsertToDomNode(text, attributes);
+    }
 
     final keyToTag = {
       AppFlowyRichTextKeys.bold: HTMLTags.strong,
@@ -126,8 +130,9 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
     if (attributes.bold) {
       cssMap['font-weight'] = 'bold';
     }
-
-    if (attributes.underline) {
+    if (attributes.underline && attributes.strikethrough) {
+      cssMap['text-decoration'] = 'underline line-through';
+    } else if (attributes.underline) {
       cssMap['text-decoration'] = 'underline';
     } else if (attributes.strikethrough) {
       cssMap['text-decoration'] = 'line-through';

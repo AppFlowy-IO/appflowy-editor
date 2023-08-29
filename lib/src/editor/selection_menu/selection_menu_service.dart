@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 // TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
-  Offset get topLeft;
   Offset get offset;
   Alignment get alignment;
   SelectionMenuStyle get style;
@@ -12,7 +11,7 @@ abstract class SelectionMenuService {
   void show();
   void dismiss();
 
-  (double left, double? top, double? bottom) getPosition();
+  (double? left, double? top, double? right, double? bottom) getPosition();
 }
 
 class SelectionMenu extends SelectionMenuService {
@@ -34,10 +33,8 @@ class SelectionMenu extends SelectionMenuService {
 
   OverlayEntry? _selectionMenuEntry;
   bool _selectionUpdateByInner = false;
-  Offset? _topLeft;
   Offset _offset = Offset.zero;
   Alignment _alignment = Alignment.topLeft;
-  bool showBelow = true;
   int itemCountFilter;
 
   @override
@@ -68,34 +65,12 @@ class SelectionMenu extends SelectionMenuService {
     if (selectionRects.isEmpty) {
       return;
     }
-    // Workaround: We can customize the padding through the [EditorStyle],
-    //  but the coordinates of overlay are not properly converted currently.
-    //  Just subtract the padding here as a result.
-    const menuHeight = 200.0;
-    const menuOffset = Offset(0, 10);
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+
+    calculateSelectionMenuOffset(selectionRects.first);
+    final (left, top, right, bottom) = getPosition();
+
     final editorHeight = editorState.renderBox!.size.height;
     final editorWidth = editorState.renderBox!.size.width;
-
-    // show below default
-    showBelow = true;
-    _alignment = Alignment.bottomLeft;
-    final bottomRight = selectionRects.first.bottomRight;
-    final topRight = selectionRects.first.topRight;
-    var offset = bottomRight + menuOffset;
-    // overflow
-    if (offset.dy + menuHeight >= editorOffset.dy + editorHeight) {
-      // show above
-      offset = topRight - menuOffset;
-      showBelow = false;
-      _alignment = Alignment.topLeft;
-    }
-    _topLeft = offset;
-    _offset = Offset(
-      offset.dx,
-      showBelow ? offset.dy : MediaQuery.of(context).size.height - offset.dy,
-    );
 
     _selectionMenuEntry = OverlayEntry(
       builder: (context) {
@@ -110,10 +85,10 @@ class SelectionMenu extends SelectionMenuService {
             child: Stack(
               children: [
                 Positioned(
-                  top: showBelow ? _offset.dy : null,
-                  bottom: showBelow ? null : _offset.dy,
-                  left: offset.dx,
-                  right: 0,
+                  top: top,
+                  bottom: bottom,
+                  left: left,
+                  right: right,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
@@ -154,24 +129,6 @@ class SelectionMenu extends SelectionMenuService {
   }
 
   @override
-  (double, double?, double?) getPosition() {
-    final left = _offset.dx;
-    double? top;
-    double? bottom;
-    if (!showBelow) {
-      bottom = _offset.dy;
-    } else {
-      top = _offset.dy;
-    }
-    return (left, top, bottom);
-  }
-
-  @override
-  Offset get topLeft {
-    return _topLeft ?? Offset.zero;
-  }
-
-  @override
   Alignment get alignment {
     return _alignment;
   }
@@ -198,6 +155,76 @@ class SelectionMenu extends SelectionMenuService {
     }
 
     dismiss();
+  }
+
+  @override
+  (double? left, double? top, double? right, double? bottom) getPosition() {
+    double? left, top, right, bottom;
+    switch (alignment) {
+      case Alignment.topLeft:
+        left = offset.dx;
+        top = offset.dy;
+        break;
+      case Alignment.bottomLeft:
+        left = offset.dx;
+        bottom = offset.dy;
+        break;
+      case Alignment.topRight:
+        right = offset.dx;
+        top = offset.dy;
+        break;
+      case Alignment.bottomRight:
+        right = offset.dx;
+        bottom = offset.dy;
+        break;
+    }
+
+    return (left, top, right, bottom);
+  }
+
+  void calculateSelectionMenuOffset(Rect rect) {
+    // Workaround: We can customize the padding through the [EditorStyle],
+    //  but the coordinates of overlay are not properly converted currently.
+    //  Just subtract the padding here as a result.
+    const menuHeight = 200.0;
+    const menuOffset = Offset(0, 10);
+    final editorOffset =
+        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final editorHeight = editorState.renderBox!.size.height;
+    final editorWidth = editorState.renderBox!.size.width;
+
+    // show below default
+    _alignment = Alignment.topLeft;
+    final bottomRight = rect.bottomRight;
+    final topRight = rect.topRight;
+    var offset = bottomRight + menuOffset;
+    _offset = Offset(
+      offset.dx,
+      offset.dy,
+    );
+
+    // show above
+    if (offset.dy + menuHeight >= editorOffset.dy + editorHeight) {
+      offset = topRight - menuOffset;
+      _alignment = Alignment.bottomLeft;
+
+      _offset = Offset(
+        offset.dx,
+        MediaQuery.of(context).size.height - offset.dy,
+      );
+    }
+
+    // show on left
+    if (_offset.dx > editorWidth / 2) {
+      _alignment = _alignment == Alignment.topLeft
+          ? Alignment.topRight
+          : Alignment.bottomRight;
+
+      _offset = Offset(
+        editorWidth - _offset.dx,
+        _offset.dy,
+      );
+    }
   }
 }
 

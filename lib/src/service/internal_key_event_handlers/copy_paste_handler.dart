@@ -2,6 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/widgets.dart';
 
 int _textLengthOfNode(Node node) => node.delta?.length ?? 0;
+RegExp _linkRegex = RegExp(
+  r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
+);
 
 void _pasteSingleLine(
   EditorState editorState,
@@ -9,9 +12,17 @@ void _pasteSingleLine(
   String line,
 ) {
   assert(selection.isCollapsed);
+
+  // handle link
+  final Attributes attributes = _linkRegex.hasMatch(line)
+      ? {
+          AppFlowyRichTextKeys.href: line,
+        }
+      : {};
+
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
-    ..insertText(node, selection.startIndex, line)
+    ..insertText(node, selection.startIndex, line, attributes: attributes)
     ..afterSelection = (Selection.collapsed(
       Position(
         path: selection.end.path,
@@ -49,10 +60,8 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   final offset = document.root.children.lastOrNull?.delta?.length ?? 0;
   transaction
     ..insertNodes(path, document.root.children)
-    ..afterSelection = Selection.collapse(
-      afterPath,
-      offset,
-    );
+    ..afterSelection =
+        Selection.collapsed(Position(path: afterPath, offset: offset));
   editorState.apply(transaction);
 }
 
@@ -85,16 +94,30 @@ void pasteHTML(EditorState editorState, String html) {
 
   Log.keyboard.debug('paste html: $html');
 
-  final htmlToNodes = htmlToDocument(html);
+  final htmlToNodes = htmlToDocument(html).root.children.where((element) {
+    final delta = element.delta;
+    if (delta == null) {
+      return true;
+    }
+    return delta.isNotEmpty;
+  });
   if (htmlToNodes.isEmpty) {
     return;
   }
 
-  _pasteMultipleLinesInText(
-    editorState,
-    selection.start.offset,
-    htmlToNodes.root.children.toList(),
-  );
+  if (htmlToNodes.length == 1) {
+    _pasteSingleLineInText(
+      editorState,
+      selection.startIndex,
+      htmlToNodes.first,
+    );
+  } else {
+    _pasteMultipleLinesInText(
+      editorState,
+      selection.start.offset,
+      htmlToNodes.toList(),
+    );
+  }
 }
 
 Selection _computeSelectionAfterPasteMultipleNodes(
@@ -133,6 +156,39 @@ void handleCopy(EditorState editorState) async {
     text: text,
     html: html.isEmpty ? null : html,
   );
+}
+
+void _pasteSingleLineInText(
+  EditorState editorState,
+  int offset,
+  Node insertedNode,
+) {
+  final transaction = editorState.transaction;
+  final selection = editorState.selection;
+  if (selection == null || !selection.isCollapsed) {
+    return;
+  }
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+  if (node == null || delta == null) {
+    return;
+  }
+  final insertedDelta = insertedNode.delta;
+  if (delta.isEmpty || insertedDelta == null) {
+    transaction.insertNode(selection.end.path.next, insertedNode);
+    transaction.deleteNode(node);
+    final length = insertedNode.delta?.length ?? 0;
+    transaction.afterSelection =
+        Selection.collapsed(Position(path: selection.end.path, offset: length));
+    editorState.apply(transaction);
+  } else {
+    transaction.insertTextDelta(
+      node,
+      offset,
+      insertedDelta,
+    );
+    editorState.apply(transaction);
+  }
 }
 
 void _pasteMultipleLinesInText(
@@ -187,6 +243,7 @@ void _pasteMultipleLinesInText(
             ),
         )
       ]);
+      transaction.afterSelection = afterSelection;
       editorState.apply(transaction);
       return;
     }
@@ -202,6 +259,7 @@ void _pasteMultipleLinesInText(
           afterNode.delta!.isNotEmpty)
         afterNode,
     ]);
+    transaction.afterSelection = afterSelection;
     editorState.apply(transaction);
     return;
   }

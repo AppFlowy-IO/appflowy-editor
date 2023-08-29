@@ -433,7 +433,7 @@ void main() async {
       );
       expect(
         editor.selection,
-        Selection.collapse([1], 0),
+        Selection.collapsed(Position(path: [1])),
       );
 
       await editor.dispose();

@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class AppFlowyEditor extends StatefulWidget {
     Map<String, BlockComponentBuilder>? blockComponentBuilders,
     List<CharacterShortcutEvent>? characterShortcutEvents,
     List<CommandShortcutEvent>? commandShortcutEvents,
+    List<List<ContextMenuItem>>? contextMenuItems,
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
@@ -32,7 +34,8 @@ class AppFlowyEditor extends StatefulWidget {
         characterShortcutEvents =
             characterShortcutEvents ?? standardCharacterShortcutEvents,
         commandShortcutEvents =
-            commandShortcutEvents ?? standardCommandShortcutEvents;
+            commandShortcutEvents ?? standardCommandShortcutEvents,
+        contextMenuItems = contextMenuItems ?? standardContextMenuItems;
 
   final EditorState editorState;
 
@@ -99,6 +102,13 @@ class AppFlowyEditor extends StatefulWidget {
   /// );
   /// ```
   final List<CommandShortcutEvent> commandShortcutEvents;
+
+  /// The context menu items.
+  ///
+  /// They will be shown when the user right click on the editor.
+  ///
+  /// A divider will be added between each list.
+  final List<List<ContextMenuItem>> contextMenuItems;
 
   /// Provide a scrollController to control the scroll behavior
   ///   if you need to custom the scroll behavior.
@@ -224,6 +234,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         key: editorState.service.selectionServiceKey,
         cursorColor: widget.editorStyle.cursorColor,
         selectionColor: widget.editorStyle.selectionColor,
+        contextMenuItems: widget.contextMenuItems,
         child: KeyboardServiceWidget(
           key: editorState.service.keyboardServiceKey,
           characterShortcutEvents: widget.characterShortcutEvents,

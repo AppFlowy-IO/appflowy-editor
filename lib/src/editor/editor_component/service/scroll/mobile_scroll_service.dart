@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 class MobileScrollService extends StatefulWidget {
   const MobileScrollService({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.autoScroller,
     required this.child,
-  }) : super(key: key);
+  });
 
   final ScrollController scrollController;
   final AutoScroller autoScroller;
@@ -16,10 +16,10 @@ class MobileScrollService extends StatefulWidget {
   final Widget child;
 
   @override
-  State<MobileScrollService> createState() => _MobileScrollServiceState();
+  State<MobileScrollService> createState() => MobileScrollServiceState();
 }
 
-class _MobileScrollServiceState extends State<MobileScrollService>
+class MobileScrollServiceState extends State<MobileScrollService>
     implements AppFlowyScrollService {
   @override
   double get dy => widget.scrollController.position.pixels;

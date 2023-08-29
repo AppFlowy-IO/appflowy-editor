@@ -2,7 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+// TODO(Xazin): Refactor to honor `Theme.platform`
 extension PlatformExtension on Platform {
+  static bool get isWindows {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isWindows;
+  }
+
   static bool get isDesktopOrWeb {
     if (kIsWeb) {
       return true;
@@ -30,11 +38,4 @@ extension PlatformExtension on Platform {
     }
     return !isMobile;
   }
-}
-
-bool isMobile() {
-  if (kIsWeb) {
-    return false;
-  }
-  return Platform.isAndroid || Platform.isIOS;
 }

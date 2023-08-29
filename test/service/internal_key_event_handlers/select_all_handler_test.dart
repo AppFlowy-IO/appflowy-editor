@@ -25,7 +25,7 @@ Future<void> _testSelectAllHandler(WidgetTester tester, int lines) async {
   const text = 'Welcome to Appflowy 😁';
   final editor = tester.editor..addParagraphs(lines, initialText: text);
   await editor.startTesting();
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,

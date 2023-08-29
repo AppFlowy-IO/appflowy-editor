@@ -101,10 +101,34 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  bool _showPlaceholder = false;
+
+  @override
+  void initState() {
+    super.initState();
+    editorState.selectionNotifier.addListener(_onSelectionChange);
+    _onSelectionChange();
+  }
+
+  @override
+  void dispose() {
+    editorState.selectionNotifier.removeListener(_onSelectionChange);
+    super.dispose();
+  }
+
+  void _onSelectionChange() {
+    final selection = editorState.selection;
+    final showPlaceholder = selection != null &&
+        (selection.isSingle && selection.start.path.equals(node.path));
+    if (showPlaceholder != _showPlaceholder) {
+      setState(() => _showPlaceholder = showPlaceholder);
+    }
+  }
+
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
@@ -120,14 +144,11 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
             key: forwardKey,
             node: widget.node,
             editorState: editorState,
-            placeholderText: placeholderText,
-            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-              textStyle,
-            ),
+            placeholderText: _showPlaceholder ? placeholderText : ' ',
+            textSpanDecorator: (textSpan) =>
+                textSpan.updateTextStyle(textStyle),
             placeholderTextSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(
-              placeholderTextStyle,
-            ),
+                textSpan.updateTextStyle(placeholderTextStyle),
             textDirection: textDirection,
           ),
         ],

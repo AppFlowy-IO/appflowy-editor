@@ -27,18 +27,51 @@ void main() async {
       return null;
     });
   });
+
   group('paste_command_test.dart', () {
+    testWidgets(
+      'Copy link',
+      (tester) async {
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.collapsed(Position(path: [0], offset: 0)),
+        );
+
+        const link = 'https://appflowy.io/';
+        AppFlowyClipboard.mockSetData(
+          const AppFlowyClipboardData(text: link),
+        );
+
+        pasteCommand.execute(editor.editorState);
+        await tester.pumpAndSettle();
+
+        final delta = editor.nodeAtPath([0])!.delta!;
+        expect(delta.toPlainText(), link);
+        expect(
+          delta.everyAttributes(
+            (element) => element[AppFlowyRichTextKeys.href] == link,
+          ),
+          true,
+        );
+
+        AppFlowyClipboard.mockSetData(null);
+        await editor.dispose();
+      },
+    );
+
     testWidgets(
         'Presses Command + A in small document and copy text and paste text',
         (tester) async {
-      await _testHandleCopyPaste(tester, Document.fromJson(paragraphdata));
+      await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
     });
+
     testWidgets(
         'Presses Command + A in small document and copy text and paste text multiple times',
         (tester) async {
       await _testHandleCopyMultiplePaste(
         tester,
-        Document.fromJson(paragraphdata),
+        Document.fromJson(paragraphData),
       );
     });
   });
@@ -48,9 +81,9 @@ Future<void> _testHandleCopyMultiplePaste(
   WidgetTester tester,
   Document document,
 ) async {
-  final editor = tester.editor..initializeWithDocment(document);
+  final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting();
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -61,16 +94,16 @@ Future<void> _testHandleCopyMultiplePaste(
 
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.editorState.document.toJson(),
-    paragraphdata,
+    paragraphData,
   );
   await editor.updateSelection(Selection.single(path: [0], startOffset: 10));
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.document.toJson(),
@@ -78,15 +111,7 @@ Future<void> _testHandleCopyMultiplePaste(
   );
   pasteHTML(
     editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
-  );
-  expect(
-    editor.document.toJson(),
-    secondParagraph,
-  );
-  pasteHTML(
-    editor.editorState,
-    documentToHTML(Document.fromJson(paragraphdata)),
+    documentToHTML(Document.fromJson(paragraphData)),
   );
   expect(
     editor.document.toJson(),
@@ -99,9 +124,9 @@ Future<void> _testHandleCopyPaste(
   WidgetTester tester,
   Document document,
 ) async {
-  final editor = tester.editor..initializeWithDocment(document);
+  final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting(platform: TargetPlatform.windows);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyA,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -109,7 +134,7 @@ Future<void> _testHandleCopyPaste(
   );
   handleCopy(editor.editorState);
   deleteSelectedContent(editor.editorState);
-  await editor.updateSelection(Selection.collapse([0], 0));
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyP,
     isControlPressed: Platform.isWindows || Platform.isLinux,
@@ -123,7 +148,7 @@ Future<void> _testHandleCopyPaste(
   await editor.dispose();
 }
 
-const paragraphdata = {
+const paragraphData = {
   "document": {
     "type": "page",
     "children": [
@@ -207,6 +232,16 @@ const thirdParagraph = {
         "type": "paragraph",
         "data": {
           "delta": [
+            {"insert": "AppFlowy Editor is a "},
+            {
+              "insert": "highly customizable",
+              "attributes": {"bold": true}
+            },
+            {"insert": "   "},
+            {
+              "insert": "rich-text editor",
+              "attributes": {"italic": true}
+            },
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",

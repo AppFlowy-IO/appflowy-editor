@@ -65,14 +65,15 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     return AutoScrollableWidget(
       shrinkWrap: widget.shrinkWrap,
       scrollController: scrollController,
-      builder: ((context, autoScroller) {
+      builder: (context, autoScroller) {
         if (PlatformExtension.isDesktopOrWeb) {
           return _buildDesktopScrollService(context, autoScroller);
         } else if (PlatformExtension.isMobile) {
           return _buildMobileScrollService(context, autoScroller);
         }
+
         throw UnimplementedError();
-      }),
+      },
     );
   }
 
@@ -104,15 +105,28 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
-        editorState.selectionUpdateReason == SelectionUpdateReason.selectAll) {
+        [SelectionUpdateReason.selectAll, SelectionUpdateReason.searchHighlight]
+            .contains(editorState.selectionUpdateReason)) {
       return;
     }
+
+    final updateReason = editorState.selectionUpdateReason;
+    final selectionType = editorState.selectionType;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
         return;
       }
+
       final endTouchPoint = selectionRect.last.centerRight;
+
+      if (editorState.selectionUpdateReason ==
+          SelectionUpdateReason.searchNavigate) {
+        scrollController.jumpTo(endTouchPoint.dy - 100);
+        return;
+      }
+
       if (selection.isCollapsed) {
         if (PlatformExtension.isMobile) {
           // soft keyboard
@@ -121,7 +135,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          if (editorState.selectionType == SelectionType.block) {
+          if (selectionType == SelectionType.block ||
+              updateReason == SelectionUpdateReason.transaction) {
             final box = editorState.renderBox;
             final editorOffset = box?.localToGlobal(Offset.zero);
             final editorHeight = box?.size.height;

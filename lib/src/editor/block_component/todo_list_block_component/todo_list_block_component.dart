@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/block_
 import 'package:flutter/material.dart';
 
 class TodoListBlockKeys {
-  TodoListBlockKeys._();
+  const TodoListBlockKeys._();
 
   static const String type = 'todo_list';
 
@@ -127,7 +127,7 @@ class _TodoListBlockComponentWidgetState
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
