@@ -339,4 +339,5 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   dividerMenuItem,
+  tableMenuItem,
 ];

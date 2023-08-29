@@ -1,5 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import '../new/infra/testable_editor.dart';
 
 void main() async {
@@ -122,9 +124,41 @@ void main() async {
     //     secondNode.delta!.toPlainText(),
     //     text.replaceAll(welcome, ''),
     //   );
-
+    //
     //   await editor.dispose();
     //   // TODO: the copy and paste test is not working during test env.
     // });
+
+    testWidgets('single tap with horizontal nodes', (tester) async {
+      var tableNode = TableNode.fromList([
+        ['00', '01', '02', '03', '04'],
+        ['10', '11', '12', '13', '14'],
+        ['20', '21', '22', '23', '24'],
+        ['30', '31', '32', '33', '34'],
+        ['40', '41', '42', '43', '44'],
+        ['50', '51', '52', '53', '54'],
+        ['60', '61', '62', '63', '64'],
+        ['70', '71', '72', '73', '74'],
+        ['80', '81', '82', '83', '84'],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+      await editor.startTesting();
+
+      final cell04 = getCellNode(tableNode.node, 0, 4);
+      final finder = find.byKey(cell04!.key);
+
+      final rect = tester.getRect(finder);
+      // tap at the beginning
+      await tester.tapAt(rect.centerLeft);
+      expect(
+        editor.selection,
+        Selection.single(
+          path: cell04.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+
+      await editor.dispose();
+    });
   });
 }

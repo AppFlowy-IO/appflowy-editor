@@ -42,6 +42,7 @@ String documentToMarkdown(
       const CodeBlockNodeParser(),
       const HeadingNodeParser(),
       const ImageNodeParser(),
+      const TableNodeParser(),
     ],
   ).encode(document);
 }

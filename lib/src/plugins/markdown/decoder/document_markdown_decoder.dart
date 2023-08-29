@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:path/path.dart' as p;
 
@@ -16,7 +17,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
   final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
   final htmlRegex = RegExp('^(http|https)://');
-  final numberedlistRegex = RegExp(r'^\d+\. ');
+  final numberedListRegex = RegExp(r'^\d+\. ');
 
   @override
   Document convert(String input) {
@@ -37,7 +38,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
           lines[i].length > 3) {
         document.insert(
           [i],
-          [_convertLineToNode(lines[i], customInlineSyntaxes)],
+          [convertLineToNode(lines[i], customInlineSyntaxes)],
         );
         i++;
       } else if (lines[i].startsWith("```")) {
@@ -54,21 +55,28 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
           i = tempLinePointer;
           document.insert(
             [i],
-            [_convertLineToNode(lines[i], customInlineSyntaxes)],
+            [convertLineToNode(lines[i], customInlineSyntaxes)],
           );
           i++;
         } else {
           codeBlock += lines[i];
           document.insert(
             [tempLinePointer],
-            [_convertLineToNode(codeBlock, customInlineSyntaxes)],
+            [convertLineToNode(codeBlock, customInlineSyntaxes)],
           );
           i++;
         }
+      } else if (i + 1 < lines.length &&
+          TableMarkdownDecoder.isTable(lines[i], lines[i + 1])) {
+        final node = TableMarkdownDecoder().convert(lines.sublist(i));
+        i += node.attributes['rowsLen'] as int;
+
+        document.insert([i], [node]);
+        i++;
       } else {
         document.insert(
           [i],
-          [_convertLineToNode(lines[i], customInlineSyntaxes)],
+          [convertLineToNode(lines[i], customInlineSyntaxes)],
         );
         i++;
       }
@@ -77,7 +85,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return document;
   }
 
-  Node _convertLineToNode(
+  Node convertLineToNode(
     String line,
     List<md.InlineSyntax> customInlineSyntaxes,
   ) {
@@ -90,6 +98,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         return node;
       }
     }
+
     // Heading Style
     if (line.startsWith('### ')) {
       return headingNode(
@@ -127,7 +136,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     } else if (line.isNotEmpty && RegExp('^-*').stringMatch(line) == line) {
       return Node(type: 'divider');
     } else if (line.startsWith('```') && line.endsWith('```')) {
-      return _codeBlockNodeFromMarkdown(line, decoder);
+      return codeBlockNodeFromMarkdown(line, decoder);
     } else if (imageRegex.hasMatch(line.trim())) {
       final filePath = extractImagePath(line.trim());
       // checking if filepath is present or if the filepath is an image or not
@@ -142,7 +151,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       if (filepath != null && !htmlRegex.hasMatch(filepath)) {
         return paragraphNode(text: line);
       }
-    } else if (numberedlistRegex.hasMatch(line)) {
+    } else if (numberedListRegex.hasMatch(line)) {
       return numberedListNode(
         attributes: {
           'delta':
@@ -172,7 +181,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return match?.group(1);
   }
 
-  Node _codeBlockNodeFromMarkdown(
+  static Node codeBlockNodeFromMarkdown(
     String markdown,
     DeltaMarkdownDecoder decoder,
   ) {

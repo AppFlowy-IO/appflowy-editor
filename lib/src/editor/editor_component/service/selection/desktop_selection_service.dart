@@ -327,8 +327,6 @@ class _DesktopSelectionServiceWidgetState
       final selection = Selection(start: start, end: end);
       updateSelection(selection);
     }
-
-    _showDebugLayerIfNeeded(offset: panEndOffset);
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -578,23 +576,37 @@ class _DesktopSelectionServiceWidgetState
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (rect.bottom <= offset.dy) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
+
+    var min = _findCloseNode(
+      sortedNodes,
+      start,
+      end,
+      (rect) => rect.bottom <= offset.dy,
+    );
+
+    final filteredNodes = List.of(sortedNodes)
+      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    min = 0;
+    if (filteredNodes.length > 1) {
+      min = _findCloseNode(
+        sortedNodes,
+        0,
+        filteredNodes.length - 1,
+        (rect) => rect.right <= offset.dx,
+      );
     }
-    min = min.clamp(start, end);
-    final node = sortedNodes[min];
+
+    final node = filteredNodes[min];
     if (node.children.isNotEmpty &&
         node.children.first.renderBox != null &&
         node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false);
+      final children = node.children.toList(growable: false)
+        ..sort(
+          (a, b) => a.rect.bottom != b.rect.bottom
+              ? a.rect.bottom.compareTo(b.rect.bottom)
+              : a.rect.left.compareTo(b.rect.left),
+        );
+
       return _getNodeInOffset(
         children,
         offset,
@@ -605,42 +617,62 @@ class _DesktopSelectionServiceWidgetState
     return node;
   }
 
-  void _showDebugLayerIfNeeded({Offset? offset}) {
-    // remove false to show debug overlay.
-    // if (kDebugMode && false) {
-    //   _debugOverlay?.remove();
-    //   if (offset != null) {
-    //     _debugOverlay = OverlayEntry(
-    //       builder: (context) => Positioned.fromRect(
-    //         rect: Rect.fromPoints(offset, offset.translate(20, 20)),
-    //         child: Container(
-    //           color: Colors.red.withOpacity(0.2),
-    //         ),
-    //       ),
-    //     );
-    //     Overlay.of(context)?.insert(_debugOverlay!);
-    //   } else if (_panStartOffset != null) {
-    //     _debugOverlay = OverlayEntry(
-    //       builder: (context) => Positioned.fromRect(
-    //         rect: Rect.fromPoints(
-    //             _panStartOffset?.translate(
-    //                   0,
-    //                   -(editorState.service.scrollService!.dy -
-    //                       _panStartScrollDy!),
-    //                 ) ??
-    //                 Offset.zero,
-    //             offset ?? Offset.zero),
-    //         child: Container(
-    //           color: Colors.red.withOpacity(0.2),
-    //         ),
-    //       ),
-    //     );
-    //     Overlay.of(context)?.insert(_debugOverlay!);
-    //   } else {
-    //     _debugOverlay = null;
-    //   }
-    // }
+  int _findCloseNode(
+    List<Node> sortedNodes,
+    int start,
+    int end,
+    bool Function(Rect rect) compare,
+  ) {
+    var min = start;
+    var max = end;
+    while (min <= max) {
+      final mid = min + ((max - min) >> 1);
+      final rect = sortedNodes[mid].rect;
+      if (compare(rect)) {
+        min = mid + 1;
+      } else {
+        max = mid - 1;
+      }
+    }
+    return min.clamp(start, end);
   }
+
+  /*void _showDebugLayerIfNeeded() {
+     remove false to show debug overlay.
+     if (kDebugMode && false) {
+       _debugOverlay?.remove();
+       if (offset != null) {
+         _debugOverlay = OverlayEntry(
+           builder: (context) => Positioned.fromRect(
+             rect: Rect.fromPoints(offset, offset.translate(20, 20)),
+             child: Container(
+               color: Colors.red.withOpacity(0.2),
+             ),
+           ),
+         );
+         Overlay.of(context)?.insert(_debugOverlay!);
+       } else if (_panStartOffset != null) {
+         _debugOverlay = OverlayEntry(
+           builder: (context) => Positioned.fromRect(
+             rect: Rect.fromPoints(
+                 _panStartOffset?.translate(
+                       0,
+                       -(editorState.service.scrollService!.dy -
+                           _panStartScrollDy!),
+                     ) ??
+                     Offset.zero,
+                 offset ?? Offset.zero),
+             child: Container(
+               color: Colors.red.withOpacity(0.2),
+             ),
+           ),
+         );
+         Overlay.of(context)?.insert(_debugOverlay!);
+       } else {
+         _debugOverlay = null;
+       }
+     }
+  }*/
 
   @override
   void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
