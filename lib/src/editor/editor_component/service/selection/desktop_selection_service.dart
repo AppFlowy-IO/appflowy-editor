@@ -6,7 +6,7 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
-import 'package:appflowy_editor/src/service/selection/desktop_selection_gesture_detector.dart';
+import 'package:appflowy_editor/src/service/selection_gesture_detector/desktop_selection_gesture_detector.dart';
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -478,13 +478,7 @@ class _DesktopSelectionServiceWidgetState
       _cursorAreas.add(cursorArea);
       selectionRects.add(selectable.transformRectToGlobal(cursorRect));
       Overlay.of(context)?.insertAll(_cursorAreas);
-
-      _forceShowCursor();
     }
-  }
-
-  void _forceShowCursor() {
-    _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
   }
 
   void _showContextMenu(TapDownDetails details) {

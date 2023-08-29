@@ -12,7 +12,8 @@ class MobileSelectionGestureDetector extends StatefulWidget {
     this.onTap,
     this.onDoubleTapDown,
     this.onDoubleTap,
-    this.onLongPressMoveUpdate,
+    this.onPanDown,
+    this.onPanUpdate,
   }) : super(key: key);
 
   @override
@@ -25,7 +26,8 @@ class MobileSelectionGestureDetector extends StatefulWidget {
   final GestureTapCallback? onTap;
   final GestureTapDownCallback? onDoubleTapDown;
   final GestureDoubleTapCallback? onDoubleTap;
-  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
+  final GestureDragDownCallback? onPanDown;
+  final GestureDragUpdateCallback? onPanUpdate;
 }
 
 class MobileSelectionGestureDetectorState
@@ -33,37 +35,23 @@ class MobileSelectionGestureDetectorState
   @override
   Widget build(BuildContext context) {
     // TODO(yijing):  Needs to refactor to add triple tap guesture, temporarily use GestureDetector here
-    // All the unused gesture is filled with debuging info for now.
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTapDown: (tapdetail) => Log.selection.debug(
-        'onTapDown global: ${tapdetail.globalPosition} local :${tapdetail.localPosition} }',
-      ),
+      // onTapDown: (tapdetail) => Log.selection.debug(
+      //   'onTapDown global: ${tapdetail.globalPosition} local :${tapdetail.localPosition} }',
+      // ),
       onTapUp: widget.onTapUp,
       onTap: widget.onTap,
       onDoubleTapDown: widget.onDoubleTapDown,
       onDoubleTap: widget.onDoubleTap,
-      onDoubleTapCancel: () => Log.selection.debug('onDoubleTapCancel'),
-      onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
-      onPanStart: (details) {
-        Log.selection.debug(
-          'onPanStart global: ${details.globalPosition} local :${details.localPosition} }',
-        );
-      },
-      onPanUpdate: (details) {
-        Log.selection.debug(
-          'onPanUpdate global: ${details.globalPosition} local :${details.localPosition}',
-        );
-      },
-      onPanDown: (details) => Log.selection.debug(
-        'onPanDown global: ${details.globalPosition} local :${details.localPosition} }',
-      ),
-      onPanEnd: (details) => Log.selection.debug(
-        'onPanEnd velocity: ${details.velocity}, local :${details.primaryVelocity}',
-      ),
-      onLongPress: () {
-        Log.selection.debug('onLongPress');
-      },
+      onPanUpdate: widget.onPanUpdate,
+      onPanDown: widget.onPanDown,
+      // onPanEnd: (details) => Log.selection.debug(
+      //   'onPanEnd velocity: ${details.velocity}, local :${details.primaryVelocity}',
+      // ),
+      // onLongPress: () {
+      //   Log.selection.debug('onLongPress');
+      // },
       child: widget.child,
     );
   }

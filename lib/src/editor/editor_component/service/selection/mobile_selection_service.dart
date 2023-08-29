@@ -1,11 +1,20 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
-import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture_detector.dart';
+import 'package:appflowy_editor/src/service/selection_gesture_detector/mobile_selection_gesture_detector.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:provider/provider.dart';
+
+enum DragMode {
+  // Dragging cursor
+  cursor,
+  // Dragging the left handler
+  leftHandler,
+  // Dragging the right handler
+  rightHandler,
+}
 
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
@@ -62,6 +71,9 @@ class _MobileSelectionServiceWidgetState
   /// The local Rect for building the right handler
   Rect? _rightHandlerRect;
 
+  /// The enum to decide which widget to move. It is based on the location where user start dragging.
+  DragMode? _dragMode;
+
   late EditorState editorState = Provider.of<EditorState>(
     context,
     listen: false,
@@ -90,8 +102,8 @@ class _MobileSelectionServiceWidgetState
 
   @override
   void dispose() {
-    clearSelection();
     WidgetsBinding.instance.removeObserver(this);
+    clearSelection();
     editorState.selectionNotifier.removeListener(_updateSelectionLayers);
     super.dispose();
   }
@@ -104,7 +116,8 @@ class _MobileSelectionServiceWidgetState
       onTap: _onTap,
       onDoubleTapDown: _onDoubleTapDown,
       onDoubleTap: _onDoubleTap,
-      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onPanUpdate: _onPanUpdate,
+      onPanDown: _onPanDown,
       child: widget.child,
     );
   }
@@ -328,9 +341,6 @@ class _MobileSelectionServiceWidgetState
       );
       _cursorOverlayEntry = cursorEntry;
       Overlay.of(context)?.insert(cursorEntry);
-
-      // Force cursor always show 100% opacity at the begining
-      _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
     }
   }
 
@@ -421,35 +431,43 @@ class _MobileSelectionServiceWidgetState
     _doubleTapDownOffset = null;
   }
 
-  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    Log.selection.debug(
-      'onLongPressMoveUpdate global: ${details.globalPosition} local :${details.localPosition}',
-    );
-
-    final offset = details.globalPosition;
+  void _onPanUpdate(DragUpdateDetails details) {
+    // Utilize _dragMode(record from [onPanStart]) to decide which widget to move(cursor, left handler, right handler)
+    Log.selection.debug('onPanUpdate: ${details.globalPosition}');
+    Log.selection.debug('onPanUpdate: _dragMode: $_dragMode');
+    // If user is not dragging, we don't need to do anything.
+    if (_dragMode == null) return;
+    // otherwise, move the corresponding widget base on selection
     final selection = editorState.selection;
     if (selection == null) return;
-    // TODO(yijing):Fix the cursor didn't update when dragging in the beginning of the line.
-    if (selection.isCollapsed) {
-      if (_isOverCursor(offset) == true) {
-        final position = getPositionInOffset(offset);
-        if (position == null) return;
-        editorState.selection = Selection.collapsed(position);
-        return;
-      }
+    final panPosition = getPositionInOffset(details.globalPosition);
+    if (panPosition == null) return;
+
+    // Update the selection in editor state base on user's behavior
+    if (_dragMode == DragMode.cursor && selection.isCollapsed) {
+      editorState.selection = Selection.collapsed(panPosition);
+    } else if (_dragMode == DragMode.leftHandler && !selection.isCollapsed) {
+      editorState.selection = editorState.selection!.copyWith(
+        start: panPosition,
+      );
+    } else if (_dragMode == DragMode.rightHandler && !selection.isCollapsed) {
+      editorState.selection = editorState.selection!.copyWith(
+        end: panPosition,
+      );
+    }
+  }
+
+  void _onPanDown(DragDownDetails details) {
+    // set the drag mode base on the user's start dragging position
+    final offset = details.globalPosition;
+    if (_isOverCursor(offset) == true) {
+      _dragMode = DragMode.cursor;
     }
     if (_isOverLeftHandler(offset) == true) {
-      final position = getPositionInOffset(offset);
-      editorState.selection = editorState.selection!.copyWith(
-        start: position,
-      );
+      _dragMode = DragMode.leftHandler;
     }
     if (_isOverRightHandler(offset) == true) {
-      final position = getPositionInOffset(offset);
-
-      editorState.selection = editorState.selection!.copyWith(
-        end: position,
-      );
+      _dragMode = DragMode.rightHandler;
     }
   }
 

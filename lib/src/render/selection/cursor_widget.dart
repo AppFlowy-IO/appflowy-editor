@@ -37,6 +37,15 @@ class CursorWidgetState extends State<CursorWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant CursorWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // when the cursor position changes(like moving round texts), we need to show the cursor(start from 100% opacity all the time)
+    if (widget.rect != oldWidget.rect) {
+      show();
+    }
+  }
+
+  @override
   void dispose() {
     timer.cancel();
     super.dispose();
