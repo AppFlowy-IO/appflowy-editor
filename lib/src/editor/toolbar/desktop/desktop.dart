@@ -1,6 +1,6 @@
 export 'floating_toolbar.dart';
 export 'floating_toolbar_widget.dart';
-
+export 'items/alignment_toolbar_items.dart';
 export 'items/bulleted_list_toolbar_item.dart';
 export 'items/color/color.dart';
 export 'items/format_toolbar_items.dart';

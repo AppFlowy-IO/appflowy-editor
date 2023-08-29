@@ -32,7 +32,11 @@ class Editor extends StatelessWidget {
           editorState.logConfiguration
             ..handler = debugPrint
             ..level = LogLevel.off;
-          onEditorStateChange(editorState);
+          editorState.transactionStream.listen((event) {
+            if (event.$1 == TransactionTime.after) {
+              onEditorStateChange(editorState);
+            }
+          });
           final scrollController = ScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
@@ -46,7 +50,8 @@ class Editor extends StatelessWidget {
                 linkItem,
                 buildTextColorItem(),
                 buildHighlightColorItem(),
-                ...textDirectionItems
+                ...textDirectionItems,
+                ...alignmentItems,
               ],
               editorState: editorState,
               scrollController: scrollController,
