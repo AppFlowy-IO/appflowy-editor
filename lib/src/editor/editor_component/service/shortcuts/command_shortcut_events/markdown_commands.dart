@@ -60,7 +60,7 @@ KeyEventResult _toggleAttribute(
   String key,
 ) {
   if (PlatformExtension.isMobile) {
-    assert(false, 'homeCommand is not supported on mobile platform.');
+    assert(false, 'toggle attribute is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
 
