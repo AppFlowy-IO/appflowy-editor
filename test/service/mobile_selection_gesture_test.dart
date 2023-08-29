@@ -1,4 +1,4 @@
-import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
+import 'package:appflowy_editor/src/service/selection_gesture_detector/mobile_selection_gesture_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,11 +15,11 @@ void main() {
     });
 
     testWidgets('on tap gesture', (tester) async {
-      bool onTapDown = false;
+      bool onTap = false;
 
       await tester.buildAndPump(
         MobileSelectionGestureDetector(
-          onTapDown: (_) => onTapDown = true,
+          onTap: () => onTap = true,
           child: const SizedBox.square(dimension: 50),
         ),
       );
@@ -28,7 +28,7 @@ void main() {
       await tester.tap(find.byType(SizedBox), warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      expect(onTapDown, true);
+      expect(onTap, true);
     });
 
     testWidgets('on double tap gesture', (tester) async {
@@ -52,12 +52,12 @@ void main() {
       expect(onDoubleTapDown, true);
     });
 
-    testWidgets('on triple tap gesture', (tester) async {
-      bool onTripleTapDown = false;
+    testWidgets('on double tap gesture', (tester) async {
+      bool onDoubleTap = false;
 
       await tester.buildAndPump(
         MobileSelectionGestureDetector(
-          onTripleTapDown: (_) => onTripleTapDown = true,
+          onDoubleTap: () => onDoubleTap = true,
           child: const SizedBox.square(dimension: 50),
         ),
       );
@@ -73,7 +73,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(onTripleTapDown, true);
+      expect(onDoubleTap, true);
     });
   });
 }

@@ -14,11 +14,11 @@ void main() {
         Stack(
           children: [
             MobileSelectionWidget(
-              showLeftHandler: true,
-              showRightHandler: true,
+              handleType: HandleType.up,
               layerLink: node.layerLink,
-              rect: const Rect.fromLTWH(0, 0, 100, 100),
-              color: Colors.red,
+              selectionRect: const Rect.fromLTWH(0, 0, 100, 100),
+              selectionColor: Colors.blue,
+              selectionHandleColor: Colors.red,
             ),
           ],
         ),
