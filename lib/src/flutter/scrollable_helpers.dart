@@ -12,6 +12,9 @@ export 'package:flutter/physics.dart' show Tolerance;
 
 /// Describes the aspects of a Scrollable widget to inform inherited widgets
 /// like [ScrollBehavior] for decorating.
+// TODO(Piinks): Fix doc with 2DScrollable change.
+// or enumerate the properties of combined
+// Scrollables, such as [TwoDimensionalScrollable].
 ///
 /// Decorations like [GlowingOverscrollIndicator]s and [Scrollbar]s require
 /// information about the Scrollable in order to be initialized.
