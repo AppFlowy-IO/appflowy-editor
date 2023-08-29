@@ -1,3 +1,4 @@
+export 'alignment_extension.dart';
 export 'attributes_extension.dart';
 export 'color_extension.dart';
 export 'node_extensions.dart';

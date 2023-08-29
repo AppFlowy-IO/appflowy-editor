@@ -152,6 +152,7 @@ class _TodoListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              textAlign: alignment?.toTextAlign,
               placeholderText: placeholderText,
               textDirection: textDirection,
               textSpanDecorator: (textSpan) =>

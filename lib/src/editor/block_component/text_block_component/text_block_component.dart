@@ -146,6 +146,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
             key: forwardKey,
             node: widget.node,
             editorState: editorState,
+            textAlign: alignment?.toTextAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
             textSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(textStyle),
