@@ -1,9 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:provider/provider.dart';
@@ -368,7 +367,7 @@ class _MobileSelectionServiceWidgetState
     );
     _selectionAreas.add(overlay);
 
-    Overlay.of(context)?.insertAll(_selectionAreas);
+    Overlay.of(context).insertAll(_selectionAreas);
   }
 
   void _updateSelectionAreas(Selection selection) {
@@ -445,8 +444,7 @@ class _MobileSelectionServiceWidgetState
       }
     }
 
-    final overlay = Overlay.of(context);
-    overlay?.insertAll(
+    Overlay.of(context).insertAll(
       _selectionAreas,
     );
   }
@@ -481,7 +479,7 @@ class _MobileSelectionServiceWidgetState
 
       _cursorAreas.add(cursorArea);
       selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
+      Overlay.of(context).insertAll(_cursorAreas);
 
       _forceShowCursor();
     }
