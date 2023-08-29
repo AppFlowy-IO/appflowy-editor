@@ -47,7 +47,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               tooltip: tooltip,
-              onPressed: () => editorState.formatNode(
+              onPressed: () => editorState.updateNode(
                 selection,
                 (node) => node.copyWith(
                   attributes: {
