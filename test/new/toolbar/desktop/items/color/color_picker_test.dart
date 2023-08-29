@@ -16,11 +16,9 @@ void main() {
       final key = GlobalKey();
       final widget = ColorPicker(
         key: key,
-        editorState: editor.editorState,
-        isTextColor: true,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {},
+        onSubmittedColorHex: (String? color) {},
         selectedColorHex: '0xFFFFFFFF',
       );
 
@@ -48,11 +46,9 @@ void main() {
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: true,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {},
+        onSubmittedColorHex: (String? color) {},
         selectedColorHex: '0xFAFFFF08',
       );
 
@@ -87,11 +83,9 @@ void main() {
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: true,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {},
+        onSubmittedColorHex: (String? color) {},
         selectedColorHex: null,
       );
 
@@ -126,11 +120,9 @@ void main() {
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: false,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {},
+        onSubmittedColorHex: (String? color) {},
         selectedColorHex: '0xFBFFFF08',
       );
 
@@ -166,11 +158,9 @@ void main() {
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: false,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {},
+        onSubmittedColorHex: (String? color) {},
         selectedColorHex: null,
       );
 
@@ -202,15 +192,13 @@ void main() {
     });
 
     testWidgets('test submitting font color and opacity', (tester) async {
-      String fontColorHex = '0xFAFFFF08';
+      String? fontColorHex = '0xFAFFFF08';
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: true,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {
+        onSubmittedColorHex: (String? color) {
           fontColorHex = color;
         },
         selectedColorHex: fontColorHex,
@@ -236,21 +224,19 @@ void main() {
       await tester.enterText(fontOpacityTexField, '100');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      fontColorHex = fontColorHex.toLowerCase();
+      fontColorHex = fontColorHex?.toLowerCase();
       expect(fontColorHex, '0xff000000');
     });
 
     testWidgets('test submitting wrong font color and opacity', (tester) async {
-      String fontColorHex = '0xFAFFFF08';
+      String? fontColorHex = '0xFAFFFF08';
 
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: true,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {
+        onSubmittedColorHex: (String? color) {
           fontColorHex = color;
         },
         selectedColorHex: fontColorHex,
@@ -276,22 +262,20 @@ void main() {
       await tester.enterText(fontOpacityTexField, '***');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      fontColorHex = fontColorHex.toLowerCase();
+      fontColorHex = fontColorHex?.toLowerCase();
       expect(fontColorHex, '0xffffffff');
     });
 
     testWidgets('test submitting  background color and opacity',
         (tester) async {
-      String backgroundColorHex = '0xFAFFFFAD';
+      String? backgroundColorHex = '0xFAFFFFAD';
 
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: false,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {
+        onSubmittedColorHex: (String? color) {
           backgroundColorHex = color;
         },
         selectedColorHex: backgroundColorHex,
@@ -317,21 +301,19 @@ void main() {
       await tester.enterText(backgroundOpacityTexField, '100');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      backgroundColorHex = backgroundColorHex.toLowerCase();
+      backgroundColorHex = backgroundColorHex?.toLowerCase();
       expect(backgroundColorHex, '0xff000000');
     });
 
     testWidgets('test submitting wrong background color and opacity',
         (tester) async {
-      String backgroundColorHex = '0xFAFFFF08';
+      String? backgroundColorHex = '0xFAFFFF08';
       final editor = tester.editor;
       await editor.startTesting();
       final widget = ColorPicker(
-        editorState: editor.editorState,
-        isTextColor: false,
+        title: 'test',
         colorOptions: const [],
-        onDismiss: () {},
-        onSubmittedColorHex: (String color) {
+        onSubmittedColorHex: (String? color) {
           backgroundColorHex = color;
         },
         selectedColorHex: backgroundColorHex,
@@ -357,7 +339,7 @@ void main() {
       await tester.enterText(backgroundOpacityTexField, '===');
 
       await tester.testTextInput.receiveAction(TextInputAction.done);
-      backgroundColorHex = backgroundColorHex.toLowerCase();
+      backgroundColorHex = backgroundColorHex?.toLowerCase();
       expect(backgroundColorHex, '0xffffffff');
     });
   });

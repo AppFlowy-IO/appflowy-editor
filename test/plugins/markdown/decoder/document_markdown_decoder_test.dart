@@ -108,6 +108,101 @@ void main() async {
         }
       },
       {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "heading",
+                "data": {
+                  "level": 2,
+                  "delta": [
+                    {"insert": "a"}
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "b",
+                      "attributes": {"bold": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {
+                      "insert": "c",
+                      "attributes": {"italic": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {"insert": "d"}
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 80.0,
+          "rowDefaultHeight": 40.0,
+          "colMinimumWidth": 40.0
+        }
+      },
+      {
         "type": "paragraph",
         "data": {
           "delta": []
@@ -516,7 +611,7 @@ void main() async {
               }
             },
             {
-              "insert": " syntaxes "
+              "insert": " syntaxes"
             }
           ],
           "level": 1
@@ -544,6 +639,9 @@ AppFlowy Editor is a **highly customizable** _rich-text editor_
 - [x] Customizable
 - [x] Test-covered
 - [ ] more to come!
+|## a|_c_|
+|-|-|
+|**b**|d|
 
 > Here is an example you can give a try
 
@@ -568,6 +666,7 @@ If you have questions or feedback, please submit an issue on Github or join the 
       final data = jsonDecode(example);
       expect(result.toJson(), data);
     });
+
     test('test code block', () async {
       const markdown = '''
 # Welcome to AppFlowy
@@ -599,6 +698,79 @@ void main(){
       expect(result.toJson(), data);
     });
 
+    test('decode uncommon markdown table', () async {
+      const markdown = r'''
+  |  ## \|a|_c_|
+      | -- |   -|''';
+      const expected = '''
+{
+  "document": {
+              "type": "page",
+              "children": [
+                {
+                  "type": "table",
+                  "children": [
+                    {
+                      "type": "table/cell",
+                      "data": {
+                        "colPosition": 0,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "heading",
+                          "data": {
+                            "level": 2,
+                            "delta": [
+                              {"insert": "|a"}
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "data": {
+                        "colPosition": 1,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "data": {
+                            "delta": [
+                              {
+                                "insert": "c",
+                                "attributes": {"italic": true}
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "data": {
+                    "colsLen": 2,
+                    "rowsLen": 1,
+                    "colDefaultWidth": 80.0,
+                    "rowDefaultHeight": 40.0,
+                    "colMinimumWidth": 40.0
+                  }
+                }
+              ]
+            }
+}
+''';
+      final result = DocumentMarkdownDecoder().convert(markdown);
+      final data = Map<String, Object>.from(json.decode(expected));
+
+      expect(result.toJson(), data);
+    });
+
     test('custom  parser', () async {
       const markdown = '''
 # Welcome to AppFlowy
@@ -613,7 +785,7 @@ print("hello world");
 
 Hello [AppFlowy Subpage](123456789abcd) **Hello** [AppFlowy Subpage](987654321abcd)
 
-# This is a test for custom **node** parser and custom **inline** syntaxes 
+# This is a test for custom **node** parser and custom **inline** syntaxes
 ''';
       List<CustomNodeParser> customNodeParsers = [
         TestCustomNodeParser(),
@@ -626,6 +798,7 @@ Hello [AppFlowy Subpage](123456789abcd) **Hello** [AppFlowy Subpage](987654321ab
         customInlineSyntaxes: customInlineSyntaxes,
       ).convert(markdown);
       final data = jsonDecode(example3);
+
       expect(result.toJson(), data);
     });
   });

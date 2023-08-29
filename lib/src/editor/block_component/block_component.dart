@@ -31,6 +31,12 @@ export 'divider_block_component/divider_block_component.dart';
 export 'divider_block_component/divider_character_shortcut.dart';
 export 'divider_block_component/divider_menu_item.dart';
 
+// table
+export 'table_block_component/table_block_component.dart';
+export 'table_block_component/table_cell_block_component.dart';
+export 'table_block_component/table_commands.dart';
+export 'table_block_component/table_action.dart';
+
 // base
 export 'base_component/convert_to_paragraph_command.dart';
 export 'base_component/insert_newline_in_type_command.dart';
