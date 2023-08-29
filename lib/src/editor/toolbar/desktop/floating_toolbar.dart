@@ -152,10 +152,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     final rect = _findSuitableRect(rects);
     final (left, top, right) = calculateToolbarOffset(rect);
-    // if the selection is not visible, then don't show the toolbar.
-    if (top <= floatingToolbarHeight || (left == 0 && right == 0)) {
-      return;
-    }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(

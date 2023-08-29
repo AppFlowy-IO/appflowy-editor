@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-
+import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_item.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_item_widget.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
 import 'package:appflowy_editor/src/editor_state.dart';
 
 mixin ToolbarMixin<T extends StatefulWidget> on State<T> {
