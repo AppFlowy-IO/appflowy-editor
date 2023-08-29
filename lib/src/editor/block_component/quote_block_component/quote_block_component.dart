@@ -133,6 +133,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 key: forwardKey,
                 node: widget.node,
                 editorState: editorState,
+                textAlign: alignment?.toTextAlign,
                 placeholderText: placeholderText,
                 textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
                   textStyle,

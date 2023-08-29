@@ -136,6 +136,7 @@ class _BulletedListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              textAlign: alignment?.toTextAlign,
               placeholderText: placeholderText,
               textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
                 textStyle,
