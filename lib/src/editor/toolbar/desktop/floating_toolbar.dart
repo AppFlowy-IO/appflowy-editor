@@ -152,6 +152,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     final rect = _findSuitableRect(rects);
     final (left, top, right) = calculateToolbarOffset(rect);
+    // if the selection is not visible, then don't show the toolbar.
+    if (top <= floatingToolbarHeight || (left == 0 && right == 0)) {
+      return;
+    }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
@@ -208,20 +212,19 @@ class _FloatingToolbarState extends State<FloatingToolbar>
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorSize = editorState.renderBox?.size ?? Size.zero;
     final editorRect = editorOffset & editorSize;
-    final editorCenter = editorRect.center;
-    final left = (rect.left - editorCenter.dx).abs();
-    final right = (rect.right - editorCenter.dx).abs();
+    final left = (rect.left - editorOffset.dx).abs();
+    final right = (rect.right - editorOffset.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
     final top = rect.top < floatingToolbarHeight
         ? rect.bottom + floatingToolbarHeight
         : rect.top;
-    if (rect.left >= threshold && rect.right <= threshold * 2.0) {
-      // show in center
-      return (threshold, top, null);
-    } else if (left >= right && rect.left <= threshold) {
+    if (left <= threshold) {
       // show in left
       return (rect.left, top, null);
+    } else if (left >= threshold && right <= threshold * 2.0) {
+      // show in center
+      return (threshold, top, null);
     } else {
       // show in right
       return (null, top, editorRect.right - rect.right);

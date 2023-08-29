@@ -86,7 +86,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         DefaultSelectableMixin,
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -104,17 +105,19 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,6 +133,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 key: forwardKey,
                 node: widget.node,
                 editorState: editorState,
+                textAlign: alignment?.toTextAlign,
                 placeholderText: placeholderText,
                 textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
                   textStyle,

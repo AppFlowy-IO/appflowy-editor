@@ -69,13 +69,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         configuration,
-        // TextInputConfiguration(
-        //   enableDeltaModel: false,
-        //   inputType: TextInputType.multiline,
-        //   textCapitalization: TextCapitalization.sentences,
-        //   inputAction: TextInputAction.newline,
-        //   keyboardAppearance: Theme.of(context).brightness,
-        // ),
       );
     }
 
@@ -179,6 +172,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       } else {
         composingTextRange = delta.composing;
       }
+    }
+
+    if (PlatformExtension.isWindows && delta is TextEditingDeltaNonTextUpdate) {
+      composingTextRange = delta.composing;
     }
   }
 }

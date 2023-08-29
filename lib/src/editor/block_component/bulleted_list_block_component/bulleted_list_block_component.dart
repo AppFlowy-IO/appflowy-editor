@@ -90,7 +90,8 @@ class _BulletedListBlockComponentWidgetState
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -111,12 +112,13 @@ class _BulletedListBlockComponentWidgetState
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -134,6 +136,7 @@ class _BulletedListBlockComponentWidgetState
               key: forwardKey,
               node: widget.node,
               editorState: editorState,
+              textAlign: alignment?.toTextAlign,
               placeholderText: placeholderText,
               textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
                 textStyle,

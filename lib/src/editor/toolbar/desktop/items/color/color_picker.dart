@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 class ColorPicker extends StatefulWidget {
   const ColorPicker({
     super.key,
-    required this.editorState,
-    required this.isTextColor,
+    required this.title,
     required this.selectedColorHex,
     required this.onSubmittedColorHex,
     required this.colorOptions,
-    required this.onDismiss,
+    this.resetText,
+    this.resetIconName,
   });
 
-  final bool isTextColor;
-  final EditorState editorState;
+  final String title;
   final String? selectedColorHex;
-  final void Function(String color) onSubmittedColorHex;
-  final Function() onDismiss;
+  final void Function(String? color) onSubmittedColorHex;
+  final String? resetText;
+  final String? resetIconName;
 
   final List<ColorOption> colorOptions;
 
@@ -40,52 +40,32 @@ class _ColorPickerState extends State<ColorPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return basicOverlay(
+      context,
       width: 300,
       height: 250,
-      decoration: buildOverlayDecoration(context),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              widget.isTextColor
-                  ? EditorOverlayTitle(
-                      text: AppFlowyEditorLocalizations.current.textColor,
-                    )
-                  : EditorOverlayTitle(
-                      text: AppFlowyEditorLocalizations.current.highlightColor,
-                    ),
-              const SizedBox(height: 6),
-              // if it is in highlight color mode with a highlight color, show the clear highlight color button
-              widget.isTextColor == false && widget.selectedColorHex != null
-                  ? ClearHighlightColorButton(
-                      editorState: widget.editorState,
-                      dismissOverlay: widget.onDismiss,
-                    )
-                  : const SizedBox.shrink(),
-              // set text color back to null(default text color)
-              widget.isTextColor == true && widget.selectedColorHex != null
-                  ? ResetTextColorButton(
-                      editorState: widget.editorState,
-                      dismissOverlay: widget.onDismiss,
-                    )
-                  : const SizedBox.shrink(),
-              CustomColorItem(
-                colorController: _colorHexController,
-                opacityController: _colorOpacityController,
-                onSubmittedColorHex: widget.onSubmittedColorHex,
-              ),
-              _buildColorItems(
-                widget.colorOptions,
-                widget.selectedColorHex,
-              ),
-            ],
-          ),
+      children: [
+        EditorOverlayTitle(text: widget.title),
+        const SizedBox(height: 6),
+        widget.selectedColorHex != null &&
+                widget.resetText != null &&
+                widget.resetIconName != null
+            ? ResetColorButton(
+                resetText: widget.resetText!,
+                resetIconName: widget.resetIconName!,
+                onPressed: widget.onSubmittedColorHex,
+              )
+            : const SizedBox.shrink(),
+        CustomColorItem(
+          colorController: _colorHexController,
+          opacityController: _colorOpacityController,
+          onSubmittedColorHex: widget.onSubmittedColorHex,
         ),
-      ),
+        _buildColorItems(
+          widget.colorOptions,
+          widget.selectedColorHex,
+        ),
+      ],
     );
   }
 
@@ -154,15 +134,17 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 }
 
-class ResetTextColorButton extends StatelessWidget {
-  const ResetTextColorButton({
+class ResetColorButton extends StatelessWidget {
+  const ResetColorButton({
     super.key,
-    required this.editorState,
-    required this.dismissOverlay,
+    required this.resetText,
+    required this.resetIconName,
+    required this.onPressed,
   });
 
-  final EditorState editorState;
-  final Function() dismissOverlay;
+  final Function(String? color) onPressed;
+  final String resetText;
+  final String resetIconName;
 
   @override
   Widget build(BuildContext context) {
@@ -170,73 +152,15 @@ class ResetTextColorButton extends StatelessWidget {
       width: double.infinity,
       height: 32,
       child: TextButton.icon(
-        onPressed: () {
-          final selection = editorState.selection!;
-          editorState
-              .formatDelta(selection, {AppFlowyRichTextKeys.textColor: null});
-          dismissOverlay();
-        },
+        onPressed: () => onPressed(null),
         icon: EditorSvg(
-          name: 'reset_text_color',
+          name: resetIconName,
           width: 13,
           height: 13,
           color: Theme.of(context).iconTheme.color,
         ),
         label: Text(
-          AppFlowyEditorLocalizations.current.resetToDefaultColor,
-          style: TextStyle(
-            color: Theme.of(context).hintColor,
-          ),
-          textAlign: TextAlign.left,
-        ),
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.hovered)) {
-                return Theme.of(context).hoverColor;
-              }
-              return Colors.transparent;
-            },
-          ),
-          alignment: Alignment.centerLeft,
-        ),
-      ),
-    );
-  }
-}
-
-class ClearHighlightColorButton extends StatelessWidget {
-  const ClearHighlightColorButton({
-    super.key,
-    required this.editorState,
-    required this.dismissOverlay,
-  });
-
-  final EditorState editorState;
-  final Function() dismissOverlay;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 32,
-      child: TextButton.icon(
-        onPressed: () {
-          final selection = editorState.selection!;
-          editorState.formatDelta(
-            selection,
-            {AppFlowyRichTextKeys.highlightColor: null},
-          );
-          dismissOverlay();
-        },
-        icon: EditorSvg(
-          name: 'clear_highlight_color',
-          width: 13,
-          height: 13,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        label: Text(
-          AppFlowyEditorLocalizations.current.clearHighlightColor,
+          resetText,
           style: TextStyle(
             color: Theme.of(context).hintColor,
           ),

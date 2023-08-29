@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:appflowy_editor/src/core/document/node.dart';
+import 'package:appflowy_editor/src/core/document/path.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
-import 'package:appflowy_editor/src/render/selection/selectable.dart';
-import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
 import 'package:appflowy_editor/src/editor/util/color_util.dart';
-import 'package:appflowy_editor/src/core/document/path.dart';
+import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
+import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -35,6 +35,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.placeholderTextSpanDecorator,
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
+    this.textAlign,
     required this.node,
     required this.editorState,
   });
@@ -64,6 +65,8 @@ class AppFlowyRichText extends StatefulWidget {
 
   /// customize the text span for placeholder text
   final AppFlowyTextSpanDecorator? placeholderTextSpanDecorator;
+
+  final TextAlign? textAlign;
 
   /// customize the text span for custom attributes
   ///
@@ -252,6 +255,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     final textSpan = getTextSpan();
     return RichText(
       key: textKey,
+      textAlign: widget.textAlign ?? TextAlign.start,
       textHeightBehavior: const TextHeightBehavior(
         applyHeightToFirstAscent: false,
         applyHeightToLastDescent: false,

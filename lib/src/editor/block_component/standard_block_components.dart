@@ -42,6 +42,8 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
       padding: (node) => const EdgeInsets.symmetric(vertical: 8.0),
     ),
   ),
+  TableBlockKeys.type: TableBlockComponentBuilder(),
+  TableCellBlockKeys.type: TableCellBlockComponentBuilder(),
 };
 
 final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
@@ -92,6 +94,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
 
   // backspace
   convertToParagraphCommand,
+  ...tableCommands,
   backspaceCommand,
   deleteLeftWordCommand,
   deleteLeftSentenceCommand,
@@ -113,6 +116,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   //
   toggleTodoListCommand,
   ...toggleMarkdownCommands,
+  toggleHighlightCommand,
   showLinkMenuCommand,
   openInlineLinkCommand,
 

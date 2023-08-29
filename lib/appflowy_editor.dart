@@ -23,6 +23,7 @@ export 'src/l10n/l10n.dart';
 export 'src/plugins/plugins.dart';
 export 'src/render/selection/selectable.dart';
 export 'src/render/toolbar/toolbar_item.dart';
+export 'src/service/context_menu/context_menu.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 export 'src/service/shortcut_event/key_mapping.dart';
 export 'src/service/shortcut_event/keybinding.dart';

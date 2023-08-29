@@ -235,6 +235,38 @@ extension TextTransforms on EditorState {
     return apply(transaction);
   }
 
+  /// update the node attributes at the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  Future<void> updateNode(
+    Selection? selection,
+    Node Function(
+      Node node,
+    ) nodeBuilder,
+  ) async {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+
+    if (selection == null) {
+      return;
+    }
+
+    final nodes = getNodesInSelection(selection);
+    if (nodes.isEmpty) {
+      return;
+    }
+
+    final transaction = this.transaction;
+
+    for (final node in nodes) {
+      transaction
+        ..updateNode(node, nodeBuilder(node).attributes)
+        ..afterSelection = transaction.beforeSelection;
+    }
+
+    return apply(transaction);
+  }
+
   /// Insert text at the given index of the given [Node] or the [Path].
   ///
   /// [Path] and [Node] are mutually exclusive.

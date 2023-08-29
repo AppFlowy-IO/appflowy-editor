@@ -83,7 +83,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -128,12 +129,13 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
   @override
   Widget buildComponent(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -144,6 +146,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
             key: forwardKey,
             node: widget.node,
             editorState: editorState,
+            textAlign: alignment?.toTextAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
             textSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(textStyle),

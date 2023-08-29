@@ -81,7 +81,5 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
     return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
   }
 
-  TextDirection textDirection() {
-    return TextDirection.ltr;
-  }
+  TextDirection textDirection() => TextDirection.ltr;
 }
