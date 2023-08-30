@@ -225,7 +225,9 @@ void main() async {
 
       for (var i = 0; i < 2; i++) {
         expect(
-          tableNode.getCell(i, 0).attributes[TableCellBlockKeys.rowBackgroundColor],
+          tableNode
+              .getCell(i, 0)
+              .attributes[TableCellBlockKeys.rowBackgroundColor],
           color,
         );
       }
@@ -263,7 +265,9 @@ void main() async {
 
       expect(tableNode.colsLen, 3);
       expect(
-        tableNode.getCell(2, 0).attributes[TableCellBlockKeys.rowBackgroundColor],
+        tableNode
+            .getCell(2, 0)
+            .attributes[TableCellBlockKeys.rowBackgroundColor],
         color,
       );
       await editor.dispose();
@@ -300,7 +304,9 @@ void main() async {
 
       expect(tableNode.rowsLen, 3);
       expect(
-        tableNode.getCell(0, 2).attributes[TableCellBlockKeys.colBackgroundColor],
+        tableNode
+            .getCell(0, 2)
+            .attributes[TableCellBlockKeys.colBackgroundColor],
         color,
       );
     });

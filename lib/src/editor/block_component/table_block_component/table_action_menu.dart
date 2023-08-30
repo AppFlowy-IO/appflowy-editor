@@ -80,8 +80,7 @@ void showActionMenu(
                 top: top,
                 bottom: bottom,
                 left: left,
-                selectedColorHex:
-                    cell?.attributes[key],
+                selectedColorHex: cell?.attributes[key],
               );
               dismissOverlay();
             },

@@ -90,9 +90,11 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             ),
             color: context.select(
               (Node n) =>
-                  (n.attributes[TableCellBlockKeys.colBackgroundColor] as String?)
+                  (n.attributes[TableCellBlockKeys.colBackgroundColor]
+                          as String?)
                       ?.toColor() ??
-                  (n.attributes[TableCellBlockKeys.rowBackgroundColor] as String?)
+                  (n.attributes[TableCellBlockKeys.rowBackgroundColor]
+                          as String?)
                       ?.toColor(),
             ),
             child: Column(
@@ -127,8 +129,8 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             return Matrix4.translationValues(left, 0.0, 0.0);
           }),
           alignment: Alignment.centerLeft,
-          height:
-              context.select((Node n) => n.attributes[TableCellBlockKeys.height]),
+          height: context
+              .select((Node n) => n.attributes[TableCellBlockKeys.height]),
           menuBuilder: widget.menuBuilder,
           dir: TableDirection.row,
         ),
