@@ -86,11 +86,10 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
-    final editorState = blockComponentContext.buildContext.read<EditorState>();
     final node = blockComponentContext.node;
     return TableBlockComponentWidget(
       key: node.key,
-      tableNode: TableNode(node: node, editorState: editorState),
+      tableNode: TableNode(node: node),
       node: node,
       configuration: configuration,
       addIcon: addIcon,

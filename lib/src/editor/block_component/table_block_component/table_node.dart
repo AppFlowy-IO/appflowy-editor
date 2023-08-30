@@ -7,12 +7,10 @@ class TableNode {
   final TableConfig _config;
 
   final Node node;
-  final EditorState? editorState;
   final List<List<Node>> _cells = [];
 
   TableNode({
     required this.node,
-    this.editorState,
   }) : _config = TableConfig.fromJson(node.attributes) {
     assert(node.type == TableBlockKeys.type);
     assert(node.attributes.containsKey(TableBlockKeys.colsLen));
@@ -144,49 +142,21 @@ class TableNode {
       ) +
       _config.borderWidth;
 
-  // void setColWidth(int col, double w) {
-  //   w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
-  //   if (getColWidth(col) != w) {
-  //     for (var i = 0; i < rowsLen; i++) {
-  //       _cells[col][i].updateAttributes({TableBlockKeys.width: w});
-  //     }
-  //     for (var i = 0; i < rowsLen; i++) {
-  //       updateRowHeight(i);
-  //     }
-
-  //   }
-  // }
-
-  Future<void> setColWidth(
-    int col,
-    double w, {
-    EditorState? editorState,
-  }) async {
-    editorState ??= this.editorState;
-    if (editorState == null) {
-      return;
-    }
-    final transaction = editorState.transaction;
+  void setColWidth(int col, double w, Transaction transaction) {
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
         transaction.updateNode(_cells[col][i], {TableBlockKeys.width: w});
       }
       for (var i = 0; i < rowsLen; i++) {
-        await updateRowHeight(i);
+        updateRowHeight(i, transaction);
       }
       transaction.updateNode(node, node.attributes);
     }
     transaction.afterSelection = transaction.beforeSelection;
-    await editorState.apply(transaction);
   }
 
-  Future<void> updateRowHeight(int row) async {
-    if (editorState == null) {
-      return;
-    }
-    final transaction = editorState!.transaction;
-
+  void updateRowHeight(int row, Transaction transaction) {
     // The extra 8 is because of paragraph padding
     double maxHeight = _cells
         .map<double>((c) => c[row].children.first.rect.height + 8)
@@ -206,6 +176,5 @@ class TableNode {
     }
 
     transaction.afterSelection = transaction.beforeSelection;
-    await editorState!.apply(transaction);
   }
 }

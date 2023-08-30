@@ -7,6 +7,7 @@ class TableColBorder extends StatefulWidget {
   const TableColBorder({
     Key? key,
     required this.tableNode,
+    required this.editorState,
     required this.colIdx,
     required this.resizable,
     required this.borderColor,
@@ -16,6 +17,7 @@ class TableColBorder extends StatefulWidget {
   final bool resizable;
   final int colIdx;
   final TableNode tableNode;
+  final EditorState editorState;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -58,8 +60,14 @@ class _TableColBorderState extends State<TableColBorder> {
           }
 
           final colWidth = widget.tableNode.getColWidth(widget.colIdx);
-          await widget.tableNode
-              .setColWidth(widget.colIdx, colWidth + details.delta.dx);
+
+          final transaction = widget.editorState.transaction;
+          widget.tableNode.setColWidth(
+            widget.colIdx,
+            colWidth + details.delta.dx,
+            transaction,
+          );
+          await widget.editorState.apply(transaction);
         },
         child: Container(
           key: _borderKey,
