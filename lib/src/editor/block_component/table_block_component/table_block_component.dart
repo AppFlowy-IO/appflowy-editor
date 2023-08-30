@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'table_view.dart';
 
 class TableBlockKeys {
@@ -85,10 +86,11 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
+    final editorState = blockComponentContext.buildContext.read<EditorState>();
     final node = blockComponentContext.node;
     return TableBlockComponentWidget(
       key: node.key,
-      tableNode: TableNode(node: node),
+      tableNode: TableNode(node: node, editorState: editorState),
       node: node,
       configuration: configuration,
       addIcon: addIcon,

@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 
@@ -6,10 +7,12 @@ class TableNode {
   final TableConfig _config;
 
   final Node node;
+  final EditorState? editorState;
   final List<List<Node>> _cells = [];
 
   TableNode({
     required this.node,
+    this.editorState,
   }) : _config = TableConfig.fromJson(node.attributes) {
     assert(node.type == TableBlockKeys.type);
     assert(node.attributes.containsKey(TableBlockKeys.colsLen));
@@ -141,20 +144,44 @@ class TableNode {
       ) +
       _config.borderWidth;
 
+  // void setColWidth(int col, double w) {
+  //   w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
+  //   if (getColWidth(col) != w) {
+  //     for (var i = 0; i < rowsLen; i++) {
+  //       _cells[col][i].updateAttributes({TableBlockKeys.width: w});
+  //     }
+  //     for (var i = 0; i < rowsLen; i++) {
+  //       updateRowHeight(i);
+  //     }
+
+  //   }
+  // }
+
   void setColWidth(int col, double w) {
+    if (editorState == null) {
+      return;
+    }
+    final transaction = editorState!.transaction;
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
-        _cells[col][i].updateAttributes({TableBlockKeys.width: w});
+        transaction.updateNode(_cells[col][i], {TableBlockKeys.width: w});
       }
       for (var i = 0; i < rowsLen; i++) {
         updateRowHeight(i);
       }
-      node.updateAttributes({});
+      transaction.updateNode(node, node.attributes);
     }
+    transaction.afterSelection = transaction.beforeSelection;
+    editorState!.apply(transaction);
   }
 
-  void updateRowHeight(int row) {
+  Future<void> updateRowHeight(int row) async {
+    if (editorState == null) {
+      return;
+    }
+    final transaction = editorState!.transaction;
+
     // The extra 8 is because of paragraph padding
     double maxHeight = _cells
         .map<double>((c) => c[row].children.first.rect.height + 8)
@@ -162,12 +189,18 @@ class TableNode {
 
     if (_cells[0][row].attributes[TableBlockKeys.height] != maxHeight) {
       for (var i = 0; i < colsLen; i++) {
-        _cells[i][row].updateAttributes({TableBlockKeys.height: maxHeight});
+        transaction.updateNode(
+          _cells[i][row],
+          {TableBlockKeys.height: maxHeight},
+        );
       }
     }
 
     if (node.attributes[TableBlockKeys.colsHeight] != colsHeight) {
-      node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
+      transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
     }
+
+    transaction.afterSelection = transaction.beforeSelection;
+    editorState!.apply(transaction);
   }
 }
