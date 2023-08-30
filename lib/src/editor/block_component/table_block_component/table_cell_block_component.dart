@@ -76,10 +76,13 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
               minHeight: context
                   .select((Node n) => n.attributes[TableBlockKeys.height]),
             ),
-            color: context.select((Node n) {
-              return (n.attributes[TableBlockKeys.backgroundColor] as String?)
-                  ?.toColor();
-            }),
+            color: context.select(
+              (Node n) =>
+                  (n.attributes[TableBlockKeys.colBackgroundColor] as String?)
+                      ?.toColor() ??
+                  (n.attributes[TableBlockKeys.rowBackgroundColor] as String?)
+                      ?.toColor(),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

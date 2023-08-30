@@ -98,6 +98,15 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
       },
     );
     node.insert(paragraphNode());
+    final firstCellInRow = getCellNode(tableNode, 0, i);
+    if (firstCellInRow?.attributes
+            .containsKey(TableBlockKeys.rowBackgroundColor) ??
+        false) {
+      node.updateAttributes({
+        TableBlockKeys.rowBackgroundColor:
+            firstCellInRow!.attributes[TableBlockKeys.rowBackgroundColor]
+      });
+    }
 
     cellNodes.add(newCellNode(tableNode, node));
   }
@@ -131,6 +140,15 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
       },
     );
     node.insert(paragraphNode());
+    final firstCellInCol = getCellNode(tableNode, i, 0);
+    if (firstCellInCol?.attributes
+            .containsKey(TableBlockKeys.colBackgroundColor) ??
+        false) {
+      node.updateAttributes({
+        TableBlockKeys.colBackgroundColor:
+            firstCellInCol!.attributes[TableBlockKeys.colBackgroundColor]
+      });
+    }
 
     late Path insertPath;
     if (position == 0) {
@@ -265,7 +283,7 @@ void _setColBgColor(
     final node = getCellNode(tableNode, col, i)!;
     transaction.updateNode(
       node,
-      {TableBlockKeys.backgroundColor: color},
+      {TableBlockKeys.colBackgroundColor: color},
     );
   }
 
@@ -285,7 +303,7 @@ void _setRowBgColor(
     final node = getCellNode(tableNode, i, row)!;
     transaction.updateNode(
       node,
-      {TableBlockKeys.backgroundColor: color},
+      {TableBlockKeys.rowBackgroundColor: color},
     );
   }
 

@@ -32,7 +32,9 @@ class TableBlockKeys {
 
   static const String colsHeight = 'colsHeight';
 
-  static const String backgroundColor = 'backgroundColor';
+  static const String rowBackgroundColor = 'rowBackgroundColor';
+
+  static const String colBackgroundColor = 'colBackgroundColor';
 }
 
 class TableDefaults {

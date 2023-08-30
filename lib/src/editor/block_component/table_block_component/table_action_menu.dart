@@ -62,6 +62,9 @@ void showActionMenu(
               final cell = dir == TableDirection.col
                   ? getCellNode(node, position, 0)
                   : getCellNode(node, 0, position);
+              final key = dir == TableDirection.col
+                  ? TableBlockKeys.colBackgroundColor
+                  : TableBlockKeys.rowBackgroundColor;
 
               _showColorMenu(
                 context,
@@ -78,7 +81,7 @@ void showActionMenu(
                 bottom: bottom,
                 left: left,
                 selectedColorHex:
-                    cell?.attributes[TableBlockKeys.backgroundColor],
+                    cell?.attributes[key],
               );
               dismissOverlay();
             },
