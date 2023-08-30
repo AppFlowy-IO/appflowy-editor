@@ -267,8 +267,20 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
       transaction
         ..insertNode(selection.end.path, tableNode.node)
         ..deleteNode(currentNode);
+      transaction.afterSelection = Selection.collapsed(
+        Position(
+          path: selection.end.path + [0, 0],
+          offset: 0,
+        ),
+      );
     } else {
       transaction.insertNode(selection.end.path.next, tableNode.node);
+      transaction.afterSelection = Selection.collapsed(
+        Position(
+          path: selection.end.path.next + [0, 0],
+          offset: 0,
+        ),
+      );
     }
 
     editorState.apply(transaction);
