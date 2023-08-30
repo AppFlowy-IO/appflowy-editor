@@ -50,7 +50,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _jsonString = rootBundle.loadString('assets/example.json');
+    // _jsonString = rootBundle.loadString('assets/example.json');
+    // _jsonString = EditorState.blank(withInitialText: false).document.insert([0], );
+
+    final nodes = List.generate(
+      10000,
+      (index) => paragraphNode(text: '$index'),
+    );
+    final editorState = EditorState(
+      document: Document(root: pageNode(children: nodes)),
+    );
+    _jsonString = Future.value(
+      jsonEncode(editorState.document.toJson()),
+    );
     _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
