@@ -21,9 +21,12 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      final transaction = editor.editorState.transaction;
-      TableActions.delete(tableNode.node, 0, transaction, TableDirection.col);
-      editor.editorState.apply(transaction);
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.col,
+      );
       await tester.pump(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
@@ -52,9 +55,12 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      final transaction = editor.editorState.transaction;
-      TableActions.delete(tableNode.node, 0, transaction, TableDirection.row);
-      await editor.editorState.apply(transaction);
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.row,
+      );
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
       tableNode = TableNode(node: tableNode.node);
 
@@ -84,14 +90,12 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      final transaction = editor.editorState.transaction;
       TableActions.duplicate(
         tableNode.node,
         0,
-        transaction,
+        editor.editorState,
         TableDirection.col,
       );
-      await editor.editorState.apply(transaction);
       await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
@@ -115,14 +119,12 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      final transaction = editor.editorState.transaction;
       TableActions.duplicate(
         tableNode.node,
         0,
-        transaction,
+        editor.editorState,
         TableDirection.row,
       );
-      await editor.editorState.apply(transaction);
       await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
