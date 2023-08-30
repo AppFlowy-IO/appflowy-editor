@@ -113,7 +113,7 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
   transaction.insertNodes(insertPath, cellNodes);
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _addRow(Node tableNode, int position, EditorState editorState) async {
@@ -150,12 +150,12 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
       insertPath,
       newCellNode(tableNode, node),
     );
-    await editorState.apply(transaction);
+    await editorState.apply(transaction, withUpdateSelection: false);
   }
 
   final transaction = editorState.transaction;
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
-  await editorState.apply(transaction);
+  await editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _deleteCol(Node tableNode, int col, EditorState editorState) {
@@ -173,7 +173,7 @@ void _deleteCol(Node tableNode, int col, EditorState editorState) {
 
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen - 1});
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _deleteRow(Node tableNode, int row, EditorState editorState) {
@@ -191,7 +191,7 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
 
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _duplicateCol(Node tableNode, int col, EditorState editorState) {
@@ -221,13 +221,13 @@ void _duplicateCol(Node tableNode, int col, EditorState editorState) {
 
   transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen + 1});
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _duplicateRow(Node tableNode, int row, EditorState editorState) async {
   Transaction transaction = editorState.transaction;
   _updateCellPositions(tableNode, editorState, 0, row + 1, 0, 1);
-  await editorState.apply(transaction);
+  await editorState.apply(transaction, withUpdateSelection: false);
 
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
@@ -244,12 +244,12 @@ void _duplicateRow(Node tableNode, int row, EditorState editorState) async {
         },
       ),
     );
-    await editorState.apply(transaction);
+    await editorState.apply(transaction, withUpdateSelection: false);
   }
 
   transaction = editorState.transaction;
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _setColBgColor(
@@ -269,7 +269,7 @@ void _setColBgColor(
     );
   }
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _setRowBgColor(
@@ -289,7 +289,7 @@ void _setRowBgColor(
     );
   }
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _clearCol(
@@ -308,7 +308,7 @@ void _clearCol(
     );
   }
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _clearRow(
@@ -327,7 +327,7 @@ void _clearRow(
     );
   }
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
 
 dynamic newCellNode(Node tableNode, n) {
@@ -391,5 +391,5 @@ void _updateCellPositions(
     }
   }
 
-  editorState.apply(transaction);
+  editorState.apply(transaction, withUpdateSelection: false);
 }
