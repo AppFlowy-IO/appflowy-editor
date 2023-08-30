@@ -1,7 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/testable_editor.dart';
 
 void main() async {
@@ -53,8 +54,8 @@ void main() async {
 
       final transaction = editor.editorState.transaction;
       TableActions.delete(tableNode.node, 0, transaction, TableDirection.row);
-      editor.editorState.apply(transaction);
-      await tester.pump(const Duration(milliseconds: 100));
+      await editor.editorState.apply(transaction);
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.rowsLen, 1);
@@ -69,6 +70,7 @@ void main() async {
           }
         },
       );
+
       await editor.dispose();
     });
 
@@ -89,8 +91,8 @@ void main() async {
         transaction,
         TableDirection.col,
       );
-      editor.editorState.apply(transaction);
-      await tester.pump(const Duration(milliseconds: 100));
+      await editor.editorState.apply(transaction);
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.colsLen, 3);
@@ -120,8 +122,8 @@ void main() async {
         transaction,
         TableDirection.row,
       );
-      editor.editorState.apply(transaction);
-      await tester.pump(const Duration(milliseconds: 100));
+      await editor.editorState.apply(transaction);
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.rowsLen, 3);

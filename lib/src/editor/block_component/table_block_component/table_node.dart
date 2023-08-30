@@ -157,23 +157,28 @@ class TableNode {
   //   }
   // }
 
-  void setColWidth(int col, double w) {
+  Future<void> setColWidth(
+    int col,
+    double w, {
+    EditorState? editorState,
+  }) async {
+    editorState ??= this.editorState;
     if (editorState == null) {
       return;
     }
-    final transaction = editorState!.transaction;
+    final transaction = editorState.transaction;
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
         transaction.updateNode(_cells[col][i], {TableBlockKeys.width: w});
       }
       for (var i = 0; i < rowsLen; i++) {
-        updateRowHeight(i);
+        await updateRowHeight(i);
       }
       transaction.updateNode(node, node.attributes);
     }
     transaction.afterSelection = transaction.beforeSelection;
-    editorState!.apply(transaction);
+    await editorState.apply(transaction);
   }
 
   Future<void> updateRowHeight(int row) async {
@@ -201,6 +206,6 @@ class TableNode {
     }
 
     transaction.afterSelection = transaction.beforeSelection;
-    editorState!.apply(transaction);
+    await editorState!.apply(transaction);
   }
 }

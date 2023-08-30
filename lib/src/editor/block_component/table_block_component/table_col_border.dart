@@ -44,7 +44,7 @@ class _TableColBorderState extends State<TableColBorder> {
       child: GestureDetector(
         onHorizontalDragStart: (_) => setState(() => _borderDragging = true),
         onHorizontalDragEnd: (_) => setState(() => _borderDragging = false),
-        onHorizontalDragUpdate: (DragUpdateDetails details) {
+        onHorizontalDragUpdate: (DragUpdateDetails details) async {
           final RenderBox box =
               _borderKey.currentContext?.findRenderObject() as RenderBox;
           final Offset pos = box.localToGlobal(Offset.zero);
@@ -58,7 +58,7 @@ class _TableColBorderState extends State<TableColBorder> {
           }
 
           final colWidth = widget.tableNode.getColWidth(widget.colIdx);
-          widget.tableNode
+          await widget.tableNode
               .setColWidth(widget.colIdx, colWidth + details.delta.dx);
         },
         child: Container(

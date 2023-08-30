@@ -1,7 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/testable_editor.dart';
 
 void main() async {
@@ -35,7 +36,7 @@ void main() async {
         ),
       );
       await editor.ime.insertText('aaaaaaaaa');
-      tableNode.updateRowHeight(0);
+      await tableNode.updateRowHeight(0);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
@@ -66,13 +67,13 @@ void main() async {
         ),
       );
       await editor.ime.insertText('aaaaaaaaa');
-      tableNode.updateRowHeight(0);
+      await tableNode.updateRowHeight(0);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
 
-      tableNode.setColWidth(1, 302.5);
-      await tester.pump(const Duration(milliseconds: 300));
+      await tableNode.setColWidth(1, 302.5, editorState: editor.editorState);
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       expect(tableNode.getRowHeight(0), row0beforeHeight);
       await editor.dispose();
@@ -90,8 +91,8 @@ void main() async {
 
       final transaction = editor.editorState.transaction;
       TableActions.add(tableNode.node, 2, transaction, TableDirection.col);
-      editor.editorState.apply(transaction);
-      await tester.pump(const Duration(milliseconds: 100));
+      await editor.editorState.apply(transaction);
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.colsLen, 3);
@@ -118,8 +119,8 @@ void main() async {
 
       final transaction = editor.editorState.transaction;
       TableActions.add(tableNode.node, 2, transaction, TableDirection.row);
-      editor.editorState.apply(transaction);
-      await tester.pump(const Duration(milliseconds: 100));
+      await editor.editorState.apply(transaction);
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.rowsLen, 3);
