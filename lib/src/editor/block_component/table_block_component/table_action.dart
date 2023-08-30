@@ -84,7 +84,7 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
     for (var i = position; i < colsLen; i++) {
       for (var j = 0; j < rowsLen; j++) {
         final node = getCellNode(tableNode, i, j)!;
-        transaction.updateNode(node, {TableBlockKeys.colPosition: i + 1});
+        transaction.updateNode(node, {TableCellBlockKeys.colPosition: i + 1});
       }
     }
   }
@@ -93,18 +93,18 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
-        TableBlockKeys.colPosition: position,
-        TableBlockKeys.rowPosition: i,
+        TableCellBlockKeys.colPosition: position,
+        TableCellBlockKeys.rowPosition: i,
       },
     );
     node.insert(paragraphNode());
     final firstCellInRow = getCellNode(tableNode, 0, i);
     if (firstCellInRow?.attributes
-            .containsKey(TableBlockKeys.rowBackgroundColor) ??
+            .containsKey(TableCellBlockKeys.rowBackgroundColor) ??
         false) {
       node.updateAttributes({
-        TableBlockKeys.rowBackgroundColor:
-            firstCellInRow!.attributes[TableBlockKeys.rowBackgroundColor]
+        TableCellBlockKeys.rowBackgroundColor:
+            firstCellInRow!.attributes[TableCellBlockKeys.rowBackgroundColor]
       });
     }
 
@@ -135,18 +135,18 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
-        TableBlockKeys.colPosition: i,
-        TableBlockKeys.rowPosition: position,
+        TableCellBlockKeys.colPosition: i,
+        TableCellBlockKeys.rowPosition: position,
       },
     );
     node.insert(paragraphNode());
     final firstCellInCol = getCellNode(tableNode, i, 0);
     if (firstCellInCol?.attributes
-            .containsKey(TableBlockKeys.colBackgroundColor) ??
+            .containsKey(TableCellBlockKeys.colBackgroundColor) ??
         false) {
       node.updateAttributes({
-        TableBlockKeys.colBackgroundColor:
-            firstCellInCol!.attributes[TableBlockKeys.colBackgroundColor]
+        TableCellBlockKeys.colBackgroundColor:
+            firstCellInCol!.attributes[TableCellBlockKeys.colBackgroundColor]
       });
     }
 
@@ -161,7 +161,7 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
     if (position != rowsLen) {
       for (var j = position; j < rowsLen; j++) {
         final node = getCellNode(tableNode, i, j)!;
-        transaction.updateNode(node, {TableBlockKeys.rowPosition: j + 1});
+        transaction.updateNode(node, {TableCellBlockKeys.rowPosition: j + 1});
       }
     }
     transaction.insertNode(
@@ -224,8 +224,8 @@ void _duplicateCol(Node tableNode, int col, EditorState editorState) {
       node.copyWith(
         attributes: {
           ...node.attributes,
-          TableBlockKeys.colPosition: col + 1,
-          TableBlockKeys.rowPosition: i,
+          TableCellBlockKeys.colPosition: col + 1,
+          TableCellBlockKeys.rowPosition: i,
         },
       ),
     );
@@ -257,8 +257,8 @@ void _duplicateRow(Node tableNode, int row, EditorState editorState) async {
       node.copyWith(
         attributes: {
           ...node.attributes,
-          TableBlockKeys.rowPosition: row + 1,
-          TableBlockKeys.colPosition: i,
+          TableCellBlockKeys.rowPosition: row + 1,
+          TableCellBlockKeys.colPosition: i,
         },
       ),
     );
@@ -283,7 +283,7 @@ void _setColBgColor(
     final node = getCellNode(tableNode, col, i)!;
     transaction.updateNode(
       node,
-      {TableBlockKeys.colBackgroundColor: color},
+      {TableCellBlockKeys.colBackgroundColor: color},
     );
   }
 
@@ -303,7 +303,7 @@ void _setRowBgColor(
     final node = getCellNode(tableNode, i, row)!;
     transaction.updateNode(
       node,
-      {TableBlockKeys.rowBackgroundColor: color},
+      {TableCellBlockKeys.rowBackgroundColor: color},
     );
   }
 
@@ -349,39 +349,39 @@ void _clearRow(
 }
 
 dynamic newCellNode(Node tableNode, n) {
-  final row = n.attributes[TableBlockKeys.rowPosition] as int;
-  final col = n.attributes[TableBlockKeys.colPosition] as int;
+  final row = n.attributes[TableCellBlockKeys.rowPosition] as int;
+  final col = n.attributes[TableCellBlockKeys.colPosition] as int;
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen];
   final int colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
-  if (!n.attributes.containsKey(TableBlockKeys.height)) {
+  if (!n.attributes.containsKey(TableCellBlockKeys.height)) {
     double nodeHeight = double.tryParse(
       tableNode.attributes[TableBlockKeys.rowDefaultHeight].toString(),
     )!;
     if (row < rowsLen) {
       nodeHeight = double.tryParse(
             getCellNode(tableNode, 0, row)!
-                .attributes[TableBlockKeys.height]
+                .attributes[TableCellBlockKeys.height]
                 .toString(),
           ) ??
           nodeHeight;
     }
-    n.updateAttributes({TableBlockKeys.height: nodeHeight});
+    n.updateAttributes({TableCellBlockKeys.height: nodeHeight});
   }
 
-  if (!n.attributes.containsKey(TableBlockKeys.width)) {
+  if (!n.attributes.containsKey(TableCellBlockKeys.width)) {
     double nodeWidth = double.tryParse(
       tableNode.attributes[TableBlockKeys.colDefaultWidth].toString(),
     )!;
     if (col < colsLen) {
       nodeWidth = double.tryParse(
             getCellNode(tableNode, col, 0)!
-                .attributes[TableBlockKeys.width]
+                .attributes[TableCellBlockKeys.width]
                 .toString(),
           ) ??
           nodeWidth;
     }
-    n.updateAttributes({TableBlockKeys.width: nodeWidth});
+    n.updateAttributes({TableCellBlockKeys.width: nodeWidth});
   }
 
   return n;
@@ -403,8 +403,8 @@ void _updateCellPositions(
   for (var i = fromCol; i < colsLen; i++) {
     for (var j = fromRow; j < rowsLen; j++) {
       transaction.updateNode(getCellNode(tableNode, i, j)!, {
-        TableBlockKeys.colPosition: i + addToCol,
-        TableBlockKeys.rowPosition: j + addToRow,
+        TableCellBlockKeys.colPosition: i + addToCol,
+        TableCellBlockKeys.rowPosition: j + addToRow,
       });
     }
   }

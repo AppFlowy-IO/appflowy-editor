@@ -28,15 +28,15 @@ class TableNode {
     assert(
       node.children.every(
         (n) =>
-            n.attributes.containsKey(TableBlockKeys.rowPosition) &&
-            n.attributes.containsKey(TableBlockKeys.colPosition),
+            n.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
+            n.attributes.containsKey(TableCellBlockKeys.colPosition),
       ),
     );
     assert(
       node.children.every(
         (n) =>
-            n.attributes.containsKey(TableBlockKeys.rowPosition) &&
-            n.attributes.containsKey(TableBlockKeys.colPosition),
+            n.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
+            n.attributes.containsKey(TableCellBlockKeys.colPosition),
       ),
     );
 
@@ -45,8 +45,8 @@ class TableNode {
       for (var j = 0; j < rowsCount; j++) {
         final cell = node.children.where(
           (n) =>
-              n.attributes[TableBlockKeys.colPosition] == i &&
-              n.attributes[TableBlockKeys.rowPosition] == j,
+              n.attributes[TableCellBlockKeys.colPosition] == i &&
+              n.attributes[TableCellBlockKeys.rowPosition] == j,
         );
         assert(cell.length == 1);
         _cells[i].add(newCellNode(node, cell.first));
@@ -86,8 +86,8 @@ class TableNode {
         final cell = Node(
           type: TableCellBlockKeys.type,
           attributes: {
-            TableBlockKeys.colPosition: i,
-            TableBlockKeys.rowPosition: j
+            TableCellBlockKeys.colPosition: i,
+            TableCellBlockKeys.rowPosition: j
           },
         );
 
@@ -118,7 +118,7 @@ class TableNode {
 
   double getRowHeight(int row) =>
       double.tryParse(
-        _cells[0][row].attributes[TableBlockKeys.height].toString(),
+        _cells[0][row].attributes[TableCellBlockKeys.height].toString(),
       ) ??
       _config.rowDefaultHeight;
 
@@ -131,7 +131,7 @@ class TableNode {
 
   double getColWidth(int col) =>
       double.tryParse(
-        _cells[col][0].attributes[TableBlockKeys.width].toString(),
+        _cells[col][0].attributes[TableCellBlockKeys.width].toString(),
       ) ??
       _config.colDefaultWidth;
 
@@ -146,7 +146,7 @@ class TableNode {
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
-        transaction.updateNode(_cells[col][i], {TableBlockKeys.width: w});
+        transaction.updateNode(_cells[col][i], {TableCellBlockKeys.width: w});
         updateRowHeight(i, transaction);
       }
       transaction.updateNode(node, node.attributes);
@@ -159,11 +159,11 @@ class TableNode {
         .map<double>((c) => c[row].children.first.rect.height + 8)
         .reduce(max);
 
-    if (_cells[0][row].attributes[TableBlockKeys.height] != maxHeight) {
+    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight) {
       for (var i = 0; i < colsLen; i++) {
         transaction.updateNode(
           _cells[i][row],
-          {TableBlockKeys.height: maxHeight},
+          {TableCellBlockKeys.height: maxHeight},
         );
       }
     }

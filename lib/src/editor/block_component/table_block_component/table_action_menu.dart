@@ -63,8 +63,8 @@ void showActionMenu(
                   ? getCellNode(node, position, 0)
                   : getCellNode(node, 0, position);
               final key = dir == TableDirection.col
-                  ? TableBlockKeys.colBackgroundColor
-                  : TableBlockKeys.rowBackgroundColor;
+                  ? TableCellBlockKeys.colBackgroundColor
+                  : TableCellBlockKeys.rowBackgroundColor;
 
               _showColorMenu(
                 context,

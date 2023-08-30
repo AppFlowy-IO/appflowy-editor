@@ -22,19 +22,7 @@ class TableBlockKeys {
 
   static const String rowsLen = 'rowsLen';
 
-  static const String rowPosition = 'rowPosition';
-
-  static const String colPosition = 'colPosition';
-
-  static const String height = 'height';
-
-  static const String width = 'width';
-
   static const String colsHeight = 'colsHeight';
-
-  static const String rowBackgroundColor = 'rowBackgroundColor';
-
-  static const String colBackgroundColor = 'colBackgroundColor';
 }
 
 class TableDefaults {

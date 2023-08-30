@@ -53,7 +53,7 @@ class _TableColState extends State<TableCol> {
       SizedBox(
         width: context.select(
           (Node n) => getCellNode(n, widget.colIdx, 0)
-              ?.attributes[TableBlockKeys.width],
+              ?.attributes[TableCellBlockKeys.width],
         ),
         child: Stack(
           children: [
