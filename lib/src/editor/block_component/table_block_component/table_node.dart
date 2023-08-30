@@ -147,13 +147,10 @@ class TableNode {
     if (getColWidth(col) != w) {
       for (var i = 0; i < rowsLen; i++) {
         transaction.updateNode(_cells[col][i], {TableBlockKeys.width: w});
-      }
-      for (var i = 0; i < rowsLen; i++) {
         updateRowHeight(i, transaction);
       }
       transaction.updateNode(node, node.attributes);
     }
-    transaction.afterSelection = transaction.beforeSelection;
   }
 
   void updateRowHeight(int row, Transaction transaction) {
@@ -174,7 +171,5 @@ class TableNode {
     if (node.attributes[TableBlockKeys.colsHeight] != colsHeight) {
       transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
     }
-
-    transaction.afterSelection = transaction.beforeSelection;
   }
 }

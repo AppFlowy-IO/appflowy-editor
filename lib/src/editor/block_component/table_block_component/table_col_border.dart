@@ -67,6 +67,7 @@ class _TableColBorderState extends State<TableColBorder> {
             colWidth + details.delta.dx,
             transaction,
           );
+          transaction.afterSelection = transaction.beforeSelection;
           await widget.editorState.apply(transaction);
         },
         child: Container(

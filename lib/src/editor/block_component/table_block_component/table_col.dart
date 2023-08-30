@@ -126,6 +126,9 @@ class _TableColState extends State<TableCol> {
 
         final transaction = widget.editorState.transaction;
         widget.tableNode.updateRowHeight(row, transaction);
-        widget.editorState.apply(transaction);
+        if (transaction.operations.isNotEmpty) {
+          transaction.afterSelection = transaction.beforeSelection;
+          widget.editorState.apply(transaction);
+        }
       });
 }
