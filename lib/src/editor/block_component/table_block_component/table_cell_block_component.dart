@@ -8,6 +8,18 @@ class TableCellBlockKeys {
   const TableCellBlockKeys._();
 
   static const String type = 'table/cell';
+
+  static const String rowPosition = 'rowPosition';
+
+  static const String colPosition = 'colPosition';
+
+  static const String height = 'height';
+
+  static const String width = 'width';
+
+  static const String rowBackgroundColor = 'rowBackgroundColor';
+
+  static const String colBackgroundColor = 'colBackgroundColor';
 }
 
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
@@ -40,8 +52,8 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   @override
   bool validate(Node node) =>
       node.attributes.isNotEmpty &&
-      node.attributes.containsKey(TableBlockKeys.rowPosition) &&
-      node.attributes.containsKey(TableBlockKeys.colPosition);
+      node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
+      node.attributes.containsKey(TableCellBlockKeys.colPosition);
 }
 
 class TableCelBlockWidget extends BlockComponentStatefulWidget {
@@ -74,12 +86,17 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
           child: Container(
             constraints: BoxConstraints(
               minHeight: context
-                  .select((Node n) => n.attributes[TableBlockKeys.height]),
+                  .select((Node n) => n.attributes[TableCellBlockKeys.height]),
             ),
-            color: context.select((Node n) {
-              return (n.attributes[TableBlockKeys.backgroundColor] as String?)
-                  ?.toColor();
-            }),
+            color: context.select(
+              (Node n) =>
+                  (n.attributes[TableCellBlockKeys.colBackgroundColor]
+                          as String?)
+                      ?.toColor() ??
+                  (n.attributes[TableCellBlockKeys.rowBackgroundColor]
+                          as String?)
+                      ?.toColor(),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -98,13 +115,13 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
           visible: _rowActionVisibility,
           node: widget.node.parent!,
           editorState: editorState,
-          position: widget.node.attributes[TableBlockKeys.rowPosition],
+          position: widget.node.attributes[TableCellBlockKeys.rowPosition],
           transform: context.select((Node n) {
-            final int col = n.attributes[TableBlockKeys.colPosition];
+            final int col = n.attributes[TableCellBlockKeys.colPosition];
             double left = -15.0;
             for (var i = 0; i < col; i++) {
               left -= getCellNode(n.parent!, i, 0)
-                  ?.attributes[TableBlockKeys.width] as double;
+                  ?.attributes[TableCellBlockKeys.width] as double;
               left -= n.parent!.attributes['borderWidth'] ??
                   TableDefaults.borderWidth;
             }
@@ -112,8 +129,8 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             return Matrix4.translationValues(left, 0.0, 0.0);
           }),
           alignment: Alignment.centerLeft,
-          height:
-              context.select((Node n) => n.attributes[TableBlockKeys.height]),
+          height: context
+              .select((Node n) => n.attributes[TableCellBlockKeys.height]),
           menuBuilder: widget.menuBuilder,
           dir: TableDirection.row,
         ),

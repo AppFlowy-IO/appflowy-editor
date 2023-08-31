@@ -41,6 +41,7 @@ class _TableColState extends State<TableCol> {
         TableColBorder(
           resizable: false,
           tableNode: widget.tableNode,
+          editorState: widget.editorState,
           colIdx: widget.colIdx,
           borderColor: widget.borderColor,
           borderHoverColor: widget.borderHoverColor,
@@ -52,7 +53,7 @@ class _TableColState extends State<TableCol> {
       SizedBox(
         width: context.select(
           (Node n) => getCellNode(n, widget.colIdx, 0)
-              ?.attributes[TableBlockKeys.width],
+              ?.attributes[TableCellBlockKeys.width],
         ),
         child: Stack(
           children: [
@@ -77,6 +78,7 @@ class _TableColState extends State<TableCol> {
       TableColBorder(
         resizable: true,
         tableNode: widget.tableNode,
+        editorState: widget.editorState,
         colIdx: widget.colIdx,
         borderColor: widget.borderColor,
         borderHoverColor: widget.borderHoverColor,
@@ -117,9 +119,16 @@ class _TableColState extends State<TableCol> {
   }
 
   void updateRowHeightCallback(int row) =>
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => row < widget.tableNode.rowsLen
-            ? widget.tableNode.updateRowHeight(row)
-            : null,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (row >= widget.tableNode.rowsLen) {
+          return;
+        }
+
+        final transaction = widget.editorState.transaction;
+        widget.tableNode.updateRowHeight(row, transaction);
+        if (transaction.operations.isNotEmpty) {
+          transaction.afterSelection = transaction.beforeSelection;
+          widget.editorState.apply(transaction);
+        }
+      });
 }

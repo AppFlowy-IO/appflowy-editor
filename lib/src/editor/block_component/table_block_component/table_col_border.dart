@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TableColBorder extends StatefulWidget {
   const TableColBorder({
     Key? key,
     required this.tableNode,
+    required this.editorState,
     required this.colIdx,
     required this.resizable,
     required this.borderColor,
@@ -16,6 +17,7 @@ class TableColBorder extends StatefulWidget {
   final bool resizable;
   final int colIdx;
   final TableNode tableNode;
+  final EditorState editorState;
 
   final Color borderColor;
   final Color borderHoverColor;
@@ -44,7 +46,7 @@ class _TableColBorderState extends State<TableColBorder> {
       child: GestureDetector(
         onHorizontalDragStart: (_) => setState(() => _borderDragging = true),
         onHorizontalDragEnd: (_) => setState(() => _borderDragging = false),
-        onHorizontalDragUpdate: (DragUpdateDetails details) {
+        onHorizontalDragUpdate: (DragUpdateDetails details) async {
           final RenderBox box =
               _borderKey.currentContext?.findRenderObject() as RenderBox;
           final Offset pos = box.localToGlobal(Offset.zero);
@@ -58,8 +60,15 @@ class _TableColBorderState extends State<TableColBorder> {
           }
 
           final colWidth = widget.tableNode.getColWidth(widget.colIdx);
-          widget.tableNode
-              .setColWidth(widget.colIdx, colWidth + details.delta.dx);
+
+          final transaction = widget.editorState.transaction;
+          widget.tableNode.setColWidth(
+            widget.colIdx,
+            colWidth + details.delta.dx,
+            transaction,
+          );
+          transaction.afterSelection = transaction.beforeSelection;
+          await widget.editorState.apply(transaction);
         },
         child: Container(
           key: _borderKey,
