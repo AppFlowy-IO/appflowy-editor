@@ -20,9 +20,9 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 0,
-              TableBlockKeys.rowPosition: 0,
-              TableBlockKeys.width: 35,
+              TableCellBlockKeys.colPosition: 0,
+              TableCellBlockKeys.rowPosition: 0,
+              TableCellBlockKeys.width: 35,
             },
             'children': [
               {
@@ -39,8 +39,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 0,
-              TableBlockKeys.rowPosition: 1,
+              TableCellBlockKeys.colPosition: 0,
+              TableCellBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -59,8 +59,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 1,
-              TableBlockKeys.rowPosition: 0,
+              TableCellBlockKeys.colPosition: 1,
+              TableCellBlockKeys.rowPosition: 0,
             },
             'children': [
               {
@@ -79,8 +79,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 1,
-              TableBlockKeys.rowPosition: 1,
+              TableCellBlockKeys.colPosition: 1,
+              TableCellBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -160,9 +160,9 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 0,
-              TableBlockKeys.rowPosition: 0,
-              TableBlockKeys.width: 35,
+              TableCellBlockKeys.colPosition: 0,
+              TableCellBlockKeys.rowPosition: 0,
+              TableCellBlockKeys.width: 35,
             },
             'children': [
               {
@@ -179,8 +179,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 1,
-              TableBlockKeys.rowPosition: 0,
+              TableCellBlockKeys.colPosition: 1,
+              TableCellBlockKeys.rowPosition: 0,
             },
             'children': [
               {
@@ -199,8 +199,8 @@ void main() {
           {
             'type': TableCellBlockKeys.type,
             'data': {
-              TableBlockKeys.colPosition: 1,
-              TableBlockKeys.rowPosition: 1,
+              TableCellBlockKeys.colPosition: 1,
+              TableCellBlockKeys.rowPosition: 1,
             },
             'children': [
               {

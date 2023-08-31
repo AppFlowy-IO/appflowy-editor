@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'table_view.dart';
 
 class TableBlockKeys {
@@ -21,17 +22,7 @@ class TableBlockKeys {
 
   static const String rowsLen = 'rowsLen';
 
-  static const String rowPosition = 'rowPosition';
-
-  static const String colPosition = 'colPosition';
-
-  static const String height = 'height';
-
-  static const String width = 'width';
-
   static const String colsHeight = 'colsHeight';
-
-  static const String backgroundColor = 'backgroundColor';
 }
 
 class TableDefaults {
@@ -265,8 +256,20 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
       transaction
         ..insertNode(selection.end.path, tableNode.node)
         ..deleteNode(currentNode);
+      transaction.afterSelection = Selection.collapsed(
+        Position(
+          path: selection.end.path + [0, 0],
+          offset: 0,
+        ),
+      );
     } else {
       transaction.insertNode(selection.end.path.next, tableNode.node);
+      transaction.afterSelection = Selection.collapsed(
+        Position(
+          path: selection.end.path.next + [0, 0],
+          offset: 0,
+        ),
+      );
     }
 
     editorState.apply(transaction);

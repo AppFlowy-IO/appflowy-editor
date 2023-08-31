@@ -34,6 +34,15 @@ CharacterShortcutEvent customSlashCommand(
   );
 }
 
+final supportSlashMenuNodeWhiteList = [
+  ParagraphBlockKeys.type,
+  HeadingBlockKeys.type,
+  TodoListBlockKeys.type,
+  BulletedListBlockKeys.type,
+  NumberedListBlockKeys.type,
+  QuoteBlockKeys.type,
+];
+
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
   EditorState editorState,
@@ -59,6 +68,13 @@ Future<bool> _showSlashMenu(
   if (afterSelection == null || !afterSelection.isCollapsed) {
     assert(false, 'the selection should be collapsed');
     return true;
+  }
+
+  final node = editorState.getNodeAtPath(selection.start.path);
+
+  // only enable in white-list nodes
+  if (node == null || !_isSupportSlashMenuNode(node)) {
+    return false;
   }
 
   // insert the slash character
@@ -93,4 +109,12 @@ Future<bool> _showSlashMenu(
   }();
 
   return true;
+}
+
+bool _isSupportSlashMenuNode(Node node) {
+  var result = supportSlashMenuNodeWhiteList.contains(node.type);
+  if (node.level > 1 && node.parent != null) {
+    return result && _isSupportSlashMenuNode(node.parent!);
+  }
+  return result;
 }

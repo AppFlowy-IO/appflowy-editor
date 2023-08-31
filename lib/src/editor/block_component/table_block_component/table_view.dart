@@ -46,14 +46,12 @@ class _TableViewState extends State<TableView> {
                   width: 28,
                   height: widget.tableNode.colsHeight,
                   onPressed: () {
-                    final transaction = widget.editorState.transaction;
                     TableActions.add(
                       widget.tableNode.node,
                       widget.tableNode.colsLen,
-                      transaction,
+                      widget.editorState,
                       TableDirection.col,
                     );
-                    widget.editorState.apply(transaction);
                   },
                 ),
               ],
@@ -64,14 +62,12 @@ class _TableViewState extends State<TableView> {
               height: 28,
               width: widget.tableNode.tableWidth,
               onPressed: () {
-                final transaction = widget.editorState.transaction;
                 TableActions.add(
                   widget.tableNode.node,
                   widget.tableNode.rowsLen,
-                  transaction,
+                  widget.editorState,
                   TableDirection.row,
                 );
-                widget.editorState.apply(transaction);
               },
             ),
           ],
