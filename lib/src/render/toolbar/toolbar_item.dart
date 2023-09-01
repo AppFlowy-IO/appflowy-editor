@@ -25,7 +25,7 @@ class ToolbarItem {
 
   final String id;
   final int group;
-  final bool Function(EditorState editorState)? isActive;
+  bool Function(EditorState editorState)? isActive;
   final Widget Function(
     BuildContext context,
     EditorState editorState,

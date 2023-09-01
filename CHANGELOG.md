@@ -1,3 +1,16 @@
+## 1.3.0
+* feat: support table plugin by @zoli in ([#62](https://github.com/AppFlowy-IO/appflowy-editor/pull/62))
+* feat: support alignment for block component by @LucasXu0 in ([#425](https://github.com/AppFlowy-IO/appflowy-editor/pull/425))
+* feat: toggle highlight using ctrl/cmd + shift + h by @MayurSMahajan in ([#333](https://github.com/AppFlowy-IO/appflowy-editor/pull/333))
+* feat: refactor floating toolbar positioning logic by @LucasXu0 in ([#422](https://github.com/AppFlowy-IO/appflowy-editor/pull/42))
+* feat: default text direction property by @zoli in ([#402](https://github.com/AppFlowy-IO/appflowy-editor/pull/402))
+* fix: rect of the divider block is incorrect by @LucasXu0 in ([#415](https://github.com/AppFlowy-IO/appflowy-editor/pull/415))
+* fix: replace matches on the same node by @MayurSMahajan in ([#418](https://github.com/AppFlowy-IO/appflowy-editor/pull/418))
+* fix: update resizable image width calculation with minimum width constraint by @LucasXu0 in ([#421](https://github.com/AppFlowy-IO/appflowy-editor/pull/421))
+* fix: fixed the cursor not moving to next line after inserting divider by @Mukund-Tandon in ([#371](https://github.com/AppFlowy-IO/appflowy-editor/pull/371))
+* fix: html encoder not adding multiple text decorations by @alihassan143 in ([#424](https://github.com/AppFlowy-IO/appflowy-editor/pull/424))
+* fix: exception on prev node text direction null by @zoli in ([#404](https://github.com/AppFlowy-IO/appflowy-editor/pull/404))
+
 ## 1.2.4
 * feat: improve CJK IME support by @LucasXu0 in ([#412](https://github.com/AppFlowy-IO/appflowy-editor/pull/412))
 * feat: implement find dialog by @MayurSMahajan in ([#106](https://github.com/AppFlowy-IO/appflowy-editor/pull/106))
