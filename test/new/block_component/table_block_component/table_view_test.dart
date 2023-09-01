@@ -38,7 +38,7 @@ void main() async {
       await editor.ime.insertText('aaaaaaaaa');
 
       final transaction = editor.editorState.transaction;
-      tableNode.updateRowHeight(0, transaction);
+      tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
@@ -72,14 +72,14 @@ void main() async {
       await editor.ime.insertText('aaaaaaaaa');
 
       Transaction transaction = editor.editorState.transaction;
-      tableNode.updateRowHeight(0, transaction);
+      tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
       expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
 
       transaction = editor.editorState.transaction;
-      tableNode.setColWidth(1, 302.5, transaction);
+      tableNode.setColWidth(1, 302.5, transaction: transaction);
       await editor.editorState.apply(transaction);
 
       await tester.pumpAndSettle(const Duration(milliseconds: 300));

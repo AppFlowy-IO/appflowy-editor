@@ -31,6 +31,8 @@ class _TableColBorderState extends State<TableColBorder> {
   bool _borderHovering = false;
   bool _borderDragging = false;
 
+  Offset initialOffset = const Offset(0, 0);
+
   @override
   Widget build(BuildContext context) {
     return widget.resizable
@@ -44,31 +46,26 @@ class _TableColBorderState extends State<TableColBorder> {
       onEnter: (_) => setState(() => _borderHovering = true),
       onExit: (_) => setState(() => _borderHovering = false),
       child: GestureDetector(
-        onHorizontalDragStart: (_) => setState(() => _borderDragging = true),
-        onHorizontalDragEnd: (_) => setState(() => _borderDragging = false),
-        onHorizontalDragUpdate: (DragUpdateDetails details) async {
-          final RenderBox box =
-              _borderKey.currentContext?.findRenderObject() as RenderBox;
-          final Offset pos = box.localToGlobal(Offset.zero);
-          final double colsHeight = widget.tableNode.colsHeight;
-          final int direction = details.delta.dx > 0 ? 1 : -1;
-          if ((details.globalPosition.dx - pos.dx - (direction * 90)).abs() >
-                  110 ||
-              (details.globalPosition.dy - pos.dy) > colsHeight + 50 ||
-              (details.globalPosition.dy - pos.dy) < -50) {
-            return;
-          }
-
-          final colWidth = widget.tableNode.getColWidth(widget.colIdx);
-
+        onHorizontalDragStart: (DragStartDetails details) {
+          setState(() => _borderDragging = true);
+          initialOffset = details.globalPosition;
+        },
+        onHorizontalDragEnd: (_) {
           final transaction = widget.editorState.transaction;
           widget.tableNode.setColWidth(
             widget.colIdx,
-            colWidth + details.delta.dx,
-            transaction,
+            widget.tableNode.getColWidth(widget.colIdx),
+            transaction: transaction,
+            force: true,
           );
           transaction.afterSelection = transaction.beforeSelection;
-          await widget.editorState.apply(transaction);
+          widget.editorState.apply(transaction);
+          setState(() => _borderDragging = false);
+        },
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          final colWidth = widget.tableNode.getColWidth(widget.colIdx);
+          widget.tableNode
+              .setColWidth(widget.colIdx, colWidth + details.delta.dx);
         },
         child: Container(
           key: _borderKey,

@@ -33,6 +33,8 @@ class TableCol extends StatefulWidget {
 class _TableColState extends State<TableCol> {
   bool _colActionVisiblity = false;
 
+  Map<String, void Function()> listeners = {};
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -98,10 +100,9 @@ class _TableColState extends State<TableCol> {
 
     for (var i = 0; i < rowsLen; i++) {
       final node = widget.tableNode.getCell(widget.colIdx, i);
-
       updateRowHeightCallback(i);
-      node.addListener(() => updateRowHeightCallback(i));
-      node.children.first.addListener(() => updateRowHeightCallback(i));
+      addListener(node, i);
+      addListener(node.children.first, i);
 
       cells.addAll([
         widget.editorState.renderer.build(
@@ -118,6 +119,15 @@ class _TableColState extends State<TableCol> {
     ];
   }
 
+  void addListener(Node node, int row) {
+    if (listeners.containsKey(node.id)) {
+      return;
+    }
+
+    listeners[node.id] = () => updateRowHeightCallback(row);
+    node.addListener(listeners[node.id]!);
+  }
+
   void updateRowHeightCallback(int row) =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (row >= widget.tableNode.rowsLen) {
@@ -125,7 +135,7 @@ class _TableColState extends State<TableCol> {
         }
 
         final transaction = widget.editorState.transaction;
-        widget.tableNode.updateRowHeight(row, transaction);
+        widget.tableNode.updateRowHeight(row, transaction: transaction);
         if (transaction.operations.isNotEmpty) {
           transaction.afterSelection = transaction.beforeSelection;
           widget.editorState.apply(transaction);
