@@ -29,16 +29,26 @@ KeyEventResult _openLinksHandler(
 
   // A set to store the links which have been opened
   // to prevent opening new tabs for the same link
-  Set<String> openedLinks = {};
+  final openedLinks = <String>{};
 
   for (final node in nodes) {
-    for (final operation in node.delta!) {
-      final link = operation.attributes?[BuiltInAttributeKey.href];
-      if (link == null || openedLinks.contains(link)) continue;
+    final delta = node.delta;
+    if (delta == null) {
+      continue;
+    }
 
-      openedLinks.add(link);
+    // Get all links in the node
+    final links = delta
+        .map<String?>((op) => op.attributes?[AppFlowyRichTextKeys.href])
+        .whereNotNull()
+        .toSet()
+        .difference(openedLinks);
+
+    for (final link in links) {
       safeLaunchUrl(link);
     }
+
+    openedLinks.addAll(links);
   }
 
   return KeyEventResult.handled;
