@@ -144,6 +144,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     Widget child = Scrollbar(
       controller: _scrollController,
       child: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 4),
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
         child: TableView(

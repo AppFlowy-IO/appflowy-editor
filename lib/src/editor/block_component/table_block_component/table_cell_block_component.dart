@@ -118,7 +118,7 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
           position: widget.node.attributes[TableCellBlockKeys.rowPosition],
           transform: context.select((Node n) {
             final int col = n.attributes[TableCellBlockKeys.colPosition];
-            double left = -15.0;
+            double left = -12;
             for (var i = 0; i < col; i++) {
               left -= getCellNode(n.parent!, i, 0)
                   ?.attributes[TableCellBlockKeys.width] as double;

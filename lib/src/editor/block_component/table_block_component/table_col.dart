@@ -67,7 +67,7 @@ class _TableColState extends State<TableCol> {
               node: widget.tableNode.node,
               editorState: widget.editorState,
               position: widget.colIdx,
-              transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+              transform: Matrix4.translationValues(0.0, -12, 0.0),
               alignment: Alignment.topCenter,
               menuBuilder: widget.menuBuilder,
               dir: TableDirection.col,
