@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 /// Option/Alt + Shift + Enter: to open links
@@ -27,28 +28,20 @@ KeyEventResult _openLinksHandler(
 
   final nodes = editorState.getNodesInSelection(selection);
 
-  // A set to store the links which have been opened
-  // to prevent opening new tabs for the same link
-  final openedLinks = <String>{};
+  // A set to store the links which should be opened
+  final links = nodes
+      .map((node) => node.delta)
+      .whereNotNull()
+      .expand(
+        (node) => node.map<String?>(
+          (op) => op.attributes?[AppFlowyRichTextKeys.href],
+        ),
+      )
+      .whereNotNull()
+      .toSet();
 
-  for (final node in nodes) {
-    final delta = node.delta;
-    if (delta == null) {
-      continue;
-    }
-
-    // Get all links in the node
-    final links = delta
-        .map<String?>((op) => op.attributes?[AppFlowyRichTextKeys.href])
-        .whereNotNull()
-        .toSet()
-        .difference(openedLinks);
-
-    for (final link in links) {
-      safeLaunchUrl(link);
-    }
-
-    openedLinks.addAll(links);
+  for (final link in links) {
+    safeLaunchUrl(link);
   }
 
   return KeyEventResult.handled;
