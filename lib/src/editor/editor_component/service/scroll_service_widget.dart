@@ -11,10 +11,15 @@ class ScrollServiceWidget extends StatefulWidget {
     Key? key,
     this.shrinkWrap = false,
     this.scrollController,
+    this.editorScrollController,
     required this.child,
   }) : super(key: key);
 
+  @Deprecated('Use editorScrollController instead')
   final ScrollController? scrollController;
+
+  final EditorScrollController? editorScrollController;
+
   final bool shrinkWrap;
   final Widget child;
 
@@ -34,10 +39,16 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   late ScrollController scrollController;
 
+  late EditorScrollController editorScrollController;
+
+  double offset = 0;
+
   @override
   void initState() {
     super.initState();
 
+    editorScrollController =
+        widget.editorScrollController ?? EditorScrollController();
     scrollController = widget.scrollController ?? ScrollController();
     editorState.selectionNotifier.addListener(_onSelectionChanged);
   }
@@ -49,31 +60,22 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   }
 
   @override
-  void didUpdateWidget(covariant ScrollServiceWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.scrollController != oldWidget.scrollController) {
-      if (oldWidget.scrollController == null) {
-        // create by self
-        scrollController.dispose();
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AutoScrollableWidget(
-      shrinkWrap: widget.shrinkWrap,
-      scrollController: scrollController,
-      builder: (context, autoScroller) {
-        if (PlatformExtension.isDesktopOrWeb) {
-          return _buildDesktopScrollService(context, autoScroller);
-        } else if (PlatformExtension.isMobile) {
-          return _buildMobileScrollService(context, autoScroller);
-        }
+    return Provider.value(
+      value: editorScrollController,
+      child: AutoScrollableWidget(
+        shrinkWrap: widget.shrinkWrap,
+        scrollController: scrollController,
+        builder: (context, autoScroller) {
+          if (PlatformExtension.isDesktopOrWeb) {
+            return _buildDesktopScrollService(context, autoScroller);
+          } else if (PlatformExtension.isMobile) {
+            return _buildMobileScrollService(context, autoScroller);
+          }
 
-        throw UnimplementedError();
-      },
+          throw UnimplementedError();
+        },
+      ),
     );
   }
 
@@ -164,7 +166,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void disable() => forward.disable();
 
   @override
-  double get dy => forward.dy;
+  double get dy => offset;
 
   @override
   void enable() => forward.enable();
@@ -191,13 +193,15 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     double edgeOffset = 100,
     AxisDirection? direction,
     Duration? duration,
-  }) =>
-      forward.startAutoScroll(
-        offset,
-        edgeOffset: edgeOffset,
-        direction: direction,
-        duration: duration,
-      );
+  }) {
+    return;
+    forward.startAutoScroll(
+      offset,
+      edgeOffset: edgeOffset,
+      direction: direction,
+      duration: duration,
+    );
+  }
 
   @override
   void stopAutoScroll() => forward.stopAutoScroll();

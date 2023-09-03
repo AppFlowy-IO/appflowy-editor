@@ -38,6 +38,7 @@ class Editor extends StatelessWidget {
             }
           });
           final scrollController = ScrollController();
+          final editorScrollController = EditorScrollController();
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
               items: [
@@ -54,11 +55,11 @@ class Editor extends StatelessWidget {
                 ...alignmentItems,
               ],
               editorState: editorState,
-              scrollController: scrollController,
+              editorScrollController: editorScrollController,
               child: _buildDesktopEditor(
                 context,
                 editorState,
-                scrollController,
+                editorScrollController,
               ),
             );
           } else if (PlatformExtension.isMobile) {
@@ -68,7 +69,7 @@ class Editor extends StatelessWidget {
                   child: _buildMobileEditor(
                     context,
                     editorState,
-                    scrollController,
+                    editorScrollController,
                   ),
                 ),
                 MobileToolbar(
@@ -99,19 +100,19 @@ class Editor extends StatelessWidget {
   Widget _buildMobileEditor(
     BuildContext context,
     EditorState editorState,
-    ScrollController? scrollController,
+    EditorScrollController? editorScrollController,
   ) {
     return AppFlowyEditor(
       editorStyle: const EditorStyle.mobile(),
       editorState: editorState,
-      scrollController: scrollController,
+      editorScrollController: editorScrollController,
     );
   }
 
   Widget _buildDesktopEditor(
     BuildContext context,
     EditorState editorState,
-    ScrollController? scrollController,
+    EditorScrollController? editorScrollController,
   ) {
     final customBlockComponentBuilders = {
       ...standardBlockComponentBuilderMap,
@@ -127,7 +128,7 @@ class Editor extends StatelessWidget {
     };
     return AppFlowyEditor(
       editorState: editorState,
-      scrollController: scrollController,
+      editorScrollController: editorScrollController,
       blockComponentBuilders: customBlockComponentBuilders,
       commandShortcutEvents: [
         customToggleHighlightCommand(

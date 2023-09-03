@@ -128,6 +128,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
 
   @override
   Widget buildComponent(BuildContext context) {
+    print('${node.path}: build text block component');
     final textDirection = calculateTextDirection(
       layoutDirection: Directionality.maybeOf(context),
     );

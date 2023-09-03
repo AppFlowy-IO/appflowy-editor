@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:nanoid/nanoid.dart';
 
 /// [Node] represents a node in the document tree.
 ///
@@ -35,7 +34,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
             ),
           ), // unlink the given children to avoid the error of "node has already a parent"
         _attributes = attributes,
-        id = id ?? nanoid(10) {
+        id = id ?? "" {
     for (final child in this.children) {
       child.parent = this;
     }
@@ -76,7 +75,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// The children of the node.
   final LinkedList<Node> _children;
-  Iterable<Node> get children => _children.toList(growable: false);
+  List<Node> get children {
+    _cacheChildren ??= _children.toList(growable: false);
+    return _cacheChildren!;
+  }
+
+  List<Node>? _cacheChildren;
 
   /// The attributes of the node.
   Attributes _attributes;
@@ -151,12 +155,16 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     } else {
       childAtIndexOrNull(index)?.insertBefore(entry);
     }
+
+    _cacheChildren = null;
   }
 
   @override
   void insertAfter(Node entry) {
     entry.parent = parent;
     super.insertAfter(entry);
+
+    parent?._cacheChildren = null;
 
     // Notifies the new node.
     parent?.notifyListeners();
@@ -166,6 +174,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   void insertBefore(Node entry) {
     entry.parent = parent;
     super.insertBefore(entry);
+
+    parent?._cacheChildren = null;
 
     // Notifies the new node.
     parent?.notifyListeners();
@@ -178,6 +188,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     }
     Log.editor.debug('delete Node $this from path $path');
     super.unlink();
+
+    parent?._cacheChildren = null;
 
     parent?.notifyListeners();
     parent = null;
@@ -224,7 +236,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }) {
     final node = Node(
       type: type ?? this.type,
-      id: nanoid(10),
+      id: "",
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );
@@ -239,11 +251,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   Path _computePath([Path previous = const []]) {
+    final parent = this.parent;
     if (parent == null) {
       return previous;
     }
-    final index = parent!.children.toList().indexOf(this);
-    return parent!._computePath([index, ...previous]);
+    final index = parent.children.indexOf(this);
+    return parent._computePath([index, ...previous]);
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DividerBlockKeys {
   const DividerBlockKeys._();
@@ -104,7 +105,37 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    return child;
+    final selectionNotifier = context.read<EditorState>().selectionNotifier;
+    return Stack(
+      children: [
+        ValueListenableBuilder(
+          valueListenable: selectionNotifier,
+          builder: (context, value, child) {
+            if (value == null) {
+              return const SizedBox.shrink();
+            }
+
+            value = value.normalized;
+
+            if (value.start.path <= widget.node.path &&
+                widget.node.path <= value.end.path) {
+              final rects = getRectsInSelection(value);
+              return Positioned.fromRect(
+                rect: rects.first,
+                child: Container(
+                  color: Colors.red.withOpacity(0.8),
+                  width: rects.first.width,
+                  height: rects.first.height,
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+        child,
+      ],
+    );
   }
 
   @override

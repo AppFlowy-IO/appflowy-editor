@@ -26,6 +26,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.focusedSelection,
     this.shrinkWrap = false,
     this.scrollController,
+    this.editorScrollController,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
     this.footer,
@@ -115,7 +116,10 @@ class AppFlowyEditor extends StatefulWidget {
   ///   if you need to custom the scroll behavior.
   ///
   /// Otherwise, the editor will create a scrollController inside.
+  @Deprecated('use SelectionUpdateReason instead')
   final ScrollController? scrollController;
+
+  final EditorScrollController? editorScrollController;
 
   /// Set the value to false to disable editing.
   final bool editable;
@@ -246,11 +250,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       );
     }
 
-    return child;
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
       shrinkWrap: widget.shrinkWrap,
       scrollController: widget.scrollController,
+      editorScrollController: widget.editorScrollController,
       child: child,
     );
   }

@@ -39,42 +39,22 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final editorState = Provider.of<EditorState>(context, listen: false);
-    // final children = editorState.renderer.buildList(context, node.children);
-    // return Column(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   mainAxisSize: MainAxisSize.min,
-    //   children: children,
-    // );
-    final visibleItems = <int>{};
-    final items = node.children.toList(growable: false);
-    final ItemScrollController itemScrollController = ItemScrollController();
-    final ScrollOffsetController scrollOffsetController =
-        ScrollOffsetController();
-    final ItemPositionsListener itemPositionsListener =
-        ItemPositionsListener.create();
-    final ScrollOffsetListener scrollOffsetListener =
-        ScrollOffsetListener.create();
+    final editorState = context.read<EditorState>();
+    final scrollController = context.read<EditorScrollController>();
 
-    itemPositionsListener.itemPositions.addListener(() {
-      final value = itemPositionsListener.itemPositions.value;
-      print(
-        'current visible items = ${value.length}, first index = ${value.first.index}, last index = ${value.last.index}',
-      );
-    });
+    final items = node.children.toList(growable: false);
 
     return ScrollablePositionedList.builder(
       shrinkWrap: false,
       itemCount: items.length,
-      itemBuilder: ((context, index) {
-        visibleItems.add(index);
-        final child = editorState.renderer.build(context, items[index]);
-        return child;
-      }),
-      itemScrollController: itemScrollController,
-      scrollOffsetController: scrollOffsetController,
-      itemPositionsListener: itemPositionsListener,
-      scrollOffsetListener: scrollOffsetListener,
+      itemBuilder: (context, index) => editorState.renderer.build(
+        context,
+        items[index],
+      ),
+      itemScrollController: scrollController.itemScrollController,
+      scrollOffsetController: scrollController.scrollOffsetController,
+      itemPositionsListener: scrollController.itemPositionsListener,
+      scrollOffsetListener: scrollController.scrollOffsetListener,
     );
   }
 }

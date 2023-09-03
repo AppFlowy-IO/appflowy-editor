@@ -21,14 +21,14 @@ class FloatingToolbar extends StatefulWidget {
     super.key,
     required this.items,
     required this.editorState,
-    required this.scrollController,
+    required this.editorScrollController,
     required this.child,
     this.style = const FloatingToolbarStyle(),
   });
 
   final List<ToolbarItem> items;
   final EditorState editorState;
-  final ScrollController scrollController;
+  final EditorScrollController editorScrollController;
   final Widget child;
   final FloatingToolbarStyle style;
 
@@ -49,7 +49,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
-    widget.scrollController.addListener(_onScrollPositionChanged);
+    widget.editorScrollController.offsetNotifier.addListener(
+      _onScrollPositionChanged,
+    );
   }
 
   @override
@@ -59,16 +61,14 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (widget.editorState != oldWidget.editorState) {
       editorState.selectionNotifier.addListener(_onSelectionChanged);
     }
-
-    if (widget.scrollController != oldWidget.scrollController) {
-      widget.scrollController.addListener(_onScrollPositionChanged);
-    }
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
-    widget.scrollController.removeListener(_onScrollPositionChanged);
+    widget.editorScrollController.offsetNotifier.removeListener(
+      _onScrollPositionChanged,
+    );
     WidgetsBinding.instance.removeObserver(this);
 
     _clear();
@@ -111,8 +111,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   void _onScrollPositionChanged() {
-    final offset = widget.scrollController.offset;
-    Log.toolbar.debug('offset = $offset');
+    final offset = widget.editorScrollController.offsetNotifier.value;
 
     _clear();
 

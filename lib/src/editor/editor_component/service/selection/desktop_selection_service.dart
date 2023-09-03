@@ -10,7 +10,7 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
-    this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.selectionColor = const Color(0xFF00BCF0),
     required this.contextMenuItems,
     required this.child,
   });
@@ -129,6 +129,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelection() {
+    return;
     final selection = editorState.selection;
 
     // TODO: why do we need to check this?
@@ -206,14 +207,38 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   Node? getNodeInOffset(Offset offset) {
-    final sortedNodes =
-        editorState.document.root.children.toList(growable: false);
+    final List<Node> sortedNodes = getVisibleNodes();
+
     return _getNodeInOffset(
       sortedNodes,
       offset,
       0,
       sortedNodes.length - 1,
     );
+  }
+
+  List<Node> getVisibleNodes() {
+    final List<Node> sortedNodes = [];
+    final positions =
+        context.read<EditorScrollController>().visibleRangeNotifier.value;
+    final min = positions.$1;
+    final max = positions.$2;
+    if (min < 0 || max < 0) {
+      return sortedNodes;
+    }
+
+    int i = -1;
+    for (final child in editorState.document.root.children) {
+      i++;
+      if (min > i) {
+        continue;
+      }
+      if (i > max) {
+        break;
+      }
+      sortedNodes.add(child);
+    }
+    return sortedNodes;
   }
 
   @override
@@ -366,6 +391,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelectionAreas(Selection selection) {
+    return;
     final nodes = editorState.getNodesInSelection(selection);
 
     currentSelectedNodes = nodes;
@@ -485,6 +511,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateCursorAreas(Position position) {
+    return;
     final node = editorState.document.root.childAtPath(position.path);
 
     if (node == null) {

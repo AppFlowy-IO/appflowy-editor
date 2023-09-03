@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
@@ -39,6 +40,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+    List.generate(len, (index) => r.nextInt(33) + 89),
+  );
+}
+
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -55,7 +63,7 @@ class _HomePageState extends State<HomePage> {
 
     final nodes = List.generate(
       10000,
-      (index) => paragraphNode(text: '$index'),
+      (index) => paragraphNode(text: '$index ${generateRandomString(50)}'),
     );
     final editorState = EditorState(
       document: Document(root: pageNode(children: nodes)),
