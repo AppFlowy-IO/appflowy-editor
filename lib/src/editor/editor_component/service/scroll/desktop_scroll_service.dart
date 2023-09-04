@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DesktopScrollService extends StatefulWidget {
   const DesktopScrollService({
@@ -22,7 +23,7 @@ class DesktopScrollService extends StatefulWidget {
 class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
   @override
-  double get dy => widget.scrollController.position.pixels;
+  double get dy => context.read<EditorScrollController>().offsetNotifier.value;
 
   @override
   double? get onePageHeight {

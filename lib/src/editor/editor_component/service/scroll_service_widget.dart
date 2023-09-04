@@ -168,7 +168,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void disable() => forward.disable();
 
   @override
-  double get dy => offset;
+  double get dy => forward.dy;
 
   @override
   void enable() => forward.enable();

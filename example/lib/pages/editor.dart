@@ -31,7 +31,7 @@ class Editor extends StatelessWidget {
           );
           editorState.logConfiguration
             ..handler = debugPrint
-            ..level = LogLevel.off;
+            ..level = LogLevel.all;
           editorState.transactionStream.listen((event) {
             if (event.$1 == TransactionTime.after) {
               onEditorStateChange(editorState);

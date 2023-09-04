@@ -116,7 +116,7 @@ class _DesktopSelectionServiceWidgetState
         _updateCursorAreas(selection.start);
       } else {
         // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
+        Log.selection.debug('update selection area, $selection');
         _updateSelectionAreas(selection);
       }
     }
@@ -322,11 +322,15 @@ class _DesktopSelectionServiceWidgetState
     _showContextMenu(details);
   }
 
+  Node? startNode;
+
   void _onPanStart(DragStartDetails details) {
     clearSelection();
 
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
+
+    startNode = getNodeInOffset(_panStartOffset!);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -336,11 +340,13 @@ class _DesktopSelectionServiceWidgetState
 
     final panEndOffset = details.globalPosition;
     final dy = editorState.service.scrollService?.dy;
+    print('dy = $dy');
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
 
-    final first = getNodeInOffset(panStartOffset)?.selectable;
+    // this one maybe redundant.
+    final first = startNode?.selectable;
     final last = getNodeInOffset(panEndOffset)?.selectable;
 
     // compute the selection in range.
