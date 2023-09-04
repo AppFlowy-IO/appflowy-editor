@@ -39,27 +39,19 @@ void showActionMenu(
         height: 230,
         children: [
           _menuItem(context, 'Add after', Icons.last_page, () {
-            final transaction = editorState.transaction;
-            TableActions.add(node, position + 1, transaction, dir);
-            editorState.apply(transaction);
+            TableActions.add(node, position + 1, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(context, 'Add before', Icons.first_page, () {
-            final transaction = editorState.transaction;
-            TableActions.add(node, position, transaction, dir);
-            editorState.apply(transaction);
+            TableActions.add(node, position, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(context, 'Remove', Icons.delete, () {
-            final transaction = editorState.transaction;
-            TableActions.delete(node, position, transaction, dir);
-            editorState.apply(transaction);
+            TableActions.delete(node, position, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(context, 'Duplicate', Icons.content_copy, () {
-            final transaction = editorState.transaction;
-            TableActions.duplicate(node, position, transaction, dir);
-            editorState.apply(transaction);
+            TableActions.duplicate(node, position, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(
@@ -70,33 +62,31 @@ void showActionMenu(
               final cell = dir == TableDirection.col
                   ? getCellNode(node, position, 0)
                   : getCellNode(node, 0, position);
+              final key = dir == TableDirection.col
+                  ? TableCellBlockKeys.colBackgroundColor
+                  : TableCellBlockKeys.rowBackgroundColor;
 
               _showColorMenu(
                 context,
                 (color) {
-                  final transaction = editorState.transaction;
                   TableActions.setBgColor(
                     node,
                     position,
-                    transaction,
+                    editorState,
                     color,
                     dir,
                   );
-                  editorState.apply(transaction);
                 },
                 top: top,
                 bottom: bottom,
                 left: left,
-                selectedColorHex:
-                    cell?.attributes[TableBlockKeys.backgroundColor],
+                selectedColorHex: cell?.attributes[key],
               );
               dismissOverlay();
             },
           ),
           _menuItem(context, 'Clear Content', Icons.clear, () {
-            final transaction = editorState.transaction;
-            TableActions.clear(node, position, transaction, dir);
-            editorState.apply(transaction);
+            TableActions.clear(node, position, editorState, dir);
             dismissOverlay();
           }),
         ],
