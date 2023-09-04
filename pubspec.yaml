@@ -47,10 +47,7 @@ dev_dependencies:
 
 dependency_overrides:
   scrollable_positioned_list:
-    git:
-      url: https://github.com/vesuvi88/flutter.widgets.git
-      ref: a1bed26
-      path: packages/scrollable_positioned_list/
+    path: /Users/lucas.xu/Desktop/flutter.widgets/packages/scrollable_positioned_list
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

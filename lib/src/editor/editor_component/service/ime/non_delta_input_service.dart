@@ -61,7 +61,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     TextEditingValue textEditingValue,
     TextInputConfiguration configuration,
   ) {
-    return;
     final formattedValue = textEditingValue.format();
     if (currentTextEditingValue == formattedValue) {
       return;

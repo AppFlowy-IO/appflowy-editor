@@ -21,6 +21,7 @@ class FloatingToolbar extends StatefulWidget {
     super.key,
     required this.items,
     required this.editorState,
+    required this.scrollController,
     required this.editorScrollController,
     required this.child,
     this.style = const FloatingToolbarStyle(),
@@ -28,6 +29,7 @@ class FloatingToolbar extends StatefulWidget {
 
   final List<ToolbarItem> items;
   final EditorState editorState;
+  final ScrollController scrollController;
   final EditorScrollController editorScrollController;
   final Widget child;
   final FloatingToolbarStyle style;

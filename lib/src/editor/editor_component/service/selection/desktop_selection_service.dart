@@ -32,7 +32,7 @@ class _DesktopSelectionServiceWidgetState
   final _cursorKey = GlobalKey(debugLabel: 'cursor');
 
   @override
-  final List<Rect> selectionRects = [];
+  List<Rect> get selectionRects => editorState.selectionRects();
   final List<OverlayEntry> _selectionAreas = [];
   final List<OverlayEntry> _cursorAreas = [];
   final List<OverlayEntry> _contextMenuAreas = [];

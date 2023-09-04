@@ -45,6 +45,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ],
     editorState: editor.editorState,
     scrollController: scrollController,
+    editorScrollController: EditorScrollController(),
     child: AppFlowyEditor(editorState: editor.editorState),
   );
 

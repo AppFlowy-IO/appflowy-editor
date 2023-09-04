@@ -55,6 +55,7 @@ class Editor extends StatelessWidget {
                 ...alignmentItems,
               ],
               editorState: editorState,
+              scrollController: scrollController,
               editorScrollController: editorScrollController,
               child: _buildDesktopEditor(
                 context,

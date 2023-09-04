@@ -47,6 +47,9 @@ class TestableEditor {
     if (withFloatingToolbar) {
       scrollController ??= ScrollController();
     }
+
+    final editorScrollController = EditorScrollController();
+
     Widget editor = Builder(
       builder: (context) {
         return AppFlowyEditor(
@@ -63,9 +66,11 @@ class TestableEditor {
           editorStyle: inMobile
               ? const EditorStyle.mobile()
               : const EditorStyle.desktop(),
+          editorScrollController: editorScrollController,
         );
       },
     );
+
     if (withFloatingToolbar) {
       if (inMobile) {
         final items = [
@@ -107,6 +112,7 @@ class TestableEditor {
           ],
           editorState: editorState,
           scrollController: scrollController!,
+          editorScrollController: editorScrollController,
           child: editor,
         );
       }
