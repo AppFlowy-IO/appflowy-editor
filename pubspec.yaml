@@ -45,6 +45,13 @@ dev_dependencies:
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
 
+dependency_overrides:
+  scrollable_positioned_list:
+    git:
+      url: https://github.com/vesuvi88/flutter.widgets.git
+      ref: a1bed26
+      path: packages/scrollable_positioned_list/
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

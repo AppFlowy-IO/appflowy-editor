@@ -49,7 +49,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
     editorScrollController =
         widget.editorScrollController ?? EditorScrollController();
-    scrollController = widget.scrollController ?? ScrollController();
+    // scrollController = widget.scrollController ?? ScrollController();
+    scrollController = editorScrollController.scrollController;
     editorState.selectionNotifier.addListener(_onSelectionChanged);
   }
 
@@ -104,6 +105,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   }
 
   void _onSelectionChanged() {
+    return;
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||

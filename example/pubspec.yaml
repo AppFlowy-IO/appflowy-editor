@@ -48,6 +48,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+dependency_overrides:
+  scrollable_positioned_list:
+    path: /Users/lucas.xu/Desktop/flutter.widgets/packages/scrollable_positioned_list
+    # git:
+    #   url: https://github.com/vesuvi88/flutter.widgets.git
+    #   ref: a1bed26
+    #   path: packages/scrollable_positioned_list/
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

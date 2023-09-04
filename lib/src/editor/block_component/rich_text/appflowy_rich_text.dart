@@ -141,8 +141,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Rect? getCursorRectInPosition(Position position) {
+    // TODO: the debug needs layout!!!
+    if (_renderParagraph?.debugNeedsLayout == true) {
+      return null;
+    }
     final textPosition = TextPosition(offset: position.offset);
-
     var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
     var cursorOffset =
         _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??

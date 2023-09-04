@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+EdgeDraggingAutoScroller? kAutoScroller;
+
 class PageBlockKeys {
   static const String type = 'page';
 }
@@ -28,7 +30,7 @@ class PageBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class PageBlockComponent extends BlockComponentStatelessWidget {
+class PageBlockComponent extends BlockComponentStatefulWidget {
   const PageBlockComponent({
     super.key,
     required super.node,
@@ -38,19 +40,38 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
   });
 
   @override
+  State<PageBlockComponent> createState() => _PageBlockComponentState();
+}
+
+class _PageBlockComponentState extends State<PageBlockComponent> {
+  late ScrollableState _scrollable;
+
+  @override
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final scrollController = context.read<EditorScrollController>();
 
-    final items = node.children.toList(growable: false);
+    final items = widget.node.children.toList(growable: false);
 
     return ScrollablePositionedList.builder(
       shrinkWrap: false,
       itemCount: items.length,
-      itemBuilder: (context, index) => editorState.renderer.build(
-        context,
-        items[index],
-      ),
+      itemBuilder: (context, index) {
+        _scrollable = Scrollable.of(context);
+        if (kAutoScroller?.scrollable != _scrollable) {
+          kAutoScroller?.stopAutoScroll();
+          kAutoScroller = EdgeDraggingAutoScroller(
+            _scrollable,
+            onScrollViewScrolled: () {
+              print('here');
+            },
+          );
+        }
+        return editorState.renderer.build(
+          context,
+          items[index],
+        );
+      },
       itemScrollController: scrollController.itemScrollController,
       scrollOffsetController: scrollController.scrollOffsetController,
       itemPositionsListener: scrollController.itemPositionsListener,

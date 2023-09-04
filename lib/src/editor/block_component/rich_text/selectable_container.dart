@@ -27,6 +27,9 @@ class _SelectableContainerState extends State<SelectableContainer> {
   Rect? cursorRect;
   List<Rect>? selectionRects;
 
+  late GlobalKey cursorKey =
+      GlobalKey(debugLabel: 'cursor_${widget.node.path}');
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +59,13 @@ class _SelectableContainerState extends State<SelectableContainer> {
           if (rect == null) {
             return child!;
           }
-          return Cursor(rect: rect, color: widget.selectionColor);
+          final cursor = Cursor(
+            key: cursorKey,
+            rect: rect,
+            color: Colors.black,
+          );
+          cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
+          return cursor;
         } else if (value.start.path <= widget.node.path &&
             widget.node.path <= value.end.path) {
           final rects = widget.delegate.getRectsInSelection(value);

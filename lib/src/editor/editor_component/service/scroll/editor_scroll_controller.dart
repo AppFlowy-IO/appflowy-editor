@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class EditorScrollController {
-  EditorScrollController() {
+  EditorScrollController({
+    ScrollController? scrollController,
+  }) : scrollController = scrollController ?? ScrollController() {
     scrollOffsetListener.changes.listen((value) {
       offsetNotifier.value = offsetNotifier.value + value;
     });
@@ -40,6 +42,8 @@ class EditorScrollController {
       visibleRangeNotifier.value = (min, max);
     });
   }
+
+  final ScrollController scrollController;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   final ScrollOffsetController scrollOffsetController =

@@ -352,6 +352,14 @@ class _DesktopSelectionServiceWidgetState
       final selection = Selection(start: start, end: end);
       updateSelection(selection);
     }
+    final dragTarget = Rect.fromCenter(
+      center: panEndOffset,
+      width: 100,
+      height: 100,
+    );
+    kAutoScroller?.startAutoScrollIfNecessary(dragTarget);
+    editorState.service.scrollService
+        ?.startAutoScroll(panEndOffset, edgeOffset: 100);
   }
 
   void _onPanEnd(DragEndDetails details) {

@@ -139,7 +139,9 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     entry.parent = this;
 
-    if (children.isEmpty) {
+    _cacheChildren = null;
+
+    if (_children.isEmpty) {
       _children.add(entry);
       notifyListeners();
       return;
@@ -155,8 +157,6 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     } else {
       childAtIndexOrNull(index)?.insertBefore(entry);
     }
-
-    _cacheChildren = null;
   }
 
   @override
