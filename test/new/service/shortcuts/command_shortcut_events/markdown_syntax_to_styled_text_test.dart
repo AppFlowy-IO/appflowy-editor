@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../new/infra/testable_editor.dart';
+import '../../../infra/testable_editor.dart';
 
 void main() async {
   bool allInSelection(
