@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/block_selection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -78,7 +79,7 @@ class _DividerBlockComponentWidgetState
   Node get node => widget.node;
 
   final dividerKey = GlobalKey();
-  RenderBox get _renderBox => context.findRenderObject() as RenderBox;
+  RenderBox? get _renderBox => context.findRenderObject() as RenderBox?;
 
   @override
   Widget build(BuildContext context) {
@@ -105,36 +106,15 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    final selectionNotifier = context.read<EditorState>().selectionNotifier;
-    return Stack(
-      children: [
-        ValueListenableBuilder(
-          valueListenable: selectionNotifier,
-          builder: (context, value, child) {
-            if (value == null) {
-              return const SizedBox.shrink();
-            }
-
-            value = value.normalized;
-
-            if (value.start.path <= widget.node.path &&
-                widget.node.path <= value.end.path) {
-              final rects = getRectsInSelection(value);
-              return Positioned.fromRect(
-                rect: rects.first,
-                child: Container(
-                  color: Colors.red.withOpacity(0.8),
-                  width: rects.first.width,
-                  height: rects.first.height,
-                ),
-              );
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
-        child,
-      ],
+    final editorState = context.read<EditorState>();
+    final selectionNotifier = editorState.selectionNotifier;
+    return BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: selectionNotifier,
+      cursorColor: editorState.editorStyle.cursorColor,
+      selectionColor: editorState.editorStyle.selectionColor,
+      child: child,
     );
   }
 
@@ -160,12 +140,18 @@ class _DividerBlockComponentWidgetState
 
   @override
   Rect? getCursorRectInPosition(Position position) {
-    final size = _renderBox.size;
+    if (_renderBox == null) {
+      return null;
+    }
+    final size = _renderBox!.size;
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
 
   @override
   List<Rect> getRectsInSelection(Selection selection) {
+    if (_renderBox == null) {
+      return [];
+    }
     final parentBox = context.findRenderObject();
     final dividerBox = dividerKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
@@ -174,7 +160,7 @@ class _DividerBlockComponentWidgetState
             dividerBox.size
       ];
     }
-    return [Offset.zero & _renderBox.size];
+    return [Offset.zero & _renderBox!.size];
   }
 
   @override
@@ -185,7 +171,7 @@ class _DividerBlockComponentWidgetState
       );
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(Offset offset) => _renderBox!.localToGlobal(offset);
 
   @override
   TextDirection textDirection() {
