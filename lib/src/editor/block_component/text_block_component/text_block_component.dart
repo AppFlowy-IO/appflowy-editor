@@ -33,7 +33,8 @@ Node paragraphNode({
   );
 }
 
-class TextBlockComponentBuilder extends BlockComponentBuilder {
+class TextBlockComponentBuilder extends BlockComponentBuilder
+    with BlockComponentSelectable {
   TextBlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
   });
@@ -59,6 +60,15 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   @override
   bool validate(Node node) {
     return node.delta != null;
+  }
+
+  @override
+  Position start(Node node) => Position(path: node.path, offset: 0);
+
+  @override
+  Position end(Node node) {
+    assert(node.delta != null);
+    return Position(path: node.path, offset: node.delta?.length ?? 0);
   }
 }
 

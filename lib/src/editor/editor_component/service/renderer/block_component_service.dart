@@ -31,6 +31,18 @@ abstract class BlockComponentBuilder {
       const BlockComponentConfiguration();
 }
 
+mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
+  /// the start position of the block component.
+  ///
+  /// For the text block component, the start position is always 0.
+  Position start(Node node);
+
+  /// the end position of the block component.
+  ///
+  /// For the text block component, the end position is always the length of the text.
+  Position end(Node node);
+}
+
 abstract class BlockComponentRendererService {
   /// Register render plugin with specified [type].
   ///
@@ -51,6 +63,9 @@ abstract class BlockComponentRendererService {
   /// or null otherwise.
   ///
   BlockComponentBuilder? blockComponentBuilder(String type);
+
+  BlockComponentSelectable? blockComponentSelectable(String type) =>
+      blockComponentBuilder(type) as BlockComponentSelectable?;
 
   /// Build a widget for the specified [node].
   ///

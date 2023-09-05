@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -60,12 +58,27 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final last = max(0, editorState.document.root.children.length - 1);
+  final nodes = editorState.document.root.children;
+  Position? result;
+  for (var i = nodes.length - 1; i >= 0; i--) {
+    final selectable =
+        editorState.renderer.blockComponentSelectable(nodes[i].type);
+    if (selectable != null) {
+      result = selectable.end(nodes[i]);
+      break;
+    }
+  }
+
+  if (result == null) {
+    return KeyEventResult.ignored;
+  }
+
+  editorState.scrollService?.jumpTo(result.path.first);
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: Position(path: [last])),
+    selection.copyWith(end: result),
     reason: SelectionUpdateReason.uiEvent,
   );
-  editorState.scrollService?.jumpTo(last);
+
   return KeyEventResult.handled;
 };
 
@@ -83,12 +96,27 @@ CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final last = max(0, editorState.document.root.children.length - 1);
+  final nodes = editorState.document.root.children;
+  Position? result;
+  for (var i = nodes.length - 1; i >= 0; i--) {
+    final selectable =
+        editorState.renderer.blockComponentSelectable(nodes[i].type);
+    if (selectable != null) {
+      result = selectable.end(nodes[i]);
+      break;
+    }
+  }
+
+  if (result == null) {
+    return KeyEventResult.ignored;
+  }
+
+  editorState.scrollService?.jumpTo(result.path.first);
   editorState.updateSelectionWithReason(
-    Selection.collapsed(Position(path: [last])),
+    Selection.collapsed(result),
     reason: SelectionUpdateReason.uiEvent,
   );
-  editorState.scrollService?.jumpTo(last);
+
   return KeyEventResult.handled;
 };
 

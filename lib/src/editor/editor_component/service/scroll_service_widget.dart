@@ -136,7 +136,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           );
         }
       } else {
-        startAutoScroll(endTouchPoint);
+        startAutoScroll(
+          endTouchPoint,
+          duration: Duration.zero,
+        );
       }
     });
   }
