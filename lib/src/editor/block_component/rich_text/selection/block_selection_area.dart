@@ -70,6 +70,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return sizedBox;
         }
 
+        // show the cursor when the selection is collapsed
         if (selection.isCollapsed) {
           if (prevCursorRect == null) {
             return sizedBox;
@@ -83,6 +84,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
           return cursor;
         } else {
+          // show the selection area when the selection is not collapsed
           if (prevSelectionRects == null || prevSelectionRects!.isEmpty) {
             return sizedBox;
           }

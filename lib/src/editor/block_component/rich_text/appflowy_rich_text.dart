@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
@@ -29,7 +30,7 @@ class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
     this.cursorHeight,
-    this.cursorWidth = 1.5,
+    this.cursorWidth = 2.0,
     this.lineHeight,
     this.textSpanDecorator,
     this.placeholderText = ' ',
@@ -174,7 +175,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       cursorHeight = widget.cursorHeight;
     }
     final rect = Rect.fromLTWH(
-      cursorOffset.dx - (widget.cursorWidth / 2.0),
+      max(0, cursorOffset.dx - (widget.cursorWidth / 2.0)),
       cursorOffset.dy,
       widget.cursorWidth,
       cursorHeight ?? 16.0,
