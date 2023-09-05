@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,10 @@ class EditorState {
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
+
+  /// store the auto scroller instance in here temporarily.
+  AutoScroller? autoScroller;
+  ScrollableState? _scrollableState;
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -419,6 +424,21 @@ class EditorState {
 
   void cancelSubscription() {
     _observer.close();
+  }
+
+  void updateAutoScroller(
+    ScrollableState scrollableState,
+  ) {
+    if (_scrollableState != scrollableState) {
+      autoScroller?.stopAutoScroll();
+      autoScroller = AutoScroller(
+        scrollableState,
+        onScrollViewScrolled: () {
+          debugPrint('on scroll view scrolled');
+        },
+      );
+      _scrollableState = scrollableState;
+    }
   }
 
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {

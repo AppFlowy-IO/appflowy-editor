@@ -37,7 +37,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   late EditorState editorState = context.read<EditorState>();
 
   @override
-  late ScrollController scrollController;
+  late ScrollController scrollController = ScrollController();
 
   late EditorScrollController editorScrollController;
 
@@ -50,7 +50,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     editorScrollController =
         widget.editorScrollController ?? EditorScrollController();
     // scrollController = widget.scrollController ?? ScrollController();
-    scrollController = editorScrollController.scrollController;
     editorState.selectionNotifier.addListener(_onSelectionChanged);
   }
 

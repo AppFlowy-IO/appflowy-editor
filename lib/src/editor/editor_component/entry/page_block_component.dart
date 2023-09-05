@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-EdgeDraggingAutoScroller? kAutoScroller;
-
 class PageBlockKeys {
   static const String type = 'page';
 }
@@ -30,7 +28,7 @@ class PageBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class PageBlockComponent extends BlockComponentStatefulWidget {
+class PageBlockComponent extends BlockComponentStatelessWidget {
   const PageBlockComponent({
     super.key,
     required super.node,
@@ -40,33 +38,15 @@ class PageBlockComponent extends BlockComponentStatefulWidget {
   });
 
   @override
-  State<PageBlockComponent> createState() => _PageBlockComponentState();
-}
-
-class _PageBlockComponentState extends State<PageBlockComponent> {
-  late ScrollableState _scrollable;
-
-  @override
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final scrollController = context.read<EditorScrollController>();
-
-    final items = widget.node.children.toList(growable: false);
-
+    final items = node.children;
     return ScrollablePositionedList.builder(
       shrinkWrap: false,
       itemCount: items.length,
       itemBuilder: (context, index) {
-        _scrollable = Scrollable.of(context);
-        if (kAutoScroller?.scrollable != _scrollable) {
-          kAutoScroller?.stopAutoScroll();
-          kAutoScroller = EdgeDraggingAutoScroller(
-            _scrollable,
-            onScrollViewScrolled: () {
-              print('here');
-            },
-          );
-        }
+        editorState.updateAutoScroller(Scrollable.of(context));
         return editorState.renderer.build(
           context,
           items[index],

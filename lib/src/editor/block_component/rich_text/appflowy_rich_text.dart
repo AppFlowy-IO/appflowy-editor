@@ -7,7 +7,7 @@ import 'package:appflowy_editor/src/core/document/text_delta.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/selectable_container.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/block_selection_container.dart';
 import 'package:appflowy_editor/src/editor/util/color_util.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
@@ -37,6 +37,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
     this.textAlign,
+    this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     required this.node,
     required this.editorState,
@@ -77,6 +78,7 @@ class AppFlowyRichText extends StatefulWidget {
   final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
   final TextDirection textDirection;
 
+  final Color cursorColor;
   final Color selectionColor;
 
   @override
@@ -112,16 +114,13 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           : _buildRichText(context),
     );
 
-    return Stack(
-      children: [
-        SelectableContainer(
-          delegate: this,
-          listenable: widget.editorState.selectionNotifier,
-          node: widget.node,
-          selectionColor: widget.selectionColor,
-        ),
-        child,
-      ],
+    return BlockSelectionContainer(
+      delegate: this,
+      listenable: widget.editorState.selectionNotifier,
+      node: widget.node,
+      cursorColor: widget.cursorColor,
+      selectionColor: widget.selectionColor,
+      child: child,
     );
   }
 

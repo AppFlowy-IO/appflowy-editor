@@ -41,7 +41,7 @@ class _DesktopSelectionServiceWidgetState
   ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
 
   @override
-  List<Node> currentSelectedNodes = [];
+  List<Node> get currentSelectedNodes => editorState.getSelectedNodes();
 
   final List<SelectionGestureInterceptor> _interceptors = [];
 
@@ -174,7 +174,7 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   void clearSelection() {
-    currentSelectedNodes = [];
+    // currentSelectedNodes = [];
     currentSelection.value = null;
 
     _clearSelection();
@@ -363,7 +363,7 @@ class _DesktopSelectionServiceWidgetState
       width: 100,
       height: 100,
     );
-    kAutoScroller?.startAutoScrollIfNecessary(dragTarget);
+    editorState.autoScroller?.startAutoScrollIfNecessary(dragTarget);
     editorState.service.scrollService
         ?.startAutoScroll(panEndOffset, edgeOffset: 100);
   }
@@ -379,7 +379,7 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    currentSelectedNodes = nodes;
+    // currentSelectedNodes = nodes;
     final node = nodes.first;
     final selectable = node.selectable;
 
@@ -408,7 +408,7 @@ class _DesktopSelectionServiceWidgetState
     return;
     final nodes = editorState.getNodesInSelection(selection);
 
-    currentSelectedNodes = nodes;
+    // currentSelectedNodes = nodes;
 
     // TODO: need to be refactored.
     Offset? toolbarOffset;
@@ -533,7 +533,7 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    currentSelectedNodes = [node];
+    // currentSelectedNodes = [node];
 
     _showCursor(node, position);
   }
