@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
 import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -105,71 +104,11 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    selectionRects.clear();
-    _clearSelection();
-
-    if (selection != null) {
-      if (selection.isCollapsed) {
-        // updates cursor area.
-        Log.selection.debug('update cursor area, $selection');
-        _forceShowCursor();
-        _updateCursorAreas(selection.start);
-      } else {
-        // updates selection area.
-        Log.selection.debug('update selection area, $selection');
-        _updateSelectionAreas(selection);
-      }
-    }
-
     currentSelection.value = selection;
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
     );
-  }
-
-  void _updateSelection() {
-    return;
-    final selection = editorState.selection;
-
-    // TODO: why do we need to check this?
-    if (currentSelection.value == selection &&
-        [SelectionUpdateReason.uiEvent, SelectionUpdateReason.searchHighlight]
-            .contains(editorState.selectionUpdateReason) &&
-        editorState.selectionType != SelectionType.block) {
-      return;
-    }
-
-    currentSelection.value = selection;
-
-    void updateSelection() {
-      selectionRects.clear();
-      _clearSelection();
-
-      if (selection != null) {
-        if (editorState.selectionType == SelectionType.block) {
-          // updates selection area.
-          Log.selection.debug('update block selection area, $selection');
-          _updateBlockSelectionAreas(selection);
-        } else if (selection.isCollapsed) {
-          // updates cursor area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateCursorAreas(selection.start);
-        } else {
-          // updates selection area.
-          Log.selection.debug('update selection area, $selection');
-          _updateSelectionAreas(selection);
-        }
-      }
-    }
-
-    if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
-      updateSelection();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        updateSelection();
-      });
-    }
   }
 
   @override
@@ -340,7 +279,6 @@ class _DesktopSelectionServiceWidgetState
 
     final panEndOffset = details.globalPosition;
     final dy = editorState.service.scrollService?.dy;
-    print('dy = $dy');
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
@@ -369,6 +307,10 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onPanEnd(DragEndDetails details) {
+    startNode = null;
+  }
+
+  void _updateSelection() {
     // do nothing
   }
 
@@ -405,164 +347,15 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelectionAreas(Selection selection) {
-    return;
-    final nodes = editorState.getNodesInSelection(selection);
-
-    // currentSelectedNodes = nodes;
-
-    // TODO: need to be refactored.
-    Offset? toolbarOffset;
-    Alignment? alignment;
-    LayerLink? layerLink;
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final editorSize = editorState.renderBox?.size ?? Size.zero;
-
-    final backwardNodes =
-        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
-    final normalizedSelection = selection.normalized;
-    assert(normalizedSelection.isBackward);
-
-    Log.selection.debug('update selection areas, $normalizedSelection');
-
-    if (editorState.selectionType == SelectionType.block) {
-      final node = backwardNodes.first;
-      final rect = Offset.zero & node.rect.size;
-      final overlay = OverlayEntry(
-        builder: (context) => SelectionWidget(
-          color: widget.selectionColor,
-          layerLink: node.layerLink,
-          rect: rect,
-        ),
-      );
-      _selectionAreas.add(overlay);
-    } else {
-      for (var i = 0; i < backwardNodes.length; i++) {
-        final node = backwardNodes[i];
-
-        final selectable = node.selectable;
-        if (selectable == null) {
-          continue;
-        }
-
-        var newSelection = normalizedSelection.copyWith();
-
-        /// In the case of multiple selections,
-        ///  we need to return a new selection for each selected node individually.
-        ///
-        /// < > means selected.
-        /// text: abcd<ef
-        /// text: ghijkl
-        /// text: mn>opqr
-        ///
-        if (!normalizedSelection.isSingle) {
-          if (i == 0) {
-            newSelection = newSelection.copyWith(end: selectable.end());
-          } else if (i == nodes.length - 1) {
-            newSelection = newSelection.copyWith(start: selectable.start());
-          } else {
-            newSelection = Selection(
-              start: selectable.start(),
-              end: selectable.end(),
-            );
-          }
-        }
-
-        const baseToolbarOffset = Offset(0, 35.0);
-        final rects = selectable.getRectsInSelection(newSelection);
-        for (final rect in rects) {
-          final selectionRect = selectable.transformRectToGlobal(rect);
-          selectionRects.add(selectionRect);
-
-          // TODO: Need to compute more precise location.
-          if ((selectionRect.topLeft.dy - editorOffset.dy) <=
-              baseToolbarOffset.dy) {
-            if (selectionRect.topLeft.dx <=
-                editorSize.width / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.bottomLeft;
-              alignment ??= Alignment.topLeft;
-            } else if (selectionRect.topRight.dx >=
-                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.bottomRight;
-              alignment ??= Alignment.topRight;
-            } else {
-              toolbarOffset ??= rect.bottomCenter;
-              alignment ??= Alignment.topCenter;
-            }
-          } else {
-            if (selectionRect.topLeft.dx <=
-                editorSize.width / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.topLeft - baseToolbarOffset;
-              alignment ??= Alignment.topLeft;
-            } else if (selectionRect.topRight.dx >=
-                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.topRight - baseToolbarOffset;
-              alignment ??= Alignment.topRight;
-            } else {
-              toolbarOffset ??= rect.topCenter - baseToolbarOffset;
-              alignment ??= Alignment.topCenter;
-            }
-          }
-
-          layerLink ??= node.layerLink;
-
-          final overlay = OverlayEntry(
-            builder: (context) => SelectionWidget(
-              color: widget.selectionColor,
-              layerLink: node.layerLink,
-              rect: rect,
-            ),
-          );
-          _selectionAreas.add(overlay);
-        }
-      }
-    }
-
-    final overlay = Overlay.of(context);
-    overlay?.insertAll(
-      _selectionAreas,
-    );
+    // do nothing
   }
 
   void _updateCursorAreas(Position position) {
-    return;
-    final node = editorState.document.root.childAtPath(position.path);
-
-    if (node == null) {
-      assert(false);
-      return;
-    }
-
-    // currentSelectedNodes = [node];
-
-    _showCursor(node, position);
+    // do nothing
   }
 
   void _showCursor(Node node, Position position) {
-    final selectable = node.selectable;
-    final cursorRect = selectable?.getCursorRectInPosition(position);
-    if (selectable != null && cursorRect != null) {
-      final cursorArea = OverlayEntry(
-        builder: (context) => CursorWidget(
-          key: _cursorKey,
-          rect: cursorRect,
-          color: widget.cursorColor,
-          layerLink: node.layerLink,
-          shouldBlink: selectable.shouldCursorBlink,
-          cursorStyle: selectable.cursorStyle,
-        ),
-      );
-
-      _cursorAreas.add(cursorArea);
-      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
-
-      _forceShowCursor();
-    }
-  }
-
-  void _forceShowCursor() {
-    _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
+    // do nothing
   }
 
   void _showContextMenu(TapDownDetails details) {
