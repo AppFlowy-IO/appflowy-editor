@@ -11,14 +11,14 @@ class ScrollServiceWidget extends StatefulWidget {
     Key? key,
     this.shrinkWrap = false,
     this.scrollController,
-    this.editorScrollController,
+    required this.editorScrollController,
     required this.child,
   }) : super(key: key);
 
   @Deprecated('Use editorScrollController instead')
   final ScrollController? scrollController;
 
-  final EditorScrollController? editorScrollController;
+  final EditorScrollController editorScrollController;
 
   final bool shrinkWrap;
   final Widget child;
@@ -39,17 +39,11 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   late ScrollController scrollController = ScrollController();
 
-  late EditorScrollController editorScrollController;
-
   double offset = 0;
 
   @override
   void initState() {
     super.initState();
-
-    editorScrollController =
-        widget.editorScrollController ?? EditorScrollController();
-    // scrollController = widget.scrollController ?? ScrollController();
     editorState.selectionNotifier.addListener(_onSelectionChanged);
   }
 
@@ -62,7 +56,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   Widget build(BuildContext context) {
     return Provider.value(
-      value: editorScrollController,
+      value: widget.editorScrollController,
       child: AutoScrollableWidget(
         shrinkWrap: widget.shrinkWrap,
         scrollController: scrollController,
@@ -85,8 +79,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return DesktopScrollService(
       key: _forwardKey,
-      scrollController: scrollController,
-      autoScroller: autoScroller,
       child: widget.child,
     );
   }
@@ -104,7 +96,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   }
 
   void _onSelectionChanged() {
-    return;
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
@@ -126,7 +117,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       if (editorState.selectionUpdateReason ==
           SelectionUpdateReason.searchNavigate) {
-        scrollController.jumpTo(endTouchPoint.dy - 100);
+        widget.editorScrollController.scrollOffsetController.animateScroll(
+          offset: endTouchPoint.dy - 100,
+          duration: Duration.zero,
+        );
         return;
       }
 
@@ -195,7 +189,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     AxisDirection? direction,
     Duration? duration,
   }) {
-    return;
     forward.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,

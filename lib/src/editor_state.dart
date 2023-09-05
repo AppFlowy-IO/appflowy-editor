@@ -118,7 +118,7 @@ class EditorState {
 
   /// store the auto scroller instance in here temporarily.
   AutoScroller? autoScroller;
-  ScrollableState? _scrollableState;
+  ScrollableState? scrollableState;
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -429,7 +429,7 @@ class EditorState {
   void updateAutoScroller(
     ScrollableState scrollableState,
   ) {
-    if (_scrollableState != scrollableState) {
+    if (this.scrollableState != scrollableState) {
       autoScroller?.stopAutoScroll();
       autoScroller = AutoScroller(
         scrollableState,
@@ -437,7 +437,7 @@ class EditorState {
           debugPrint('on scroll view scrolled');
         },
       );
-      _scrollableState = scrollableState;
+      this.scrollableState = scrollableState;
     }
   }
 

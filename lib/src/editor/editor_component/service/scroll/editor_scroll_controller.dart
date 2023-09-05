@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -10,8 +12,14 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 ///
 class EditorScrollController {
   EditorScrollController() {
-    _listenScrollOffset();
-    _listenItemPositions();
+    // listen to the scroll offset
+    _scrollOffsetSubscription = scrollOffsetListener.changes.listen((value) {
+      // the value from changes is the delta offset, so we add it to the current
+      // offset to get the total offset.
+      offsetNotifier.value = offsetNotifier.value + value;
+    });
+
+    itemPositionsListener.itemPositions.addListener(_listenItemPositions);
   }
 
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
@@ -41,53 +49,48 @@ class EditorScrollController {
       ScrollOffsetListener.create();
   // ------------ end ----------------
 
-  // listen to the scroll offset
-  void _listenScrollOffset() {
-    // the value from changes is the delta offset, so we add it to the current
-    // offset to get the total offset.
-    scrollOffsetListener.changes.listen((value) {
-      offsetNotifier.value = offsetNotifier.value + value;
-    });
+  late final StreamSubscription<double> _scrollOffsetSubscription;
+
+  // dispose the subscription
+  void dispose() {
+    _scrollOffsetSubscription.cancel();
+    itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
   }
 
   // listen to the visible item positions
   void _listenItemPositions() {
     // the value from itemPositions is the list of item positions, we need to filter
     //  the list to find the first and last visible items.
-    itemPositionsListener.itemPositions.addListener(() {
-      final positions = itemPositionsListener.itemPositions.value;
+    final positions = itemPositionsListener.itemPositions.value;
 
-      if (positions.isEmpty) {
-        visibleRangeNotifier.value = (-1, -1);
-        return;
-      }
+    if (positions.isEmpty) {
+      visibleRangeNotifier.value = (-1, -1);
+      return;
+    }
 
-      // Determine the first visible item by finding the item with the
-      // smallest trailing edge that is greater than 0.  i.e. the first
-      // item whose trailing edge in visible in the viewport.
-      final min = positions
-          .where((ItemPosition position) => position.itemTrailingEdge > 0)
-          .reduce(
-            (ItemPosition min, ItemPosition position) =>
-                position.itemTrailingEdge < min.itemTrailingEdge
-                    ? position
-                    : min,
-          )
-          .index;
-      // Determine the last visible item by finding the item with the
-      // greatest leading edge that is less than 1.  i.e. the last
-      // item whose leading edge in visible in the viewport.
-      final max = positions
-          .where((ItemPosition position) => position.itemLeadingEdge < 1)
-          .reduce(
-            (ItemPosition max, ItemPosition position) =>
-                position.itemLeadingEdge > max.itemLeadingEdge ? position : max,
-          )
-          .index;
+    // Determine the first visible item by finding the item with the
+    // smallest trailing edge that is greater than 0.  i.e. the first
+    // item whose trailing edge in visible in the viewport.
+    final min = positions
+        .where((ItemPosition position) => position.itemTrailingEdge > 0)
+        .reduce(
+          (ItemPosition min, ItemPosition position) =>
+              position.itemTrailingEdge < min.itemTrailingEdge ? position : min,
+        )
+        .index;
+    // Determine the last visible item by finding the item with the
+    // greatest leading edge that is less than 1.  i.e. the last
+    // item whose leading edge in visible in the viewport.
+    final max = positions
+        .where((ItemPosition position) => position.itemLeadingEdge < 1)
+        .reduce(
+          (ItemPosition max, ItemPosition position) =>
+              position.itemLeadingEdge > max.itemLeadingEdge ? position : max,
+        )
+        .index;
 
-      // notify the listeners
-      visibleRangeNotifier.value = (min, max);
-    });
+    // notify the listeners
+    visibleRangeNotifier.value = (min, max);
   }
 }
 

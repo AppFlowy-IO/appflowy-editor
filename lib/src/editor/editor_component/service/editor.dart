@@ -156,6 +156,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
   EditorState get editorState => widget.editorState;
 
+  late final EditorScrollController editorScrollController;
+
   @override
   void initState() {
     super.initState();
@@ -165,6 +167,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         'scrollController must be provided when shrinkWrap is true.',
       );
     }
+
+    editorScrollController =
+        widget.editorScrollController ?? EditorScrollController();
 
     editorState.editorStyle = widget.editorStyle;
     editorState.renderer = _renderer;
@@ -178,6 +183,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
   @override
   void dispose() {
+    // dispose the scroll controller if it's created by the editor
+    if (widget.editorScrollController == null) {
+      editorScrollController.dispose();
+    }
+
     super.dispose();
   }
 
@@ -254,7 +264,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       key: editorState.service.scrollServiceKey,
       shrinkWrap: widget.shrinkWrap,
       scrollController: widget.scrollController,
-      editorScrollController: widget.editorScrollController,
+      editorScrollController: editorScrollController,
       child: child,
     );
   }
