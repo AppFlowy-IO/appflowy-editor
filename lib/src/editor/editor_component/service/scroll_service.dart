@@ -36,6 +36,10 @@ abstract class AppFlowyScrollService implements AutoScrollerService {
     Duration? duration,
   });
 
+  void jumpTo(
+    int index,
+  );
+
   void goBallistic(double velocity);
 
   /// Enables scroll service.

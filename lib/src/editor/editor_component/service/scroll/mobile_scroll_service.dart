@@ -66,6 +66,9 @@ class MobileScrollServiceState extends State<MobileScrollService>
   }
 
   @override
+  void jumpTo(int index) => throw UnimplementedError();
+
+  @override
   void disable() {
     Log.scroll.debug('disable scroll service');
   }

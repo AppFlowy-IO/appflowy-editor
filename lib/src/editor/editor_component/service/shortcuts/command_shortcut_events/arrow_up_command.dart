@@ -91,22 +91,11 @@ CommandShortcutEventHandler _moveCursorTopCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .firstWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
-    return KeyEventResult.ignored;
-  }
-  final position = selectable.start();
   editorState.updateSelectionWithReason(
-    Selection.collapsed(position),
+    Selection.collapsed(Position(path: [0])),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final top = scrollService.minScrollExtent;
-    scrollService.scrollTo(top);
-  }
+  editorState.scrollService?.jumpTo(0);
   return KeyEventResult.handled;
 };
 

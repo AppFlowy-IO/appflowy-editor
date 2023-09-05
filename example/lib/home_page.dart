@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     // _jsonString = EditorState.blank(withInitialText: false).document.insert([0], );
 
     final nodes = List.generate(
-      10000,
+      1000,
       (index) => paragraphNode(text: '$index ${generateRandomString(50)}'),
     );
     final editorState = EditorState(

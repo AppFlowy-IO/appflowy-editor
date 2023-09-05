@@ -5,6 +5,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+final _deepEqual = const DeepCollectionEquality().equals;
+
 /// [BlockSelectionArea] is a widget that renders the selection area or the cursor of a block.
 class BlockSelectionArea extends StatefulWidget {
   const BlockSelectionArea({
@@ -117,7 +119,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         }
       } else {
         final rects = widget.delegate.getRectsInSelection(selection);
-        if (!const DeepCollectionEquality().equals(rects, prevSelectionRects)) {
+        if (!_deepEqual(rects, prevSelectionRects)) {
           setState(() {
             prevSelectionRects = rects;
           });

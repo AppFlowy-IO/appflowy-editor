@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowDownKeys = [
@@ -59,22 +60,12 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .lastWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
-    return KeyEventResult.ignored;
-  }
-  final end = selectable.end();
+  final last = max(0, editorState.document.root.children.length - 1);
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: end),
+    selection.copyWith(end: Position(path: [last])),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final bottom = scrollService.maxScrollExtent;
-    scrollService.scrollTo(bottom);
-  }
+  editorState.scrollService?.jumpTo(last);
   return KeyEventResult.handled;
 };
 
@@ -92,22 +83,12 @@ CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .lastWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
-    return KeyEventResult.ignored;
-  }
-  final position = selectable.end();
+  final last = max(0, editorState.document.root.children.length - 1);
   editorState.updateSelectionWithReason(
-    Selection.collapsed(position),
+    Selection.collapsed(Position(path: [last])),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final bottom = scrollService.maxScrollExtent;
-    scrollService.scrollTo(bottom);
-  }
+  editorState.scrollService?.jumpTo(last);
   return KeyEventResult.handled;
 };
 

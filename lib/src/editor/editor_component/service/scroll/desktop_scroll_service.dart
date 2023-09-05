@@ -62,8 +62,16 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     );
     editorScrollController.scrollOffsetController.animateScroll(
       offset: dy,
-      duration: duration ?? Duration.zero,
+      duration: duration ??
+          const Duration(
+            milliseconds: 1,
+          ), // the animation duration should be greater than zero, use 1ms instead
     );
+  }
+
+  @override
+  void jumpTo(int index) {
+    editorScrollController.itemScrollController.jumpTo(index: index);
   }
 
   @override
