@@ -259,8 +259,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
-      shrinkWrap: widget.shrinkWrap,
-      scrollController: widget.scrollController,
       editorScrollController: editorScrollController,
       child: child,
     );

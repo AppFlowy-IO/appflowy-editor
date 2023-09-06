@@ -4,6 +4,7 @@ import 'package:appflowy_editor/src/render/selection/cursor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 final _deepEqual = const DeepCollectionEquality().equals;
 
@@ -72,8 +73,20 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return sizedBox;
         }
 
+        if (context.read<EditorState>().selectionType == SelectionType.block) {
+          final rect = widget.delegate.getBlockRect();
+          return Positioned.fromRect(
+            rect: rect,
+            child: Container(
+              decoration: BoxDecoration(
+                color: widget.selectionColor,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+            ),
+          );
+        }
         // show the cursor when the selection is collapsed
-        if (selection.isCollapsed) {
+        else if (selection.isCollapsed) {
           if (prevCursorRect == null) {
             return sizedBox;
           }

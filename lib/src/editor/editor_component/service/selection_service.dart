@@ -34,7 +34,6 @@ abstract class AppFlowySelectionService {
   ///   and `[n1, n2, n3]` if the selection is backward.
   ///
   /// Returns empty result if there is no nodes are selected.
-  @Deprecated('get selected nodes from editorState')
   List<Node> get currentSelectedNodes;
 
   /// Updates the selection.

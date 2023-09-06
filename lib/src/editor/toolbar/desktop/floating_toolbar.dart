@@ -113,8 +113,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   void _onScrollPositionChanged() {
-    final offset = widget.editorScrollController.offsetNotifier.value;
-
     _clear();
 
     // TODO: optimize the toolbar showing logic, making it more smooth.

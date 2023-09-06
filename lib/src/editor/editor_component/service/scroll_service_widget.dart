@@ -9,18 +9,12 @@ import 'package:provider/provider.dart';
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
     Key? key,
-    this.shrinkWrap = false,
-    this.scrollController,
     required this.editorScrollController,
     required this.child,
   }) : super(key: key);
 
-  @Deprecated('Use editorScrollController instead')
-  final ScrollController? scrollController;
-
   final EditorScrollController editorScrollController;
 
-  final bool shrinkWrap;
   final Widget child;
 
   @override
@@ -58,7 +52,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     return Provider.value(
       value: widget.editorScrollController,
       child: AutoScrollableWidget(
-        shrinkWrap: widget.shrinkWrap,
         scrollController: scrollController,
         builder: (context, autoScroller) {
           if (PlatformExtension.isDesktopOrWeb) {

@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
@@ -28,8 +27,6 @@ class _DesktopSelectionServiceWidgetState
     extends State<DesktopSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
-  final _cursorKey = GlobalKey(debugLabel: 'cursor');
-
   @override
   List<Rect> get selectionRects => editorState.selectionRects();
   final List<OverlayEntry> _selectionAreas = [];
@@ -313,50 +310,6 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _updateSelection() {}
-
-  void _updateBlockSelectionAreas(Selection selection) {
-    assert(editorState.selectionType == SelectionType.block);
-    final nodes = editorState.getNodesInSelection(selection.normalized);
-    if (nodes.isEmpty) {
-      return;
-    }
-
-    // currentSelectedNodes = nodes;
-    final node = nodes.first;
-    final selectable = node.selectable;
-
-    if (selectable == null) {
-      return;
-    }
-
-    final rect = selectable.getBlockRect();
-    final overlay = OverlayEntry(
-      builder: (context) => SelectionWidget(
-        color: widget.selectionColor,
-        layerLink: node.layerLink,
-        rect: rect,
-        decoration: BoxDecoration(
-          color: widget.selectionColor,
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-    );
-    _selectionAreas.add(overlay);
-
-    Overlay.of(context)?.insertAll(_selectionAreas);
-  }
-
-  void _updateSelectionAreas(Selection selection) {
-    // do nothing
-  }
-
-  void _updateCursorAreas(Position position) {
-    // do nothing
-  }
-
-  void _showCursor(Node node, Position position) {
-    // do nothing
-  }
 
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
