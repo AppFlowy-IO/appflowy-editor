@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowUpKeys = [
@@ -58,22 +57,17 @@ CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .firstWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
+  final result = editorState.getFirstSelectable();
+  if (result == null) {
     return KeyEventResult.ignored;
   }
-  final end = selectable.start();
+
+  final position = result.$2.start(result.$1);
+  editorState.scrollService?.jumpTo(position.path.first);
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: end),
+    selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final top = scrollService.minScrollExtent;
-    scrollService.scrollTo(top);
-  }
   return KeyEventResult.handled;
 };
 
@@ -91,11 +85,19 @@ CommandShortcutEventHandler _moveCursorTopCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+
+  final result = editorState.getFirstSelectable();
+  if (result == null) {
+    return KeyEventResult.ignored;
+  }
+
+  final position = result.$2.start(result.$1);
+  editorState.scrollService?.jumpTo(position.path.first);
   editorState.updateSelectionWithReason(
-    Selection.collapsed(Position(path: [0])),
+    Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  editorState.scrollService?.jumpTo(0);
+
   return KeyEventResult.handled;
 };
 
@@ -123,3 +125,16 @@ CommandShortcutEventHandler _moveCursorUpSelectCommandHandler = (editorState) {
   );
   return KeyEventResult.handled;
 };
+
+extension on EditorState {
+  (Node, BlockComponentSelectable)? getFirstSelectable() {
+    final nodes = document.root.children;
+    for (var i = 0; i < nodes.length; i++) {
+      final selectable = renderer.blockComponentSelectable(nodes[i].type);
+      if (selectable != null) {
+        return (nodes[i], selectable);
+      }
+    }
+    return null;
+  }
+}

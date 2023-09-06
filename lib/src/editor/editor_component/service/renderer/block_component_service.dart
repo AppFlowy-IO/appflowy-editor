@@ -64,8 +64,13 @@ abstract class BlockComponentRendererService {
   ///
   BlockComponentBuilder? blockComponentBuilder(String type);
 
-  BlockComponentSelectable? blockComponentSelectable(String type) =>
-      blockComponentBuilder(type) as BlockComponentSelectable?;
+  BlockComponentSelectable? blockComponentSelectable(String type) {
+    final builder = blockComponentBuilder(type);
+    if (builder is BlockComponentSelectable) {
+      return builder as BlockComponentSelectable;
+    }
+    return null;
+  }
 
   /// Build a widget for the specified [node].
   ///

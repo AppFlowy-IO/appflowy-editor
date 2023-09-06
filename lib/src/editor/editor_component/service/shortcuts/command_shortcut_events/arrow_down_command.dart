@@ -58,24 +58,16 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final nodes = editorState.document.root.children;
-  Position? result;
-  for (var i = nodes.length - 1; i >= 0; i--) {
-    final selectable =
-        editorState.renderer.blockComponentSelectable(nodes[i].type);
-    if (selectable != null) {
-      result = selectable.end(nodes[i]);
-      break;
-    }
-  }
 
+  final result = editorState.getLastSelectable();
   if (result == null) {
     return KeyEventResult.ignored;
   }
 
-  editorState.scrollService?.jumpTo(result.path.first);
+  final position = result.$2.end(result.$1);
+  editorState.scrollService?.jumpTo(position.path.first);
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: result),
+    selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
   );
 
@@ -96,24 +88,16 @@ CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final nodes = editorState.document.root.children;
-  Position? result;
-  for (var i = nodes.length - 1; i >= 0; i--) {
-    final selectable =
-        editorState.renderer.blockComponentSelectable(nodes[i].type);
-    if (selectable != null) {
-      result = selectable.end(nodes[i]);
-      break;
-    }
-  }
 
+  final result = editorState.getLastSelectable();
   if (result == null) {
     return KeyEventResult.ignored;
   }
 
-  editorState.scrollService?.jumpTo(result.path.first);
+  final position = result.$2.end(result.$1);
+  editorState.scrollService?.jumpTo(position.path.first);
   editorState.updateSelectionWithReason(
-    Selection.collapsed(result),
+    Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,
   );
 
@@ -145,3 +129,16 @@ CommandShortcutEventHandler _moveCursorDownSelectCommandHandler =
   );
   return KeyEventResult.handled;
 };
+
+extension on EditorState {
+  (Node, BlockComponentSelectable)? getLastSelectable() {
+    final nodes = document.root.children;
+    for (var i = nodes.length - 1; i >= 0; i--) {
+      final selectable = renderer.blockComponentSelectable(nodes[i].type);
+      if (selectable != null) {
+        return (nodes[i], selectable);
+      }
+    }
+    return null;
+  }
+}
