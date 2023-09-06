@@ -8,8 +8,13 @@ class BlockSelectionContainer extends StatelessWidget {
     required this.node,
     required this.delegate,
     required this.listenable,
-    required this.cursorColor,
-    required this.selectionColor,
+    this.cursorColor = Colors.black,
+    this.selectionColor = Colors.blue,
+    this.blockColor = Colors.blue,
+    this.supportTypes = const [
+      BlockSelectionType.cursor,
+      BlockSelectionType.selection
+    ],
     required this.child,
   });
 
@@ -25,14 +30,20 @@ class BlockSelectionContainer extends StatelessWidget {
   // the color of the selection
   final Color selectionColor;
 
+  // the color of the background of the block
+  final Color blockColor;
+
   // the node of the block
   final Node node;
+
+  final List<BlockSelectionType> supportTypes;
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         BlockSelectionArea(
           node: node,
@@ -40,6 +51,8 @@ class BlockSelectionContainer extends StatelessWidget {
           listenable: listenable,
           cursorColor: cursorColor,
           selectionColor: selectionColor,
+          blockColor: blockColor,
+          supportTypes: supportTypes,
         ),
         child,
       ],

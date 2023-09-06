@@ -28,7 +28,7 @@ mixin DefaultSelectableMixin {
     if (parentBox is RenderBox && childBox is RenderBox) {
       final offset = childBox.localToGlobal(Offset.zero, ancestor: parentBox);
       final size = parentBox.size;
-      return offset & (size - offset as Size);
+      return Offset.zero & (size - offset as Size);
     }
     return Rect.zero;
   }

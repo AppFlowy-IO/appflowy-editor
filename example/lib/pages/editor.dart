@@ -37,7 +37,6 @@ class Editor extends StatelessWidget {
               onEditorStateChange(editorState);
             }
           });
-          final scrollController = ScrollController();
           final editorScrollController = EditorScrollController(
             editorState: editorState,
             shrinkWrap: false,
@@ -58,7 +57,6 @@ class Editor extends StatelessWidget {
                 ...alignmentItems,
               ],
               editorState: editorState,
-              scrollController: scrollController,
               editorScrollController: editorScrollController,
               child: _buildDesktopEditor(
                 context,

@@ -24,6 +24,8 @@ class PageBlockComponentBuilder extends BlockComponentBuilder {
     return PageBlockComponent(
       key: blockComponentContext.node.key,
       node: blockComponentContext.node,
+      header: blockComponentContext.header,
+      footer: blockComponentContext.footer,
     );
   }
 }
@@ -35,13 +37,21 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.header,
+    this.footer,
   });
+
+  final Widget? header;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final scrollController = context.read<EditorScrollController>();
     final items = node.children;
+    int extentCount = 0;
+    if (header != null) extentCount++;
+    if (footer != null) extentCount++;
 
     if (scrollController.shrinkWrap) {
       return SingleChildScrollView(
@@ -49,10 +59,17 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
         child: Builder(
           builder: (context) {
             editorState.updateAutoScroller(Scrollable.of(context));
-            return Column(
-              children: items
-                  .map((e) => editorState.renderer.build(context, e))
-                  .toList(),
+            return Padding(
+              padding: editorState.editorStyle.padding,
+              child: Column(
+                children: [
+                  if (header != null) header!,
+                  ...items
+                      .map((e) => editorState.renderer.build(context, e))
+                      .toList(),
+                  if (footer != null) footer!,
+                ],
+              ),
             );
           },
         ),
@@ -60,13 +77,16 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     } else {
       return ScrollablePositionedList.builder(
         shrinkWrap: scrollController.shrinkWrap,
+        padding: editorState.editorStyle.padding,
         scrollDirection: Axis.vertical,
-        itemCount: items.length,
+        itemCount: items.length + extentCount,
         itemBuilder: (context, index) {
           editorState.updateAutoScroller(Scrollable.of(context));
+          if (header != null && index == 0) return header!;
+          if (footer != null && index == items.length + 1) return footer!;
           return editorState.renderer.build(
             context,
-            items[index],
+            items[index - (header != null ? 1 : 0)],
           );
         },
         itemScrollController: scrollController.itemScrollController,

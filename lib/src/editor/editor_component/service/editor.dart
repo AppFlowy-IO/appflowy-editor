@@ -25,7 +25,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.shrinkWrap = false,
-    this.scrollController,
     this.editorScrollController,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
@@ -112,13 +111,13 @@ class AppFlowyEditor extends StatefulWidget {
   /// A divider will be added between each list.
   final List<List<ContextMenuItem>> contextMenuItems;
 
-  /// Provide a scrollController to control the scroll behavior
-  ///   if you need to custom the scroll behavior.
+  /// Provide a editorScrollController to control the scroll behavior
   ///
-  /// Otherwise, the editor will create a scrollController inside.
-  @Deprecated('use SelectionUpdateReason instead')
-  final ScrollController? scrollController;
-
+  /// Notes: the shrinkWrap will affect the layout behavior of the editor.
+  /// Be carefully to set it as true, it will perform poorly.
+  ///
+  /// shrinkWrap == true: will use SingleChildView + Column to layout the editor.
+  /// shrinkWrap == false: will use ListView to layout the editor.
   final EditorScrollController? editorScrollController;
 
   /// Set the value to false to disable editing.
@@ -221,25 +220,12 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   }
 
   Widget _buildServices(BuildContext context) {
-    Widget child = Container(
-      padding: widget.editorStyle.padding,
-      child: editorState.renderer.build(
-        context,
-        editorState.document.root,
-      ),
+    Widget child = editorState.renderer.build(
+      context,
+      editorState.document.root,
+      header: widget.header,
+      footer: widget.footer,
     );
-
-    if (widget.header != null || widget.footer != null) {
-      child = Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.header != null) widget.header!,
-          child,
-          if (widget.footer != null) widget.footer!,
-        ],
-      );
-    }
 
     if (widget.editable) {
       child = SelectionServiceWidget(

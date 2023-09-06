@@ -8,6 +8,12 @@ import 'package:provider/provider.dart';
 
 final _deepEqual = const DeepCollectionEquality().equals;
 
+enum BlockSelectionType {
+  cursor,
+  selection,
+  block,
+}
+
 /// [BlockSelectionArea] is a widget that renders the selection area or the cursor of a block.
 class BlockSelectionArea extends StatefulWidget {
   const BlockSelectionArea({
@@ -17,6 +23,11 @@ class BlockSelectionArea extends StatefulWidget {
     required this.listenable,
     required this.cursorColor,
     required this.selectionColor,
+    required this.blockColor,
+    this.supportTypes = const [
+      BlockSelectionType.cursor,
+      BlockSelectionType.selection
+    ],
   });
 
   // get the cursor rect or selection rects from the delegate
@@ -31,8 +42,12 @@ class BlockSelectionArea extends StatefulWidget {
   // the color of the selection
   final Color selectionColor;
 
+  final Color blockColor;
+
   // the node of the block
   final Node node;
+
+  final List<BlockSelectionType> supportTypes;
 
   @override
   State<BlockSelectionArea> createState() => _BlockSelectionAreaState();
@@ -48,12 +63,16 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
   Rect? prevCursorRect;
   // keep the previous selection rects to avoid unnecessary rebuild
   List<Rect>? prevSelectionRects;
+  // keep the block selection rect to avoid unnecessary rebuild
+  Rect? prevBlockRect;
 
   @override
   void initState() {
     super.initState();
 
-    _updateSelectionIfNeeded();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateSelectionIfNeeded();
+    });
   }
 
   @override
@@ -74,20 +93,25 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         }
 
         if (context.read<EditorState>().selectionType == SelectionType.block) {
-          final rect = widget.delegate.getBlockRect();
+          if (!widget.supportTypes.contains(BlockSelectionType.block) ||
+              !path.equals(selection.start.path) ||
+              prevBlockRect == null) {
+            return sizedBox;
+          }
           return Positioned.fromRect(
-            rect: rect,
+            rect: prevBlockRect!,
             child: Container(
               decoration: BoxDecoration(
-                color: widget.selectionColor,
-                borderRadius: BorderRadius.circular(4.0),
+                color: widget.blockColor,
+                borderRadius: BorderRadius.circular(0.0),
               ),
             ),
           );
         }
         // show the cursor when the selection is collapsed
         else if (selection.isCollapsed) {
-          if (prevCursorRect == null) {
+          if (!widget.supportTypes.contains(BlockSelectionType.cursor) ||
+              prevCursorRect == null) {
             return sizedBox;
           }
           final cursor = Cursor(
@@ -102,7 +126,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return cursor;
         } else {
           // show the selection area when the selection is not collapsed
-          if (prevSelectionRects == null || prevSelectionRects!.isEmpty) {
+          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
+              prevSelectionRects == null ||
+              prevSelectionRects!.isEmpty) {
             return sizedBox;
           }
           return SelectionAreaPaint(
@@ -125,14 +151,31 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
 
     // the current path is in the selection
     if (selection != null && path.inSelection(selection)) {
-      if (selection.isCollapsed) {
+      if (widget.supportTypes.contains(BlockSelectionType.block)) {
+        if (context.read<EditorState>().selectionType != SelectionType.block ||
+            !path.equals(selection.start.path)) {
+          if (prevBlockRect != null) {
+            setState(() {
+              prevBlockRect = null;
+            });
+          }
+        } else {
+          final rect = widget.delegate.getBlockRect();
+          if (prevBlockRect != rect) {
+            setState(() {
+              prevBlockRect = rect;
+            });
+          }
+        }
+      } else if (widget.supportTypes.contains(BlockSelectionType.cursor) &&
+          selection.isCollapsed) {
         final rect = widget.delegate.getCursorRectInPosition(selection.start);
         if (rect != prevCursorRect) {
           setState(() {
             prevCursorRect = rect;
           });
         }
-      } else {
+      } else if (widget.supportTypes.contains(BlockSelectionType.selection)) {
         final rects = widget.delegate.getRectsInSelection(selection);
         if (!_deepEqual(rects, prevSelectionRects)) {
           setState(() {

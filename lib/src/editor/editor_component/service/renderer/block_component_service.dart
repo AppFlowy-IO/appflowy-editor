@@ -78,10 +78,14 @@ abstract class BlockComponentRendererService {
   /// Build a widget for the specified [node].
   ///
   /// the widget is embedded in a [BlockComponentContainer] widget.
+  ///
+  /// the header and the footer only works for the root node.
   Widget build(
     BuildContext buildContext,
-    Node node,
-  );
+    Node node, {
+    Widget? header,
+    Widget? footer,
+  });
 
   List<Widget> buildList(
     BuildContext buildContext,
@@ -105,9 +109,16 @@ class BlockComponentRenderer extends BlockComponentRendererService {
   @override
   Widget build(
     BuildContext buildContext,
-    Node node,
-  ) {
-    final blockComponentContext = BlockComponentContext(buildContext, node);
+    Node node, {
+    Widget? header,
+    Widget? footer,
+  }) {
+    final blockComponentContext = BlockComponentContext(
+      buildContext,
+      node,
+      header: header,
+      footer: footer,
+    );
     final builder = blockComponentBuilder(node.type);
     if (builder == null) {
       assert(false, 'no builder for node type(${node.type})');
