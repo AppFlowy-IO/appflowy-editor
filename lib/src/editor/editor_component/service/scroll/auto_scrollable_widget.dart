@@ -28,15 +28,14 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   @override
   Widget build(BuildContext context) {
     Widget builder(context) {
-      _scrollableState = ScrollableState();
-      _initAutoScroller();
       return widget.builder(context, _autoScroller);
     }
 
+    _scrollableState = ScrollableState();
+    _initAutoScroller();
+
     if (widget.shrinkWrap) {
-      return Builder(
-        builder: builder,
-      );
+      return widget.builder(context, _autoScroller);
     } else {
       return Builder(
         builder: builder,

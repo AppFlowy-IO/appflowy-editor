@@ -192,6 +192,8 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onTapDown(TapDownDetails details) {
+    _clearContextMenu();
+
     final canTap = _interceptors.every(
       (element) => element.canTap?.call(details) ?? true,
     );
@@ -251,7 +253,7 @@ class _DesktopSelectionServiceWidgetState
     // if selection is null, or
     // selection.isCollapsed and the selected node is TextNode.
     // try to select the word.
-    final selection = currentSelection.value;
+    final selection = editorState.selectionNotifier.value;
     if (selection == null ||
         (selection.isCollapsed == true &&
             currentSelectedNodes.first.delta != null)) {
@@ -310,9 +312,7 @@ class _DesktopSelectionServiceWidgetState
     startNode = null;
   }
 
-  void _updateSelection() {
-    // do nothing
-  }
+  void _updateSelection() {}
 
   void _updateBlockSelectionAreas(Selection selection) {
     assert(editorState.selectionType == SelectionType.block);

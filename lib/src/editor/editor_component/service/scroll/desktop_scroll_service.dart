@@ -60,7 +60,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
       minScrollExtent,
       maxScrollExtent,
     );
-    editorScrollController.scrollOffsetController.animateScroll(
+    editorScrollController.animateTo(
       offset: dy,
       duration: duration ??
           const Duration(
@@ -70,8 +70,18 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   }
 
   @override
+  void jumpToTop() {
+    editorScrollController.jumpToTop();
+  }
+
+  @override
+  void jumpToBottom() {
+    editorScrollController.jumpToBottom();
+  }
+
+  @override
   void jumpTo(int index) {
-    editorScrollController.itemScrollController.jumpTo(index: index);
+    throw UnimplementedError();
   }
 
   @override

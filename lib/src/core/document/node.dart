@@ -35,7 +35,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
           ), // unlink the given children to avoid the error of "node has already a parent"
         _attributes = attributes,
         id = id ?? "" {
-    for (final child in this.children) {
+    for (final child in _children) {
       child.parent = this;
     }
   }

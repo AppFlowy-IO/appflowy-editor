@@ -162,14 +162,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void initState() {
     super.initState();
 
-    if (widget.shrinkWrap && widget.scrollController == null) {
-      throw ArgumentError(
-        'scrollController must be provided when shrinkWrap is true.',
-      );
-    }
-
-    editorScrollController =
-        widget.editorScrollController ?? EditorScrollController();
+    editorScrollController = widget.editorScrollController ??
+        EditorScrollController(
+          editorState: editorState,
+          shrinkWrap: widget.shrinkWrap,
+        );
 
     editorState.editorStyle = widget.editorStyle;
     editorState.renderer = _renderer;

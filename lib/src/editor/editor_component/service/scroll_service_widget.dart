@@ -89,8 +89,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return MobileScrollService(
       key: _forwardKey,
-      scrollController: scrollController,
-      autoScroller: autoScroller,
       child: widget.child,
     );
   }
@@ -171,6 +169,16 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   @override
   void jumpTo(int index) => forward.jumpTo(index);
+
+  @override
+  void jumpToTop() {
+    forward.jumpToTop();
+  }
+
+  @override
+  void jumpToBottom() {
+    forward.jumpToBottom();
+  }
 
   @override
   void startAutoScroll(

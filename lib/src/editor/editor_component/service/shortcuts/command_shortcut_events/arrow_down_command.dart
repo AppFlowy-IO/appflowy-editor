@@ -65,7 +65,7 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
   }
 
   final position = result.$2.end(result.$1);
-  editorState.scrollService?.jumpTo(position.path.first);
+  editorState.scrollService?.jumpToBottom();
   editorState.updateSelectionWithReason(
     selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
@@ -95,7 +95,7 @@ CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
   }
 
   final position = result.$2.end(result.$1);
-  editorState.scrollService?.jumpTo(position.path.first);
+  editorState.scrollService?.jumpToBottom();
   editorState.updateSelectionWithReason(
     Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,

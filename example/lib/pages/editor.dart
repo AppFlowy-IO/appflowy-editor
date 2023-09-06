@@ -38,7 +38,10 @@ class Editor extends StatelessWidget {
             }
           });
           final scrollController = ScrollController();
-          final editorScrollController = EditorScrollController();
+          final editorScrollController = EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: false,
+          );
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
               items: [
@@ -129,6 +132,7 @@ class Editor extends StatelessWidget {
     };
     return AppFlowyEditor(
       editorState: editorState,
+      shrinkWrap: true,
       editorScrollController: editorScrollController,
       blockComponentBuilders: customBlockComponentBuilders,
       commandShortcutEvents: [

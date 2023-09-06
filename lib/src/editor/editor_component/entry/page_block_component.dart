@@ -42,20 +42,38 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     final editorState = context.read<EditorState>();
     final scrollController = context.read<EditorScrollController>();
     final items = node.children;
-    return ScrollablePositionedList.builder(
-      shrinkWrap: false,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        editorState.updateAutoScroller(Scrollable.of(context));
-        return editorState.renderer.build(
-          context,
-          items[index],
-        );
-      },
-      itemScrollController: scrollController.itemScrollController,
-      scrollOffsetController: scrollController.scrollOffsetController,
-      itemPositionsListener: scrollController.itemPositionsListener,
-      scrollOffsetListener: scrollController.scrollOffsetListener,
-    );
+
+    if (scrollController.shrinkWrap) {
+      return SingleChildScrollView(
+        controller: scrollController.scrollController,
+        child: Builder(
+          builder: (context) {
+            editorState.updateAutoScroller(Scrollable.of(context));
+            return Column(
+              children: items
+                  .map((e) => editorState.renderer.build(context, e))
+                  .toList(),
+            );
+          },
+        ),
+      );
+    } else {
+      return ScrollablePositionedList.builder(
+        shrinkWrap: scrollController.shrinkWrap,
+        scrollDirection: Axis.vertical,
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          editorState.updateAutoScroller(Scrollable.of(context));
+          return editorState.renderer.build(
+            context,
+            items[index],
+          );
+        },
+        itemScrollController: scrollController.itemScrollController,
+        scrollOffsetController: scrollController.scrollOffsetController,
+        itemPositionsListener: scrollController.itemPositionsListener,
+        scrollOffsetListener: scrollController.scrollOffsetListener,
+      );
+    }
   }
 }

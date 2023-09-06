@@ -292,7 +292,7 @@ class EditorState {
   ]) {
     List<Node> res = [];
     selection ??= this.selection;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null) {
       return res;
     }
     final nodes = getNodesInSelection(selection);

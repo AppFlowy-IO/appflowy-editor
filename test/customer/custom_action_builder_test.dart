@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/block_selection_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -30,7 +30,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       final selectionAreaRect = tester.getTopLeft(
-        find.byType(SelectionWidget),
+        find.byType(BlockSelectionArea),
       );
       expect(selectionAreaRect.dx, greaterThan(0));
     });

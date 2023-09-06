@@ -1,42 +1,41 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MobileScrollService extends StatefulWidget {
   const MobileScrollService({
-    super.key,
-    required this.scrollController,
-    required this.autoScroller,
+    Key? key,
     required this.child,
-  });
-
-  final ScrollController scrollController;
-  final AutoScroller autoScroller;
+  }) : super(key: key);
 
   final Widget child;
 
   @override
-  State<MobileScrollService> createState() => MobileScrollServiceState();
+  State<MobileScrollService> createState() => _MobileScrollServiceState();
 }
 
-class MobileScrollServiceState extends State<MobileScrollService>
+class _MobileScrollServiceState extends State<MobileScrollService>
     implements AppFlowyScrollService {
+  late final editorState = context.read<EditorState>();
+  late final autoScroller = editorState.autoScroller;
+  late final editorScrollController = context.read<EditorScrollController>();
+
   @override
-  double get dy => widget.scrollController.position.pixels;
+  double get dy => context.read<EditorScrollController>().offsetNotifier.value;
 
   @override
   double? get onePageHeight {
-    final renderBox = context.findRenderObject()?.unwrapOrNull<RenderBox>();
+    final renderBox = context.findRenderObject() as RenderBox?;
     return renderBox?.size.height;
   }
 
   @override
   double get maxScrollExtent =>
-      widget.scrollController.position.maxScrollExtent;
+      editorState.scrollableState!.position.maxScrollExtent;
 
   @override
   double get minScrollExtent =>
-      widget.scrollController.position.minScrollExtent;
+      editorState.scrollableState!.position.minScrollExtent;
 
   @override
   int? get page {
@@ -57,16 +56,33 @@ class MobileScrollServiceState extends State<MobileScrollService>
     double dy, {
     Duration? duration,
   }) {
-    widget.scrollController.position.jumpTo(
-      dy.clamp(
-        widget.scrollController.position.minScrollExtent,
-        widget.scrollController.position.maxScrollExtent,
-      ),
+    dy = dy.clamp(
+      minScrollExtent,
+      maxScrollExtent,
+    );
+    editorScrollController.scrollOffsetController.animateScroll(
+      offset: dy,
+      duration: duration ??
+          const Duration(
+            milliseconds: 1,
+          ), // the animation duration should be greater than zero, use 1ms instead
     );
   }
 
   @override
-  void jumpTo(int index) => throw UnimplementedError();
+  void jumpTo(int index) {
+    editorScrollController.itemScrollController.jumpTo(index: index);
+  }
+
+  @override
+  void jumpToTop() {
+    // TODO: implement jumpToTop
+  }
+
+  @override
+  void jumpToBottom() {
+    // TODO: implement jumpToBottom
+  }
 
   @override
   void disable() {
@@ -85,26 +101,24 @@ class MobileScrollServiceState extends State<MobileScrollService>
     AxisDirection? direction,
     Duration? duration,
   }) {
-    widget.autoScroller.startAutoScroll(
+    autoScroller?.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
       direction: direction,
+      duration: duration,
     );
   }
 
   @override
   void stopAutoScroll() {
-    widget.autoScroller.stopAutoScroll();
+    autoScroller?.stopAutoScroll();
   }
 
   @override
   void goBallistic(double velocity) {
-    final position = widget.scrollController.position;
-    if (position is ScrollPositionWithSingleContext) {
-      position.goBallistic(velocity);
-    }
+    throw UnimplementedError();
   }
 
   @override
-  ScrollController get scrollController => widget.scrollController;
+  ScrollController get scrollController => throw UnimplementedError();
 }

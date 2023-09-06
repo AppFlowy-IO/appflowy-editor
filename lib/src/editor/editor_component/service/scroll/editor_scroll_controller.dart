@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -11,18 +12,45 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 /// And, you can use [visibleRangeNotifier] to get the first level visible items.
 ///
 class EditorScrollController {
-  EditorScrollController() {
-    // listen to the scroll offset
-    _scrollOffsetSubscription = scrollOffsetListener.changes.listen((value) {
-      // the value from changes is the delta offset, so we add it to the current
-      // offset to get the total offset.
-      offsetNotifier.value = offsetNotifier.value + value;
-    });
+  EditorScrollController({
+    required this.editorState,
+    this.shrinkWrap = false,
+  }) {
+    // if shrinkWrap is true, we will render the document with Column layout.
+    // otherwise, we will render the document with ScrollablePositionedList.
+    if (shrinkWrap) {
+      void updateVisibleRange() {
+        visibleRangeNotifier.value = (
+          0,
+          editorState.document.root.children.length - 1,
+        );
+      }
 
-    itemPositionsListener.itemPositions.addListener(_listenItemPositions);
+      updateVisibleRange();
+      editorState.document.root.addListener(updateVisibleRange);
+
+      // listen to the scroll offset
+      scrollController.addListener(
+        () => offsetNotifier.value = scrollController.offset,
+      );
+    } else {
+      // listen to the scroll offset
+      _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
+        // the value from changes is the delta offset, so we add it to the current
+        // offset to get the total offset.
+        offsetNotifier.value = offsetNotifier.value + value;
+      });
+
+      _itemPositionsListener.itemPositions.addListener(_listenItemPositions);
+    }
   }
 
+  final EditorState editorState;
+  final bool shrinkWrap;
+
+  // provide the current scroll offset
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
+
   // provide the first level visible items, for example, if there're texts like this:
   //
   // 1. text1
@@ -38,14 +66,64 @@ class EditorScrollController {
   final ValueNotifier<(int, int)> visibleRangeNotifier =
       ValueNotifier((-1, -1));
 
-  // these values are required by ScrollablePositionedList
+  // these value is required by SingleChildScrollView
+  // notes: don't use them if shrinkWrap is false
   // ------------ start ----------------
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ScrollOffsetController scrollOffsetController =
+  final ScrollController scrollController = ScrollController();
+  // ------------ end ----------------
+
+  // these values are required by ScrollablePositionedList
+  // notes: don't use them if shrinkWrap is true
+  // ------------ start ----------------
+  ItemScrollController get itemScrollController {
+    if (shrinkWrap) {
+      throw UnsupportedError(
+        'ItemScrollController is not supported '
+        'when shrinkWrap is true',
+      );
+    }
+    return _itemScrollController;
+  }
+
+  final ItemScrollController _itemScrollController = ItemScrollController();
+
+  ScrollOffsetController get scrollOffsetController {
+    if (shrinkWrap) {
+      throw UnsupportedError(
+        'ScrollOffsetController is not supported '
+        'when shrinkWrap is true',
+      );
+    }
+    return _scrollOffsetController;
+  }
+
+  final ScrollOffsetController _scrollOffsetController =
       ScrollOffsetController();
-  final ItemPositionsListener itemPositionsListener =
+
+  ItemPositionsListener get itemPositionsListener {
+    if (shrinkWrap) {
+      throw UnsupportedError(
+        'ItemPositionsListener is not supported '
+        'when shrinkWrap is true',
+      );
+    }
+    return _itemPositionsListener;
+  }
+
+  final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
-  final ScrollOffsetListener scrollOffsetListener =
+
+  ScrollOffsetListener get scrollOffsetListener {
+    if (shrinkWrap) {
+      throw UnsupportedError(
+        'ScrollOffsetListener is not supported '
+        'when shrinkWrap is true',
+      );
+    }
+    return _scrollOffsetListener;
+  }
+
+  final ScrollOffsetListener _scrollOffsetListener =
       ScrollOffsetListener.create();
   // ------------ end ----------------
 
@@ -53,15 +131,55 @@ class EditorScrollController {
 
   // dispose the subscription
   void dispose() {
+    scrollController.dispose();
+
     _scrollOffsetSubscription.cancel();
-    itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
+    _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
+  }
+
+  Future<void> animateTo({
+    required double offset,
+    required Duration duration,
+    Curve curve = Curves.linear,
+  }) async {
+    if (shrinkWrap) {
+      await scrollController.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    } else {
+      await scrollOffsetController.animateScroll(
+        offset: offset,
+        duration: duration,
+        curve: curve,
+      );
+    }
+  }
+
+  void jumpToTop() {
+    if (shrinkWrap) {
+      scrollController.jumpTo(0);
+    } else {
+      itemScrollController.jumpTo(index: 0);
+    }
+  }
+
+  void jumpToBottom() {
+    if (shrinkWrap) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    } else {
+      itemScrollController.jumpTo(
+        index: editorState.document.root.children.length - 1,
+      );
+    }
   }
 
   // listen to the visible item positions
   void _listenItemPositions() {
     // the value from itemPositions is the list of item positions, we need to filter
     //  the list to find the first and last visible items.
-    final positions = itemPositionsListener.itemPositions.value;
+    final positions = _itemPositionsListener.itemPositions.value;
 
     if (positions.isEmpty) {
       visibleRangeNotifier.value = (-1, -1);
