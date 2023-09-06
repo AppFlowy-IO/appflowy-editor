@@ -150,6 +150,7 @@ class _TodoListBlockComponentWidgetState
           Flexible(
             child: AppFlowyRichText(
               key: forwardKey,
+              delegate: this,
               node: widget.node,
               editorState: editorState,
               textAlign: alignment?.toTextAlign,

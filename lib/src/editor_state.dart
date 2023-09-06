@@ -298,6 +298,7 @@ class EditorState {
     }
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
+      // FIXME: @LucasXu0
       // if ( res.any((element) => element.path.isParentOf(node.path))) {
       //   continue;
       // }

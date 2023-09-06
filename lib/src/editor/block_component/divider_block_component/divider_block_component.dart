@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/block_selection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

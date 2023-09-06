@@ -10,11 +10,11 @@ mixin DefaultSelectableMixin {
       forwardKey.currentState as SelectableMixin;
 
   Offset get baseOffset {
-    final parentBox = containerKey.currentContext?.findRenderObject();
-    final childBox = forwardKey.currentContext?.findRenderObject();
-    if (parentBox is RenderBox && childBox is RenderBox) {
-      return childBox.localToGlobal(Offset.zero, ancestor: parentBox);
-    }
+    // final parentBox = containerKey.currentContext?.findRenderObject();
+    // final childBox = forwardKey.currentContext?.findRenderObject();
+    // if (parentBox is RenderBox && childBox is RenderBox) {
+    //   return childBox.localToGlobal(Offset.zero, ancestor: parentBox);
+    // }
     return Offset.zero;
   }
 

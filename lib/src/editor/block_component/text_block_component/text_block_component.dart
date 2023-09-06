@@ -144,6 +144,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         children: [
           AppFlowyRichText(
             key: forwardKey,
+            delegate: this,
             node: widget.node,
             editorState: editorState,
             textAlign: alignment?.toTextAlign,

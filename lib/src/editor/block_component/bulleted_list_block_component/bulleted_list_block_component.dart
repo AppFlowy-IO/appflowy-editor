@@ -134,6 +134,7 @@ class _BulletedListBlockComponentWidgetState
           Flexible(
             child: AppFlowyRichText(
               key: forwardKey,
+              delegate: this,
               node: widget.node,
               editorState: editorState,
               textAlign: alignment?.toTextAlign,

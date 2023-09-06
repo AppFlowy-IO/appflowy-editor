@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/selection_area_painter.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/selection/selection_area_painter.dart';
 import 'package:appflowy_editor/src/render/selection/cursor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';

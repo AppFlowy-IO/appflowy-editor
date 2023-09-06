@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/selection/block_selection_area.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,7 @@ class BlockSelectionContainer extends StatelessWidget {
     required this.child,
   });
 
-  // get the cursor rect or selection rects from the delegate
+  // get the cursor rect, selection rects or block rect from the delegate
   final SelectableMixin delegate;
 
   // get the selection from the listenable
