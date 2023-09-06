@@ -66,7 +66,7 @@ List<TextEditingDelta> getTextEditingDeltas(
         insertionOffset: diff.start,
         selection: newValue.selection,
         composing: newValue.composing,
-      )
+      ),
     ];
   } else if (diff.inserted.isEmpty && diff.deleted.isNotEmpty) {
     return [

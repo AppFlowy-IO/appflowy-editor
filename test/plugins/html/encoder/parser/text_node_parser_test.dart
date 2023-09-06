@@ -11,7 +11,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
-    const HtmlTableNodeParser()
+    const HtmlTableNodeParser(),
   ];
   group('html_text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
@@ -257,7 +257,7 @@ void main() async {
           TableBlockKeys.rowsLen: 2,
           TableBlockKeys.colDefaultWidth: 60,
           TableBlockKeys.rowDefaultHeight: 50,
-          TableBlockKeys.colMinimumWidth: 30
+          TableBlockKeys.colMinimumWidth: 30,
         },
         'children': [
           {
@@ -265,7 +265,7 @@ void main() async {
             'data': {
               TableCellBlockKeys.colPosition: 0,
               TableCellBlockKeys.rowPosition: 0,
-              TableCellBlockKeys.width: 35
+              TableCellBlockKeys.width: 35,
             },
             'children': [
               {
@@ -273,7 +273,7 @@ void main() async {
                 'data': {
                   'level': 2,
                   'delta': [
-                    {'insert': 'a'}
+                    {'insert': 'a'},
                   ],
                 },
               },
@@ -283,7 +283,7 @@ void main() async {
             'type': TableCellBlockKeys.type,
             'data': {
               TableCellBlockKeys.colPosition: 0,
-              TableCellBlockKeys.rowPosition: 1
+              TableCellBlockKeys.rowPosition: 1,
             },
             'children': [
               {
@@ -292,7 +292,7 @@ void main() async {
                   'delta': [
                     {
                       'insert': 'b',
-                      'attributes': {'bold': true}
+                      'attributes': {'bold': true},
                     }
                   ],
                 },
@@ -303,7 +303,7 @@ void main() async {
             'type': TableCellBlockKeys.type,
             'data': {
               TableCellBlockKeys.colPosition: 1,
-              TableCellBlockKeys.rowPosition: 0
+              TableCellBlockKeys.rowPosition: 0,
             },
             'children': [
               {
@@ -312,7 +312,7 @@ void main() async {
                   'delta': [
                     {
                       'insert': 'c',
-                      'attributes': {'italic': true}
+                      'attributes': {'italic': true},
                     }
                   ],
                 },
@@ -323,15 +323,15 @@ void main() async {
             'type': TableCellBlockKeys.type,
             'data': {
               TableCellBlockKeys.colPosition: 1,
-              TableCellBlockKeys.rowPosition: 1
+              TableCellBlockKeys.rowPosition: 1,
             },
             'children': [
               {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': 'd'}
-                  ]
+                    {'insert': 'd'},
+                  ],
                 },
               }
             ],
@@ -344,7 +344,7 @@ void main() async {
           tableNode.node,
           encodeParsers: parser,
         ),
-        '''<table><tr><td><h2>a</h2></td><td><p><i>c</i></p></td></tr><tr><td><p><strong>b</strong></p></td><td><p>d</p></td></tr></table>'''
+        '''<table><tr><td><h2>a</h2></td><td><p><i>c</i></p></td></tr><tr><td><p><strong>b</strong></p></td><td><p>d</p></td></tr></table>''',
       );
     });
   });

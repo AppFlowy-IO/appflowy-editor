@@ -232,7 +232,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
         dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
-            dividerBox.size
+            dividerBox.size,
       ];
     }
     return [Offset.zero & _renderBox.size];

@@ -73,7 +73,7 @@ class _TableColState extends State<TableCol> {
               alignment: Alignment.topCenter,
               menuBuilder: widget.menuBuilder,
               dir: TableDirection.col,
-            )
+            ),
           ],
         ),
       ),
@@ -84,7 +84,7 @@ class _TableColState extends State<TableCol> {
         colIdx: widget.colIdx,
         borderColor: widget.borderColor,
         borderHoverColor: widget.borderHoverColor,
-      )
+      ),
     ]);
 
     return Row(children: children);
@@ -109,7 +109,7 @@ class _TableColState extends State<TableCol> {
           context,
           node,
         ),
-        cellBorder
+        cellBorder,
       ]);
     }
 

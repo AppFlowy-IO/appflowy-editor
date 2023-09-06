@@ -30,11 +30,11 @@ void main() {
                 'data': {
                   'level': 2,
                   'delta': [
-                    {'insert': 'a'}
-                  ]
-                }
+                    {'insert': 'a'},
+                  ],
+                },
               },
-            ]
+            ],
           },
           {
             'type': TableCellBlockKeys.type,
@@ -49,10 +49,10 @@ void main() {
                   'delta': [
                     {
                       'insert': 'b',
-                      'data': {'bold': true}
+                      'data': {'bold': true},
                     }
-                  ]
-                }
+                  ],
+                },
               },
             ],
           },
@@ -69,10 +69,10 @@ void main() {
                   'delta': [
                     {
                       'insert': 'c',
-                      'data': {'italic': true}
+                      'data': {'italic': true},
                     }
-                  ]
-                }
+                  ],
+                },
               },
             ],
           },
@@ -87,11 +87,11 @@ void main() {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': 'd'}
-                  ]
-                }
+                    {'insert': 'd'},
+                  ],
+                },
               }
-            ]
+            ],
           }
         ],
       });
@@ -113,9 +113,9 @@ void main() {
           'data': {
             'level': 2,
             'delta': [
-              {'insert': 'a'}
-            ]
-          }
+              {'insert': 'a'},
+            ],
+          },
         },
       );
       expect(
@@ -126,10 +126,10 @@ void main() {
             'delta': [
               {
                 'insert': 'c',
-                'data': {'italic': true}
+                'data': {'italic': true},
               }
-            ]
-          }
+            ],
+          },
         },
       );
 
@@ -139,9 +139,9 @@ void main() {
           'type': 'paragraph',
           'data': {
             'delta': [
-              {'insert': 'd'}
-            ]
-          }
+              {'insert': 'd'},
+            ],
+          },
         },
       );
     });
@@ -170,11 +170,11 @@ void main() {
                 'data': {
                   'level': 2,
                   'delta': [
-                    {'insert': 'a'}
-                  ]
-                }
+                    {'insert': 'a'},
+                  ],
+                },
               },
-            ]
+            ],
           },
           {
             'type': TableCellBlockKeys.type,
@@ -189,10 +189,10 @@ void main() {
                   'delta': [
                     {
                       'insert': 'c',
-                      'data': {'italic': true}
+                      'data': {'italic': true},
                     }
-                  ]
-                }
+                  ],
+                },
               },
             ],
           },
@@ -207,11 +207,11 @@ void main() {
                 'type': 'paragraph',
                 'data': {
                   'delta': [
-                    {'insert': 'd'}
-                  ]
-                }
+                    {'insert': 'd'},
+                  ],
+                },
               }
-            ]
+            ],
           }
         ],
       };
@@ -222,7 +222,7 @@ void main() {
     test('default constructor (from list of list of strings)', () {
       final tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
       const config = TableConfig();
 
@@ -246,9 +246,9 @@ void main() {
           'type': 'paragraph',
           'data': {
             'delta': [
-              {'insert': '1'}
-            ]
-          }
+              {'insert': '1'},
+            ],
+          },
         },
       );
       expect(
@@ -260,8 +260,8 @@ void main() {
               {
                 'insert': '3',
               }
-            ]
-          }
+            ],
+          },
         },
       );
 
@@ -271,9 +271,9 @@ void main() {
           'type': 'paragraph',
           'data': {
             'delta': [
-              {'insert': '4'}
-            ]
-          }
+              {'insert': '4'},
+            ],
+          },
         },
       );
     });
@@ -287,7 +287,7 @@ void main() {
       final tableNode = TableNode.fromList(
         [
           ['1', '2'],
-          ['3', '4']
+          ['3', '4'],
         ],
         config: config,
       );
@@ -309,8 +309,8 @@ void main() {
               {
                 'insert': '3',
               }
-            ]
-          }
+            ],
+          },
         },
       );
     });
@@ -320,7 +320,7 @@ void main() {
         () {
       final listData = [
         ['1', '2'],
-        ['3']
+        ['3'],
       ];
 
       expect(() => TableNode.fromList(listData), throwsAssertionError);
@@ -329,7 +329,7 @@ void main() {
     test('colsHeight', () {
       final tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
 
       expect(

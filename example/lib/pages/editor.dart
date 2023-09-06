@@ -123,7 +123,7 @@ class Editor extends StatelessWidget {
             child: Text('Sample Menu'),
           );
         },
-      )
+      ),
     };
     return AppFlowyEditor(
       editorState: editorState,

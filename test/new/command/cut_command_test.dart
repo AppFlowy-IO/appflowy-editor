@@ -55,7 +55,7 @@ const paragraphdata = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -63,15 +63,15 @@ const paragraphdata = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -81,63 +81,63 @@ const paragraphdata = {
             {"insert": " "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": " for "},
             {
               "insert": "Flutter",
-              "attributes": {"underline": true}
+              "attributes": {"underline": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -150,24 +150,24 @@ const paragraphdata = {
                 "italic": true,
                 "bold": true,
                 "font_color": "0xffD70040",
-                "bg_color": "0x6000BCF0"
-              }
+                "bg_color": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -175,14 +175,14 @@ const paragraphdata = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -190,13 +190,13 @@ const paragraphdata = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 
 const afterCut = {
@@ -211,7 +211,7 @@ const afterCut = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -219,62 +219,62 @@ const afterCut = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -287,24 +287,24 @@ const afterCut = {
                 "italic": true,
                 "bold": true,
                 "font_color": "0xffD70040",
-                "bg_color": "0x6000BCF0"
-              }
+                "bg_color": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -312,14 +312,14 @@ const afterCut = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -327,11 +327,11 @@ const afterCut = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };

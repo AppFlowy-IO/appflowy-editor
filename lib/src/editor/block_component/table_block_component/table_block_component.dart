@@ -193,7 +193,8 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     final tableBox = tableKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && tableBox is RenderBox) {
       return [
-        tableBox.localToGlobal(Offset.zero, ancestor: parentBox) & tableBox.size
+        tableBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            tableBox.size,
       ];
     }
     return [Offset.zero & _renderBox.size];
@@ -248,7 +249,7 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
 
     final tableNode = TableNode.fromList([
       ['', ''],
-      ['', '']
+      ['', ''],
     ]);
 
     final transaction = editorState.transaction;
