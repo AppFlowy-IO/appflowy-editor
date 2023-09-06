@@ -12,7 +12,7 @@ void main() async {
 
       expect(result.toJson(), example);
     });
-      test('html table parser document', () async {
+    test('html table parser document', () async {
       final result = DocumentHTMLDecoder().convert(htmlTable);
 
       expect(result.toJson(), htmlTablejson);
