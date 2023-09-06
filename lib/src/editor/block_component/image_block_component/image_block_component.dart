@@ -122,7 +122,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   Node get node => widget.node;
 
   final imageKey = GlobalKey();
-  RenderBox get _renderBox => context.findRenderObject() as RenderBox;
+  RenderBox? get _renderBox => context.findRenderObject() as RenderBox?;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
@@ -229,12 +229,18 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
 
   @override
   Rect? getCursorRectInPosition(Position position) {
-    final size = _renderBox.size;
+    if (_renderBox == null) {
+      return null;
+    }
+    final size = _renderBox!.size;
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
 
   @override
   List<Rect> getRectsInSelection(Selection selection) {
+    if (_renderBox == null) {
+      return [];
+    }
     final parentBox = context.findRenderObject();
     final dividerBox = imageKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
@@ -243,7 +249,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
             dividerBox.size
       ];
     }
-    return [Offset.zero & _renderBox.size];
+    return [Offset.zero & _renderBox!.size];
   }
 
   @override
@@ -254,7 +260,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       );
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(Offset offset) => _renderBox!.localToGlobal(offset);
 }
 
 extension AlignmentExtension on Alignment {
