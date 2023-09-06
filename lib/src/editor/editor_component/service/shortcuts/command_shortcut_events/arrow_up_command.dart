@@ -125,16 +125,3 @@ CommandShortcutEventHandler _moveCursorUpSelectCommandHandler = (editorState) {
   );
   return KeyEventResult.handled;
 };
-
-extension on EditorState {
-  (Node, BlockComponentSelectable)? getFirstSelectable() {
-    final nodes = document.root.children;
-    for (var i = 0; i < nodes.length; i++) {
-      final selectable = renderer.blockComponentSelectable(nodes[i].type);
-      if (selectable != null) {
-        return (nodes[i], selectable);
-      }
-    }
-    return null;
-  }
-}

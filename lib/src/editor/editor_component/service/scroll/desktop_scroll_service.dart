@@ -54,7 +54,9 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   void scrollTo(
     double dy, {
-    Duration? duration,
+    Duration duration = const Duration(
+      milliseconds: 150,
+    ),
   }) {
     dy = dy.clamp(
       minScrollExtent,
@@ -62,10 +64,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     );
     editorScrollController.animateTo(
       offset: dy,
-      duration: duration ??
-          const Duration(
-            milliseconds: 1,
-          ), // the animation duration should be greater than zero, use 1ms instead
+      duration: duration,
     );
   }
 

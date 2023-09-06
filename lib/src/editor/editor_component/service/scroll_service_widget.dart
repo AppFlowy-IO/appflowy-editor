@@ -112,7 +112,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       if (editorState.selectionUpdateReason ==
           SelectionUpdateReason.searchNavigate) {
-        widget.editorScrollController.scrollOffsetController.animateScroll(
+        widget.editorScrollController.animateTo(
           offset: endTouchPoint.dy - 100,
           duration: Duration.zero,
         );
@@ -164,7 +164,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   int? get page => forward.page;
 
   @override
-  void scrollTo(double dy, {Duration? duration}) =>
+  void scrollTo(
+    double dy, {
+    Duration duration = const Duration(milliseconds: 150),
+  }) =>
       forward.scrollTo(dy, duration: duration);
 
   @override

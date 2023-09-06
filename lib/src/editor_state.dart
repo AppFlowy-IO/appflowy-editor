@@ -287,9 +287,10 @@ class EditorState {
     return [];
   }
 
-  List<Node> getSelectedNodes([
+  List<Node> getSelectedNodes({
     Selection? selection,
-  ]) {
+    bool withCopy = true,
+  }) {
     List<Node> res = [];
     selection ??= this.selection;
     if (selection == null) {
@@ -303,7 +304,9 @@ class EditorState {
       res.add(node);
     }
 
-    res = res.map((e) => e.copyWith()).toList();
+    if (withCopy) {
+      res = res.map((e) => e.copyWith()).toList();
+    }
 
     if (res.isNotEmpty) {
       var delta = res.first.delta;
@@ -433,9 +436,7 @@ class EditorState {
       autoScroller?.stopAutoScroll();
       autoScroller = AutoScroller(
         scrollableState,
-        onScrollViewScrolled: () {
-          debugPrint('on scroll view scrolled');
-        },
+        onScrollViewScrolled: () {},
       );
       this.scrollableState = scrollableState;
     }

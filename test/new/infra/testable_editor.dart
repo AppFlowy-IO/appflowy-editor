@@ -48,7 +48,9 @@ class TestableEditor {
       scrollController ??= ScrollController();
     }
 
-    final editorScrollController = EditorScrollController();
+    final editorScrollController = EditorScrollController(
+      editorState: editorState,
+    );
 
     Widget editor = Builder(
       builder: (context) {
@@ -58,6 +60,10 @@ class TestableEditor {
           autoFocus: autoFocus,
           shrinkWrap: shrinkWrap,
           scrollController: scrollController,
+          editorScrollController: EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: shrinkWrap,
+          ),
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
             ...TestableFindAndReplaceCommands(context: context)
@@ -66,7 +72,6 @@ class TestableEditor {
           editorStyle: inMobile
               ? const EditorStyle.mobile()
               : const EditorStyle.desktop(),
-          editorScrollController: editorScrollController,
         );
       },
     );

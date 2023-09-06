@@ -11,7 +11,7 @@ abstract class BlockComponentActionState {
 }
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
-abstract class BlockComponentBuilder {
+abstract class BlockComponentBuilder with BlockComponentSelectable {
   BlockComponentBuilder();
 
   /// validate the node.
@@ -35,12 +35,15 @@ mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
   /// the start position of the block component.
   ///
   /// For the text block component, the start position is always 0.
-  Position start(Node node);
+  Position start(Node node) => Position(path: node.path, offset: 0);
 
   /// the end position of the block component.
   ///
   /// For the text block component, the end position is always the length of the text.
-  Position end(Node node);
+  Position end(Node node) => Position(
+        path: node.path,
+        offset: node.delta?.length ?? 0,
+      );
 }
 
 abstract class BlockComponentRendererService {

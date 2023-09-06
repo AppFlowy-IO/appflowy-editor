@@ -80,6 +80,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           final cursor = Cursor(
             key: cursorKey,
             rect: prevCursorRect!,
+            shouldBlink: widget.delegate.shouldCursorBlink,
+            cursorStyle: widget.delegate.cursorStyle,
             color: widget.cursorColor,
           );
           // force to show the cursor

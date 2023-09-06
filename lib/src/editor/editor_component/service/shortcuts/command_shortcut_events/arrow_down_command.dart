@@ -129,16 +129,3 @@ CommandShortcutEventHandler _moveCursorDownSelectCommandHandler =
   );
   return KeyEventResult.handled;
 };
-
-extension on EditorState {
-  (Node, BlockComponentSelectable)? getLastSelectable() {
-    final nodes = document.root.children;
-    for (var i = nodes.length - 1; i >= 0; i--) {
-      final selectable = renderer.blockComponentSelectable(nodes[i].type);
-      if (selectable != null) {
-        return (nodes[i], selectable);
-      }
-    }
-    return null;
-  }
-}

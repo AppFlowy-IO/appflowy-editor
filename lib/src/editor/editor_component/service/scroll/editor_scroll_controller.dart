@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -144,13 +145,16 @@ class EditorScrollController {
   }) async {
     if (shrinkWrap) {
       await scrollController.animateTo(
-        offset,
+        offset.clamp(
+          scrollController.position.minScrollExtent,
+          scrollController.position.maxScrollExtent,
+        ),
         duration: duration,
         curve: curve,
       );
     } else {
-      await scrollOffsetController.animateScroll(
-        offset: offset,
+      await scrollOffsetController.animateTo(
+        offset: max(0, offset),
         duration: duration,
         curve: curve,
       );

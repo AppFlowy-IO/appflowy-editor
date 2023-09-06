@@ -143,8 +143,7 @@ class _DividerBlockComponentWidgetState
     if (_renderBox == null) {
       return null;
     }
-    final size = _renderBox!.size;
-    return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
+    return getRectsInSelection(Selection.collapsed(position)).firstOrNull;
   }
 
   @override
