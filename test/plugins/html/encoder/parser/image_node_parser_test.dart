@@ -10,6 +10,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
+    const HtmlTableNodeParser()
   ];
   group('html_image_node_parser.dart', () {
     test('parser image node', () {
