@@ -40,13 +40,6 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-String generateRandomString(int len) {
-  var r = Random();
-  return String.fromCharCodes(
-    List.generate(len, (index) => r.nextInt(33) + 89),
-  );
-}
-
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -58,19 +51,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    // _jsonString = rootBundle.loadString('assets/example.json');
-    // _jsonString = EditorState.blank(withInitialText: false).document.insert([0], );
+    _jsonString = rootBundle.loadString('assets/example.json');
 
-    final nodes = List.generate(
-      1000,
-      (index) => paragraphNode(text: '$index ${generateRandomString(50)}'),
-    );
-    final editorState = EditorState(
-      document: Document(root: pageNode(children: nodes)),
-    );
-    _jsonString = Future.value(
-      jsonEncode(editorState.document.toJson()),
-    );
     _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
@@ -127,6 +109,20 @@ class _HomePageState extends State<HomePage> {
           _buildSeparator(context, 'AppFlowy Editor Demo'),
           _buildListTile(context, 'With Example.json', () {
             final jsonString = rootBundle.loadString('assets/example.json');
+            _loadEditor(context, jsonString);
+          }),
+          _buildListTile(context, 'With Large Document (10000+ lines)', () {
+            final nodes = List.generate(
+              10000,
+              (index) =>
+                  paragraphNode(text: '$index ${generateRandomString(50)}'),
+            );
+            final editorState = EditorState(
+              document: Document(root: pageNode(children: nodes)),
+            );
+            final jsonString = Future.value(
+              jsonEncode(editorState.document.toJson()),
+            );
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Example.html', () async {
@@ -334,4 +330,11 @@ class _HomePageState extends State<HomePage> {
       _loadEditor(context, Future<String>.value(jsonString));
     }
   }
+}
+
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+    List.generate(len, (index) => r.nextInt(33) + 89),
+  );
 }

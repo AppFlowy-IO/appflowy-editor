@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:nanoid/non_secure.dart';
 
 /// [Node] represents a node in the document tree.
 ///
@@ -34,7 +35,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
             ),
           ), // unlink the given children to avoid the error of "node has already a parent"
         _attributes = attributes,
-        id = id ?? "" {
+        id = id ?? nanoid(6) {
     for (final child in children) {
       child.parent = this;
     }
@@ -236,7 +237,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }) {
     final node = Node(
       type: type ?? this.type,
-      id: "",
+      id: nanoid(6),
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );
