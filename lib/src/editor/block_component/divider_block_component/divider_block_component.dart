@@ -138,15 +138,24 @@ class _DividerBlockComponentWidgetState
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
     if (_renderBox == null) {
       return null;
     }
-    return getRectsInSelection(Selection.collapsed(position)).firstOrNull;
+    return getRectsInSelection(
+      Selection.collapsed(position),
+      shiftWithBaseOffset: shiftWithBaseOffset,
+    ).firstOrNull;
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
     if (_renderBox == null) {
       return [];
     }
@@ -169,7 +178,11 @@ class _DividerBlockComponentWidgetState
       );
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox!.localToGlobal(offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
+      _renderBox!.localToGlobal(offset);
 
   @override
   TextDirection textDirection() {

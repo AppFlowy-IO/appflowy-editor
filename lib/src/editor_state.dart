@@ -382,9 +382,17 @@ class EditorState {
     if (selection.isCollapsed && nodes.length == 1) {
       final selectable = nodes.first.selectable;
       if (selectable != null) {
-        final rect = selectable.getCursorRectInPosition(selection.end);
+        final rect = selectable.getCursorRectInPosition(
+          selection.end,
+          shiftWithBaseOffset: true,
+        );
         if (rect != null) {
-          rects.add(selectable.transformRectToGlobal(rect));
+          rects.add(
+            selectable.transformRectToGlobal(
+              rect,
+              shiftWithBaseOffset: true,
+            ),
+          );
         }
       }
     } else {
@@ -393,7 +401,10 @@ class EditorState {
         if (selectable == null) {
           continue;
         }
-        final nodeRects = selectable.getRectsInSelection(selection);
+        final nodeRects = selectable.getRectsInSelection(
+          selection,
+          shiftWithBaseOffset: true,
+        );
         if (nodeRects.isEmpty) {
           continue;
         }

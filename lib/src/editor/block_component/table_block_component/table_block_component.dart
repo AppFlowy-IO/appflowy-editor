@@ -188,7 +188,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   Position getPositionInOffset(Offset start) => end();
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
     final parentBox = context.findRenderObject();
     final tableBox = tableKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && tableBox is RenderBox) {
@@ -213,7 +216,11 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
+      _renderBox.localToGlobal(offset);
 
   @override
   Rect getBlockRect() {
@@ -221,7 +228,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
     final size = _renderBox.size;
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }

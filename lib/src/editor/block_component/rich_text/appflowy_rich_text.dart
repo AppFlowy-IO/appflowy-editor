@@ -144,7 +144,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
     // TODO: the debug needs layout!!!
     if (_renderParagraph?.debugNeedsLayout == true) {
       return null;
@@ -218,7 +221,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
     final textSelection = textSelectionFromEditorSelection(selection);
     if (textSelection == null) {
       return [];
@@ -256,7 +262,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  Offset localToGlobal(Offset offset) {
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) {
     return _renderParagraph?.localToGlobal(offset) ?? Offset.zero;
   }
 
