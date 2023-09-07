@@ -66,10 +66,10 @@ KeyEventResult _toggleAttribute(
 
   final selection = editorState.selection;
   if (selection == null) {
-    return KeyEventResult.ignored;
+        return KeyEventResult.ignored;
   }
 
   editorState.toggleAttribute(key);
-
+  
   return KeyEventResult.handled;
 }

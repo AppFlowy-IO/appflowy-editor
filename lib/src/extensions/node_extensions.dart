@@ -111,14 +111,12 @@ extension NodeExtensions on Node {
     }
 
     selection = selection.normalized;
-
     var delta = this.delta;
     if (delta == null) {
       return false;
     }
 
     delta = delta.slice(selection.startIndex, selection.endIndex);
-
     return test(delta);
   }
 }
@@ -146,7 +144,6 @@ extension NodesExtensions<T extends Node> on List<T> {
 
     selection = selection.normalized;
     final nodes = this.normalized;
-
     if (nodes.length == 1) {
       return nodes.first.allSatisfyInSelection(selection, test);
     }
@@ -162,6 +159,7 @@ extension NodesExtensions<T extends Node> on List<T> {
         delta = delta.slice(selection.start.offset);
       } else if (i == nodes.length - 1) {
         delta = delta.slice(0, selection.end.offset);
+         print(delta);
       }
       if (!test(delta)) {
         return false;
