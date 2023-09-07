@@ -97,6 +97,19 @@ class _DividerBlockComponentWidgetState
       child: child,
     );
 
+    final editorState = context.read<EditorState>();
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -105,7 +118,6 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    final editorState = context.read<EditorState>();
     final selectionNotifier = editorState.selectionNotifier;
     return BlockSelectionContainer(
       node: node,
@@ -163,7 +175,9 @@ class _DividerBlockComponentWidgetState
     final dividerBox = dividerKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
-        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+        (shiftWithBaseOffset
+                ? dividerBox.localToGlobal(Offset.zero, ancestor: parentBox)
+                : Offset.zero) &
             dividerBox.size
       ];
     }

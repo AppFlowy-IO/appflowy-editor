@@ -12,10 +12,13 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 /// You can use [offsetNotifier] to get the current scroll offset.
 /// And, you can use [visibleRangeNotifier] to get the first level visible items.
 ///
+/// If the shrinkWrap is true, the scrollController must not be null
+///   and the editor should be wrapped in a SingleChildScrollView.
 class EditorScrollController {
   EditorScrollController({
     required this.editorState,
     this.shrinkWrap = false,
+    ScrollController? scrollController,
   }) {
     // if shrinkWrap is true, we will render the document with Column layout.
     // otherwise, we will render the document with ScrollablePositionedList.
@@ -30,10 +33,12 @@ class EditorScrollController {
       updateVisibleRange();
       editorState.document.root.addListener(updateVisibleRange);
 
+      shouldDisposeScrollController = scrollController == null;
+      this.scrollController = scrollController ?? ScrollController();
       // listen to the scroll offset
-      scrollController.addListener(
-        () => offsetNotifier.value = scrollController.offset,
-      );
+      this.scrollController.addListener(
+            () => offsetNotifier.value = this.scrollController.offset,
+          );
     } else {
       // listen to the scroll offset
       _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
@@ -70,7 +75,8 @@ class EditorScrollController {
   // these value is required by SingleChildScrollView
   // notes: don't use them if shrinkWrap is false
   // ------------ start ----------------
-  final ScrollController scrollController = ScrollController();
+  late final ScrollController scrollController;
+  bool shouldDisposeScrollController = false;
   // ------------ end ----------------
 
   // these values are required by ScrollablePositionedList
@@ -132,7 +138,9 @@ class EditorScrollController {
 
   // dispose the subscription
   void dispose() {
-    scrollController.dispose();
+    if (shouldDisposeScrollController) {
+      scrollController.dispose();
+    }
 
     _scrollOffsetSubscription.cancel();
     _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);

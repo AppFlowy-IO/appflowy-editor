@@ -165,6 +165,8 @@ class _TodoListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              cursorColor: editorState.editorStyle.cursorColor,
+              selectionColor: editorState.editorStyle.selectionColor,
             ),
           ),
         ],
@@ -174,6 +176,17 @@ class _TodoListBlockComponentWidgetState
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 

@@ -29,7 +29,11 @@ void main() async {
       await tester.pumpAndSettle();
 
       final selectionAreaRect = tester.getTopLeft(
-        find.byType(BlockSelectionArea),
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is BlockSelectionArea &&
+              widget.supportTypes.contains(BlockSelectionType.block),
+        ),
       );
       expect(selectionAreaRect.dx, greaterThan(0));
     });

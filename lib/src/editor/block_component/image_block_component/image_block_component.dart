@@ -163,6 +163,17 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       child: child,
     );
 
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,

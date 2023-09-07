@@ -164,6 +164,17 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       child: child,
     );
 
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -196,7 +207,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     final tableBox = tableKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && tableBox is RenderBox) {
       return [
-        tableBox.localToGlobal(Offset.zero, ancestor: parentBox) & tableBox.size
+        (shiftWithBaseOffset
+                ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox)
+                : Offset.zero) &
+            tableBox.size
       ];
     }
     return [Offset.zero & _renderBox.size];

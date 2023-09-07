@@ -49,32 +49,30 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     final editorState = context.read<EditorState>();
     final scrollController = context.read<EditorScrollController>();
     final items = node.children;
-    int extentCount = 0;
-    if (header != null) extentCount++;
-    if (footer != null) extentCount++;
 
     if (scrollController.shrinkWrap) {
-      return SingleChildScrollView(
-        controller: scrollController.scrollController,
-        child: Builder(
-          builder: (context) {
-            editorState.updateAutoScroller(Scrollable.of(context));
-            return Padding(
-              padding: editorState.editorStyle.padding,
-              child: Column(
-                children: [
-                  if (header != null) header!,
-                  ...items
-                      .map((e) => editorState.renderer.build(context, e))
-                      .toList(),
-                  if (footer != null) footer!,
-                ],
-              ),
-            );
-          },
-        ),
+      return Builder(
+        builder: (context) {
+          editorState.updateAutoScroller(Scrollable.of(context));
+          return Padding(
+            padding: editorState.editorStyle.padding,
+            child: Column(
+              children: [
+                if (header != null) header!,
+                ...items
+                    .map((e) => editorState.renderer.build(context, e))
+                    .toList(),
+                if (footer != null) footer!,
+              ],
+            ),
+          );
+        },
       );
     } else {
+      int extentCount = 0;
+      if (header != null) extentCount++;
+      if (footer != null) extentCount++;
+
       return ScrollablePositionedList.builder(
         shrinkWrap: scrollController.shrinkWrap,
         padding: editorState.editorStyle.padding,

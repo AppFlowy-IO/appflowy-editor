@@ -50,6 +50,8 @@ class TestableEditor {
 
     final editorScrollController = EditorScrollController(
       editorState: editorState,
+      shrinkWrap: shrinkWrap,
+      scrollController: scrollController,
     );
 
     Widget editor = Builder(
@@ -59,11 +61,7 @@ class TestableEditor {
           editable: editable,
           autoFocus: autoFocus,
           shrinkWrap: shrinkWrap,
-          scrollController: scrollController,
-          editorScrollController: EditorScrollController(
-            editorState: editorState,
-            shrinkWrap: shrinkWrap,
-          ),
+          editorScrollController: editorScrollController,
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
             ...TestableFindAndReplaceCommands(context: context)
@@ -93,7 +91,6 @@ class TestableEditor {
               child: AppFlowyEditor(
                 editorStyle: const EditorStyle.mobile(),
                 editorState: editorState,
-                scrollController: scrollController,
               ),
             ),
             MobileToolbar(
@@ -116,7 +113,6 @@ class TestableEditor {
             buildHighlightColorItem()
           ],
           editorState: editorState,
-          scrollController: scrollController!,
           editorScrollController: editorScrollController,
           child: editor,
         );

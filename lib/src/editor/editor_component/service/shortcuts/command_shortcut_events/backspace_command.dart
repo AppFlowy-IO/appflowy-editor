@@ -45,10 +45,15 @@ CommandShortcutEventHandler _deleteLeftSentenceCommandHandler = (editorState) {
 
 CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
   final selection = editorState.selection;
+  final selectionType = editorState.selectionType;
+
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
+
+  if (selectionType == SelectionType.block) {
+    return _backspaceInBlockSelection(editorState);
+  } else if (selection.isCollapsed) {
     return _backspaceInCollapsedSelection(editorState);
   } else {
     return _backspaceInNotCollapsedSelection(editorState);
@@ -136,5 +141,19 @@ CommandShortcutEventHandler _backspaceInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _backspaceInBlockSelection = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || editorState.selectionType != SelectionType.block) {
+    return KeyEventResult.ignored;
+  }
+  final transaction = editorState.transaction;
+  transaction.deleteNodesAtPath(selection.start.path);
+  editorState
+      .apply(transaction)
+      .then((value) => editorState.selectionType = null);
+
   return KeyEventResult.handled;
 };

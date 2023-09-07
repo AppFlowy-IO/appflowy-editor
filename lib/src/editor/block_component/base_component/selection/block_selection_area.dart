@@ -78,6 +78,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
+      key: ValueKey(widget.node.id + widget.supportTypes.toString()),
       valueListenable: widget.listenable,
       builder: ((context, value, child) {
         final sizedBox = child ?? const SizedBox.shrink();

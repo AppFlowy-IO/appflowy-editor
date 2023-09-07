@@ -153,6 +153,8 @@ class _NumberedListBlockComponentWidgetState
                 placeholderTextStyle,
               ),
               textDirection: textDirection,
+              cursorColor: editorState.editorStyle.cursorColor,
+              selectionColor: editorState.editorStyle.selectionColor,
             ),
           ),
         ],
@@ -162,6 +164,17 @@ class _NumberedListBlockComponentWidgetState
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 
