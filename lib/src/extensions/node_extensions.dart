@@ -159,7 +159,6 @@ extension NodesExtensions<T extends Node> on List<T> {
         delta = delta.slice(selection.start.offset);
       } else if (i == nodes.length - 1) {
         delta = delta.slice(0, selection.end.offset);
-         print(delta);
       }
       if (!test(delta)) {
         return false;
