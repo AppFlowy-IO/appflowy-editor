@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:appflowy_editor/src/core/document/attributes.dart';
 import 'package:collection/collection.dart';
-import 'package:diff_match_patch/diff_match_patch.dart' as diffMatchPatch;
+import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -19,8 +19,6 @@ sealed class TextOperation {
 
   Map<String, dynamic> toJson();
 }
-
-final _kNullCharacter = String.fromCharCode(0);
 
 class TextInsert extends TextOperation {
   TextInsert(
@@ -328,7 +326,7 @@ class Delta extends Iterable<TextOperation> {
     }).toList();
 
     final retDelta = Delta();
-    final diffResult = diffMatchPatch.diff(strings[0], strings[1]);
+    final diffResult = diff_match_patch.diff(strings[0], strings[1]);
 
     final thisIter = _OpIterator(this);
     final otherIter = _OpIterator(other);
@@ -338,16 +336,16 @@ class Delta extends Iterable<TextOperation> {
       while (length > 0) {
         var opLength = 0;
         switch (component.operation) {
-          case diffMatchPatch.DIFF_INSERT:
+          case diff_match_patch.DIFF_INSERT:
             opLength = min(otherIter.peekLength(), length);
             retDelta.add(otherIter.next(opLength));
             break;
-          case diffMatchPatch.DIFF_DELETE:
+          case diff_match_patch.DIFF_DELETE:
             opLength = min(length, thisIter.peekLength());
             thisIter.next(opLength);
             retDelta.delete(opLength);
             break;
-          case diffMatchPatch.DIFF_EQUAL:
+          case diff_match_patch.DIFF_EQUAL:
             opLength = min(
               min(thisIter.peekLength(), otherIter.peekLength()),
               length,
