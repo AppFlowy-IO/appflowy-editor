@@ -119,6 +119,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   toggleHighlightCommand,
   showLinkMenuCommand,
   openInlineLinkCommand,
+  openLinksCommand,
 
   //
   indentCommand,
