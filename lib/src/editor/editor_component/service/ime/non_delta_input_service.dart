@@ -34,8 +34,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   TextInputConnection? _textInputConnection;
 
-  int _skipNextUpdate = 0;
-
   final String debounceKey = 'updateEditingValue';
 
   @override
@@ -76,7 +74,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     Debounce.cancel(debounceKey);
 
-    _skipNextUpdate++;
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
@@ -90,9 +87,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
-    if (_skipNextUpdate-- > 0) {
-      return;
-    }
     if (currentTextEditingValue == value) {
       return;
     }
