@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -78,12 +79,14 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
+      case HTMLTags.table:
+        return _parseTable(element);
       case HTMLTags.list:
         return [
           _parseListElement(
             element,
             type: type,
-          )
+          ),
         ];
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
@@ -94,6 +97,149 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       default:
         return _parseParagraphElement(element);
     }
+  }
+
+  Iterable<Node> _parseTable(dom.Element element) {
+    final List<Node> tablenodes = [];
+    int columnLenth = 0;
+    int rowLength = 0;
+    for (final data in element.children) {
+      final (col, row, rwdata) = _parsetableRows(data);
+      columnLenth = columnLenth + col;
+      rowLength = rowLength + row;
+
+      tablenodes.addAll(rwdata);
+    }
+
+    return [
+      TableNode(
+        node: Node(
+          type: TableBlockKeys.type,
+          attributes: {
+            TableBlockKeys.rowsLen: rowLength,
+            TableBlockKeys.colsLen: columnLenth,
+            TableBlockKeys.colDefaultWidth: 60,
+            TableBlockKeys.rowDefaultHeight: 50,
+            TableBlockKeys.colMinimumWidth: 30,
+          },
+          children: tablenodes,
+        ),
+      ).node,
+    ];
+  }
+
+  (int, int, List<Node>) _parsetableRows(dom.Element element) {
+    final List<Node> nodes = [];
+    int length = 0;
+    int rowLength = 0;
+
+    for (final data in element.children) {
+      final tabledata = _parsetableData(data, rowPosition: rowLength);
+      if (length == 0) {
+        length = tabledata.length;
+      }
+      nodes.addAll(tabledata);
+      rowLength++;
+    }
+    return (length, rowLength, nodes);
+  }
+
+  Iterable<Node> _parsetableData(
+    dom.Element element, {
+    required int rowPosition,
+  }) {
+    final List<Node> nodes = [];
+    int columnPosition = 0;
+
+    for (final data in element.children) {
+      if (data.children.isEmpty) {
+        Attributes attributes = {
+          TableCellBlockKeys.colPosition: columnPosition,
+          TableCellBlockKeys.rowPosition: rowPosition,
+        };
+        if (data.attributes.isNotEmpty) {
+          final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
+                element.attributes,
+              ) ??
+              {};
+          attributes.addAll(deltaAttributes);
+        }
+
+        final node = Node(
+          type: TableCellBlockKeys.type,
+          attributes: attributes,
+          children: [paragraphNode(text: data.text)],
+        );
+
+        nodes.add(node);
+      } else {
+        Attributes attributes = {
+          TableCellBlockKeys.colPosition: columnPosition,
+          TableCellBlockKeys.rowPosition: rowPosition,
+        };
+        if (data.attributes.isNotEmpty) {
+          final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
+                element.attributes,
+              ) ??
+              {};
+          attributes.addAll(deltaAttributes);
+        }
+
+        final newnodes = Node(
+          type: TableCellBlockKeys.type,
+          attributes: attributes,
+          children: _parseTableSpecialNodes(data),
+        );
+
+        nodes.add(newnodes);
+      }
+      columnPosition++;
+    }
+
+    return nodes;
+  }
+
+  Iterable<Node> _parseTableSpecialNodes(dom.Element element) {
+    final List<Node> nodes = [];
+
+    if (element.children.isNotEmpty) {
+      for (final childrens in element.children) {
+        nodes.addAll(_parseTableDataElementsData(childrens));
+      }
+    } else {
+      nodes.addAll(_parseTableDataElementsData(element));
+    }
+    return nodes;
+  }
+
+  List<Node> _parseTableDataElementsData(dom.Element element) {
+    final List<Node> nodes = [];
+    final delta = Delta();
+    final localName = element.localName;
+
+    if (HTMLTags.formattingElements.contains(localName)) {
+      final attributes = _parserFormattingElementAttributes(element);
+      delta.insert(element.text, attributes: attributes);
+    } else if (HTMLTags.specialElements.contains(localName)) {
+      if (delta.isNotEmpty) {
+        nodes.add(paragraphNode(delta: delta));
+      }
+      nodes.addAll(
+        _parseSpecialElements(
+          element,
+          type: ParagraphBlockKeys.type,
+        ),
+      );
+    } else if (element is dom.Text) {
+      // skip the empty text node
+
+      delta.insert(element.text);
+    }
+
+    if (delta.isNotEmpty) {
+      nodes.add(paragraphNode(delta: delta));
+    }
+    return nodes;
   }
 
   Attributes _parserFormattingElementAttributes(
@@ -130,6 +276,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes = {AppFlowyRichTextKeys.href: href};
         }
         break;
+
       case HTMLTags.strikethrough:
         attributes = {AppFlowyRichTextKeys.strikethrough: true};
         break;
@@ -152,7 +299,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         level: level,
         delta: delta,
       ),
-      ...specialNodes
+      ...specialNodes,
     ];
   }
 
@@ -247,8 +394,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   }
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
-    LinkedHashMap<Object, String> htmlAttributes,
-  ) {
+    LinkedHashMap<Object, String> htmlAttributes, {
+    AttributeType attributeType = AttributeType.none,
+  }) {
     final Attributes attributes = {};
     final style = htmlAttributes['style'];
     final css = _getCssFromString(style);
@@ -283,38 +431,58 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
       }
     }
+    if (attributeType == AttributeType.none) {
+      // background color
+      final backgroundColor = css['background-color'];
+      if (backgroundColor != null) {
+        final highlightColor = backgroundColor.tryToColor()?.toHex();
+        if (highlightColor != null) {
+          attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        }
+      }
 
-    // background color
-    final backgroundColor = css['background-color'];
-    if (backgroundColor != null) {
-      final highlightColor = backgroundColor.tryToColor()?.toHex();
-      if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+      // background
+      final background = css['background'];
+      if (background != null) {
+        final highlightColor = background.tryToColor()?.toHex();
+        if (highlightColor != null) {
+          attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        }
+      }
+
+      // color
+      final color = css['color'];
+      if (color != null) {
+        final textColor = color.tryToColor()?.toHex();
+        if (textColor != null) {
+          attributes[AppFlowyRichTextKeys.textColor] = textColor;
+        }
+      }
+
+      // italic
+      final fontStyle = css['font-style'];
+      if (fontStyle == 'italic') {
+        attributes[AppFlowyRichTextKeys.italic] = true;
       }
     }
+    if (attributeType == AttributeType.tablerow) {
+      final regex = RegExp('[^0-9]');
+      final width = css['width'];
+      if (width != null) {
+        String rowWidth = width.toString();
+        rowWidth = rowWidth.replaceAll(regex, '');
+        int newrowWidth = int.parse(rowWidth);
 
-    // background
-    final background = css['background'];
-    if (background != null) {
-      final highlightColor = background.tryToColor()?.toHex();
-      if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[TableCellBlockKeys.width] = newrowWidth;
       }
-    }
+      final height = css['height'];
+      if (height != null) {
+        String rowHeight = height.toString();
+        rowHeight = rowHeight.replaceAll(regex, '');
+        int newhieght = int.parse(rowHeight);
 
-    // color
-    final color = css['color'];
-    if (color != null) {
-      final textColor = color.tryToColor()?.toHex();
-      if (textColor != null) {
-        attributes[AppFlowyRichTextKeys.textColor] = textColor;
+        attributes[TableCellBlockKeys.height] = newhieght;
       }
-    }
-
-    // italic
-    final fontStyle = css['font-style'];
-    if (fontStyle == 'italic') {
-      attributes[AppFlowyRichTextKeys.italic] = true;
     }
 
     return attributes.isEmpty ? null : attributes;
@@ -360,6 +528,10 @@ class HTMLTags {
   static const blockQuote = 'blockquote';
   static const div = 'div';
   static const divider = 'hr';
+  static const table = 'table';
+  static const tableRow = 'tr';
+  static const tableheader = "th";
+  static const tabledata = "td";
 
   static List<String> formattingElements = [
     HTMLTags.anchor,
@@ -382,19 +554,23 @@ class HTMLTags {
     HTMLTags.orderedList,
     HTMLTags.div,
     HTMLTags.list,
+    HTMLTags.table,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTags.image
+    HTMLTags.image,
   ];
 
   static bool isTopLevel(String tag) {
     return tag == h1 ||
         tag == h2 ||
         tag == h3 ||
+        tag == table ||
         tag == checkbox ||
         tag == paragraph ||
         tag == div ||
         tag == blockQuote;
   }
 }
+
+enum AttributeType { table, tablerow, none }

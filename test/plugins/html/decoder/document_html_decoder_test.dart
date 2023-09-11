@@ -12,6 +12,11 @@ void main() async {
 
       expect(result.toJson(), example);
     });
+    test('html table parser document', () async {
+      final result = DocumentHTMLDecoder().convert(htmlTable);
+
+      expect(result.toJson(), htmlTablejson);
+    });
     test('nested parser document', () async {
       final result = DocumentHTMLDecoder().convert(nestedHTML);
       expect(result.toJson(), nestedDelta);
@@ -21,6 +26,126 @@ void main() async {
 
 const rawHTML =
     '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li><li>[x] Test-covered</li><li>[ ] more to come!</li><li>First item</li><li>Second item</li><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><p></p><p></p>''';
+const htmlTable =
+    ''''<table><tr><td><h2>a</h2></td><td><p><i>c</i></p></td></tr><tr><td><p><strong>b</strong></p></td><td><p>d</p></td></tr></table>''';
+const htmlTablejson = {
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "'"}
+          ],
+        },
+      },
+      {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "heading",
+                "data": {
+                  "delta": [
+                    {"insert": "a"}
+                  ],
+                  "level": 2
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "height": 50.0,
+              "width": 60.0
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "c",
+                      "attributes": {"italic": true},
+                    }
+                  ]
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "height": 50.0,
+              "width": 60.0
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "b",
+                      "attributes": {"bold": true}
+                    }
+                  ]
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "height": 50.0,
+              "width": 60.0
+            },
+          },
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {"insert": "d"}
+                  ]
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "height": 50.0,
+              "width": 60.0
+            }
+          }
+        ],
+        "data": {
+          "rowsLen": 2,
+          "colsLen": 2,
+          "colDefaultWidth": 60,
+          "rowDefaultHeight": 50,
+          "colMinimumWidth": 30
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "'"}
+          ]
+        }
+      }
+    ]
+  }
+};
 
 const example = {
   'document': {
