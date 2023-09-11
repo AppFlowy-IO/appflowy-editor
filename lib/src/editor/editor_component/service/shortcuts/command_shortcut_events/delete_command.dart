@@ -15,10 +15,13 @@ final CommandShortcutEvent deleteCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _deleteCommandHandler = (editorState) {
   final selection = editorState.selection;
+  final selectionType = editorState.selectionType;
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
+  if (selectionType == SelectionType.block) {
+    return _deleteInBlockSelection(editorState);
+  } else if (selection.isCollapsed) {
     return _deleteInCollapsedSelection(editorState);
   } else {
     return _deleteInNotCollapsedSelection(editorState);
@@ -81,5 +84,19 @@ CommandShortcutEventHandler _deleteInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _deleteInBlockSelection = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || editorState.selectionType != SelectionType.block) {
+    return KeyEventResult.ignored;
+  }
+  final transaction = editorState.transaction;
+  transaction.deleteNodesAtPath(selection.start.path);
+  editorState
+      .apply(transaction)
+      .then((value) => editorState.selectionType = null);
+
   return KeyEventResult.handled;
 };

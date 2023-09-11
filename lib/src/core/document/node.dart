@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:nanoid/nanoid.dart';
+import 'package:nanoid/non_secure.dart';
 
 abstract class NodeExternalValues {
   const NodeExternalValues();
@@ -39,8 +39,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
             ),
           ), // unlink the given children to avoid the error of "node has already a parent"
         _attributes = attributes,
-        id = id ?? nanoid(10) {
-    for (final child in this.children) {
+        id = id ?? nanoid(6) {
+    for (final child in children) {
       child.parent = this;
     }
   }
@@ -80,7 +80,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// The children of the node.
   final LinkedList<Node> _children;
-  Iterable<Node> get children => _children.toList(growable: false);
+  List<Node> get children {
+    _cacheChildren ??= _children.toList(growable: false);
+    return _cacheChildren!;
+  }
+
+  List<Node>? _cacheChildren;
 
   /// The attributes of the node.
   Attributes _attributes;
@@ -141,7 +146,9 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     entry.parent = this;
 
-    if (children.isEmpty) {
+    _cacheChildren = null;
+
+    if (_children.isEmpty) {
       _children.add(entry);
       notifyListeners();
       return;
@@ -164,6 +171,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     entry.parent = parent;
     super.insertAfter(entry);
 
+    parent?._cacheChildren = null;
+
     // Notifies the new node.
     parent?.notifyListeners();
   }
@@ -172,6 +181,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   void insertBefore(Node entry) {
     entry.parent = parent;
     super.insertBefore(entry);
+
+    parent?._cacheChildren = null;
 
     // Notifies the new node.
     parent?.notifyListeners();
@@ -184,6 +195,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     }
     Log.editor.debug('delete Node $this from path $path');
     super.unlink();
+
+    parent?._cacheChildren = null;
 
     parent?.notifyListeners();
     parent = null;
@@ -230,12 +243,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }) {
     final node = Node(
       type: type ?? this.type,
-      id: nanoid(10),
+      id: nanoid(6),
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );
-    if (children == null && this.children.isNotEmpty) {
-      for (final child in this.children) {
+    if (children == null && _children.isNotEmpty) {
+      for (final child in _children) {
         node._children.add(
           child.copyWith()..parent = node,
         );
@@ -246,11 +259,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   Path _computePath([Path previous = const []]) {
+    final parent = this.parent;
     if (parent == null) {
       return previous;
     }
-    final index = parent!.children.toList().indexOf(this);
-    return parent!._computePath([index, ...previous]);
+    final index = parent.children.indexOf(this);
+    return parent._computePath([index, ...previous]);
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -24,8 +26,8 @@ CommandShortcutEventHandler _pageUpCommandHandler = (editorState) {
   }
 
   final scrollHeight = scrollService.onePageHeight;
-  final dy = scrollService.dy;
-  if (dy < 0 || scrollHeight == null) {
+  final dy = max(0, scrollService.dy);
+  if (scrollHeight == null) {
     return KeyEventResult.ignored;
   }
   scrollService.scrollTo(

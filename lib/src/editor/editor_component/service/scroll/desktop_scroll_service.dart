@@ -1,17 +1,12 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DesktopScrollService extends StatefulWidget {
   const DesktopScrollService({
     Key? key,
-    required this.scrollController,
-    required this.autoScroller,
     required this.child,
   }) : super(key: key);
-
-  final ScrollController scrollController;
-  final AutoScroller autoScroller;
 
   final Widget child;
 
@@ -21,8 +16,12 @@ class DesktopScrollService extends StatefulWidget {
 
 class _DesktopScrollServiceState extends State<DesktopScrollService>
     implements AppFlowyScrollService {
+  late final editorState = context.read<EditorState>();
+  late final autoScroller = editorState.autoScroller;
+  late final editorScrollController = context.read<EditorScrollController>();
+
   @override
-  double get dy => widget.scrollController.position.pixels;
+  double get dy => context.read<EditorScrollController>().offsetNotifier.value;
 
   @override
   double? get onePageHeight {
@@ -32,11 +31,11 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   double get maxScrollExtent =>
-      widget.scrollController.position.maxScrollExtent;
+      editorState.scrollableState!.position.maxScrollExtent;
 
   @override
   double get minScrollExtent =>
-      widget.scrollController.position.minScrollExtent;
+      editorState.scrollableState!.position.minScrollExtent;
 
   @override
   int? get page {
@@ -55,21 +54,33 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   void scrollTo(
     double dy, {
-    Duration? duration,
+    Duration duration = const Duration(
+      milliseconds: 150,
+    ),
   }) {
     dy = dy.clamp(
-      widget.scrollController.position.minScrollExtent,
-      widget.scrollController.position.maxScrollExtent,
+      minScrollExtent,
+      maxScrollExtent,
     );
-    if (duration != null) {
-      widget.scrollController.position.animateTo(
-        dy,
-        duration: duration,
-        curve: Curves.bounceInOut,
-      );
-    } else {
-      widget.scrollController.position.jumpTo(dy);
-    }
+    editorScrollController.animateTo(
+      offset: dy,
+      duration: duration,
+    );
+  }
+
+  @override
+  void jumpToTop() {
+    editorScrollController.jumpToTop();
+  }
+
+  @override
+  void jumpToBottom() {
+    editorScrollController.jumpToBottom();
+  }
+
+  @override
+  void jumpTo(int index) {
+    throw UnimplementedError();
   }
 
   @override
@@ -89,7 +100,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     AxisDirection? direction,
     Duration? duration,
   }) {
-    widget.autoScroller.startAutoScroll(
+    autoScroller?.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
       direction: direction,
@@ -99,17 +110,14 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void stopAutoScroll() {
-    widget.autoScroller.stopAutoScroll();
+    autoScroller?.stopAutoScroll();
   }
 
   @override
   void goBallistic(double velocity) {
-    final position = widget.scrollController.position;
-    if (position is ScrollPositionWithSingleContext) {
-      position.goBallistic(velocity);
-    }
+    throw UnimplementedError();
   }
 
   @override
-  ScrollController get scrollController => widget.scrollController;
+  ScrollController get scrollController => throw UnimplementedError();
 }

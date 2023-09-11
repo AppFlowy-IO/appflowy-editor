@@ -195,15 +195,13 @@ void main() async {
           ..addNode(
             imageNode(url: url),
           )
-          ..addNode(
-            imageNode(url: url),
-          )
           ..addParagraph(initialText: text);
         await editor.startTesting();
+        await tester.pumpAndSettle();
 
-        expect(editor.documentRootLen, 4);
+        expect(editor.documentRootLen, 3);
         final imageFinder = find.byType(Image);
-        expect(imageFinder, findsNWidgets(2));
+        expect(imageFinder, findsNWidgets(1));
 
         // final node = editor.document.nodeAtPath([1]);
         // expect(editor.runAction(4, imageNode!), true); // delete

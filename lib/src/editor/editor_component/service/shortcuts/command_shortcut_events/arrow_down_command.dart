@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowDownKeys = [
@@ -59,22 +58,19 @@ CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .lastWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
+
+  final result = editorState.getLastSelectable();
+  if (result == null) {
     return KeyEventResult.ignored;
   }
-  final end = selectable.end();
+
+  final position = result.$2.end(result.$1);
+  editorState.scrollService?.jumpToBottom();
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: end),
+    selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final bottom = scrollService.maxScrollExtent;
-    scrollService.scrollTo(bottom);
-  }
+
   return KeyEventResult.handled;
 };
 
@@ -92,22 +88,19 @@ CommandShortcutEventHandler _moveCursorBottomCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .lastWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
+
+  final result = editorState.getLastSelectable();
+  if (result == null) {
     return KeyEventResult.ignored;
   }
-  final position = selectable.end();
+
+  final position = result.$2.end(result.$1);
+  editorState.scrollService?.jumpToBottom();
   editorState.updateSelectionWithReason(
     Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final bottom = scrollService.maxScrollExtent;
-    scrollService.scrollTo(bottom);
-  }
+
   return KeyEventResult.handled;
 };
 

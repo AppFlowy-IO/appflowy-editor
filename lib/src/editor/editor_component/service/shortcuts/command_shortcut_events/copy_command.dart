@@ -29,7 +29,9 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   final text = editorState.getTextInSelection(selection).join('\n');
 
   // html
-  final nodes = editorState.getSelectedNodes(selection);
+  final nodes = editorState.getSelectedNodes(
+    selection: selection,
+  );
   final document = Document.blank()..insert([0], nodes);
   final html = documentToHTML(document);
 
