@@ -4,6 +4,10 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 
+abstract class NodeExternalValues {
+  const NodeExternalValues();
+}
+
 /// [Node] represents a node in the document tree.
 ///
 /// It contains three parts:
@@ -89,6 +93,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// The path of the node.
   Path get path => _computePath();
+
+  NodeExternalValues? externalValues;
 
   // Render Part
   final key = GlobalKey();
@@ -248,6 +254,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
         );
       }
     }
+    node.externalValues = externalValues;
     return node;
   }
 
