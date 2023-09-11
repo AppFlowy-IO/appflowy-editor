@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../infra/testable_editor.dart';
 
 void main() async {
@@ -163,7 +163,7 @@ Future<void> _testUpdateTextStyleByCommandX(
       isMetaPressed: true,
     );
   }
-  var nodes = editor.editorState.service.selectionService.currentSelectedNodes;
+  var nodes = editor.editorState.getSelectedNodes(withCopy: false);
   expect(nodes.length, 3);
   for (final node in nodes) {
     expect(
@@ -195,7 +195,7 @@ Future<void> _testUpdateTextStyleByCommandX(
       isMetaPressed: true,
     );
   }
-  nodes = editor.editorState.service.selectionService.currentSelectedNodes;
+  nodes = editor.editorState.getSelectedNodes(withCopy: false);
   expect(nodes.length, 3);
   for (final node in nodes) {
     expect(

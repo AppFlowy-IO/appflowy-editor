@@ -1,6 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../new/infra/testable_editor.dart';
 
 void main() {
@@ -33,22 +34,8 @@ void main() {
       await editor.dispose();
     });
 
-    testWidgets('with shrinkWrap true', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          1000,
-          initialText: 'Hello',
-        );
-      await editor.startTesting(shrinkWrap: true);
-      expect(
-        tester.takeException(),
-        isInstanceOf<ArgumentError>(),
-      );
-    });
-
     testWidgets('with shrinkWrap true and wrapper with scroll view',
         (tester) async {
-      final scrollController = ScrollController();
       final editor = tester.editor
         ..addParagraphs(
           1000,
@@ -56,7 +43,6 @@ void main() {
         );
       await editor.startTesting(
         shrinkWrap: true,
-        scrollController: scrollController,
         wrapper: (child) => SingleChildScrollView(
           child: IntrinsicHeight(
             child: child,

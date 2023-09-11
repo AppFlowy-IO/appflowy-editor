@@ -31,7 +31,10 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   ///
   /// The return result must be a [List] of the [Rect]
   ///   under the local coordinate system.
-  List<Rect> getRectsInSelection(Selection selection);
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  });
 
   /// Returns [Position] for the offset in current widget.
   ///
@@ -41,12 +44,18 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   /// Returns [Rect] for the position in current widget.
   ///
   /// The return result must be an offset of the local coordinate system.
-  Rect? getCursorRectInPosition(Position position) {
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
     return null;
   }
 
   /// Return global offset from local offset.
-  Offset localToGlobal(Offset offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  });
 
   Position start();
   Position end();
@@ -73,8 +82,14 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
 
   CursorStyle get cursorStyle => CursorStyle.verticalLine;
 
-  Rect transformRectToGlobal(Rect r) {
-    final topLeft = localToGlobal(r.topLeft);
+  Rect transformRectToGlobal(
+    Rect r, {
+    bool shiftWithBaseOffset = false,
+  }) {
+    final topLeft = localToGlobal(
+      r.topLeft,
+      shiftWithBaseOffset: shiftWithBaseOffset,
+    );
     return Rect.fromLTWH(topLeft.dx, topLeft.dy, r.width, r.height);
   }
 

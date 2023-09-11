@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,10 @@ class EditorState {
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
+
+  /// store the auto scroller instance in here temporarily.
+  AutoScroller? autoScroller;
+  ScrollableState? scrollableState;
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -282,23 +287,26 @@ class EditorState {
     return [];
   }
 
-  List<Node> getSelectedNodes([
+  List<Node> getSelectedNodes({
     Selection? selection,
-  ]) {
+    bool withCopy = true,
+  }) {
     List<Node> res = [];
     selection ??= this.selection;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null) {
       return res;
     }
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
-      if (res.any((element) => element.path.isParentOf(node.path))) {
+      if (res.any((element) => element.isParentOf(node))) {
         continue;
       }
       res.add(node);
     }
 
-    res = res.map((e) => e.copyWith()).toList();
+    if (withCopy) {
+      res = res.map((e) => e.copyWith()).toList();
+    }
 
     if (res.isNotEmpty) {
       var delta = res.first.delta;
@@ -373,9 +381,17 @@ class EditorState {
     if (selection.isCollapsed && nodes.length == 1) {
       final selectable = nodes.first.selectable;
       if (selectable != null) {
-        final rect = selectable.getCursorRectInPosition(selection.end);
+        final rect = selectable.getCursorRectInPosition(
+          selection.end,
+          shiftWithBaseOffset: true,
+        );
         if (rect != null) {
-          rects.add(selectable.transformRectToGlobal(rect));
+          rects.add(
+            selectable.transformRectToGlobal(
+              rect,
+              shiftWithBaseOffset: true,
+            ),
+          );
         }
       }
     } else {
@@ -384,7 +400,10 @@ class EditorState {
         if (selectable == null) {
           continue;
         }
-        final nodeRects = selectable.getRectsInSelection(selection);
+        final nodeRects = selectable.getRectsInSelection(
+          selection,
+          shiftWithBaseOffset: true,
+        );
         if (nodeRects.isEmpty) {
           continue;
         }
@@ -419,6 +438,19 @@ class EditorState {
 
   void cancelSubscription() {
     _observer.close();
+  }
+
+  void updateAutoScroller(
+    ScrollableState scrollableState,
+  ) {
+    if (this.scrollableState != scrollableState) {
+      autoScroller?.stopAutoScroll();
+      autoScroller = AutoScroller(
+        scrollableState,
+        onScrollViewScrolled: () {},
+      );
+      this.scrollableState = scrollableState;
+    }
   }
 
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {

@@ -140,7 +140,7 @@ void handleCopy(EditorState editorState) async {
     return;
   }
   final text = editorState.getTextInSelection(selection).join('\n');
-  final nodes = editorState.getSelectedNodes(selection);
+  final nodes = editorState.getSelectedNodes(selection: selection);
   if (nodes.isEmpty) {
     return;
   }

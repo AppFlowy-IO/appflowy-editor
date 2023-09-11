@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
@@ -51,6 +52,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _jsonString = rootBundle.loadString('assets/example.json');
+
     _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
@@ -107,6 +109,20 @@ class _HomePageState extends State<HomePage> {
           _buildSeparator(context, 'AppFlowy Editor Demo'),
           _buildListTile(context, 'With Example.json', () {
             final jsonString = rootBundle.loadString('assets/example.json');
+            _loadEditor(context, jsonString);
+          }),
+          _buildListTile(context, 'With Large Document (10000+ lines)', () {
+            final nodes = List.generate(
+              10000,
+              (index) =>
+                  paragraphNode(text: '$index ${generateRandomString(50)}'),
+            );
+            final editorState = EditorState(
+              document: Document(root: pageNode(children: nodes)),
+            );
+            final jsonString = Future.value(
+              jsonEncode(editorState.document.toJson()),
+            );
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Example.html', () async {
@@ -314,4 +330,11 @@ class _HomePageState extends State<HomePage> {
       _loadEditor(context, Future<String>.value(jsonString));
     }
   }
+}
+
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+    List.generate(len, (index) => r.nextInt(33) + 89),
+  );
 }

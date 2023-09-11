@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.

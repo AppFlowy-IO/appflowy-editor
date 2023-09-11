@@ -1,9 +1,8 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../infra/testable_editor.dart';
 import 'find_replace_menu_utils.dart';
@@ -74,8 +73,7 @@ void main() async {
       await enterInputIntoFindDialog(tester, pattern);
 
       // Checking if current selection consists an occurance of matched pattern.
-      final selection =
-          editor.editorState.service.selectionService.currentSelection.value;
+      final selection = editor.editorState.selection;
 
       // We expect the first occurance of the pattern to be found and selected,
       // this is because we send a testTextInput.receiveAction(TextInputAction.done)
@@ -215,8 +213,7 @@ void main() async {
         key: LogicalKeyboardKey.enter,
       );
 
-      final selection =
-          editor.editorState.service.selectionService.currentSelection.value;
+      final selection = editor.editorState.selection;
       expect(selection, isNotNull);
 
       final node = editor.nodeAtPath([2]);

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DividerBlockKeys {
   const DividerBlockKeys._();
@@ -77,7 +78,7 @@ class _DividerBlockComponentWidgetState
   Node get node => widget.node;
 
   final dividerKey = GlobalKey();
-  RenderBox get _renderBox => context.findRenderObject() as RenderBox;
+  RenderBox? get _renderBox => context.findRenderObject() as RenderBox?;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +97,19 @@ class _DividerBlockComponentWidgetState
       child: child,
     );
 
+    final editorState = context.read<EditorState>();
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -104,7 +118,15 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    return child;
+    final selectionNotifier = editorState.selectionNotifier;
+    return BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: selectionNotifier,
+      cursorColor: editorState.editorStyle.cursorColor,
+      selectionColor: editorState.editorStyle.selectionColor,
+      child: child,
+    );
   }
 
   @override
@@ -128,22 +150,38 @@ class _DividerBlockComponentWidgetState
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
-    final size = _renderBox.size;
-    return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
+    if (_renderBox == null) {
+      return null;
+    }
+    return getRectsInSelection(
+      Selection.collapsed(position),
+      shiftWithBaseOffset: shiftWithBaseOffset,
+    ).firstOrNull;
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
+    if (_renderBox == null) {
+      return [];
+    }
     final parentBox = context.findRenderObject();
     final dividerBox = dividerKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
-        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+        (shiftWithBaseOffset
+                ? dividerBox.localToGlobal(Offset.zero, ancestor: parentBox)
+                : Offset.zero) &
             dividerBox.size
       ];
     }
-    return [Offset.zero & _renderBox.size];
+    return [Offset.zero & _renderBox!.size];
   }
 
   @override
@@ -154,7 +192,11 @@ class _DividerBlockComponentWidgetState
       );
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
+      _renderBox!.localToGlobal(offset);
 
   @override
   TextDirection textDirection() {

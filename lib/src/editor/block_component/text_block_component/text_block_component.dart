@@ -144,6 +144,7 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
         children: [
           AppFlowyRichText(
             key: forwardKey,
+            delegate: this,
             node: widget.node,
             editorState: editorState,
             textAlign: alignment?.toTextAlign,
@@ -153,6 +154,8 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
             placeholderTextSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(placeholderTextStyle),
             textDirection: textDirection,
+            cursorColor: editorState.editorStyle.cursorColor,
+            selectionColor: editorState.editorStyle.selectionColor,
           ),
         ],
       ),
@@ -161,6 +164,17 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 

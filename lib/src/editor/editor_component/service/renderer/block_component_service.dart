@@ -11,7 +11,7 @@ abstract class BlockComponentActionState {
 }
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
-abstract class BlockComponentBuilder {
+abstract class BlockComponentBuilder with BlockComponentSelectable {
   BlockComponentBuilder();
 
   /// validate the node.
@@ -29,6 +29,21 @@ abstract class BlockComponentBuilder {
 
   BlockComponentConfiguration get configuration =>
       const BlockComponentConfiguration();
+}
+
+mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
+  /// the start position of the block component.
+  ///
+  /// For the text block component, the start position is always 0.
+  Position start(Node node) => Position(path: node.path, offset: 0);
+
+  /// the end position of the block component.
+  ///
+  /// For the text block component, the end position is always the length of the text.
+  Position end(Node node) => Position(
+        path: node.path,
+        offset: node.delta?.length ?? 0,
+      );
 }
 
 abstract class BlockComponentRendererService {
@@ -52,13 +67,25 @@ abstract class BlockComponentRendererService {
   ///
   BlockComponentBuilder? blockComponentBuilder(String type);
 
+  BlockComponentSelectable? blockComponentSelectable(String type) {
+    final builder = blockComponentBuilder(type);
+    if (builder is BlockComponentSelectable) {
+      return builder as BlockComponentSelectable;
+    }
+    return null;
+  }
+
   /// Build a widget for the specified [node].
   ///
   /// the widget is embedded in a [BlockComponentContainer] widget.
+  ///
+  /// the header and the footer only works for the root node.
   Widget build(
     BuildContext buildContext,
-    Node node,
-  );
+    Node node, {
+    Widget? header,
+    Widget? footer,
+  });
 
   List<Widget> buildList(
     BuildContext buildContext,
@@ -82,9 +109,16 @@ class BlockComponentRenderer extends BlockComponentRendererService {
   @override
   Widget build(
     BuildContext buildContext,
-    Node node,
-  ) {
-    final blockComponentContext = BlockComponentContext(buildContext, node);
+    Node node, {
+    Widget? header,
+    Widget? footer,
+  }) {
+    final blockComponentContext = BlockComponentContext(
+      buildContext,
+      node,
+      header: header,
+      footer: footer,
+    );
     final builder = blockComponentBuilder(node.type);
     if (builder == null) {
       assert(false, 'no builder for node type(${node.type})');

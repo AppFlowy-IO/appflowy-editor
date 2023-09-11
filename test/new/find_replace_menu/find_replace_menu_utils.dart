@@ -138,8 +138,7 @@ void checkCurrentSelection(
   int startOffset,
   int endOffset,
 ) {
-  final selection =
-      editor.editorState.service.selectionService.currentSelection.value;
+  final selection = editor.editorState.selection;
 
   expect(selection != null, true);
   expect(selection!.start, Position(path: path, offset: startOffset));

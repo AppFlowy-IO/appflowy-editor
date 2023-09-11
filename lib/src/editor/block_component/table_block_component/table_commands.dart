@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> tableCommands = [
   _enterInTableCell,
@@ -172,7 +172,11 @@ CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
 };
 
 Iterable<Node> _inTableNodes(EditorState editorState) {
-  final nodes = editorState.selectionService.currentSelectedNodes;
+  final selection = editorState.selection;
+  if (selection == null) {
+    return [];
+  }
+  final nodes = editorState.getNodesInSelection(selection);
   return nodes.where(
     (node) => node.parent?.type.contains(TableBlockKeys.type) ?? false,
   );
