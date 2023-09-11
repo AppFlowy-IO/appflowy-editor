@@ -26,6 +26,7 @@ class FindMenuWidget extends StatefulWidget {
 
 class _FindMenuWidgetState extends State<FindMenuWidget> {
   final focusNode = FocusNode();
+  final replaceFocusNode = FocusNode();
   final findController = TextEditingController();
   final replaceController = TextEditingController();
   String queriedPattern = '';
@@ -79,7 +80,14 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 key: const Key('findTextField'),
                 focusNode: focusNode,
                 controller: findController,
-                onSubmitted: (_) => searchService.navigateToMatch(),
+                onSubmitted: (_) {
+                  searchService.navigateToMatch();
+
+                  // Workaround for editor forcing focus
+                  Future.delayed(const Duration(milliseconds: 50)).then(
+                    (value) => FocusScope.of(context).requestFocus(focusNode),
+                  );
+                },
                 decoration: _buildInputDecoration(widget.localizations.find),
               ),
             ),
@@ -121,9 +129,17 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     height: 30,
                     child: TextField(
                       key: const Key('replaceTextField'),
+                      focusNode: replaceFocusNode,
                       autofocus: false,
                       controller: replaceController,
-                      onSubmitted: (_) => _replaceSelectedWord(),
+                      onSubmitted: (_) {
+                        _replaceSelectedWord();
+
+                        Future.delayed(const Duration(milliseconds: 50)).then(
+                          (value) => FocusScope.of(context)
+                              .requestFocus(replaceFocusNode),
+                        );
+                      },
                       decoration:
                           _buildInputDecoration(widget.localizations.replace),
                     ),
