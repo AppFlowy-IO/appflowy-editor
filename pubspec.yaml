@@ -36,7 +36,6 @@ dependencies:
   visibility_detector: ^0.4.0+2
   file_picker: ^5.3.1
   path: ^1.8.3
-  scrollable_positioned_list: ^0.3.8
   diff_match_patch: ^0.4.1
 
 dev_dependencies:
@@ -45,13 +44,6 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
-
-dependency_overrides:
-  scrollable_positioned_list:
-    git:
-      url: https://github.com/LucasXu0/flutter.widgets.git
-      ref: 93d78cbcd689a89a8fa6deb87eeb70dc90cc7700
-      path: packages/scrollable_positioned_list
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
