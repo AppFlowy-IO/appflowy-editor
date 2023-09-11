@@ -101,7 +101,7 @@ void main() async {
           );
         await editor.startTesting();
 
-        // Welcome| to AppFlowy Editor 🔥!
+        // Welcome |to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
         final selection = Selection.collapsed(
           Position(path: [0], offset: welcome.length + 1),
@@ -120,6 +120,133 @@ void main() async {
           editor.nodeAtPath([0])?.delta?.toPlainText(),
           text.substring(welcome.length + 1),
         );
+
+        await editor.dispose();
+      });
+
+      testWidgets('repeatedly till line is empty', (tester) async {
+        List<String> words = ["Welcome", " ", "to", " ", "Appflowy", " ", "😁"];
+        final text = words.join();
+        final editor = tester.editor..addParagraph(initialText: text);
+
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: text.length),
+        );
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isAltPressed: Platform.isMacOS,
+        );
+
+        //fetching all the text that is still on the editor.
+        final selection = editor.selection!;
+        assert(selection.isSingle, true);
+        var node = editor.nodeAtPath(selection.end.path)!;
+
+        words.removeLast();
+        //expected: Welcome_to_Appflowy_
+        //here _ actually represents ' '
+        expect(node.delta!.toPlainText(), words.join());
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isAltPressed: Platform.isMacOS,
+        );
+
+        //fetching all the text that is still on the editor.
+        node = editor.nodeAtPath(selection.end.path)!;
+
+        //removes the whitespace
+        words.removeLast();
+        words.removeLast();
+        //expected is: Welcome_to_
+        expect(node.delta!.toPlainText(), words.join());
+
+        //we divide words.length by 2 becuase we know half words are whitespaces.
+        for (var i = 0; i < words.length / 2; i++) {
+          await editor.pressKey(
+            key: LogicalKeyboardKey.backspace,
+            isControlPressed: Platform.isWindows || Platform.isLinux,
+            isAltPressed: Platform.isMacOS,
+          );
+        }
+
+        node = editor.nodeAtPath(selection.end.path)!;
+
+        expect(node.delta!.toPlainText(), '');
+
+        await editor.dispose();
+      });
+
+      testWidgets('at the middle of a word', (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraph(initialText: text);
+
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isAltPressed: Platform.isMacOS,
+        );
+
+        //fetching all the text that is still on the editor.
+        final selection = editor.selection!;
+        var node = editor.editorState.getNodeAtPath(selection.end.path)!;
+
+        //nothing happens when there is no words to the left of the cursor
+        expect(node.delta!.toPlainText(), text);
+
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 14),
+        );
+        //Welcome to App|flowy 😁
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isAltPressed: Platform.isMacOS,
+        );
+
+        //fetching all the text that is still on the editor.
+        node = editor.editorState.getNodeAtPath(selection.end.path)!;
+
+        const expectedText = 'Welcome to flowy 😁';
+        expect(node.delta!.toPlainText(), expectedText);
+
+        await editor.dispose();
+      });
+
+      testWidgets('works properly with only single whitespace', (tester) async {
+        //edge case that checks if pressing ctrl+backspace on null value
+        //after removing a whitespace, does not throw an exception.
+        const text = ' ';
+        final editor = tester.editor..addParagraph(initialText: text);
+
+        await editor.startTesting();
+
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: text.length),
+        );
+        // |
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.backspace,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isAltPressed: Platform.isMacOS,
+        );
+
+        //fetching all the text that is still on the editor.
+        final selection = editor.selection!;
+        final node = editor.editorState.getNodeAtPath(selection.end.path)!;
+
+        expect(node.delta!.toPlainText().isEmpty, true);
 
         await editor.dispose();
       });
