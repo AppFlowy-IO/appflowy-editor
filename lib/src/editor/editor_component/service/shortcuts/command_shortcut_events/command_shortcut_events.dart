@@ -12,6 +12,7 @@ export 'find_replace_command.dart';
 export 'home_command.dart';
 export 'markdown_commands.dart';
 export 'open_link_command.dart';
+export 'open_links_command.dart';
 export 'page_down_command.dart';
 export 'page_up_command.dart';
 export 'paste_command.dart';
