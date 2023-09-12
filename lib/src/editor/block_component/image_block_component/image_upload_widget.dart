@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_picker/file_picker.dart' as fp;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../util/file_picker/file_picker_impl.dart';
+import 'base64_image.dart';
 
 enum ImageFromFileStatus {
   notSelected,
@@ -293,7 +295,11 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           );
           if (result != null && result.files.isNotEmpty) {
             setState(() {
-              _localImagePath = result.files.first.path;
+              if (kIsWeb && result.files.first.bytes != null) {
+                _localImagePath = base64String(result.files.first.bytes!);
+              } else {
+                _localImagePath = result.files.first.path;
+              }
             });
           }
         },
@@ -307,7 +313,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           child: _localImagePath != null
               ? Align(
                   alignment: Alignment.center,
-                  child: Image.file(
+                  child: kIsWeb ? Image.memory(dataFromBase64String(_localImagePath!), fit: BoxFit.cover) : Image.file(
                     File(
                       _localImagePath!,
                     ),

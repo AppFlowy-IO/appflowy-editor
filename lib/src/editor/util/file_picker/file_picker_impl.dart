@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/src/editor/util/file_picker/file_picker_service.dart';
 import 'package:file_picker/file_picker.dart' as fp;
+import 'package:flutter/foundation.dart';
 
 class FilePicker implements FilePickerService {
   @override
@@ -23,12 +24,12 @@ class FilePicker implements FilePickerService {
     final result = await fp.FilePicker.platform.pickFiles(
       dialogTitle: dialogTitle,
       initialDirectory: initialDirectory,
-      type: type,
+      type: kIsWeb ? fp.FileType.custom : type,
       allowedExtensions: allowedExtensions,
       onFileLoading: onFileLoading,
       allowCompression: allowCompression,
       allowMultiple: allowMultiple,
-      withData: withData,
+      withData: kIsWeb ? true : withData,
       withReadStream: withReadStream,
       lockParentWindow: lockParentWindow,
     );

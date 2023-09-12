@@ -2,6 +2,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:string_validator/string_validator.dart';
+
+import 'base64_image.dart';
 
 class ResizableImage extends StatefulWidget {
   const ResizableImage({
@@ -70,7 +73,13 @@ class _ResizableImageState extends State<ResizableImage> {
     Widget child;
     final regex = RegExp('^(http|https)://');
     final url = widget.src;
-    if (regex.hasMatch(url)) {
+    if (isBase64(url)) {
+      // load base64 image (url is raw base64 from web)
+      _cacheImage ??= Image.memory(
+        dataFromBase64String(url),
+      );
+      child = _cacheImage!;
+    } else if (regex.hasMatch(url)) {
       // load network image
       _cacheImage ??= Image.network(
         widget.src,
