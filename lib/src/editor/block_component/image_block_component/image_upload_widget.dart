@@ -314,8 +314,10 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
               ? Align(
                   alignment: Alignment.center,
                   child: kIsWeb
-                      ? Image.memory(dataFromBase64String(_localImagePath!),
-                          fit: BoxFit.cover)
+                      ? Image.memory(
+                          dataFromBase64String(_localImagePath!),
+                          fit: BoxFit.cover,
+                        )
                       : Image.file(
                           File(
                             _localImagePath!,
