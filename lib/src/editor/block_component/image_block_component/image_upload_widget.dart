@@ -313,12 +313,15 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           child: _localImagePath != null
               ? Align(
                   alignment: Alignment.center,
-                  child: kIsWeb ? Image.memory(dataFromBase64String(_localImagePath!), fit: BoxFit.cover) : Image.file(
-                    File(
-                      _localImagePath!,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+                  child: kIsWeb
+                      ? Image.memory(dataFromBase64String(_localImagePath!),
+                          fit: BoxFit.cover)
+                      : Image.file(
+                          File(
+                            _localImagePath!,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                 )
               : const Center(
                   child: Column(
