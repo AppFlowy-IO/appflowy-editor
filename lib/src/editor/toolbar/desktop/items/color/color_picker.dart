@@ -93,7 +93,7 @@ class _ColorPickerState extends State<ColorPicker> {
           dimension: 12,
           child: Container(
             decoration: BoxDecoration(
-              color: option.colorHex.toColor(),
+              color: option.colorHex.tryToColor(),
               shape: BoxShape.circle,
             ),
           ),

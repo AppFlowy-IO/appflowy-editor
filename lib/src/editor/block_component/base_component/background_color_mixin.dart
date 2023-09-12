@@ -10,6 +10,6 @@ mixin BlockComponentBackgroundColorMixin {
     if (colorString == null) {
       return Colors.transparent;
     }
-    return colorString.toColor() ?? Colors.transparent;
+    return colorString.tryToColor() ?? Colors.transparent;
   }
 }

@@ -8,6 +8,7 @@ void main() {
     const black = Color(0XFF000000);
     const blue = Color(0XFF000FFF);
     const blueRgba = 'rgba(0, 15, 255, 255)';
+
     test('ToRgbaString', () {
       expect(blue.toRgbaString(), 'rgba(0, 15, 255, 255)');
       expect(white.toRgbaString(), 'rgba(255, 255, 255, 255)');

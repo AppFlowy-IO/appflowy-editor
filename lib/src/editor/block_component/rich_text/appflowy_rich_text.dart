@@ -447,18 +447,18 @@ extension AppFlowyRichTextAttributes on Attributes {
 
   Color? get color {
     final textColor = this[AppFlowyRichTextKeys.textColor] as String?;
-    return textColor?.toColor();
+    return textColor?.tryToColor();
   }
 
   Color? get backgroundColor {
     final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
-    return highlightColor?.toColor();
+    return highlightColor?.tryToColor();
   }
 
   Color? get findBackgroundColor {
     final findBackgroundColor =
         this[AppFlowyRichTextKeys.findBackgroundColor] as String?;
-    return findBackgroundColor?.toColor();
+    return findBackgroundColor?.tryToColor();
   }
 
   String? get href {

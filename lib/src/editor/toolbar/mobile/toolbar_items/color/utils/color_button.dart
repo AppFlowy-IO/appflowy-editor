@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 class ColorButton extends StatelessWidget {
   const ColorButton({
@@ -24,7 +24,7 @@ class ColorButton extends StatelessWidget {
         height: style.buttonHeight,
         decoration: BoxDecoration(
           color: isBackgroundColor
-              ? colorOption.colorHex.toColor()
+              ? colorOption.colorHex.tryToColor()
               : Colors.transparent,
           borderRadius: BorderRadius.circular(style.borderRadius),
           border: isSelected
@@ -42,7 +42,7 @@ class ColorButton extends StatelessWidget {
             : Center(
                 child: Text(
                   colorOption.name,
-                  style: TextStyle(color: colorOption.colorHex.toColor()),
+                  style: TextStyle(color: colorOption.colorHex.tryToColor()),
                 ),
               ),
       ),
