@@ -361,6 +361,7 @@ class HTMLTags {
   static const div = 'div';
   static const divider = 'hr';
   static const section = 'section';
+  static const font = 'font';
 
   static List<String> formattingElements = [
     HTMLTags.anchor,
@@ -373,6 +374,7 @@ class HTMLTags {
     HTMLTags.span,
     HTMLTags.code,
     HTMLTags.strikethrough,
+    HTMLTags.font,
   ];
 
   static List<String> specialElements = [
