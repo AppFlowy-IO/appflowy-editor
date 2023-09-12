@@ -107,7 +107,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           SelectionUpdateReason.searchNavigate) {
         widget.editorScrollController.animateTo(
           offset: endTouchPoint.dy - 100,
-          duration: Duration.zero,
+          duration: const Duration(microseconds: 1),
         );
         return;
       }
