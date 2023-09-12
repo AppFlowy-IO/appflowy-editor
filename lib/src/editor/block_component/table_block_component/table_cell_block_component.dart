@@ -92,10 +92,10 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
               (Node n) =>
                   (n.attributes[TableCellBlockKeys.colBackgroundColor]
                           as String?)
-                      ?.toColor() ??
+                      ?.tryToColor() ??
                   (n.attributes[TableCellBlockKeys.rowBackgroundColor]
                           as String?)
-                      ?.toColor(),
+                      ?.tryToColor(),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -532,6 +532,8 @@ class HTMLTags {
   static const tableRow = 'tr';
   static const tableheader = "th";
   static const tabledata = "td";
+  static const section = 'section';
+  static const font = 'font';
 
   static List<String> formattingElements = [
     HTMLTags.anchor,
@@ -544,6 +546,7 @@ class HTMLTags {
     HTMLTags.span,
     HTMLTags.code,
     HTMLTags.strikethrough,
+    HTMLTags.font,
   ];
 
   static List<String> specialElements = [
@@ -559,6 +562,7 @@ class HTMLTags {
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
     HTMLTags.image,
+    HTMLTags.section,
   ];
 
   static bool isTopLevel(String tag) {
