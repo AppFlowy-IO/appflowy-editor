@@ -197,18 +197,18 @@ const paragraphData = {
             {'insert': 'AppFlowy Editor is a '},
             {
               'insert': 'highly customizable',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'rich-text editor',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const sameNodeParagraph = {
   "document": {
@@ -221,28 +221,28 @@ const sameNodeParagraph = {
             {"insert": "AppFAppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": "lowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const nestedNodeParagraph = {
   "document": {
@@ -256,10 +256,10 @@ const nestedNodeParagraph = {
             {"insert": "👋 "},
             {
               "insert": "We",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "heading",
@@ -268,7 +268,7 @@ const nestedNodeParagraph = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -276,16 +276,16 @@ const nestedNodeParagraph = {
               "attributes": {
                 "href": "appflowy.io",
                 "bold": true,
-                "italic": true
-              }
+                "italic": true,
+              },
             }
           ],
-          "level": 2
-        }
+          "level": 2,
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -294,72 +294,72 @@ const nestedNodeParagraph = {
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": " for "},
             {
               "insert": "Flutter",
-              "attributes": {"underline": true}
+              "attributes": {"underline": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
         "data": {
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
         "data": {
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {
+          "delta": [
+            {"insert": "more to come!"},
+          ],
+        },
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []},
+      },
+      {
+        "type": "paragraph",
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -368,23 +368,23 @@ const nestedNodeParagraph = {
             {"insert": "You can also use "},
             {
               "insert": "AppFlowy Editor",
-              "attributes": {"bold": true, "italic": true}
+              "attributes": {"bold": true, "italic": true},
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -392,14 +392,14 @@ const nestedNodeParagraph = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -407,10 +407,10 @@ const nestedNodeParagraph = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "heading",
@@ -419,7 +419,7 @@ const nestedNodeParagraph = {
           "delta": [
             {
               "insert": "lcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -427,15 +427,15 @@ const nestedNodeParagraph = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -445,63 +445,63 @@ const nestedNodeParagraph = {
             {"insert": " "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": " for "},
             {
               "insert": "Flutter",
-              "attributes": {"underline": true}
+              "attributes": {"underline": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -514,24 +514,24 @@ const nestedNodeParagraph = {
                 "italic": true,
                 "bold": true,
                 "textColor": "0xffD70040",
-                "highlightColor": "0x6000BCF0"
-              }
+                "highlightColor": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -539,14 +539,14 @@ const nestedNodeParagraph = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -554,13 +554,13 @@ const nestedNodeParagraph = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const data = {
   'document': {
@@ -571,9 +571,9 @@ const data = {
         'data': {
           'level': 1,
           'delta': [
-            {'insert': 'AppFlowyEditor'}
-          ]
-        }
+            {'insert': 'AppFlowyEditor'},
+          ],
+        },
       },
       {
         'type': 'heading',
@@ -583,15 +583,15 @@ const data = {
             {'insert': '👋 '},
             {
               'insert': 'Welcome to',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -600,15 +600,15 @@ const data = {
             {'insert': 'AppFlowy Editor is a '},
             {
               'insert': 'highly customizable',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'rich-text editor',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -617,16 +617,16 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Here',
-              'attributes': {'underline': true}
+              'attributes': {'underline': true},
             },
             {'insert': ' is an example '},
             {
               'insert': 'your',
-              'attributes': {'strikethrough': true}
+              'attributes': {'strikethrough': true},
             },
-            {'insert': ' you can give a try'}
-          ]
-        }
+            {'insert': ' you can give a try'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -635,10 +635,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -647,10 +647,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element two',
-              'attributes': {'underline': true}
+              'attributes': {'underline': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -659,10 +659,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Span element three',
-              'attributes': {'bold': true, 'strikethrough': true}
+              'attributes': {'bold': true, 'strikethrough': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -671,75 +671,75 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'This is an anchor tag!',
-              'attributes': {'href': 'https://appflowy.io'}
+              'attributes': {'href': 'https://appflowy.io'},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'heading',
         'data': {
           'level': 3,
           'delta': [
-            {'insert': 'Features!'}
-          ]
-        }
+            {'insert': 'Features!'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Customizable'}
-          ]
-        }
+            {'insert': '[x] Customizable'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[x] Test-covered'}
-          ]
-        }
+            {'insert': '[x] Test-covered'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': '[ ] more to come!'}
-          ]
-        }
+            {'insert': '[ ] more to come!'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'First item'}
-          ]
-        }
+            {'insert': 'First item'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'Second item'}
-          ]
-        }
+            {'insert': 'Second item'},
+          ],
+        },
       },
       {
         'type': 'bulleted_list',
         'data': {
           'delta': [
-            {'insert': 'List element'}
-          ]
-        }
+            {'insert': 'List element'},
+          ],
+        },
       },
       {
         'type': 'quote',
         'data': {
           'delta': [
-            {'insert': 'This is a quote!'}
-          ]
-        }
+            {'insert': 'This is a quote!'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -747,10 +747,10 @@ const data = {
           'delta': [
             {
               'insert': ' Code block',
-              'attributes': {'code': true}
+              'attributes': {'code': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -759,10 +759,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Italic one',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -771,10 +771,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Italic two',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -783,10 +783,10 @@ const data = {
             {'insert': '   '},
             {
               'insert': 'Bold tag',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -795,20 +795,20 @@ const data = {
             {'insert': 'You can also use '},
             {
               'insert': 'AppFlowy Editor',
-              'attributes': {'bold': true, 'italic': true}
+              'attributes': {'bold': true, 'italic': true},
             },
-            {'insert': ' as a component to build your own app. '}
-          ]
-        }
+            {'insert': ' as a component to build your own app. '},
+          ],
+        },
       },
       {
         'type': 'heading',
         'data': {
           'level': 3,
           'delta': [
-            {'insert': 'Awesome features'}
-          ]
-        }
+            {'insert': 'Awesome features'},
+          ],
+        },
       },
       {
         'type': 'paragraph',
@@ -816,21 +816,21 @@ const data = {
           'delta': [
             {
               'insert':
-                  'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!'
+                  'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!',
             }
-          ]
-        }
+          ],
+        },
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       },
       {
         'type': 'paragraph',
-        'data': {'delta': []}
+        'data': {'delta': []},
       }
-    ]
-  }
+    ],
+  },
 };
 const exampledoc = {
   "document": {
@@ -844,7 +844,7 @@ const exampledoc = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -852,15 +852,15 @@ const exampledoc = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -870,63 +870,63 @@ const exampledoc = {
             {"insert": " "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": " for "},
             {
               "insert": "Flutter",
-              "attributes": {"underline": true}
+              "attributes": {"underline": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -939,24 +939,24 @@ const exampledoc = {
                 "italic": true,
                 "bold": true,
                 "textColor": "0xffD70040",
-                "highlightColor": "0x6000BCF0"
-              }
+                "highlightColor": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -964,14 +964,14 @@ const exampledoc = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -979,13 +979,13 @@ const exampledoc = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const paragraphhtml =
     "<p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p>";
@@ -1003,7 +1003,7 @@ const cutData = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -1011,15 +1011,15 @@ const cutData = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -1029,63 +1029,63 @@ const cutData = {
             {"insert": " "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": " for "},
             {
               "insert": "Flutter",
-              "attributes": {"underline": true}
+              "attributes": {"underline": true},
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -1098,24 +1098,24 @@ const cutData = {
                 "italic": true,
                 "bold": true,
                 "font_color": "0xffD70040",
-                "bg_color": "0x6000BCF0"
-              }
+                "bg_color": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -1123,14 +1123,14 @@ const cutData = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -1138,13 +1138,13 @@ const cutData = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const afterCut = {
   "document": {
@@ -1158,7 +1158,7 @@ const afterCut = {
             {"insert": "👋 "},
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
@@ -1166,62 +1166,62 @@ const afterCut = {
               "attributes": {
                 "href": "appflowy.io",
                 "italic": true,
-                "bold": true
-              }
+                "bold": true,
+              },
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Customizable"}
-          ]
-        }
+            {"insert": "Customizable"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": true,
           "delta": [
-            {"insert": "Test-covered"}
-          ]
-        }
+            {"insert": "Test-covered"},
+          ],
+        },
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
           "delta": [
-            {"insert": "more to come!"}
-          ]
-        }
+            {"insert": "more to come!"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "quote",
         "data": {
           "delta": [
-            {"insert": "Here is an example you can give a try"}
-          ]
-        }
+            {"insert": "Here is an example you can give a try"},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -1234,24 +1234,24 @@ const afterCut = {
                 "italic": true,
                 "bold": true,
                 "font_color": "0xffD70040",
-                "bg_color": "0x6000BCF0"
-              }
+                "bg_color": "0x6000BCF0",
+              },
             },
-            {"insert": " as a component to build your own app."}
-          ]
-        }
+            {"insert": " as a component to build your own app."},
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "bulleted_list",
         "data": {
           "delta": [
-            {"insert": "Use / to insert blocks"}
-          ]
-        }
+            {"insert": "Use / to insert blocks"},
+          ],
+        },
       },
       {
         "type": "bulleted_list",
@@ -1259,14 +1259,14 @@ const afterCut = {
           "delta": [
             {
               "insert":
-                  "Select text to trigger to the toolbar to format your notes."
+                  "Select text to trigger to the toolbar to format your notes.",
             }
-          ]
-        }
+          ],
+        },
       },
       {
         "type": "paragraph",
-        "data": {"delta": []}
+        "data": {"delta": []},
       },
       {
         "type": "paragraph",
@@ -1274,11 +1274,11 @@ const afterCut = {
           "delta": [
             {
               "insert":
-                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
+                  "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };

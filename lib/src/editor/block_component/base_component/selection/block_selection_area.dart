@@ -26,7 +26,7 @@ class BlockSelectionArea extends StatefulWidget {
     required this.blockColor,
     this.supportTypes = const [
       BlockSelectionType.cursor,
-      BlockSelectionType.selection
+      BlockSelectionType.selection,
     ],
   });
 

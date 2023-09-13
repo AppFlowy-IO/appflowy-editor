@@ -51,7 +51,7 @@ void main() async {
               paragraphNode(
                 text: text,
                 children: [paragraphNode(text: text)],
-              )
+              ),
             ],
           ),
         );

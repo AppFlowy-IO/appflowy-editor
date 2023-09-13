@@ -122,7 +122,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
             context,
             widget.node.children,
           ),
-        )
+        ),
       ],
     );
   }

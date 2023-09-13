@@ -389,7 +389,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       LogicalKeyboardKey.arrowLeft,
       LogicalKeyboardKey.arrowRight,
       LogicalKeyboardKey.arrowUp,
-      LogicalKeyboardKey.arrowDown
+      LogicalKeyboardKey.arrowDown,
     ];
 
     if (event.logicalKey == LogicalKeyboardKey.enter) {

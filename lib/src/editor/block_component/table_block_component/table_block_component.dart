@@ -210,7 +210,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
         (shiftWithBaseOffset
                 ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox)
                 : Offset.zero) &
-            tableBox.size
+            tableBox.size,
       ];
     }
     return [Offset.zero & _renderBox.size];
@@ -272,7 +272,7 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
 
     final tableNode = TableNode.fromList([
       ['', ''],
-      ['', '']
+      ['', ''],
     ]);
 
     final transaction = editorState.transaction;

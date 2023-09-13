@@ -169,7 +169,7 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

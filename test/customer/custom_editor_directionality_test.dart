@@ -33,7 +33,7 @@ class DirectionalityTester extends StatelessWidget {
         [0],
         [
           headingNode(level: 1, delta: Delta()..insert('سلام از Appflowy')),
-          paragraphNode(text: 'این یک متن راست به چپ است')
+          paragraphNode(text: 'این یک متن راست به چپ است'),
         ],
       );
 

@@ -7,7 +7,7 @@ void main() async {
     test('parser table node', () {
       final node = TableNode.fromList([
         ['a'],
-        ['b']
+        ['b'],
       ]).node;
 
       final result = const TableNodeParser().transform(node);
@@ -17,7 +17,7 @@ void main() async {
     test('parser table node empty cells', () {
       final node = TableNode.fromList([
         [''],
-        ['']
+        [''],
       ]).node;
 
       final result = const TableNodeParser().transform(node);

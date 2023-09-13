@@ -104,7 +104,7 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
         false) {
       node.updateAttributes({
         TableCellBlockKeys.rowBackgroundColor:
-            firstCellInRow!.attributes[TableCellBlockKeys.rowBackgroundColor]
+            firstCellInRow!.attributes[TableCellBlockKeys.rowBackgroundColor],
       });
     }
 
@@ -146,7 +146,7 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
         false) {
       node.updateAttributes({
         TableCellBlockKeys.colBackgroundColor:
-            firstCellInCol!.attributes[TableCellBlockKeys.colBackgroundColor]
+            firstCellInCol!.attributes[TableCellBlockKeys.colBackgroundColor],
       });
     }
 

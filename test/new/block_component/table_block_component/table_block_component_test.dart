@@ -11,7 +11,7 @@ void main() async {
   group('table_block_component.dart', () {
     testWidgets('render table node', (tester) async {
       final tableNode = TableNode.fromList([
-        ['']
+        [''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
