@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../new/infra/testable_editor.dart';
+
+import '../../../infra/testable_editor.dart';
 
 void main() async {
   setUpAll(() {
@@ -29,7 +30,7 @@ void main() async {
         expect(find.text(item.name), findsOneWidget);
       }
 
-      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
+      await tester.tapAt(Offset.zero);
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
       expect(
         find.byType(SelectionMenuItemWidget, skipOffstage: false),
@@ -59,8 +60,7 @@ void main() async {
         expect(find.text(item.name), findsOneWidget);
       }
 
-      await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
-
+      await tester.tapAt(Offset.zero);
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
 
       expect(

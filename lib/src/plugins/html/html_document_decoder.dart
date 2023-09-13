@@ -360,6 +360,8 @@ class HTMLTags {
   static const blockQuote = 'blockquote';
   static const div = 'div';
   static const divider = 'hr';
+  static const section = 'section';
+  static const font = 'font';
 
   static List<String> formattingElements = [
     HTMLTags.anchor,
@@ -372,6 +374,7 @@ class HTMLTags {
     HTMLTags.span,
     HTMLTags.code,
     HTMLTags.strikethrough,
+    HTMLTags.font,
   ];
 
   static List<String> specialElements = [
@@ -385,7 +388,8 @@ class HTMLTags {
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
-    HTMLTags.image
+    HTMLTags.image,
+    HTMLTags.section,
   ];
 
   static bool isTopLevel(String tag) {

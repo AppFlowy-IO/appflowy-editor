@@ -77,6 +77,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
+
     currentTextEditingValue = formattedValue;
 
     Log.input.debug(

@@ -9,13 +9,12 @@ import 'package:provider/provider.dart';
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
     Key? key,
-    this.shrinkWrap = false,
-    this.scrollController,
+    required this.editorScrollController,
     required this.child,
   }) : super(key: key);
 
-  final ScrollController? scrollController;
-  final bool shrinkWrap;
+  final EditorScrollController editorScrollController;
+
   final Widget child;
 
   @override
@@ -32,13 +31,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   late EditorState editorState = context.read<EditorState>();
 
   @override
-  late ScrollController scrollController;
+  late ScrollController scrollController = ScrollController();
+
+  double offset = 0;
 
   @override
   void initState() {
     super.initState();
-
-    scrollController = widget.scrollController ?? ScrollController();
     editorState.selectionNotifier.addListener(_onSelectionChanged);
   }
 
@@ -49,31 +48,21 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   }
 
   @override
-  void didUpdateWidget(covariant ScrollServiceWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.scrollController != oldWidget.scrollController) {
-      if (oldWidget.scrollController == null) {
-        // create by self
-        scrollController.dispose();
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AutoScrollableWidget(
-      shrinkWrap: widget.shrinkWrap,
-      scrollController: scrollController,
-      builder: (context, autoScroller) {
-        if (PlatformExtension.isDesktopOrWeb) {
-          return _buildDesktopScrollService(context, autoScroller);
-        } else if (PlatformExtension.isMobile) {
-          return _buildMobileScrollService(context, autoScroller);
-        }
+    return Provider.value(
+      value: widget.editorScrollController,
+      child: AutoScrollableWidget(
+        scrollController: scrollController,
+        builder: (context, autoScroller) {
+          if (PlatformExtension.isDesktopOrWeb) {
+            return _buildDesktopScrollService(context, autoScroller);
+          } else if (PlatformExtension.isMobile) {
+            return _buildMobileScrollService(context, autoScroller);
+          }
 
-        throw UnimplementedError();
-      },
+          throw UnimplementedError();
+        },
+      ),
     );
   }
 
@@ -83,8 +72,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return DesktopScrollService(
       key: _forwardKey,
-      scrollController: scrollController,
-      autoScroller: autoScroller,
       child: widget.child,
     );
   }
@@ -95,8 +82,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   ) {
     return MobileScrollService(
       key: _forwardKey,
-      scrollController: scrollController,
-      autoScroller: autoScroller,
       child: widget.child,
     );
   }
@@ -110,9 +95,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       return;
     }
 
-    final updateReason = editorState.selectionUpdateReason;
-    final selectionType = editorState.selectionType;
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final selectionRect = editorState.selectionRects();
       if (selectionRect.isEmpty) {
@@ -123,7 +105,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       if (editorState.selectionUpdateReason ==
           SelectionUpdateReason.searchNavigate) {
-        scrollController.jumpTo(endTouchPoint.dy - 100);
+        widget.editorScrollController.animateTo(
+          offset: endTouchPoint.dy - 100,
+          duration: const Duration(microseconds: 1),
+        );
         return;
       }
 
@@ -135,27 +120,17 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             startAutoScroll(endTouchPoint, edgeOffset: 50);
           });
         } else {
-          if (selectionType == SelectionType.block ||
-              updateReason == SelectionUpdateReason.transaction) {
-            final box = editorState.renderBox;
-            final editorOffset = box?.localToGlobal(Offset.zero);
-            final editorHeight = box?.size.height;
-            double offset = 100;
-            if (editorOffset != null && editorHeight != null) {
-              // try to center the highlight area
-              offset = editorOffset.dy + editorHeight / 2.0;
-            }
-            startAutoScroll(
-              endTouchPoint,
-              edgeOffset: offset,
-              duration: Duration.zero,
-            );
-          } else {
-            startAutoScroll(endTouchPoint, edgeOffset: 100);
-          }
+          startAutoScroll(
+            endTouchPoint,
+            edgeOffset: 100,
+            duration: Duration.zero,
+          );
         }
       } else {
-        startAutoScroll(endTouchPoint);
+        startAutoScroll(
+          endTouchPoint,
+          duration: Duration.zero,
+        );
       }
     });
   }
@@ -182,8 +157,24 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   int? get page => forward.page;
 
   @override
-  void scrollTo(double dy, {Duration? duration}) =>
+  void scrollTo(
+    double dy, {
+    Duration duration = const Duration(milliseconds: 150),
+  }) =>
       forward.scrollTo(dy, duration: duration);
+
+  @override
+  void jumpTo(int index) => forward.jumpTo(index);
+
+  @override
+  void jumpToTop() {
+    forward.jumpToTop();
+  }
+
+  @override
+  void jumpToBottom() {
+    forward.jumpToBottom();
+  }
 
   @override
   void startAutoScroll(
@@ -191,13 +182,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     double edgeOffset = 100,
     AxisDirection? direction,
     Duration? duration,
-  }) =>
-      forward.startAutoScroll(
-        offset,
-        edgeOffset: edgeOffset,
-        direction: direction,
-        duration: duration,
-      );
+  }) {
+    forward.startAutoScroll(
+      offset,
+      edgeOffset: edgeOffset,
+      direction: direction,
+      duration: duration,
+    );
+  }
 
   @override
   void stopAutoScroll() => forward.stopAutoScroll();

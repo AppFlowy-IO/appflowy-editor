@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 
 typedef Path = List<int>;
@@ -104,5 +105,11 @@ extension PathExtensions on Path {
       }
     }
     return true;
+  }
+
+  bool inSelection(Selection? selection) {
+    return selection != null &&
+        selection.start.path <= this &&
+        this <= selection.end.path;
   }
 }

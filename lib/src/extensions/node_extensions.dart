@@ -119,6 +119,17 @@ extension NodeExtensions on Node {
     delta = delta.slice(selection.startIndex, selection.endIndex);
     return test(delta);
   }
+
+  bool isParentOf(Node node) {
+    var parent = node.parent;
+    while (parent != null) {
+      if (parent.id == id) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+    return false;
+  }
 }
 
 extension NodesExtensions<T extends Node> on List<T> {

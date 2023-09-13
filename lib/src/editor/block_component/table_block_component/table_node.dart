@@ -142,18 +142,34 @@ class TableNode {
       ) +
       _config.borderWidth;
 
-  void setColWidth(int col, double w, Transaction transaction) {
+  void setColWidth(
+    int col,
+    double w, {
+    Transaction? transaction,
+    bool force = false,
+  }) {
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
-    if (getColWidth(col) != w) {
+    if (getColWidth(col) != w || force) {
       for (var i = 0; i < rowsLen; i++) {
-        transaction.updateNode(_cells[col][i], {TableCellBlockKeys.width: w});
-        updateRowHeight(i, transaction);
+        if (transaction != null) {
+          transaction.updateNode(_cells[col][i], {TableCellBlockKeys.width: w});
+        } else {
+          _cells[col][i].updateAttributes({TableCellBlockKeys.width: w});
+        }
+        updateRowHeight(i, transaction: transaction);
       }
-      transaction.updateNode(node, node.attributes);
+      if (transaction != null) {
+        transaction.updateNode(node, node.attributes);
+      } else {
+        node.updateAttributes(node.attributes);
+      }
     }
   }
 
-  void updateRowHeight(int row, Transaction transaction) {
+  void updateRowHeight(
+    int row, {
+    Transaction? transaction,
+  }) {
     // The extra 8 is because of paragraph padding
     double maxHeight = _cells
         .map<double>((c) => c[row].children.first.rect.height + 8)
@@ -161,15 +177,24 @@ class TableNode {
 
     if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight) {
       for (var i = 0; i < colsLen; i++) {
-        transaction.updateNode(
-          _cells[i][row],
-          {TableCellBlockKeys.height: maxHeight},
-        );
+        if (transaction != null) {
+          transaction.updateNode(
+            _cells[i][row],
+            {TableCellBlockKeys.height: maxHeight},
+          );
+        } else {
+          _cells[i][row]
+              .updateAttributes({TableCellBlockKeys.height: maxHeight});
+        }
       }
     }
 
     if (node.attributes[TableBlockKeys.colsHeight] != colsHeight) {
-      transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
+      if (transaction != null) {
+        transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
+      } else {
+        node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
+      }
     }
   }
 }

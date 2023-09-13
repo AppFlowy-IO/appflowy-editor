@@ -72,8 +72,14 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     final html = data.html;
     if (html != null && html.isNotEmpty) {
       await editorState.deleteSelectionIfNeeded();
-      editorState.pasteHtml(html);
-    } else if (text != null && text.isNotEmpty) {
+      // if the html is pasted successfully, then return
+      // otherwise, paste the plain text
+      if (await editorState.pasteHtml(html)) {
+        return;
+      }
+    }
+
+    if (text != null && text.isNotEmpty) {
       await editorState.deleteSelectionIfNeeded();
       editorState.pastePlainText(text);
     }
@@ -87,7 +93,7 @@ RegExp _hrefRegex = RegExp(
 );
 
 extension on EditorState {
-  Future<void> pasteHtml(String html) async {
+  Future<bool> pasteHtml(String html) async {
     final nodes = htmlToDocument(html).root.children.toList();
     // remove the front and back empty line
     while (nodes.isNotEmpty && nodes.first.delta?.isEmpty == true) {
@@ -97,13 +103,14 @@ extension on EditorState {
       nodes.removeLast();
     }
     if (nodes.isEmpty) {
-      return;
+      return false;
     }
     if (nodes.length == 1) {
       await pasteSingleLineNode(nodes.first);
     } else {
       await pasteMultiLineNodes(nodes.toList());
     }
+    return true;
   }
 
   Future<void> pastePlainText(String plainText) async {

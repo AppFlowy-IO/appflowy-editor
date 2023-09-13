@@ -228,7 +228,7 @@ extension TextTransforms on EditorState {
         (attributes) => attributes[key] == true,
       );
     });
-    formatDelta(
+    await formatDelta(
       selection,
       {
         key: !isHighlight,

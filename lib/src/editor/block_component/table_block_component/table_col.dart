@@ -1,10 +1,10 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col_border.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col_border.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
 
 class TableCol extends StatefulWidget {
   const TableCol({
@@ -32,6 +32,8 @@ class TableCol extends StatefulWidget {
 
 class _TableColState extends State<TableCol> {
   bool _colActionVisiblity = false;
+
+  Map<String, void Function()> listeners = {};
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class _TableColState extends State<TableCol> {
               node: widget.tableNode.node,
               editorState: widget.editorState,
               position: widget.colIdx,
-              transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+              transform: Matrix4.translationValues(0.0, -12, 0.0),
               alignment: Alignment.topCenter,
               menuBuilder: widget.menuBuilder,
               dir: TableDirection.col,
@@ -98,10 +100,9 @@ class _TableColState extends State<TableCol> {
 
     for (var i = 0; i < rowsLen; i++) {
       final node = widget.tableNode.getCell(widget.colIdx, i);
-
       updateRowHeightCallback(i);
-      node.addListener(() => updateRowHeightCallback(i));
-      node.children.first.addListener(() => updateRowHeightCallback(i));
+      addListener(node, i);
+      addListener(node.children.first, i);
 
       cells.addAll([
         widget.editorState.renderer.build(
@@ -118,6 +119,15 @@ class _TableColState extends State<TableCol> {
     ];
   }
 
+  void addListener(Node node, int row) {
+    if (listeners.containsKey(node.id)) {
+      return;
+    }
+
+    listeners[node.id] = () => updateRowHeightCallback(row);
+    node.addListener(listeners[node.id]!);
+  }
+
   void updateRowHeightCallback(int row) =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (row >= widget.tableNode.rowsLen) {
@@ -125,7 +135,7 @@ class _TableColState extends State<TableCol> {
         }
 
         final transaction = widget.editorState.transaction;
-        widget.tableNode.updateRowHeight(row, transaction);
+        widget.tableNode.updateRowHeight(row, transaction: transaction);
         if (transaction.operations.isNotEmpty) {
           transaction.afterSelection = transaction.beforeSelection;
           widget.editorState.apply(transaction);

@@ -144,6 +144,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     Widget child = Scrollbar(
       controller: _scrollController,
       child: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 10, left: 10, bottom: 4),
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
         child: TableView(
@@ -160,6 +161,17 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     child = Padding(
       key: tableKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 
@@ -187,12 +199,18 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   Position getPositionInOffset(Offset start) => end();
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
     final parentBox = context.findRenderObject();
     final tableBox = tableKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && tableBox is RenderBox) {
       return [
-        tableBox.localToGlobal(Offset.zero, ancestor: parentBox) & tableBox.size
+        (shiftWithBaseOffset
+                ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox)
+                : Offset.zero) &
+            tableBox.size
       ];
     }
     return [Offset.zero & _renderBox.size];
@@ -212,7 +230,11 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
+      _renderBox.localToGlobal(offset);
 
   @override
   Rect getBlockRect() {
@@ -220,7 +242,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
     final size = _renderBox.size;
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }

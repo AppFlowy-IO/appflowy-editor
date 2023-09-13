@@ -1,6 +1,6 @@
 import 'package:appflowy_editor/src/core/document/attributes.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/core/document/text_delta.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('text_delta.dart', () {
@@ -488,6 +488,36 @@ void main() {
         expect(attrs?.containsKey("b"), true);
         expect(attrs?["a"], null);
         expect(attrs?["b"], null);
+      });
+    });
+
+    group('diff', () {
+      test('diff1', () {
+        final a = Delta()..insert('Hello');
+        final b = Delta()..insert('Hello!');
+        final diff = a.diff(b);
+        expect(a.compose(diff), b);
+      });
+
+      test('diff2', () {
+        final delta = Delta()
+          ..insert('Gandalf', attributes: {'bold': true})
+          ..insert(' the ')
+          ..insert('Grey', attributes: {'color': '#ccc'});
+        final death = Delta()
+          ..retain(12)
+          ..insert('White', attributes: {'color': '#ccc'})
+          ..delete(4);
+        final restored = delta.compose(death);
+        expect(
+          restored,
+          Delta()
+            ..insert('Gandalf', attributes: {'bold': true})
+            ..insert(' the ')
+            ..insert('White', attributes: {'color': '#ccc'}),
+        );
+        final diff = delta.diff(restored);
+        expect(delta.compose(diff), restored);
       });
     });
   });
