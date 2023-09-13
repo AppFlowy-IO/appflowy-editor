@@ -40,7 +40,7 @@ void main() {
       final subNodes = [
         Node(
           type: 'type',
-        )
+        ),
       ];
 
       final node = Node(

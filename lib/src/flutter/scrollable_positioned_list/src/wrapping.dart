@@ -804,7 +804,7 @@ abstract class CustomRenderViewport
                     'vertical space for the children. In this case, consider using a '
                     'Column instead. Otherwise, consider using the "shrinkWrap" property '
                     '(or a ShrinkWrappingViewport) to size the height of the viewport '
-                    'to the sum of the heights of its children.')
+                    'to the sum of the heights of its children.'),
               ]);
             }
             if (!constraints.hasBoundedWidth) {
@@ -831,7 +831,7 @@ abstract class CustomRenderViewport
                     'horizontal space for the children. In this case, consider using a '
                     'Row instead. Otherwise, consider using the "shrinkWrap" property '
                     '(or a ShrinkWrappingViewport) to size the width of the viewport '
-                    'to the sum of the widths of its children.')
+                    'to the sum of the widths of its children.'),
               ]);
             }
             if (!constraints.hasBoundedHeight) {

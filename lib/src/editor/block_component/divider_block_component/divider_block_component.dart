@@ -104,8 +104,12 @@ class _DividerBlockComponentWidgetState
       delegate: this,
       listenable: editorState.selectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
+      cursorColor: editorState.editorStyle.cursorColor,
+      selectionColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
+        BlockSelectionType.cursor,
+        BlockSelectionType.selection,
       ],
       child: child,
     );
@@ -118,15 +122,7 @@ class _DividerBlockComponentWidgetState
       );
     }
 
-    final selectionNotifier = editorState.selectionNotifier;
-    return BlockSelectionContainer(
-      node: node,
-      delegate: this,
-      listenable: selectionNotifier,
-      cursorColor: editorState.editorStyle.cursorColor,
-      selectionColor: editorState.editorStyle.selectionColor,
-      child: child,
-    );
+    return child;
   }
 
   @override
@@ -178,7 +174,7 @@ class _DividerBlockComponentWidgetState
         (shiftWithBaseOffset
                 ? dividerBox.localToGlobal(Offset.zero, ancestor: parentBox)
                 : Offset.zero) &
-            dividerBox.size
+            dividerBox.size,
       ];
     }
     return [Offset.zero & _renderBox!.size];

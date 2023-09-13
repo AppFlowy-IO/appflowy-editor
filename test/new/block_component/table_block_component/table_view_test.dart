@@ -17,7 +17,7 @@ void main() async {
     testWidgets('row height changing base on cell height', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -51,7 +51,7 @@ void main() async {
     testWidgets('row height changing base on column width', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 

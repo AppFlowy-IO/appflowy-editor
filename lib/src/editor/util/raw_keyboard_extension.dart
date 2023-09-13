@@ -5,7 +5,7 @@ extension RawKeyboardExtension on RawKeyboard {
         (element) => [
           LogicalKeyboardKey.shift,
           LogicalKeyboardKey.shiftLeft,
-          LogicalKeyboardKey.shiftRight
+          LogicalKeyboardKey.shiftRight,
         ].contains(element),
       );
 }

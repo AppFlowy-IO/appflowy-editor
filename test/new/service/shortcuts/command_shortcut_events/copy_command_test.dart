@@ -82,16 +82,16 @@ const paragraphdata = {
             {'insert': 'AppFlowy Editor is a '},
             {
               'insert': 'highly customizable',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'rich-text editor',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };

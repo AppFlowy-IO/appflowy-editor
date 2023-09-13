@@ -83,7 +83,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           _parseListElement(
             element,
             type: type,
-          )
+          ),
         ];
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
@@ -152,7 +152,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         level: level,
         delta: delta,
       ),
-      ...specialNodes
+      ...specialNodes,
     ];
   }
 
