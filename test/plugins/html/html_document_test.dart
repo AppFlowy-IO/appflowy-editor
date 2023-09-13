@@ -112,7 +112,10 @@ void main() {
           {"insert": ", and "},
           {
             "insert": "inline code",
-            "attributes": {"bg_color": "0x26878378", "font_color": "0xffeb5757"},
+            "attributes": {
+              "bg_color": "0x26878378",
+              "font_color": "0xffeb5757"
+            },
           },
           {"insert": "."},
         ],
