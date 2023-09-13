@@ -173,6 +173,19 @@ extension TextTransforms on EditorState {
       withUpdateSelection: withUpdateSelection,
     );
   }
+ bool iswhiteSpaceBeforeSelected(Selection selection) {
+    if (selection.end.offset == 0) {
+      return false;
+    }
+    return getTextInSelection(
+          selection.copyWith(
+            start: selection.end.copyWith(offset: selection.end.offset - 1),
+            end: selection.end.copyWith(offset: selection.end.offset),
+          ),
+        ).first ==
+        " ";
+  }
+
 
   /// Toggles the given attribute on or off for the selected text.
   ///
