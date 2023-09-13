@@ -178,7 +178,7 @@ class _DividerBlockComponentWidgetState
         (shiftWithBaseOffset
                 ? dividerBox.localToGlobal(Offset.zero, ancestor: parentBox)
                 : Offset.zero) &
-            dividerBox.size
+            dividerBox.size,
       ];
     }
     return [Offset.zero & _renderBox!.size];

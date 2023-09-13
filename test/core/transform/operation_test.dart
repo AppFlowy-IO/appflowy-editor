@@ -51,7 +51,7 @@ void main() async {
           {
             'type': 'example',
           }
-        ]
+        ],
       });
       expect(InsertOperation.fromJson(json), op);
       expect(op.invert().invert(), op);
@@ -65,7 +65,7 @@ void main() async {
         'op': 'update',
         'path': [0],
         'attributes': {'a': 1},
-        'oldAttributes': {'a': 0}
+        'oldAttributes': {'a': 0},
       });
       expect(UpdateOperation.fromJson(json), op);
       expect(op.invert().invert(), op);
@@ -83,7 +83,7 @@ void main() async {
           {
             'type': 'example',
           }
-        ]
+        ],
       });
       expect(DeleteOperation.fromJson(json), op);
       expect(op.invert().invert(), op);
@@ -101,12 +101,12 @@ void main() async {
         'op': 'update_text',
         'path': [0],
         'delta': [
-          {'insert': 'App'}
+          {'insert': 'App'},
         ],
         'inverted': [
           {'retain': 3},
-          {'delete': 5}
-        ]
+          {'delete': 5},
+        ],
       });
       expect(UpdateTextOperation.fromJson(json), op);
       expect(op.invert().invert(), op);

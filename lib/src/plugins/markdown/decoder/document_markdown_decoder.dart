@@ -155,7 +155,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return numberedListNode(
         attributes: {
           'delta':
-              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson()
+              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson(),
         },
       );
     }
@@ -220,7 +220,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         type: 'code',
         attributes: {
           'delta': decoder.convert(codeBlock).toJson(),
-          'language': null
+          'language': null,
         },
       );
     }
@@ -231,7 +231,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       type: 'code',
       attributes: {
         'delta': decoder.convert(codeContent).toJson(),
-        'language': language.isEmpty ? null : language
+        'language': language.isEmpty ? null : language,
       },
     );
   }

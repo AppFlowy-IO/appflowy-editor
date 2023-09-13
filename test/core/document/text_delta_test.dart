@@ -73,7 +73,7 @@ void main() {
               attributes: {
                 'color': '#ccc',
               },
-            )
+            ),
           ],
         );
 
@@ -366,7 +366,7 @@ void main() {
         expect(delta.toJson(), [
           {'retain': 2},
           {'insert': 'A'},
-          {'delete': 3}
+          {'delete': 3},
         ]);
       });
 

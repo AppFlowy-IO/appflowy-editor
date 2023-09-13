@@ -15,7 +15,7 @@ void main() async {
     testWidgets('enter key on middle cells', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -44,7 +44,7 @@ void main() async {
     testWidgets('enter key on last cell', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -73,7 +73,7 @@ void main() async {
     testWidgets('backspace on beginning of cell', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -143,7 +143,7 @@ void main() async {
         (tester) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cd'],
-        ['ef', 'hi']
+        ['ef', 'hi'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
       editor.addParagraph(initialText: 'Testing');
@@ -183,7 +183,7 @@ void main() async {
     testWidgets('backspace on whole table in selection', (tester) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cd'],
-        ['ef', 'hi']
+        ['ef', 'hi'],
       ]);
       final editor = tester.editor..addParagraph(initialText: 'Start');
       editor.addNode(tableNode.node);
@@ -221,7 +221,7 @@ void main() async {
         (tester) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cde'],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -265,7 +265,7 @@ void main() async {
         (tester) async {
       final tableNode = TableNode.fromList([
         ['abc', 'de'],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 

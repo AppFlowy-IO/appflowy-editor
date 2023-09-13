@@ -13,7 +13,7 @@ class BlockSelectionContainer extends StatelessWidget {
     this.blockColor = Colors.blue,
     this.supportTypes = const [
       BlockSelectionType.cursor,
-      BlockSelectionType.selection
+      BlockSelectionType.selection,
     ],
     required this.child,
   });

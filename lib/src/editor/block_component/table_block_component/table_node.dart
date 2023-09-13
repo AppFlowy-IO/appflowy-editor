@@ -87,7 +87,7 @@ class TableNode {
           type: TableCellBlockKeys.type,
           attributes: {
             TableCellBlockKeys.colPosition: i,
-            TableCellBlockKeys.rowPosition: j
+            TableCellBlockKeys.rowPosition: j,
           },
         );
 
