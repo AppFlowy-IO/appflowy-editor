@@ -27,8 +27,8 @@ class HtmlTableNodeParser extends HTMLNodeParser {
     Node node, {
     required List<HTMLNodeParser> encodeParsers,
   }) {
-    final int rowsLen = node.attributes['rowsLen'],
-        colsLen = node.attributes['colsLen'];
+    final int rowsLen = node.attributes[TableBlockKeys.rowsLen],
+        colsLen = node.attributes[TableBlockKeys.colsLen];
     final List<dom.Node> domNodes = [];
 
     for (var i = 0; i < rowsLen; i++) {

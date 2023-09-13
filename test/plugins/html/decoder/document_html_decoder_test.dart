@@ -37,8 +37,8 @@ const htmlTablejson = {
         "data": {
           "delta": [
             {"insert": "'"}
-          ],
-        },
+          ]
+        }
       },
       {
         "type": "table",
@@ -59,8 +59,8 @@ const htmlTablejson = {
             "data": {
               "colPosition": 0,
               "rowPosition": 0,
-              "height": 50.0,
-              "width": 60.0
+              "height": 40.0,
+              "width": 80.0
             }
           },
           {
@@ -81,8 +81,8 @@ const htmlTablejson = {
             "data": {
               "colPosition": 1,
               "rowPosition": 0,
-              "height": 50.0,
-              "width": 60.0
+              "height": 40.0,
+              "width": 80.0
             }
           },
           {
@@ -103,9 +103,9 @@ const htmlTablejson = {
             "data": {
               "colPosition": 0,
               "rowPosition": 1,
-              "height": 50.0,
-              "width": 60.0
-            },
+              "height": 40.0,
+              "width": 80.0
+            }
           },
           {
             "type": "table/cell",
@@ -122,17 +122,17 @@ const htmlTablejson = {
             "data": {
               "colPosition": 1,
               "rowPosition": 1,
-              "height": 50.0,
-              "width": 60.0
+              "height": 40.0,
+              "width": 80.0
             }
           }
         ],
         "data": {
           "rowsLen": 2,
           "colsLen": 2,
-          "colDefaultWidth": 60,
-          "rowDefaultHeight": 50,
-          "colMinimumWidth": 30
+          "colDefaultWidth": 80,
+          "rowDefaultHeight": 40,
+          "colMinimumWidth":40
         }
       },
       {

@@ -118,9 +118,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes: {
             TableBlockKeys.rowsLen: rowLength,
             TableBlockKeys.colsLen: columnLenth,
-            TableBlockKeys.colDefaultWidth: 60,
-            TableBlockKeys.rowDefaultHeight: 50,
-            TableBlockKeys.colMinimumWidth: 30,
+            TableBlockKeys.colDefaultWidth: TableDefaults.colWidth,
+            TableBlockKeys.rowDefaultHeight: TableDefaults.rowHeight,
+            TableBlockKeys.colMinimumWidth: TableDefaults.colMinimumWidth,
           },
           children: tablenodes,
         ),
@@ -130,18 +130,18 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
 
   (int, int, List<Node>) _parsetableRows(dom.Element element) {
     final List<Node> nodes = [];
-    int length = 0;
+    int colLength = 0;
     int rowLength = 0;
 
     for (final data in element.children) {
       final tabledata = _parsetableData(data, rowPosition: rowLength);
-      if (length == 0) {
-        length = tabledata.length;
+      if (colLength == 0) {
+        colLength = tabledata.length;
       }
       nodes.addAll(tabledata);
       rowLength++;
     }
-    return (length, rowLength, nodes);
+    return (colLength, rowLength, nodes);
   }
 
   Iterable<Node> _parsetableData(
@@ -152,47 +152,32 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     int columnPosition = 0;
 
     for (final data in element.children) {
-      if (data.children.isEmpty) {
-        Attributes attributes = {
-          TableCellBlockKeys.colPosition: columnPosition,
-          TableCellBlockKeys.rowPosition: rowPosition,
-        };
-        if (data.attributes.isNotEmpty) {
-          final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
-                element.attributes,
-              ) ??
-              {};
-          attributes.addAll(deltaAttributes);
-        }
-
-        final node = Node(
-          type: TableCellBlockKeys.type,
-          attributes: attributes,
-          children: [paragraphNode(text: data.text)],
-        );
-
-        nodes.add(node);
-      } else {
-        Attributes attributes = {
-          TableCellBlockKeys.colPosition: columnPosition,
-          TableCellBlockKeys.rowPosition: rowPosition,
-        };
-        if (data.attributes.isNotEmpty) {
-          final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
-                element.attributes,
-              ) ??
-              {};
-          attributes.addAll(deltaAttributes);
-        }
-
-        final newnodes = Node(
-          type: TableCellBlockKeys.type,
-          attributes: attributes,
-          children: _parseTableSpecialNodes(data),
-        );
-
-        nodes.add(newnodes);
+      Attributes attributes = {
+        TableCellBlockKeys.colPosition: columnPosition,
+        TableCellBlockKeys.rowPosition: rowPosition,
+      };
+      if (data.attributes.isNotEmpty) {
+        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
+              element.attributes,
+            ) ??
+            {};
+        attributes.addAll(deltaAttributes);
       }
+
+      List<Node> children;
+      if (data.children.isEmpty) {
+        children = [paragraphNode(text: data.text)];
+      } else {
+        children = _parseTableSpecialNodes(data).toList();
+      }
+
+      final node = Node(
+        type: TableCellBlockKeys.type,
+        attributes: attributes,
+        children: children,
+      );
+
+      nodes.add(node);
       columnPosition++;
     }
 
@@ -395,7 +380,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
     LinkedHashMap<Object, String> htmlAttributes, {
-    AttributeType attributeType = AttributeType.none,
+    HtmlAttributeType attributeType = HtmlAttributeType.none,
   }) {
     final Attributes attributes = {};
     final style = htmlAttributes['style'];
@@ -431,7 +416,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
       }
     }
-    if (attributeType == AttributeType.none) {
+    if (attributeType == HtmlAttributeType.none) {
       // background color
       final backgroundColor = css['background-color'];
       if (backgroundColor != null) {
@@ -465,7 +450,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         attributes[AppFlowyRichTextKeys.italic] = true;
       }
     }
-    if (attributeType == AttributeType.tablerow) {
+    if (attributeType == HtmlAttributeType.tablerow) {
       final regex = RegExp('[^0-9]');
       final width = css['width'];
       if (width != null) {
@@ -577,4 +562,4 @@ class HTMLTags {
   }
 }
 
-enum AttributeType { table, tablerow, none }
+enum HtmlAttributeType { table, tablerow, none }
