@@ -159,18 +159,18 @@ const paragraphData = {
             {'insert': 'AppFlowy Editor is a '},
             {
               'insert': 'highly customizable',
-              'attributes': {'bold': true}
+              'attributes': {'bold': true},
             },
             {'insert': '   '},
             {
               'insert': 'rich-text editor',
-              'attributes': {'italic': true}
+              'attributes': {'italic': true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const secondParagraph = {
   "document": {
@@ -183,28 +183,28 @@ const secondParagraph = {
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const plainTextJson = {
   "document": {
@@ -216,13 +216,13 @@ const plainTextJson = {
           "delta": [
             {
               "insert":
-                  "AppFlowy Editor is a highly customizable   rich-text editor"
+                  "AppFlowy Editor is a highly customizable   rich-text editor",
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };
 const thirdParagraph = {
   "document": {
@@ -235,36 +235,36 @@ const thirdParagraph = {
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             },
             {"insert": "AppFlowy Editor is a "},
             {
               "insert": "highly customizable",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": "   "},
             {
               "insert": "rich-text editor",
-              "attributes": {"italic": true}
+              "attributes": {"italic": true},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };

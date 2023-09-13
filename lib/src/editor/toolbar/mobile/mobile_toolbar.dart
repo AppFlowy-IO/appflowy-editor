@@ -192,7 +192,7 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                 .toolbarItems[_selectedToolbarItemIndex!]
                 // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
                 .itemMenuBuilder!(widget.editorState, widget.selection, this),
-          )
+          ),
       ],
     );
   }

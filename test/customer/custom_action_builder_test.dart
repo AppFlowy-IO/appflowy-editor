@@ -50,7 +50,7 @@ class CustomActionBuilder extends StatelessWidget {
     const text = 'Hello AppFlowy!';
     final document = Document.blank()
       ..insert([
-        0
+        0,
       ], [
         paragraphNode(text: text),
       ]);

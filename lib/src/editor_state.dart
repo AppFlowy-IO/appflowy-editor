@@ -319,7 +319,7 @@ class EditorState {
                   selection.startIndex,
                   delta.length,
                 )
-                .toJson()
+                .toJson(),
           },
         );
       }
@@ -340,7 +340,7 @@ class EditorState {
                       0,
                       selection.endIndex,
                     )
-                    .toJson()
+                    .toJson(),
               },
             ),
           );
@@ -354,7 +354,7 @@ class EditorState {
                     0,
                     selection.endIndex,
                   )
-                  .toJson()
+                  .toJson(),
             },
           );
         }

@@ -82,7 +82,7 @@ class _BackgroundColorOptionsWidgetsState
               },
               isSelected: isSelected,
             );
-          }).toList()
+          }).toList(),
         ],
       ),
     );

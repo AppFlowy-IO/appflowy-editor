@@ -50,7 +50,7 @@ bool insertNodeAfterSelection(
   }
   node.updateAttributes({
     blockComponentTextDirection:
-        currentNode.attributes[blockComponentTextDirection]
+        currentNode.attributes[blockComponentTextDirection],
   });
 
   final transaction = editorState.transaction;

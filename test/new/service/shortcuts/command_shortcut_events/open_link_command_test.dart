@@ -66,16 +66,16 @@ const exampleJson = {
           "delta": [
             {
               "insert": "Welcome to",
-              "attributes": {"bold": true}
+              "attributes": {"bold": true},
             },
             {"insert": " "},
             {
               "insert": "AppFlowy",
-              "attributes": {"href": "appflowy.io"}
+              "attributes": {"href": "appflowy.io"},
             }
-          ]
-        }
+          ],
+        },
       }
-    ]
-  }
+    ],
+  },
 };

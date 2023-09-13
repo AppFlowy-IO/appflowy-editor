@@ -212,7 +212,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           initialEntries: [
             OverlayEntry(
               builder: (context) => services!,
-            )
+            ),
           ],
         ),
       ),

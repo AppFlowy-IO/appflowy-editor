@@ -110,7 +110,7 @@ void main() {
             "path": [0],
             "nodes": [item1.toJson()],
           }
-        ]
+        ],
       });
     });
     test("delete", () {

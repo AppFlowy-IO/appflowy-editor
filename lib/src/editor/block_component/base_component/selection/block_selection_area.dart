@@ -26,7 +26,7 @@ class BlockSelectionArea extends StatefulWidget {
     required this.blockColor,
     this.supportTypes = const [
       BlockSelectionType.cursor,
-      BlockSelectionType.selection
+      BlockSelectionType.selection,
     ],
   });
 
@@ -152,9 +152,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
 
     // the current path is in the selection
     if (selection != null && path.inSelection(selection)) {
-      if (widget.supportTypes.contains(BlockSelectionType.block)) {
-        if (context.read<EditorState>().selectionType != SelectionType.block ||
-            !path.equals(selection.start.path)) {
+      if (widget.supportTypes.contains(BlockSelectionType.block) &&
+          context.read<EditorState>().selectionType == SelectionType.block) {
+        if (!path.equals(selection.start.path)) {
           if (prevBlockRect != null) {
             setState(() {
               prevBlockRect = null;
