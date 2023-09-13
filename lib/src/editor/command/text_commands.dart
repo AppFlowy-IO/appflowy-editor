@@ -186,7 +186,7 @@ extension TextTransforms on EditorState {
         " ";
   }
 
-
+  
   /// Toggles the given attribute on or off for the selected text.
   ///
   /// If the [Selection] is not passed in, use the current selection.
@@ -199,6 +199,29 @@ extension TextTransforms on EditorState {
       return;
     }
     final nodes = getNodesInSelection(selection);
+
+    if (selection.length == 0) {
+      if (selection.end.offset == 0) {
+        insertTextAtCurrentSelection(" ");
+        selection = selection.copyWith(
+          start: selection.end.copyWith(offset: selection.end.offset),
+          end: selection.end.copyWith(offset: selection.end.offset + 1),
+        );
+      } else {
+        if (iswhiteSpaceBeforeSelected(selection)) {
+          selection = selection.copyWith(
+            start: selection.end.copyWith(offset: selection.end.offset - 1),
+            end: selection.end.copyWith(offset: selection.end.offset),
+          );
+        } else {
+          insertTextAtCurrentSelection(" ");
+          selection = selection.copyWith(
+            start: selection.end.copyWith(offset: selection.end.offset),
+            end: selection.end.copyWith(offset: selection.end.offset + 1),
+          );
+        }
+      }
+    }
     final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
         (attributes) => attributes[key] == true,
