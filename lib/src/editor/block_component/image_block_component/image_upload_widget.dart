@@ -4,6 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_picker/file_picker.dart' as fp;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:string_validator/string_validator.dart';
 
 import '../../util/file_picker/file_picker_impl.dart';
 import 'base64_image.dart';
@@ -84,9 +85,11 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _filePicker = FilePicker();
-  final _regex = RegExp('^(http|https)://');
 
-  String? _localImagePath;
+  // this value is either a path or base64 content
+  // if the app is running on web, it will be base64 content
+  // otherwise, it will be a path
+  String? _imagePathOrContent;
 
   bool isUrlValid = true;
 
@@ -169,7 +172,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       textAlign: TextAlign.left,
       controller: _textEditingController,
       onSubmitted: (text) {
-        if (validateUrl(text)) {
+        if (_validateUrl(text)) {
           widget.onSubmitted(text);
         } else {
           setState(() {
@@ -222,11 +225,11 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           ),
         ),
         onPressed: () async {
-          if (_localImagePath != null) {
+          if (_imagePathOrContent != null) {
             widget.onUpload(
-              _localImagePath!,
+              _imagePathOrContent!,
             );
-          } else if (validateUrl(_textEditingController.text)) {
+          } else if (_validateUrl(_textEditingController.text)) {
             widget.onUpload(
               _textEditingController.text,
             );
@@ -290,15 +293,17 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           final result = await _filePicker.pickFiles(
             dialogTitle: '',
             allowMultiple: false,
-            type: fp.FileType.image,
+            type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
             allowedExtensions: allowedExtensions,
+            withData: kIsWeb,
           );
           if (result != null && result.files.isNotEmpty) {
             setState(() {
-              if (kIsWeb && result.files.first.bytes != null) {
-                _localImagePath = base64String(result.files.first.bytes!);
+              final bytes = result.files.first.bytes;
+              if (kIsWeb && bytes != null) {
+                _imagePathOrContent = base64String(bytes);
               } else {
-                _localImagePath = result.files.first.path;
+                _imagePathOrContent = result.files.first.path;
               }
             });
           }
@@ -310,18 +315,16 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             border: Border.all(color: const Color(0xff00BCF0)),
             borderRadius: BorderRadius.circular(12.0),
           ),
-          child: _localImagePath != null
+          child: _imagePathOrContent != null
               ? Align(
                   alignment: Alignment.center,
                   child: kIsWeb
                       ? Image.memory(
-                          dataFromBase64String(_localImagePath!),
+                          dataFromBase64String(_imagePathOrContent!),
                           fit: BoxFit.cover,
                         )
                       : Image.file(
-                          File(
-                            _localImagePath!,
-                          ),
+                          File(_imagePathOrContent!),
                           fit: BoxFit.cover,
                         ),
                 )
@@ -348,8 +351,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
     );
   }
 
-  bool validateUrl(String url) {
-    return url.isNotEmpty && _regex.hasMatch(url);
+  bool _validateUrl(String url) {
+    return url.isNotEmpty && isURL(url);
   }
 }
 

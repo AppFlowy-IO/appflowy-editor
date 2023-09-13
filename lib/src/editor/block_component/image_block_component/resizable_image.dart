@@ -71,15 +71,14 @@ class _ResizableImageState extends State<ResizableImage> {
 
   Widget _buildResizableImage(BuildContext context) {
     Widget child;
-    final regex = RegExp('^(http|https)://');
-    final url = widget.src;
-    if (isBase64(url)) {
+    final src = widget.src;
+    if (isBase64(src)) {
       // load base64 image (url is raw base64 from web)
       _cacheImage ??= Image.memory(
-        dataFromBase64String(url),
+        dataFromBase64String(src),
       );
       child = _cacheImage!;
-    } else if (regex.hasMatch(url)) {
+    } else if (isURL(src)) {
       // load network image
       _cacheImage ??= Image.network(
         widget.src,
@@ -98,7 +97,7 @@ class _ResizableImageState extends State<ResizableImage> {
       child = _cacheImage!;
     } else {
       // load local file
-      _cacheImage ??= Image.file(File(url));
+      _cacheImage ??= Image.file(File(src));
       child = _cacheImage!;
     }
     return Stack(
