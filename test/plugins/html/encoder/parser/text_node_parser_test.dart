@@ -10,7 +10,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
-    const HtmlTableNodeParser()
+    const HtmlTableNodeParser(),
   ];
   group('html_text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
@@ -247,6 +247,5 @@ void main() async {
         '''<p><span style="font-weight: bold; text-decoration: underline line-through; font-style: italic; color: rgba(33, 150, 243, 255)">Welcome to AppFlowy</span></p>''',
       );
     });
-
   });
 }
