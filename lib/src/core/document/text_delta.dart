@@ -327,15 +327,16 @@ class Delta extends Iterable<TextOperation> {
 
     final retDelta = Delta();
     final diffResult = diff_match_patch.diff(strings[0], strings[1]);
+    diff_match_patch.DiffMatchPatch().diffCleanupSemantic(diffResult);
 
     final thisIter = _OpIterator(this);
     final otherIter = _OpIterator(other);
 
-    for (var component in diffResult) {
-      var length = component.text.length;
+    for (final diff in diffResult) {
+      var length = diff.text.length;
       while (length > 0) {
         var opLength = 0;
-        switch (component.operation) {
+        switch (diff.operation) {
           case diff_match_patch.DIFF_INSERT:
             opLength = min(otherIter.peekLength(), length);
             retDelta.add(otherIter.next(opLength));
@@ -352,7 +353,7 @@ class Delta extends Iterable<TextOperation> {
             );
             final thisOp = thisIter.next(opLength);
             final otherOp = otherIter.next(opLength);
-            if (thisOp.attributes == otherOp.attributes) {
+            if (isAttributesEqual(thisOp.attributes, otherOp.attributes)) {
               retDelta.retain(
                 opLength,
                 attributes: invertAttributes(
