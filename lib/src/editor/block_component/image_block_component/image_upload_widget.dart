@@ -341,7 +341,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                       Text(
                         AppFlowyEditorLocalizations.current.chooseImage,
                         style: const TextStyle(
-                            fontSize: 14.0, color: Color(0xff00BCF0)),
+                          fontSize: 14.0,
+                          color: Color(0xff00BCF0),
+                        ),
                       ),
                     ],
                   ),
