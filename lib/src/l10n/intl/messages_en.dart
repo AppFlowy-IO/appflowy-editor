@@ -50,11 +50,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
+        "chooseImage": MessageLookupByLibrary.simpleMessage("Choose an image"),
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
+        "colAddAfter": MessageLookupByLibrary.simpleMessage("Add after"),
+        "colAddBefore": MessageLookupByLibrary.simpleMessage("Add before"),
+        "colClear": MessageLookupByLibrary.simpleMessage("Clear Content"),
+        "colDuplicate": MessageLookupByLibrary.simpleMessage("Duplicate"),
+        "colRemove": MessageLookupByLibrary.simpleMessage("Remove"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
+        "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
         "customColor": MessageLookupByLibrary.simpleMessage("Custom color"),
+        "cut": MessageLookupByLibrary.simpleMessage("Cut"),
+        "divider": MessageLookupByLibrary.simpleMessage("Divider"),
         "done": MessageLookupByLibrary.simpleMessage("Done"),
         "editLink": MessageLookupByLibrary.simpleMessage("Edit link"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Embed Code"),
@@ -76,6 +85,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "highlightColor":
             MessageLookupByLibrary.simpleMessage("Highlight color"),
         "image": MessageLookupByLibrary.simpleMessage("Image"),
+        "imageLoadFailed":
+            MessageLookupByLibrary.simpleMessage("Could not load the image"),
+        "incorrectLink": MessageLookupByLibrary.simpleMessage("Incorrect Link"),
         "italic": MessageLookupByLibrary.simpleMessage("Italic"),
         "lightLightTint1": MessageLookupByLibrary.simpleMessage("Purple"),
         "lightLightTint2": MessageLookupByLibrary.simpleMessage("Pink"),
@@ -92,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkText": MessageLookupByLibrary.simpleMessage("Text"),
         "linkTextHint":
             MessageLookupByLibrary.simpleMessage("Please enter text"),
+        "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
         "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
         "mobileHeading2": MessageLookupByLibrary.simpleMessage("Heading 2"),
@@ -99,12 +112,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "numberedList": MessageLookupByLibrary.simpleMessage("Numbered List"),
         "opacity": MessageLookupByLibrary.simpleMessage("Opacity"),
         "openLink": MessageLookupByLibrary.simpleMessage("Open link"),
+        "paste": MessageLookupByLibrary.simpleMessage("Paste"),
         "quote": MessageLookupByLibrary.simpleMessage("Quote"),
         "removeLink": MessageLookupByLibrary.simpleMessage("Remove link"),
         "resetToDefaultColor":
             MessageLookupByLibrary.simpleMessage("Reset to default color"),
+        "rowAddAfter": MessageLookupByLibrary.simpleMessage("Add after"),
+        "rowAddBefore": MessageLookupByLibrary.simpleMessage("Add before"),
+        "rowClear": MessageLookupByLibrary.simpleMessage("Clear Content"),
+        "rowDuplicate": MessageLookupByLibrary.simpleMessage("Duplicate"),
+        "rowRemove": MessageLookupByLibrary.simpleMessage("Remove"),
         "rtl": MessageLookupByLibrary.simpleMessage("RTL"),
+        "slashPlaceHolder": MessageLookupByLibrary.simpleMessage(
+            "Enter a / to insert a block, or start typing"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
+        "table": MessageLookupByLibrary.simpleMessage("Table"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
@@ -117,6 +139,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
         "underline": MessageLookupByLibrary.simpleMessage("Underline"),
-        "urlHint": MessageLookupByLibrary.simpleMessage("URL")
+        "upload": MessageLookupByLibrary.simpleMessage("Upload"),
+        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload Image"),
+        "urlHint": MessageLookupByLibrary.simpleMessage("URL"),
+        "urlImage": MessageLookupByLibrary.simpleMessage("URL Image")
       };
 }
