@@ -94,15 +94,18 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
+
   bool get _isFirstNode => node.path.length == 1 && node.path.first == 0;
+
   @override
   Widget build(BuildContext context) {
     if (!_isFirstNode) {
       return const SizedBox.shrink();
     }
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     return Container(
@@ -119,6 +122,7 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
             child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
+              delegate: this,
               editorState: editorState,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle).updateTextStyle(
