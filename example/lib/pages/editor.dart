@@ -32,8 +32,15 @@ class Editor extends StatelessWidget {
           editorState.logConfiguration
             ..handler = debugPrint
             ..level = LogLevel.off;
-          onEditorStateChange(editorState);
-          final scrollController = ScrollController();
+          editorState.transactionStream.listen((event) {
+            if (event.$1 == TransactionTime.after) {
+              onEditorStateChange(editorState);
+            }
+          });
+          final editorScrollController = EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: false,
+          );
           if (PlatformExtension.isDesktopOrWeb) {
             return FloatingToolbar(
               items: [
@@ -46,14 +53,15 @@ class Editor extends StatelessWidget {
                 linkItem,
                 buildTextColorItem(),
                 buildHighlightColorItem(),
-                ...textDirectionItems
+                ...textDirectionItems,
+                ...alignmentItems,
               ],
               editorState: editorState,
-              scrollController: scrollController,
+              editorScrollController: editorScrollController,
               child: _buildDesktopEditor(
                 context,
                 editorState,
-                scrollController,
+                editorScrollController,
               ),
             );
           } else if (PlatformExtension.isMobile) {
@@ -63,7 +71,7 @@ class Editor extends StatelessWidget {
                   child: _buildMobileEditor(
                     context,
                     editorState,
-                    scrollController,
+                    editorScrollController,
                   ),
                 ),
                 MobileToolbar(
@@ -94,19 +102,19 @@ class Editor extends StatelessWidget {
   Widget _buildMobileEditor(
     BuildContext context,
     EditorState editorState,
-    ScrollController? scrollController,
+    EditorScrollController? editorScrollController,
   ) {
     return AppFlowyEditor(
       editorStyle: const EditorStyle.mobile(),
       editorState: editorState,
-      scrollController: scrollController,
+      editorScrollController: editorScrollController,
     );
   }
 
   Widget _buildDesktopEditor(
     BuildContext context,
     EditorState editorState,
-    ScrollController? scrollController,
+    EditorScrollController? editorScrollController,
   ) {
     final customBlockComponentBuilders = {
       ...standardBlockComponentBuilderMap,
@@ -124,14 +132,25 @@ class Editor extends StatelessWidget {
             child: Text('Sample Menu'),
           );
         },
-      )
+      ),
     };
     return AppFlowyEditor(
       editorState: editorState,
-      scrollController: scrollController,
+      shrinkWrap: true,
+      editorScrollController: editorScrollController,
       blockComponentBuilders: customBlockComponentBuilders,
       commandShortcutEvents: [
-        ...standardCommandShortcutEvents,
+        customToggleHighlightCommand(
+          style: ToggleColorsStyle(
+            highlightColor: Theme.of(context).highlightColor,
+          ),
+        ),
+        ...[
+          ...standardCommandShortcutEvents
+            ..removeWhere(
+              (el) => el == toggleHighlightCommand,
+            ),
+        ],
         ...findAndReplaceCommands(
           context: context,
           localizations: FindReplaceLocalizations(

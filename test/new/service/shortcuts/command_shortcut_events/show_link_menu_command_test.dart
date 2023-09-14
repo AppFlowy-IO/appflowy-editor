@@ -44,7 +44,10 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
       buildHighlightColorItem(),
     ],
     editorState: editor.editorState,
-    scrollController: scrollController,
+    editorScrollController: EditorScrollController(
+      editorState: editor.editorState,
+      scrollController: scrollController,
+    ),
     child: AppFlowyEditor(editorState: editor.editorState),
   );
 
@@ -65,17 +68,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(find.byType(FloatingToolbar), findsOneWidget);
 
   // trigger the link menu
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
   expect(find.byType(LinkMenu), findsOneWidget);
 
   await tester.enterText(find.byType(TextField), link);
@@ -99,17 +97,11 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   // Trigger the link menu again
   await editor.updateSelection(selection);
 
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
 
   // Check if the link menu is shown
   expect(find.byType(LinkMenu), findsOneWidget);
@@ -128,17 +120,12 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   // Remove link
-  if (Platform.isWindows || Platform.isLinux) {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isControlPressed: true,
-    );
-  } else {
-    await editor.pressKey(
-      key: LogicalKeyboardKey.keyK,
-      isMetaPressed: true,
-    );
-  }
+  await editor.pressKey(
+    key: LogicalKeyboardKey.keyK,
+    isControlPressed: Platform.isWindows || Platform.isLinux,
+    isMetaPressed: Platform.isMacOS,
+  );
+
   final removeLink = find.text('Remove link');
   expect(removeLink, findsOneWidget);
   await tester.tap(removeLink);

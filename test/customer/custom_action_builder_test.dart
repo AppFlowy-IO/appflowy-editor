@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -30,7 +29,11 @@ void main() async {
       await tester.pumpAndSettle();
 
       final selectionAreaRect = tester.getTopLeft(
-        find.byType(SelectionWidget),
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is BlockSelectionArea &&
+              widget.supportTypes.contains(BlockSelectionType.block),
+        ),
       );
       expect(selectionAreaRect.dx, greaterThan(0));
     });
@@ -47,7 +50,7 @@ class CustomActionBuilder extends StatelessWidget {
     const text = 'Hello AppFlowy!';
     final document = Document.blank()
       ..insert([
-        0
+        0,
       ], [
         paragraphNode(text: text),
       ]);

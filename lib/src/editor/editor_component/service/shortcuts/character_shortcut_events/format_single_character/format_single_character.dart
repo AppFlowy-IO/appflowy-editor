@@ -37,7 +37,7 @@ bool handleFormatByWrappingWithSingleCharacter({
   // Determine if a 'Character' already exists in the node and only once.
   // 1. This is no 'Character' in the plainText: indexOf returns -1.
   // 2. More than one 'Character' in the plainText: the headCharIndex and endCharIndex are supposed to be the same, if not, which means plainText has more than one character. For example: when plainText is '_abc', it will trigger formatting(remind:the last char is used to trigger the formatting,so it won't be counted in the plainText.). But adding '_' after 'a__ab' won't trigger formatting.
-  // 3. there're two characters connecting together, like adding '_' after 'abc_' won't trigger formatting.
+  // 3. there are two characters connecting together, like adding '_' after 'abc_' won't trigger formatting.
   if (headCharIndex == -1 ||
       headCharIndex != endCharIndex ||
       headCharIndex == selection.end.offset - 1) {

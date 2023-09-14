@@ -1,7 +1,12 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:markdown/markdown.dart' as md;
+
+import '../custom_parsers/test_custom_node_parsers.dart';
+import '../custom_parsers/test_custom_parser.dart';
 
 void main() async {
   group('document_markdown_decoder.dart', () {
@@ -100,6 +105,101 @@ void main() async {
               "insert": "more to come!"
             }
           ]
+        }
+      },
+      {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "heading",
+                "data": {
+                  "level": 2,
+                  "delta": [
+                    {"insert": "a"}
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "b",
+                      "attributes": {"bold": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {
+                      "insert": "c",
+                      "attributes": {"italic": true}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "table/cell",
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "width": 80,
+              "height": 40
+            },
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                    "delta": [
+                    {"insert": "d"}
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 80.0,
+          "rowDefaultHeight": 40.0,
+          "colMinimumWidth": 40.0
         }
       },
       {
@@ -394,6 +494,139 @@ void main() async {
   }
 }
 ''';
+    const example3 = '''
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "Welcome to AppFlowy"
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "code",
+        "data": {
+          "delta": [
+            {
+              "insert": "void main(){\\nprint(\\"hello world\\");\\n}"
+            }
+          ],
+          "language": "dart"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "custom node"
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "Hello "
+            },
+            {
+              "insert": "\$",
+              "attributes": {
+                "mention": {
+                  "type": "page",
+                  "page_id": "[AppFlowy Subpage](123456789abcd)"
+                }
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "Hello",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " "
+            },
+            {
+              "insert": "\$",
+              "attributes": {
+                "mention": {
+                  "type": "page",
+                  "page_id": "[AppFlowy Subpage](987654321abcd)"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "This is a test for custom "
+            },
+            {
+              "insert": "node",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " parser and custom "
+            },
+            {
+              "insert": "inline",
+              "attributes": {
+                "bold": true
+              }
+            },
+            {
+              "insert": " syntaxes"
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      }
+    ]
+  }
+}
+''';
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
@@ -406,6 +639,9 @@ AppFlowy Editor is a **highly customizable** _rich-text editor_
 - [x] Customizable
 - [x] Test-covered
 - [ ] more to come!
+|## a|_c_|
+|-|-|
+|**b**|d|
 
 > Here is an example you can give a try
 
@@ -430,6 +666,7 @@ If you have questions or feedback, please submit an issue on Github or join the 
       final data = jsonDecode(example);
       expect(result.toJson(), data);
     });
+
     test('test code block', () async {
       const markdown = '''
 # Welcome to AppFlowy
@@ -458,6 +695,110 @@ void main(){
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = jsonDecode(example2);
+      expect(result.toJson(), data);
+    });
+
+    test('decode uncommon markdown table', () async {
+      const markdown = r'''
+  |  ## \|a|_c_|
+      | -- |   -|''';
+      const expected = '''
+{
+  "document": {
+              "type": "page",
+              "children": [
+                {
+                  "type": "table",
+                  "children": [
+                    {
+                      "type": "table/cell",
+                      "data": {
+                        "colPosition": 0,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "heading",
+                          "data": {
+                            "level": 2,
+                            "delta": [
+                              {"insert": "|a"}
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "table/cell",
+                      "data": {
+                        "colPosition": 1,
+                        "rowPosition": 0,
+                        "height": 40.0,
+                        "width": 80.0
+                      },
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "data": {
+                            "delta": [
+                              {
+                                "insert": "c",
+                                "attributes": {"italic": true}
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "data": {
+                    "colsLen": 2,
+                    "rowsLen": 1,
+                    "colDefaultWidth": 80.0,
+                    "rowDefaultHeight": 40.0,
+                    "colMinimumWidth": 40.0
+                  }
+                }
+              ]
+            }
+}
+''';
+      final result = DocumentMarkdownDecoder().convert(markdown);
+      final data = Map<String, Object>.from(json.decode(expected));
+
+      expect(result.toJson(), data);
+    });
+
+    test('custom  parser', () async {
+      const markdown = '''
+# Welcome to AppFlowy
+
+```dart
+void main(){
+print("hello world");
+}
+```
+
+[Custom Node](AppFlowy Subpage 1);
+
+Hello [AppFlowy Subpage](123456789abcd) **Hello** [AppFlowy Subpage](987654321abcd)
+
+# This is a test for custom **node** parser and custom **inline** syntaxes
+''';
+      List<CustomNodeParser> customNodeParsers = [
+        TestCustomNodeParser(),
+      ];
+      List<md.InlineSyntax> customInlineSyntaxes = [
+        TestCustomInlineSyntaxes(),
+      ];
+      final result = DocumentMarkdownDecoder(
+        customNodeParsers: customNodeParsers,
+        customInlineSyntaxes: customInlineSyntaxes,
+      ).convert(markdown);
+      final data = jsonDecode(example3);
+
       expect(result.toJson(), data);
     });
   });

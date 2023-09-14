@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 /// Used in testing mobile app with toolbar
 class MobileAppWithToolbarWidget extends StatelessWidget {
@@ -13,7 +13,6 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = ScrollController();
     final localToolbarItems = toolbarItems ??
         [
           textDecorationMobileToolbarItem,
@@ -31,7 +30,6 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
             child: AppFlowyEditor(
               editorStyle: const EditorStyle.mobile(),
               editorState: editorState,
-              scrollController: scrollController,
             ),
           ),
           MobileToolbar(

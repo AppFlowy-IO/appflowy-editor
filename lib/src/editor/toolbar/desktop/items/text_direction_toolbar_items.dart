@@ -30,7 +30,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
     required IconData icon,
   }) : super(
           id: 'editor.$id',
-          group: 6,
+          group: 7,
           isActive: onlyShowInTextType,
           builder: (context, editorState, highlightColor) {
             final selection = editorState.selection!;
@@ -47,7 +47,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               tooltip: tooltip,
-              onPressed: () => editorState.formatNode(
+              onPressed: () => editorState.updateNode(
                 selection,
                 (node) => node.copyWith(
                   attributes: {

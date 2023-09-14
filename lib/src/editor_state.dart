@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ enum TransactionTime {
 class EditorState {
   EditorState({
     required this.document,
+    this.minHistoryItemDuration = const Duration(milliseconds: 200),
   }) {
     undoManager.state = this;
   }
@@ -80,6 +82,9 @@ class EditorState {
         );
 
   final Document document;
+
+  // the minimum duration for saving the history item.
+  final Duration minHistoryItemDuration;
 
   /// Whether the editor is editable.
   bool editable = true;
@@ -128,6 +133,11 @@ class EditorState {
   }
 
   bool get _shouldHaveTitle => renderer.builders[TitleBlockKeys.type] != null;
+
+  /// store the auto scroller instance in here temporarily.
+  AutoScroller? autoScroller;
+  ScrollableState? scrollableState;
+
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
@@ -296,33 +306,78 @@ class EditorState {
     return [];
   }
 
-  List<Node> getSelectedNodes([
+  List<Node> getSelectedNodes({
     Selection? selection,
-  ]) {
-    final List<Node> res = [];
+    bool withCopy = true,
+  }) {
+    List<Node> res = [];
     selection ??= this.selection;
-    if (selection == null || selection.isCollapsed) {
+    if (selection == null) {
       return res;
     }
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
-      if (node.level > 1) {
+      if (res.any((element) => element.isParentOf(node))) {
         continue;
       }
-      final delta = node.delta;
-      if (delta == null) {
-        continue;
-      }
-      final startIndex = node == nodes.first ? selection.startIndex : 0;
-      final endIndex = node == nodes.last ? selection.endIndex : delta.length;
-      res.add(
-        node.copyWith(
-          attributes: {
-            ...node.attributes,
-            blockComponentDelta: delta.slice(startIndex, endIndex).toJson()
+      res.add(node);
+    }
+
+    if (withCopy) {
+      res = res.map((e) => e.copyWith()).toList();
+    }
+
+    if (res.isNotEmpty) {
+      var delta = res.first.delta;
+      if (delta != null) {
+        res.first.updateAttributes(
+          {
+            ...res.first.attributes,
+            blockComponentDelta: delta
+                .slice(
+                  selection.startIndex,
+                  delta.length,
+                )
+                .toJson(),
           },
-        ),
-      );
+        );
+      }
+
+      var node = res.last;
+      while (node.children.isNotEmpty) {
+        node = node.children.last;
+      }
+      delta = node.delta;
+      if (delta != null) {
+        if (node.parent != null) {
+          node.insertBefore(
+            node.copyWith(
+              attributes: {
+                ...node.attributes,
+                blockComponentDelta: delta
+                    .slice(
+                      0,
+                      selection.endIndex,
+                    )
+                    .toJson(),
+              },
+            ),
+          );
+          node.unlink();
+        } else {
+          node.updateAttributes(
+            {
+              ...node.attributes,
+              blockComponentDelta: delta
+                  .slice(
+                    0,
+                    selection.endIndex,
+                  )
+                  .toJson(),
+            },
+          );
+        }
+      }
     }
 
     return res;
@@ -345,9 +400,17 @@ class EditorState {
     if (selection.isCollapsed && nodes.length == 1) {
       final selectable = nodes.first.selectable;
       if (selectable != null) {
-        final rect = selectable.getCursorRectInPosition(selection.end);
+        final rect = selectable.getCursorRectInPosition(
+          selection.end,
+          shiftWithBaseOffset: true,
+        );
         if (rect != null) {
-          rects.add(selectable.transformRectToGlobal(rect));
+          rects.add(
+            selectable.transformRectToGlobal(
+              rect,
+              shiftWithBaseOffset: true,
+            ),
+          );
         }
       }
     } else {
@@ -356,7 +419,10 @@ class EditorState {
         if (selectable == null) {
           continue;
         }
-        final nodeRects = selectable.getRectsInSelection(selection);
+        final nodeRects = selectable.getRectsInSelection(
+          selection,
+          shiftWithBaseOffset: true,
+        );
         if (nodeRects.isEmpty) {
           continue;
         }
@@ -393,6 +459,19 @@ class EditorState {
     _observer.close();
   }
 
+  void updateAutoScroller(
+    ScrollableState scrollableState,
+  ) {
+    if (this.scrollableState != scrollableState) {
+      autoScroller?.stopAutoScroll();
+      autoScroller = AutoScroller(
+        scrollableState,
+        onScrollViewScrolled: () {},
+      );
+      this.scrollableState = scrollableState;
+    }
+  }
+
   void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
     if (options.recordUndo) {
       final undoItem = undoManager.getUndoHistoryItem();
@@ -417,8 +496,7 @@ class EditorState {
       return;
     }
     _debouncedSealHistoryItemTimer?.cancel();
-    _debouncedSealHistoryItemTimer =
-        Timer(const Duration(milliseconds: 1000), () {
+    _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
       if (undoManager.undoStack.isNonEmpty) {
         Log.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;

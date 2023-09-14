@@ -49,6 +49,13 @@ class TestableEditor {
     if (withFloatingToolbar) {
       scrollController ??= ScrollController();
     }
+
+    final editorScrollController = EditorScrollController(
+      editorState: editorState,
+      shrinkWrap: shrinkWrap,
+      scrollController: scrollController,
+    );
+
     Widget editor = Builder(
       builder: (context) {
         return AppFlowyEditor(
@@ -56,11 +63,11 @@ class TestableEditor {
           editable: editable,
           autoFocus: autoFocus,
           shrinkWrap: shrinkWrap,
-          scrollController: scrollController,
           blockComponentBuilders: {
             ...?additionalBlockBuilders,
             ...standardBlockComponentBuilderMap,
           },
+          editorScrollController: editorScrollController,
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
             ...TestableFindAndReplaceCommands(context: context)
@@ -72,6 +79,7 @@ class TestableEditor {
         );
       },
     );
+
     if (withFloatingToolbar) {
       if (inMobile) {
         final items = [
@@ -89,7 +97,6 @@ class TestableEditor {
               child: AppFlowyEditor(
                 editorStyle: const EditorStyle.mobile(),
                 editorState: editorState,
-                scrollController: scrollController,
               ),
             ),
             MobileToolbar(
@@ -109,10 +116,10 @@ class TestableEditor {
             numberedListItem,
             linkItem,
             buildTextColorItem(),
-            buildHighlightColorItem()
+            buildHighlightColorItem(),
           ],
           editorState: editorState,
-          scrollController: scrollController!,
+          editorScrollController: editorScrollController,
           child: editor,
         );
       }
@@ -323,20 +330,30 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }
 
   Future<void> replaceText(String text) async {
-    final selection = editorState.selection?.normalized;
-    if (selection == null || selection.isCollapsed) {
+    var selection = editorState.selection?.normalized;
+    if (selection == null) {
       return;
     }
-    final texts = editorState.getTextInSelection(selection).join('\n');
+    if (!selection.isSingle || !selection.isCollapsed) {
+      await editorState.deleteSelection(selection);
+    }
+    selection = editorState.selection?.normalized;
+    if (selection == null) {
+      return;
+    }
+
+    final oldText =
+        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
+
     await imeInput.apply([
       TextEditingDeltaReplacement(
-        oldText: ' $texts',
+        oldText: ' $oldText',
         replacementText: text,
         replacedRange: TextSelection(
           baseOffset: selection.startIndex + 1,
@@ -346,7 +363,7 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }

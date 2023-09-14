@@ -36,14 +36,16 @@ void showColorMenu(
     overlay = null;
   }
 
+  keepEditorFocusNotifier.value += 1;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
     left: left,
     builder: (context) {
       return ColorPicker(
-        isTextColor: isTextColor,
-        editorState: editorState,
+        title: isTextColor
+            ? AppFlowyEditorLocalizations.current.textColor
+            : AppFlowyEditorLocalizations.current.highlightColor,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
             ? textColorOptions ?? generateTextColorOptions()
@@ -53,16 +55,21 @@ void showColorMenu(
               ? formatFontColor(
                   editorState,
                   editorState.selection,
-                  color,
+                  color ?? Colors.black.toHex(),
                 )
               : formatHighlightColor(
                   editorState,
                   editorState.selection,
-                  color,
+                  color ?? Colors.transparent.toHex(),
                 );
           dismissOverlay();
+          keepEditorFocusNotifier.value -= 1;
         },
-        onDismiss: dismissOverlay,
+        resetText: isTextColor
+            ? AppFlowyEditorLocalizations.current.resetToDefaultColor
+            : AppFlowyEditorLocalizations.current.clearHighlightColor,
+        resetIconName:
+            isTextColor ? 'reset_text_color' : 'clear_highlight_color',
       );
     },
   ).build();

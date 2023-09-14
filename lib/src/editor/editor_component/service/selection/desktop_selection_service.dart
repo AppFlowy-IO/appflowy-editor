@@ -1,25 +1,22 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
-import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
-    this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.selectionColor = const Color(0xFF00BCF0),
+    required this.contextMenuItems,
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
+  final List<List<ContextMenuItem>> contextMenuItems;
 
   @override
   State<DesktopSelectionServiceWidget> createState() =>
@@ -30,10 +27,8 @@ class _DesktopSelectionServiceWidgetState
     extends State<DesktopSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
-  final _cursorKey = GlobalKey(debugLabel: 'cursor');
-
   @override
-  final List<Rect> selectionRects = [];
+  List<Rect> get selectionRects => editorState.selectionRects();
   final List<OverlayEntry> _selectionAreas = [];
   final List<OverlayEntry> _cursorAreas = [];
   final List<OverlayEntry> _contextMenuAreas = [];
@@ -42,7 +37,7 @@ class _DesktopSelectionServiceWidgetState
   ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
 
   @override
-  List<Node> currentSelectedNodes = [];
+  List<Node> get currentSelectedNodes => editorState.getSelectedNodes();
 
   final List<SelectionGestureInterceptor> _interceptors = [];
 
@@ -106,22 +101,6 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    selectionRects.clear();
-    _clearSelection();
-
-    if (selection != null) {
-      if (selection.isCollapsed) {
-        // updates cursor area.
-        Log.selection.debug('update cursor area, $selection');
-        _forceShowCursor();
-        _updateCursorAreas(selection.start);
-      } else {
-        // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
-        _updateSelectionAreas(selection);
-      }
-    }
-
     currentSelection.value = selection;
     editorState.updateSelectionWithReason(
       selection,
@@ -129,52 +108,9 @@ class _DesktopSelectionServiceWidgetState
     );
   }
 
-  void _updateSelection() {
-    final selection = editorState.selection;
-
-    // TODO: why do we need to check this?
-    if (currentSelection.value == selection &&
-        [SelectionUpdateReason.uiEvent, SelectionUpdateReason.searchHighlight]
-            .contains(editorState.selectionUpdateReason) &&
-        editorState.selectionType != SelectionType.block) {
-      return;
-    }
-
-    currentSelection.value = selection;
-
-    void updateSelection() {
-      selectionRects.clear();
-      _clearSelection();
-
-      if (selection != null) {
-        if (editorState.selectionType == SelectionType.block) {
-          // updates selection area.
-          Log.selection.debug('update block selection area, $selection');
-          _updateBlockSelectionAreas(selection);
-        } else if (selection.isCollapsed) {
-          // updates cursor area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateCursorAreas(selection.start);
-        } else {
-          // updates selection area.
-          Log.selection.debug('update selection area, $selection');
-          _updateSelectionAreas(selection);
-        }
-      }
-    }
-
-    if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
-      updateSelection();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        updateSelection();
-      });
-    }
-  }
-
   @override
   void clearSelection() {
-    currentSelectedNodes = [];
+    // currentSelectedNodes = [];
     currentSelection.value = null;
 
     _clearSelection();
@@ -207,14 +143,38 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   Node? getNodeInOffset(Offset offset) {
-    final sortedNodes =
-        editorState.document.root.children.toList(growable: false);
+    final List<Node> sortedNodes = getVisibleNodes();
+
     return _getNodeInOffset(
       sortedNodes,
       offset,
       0,
       sortedNodes.length - 1,
     );
+  }
+
+  List<Node> getVisibleNodes() {
+    final List<Node> sortedNodes = [];
+    final positions =
+        context.read<EditorScrollController>().visibleRangeNotifier.value;
+    final min = positions.$1;
+    final max = positions.$2;
+    if (min < 0 || max < 0) {
+      return sortedNodes;
+    }
+
+    int i = -1;
+    for (final child in editorState.document.root.children) {
+      i++;
+      if (min > i) {
+        continue;
+      }
+      if (i > max) {
+        break;
+      }
+      sortedNodes.add(child);
+    }
+    return sortedNodes;
   }
 
   @override
@@ -229,6 +189,8 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onTapDown(TapDownDetails details) {
+    _clearContextMenu();
+
     final canTap = _interceptors.every(
       (element) => element.canTap?.call(details) ?? true,
     );
@@ -288,7 +250,7 @@ class _DesktopSelectionServiceWidgetState
     // if selection is null, or
     // selection.isCollapsed and the selected node is TextNode.
     // try to select the word.
-    final selection = currentSelection.value;
+    final selection = editorState.selectionNotifier.value;
     if (selection == null ||
         (selection.isCollapsed == true &&
             currentSelectedNodes.first.delta != null)) {
@@ -298,11 +260,15 @@ class _DesktopSelectionServiceWidgetState
     _showContextMenu(details);
   }
 
+  Node? startNode;
+
   void _onPanStart(DragStartDetails details) {
     clearSelection();
 
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
+
+    startNode = getNodeInOffset(_panStartOffset!);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -316,7 +282,8 @@ class _DesktopSelectionServiceWidgetState
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
 
-    final first = getNodeInOffset(panStartOffset)?.selectable;
+    // this one maybe redundant.
+    final first = startNode?.selectable;
     final last = getNodeInOffset(panEndOffset)?.selectable;
 
     // compute the selection in range.
@@ -328,207 +295,43 @@ class _DesktopSelectionServiceWidgetState
       final selection = Selection(start: start, end: end);
       updateSelection(selection);
     }
-
-    _showDebugLayerIfNeeded(offset: panEndOffset);
+    final dragTarget = Rect.fromCenter(
+      center: panEndOffset,
+      width: 100,
+      height: 100,
+    );
+    editorState.autoScroller?.startAutoScrollIfNecessary(dragTarget);
+    editorState.service.scrollService
+        ?.startAutoScroll(panEndOffset, edgeOffset: 100);
   }
 
   void _onPanEnd(DragEndDetails details) {
-    // do nothing
+    startNode = null;
   }
 
-  void _updateBlockSelectionAreas(Selection selection) {
-    assert(editorState.selectionType == SelectionType.block);
-    final nodes = editorState.getNodesInSelection(selection.normalized);
-    if (nodes.isEmpty) {
-      return;
-    }
-
-    currentSelectedNodes = nodes;
-    final node = nodes.first;
-    final selectable = node.selectable;
-
-    if (selectable == null) {
-      return;
-    }
-
-    final rect = selectable.getBlockRect();
-    final overlay = OverlayEntry(
-      builder: (context) => SelectionWidget(
-        color: widget.selectionColor,
-        layerLink: node.layerLink,
-        rect: rect,
-        decoration: BoxDecoration(
-          color: widget.selectionColor,
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-    );
-    _selectionAreas.add(overlay);
-
-    Overlay.of(context)?.insertAll(_selectionAreas);
-  }
-
-  void _updateSelectionAreas(Selection selection) {
-    final nodes = editorState.getNodesInSelection(selection);
-
-    currentSelectedNodes = nodes;
-
-    // TODO: need to be refactored.
-    Offset? toolbarOffset;
-    Alignment? alignment;
-    LayerLink? layerLink;
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final editorSize = editorState.renderBox?.size ?? Size.zero;
-
-    final backwardNodes =
-        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
-    final normalizedSelection = selection.normalized;
-    assert(normalizedSelection.isBackward);
-
-    Log.selection.debug('update selection areas, $normalizedSelection');
-
-    if (editorState.selectionType == SelectionType.block) {
-      final node = backwardNodes.first;
-      final rect = Offset.zero & node.rect.size;
-      final overlay = OverlayEntry(
-        builder: (context) => SelectionWidget(
-          color: widget.selectionColor,
-          layerLink: node.layerLink,
-          rect: rect,
-        ),
-      );
-      _selectionAreas.add(overlay);
-    } else {
-      for (var i = 0; i < backwardNodes.length; i++) {
-        final node = backwardNodes[i];
-
-        final selectable = node.selectable;
-        if (selectable == null) {
-          continue;
-        }
-
-        var newSelection = normalizedSelection.copyWith();
-
-        /// In the case of multiple selections,
-        ///  we need to return a new selection for each selected node individually.
-        ///
-        /// < > means selected.
-        /// text: abcd<ef
-        /// text: ghijkl
-        /// text: mn>opqr
-        ///
-        if (!normalizedSelection.isSingle) {
-          if (i == 0) {
-            newSelection = newSelection.copyWith(end: selectable.end());
-          } else if (i == nodes.length - 1) {
-            newSelection = newSelection.copyWith(start: selectable.start());
-          } else {
-            newSelection = Selection(
-              start: selectable.start(),
-              end: selectable.end(),
-            );
-          }
-        }
-
-        const baseToolbarOffset = Offset(0, 35.0);
-        final rects = selectable.getRectsInSelection(newSelection);
-        for (final rect in rects) {
-          final selectionRect = selectable.transformRectToGlobal(rect);
-          selectionRects.add(selectionRect);
-
-          // TODO: Need to compute more precise location.
-          if ((selectionRect.topLeft.dy - editorOffset.dy) <=
-              baseToolbarOffset.dy) {
-            if (selectionRect.topLeft.dx <=
-                editorSize.width / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.bottomLeft;
-              alignment ??= Alignment.topLeft;
-            } else if (selectionRect.topRight.dx >=
-                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.bottomRight;
-              alignment ??= Alignment.topRight;
-            } else {
-              toolbarOffset ??= rect.bottomCenter;
-              alignment ??= Alignment.topCenter;
-            }
-          } else {
-            if (selectionRect.topLeft.dx <=
-                editorSize.width / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.topLeft - baseToolbarOffset;
-              alignment ??= Alignment.topLeft;
-            } else if (selectionRect.topRight.dx >=
-                editorSize.width * 2.0 / 3.0 + editorOffset.dx) {
-              toolbarOffset ??= rect.topRight - baseToolbarOffset;
-              alignment ??= Alignment.topRight;
-            } else {
-              toolbarOffset ??= rect.topCenter - baseToolbarOffset;
-              alignment ??= Alignment.topCenter;
-            }
-          }
-
-          layerLink ??= node.layerLink;
-
-          final overlay = OverlayEntry(
-            builder: (context) => SelectionWidget(
-              color: widget.selectionColor,
-              layerLink: node.layerLink,
-              rect: rect,
-            ),
-          );
-          _selectionAreas.add(overlay);
-        }
-      }
-    }
-
-    final overlay = Overlay.of(context);
-    overlay?.insertAll(
-      _selectionAreas,
-    );
-  }
-
-  void _updateCursorAreas(Position position) {
-    final node = editorState.document.root.childAtPath(position.path);
-
-    if (node == null) {
-      assert(false);
-      return;
-    }
-
-    currentSelectedNodes = [node];
-
-    _showCursor(node, position);
-  }
-
-  void _showCursor(Node node, Position position) {
-    final selectable = node.selectable;
-    final cursorRect = selectable?.getCursorRectInPosition(position);
-    if (selectable != null && cursorRect != null) {
-      final cursorArea = OverlayEntry(
-        builder: (context) => CursorWidget(
-          key: _cursorKey,
-          rect: cursorRect,
-          color: widget.cursorColor,
-          layerLink: node.layerLink,
-          shouldBlink: selectable.shouldCursorBlink,
-          cursorStyle: selectable.cursorStyle,
-        ),
-      );
-
-      _cursorAreas.add(cursorArea);
-      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
-
-      _forceShowCursor();
-    }
-  }
-
-  void _forceShowCursor() {
-    _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
-  }
+  void _updateSelection() {}
 
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
+
+    // only shows around the selection area.
+    if (selectionRects.isEmpty) {
+      return;
+    }
+
+    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
+        selectionRects.any((element) {
+          const threshold = 20;
+          final scaledArea = Rect.fromCenter(
+            center: element.center,
+            width: element.width + threshold,
+            height: element.height + threshold,
+          );
+          return scaledArea.contains(details.globalPosition);
+        });
+    if (!isHitSelectionAreas) {
+      return;
+    }
 
     // For now, only support the text node.
     if (!currentSelectedNodes.every((element) => element.delta != null)) {
@@ -542,7 +345,7 @@ class _DesktopSelectionServiceWidgetState
       builder: (context) => ContextMenu(
         position: offset,
         editorState: editorState,
-        items: builtInContextMenuItems,
+        items: widget.contextMenuItems,
         onPressed: () => _clearContextMenu(),
       ),
     );
@@ -560,23 +363,37 @@ class _DesktopSelectionServiceWidgetState
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (rect.bottom <= offset.dy) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
+
+    var min = _findCloseNode(
+      sortedNodes,
+      start,
+      end,
+      (rect) => rect.bottom <= offset.dy,
+    );
+
+    final filteredNodes = List.of(sortedNodes)
+      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    min = 0;
+    if (filteredNodes.length > 1) {
+      min = _findCloseNode(
+        sortedNodes,
+        0,
+        filteredNodes.length - 1,
+        (rect) => rect.right <= offset.dx,
+      );
     }
-    min = min.clamp(start, end);
-    final node = sortedNodes[min];
+
+    final node = filteredNodes[min];
     if (node.children.isNotEmpty &&
         node.children.first.renderBox != null &&
         node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false);
+      final children = node.children.toList(growable: false)
+        ..sort(
+          (a, b) => a.rect.bottom != b.rect.bottom
+              ? a.rect.bottom.compareTo(b.rect.bottom)
+              : a.rect.left.compareTo(b.rect.left),
+        );
+
       return _getNodeInOffset(
         children,
         offset,
@@ -587,42 +404,62 @@ class _DesktopSelectionServiceWidgetState
     return node;
   }
 
-  void _showDebugLayerIfNeeded({Offset? offset}) {
-    // remove false to show debug overlay.
-    // if (kDebugMode && false) {
-    //   _debugOverlay?.remove();
-    //   if (offset != null) {
-    //     _debugOverlay = OverlayEntry(
-    //       builder: (context) => Positioned.fromRect(
-    //         rect: Rect.fromPoints(offset, offset.translate(20, 20)),
-    //         child: Container(
-    //           color: Colors.red.withOpacity(0.2),
-    //         ),
-    //       ),
-    //     );
-    //     Overlay.of(context)?.insert(_debugOverlay!);
-    //   } else if (_panStartOffset != null) {
-    //     _debugOverlay = OverlayEntry(
-    //       builder: (context) => Positioned.fromRect(
-    //         rect: Rect.fromPoints(
-    //             _panStartOffset?.translate(
-    //                   0,
-    //                   -(editorState.service.scrollService!.dy -
-    //                       _panStartScrollDy!),
-    //                 ) ??
-    //                 Offset.zero,
-    //             offset ?? Offset.zero),
-    //         child: Container(
-    //           color: Colors.red.withOpacity(0.2),
-    //         ),
-    //       ),
-    //     );
-    //     Overlay.of(context)?.insert(_debugOverlay!);
-    //   } else {
-    //     _debugOverlay = null;
-    //   }
-    // }
+  int _findCloseNode(
+    List<Node> sortedNodes,
+    int start,
+    int end,
+    bool Function(Rect rect) compare,
+  ) {
+    var min = start;
+    var max = end;
+    while (min <= max) {
+      final mid = min + ((max - min) >> 1);
+      final rect = sortedNodes[mid].rect;
+      if (compare(rect)) {
+        min = mid + 1;
+      } else {
+        max = mid - 1;
+      }
+    }
+    return min.clamp(start, end);
   }
+
+  /*void _showDebugLayerIfNeeded() {
+     remove false to show debug overlay.
+     if (kDebugMode && false) {
+       _debugOverlay?.remove();
+       if (offset != null) {
+         _debugOverlay = OverlayEntry(
+           builder: (context) => Positioned.fromRect(
+             rect: Rect.fromPoints(offset, offset.translate(20, 20)),
+             child: Container(
+               color: Colors.red.withOpacity(0.2),
+             ),
+           ),
+         );
+         Overlay.of(context)?.insert(_debugOverlay!);
+       } else if (_panStartOffset != null) {
+         _debugOverlay = OverlayEntry(
+           builder: (context) => Positioned.fromRect(
+             rect: Rect.fromPoints(
+                 _panStartOffset?.translate(
+                       0,
+                       -(editorState.service.scrollService!.dy -
+                           _panStartScrollDy!),
+                     ) ??
+                     Offset.zero,
+                 offset ?? Offset.zero),
+             child: Container(
+               color: Colors.red.withOpacity(0.2),
+             ),
+           ),
+         );
+         Overlay.of(context)?.insert(_debugOverlay!);
+       } else {
+         _debugOverlay = null;
+       }
+     }
+  }*/
 
   @override
   void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {

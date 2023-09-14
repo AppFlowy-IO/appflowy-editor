@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> arrowUpKeys = [
@@ -58,22 +57,17 @@ CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .firstWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
+  final result = editorState.getFirstSelectable();
+  if (result == null) {
     return KeyEventResult.ignored;
   }
-  final end = selectable.start();
+
+  final position = result.$2.start(result.$1);
+  editorState.scrollService?.jumpToTop();
   editorState.updateSelectionWithReason(
-    selection.copyWith(end: end),
+    selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final top = scrollService.minScrollExtent;
-    scrollService.scrollTo(top);
-  }
   return KeyEventResult.handled;
 };
 
@@ -91,22 +85,19 @@ CommandShortcutEventHandler _moveCursorTopCommandHandler = (editorState) {
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final selectable = editorState.document.root.children
-      .firstWhereOrNull((element) => element.selectable != null)
-      ?.selectable;
-  if (selectable == null) {
+
+  final result = editorState.getFirstSelectable();
+  if (result == null) {
     return KeyEventResult.ignored;
   }
-  final position = selectable.start();
+
+  final position = result.$2.start(result.$1);
+  editorState.scrollService?.jumpToTop();
   editorState.updateSelectionWithReason(
     Selection.collapsed(position),
     reason: SelectionUpdateReason.uiEvent,
   );
-  final scrollService = editorState.scrollService;
-  if (scrollService != null) {
-    final top = scrollService.minScrollExtent;
-    scrollService.scrollTo(top);
-  }
+
   return KeyEventResult.handled;
 };
 

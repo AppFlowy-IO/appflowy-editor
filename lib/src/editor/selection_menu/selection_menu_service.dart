@@ -113,7 +113,7 @@ class SelectionMenu extends SelectionMenuService {
                       deleteSlashByDefault: deleteSlashByDefault,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -339,4 +339,5 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   dividerMenuItem,
+  tableMenuItem,
 ];

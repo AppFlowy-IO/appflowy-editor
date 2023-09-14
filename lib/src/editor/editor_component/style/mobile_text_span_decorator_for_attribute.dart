@@ -202,7 +202,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                           hrefTextTextEditingController.text,
                           attributes: {
                             AppFlowyRichTextKeys.href:
-                                hrefAddressTextEditingController.text
+                                hrefAddressTextEditingController.text,
                           },
                         );
                       await widget.editorState.apply(transaction).whenComplete(
@@ -231,7 +231,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                 },
               ),
             ],
-          )
+          ),
         ],
       ),
     );

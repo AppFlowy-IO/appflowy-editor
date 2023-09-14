@@ -18,7 +18,7 @@ class ImageBlockKeys {
   /// The image src of a image block.
   ///
   /// The value is a String.
-  /// only support network image now.
+  /// It can be a url or a base64 string(web).
   static const String url = 'url';
 
   /// The height of a image block.
@@ -121,7 +121,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   Node get node => widget.node;
 
   final imageKey = GlobalKey();
-  RenderBox get _renderBox => context.findRenderObject() as RenderBox;
+  RenderBox? get _renderBox => context.findRenderObject() as RenderBox?;
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
@@ -163,6 +163,17 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       child: child,
     );
 
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
+      child: child,
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
@@ -186,7 +197,14 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
           builder: (context, value, child) {
             return Stack(
               children: [
-                child!,
+                BlockSelectionContainer(
+                  node: node,
+                  delegate: this,
+                  listenable: editorState.selectionNotifier,
+                  cursorColor: editorState.editorStyle.cursorColor,
+                  selectionColor: editorState.editorStyle.selectionColor,
+                  child: child!,
+                ),
                 if (value) widget.menuBuilder!(widget.node, this),
               ],
             );
@@ -215,27 +233,41 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
   }
 
   @override
-  Rect? getCursorRectInPosition(Position position) {
-    final size = _renderBox.size;
+  Rect? getCursorRectInPosition(
+    Position position, {
+    bool shiftWithBaseOffset = false,
+  }) {
+    if (_renderBox == null) {
+      return null;
+    }
+    final size = _renderBox!.size;
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
 
   @override
-  List<Rect> getRectsInSelection(Selection selection) {
+  List<Rect> getRectsInSelection(
+    Selection selection, {
+    bool shiftWithBaseOffset = false,
+  }) {
+    if (_renderBox == null) {
+      return [];
+    }
     final parentBox = context.findRenderObject();
     final dividerBox = imageKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
         dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
-            dividerBox.size
+            dividerBox.size,
       ];
     }
-    return [Offset.zero & _renderBox.size];
+    return [Offset.zero & _renderBox!.size];
   }
 
   @override
@@ -246,7 +278,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       );
 
   @override
-  Offset localToGlobal(Offset offset) => _renderBox.localToGlobal(offset);
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
+      _renderBox!.localToGlobal(offset);
 }
 
 extension AlignmentExtension on Alignment {
