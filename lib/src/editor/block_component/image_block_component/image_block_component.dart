@@ -18,7 +18,7 @@ class ImageBlockKeys {
   /// The image src of a image block.
   ///
   /// The value is a String.
-  /// only support network image now.
+  /// It can be a url or a base64 string(web).
   static const String url = 'url';
 
   /// The height of a image block.
