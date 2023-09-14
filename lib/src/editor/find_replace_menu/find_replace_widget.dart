@@ -69,7 +69,9 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               onPressed: () => setState(
                 () => replaceFlag = !replaceFlag,
               ),
-              icon: replaceFlag ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more),
+              icon: replaceFlag
+                  ? const Icon(Icons.expand_less)
+                  : const Icon(Icons.expand_more),
             ),
             SizedBox(
               width: 200,
@@ -87,7 +89,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   );
                 },
                 decoration: _buildInputDecoration(
-                  widget.localizations?.find ?? AppFlowyEditorLocalizations.current.find,
+                  widget.localizations?.find ??
+                      AppFlowyEditorLocalizations.current.find,
                 ),
               ),
             ),
@@ -104,8 +107,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
-              tooltip:
-                  widget.localizations?.nextMatch ?? AppFlowyEditorLocalizations.current.nextMatch,
+              tooltip: widget.localizations?.nextMatch ??
+                  AppFlowyEditorLocalizations.current.nextMatch,
             ),
             IconButton(
               key: const Key('closeButton'),
@@ -119,7 +122,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 queriedPattern = '';
               },
               icon: const Icon(Icons.close),
-              tooltip: widget.localizations?.close ?? AppFlowyEditorLocalizations.current.closeFind,
+              tooltip: widget.localizations?.close ??
+                  AppFlowyEditorLocalizations.current.closeFind,
             ),
           ],
         ),
@@ -138,7 +142,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                         _replaceSelectedWord();
 
                         Future.delayed(const Duration(milliseconds: 50)).then(
-                          (value) => FocusScope.of(context).requestFocus(replaceFocusNode),
+                          (value) => FocusScope.of(context)
+                              .requestFocus(replaceFocusNode),
                         );
                       },
                       decoration: _buildInputDecoration(

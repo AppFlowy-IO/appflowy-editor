@@ -10,7 +10,8 @@ void showActionMenu(
   int position,
   TableDirection dir,
 ) {
-  final Offset pos = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  final Offset pos =
+      (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
   final rect = Rect.fromLTWH(
     pos.dx,
     pos.dy,
@@ -42,7 +43,9 @@ void showActionMenu(
               dir == TableDirection.col
                   ? AppFlowyEditorLocalizations.current.colAddAfter
                   : AppFlowyEditorLocalizations.current.rowAddAfter,
-              dir == TableDirection.col ? Icons.last_page : Icons.vertical_align_bottom, () {
+              dir == TableDirection.col
+                  ? Icons.last_page
+                  : Icons.vertical_align_bottom, () {
             TableActions.add(node, position + 1, editorState, dir);
             dismissOverlay();
           }),
@@ -51,7 +54,9 @@ void showActionMenu(
               dir == TableDirection.col
                   ? AppFlowyEditorLocalizations.current.colAddBefore
                   : AppFlowyEditorLocalizations.current.rowAddBefore,
-              dir == TableDirection.col ? Icons.first_page : Icons.vertical_align_top, () {
+              dir == TableDirection.col
+                  ? Icons.first_page
+                  : Icons.vertical_align_top, () {
             TableActions.add(node, position, editorState, dir);
             dismissOverlay();
           }),
