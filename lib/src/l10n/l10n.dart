@@ -881,6 +881,66 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Find`
+  String get find {
+    return Intl.message(
+      'Find',
+      name: 'find',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous match`
+  String get previousMatch {
+    return Intl.message(
+      'Previous match',
+      name: 'previousMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next match`
+  String get nextMatch {
+    return Intl.message(
+      'Next match',
+      name: 'nextMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get closeFind {
+    return Intl.message(
+      'Close',
+      name: 'closeFind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace`
+  String get replace {
+    return Intl.message(
+      'Replace',
+      name: 'replace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace all`
+  String get replaceAll {
+    return Intl.message(
+      'Replace all',
+      name: 'replaceAll',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Upload Image`
   String get uploadImage {
     return Intl.message(

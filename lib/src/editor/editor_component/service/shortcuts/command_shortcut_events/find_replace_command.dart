@@ -3,18 +3,15 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.d
 import 'package:flutter/material.dart';
 
 List<CommandShortcutEvent> findAndReplaceCommands({
-  required FindReplaceLocalizations localizations,
   required BuildContext context,
   FindReplaceStyle? style,
 }) =>
     [
       openFindDialog(
-        localizations: localizations,
         context: context,
         style: style ?? FindReplaceStyle(),
       ),
       openReplaceDialog(
-        localizations: localizations,
         context: context,
         style: style ?? FindReplaceStyle(),
       ),
@@ -32,24 +29,6 @@ class FindReplaceStyle {
   final Color unselectedHighlightColor;
 }
 
-class FindReplaceLocalizations {
-  FindReplaceLocalizations({
-    required this.find,
-    required this.previousMatch,
-    required this.nextMatch,
-    required this.close,
-    required this.replace,
-    required this.replaceAll,
-  });
-
-  final String find;
-  final String previousMatch;
-  final String nextMatch;
-  final String close;
-  final String replace;
-  final String replaceAll;
-}
-
 /// Show the slash menu
 ///
 /// - support
@@ -57,7 +36,6 @@ class FindReplaceLocalizations {
 ///   - web
 ///
 CommandShortcutEvent openFindDialog({
-  required FindReplaceLocalizations localizations,
   required BuildContext context,
   required FindReplaceStyle style,
 }) =>
@@ -68,13 +46,11 @@ CommandShortcutEvent openFindDialog({
       handler: (editorState) => _showFindAndReplaceDialog(
         context,
         editorState,
-        localizations: localizations,
         style: style,
       ),
     );
 
 CommandShortcutEvent openReplaceDialog({
-  required FindReplaceLocalizations localizations,
   required BuildContext context,
   required FindReplaceStyle style,
 }) =>
@@ -85,7 +61,6 @@ CommandShortcutEvent openReplaceDialog({
       handler: (editorState) => _showFindAndReplaceDialog(
         context,
         editorState,
-        localizations: localizations,
         style: style,
         openReplace: true,
       ),
@@ -95,7 +70,6 @@ FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(
   BuildContext context,
   EditorState editorState, {
-  required FindReplaceLocalizations localizations,
   required FindReplaceStyle style,
   bool openReplace = false,
 }) {
@@ -107,7 +81,6 @@ KeyEventResult _showFindAndReplaceDialog(
     context: context,
     editorState: editorState,
     replaceFlag: openReplace,
-    localizations: localizations,
     style: style,
   );
 

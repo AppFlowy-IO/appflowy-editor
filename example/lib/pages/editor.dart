@@ -147,14 +147,6 @@ class Editor extends StatelessWidget {
         ],
         ...findAndReplaceCommands(
           context: context,
-          localizations: FindReplaceLocalizations(
-            find: 'Find',
-            previousMatch: 'Previous match',
-            nextMatch: 'Next match',
-            close: 'Close',
-            replace: 'Replace',
-            replaceAll: 'Replace all',
-          ),
         ),
       ],
       characterShortcutEvents: standardCharacterShortcutEvents,
