@@ -302,6 +302,9 @@ class ScrollOffsetController {
     );
   }
 
+  void jumpTo({required double offset}) =>
+      _scrollableListState!.primary.scrollController.jumpTo(offset);
+
   _ScrollablePositionedListState? _scrollableListState;
 
   void _attach(_ScrollablePositionedListState scrollableListState) {
