@@ -33,7 +33,7 @@ mixin DefaultSelectableMixin {
       if (shiftWithBaseOffset) {
         return offset & (size - offset as Size);
       }
-      return Offset.zero & childBox.size;
+      return Offset.zero & (size - offset as Size);
     }
     return Rect.zero;
   }
