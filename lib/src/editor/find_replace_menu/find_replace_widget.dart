@@ -91,33 +91,46 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 decoration: _buildInputDecoration(widget.localizations.find),
               ),
             ),
-            IconButton(
-              key: const Key('previousMatchButton'),
-              iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(moveUp: true),
-              icon: const Icon(Icons.arrow_upward),
-              tooltip: widget.localizations.previousMatch,
+            SizedBox(
+              height: 40,
+              width: 40,
+              child:
+              IconButton(
+                key: const Key('previousMatchButton'),
+                iconSize: _iconSize,
+                onPressed: () => searchService.navigateToMatch(moveUp: true),
+                icon: const Icon(Icons.arrow_upward),
+                tooltip: widget.localizations.previousMatch,
+              ),
             ),
-            IconButton(
-              key: const Key('nextMatchButton'),
-              iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(),
-              icon: const Icon(Icons.arrow_downward),
-              tooltip: widget.localizations.nextMatch,
+            SizedBox(
+              height: 40,
+              width: 40,
+              child: IconButton(
+                key: const Key('nextMatchButton'),
+                iconSize: _iconSize,
+                onPressed: () => searchService.navigateToMatch(),
+                icon: const Icon(Icons.arrow_downward),
+                tooltip: widget.localizations.nextMatch,
+              ),
             ),
-            IconButton(
-              key: const Key('closeButton'),
-              iconSize: _iconSize,
-              onPressed: () {
-                widget.dismiss();
-                searchService.findAndHighlight(
-                  queriedPattern,
-                  unhighlight: true,
-                );
-                queriedPattern = '';
-              },
-              icon: const Icon(Icons.close),
-              tooltip: widget.localizations.close,
+            SizedBox(
+              height: 40,
+              width: 40,
+              child: IconButton(
+                key: const Key('closeButton'),
+                iconSize: _iconSize,
+                onPressed: () {
+                  widget.dismiss();
+                  searchService.findAndHighlight(
+                    queriedPattern,
+                    unhighlight: true,
+                  );
+                  queriedPattern = '';
+                },
+                icon: const Icon(Icons.close),
+                tooltip: widget.localizations.close,
+              ),
             ),
           ],
         ),
@@ -144,19 +157,27 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                           _buildInputDecoration(widget.localizations.replace),
                     ),
                   ),
-                  IconButton(
-                    key: const Key('replaceSelectedButton'),
-                    onPressed: () => _replaceSelectedWord(),
-                    icon: const Icon(Icons.find_replace),
-                    iconSize: _iconSize,
-                    tooltip: widget.localizations.replace,
+                  SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: IconButton(
+                      key: const Key('replaceSelectedButton'),
+                      onPressed: () => _replaceSelectedWord(),
+                      icon: const Icon(Icons.find_replace),
+                      iconSize: _iconSize,
+                      tooltip: widget.localizations.replace,
+                    ),
                   ),
-                  IconButton(
-                    key: const Key('replaceAllButton'),
-                    onPressed: () => _replaceAllMatches(),
-                    icon: const Icon(Icons.change_circle_outlined),
-                    iconSize: _iconSize,
-                    tooltip: widget.localizations.replaceAll,
+                  SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: IconButton(
+                      key: const Key('replaceAllButton'),
+                      onPressed: () => _replaceAllMatches(),
+                      icon: const Icon(Icons.change_circle_outlined),
+                      iconSize: _iconSize,
+                      tooltip: widget.localizations.replaceAll,
+                    ),
                   ),
                 ],
               )
