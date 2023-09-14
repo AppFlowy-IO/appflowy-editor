@@ -115,13 +115,16 @@ class _NumberedListBlockComponentWidgetState
   Node get node => widget.node;
 
   @override
-  Widget buildComponent(BuildContext context) {
+  Widget buildComponent(
+    BuildContext context, {
+    bool withBackgroundColor = true,
+  }) {
     final textDirection = calculateTextDirection(
       layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
-      color: backgroundColor,
+      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Row(

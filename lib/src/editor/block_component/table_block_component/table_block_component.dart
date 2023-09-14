@@ -237,7 +237,9 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       _renderBox.localToGlobal(offset);
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getRectsInSelection(Selection.invalid()).first;
   }
 

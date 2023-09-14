@@ -62,6 +62,7 @@ enum TransactionTime {
 class EditorState {
   EditorState({
     required this.document,
+    this.minHistoryItemDuration = const Duration(milliseconds: 200),
   }) {
     undoManager.state = this;
   }
@@ -81,6 +82,9 @@ class EditorState {
         );
 
   final Document document;
+
+  // the minimum duration for saving the history item.
+  final Duration minHistoryItemDuration;
 
   /// Whether the editor is editable.
   bool editable = true;
@@ -477,8 +481,7 @@ class EditorState {
       return;
     }
     _debouncedSealHistoryItemTimer?.cancel();
-    _debouncedSealHistoryItemTimer =
-        Timer(const Duration(milliseconds: 1000), () {
+    _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
       if (undoManager.undoStack.isNonEmpty) {
         Log.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;

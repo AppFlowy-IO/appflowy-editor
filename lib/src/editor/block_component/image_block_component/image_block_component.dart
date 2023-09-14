@@ -233,7 +233,9 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
   }
 
