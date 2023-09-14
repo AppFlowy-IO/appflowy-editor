@@ -1,6 +1,5 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/context_menu/context_menu.dart';
-
+import 'context_menu.dart';
+import '../../l10n/l10n.dart';
 import '../internal_key_event_handlers/copy_paste_handler.dart';
 
 final standardContextMenuItems = [
