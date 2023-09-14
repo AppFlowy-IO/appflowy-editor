@@ -3,6 +3,7 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart
 import 'package:flutter/material.dart';
 
 const double _iconSize = 20;
+const double _iconButtonSize = 40;
 
 class FindMenuWidget extends StatefulWidget {
   const FindMenuWidget({
@@ -69,9 +70,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               onPressed: () => setState(
                 () => replaceFlag = !replaceFlag,
               ),
-              icon: replaceFlag
-                  ? const Icon(Icons.expand_less)
-                  : const Icon(Icons.expand_more),
+              icon: replaceFlag ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more),
             ),
             SizedBox(
               width: 200,
@@ -91,46 +90,33 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 decoration: _buildInputDecoration(widget.localizations.find),
               ),
             ),
-            SizedBox(
-              height: 40,
-              width: 40,
-              child:
-              IconButton(
-                key: const Key('previousMatchButton'),
-                iconSize: _iconSize,
-                onPressed: () => searchService.navigateToMatch(moveUp: true),
-                icon: const Icon(Icons.arrow_upward),
-                tooltip: widget.localizations.previousMatch,
-              ),
+            _iconButton(
+              key: const Key('previousMatchButton'),
+              iconSize: _iconSize,
+              onPressed: () => searchService.navigateToMatch(moveUp: true),
+              icon: const Icon(Icons.arrow_upward),
+              tooltip: widget.localizations.previousMatch,
             ),
-            SizedBox(
-              height: 40,
-              width: 40,
-              child: IconButton(
-                key: const Key('nextMatchButton'),
-                iconSize: _iconSize,
-                onPressed: () => searchService.navigateToMatch(),
-                icon: const Icon(Icons.arrow_downward),
-                tooltip: widget.localizations.nextMatch,
-              ),
+            _iconButton(
+              key: const Key('nextMatchButton'),
+              iconSize: _iconSize,
+              onPressed: () => searchService.navigateToMatch(),
+              icon: const Icon(Icons.arrow_downward),
+              tooltip: widget.localizations.nextMatch,
             ),
-            SizedBox(
-              height: 40,
-              width: 40,
-              child: IconButton(
-                key: const Key('closeButton'),
-                iconSize: _iconSize,
-                onPressed: () {
-                  widget.dismiss();
-                  searchService.findAndHighlight(
-                    queriedPattern,
-                    unhighlight: true,
-                  );
-                  queriedPattern = '';
-                },
-                icon: const Icon(Icons.close),
-                tooltip: widget.localizations.close,
-              ),
+            _iconButton(
+              key: const Key('closeButton'),
+              iconSize: _iconSize,
+              onPressed: () {
+                widget.dismiss();
+                searchService.findAndHighlight(
+                  queriedPattern,
+                  unhighlight: true,
+                );
+                queriedPattern = '';
+              },
+              icon: const Icon(Icons.close),
+              tooltip: widget.localizations.close,
             ),
           ],
         ),
@@ -149,40 +135,50 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                         _replaceSelectedWord();
 
                         Future.delayed(const Duration(milliseconds: 50)).then(
-                          (value) => FocusScope.of(context)
-                              .requestFocus(replaceFocusNode),
+                          (value) => FocusScope.of(context).requestFocus(replaceFocusNode),
                         );
                       },
-                      decoration:
-                          _buildInputDecoration(widget.localizations.replace),
+                      decoration: _buildInputDecoration(widget.localizations.replace),
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      key: const Key('replaceSelectedButton'),
-                      onPressed: () => _replaceSelectedWord(),
-                      icon: const Icon(Icons.find_replace),
-                      iconSize: _iconSize,
-                      tooltip: widget.localizations.replace,
-                    ),
+                  _iconButton(
+                    key: const Key('replaceSelectedButton'),
+                    onPressed: () => _replaceSelectedWord(),
+                    icon: const Icon(Icons.find_replace),
+                    iconSize: _iconSize,
+                    tooltip: widget.localizations.replace,
                   ),
-                  SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      key: const Key('replaceAllButton'),
-                      onPressed: () => _replaceAllMatches(),
-                      icon: const Icon(Icons.change_circle_outlined),
-                      iconSize: _iconSize,
-                      tooltip: widget.localizations.replaceAll,
-                    ),
+                  _iconButton(
+                    key: const Key('replaceAllButton'),
+                    onPressed: () => _replaceAllMatches(),
+                    icon: const Icon(Icons.change_circle_outlined),
+                    iconSize: _iconSize,
+                    tooltip: widget.localizations.replaceAll,
                   ),
                 ],
               )
             : const SizedBox.shrink(),
       ],
+    );
+  }
+
+  Widget _iconButton({
+    Key? key,
+    VoidCallback? onPressed,
+    required Widget icon,
+    double? iconSize,
+    String? tooltip,
+  }) {
+    return SizedBox(
+      width: _iconButtonSize,
+      height: _iconButtonSize,
+      child: IconButton(
+        key: key,
+        onPressed: onPressed,
+        icon: icon,
+        iconSize: iconSize,
+        tooltip: tooltip,
+      ),
     );
   }
 
