@@ -263,8 +263,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final dividerBox = imageKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
-        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
-            dividerBox.size,
+        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) & dividerBox.size,
       ];
     }
     return [Offset.zero & _renderBox!.size];

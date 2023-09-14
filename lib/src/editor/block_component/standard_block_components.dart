@@ -32,8 +32,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   ),
   HeadingBlockKeys.type: HeadingBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (node) =>
-          'Heading ${node.attributes[HeadingBlockKeys.level]}',
+      placeholderText: (node) => 'Heading ${node.attributes[HeadingBlockKeys.level]}',
     ),
   ),
   ImageBlockKeys.type: ImageBlockComponentBuilder(),

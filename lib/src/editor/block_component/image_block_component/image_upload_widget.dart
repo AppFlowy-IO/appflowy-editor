@@ -340,8 +340,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                       const SizedBox(height: 8.0),
                       Text(
                         AppFlowyEditorLocalizations.current.chooseImage,
-                        style:
-                            const TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
+                        style: const TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
                       ),
                     ],
                   ),
@@ -370,8 +369,7 @@ extension InsertImage on EditorState {
     }
     final transaction = this.transaction;
     // if the current node is empty paragraph, replace it with image node
-    if (node.type == ParagraphBlockKeys.type &&
-        (node.delta?.isEmpty ?? false)) {
+    if (node.type == ParagraphBlockKeys.type && (node.delta?.isEmpty ?? false)) {
       transaction
         ..insertNode(
           node.path,
