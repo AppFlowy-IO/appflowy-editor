@@ -10,12 +10,14 @@ class FindMenuWidget extends StatefulWidget {
     required this.dismiss,
     required this.editorState,
     required this.replaceFlag,
+    this.localizations,
     required this.style,
   });
 
   final VoidCallback dismiss;
   final EditorState editorState;
   final bool replaceFlag;
+  final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
 
   @override
@@ -67,9 +69,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               onPressed: () => setState(
                 () => replaceFlag = !replaceFlag,
               ),
-              icon: replaceFlag
-                  ? const Icon(Icons.expand_less)
-                  : const Icon(Icons.expand_more),
+              icon: replaceFlag ? const Icon(Icons.expand_less) : const Icon(Icons.expand_more),
             ),
             SizedBox(
               width: 200,
@@ -86,7 +86,9 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     (value) => FocusScope.of(context).requestFocus(focusNode),
                   );
                 },
-                decoration: _buildInputDecoration(AppFlowyEditorLocalizations.current.find),
+                decoration: _buildInputDecoration(
+                  widget.localizations?.find ?? AppFlowyEditorLocalizations.current.find,
+                ),
               ),
             ),
             IconButton(
@@ -94,14 +96,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
-              tooltip: AppFlowyEditorLocalizations.current.previousMatch,
+              tooltip: widget.localizations?.previousMatch ??
+                  AppFlowyEditorLocalizations.current.previousMatch,
             ),
             IconButton(
               key: const Key('nextMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
-              tooltip: AppFlowyEditorLocalizations.current.nextMatch,
+              tooltip:
+                  widget.localizations?.nextMatch ?? AppFlowyEditorLocalizations.current.nextMatch,
             ),
             IconButton(
               key: const Key('closeButton'),
@@ -115,7 +119,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 queriedPattern = '';
               },
               icon: const Icon(Icons.close),
-              tooltip: AppFlowyEditorLocalizations.current.closeFind,
+              tooltip: widget.localizations?.close ?? AppFlowyEditorLocalizations.current.closeFind,
             ),
           ],
         ),
@@ -134,12 +138,13 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                         _replaceSelectedWord();
 
                         Future.delayed(const Duration(milliseconds: 50)).then(
-                          (value) => FocusScope.of(context)
-                              .requestFocus(replaceFocusNode),
+                          (value) => FocusScope.of(context).requestFocus(replaceFocusNode),
                         );
                       },
-                      decoration:
-                          _buildInputDecoration(AppFlowyEditorLocalizations.current.replace),
+                      decoration: _buildInputDecoration(
+                        widget.localizations?.replace ??
+                            AppFlowyEditorLocalizations.current.replace,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -147,14 +152,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
-                    tooltip: AppFlowyEditorLocalizations.current.replace,
+                    tooltip: widget.localizations?.replace ??
+                        AppFlowyEditorLocalizations.current.replace,
                   ),
                   IconButton(
                     key: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     iconSize: _iconSize,
-                    tooltip: AppFlowyEditorLocalizations.current.replaceAll,
+                    tooltip: widget.localizations?.replaceAll ??
+                        AppFlowyEditorLocalizations.current.replaceAll,
                   ),
                 ],
               )
