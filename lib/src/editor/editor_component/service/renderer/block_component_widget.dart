@@ -92,7 +92,8 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final left = node.selectable?.getBlockRect().left;
+      final left =
+          node.selectable?.getBlockRect(shiftWithBaseOffset: true).left;
       if (cachedLeft != left) {
         setState(() => cachedLeft = left);
       }
@@ -102,7 +103,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
   @override
   Widget build(BuildContext context) {
     return node.children.isEmpty
-        ? buildComponent(context)
+        ? buildComponent(context, withBackgroundColor: true)
         : buildComponentWithChildren(context);
   }
 
@@ -117,7 +118,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
         ),
         NestedListWidget(
           indentPadding: indentPadding,
-          child: buildComponent(context),
+          child: buildComponent(context, withBackgroundColor: false),
           children: editorState.renderer.buildList(
             context,
             widget.node.children,
@@ -127,5 +128,8 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     );
   }
 
-  Widget buildComponent(BuildContext context);
+  Widget buildComponent(
+    BuildContext context, {
+    bool withBackgroundColor = true,
+  });
 }

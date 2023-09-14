@@ -139,7 +139,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       );
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     throw UnimplementedError();
   }
 
