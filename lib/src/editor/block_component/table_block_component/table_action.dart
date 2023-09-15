@@ -207,7 +207,11 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
 
   _updateCellPositions(tableNode, editorState, 0, row + 1, 0, -1);
 
-  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
+  final updateNodeMap = {TableBlockKeys.rowsLen: rowsLen - 1};
+  if (rowsLen == 1) {
+    updateNodeMap[TableBlockKeys.colsLen] = 0;
+  }
+  transaction.updateNode(tableNode, updateNodeMap);
 
   editorState.apply(transaction, withUpdateSelection: false);
 }
