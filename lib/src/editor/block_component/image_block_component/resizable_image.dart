@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -146,7 +147,7 @@ class _ResizableImageState extends State<ResizableImage> {
           SizedBox.fromSize(
             size: const Size(10, 10),
           ),
-          const Text('Loading'),
+          Text(AppFlowyEditorLocalizations.current.loading),
         ],
       ),
     );
@@ -162,7 +163,7 @@ class _ResizableImageState extends State<ResizableImage> {
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         border: Border.all(width: 1, color: Colors.black),
       ),
-      child: const Text('Could not load the image'),
+      child: Text(AppFlowyEditorLocalizations.current.imageLoadFailed),
     );
   }
 

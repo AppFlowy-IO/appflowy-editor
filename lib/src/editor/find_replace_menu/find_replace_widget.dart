@@ -11,14 +11,14 @@ class FindMenuWidget extends StatefulWidget {
     required this.dismiss,
     required this.editorState,
     required this.replaceFlag,
-    required this.localizations,
+    this.localizations,
     required this.style,
   });
 
   final VoidCallback dismiss;
   final EditorState editorState;
   final bool replaceFlag;
-  final FindReplaceLocalizations localizations;
+  final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
 
   @override
@@ -89,7 +89,10 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     (value) => FocusScope.of(context).requestFocus(focusNode),
                   );
                 },
-                decoration: _buildInputDecoration(widget.localizations.find),
+                decoration: _buildInputDecoration(
+                  widget.localizations?.find ??
+                      AppFlowyEditorLocalizations.current.find,
+                ),
               ),
             ),
             _iconButton(
@@ -97,14 +100,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
-              tooltip: widget.localizations.previousMatch,
+              tooltip: widget.localizations?.previousMatch ??
+                  AppFlowyEditorLocalizations.current.previousMatch,
             ),
             _iconButton(
               key: const Key('nextMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
-              tooltip: widget.localizations.nextMatch,
+              tooltip: widget.localizations?.nextMatch ??
+                  AppFlowyEditorLocalizations.current.nextMatch,
             ),
             _iconButton(
               key: const Key('closeButton'),
@@ -118,7 +123,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 queriedPattern = '';
               },
               icon: const Icon(Icons.close),
-              tooltip: widget.localizations.close,
+              tooltip: widget.localizations?.close ??
+                  AppFlowyEditorLocalizations.current.closeFind,
             ),
           ],
         ),
@@ -141,8 +147,10 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                               .requestFocus(replaceFocusNode),
                         );
                       },
-                      decoration:
-                          _buildInputDecoration(widget.localizations.replace),
+                      decoration: _buildInputDecoration(
+                        widget.localizations?.replace ??
+                            AppFlowyEditorLocalizations.current.replace,
+                      ),
                     ),
                   ),
                   _iconButton(
@@ -150,14 +158,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
-                    tooltip: widget.localizations.replace,
+                    tooltip: widget.localizations?.replace ??
+                        AppFlowyEditorLocalizations.current.replace,
                   ),
                   _iconButton(
                     key: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     iconSize: _iconSize,
-                    tooltip: widget.localizations.replaceAll,
+                    tooltip: widget.localizations?.replaceAll ??
+                        AppFlowyEditorLocalizations.current.replaceAll,
                   ),
                 ],
               )
