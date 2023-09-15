@@ -12,6 +12,9 @@ void main() async {
   // 1. When the text field is focused, the editor's cursor should be disabled.
   // 2. When the editor is focused, the text field's cursor should be disabled.
   // 3. Tapping a non-first line of the editor should still allow the editor to grab focus.
+  await AppFlowyEditorLocalizations.load(
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('text field + editor', (tester) async {
     const widget = CustomAttributeKeyForTextBlock();
     await tester.pumpWidget(widget);

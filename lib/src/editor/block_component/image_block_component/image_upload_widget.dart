@@ -132,9 +132,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                 width: 260,
                 height: 36,
                 child: TabBar(
-                  tabs: const [
-                    Tab(text: 'Upload Image'),
-                    Tab(text: 'URL Image'),
+                  tabs: [
+                    Tab(text: AppFlowyEditorLocalizations.current.uploadImage),
+                    Tab(text: AppFlowyEditorLocalizations.current.urlImage),
                   ],
                   labelColor: widget.headerColor,
                   unselectedLabelColor: Colors.grey,
@@ -203,9 +203,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   }
 
   Widget _buildInvalidLinkText() {
-    return const Text(
-      'Incorrect Link',
-      style: TextStyle(color: Colors.red, fontSize: 12),
+    return Text(
+      AppFlowyEditorLocalizations.current.incorrectLink,
+      style: const TextStyle(color: Colors.red, fontSize: 12),
     );
   }
 
@@ -240,7 +240,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           }
         },
         child: Text(
-          'Upload',
+          AppFlowyEditorLocalizations.current.upload,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
             fontSize: 14.0,
@@ -328,20 +328,22 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                           fit: BoxFit.cover,
                         ),
                 )
-              : const Center(
+              : Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      EditorSvg(
+                      const EditorSvg(
                         name: 'upload_image',
                         width: 32,
                         height: 32,
                       ),
-                      SizedBox(height: 8.0),
+                      const SizedBox(height: 8.0),
                       Text(
-                        'Choose an image',
-                        style:
-                            TextStyle(fontSize: 14.0, color: Color(0xff00BCF0)),
+                        AppFlowyEditorLocalizations.current.chooseImage,
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          color: Color(0xff00BCF0),
+                        ),
                       ),
                     ],
                   ),

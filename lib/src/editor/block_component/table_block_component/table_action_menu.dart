@@ -38,25 +38,49 @@ void showActionMenu(
         width: 200,
         height: 230,
         children: [
-          _menuItem(context, 'Add after', Icons.last_page, () {
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorLocalizations.current.colAddAfter
+                  : AppFlowyEditorLocalizations.current.rowAddAfter,
+              dir == TableDirection.col
+                  ? Icons.last_page
+                  : Icons.vertical_align_bottom, () {
             TableActions.add(node, position + 1, editorState, dir);
             dismissOverlay();
           }),
-          _menuItem(context, 'Add before', Icons.first_page, () {
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorLocalizations.current.colAddBefore
+                  : AppFlowyEditorLocalizations.current.rowAddBefore,
+              dir == TableDirection.col
+                  ? Icons.first_page
+                  : Icons.vertical_align_top, () {
             TableActions.add(node, position, editorState, dir);
             dismissOverlay();
           }),
-          _menuItem(context, 'Remove', Icons.delete, () {
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorLocalizations.current.colRemove
+                  : AppFlowyEditorLocalizations.current.rowRemove,
+              Icons.delete, () {
             TableActions.delete(node, position, editorState, dir);
             dismissOverlay();
           }),
-          _menuItem(context, 'Duplicate', Icons.content_copy, () {
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorLocalizations.current.colDuplicate
+                  : AppFlowyEditorLocalizations.current.rowDuplicate,
+              Icons.content_copy, () {
             TableActions.duplicate(node, position, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(
             context,
-            'Background Color',
+            AppFlowyEditorLocalizations.current.backgroundColor,
             Icons.format_color_fill,
             () {
               final cell = dir == TableDirection.col
@@ -85,7 +109,12 @@ void showActionMenu(
               dismissOverlay();
             },
           ),
-          _menuItem(context, 'Clear Content', Icons.clear, () {
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorLocalizations.current.colClear
+                  : AppFlowyEditorLocalizations.current.rowClear,
+              Icons.clear, () {
             TableActions.clear(node, position, editorState, dir);
             dismissOverlay();
           }),

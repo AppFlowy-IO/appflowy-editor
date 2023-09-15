@@ -850,6 +850,296 @@ class AppFlowyEditorLocalizations {
       args: [],
     );
   }
+
+  /// `Cut`
+  String get cut {
+    return Intl.message(
+      'Cut',
+      name: 'cut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy`
+  String get copy {
+    return Intl.message(
+      'Copy',
+      name: 'copy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste`
+  String get paste {
+    return Intl.message(
+      'Paste',
+      name: 'paste',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find`
+  String get find {
+    return Intl.message(
+      'Find',
+      name: 'find',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous match`
+  String get previousMatch {
+    return Intl.message(
+      'Previous match',
+      name: 'previousMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next match`
+  String get nextMatch {
+    return Intl.message(
+      'Next match',
+      name: 'nextMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get closeFind {
+    return Intl.message(
+      'Close',
+      name: 'closeFind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace`
+  String get replace {
+    return Intl.message(
+      'Replace',
+      name: 'replace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace all`
+  String get replaceAll {
+    return Intl.message(
+      'Replace all',
+      name: 'replaceAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Image`
+  String get uploadImage {
+    return Intl.message(
+      'Upload Image',
+      name: 'uploadImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL Image`
+  String get urlImage {
+    return Intl.message(
+      'URL Image',
+      name: 'urlImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incorrect Link`
+  String get incorrectLink {
+    return Intl.message(
+      'Incorrect Link',
+      name: 'incorrectLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload`
+  String get upload {
+    return Intl.message(
+      'Upload',
+      name: 'upload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose an image`
+  String get chooseImage {
+    return Intl.message(
+      'Choose an image',
+      name: 'chooseImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading`
+  String get loading {
+    return Intl.message(
+      'Loading',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the image`
+  String get imageLoadFailed {
+    return Intl.message(
+      'Could not load the image',
+      name: 'imageLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Divider`
+  String get divider {
+    return Intl.message(
+      'Divider',
+      name: 'divider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table`
+  String get table {
+    return Intl.message(
+      'Table',
+      name: 'table',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add before`
+  String get colAddBefore {
+    return Intl.message(
+      'Add before',
+      name: 'colAddBefore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add before`
+  String get rowAddBefore {
+    return Intl.message(
+      'Add before',
+      name: 'rowAddBefore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add after`
+  String get colAddAfter {
+    return Intl.message(
+      'Add after',
+      name: 'colAddAfter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add after`
+  String get rowAddAfter {
+    return Intl.message(
+      'Add after',
+      name: 'rowAddAfter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get colRemove {
+    return Intl.message(
+      'Remove',
+      name: 'colRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get rowRemove {
+    return Intl.message(
+      'Remove',
+      name: 'rowRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate`
+  String get colDuplicate {
+    return Intl.message(
+      'Duplicate',
+      name: 'colDuplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate`
+  String get rowDuplicate {
+    return Intl.message(
+      'Duplicate',
+      name: 'rowDuplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear Content`
+  String get colClear {
+    return Intl.message(
+      'Clear Content',
+      name: 'colClear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear Content`
+  String get rowClear {
+    return Intl.message(
+      'Clear Content',
+      name: 'rowClear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a / to insert a block, or start typing`
+  String get slashPlaceHolder {
+    return Intl.message(
+      'Enter a / to insert a block, or start typing',
+      name: 'slashPlaceHolder',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate
