@@ -75,7 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "highlightColor": MessageLookupByLibrary.simpleMessage("高亮顏色"),
         "image": MessageLookupByLibrary.simpleMessage("圖片"),
         "imageLoadFailed": MessageLookupByLibrary.simpleMessage("無法載入圖像"),
-        "incorrectLink": MessageLookupByLibrary.simpleMessage("鏈接錯誤"),
+        "incorrectLink": MessageLookupByLibrary.simpleMessage("連結錯誤"),
         "italic": MessageLookupByLibrary.simpleMessage("斜體"),
         "lightLightTint1": MessageLookupByLibrary.simpleMessage("紫色"),
         "lightLightTint2": MessageLookupByLibrary.simpleMessage("粉紅色"),
