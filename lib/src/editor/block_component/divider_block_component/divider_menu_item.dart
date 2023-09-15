@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 SelectionMenuItem dividerMenuItem = SelectionMenuItem(
-  name: 'Divider',
+  name: AppFlowyEditorLocalizations.current.divider,
   icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
     icon: Icons.horizontal_rule,
     isSelected: isSelected,

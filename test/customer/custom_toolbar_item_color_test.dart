@@ -7,6 +7,9 @@ void main() async {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
+  await AppFlowyEditorLocalizations.load(
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('customize highlight color', (tester) async {
     const text = 'Hello World';
     final document = Document.blank()

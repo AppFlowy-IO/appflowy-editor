@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.d
 import 'package:flutter/material.dart';
 
 List<CommandShortcutEvent> findAndReplaceCommands({
-  required FindReplaceLocalizations localizations,
+  FindReplaceLocalizations? localizations,
   required BuildContext context,
   FindReplaceStyle? style,
 }) =>
@@ -57,7 +57,7 @@ class FindReplaceLocalizations {
 ///   - web
 ///
 CommandShortcutEvent openFindDialog({
-  required FindReplaceLocalizations localizations,
+  FindReplaceLocalizations? localizations,
   required BuildContext context,
   required FindReplaceStyle style,
 }) =>
@@ -74,7 +74,7 @@ CommandShortcutEvent openFindDialog({
     );
 
 CommandShortcutEvent openReplaceDialog({
-  required FindReplaceLocalizations localizations,
+  FindReplaceLocalizations? localizations,
   required BuildContext context,
   required FindReplaceStyle style,
 }) =>
@@ -95,7 +95,7 @@ FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(
   BuildContext context,
   EditorState editorState, {
-  required FindReplaceLocalizations localizations,
+  FindReplaceLocalizations? localizations,
   required FindReplaceStyle style,
   bool openReplace = false,
 }) {
