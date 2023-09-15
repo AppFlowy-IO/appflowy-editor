@@ -8,7 +8,8 @@ void main() async {
   });
 
   await AppFlowyEditorLocalizations.load(
-      const Locale.fromSubtags(languageCode: 'en'));
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('customize highlight color', (tester) async {
     const text = 'Hello World';
     final document = Document.blank()

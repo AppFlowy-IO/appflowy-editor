@@ -5,7 +5,8 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 void main() async {
   await AppFlowyEditorLocalizations.load(
-      const Locale.fromSubtags(languageCode: 'en'));
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('wrapp editor with directionality', (tester) async {
     await mockNetworkImagesFor(() async {
       const widget = DirectionalityTester();
