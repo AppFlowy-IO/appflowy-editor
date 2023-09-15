@@ -169,6 +169,21 @@ class EditorScrollController {
     }
   }
 
+  void jumpTo({
+    required double offset,
+  }) async {
+    if (shrinkWrap) {
+      return scrollController.jumpTo(
+        offset.clamp(
+          scrollController.position.minScrollExtent,
+          scrollController.position.maxScrollExtent,
+        ),
+      );
+    }
+
+    scrollOffsetController.jumpTo(offset: max(0, offset));
+  }
+
   void jumpToTop() {
     if (shrinkWrap) {
       scrollController.jumpTo(0);
