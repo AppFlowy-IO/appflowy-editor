@@ -97,7 +97,6 @@ void main() async {
         TableDirection.col,
       );
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
-      tableNode = TableNode(node: tableNode.node);
 
       expect(tester.editor.document.isEmpty, isTrue);
       await editor.dispose();
@@ -120,7 +119,6 @@ void main() async {
         TableDirection.row,
       );
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
-      tableNode = TableNode(node: tableNode.node);
 
       expect(tester.editor.document.isEmpty, isTrue);
       await editor.dispose();
