@@ -63,13 +63,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            IconButton(
+            _iconButton(
               onPressed: () => setState(
                 () => replaceFlag = !replaceFlag,
               ),
+              iconSize: _iconSize,
               icon: replaceFlag
                   ? const Icon(Icons.expand_less)
                   : const Icon(Icons.expand_more),
@@ -126,11 +129,49 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               tooltip: widget.localizations?.close ??
                   AppFlowyEditorLocalizations.current.closeFind,
             ),
+            _iconButton(
+              key: const Key('findRegex'),
+              iconSize: _iconSize,
+              onPressed: () {
+                setState(() {
+                  searchService.isRegex = !searchService.isRegex;
+                });
+              },
+              icon: Text(
+                'R*',
+                style: TextStyle(
+                  color: searchService.isRegex ? Colors.black : Colors.grey,
+                ),
+              ),
+              tooltip: AppFlowyEditorLocalizations.current.regex,
+            ),
+            _iconButton(
+              key: const Key('caseSensitive'),
+              iconSize: _iconSize,
+              onPressed: () {
+                setState(() {
+                  searchService.caseSensitive = !searchService.caseSensitive;
+                });
+              },
+              icon: Text(
+                'Cc',
+                style: TextStyle(
+                  color:
+                      searchService.caseSensitive ? Colors.black : Colors.grey,
+                ),
+              ),
+              tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
+            ),
           ],
         ),
         replaceFlag
             ? Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(
+                    width: 2 * _iconSize,
+                  ),
                   SizedBox(
                     width: 200,
                     height: 30,
