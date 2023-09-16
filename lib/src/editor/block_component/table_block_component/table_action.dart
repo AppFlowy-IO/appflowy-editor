@@ -184,6 +184,7 @@ void _deleteCol(Node tableNode, int col, EditorState editorState) {
 
   if (colsLen == 1) {
     transaction.deleteNode(tableNode);
+    tableNode.dispose();
   } else {
     List<Node> nodes = [];
     for (var i = 0; i < rowsLen; i++) {
@@ -207,6 +208,7 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
 
   if (rowsLen == 1) {
     transaction.deleteNode(tableNode);
+    tableNode.dispose();
   } else {
     List<Node> nodes = [];
     for (var i = 0; i < colsLen; i++) {
