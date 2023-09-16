@@ -46,6 +46,7 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
 
   // merge the next node with delta
   if (position.offset == delta.length) {
+    // stop findDownward if table node encountered
     final next = node.findDownward((element) =>
         element.type.contains('table') ? null : element.delta != null);
     if (next != null) {
