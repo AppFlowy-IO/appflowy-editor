@@ -78,8 +78,8 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
             // merge with the previous node contains delta.
             element.delta != null;
       });
-      // table node should be deleted using table menu
-      // in-table paragraph should only be deleted inside the table
+      // table nodes should be deleted using the table menu
+      // in-table paragraphs should only be deleted inside the table
       if (prev != null && tableParent == prevTableParent) {
         assert(prev.delta != null);
         transaction

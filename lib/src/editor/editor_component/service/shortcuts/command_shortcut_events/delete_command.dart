@@ -56,8 +56,8 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
           // merge the next node with delta
           element.delta != null;
     });
-    // table node should be deleted using table menu
-    // in-table paragraph should only be deleted inside the table
+    // table nodes should be deleted using the table menu
+    // in-table paragraphs should only be deleted inside the table
     if (next != null && tableParent == nextTableParent) {
       if (next.children.isNotEmpty) {
         final path = node.path + [node.children.length];
