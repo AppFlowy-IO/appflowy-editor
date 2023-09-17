@@ -132,6 +132,14 @@ extension NodeExtensions on Node {
     }
     return false;
   }
+
+  Node? findParent(bool Function(Node element) test) {
+    if (test(this)) {
+      return this;
+    }
+    final parent = this.parent;
+    return parent?.findParent(test);
+  }
 }
 
 extension NodesExtensions<T extends Node> on List<T> {
