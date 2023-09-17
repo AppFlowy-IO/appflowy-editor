@@ -95,24 +95,24 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 ),
               ),
             ),
-            _iconButton(
-              key: const Key('previousMatchButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('previousMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: widget.localizations?.previousMatch ??
                   AppFlowyEditorLocalizations.current.previousMatch,
             ),
-            _iconButton(
-              key: const Key('nextMatchButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('nextMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: widget.localizations?.nextMatch ??
                   AppFlowyEditorLocalizations.current.nextMatch,
             ),
-            _iconButton(
-              key: const Key('closeButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('closeButton'),
               iconSize: _iconSize,
               onPressed: () {
                 widget.dismiss();
@@ -153,16 +153,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                       ),
                     ),
                   ),
-                  _iconButton(
-                    key: const Key('replaceSelectedButton'),
+                  FindMenuIconButton(
+                    buttonKey: const Key('replaceSelectedButton'),
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
                     tooltip: widget.localizations?.replace ??
                         AppFlowyEditorLocalizations.current.replace,
                   ),
-                  _iconButton(
-                    key: const Key('replaceAllButton'),
+                  FindMenuIconButton(
+                    buttonKey: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     iconSize: _iconSize,
@@ -173,26 +173,6 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               )
             : const SizedBox.shrink(),
       ],
-    );
-  }
-
-  Widget _iconButton({
-    Key? key,
-    VoidCallback? onPressed,
-    required Widget icon,
-    double? iconSize,
-    String? tooltip,
-  }) {
-    return SizedBox(
-      width: _iconButtonSize,
-      height: _iconButtonSize,
-      child: IconButton(
-        key: key,
-        onPressed: onPressed,
-        icon: icon,
-        iconSize: iconSize,
-        tooltip: tooltip,
-      ),
     );
   }
 
@@ -220,6 +200,38 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
       border: const OutlineInputBorder(),
       hintText: hintText,
+    );
+  }
+}
+
+class FindMenuIconButton extends StatelessWidget {
+  const FindMenuIconButton({
+    super.key,
+    required this.icon,
+    this.onPressed,
+    this.iconSize,
+    this.tooltip,
+    this.buttonKey,
+  });
+
+  final Widget icon;
+  final Key? buttonKey;
+  final VoidCallback? onPressed;
+  final double? iconSize;
+  final String? tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _iconButtonSize,
+      height: _iconButtonSize,
+      child: IconButton(
+        key: buttonKey,
+        onPressed: onPressed,
+        icon: icon,
+        iconSize: iconSize,
+        tooltip: tooltip,
+      ),
     );
   }
 }
