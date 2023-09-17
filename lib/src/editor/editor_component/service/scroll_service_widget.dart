@@ -109,22 +109,21 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             .jumpTo(offset: endTouchPoint.dy - 100);
       }
 
-      if (selection.isCollapsed) {
-        if (PlatformExtension.isMobile) {
-          // soft keyboard
-          // workaround: wait for the soft keyboard to show up
-          return Future.delayed(const Duration(milliseconds: 300), () {
-            startAutoScroll(endTouchPoint, edgeOffset: 50);
-          });
-        }
-
+      if (PlatformExtension.isMobile) {
+        // soft keyboard
+        // workaround: wait for the soft keyboard to show up
+        return Future.delayed(const Duration(milliseconds: 300), () {
+          startAutoScroll(
+            endTouchPoint,
+            edgeOffset: 50,
+            duration: Duration.zero,
+          );
+        });
+      } else {
         startAutoScroll(
           endTouchPoint,
-          edgeOffset: 100,
           duration: Duration.zero,
         );
-      } else {
-        startAutoScroll(endTouchPoint, duration: Duration.zero);
       }
     });
   }
