@@ -181,15 +181,21 @@ void _deleteCol(Node tableNode, int col, EditorState editorState) {
 
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
-  List<Node> nodes = [];
-  for (var i = 0; i < rowsLen; i++) {
-    nodes.add(getCellNode(tableNode, col, i)!);
+
+  if (colsLen == 1) {
+    transaction.deleteNode(tableNode);
+    tableNode.dispose();
+  } else {
+    List<Node> nodes = [];
+    for (var i = 0; i < rowsLen; i++) {
+      nodes.add(getCellNode(tableNode, col, i)!);
+    }
+    transaction.deleteNodes(nodes);
+
+    _updateCellPositions(tableNode, editorState, col + 1, 0, -1, 0);
+
+    transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen - 1});
   }
-  transaction.deleteNodes(nodes);
-
-  _updateCellPositions(tableNode, editorState, col + 1, 0, -1, 0);
-
-  transaction.updateNode(tableNode, {TableBlockKeys.colsLen: colsLen - 1});
 
   editorState.apply(transaction, withUpdateSelection: false);
 }
@@ -199,15 +205,21 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
 
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
-  List<Node> nodes = [];
-  for (var i = 0; i < colsLen; i++) {
-    nodes.add(getCellNode(tableNode, i, row)!);
+
+  if (rowsLen == 1) {
+    transaction.deleteNode(tableNode);
+    tableNode.dispose();
+  } else {
+    List<Node> nodes = [];
+    for (var i = 0; i < colsLen; i++) {
+      nodes.add(getCellNode(tableNode, i, row)!);
+    }
+    transaction.deleteNodes(nodes);
+
+    _updateCellPositions(tableNode, editorState, 0, row + 1, 0, -1);
+
+    transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
   }
-  transaction.deleteNodes(nodes);
-
-  _updateCellPositions(tableNode, editorState, 0, row + 1, 0, -1);
-
-  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen - 1});
 
   editorState.apply(transaction, withUpdateSelection: false);
 }

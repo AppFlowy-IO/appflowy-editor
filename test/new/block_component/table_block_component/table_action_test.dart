@@ -81,6 +81,49 @@ void main() async {
       await editor.dispose();
     });
 
+    testWidgets('remove the last column', (tester) async {
+      var tableNode = TableNode.fromList([
+        ['1', '2'],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.col,
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+
+      expect(tester.editor.document.isEmpty, isTrue);
+      await editor.dispose();
+    });
+
+    testWidgets('remove the last row', (tester) async {
+      var tableNode = TableNode.fromList([
+        ['1'],
+        ['3'],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.row,
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+
+      expect(tester.editor.document.isEmpty, isTrue);
+      await editor.dispose();
+    });
+
     testWidgets('duplicate column', (tester) async {
       var tableNode = TableNode.fromList([
         ['1', '2'],
