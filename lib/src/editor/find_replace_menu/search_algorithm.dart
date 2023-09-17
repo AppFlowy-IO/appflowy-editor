@@ -76,7 +76,10 @@ class BoyerMoore extends SearchAlgorithm {
 class DartBuiltin extends SearchAlgorithm {
   @override
   List<Range> searchMethod(Pattern pattern, String text) {
-    return pattern.allMatches(text).map((e) => Range(start: e.start, end: e.end)).toList();
+    return pattern
+        .allMatches(text)
+        .map((e) => Range(start: e.start, end: e.end))
+        .toList();
   }
 }
 
