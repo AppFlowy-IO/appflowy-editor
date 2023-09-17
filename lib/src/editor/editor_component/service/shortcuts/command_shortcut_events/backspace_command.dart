@@ -70,8 +70,6 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
       Node? tableParent =
           node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
-      // table node should be deleted using table menu,
-      // in-table paragraph should only be deleted inside the table
       final prev = node.previousNodeWhere((element) {
         prevTableParent = element
             .findParent((element) => element.type == TableBlockKeys.type);
