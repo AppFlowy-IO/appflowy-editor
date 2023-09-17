@@ -25,7 +25,7 @@ class MobileSelectionWidget extends StatelessWidget {
       child: CompositedTransformFollower(
         link: layerLink,
         offset: rect.topLeft,
-        showWhenUnlinked: true,
+        showWhenUnlinked: false,
         // Ignore the gestures in selection overlays
         //  to solve the problem that selection areas cannot overlap.
         child: IgnorePointer(

@@ -3,6 +3,7 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart
 import 'package:flutter/material.dart';
 
 const double _iconSize = 20;
+const double _iconButtonSize = 40;
 
 class FindMenuWidget extends StatefulWidget {
   const FindMenuWidget({
@@ -94,24 +95,24 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 ),
               ),
             ),
-            IconButton(
-              key: const Key('previousMatchButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('previousMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(moveUp: true),
               icon: const Icon(Icons.arrow_upward),
               tooltip: widget.localizations?.previousMatch ??
                   AppFlowyEditorLocalizations.current.previousMatch,
             ),
-            IconButton(
-              key: const Key('nextMatchButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('nextMatchButton'),
               iconSize: _iconSize,
               onPressed: () => searchService.navigateToMatch(),
               icon: const Icon(Icons.arrow_downward),
               tooltip: widget.localizations?.nextMatch ??
                   AppFlowyEditorLocalizations.current.nextMatch,
             ),
-            IconButton(
-              key: const Key('closeButton'),
+            FindMenuIconButton(
+              buttonKey: const Key('closeButton'),
               iconSize: _iconSize,
               onPressed: () {
                 widget.dismiss();
@@ -152,16 +153,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    key: const Key('replaceSelectedButton'),
+                  FindMenuIconButton(
+                    buttonKey: const Key('replaceSelectedButton'),
                     onPressed: () => _replaceSelectedWord(),
                     icon: const Icon(Icons.find_replace),
                     iconSize: _iconSize,
                     tooltip: widget.localizations?.replace ??
                         AppFlowyEditorLocalizations.current.replace,
                   ),
-                  IconButton(
-                    key: const Key('replaceAllButton'),
+                  FindMenuIconButton(
+                    buttonKey: const Key('replaceAllButton'),
                     onPressed: () => _replaceAllMatches(),
                     icon: const Icon(Icons.change_circle_outlined),
                     iconSize: _iconSize,
@@ -199,6 +200,38 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
       border: const OutlineInputBorder(),
       hintText: hintText,
+    );
+  }
+}
+
+class FindMenuIconButton extends StatelessWidget {
+  const FindMenuIconButton({
+    super.key,
+    required this.icon,
+    this.onPressed,
+    this.iconSize,
+    this.tooltip,
+    this.buttonKey,
+  });
+
+  final Widget icon;
+  final Key? buttonKey;
+  final VoidCallback? onPressed;
+  final double? iconSize;
+  final String? tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _iconButtonSize,
+      height: _iconButtonSize,
+      child: IconButton(
+        key: buttonKey,
+        onPressed: onPressed,
+        icon: icon,
+        iconSize: iconSize,
+        tooltip: tooltip,
+      ),
     );
   }
 }
