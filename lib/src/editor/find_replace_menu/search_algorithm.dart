@@ -27,7 +27,7 @@ class BoyerMoore extends SearchAlgorithm {
     if (pattern is String) {
       return _searchMethod(pattern, text);
     } else if (pattern is RegExp) {
-      return _rSearchMethod(pattern, text);
+      throw UnimplementedError();
     } else {
       throw TypeError();
     }
@@ -72,44 +72,5 @@ class BoyerMoore extends SearchAlgorithm {
       String ch = pat[i];
       badchar[ch] = i;
     }
-  }
-
-  List<Range> _rSearchMethod(RegExp pattern, String text) {
-    int n = text.length;
-    List<Range> matches = [];
-
-    int s = 0;
-
-    while (s <= n - 1) {
-      var match = pattern.firstMatch(text.substring(s));
-
-      if (match != null) {
-        int j = match.start - 1;
-
-        while (j >= 0 && pattern.hasMatch(text.substring(s + j, s + j + 1))) {
-          j--;
-        }
-
-        if (j < 0) {
-          // Complete pattern match found, add the starting index to matches
-          matches.add(Range(start: s, end: s + match.end - match.start));
-          // Move the search position to the character after the match
-          s += match.start + 1;
-        } else {
-          // Calculate the maximum shift based on the bad character
-          var badChar = text.substring(s + j, s + j + 1);
-          var shift = math.max(
-            1,
-            j - (match.start - (pattern.firstMatch(badChar)?.start ?? -1)),
-          );
-          s += shift;
-        }
-      } else {
-        // No match found, move to the next character
-        s++;
-      }
-    }
-
-    return matches;
   }
 }
