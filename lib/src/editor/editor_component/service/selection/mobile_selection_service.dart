@@ -1,11 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
+import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
-import 'package:appflowy_editor/src/render/selection/cursor_widget.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:provider/provider.dart';
 
 enum MobileSelectionDragMode {
@@ -42,8 +40,6 @@ class _MobileSelectionServiceWidgetState
     extends State<MobileSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
-  final _cursorKey = GlobalKey(debugLabel: 'cursor');
-
   @override
   final List<Rect> selectionRects = [];
   final List<OverlayEntry> _selectionAreas = [];
@@ -109,12 +105,7 @@ class _MobileSelectionServiceWidgetState
     _clearSelection();
 
     if (selection != null) {
-      if (selection.isCollapsed) {
-        // updates cursor area.
-        Log.selection.debug('update cursor area, $selection');
-        _forceShowCursor();
-        _updateCursorAreas(selection.start);
-      } else {
+      if (!selection.isCollapsed) {
         // updates selection area.
         Log.selection.debug('update cursor area, $selection');
         _updateSelectionAreas(selection);
@@ -122,7 +113,10 @@ class _MobileSelectionServiceWidgetState
     }
 
     currentSelection.value = selection;
-    editorState.selection = selection;
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
   }
 
   @override
@@ -152,14 +146,38 @@ class _MobileSelectionServiceWidgetState
 
   @override
   Node? getNodeInOffset(Offset offset) {
-    final sortedNodes =
-        editorState.document.root.children.toList(growable: false);
+    final List<Node> sortedNodes = getVisibleNodes();
+
     return _getNodeInOffset(
       sortedNodes,
       offset,
       0,
       sortedNodes.length - 1,
     );
+  }
+
+  List<Node> getVisibleNodes() {
+    final List<Node> sortedNodes = [];
+    final positions =
+        context.read<EditorScrollController>().visibleRangeNotifier.value;
+    final min = positions.$1;
+    final max = positions.$2;
+    if (min < 0 || max < 0) {
+      return sortedNodes;
+    }
+
+    int i = -1;
+    for (final child in editorState.document.root.children) {
+      i++;
+      if (min > i) {
+        continue;
+      }
+      if (i > max) {
+        break;
+      }
+      sortedNodes.add(child);
+    }
+    return sortedNodes;
   }
 
   @override
@@ -185,42 +203,20 @@ class _MobileSelectionServiceWidgetState
 
   void _updateSelection() {
     final selection = editorState.selection;
-    // TODO: why do we need to check this?
-    if (currentSelection.value == selection &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
-        editorState.selectionType != SelectionType.block) {
+    if (currentSelection.value != selection) {
       return;
     }
 
-    currentSelection.value = selection;
-
-    void updateSelection() {
-      selectionRects.clear();
-      _clearSelection();
-
-      if (selection != null) {
-        if (editorState.selectionType == SelectionType.block) {
-          // updates selection area.
-          Log.selection.debug('update block selection area, $selection');
-          _updateBlockSelectionAreas(selection);
-        } else if (selection.isCollapsed) {
-          // updates cursor area.
-          Log.selection.debug('update cursor area, $selection');
-          _updateCursorAreas(selection.start);
-        } else {
-          // updates selection area.
-          Log.selection.debug('update selection area, $selection');
+    if (selection != null) {
+      if (!selection.isCollapsed) {
+        // updates selection area.
+        Log.selection.debug('update cursor area, $selection');
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          selectionRects.clear();
+          _clearSelection();
           _updateSelectionAreas(selection);
-        }
+        });
       }
-    }
-
-    if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
-      updateSelection();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        updateSelection();
-      });
     }
   }
 
@@ -230,6 +226,8 @@ class _MobileSelectionServiceWidgetState
     );
     if (!canTap) return;
 
+    clearSelection();
+
     // clear old state.
     _panStartOffset = null;
 
@@ -238,7 +236,6 @@ class _MobileSelectionServiceWidgetState
       return;
     }
 
-    // updateSelection(selection);
     editorState.selection = Selection.collapsed(position);
   }
 
@@ -344,33 +341,6 @@ class _MobileSelectionServiceWidgetState
     // do nothing
   }
 
-  void _updateBlockSelectionAreas(Selection selection) {
-    assert(editorState.selectionType == SelectionType.block);
-    final nodes = editorState.getNodesInSelection(selection).normalized;
-
-    currentSelectedNodes = nodes;
-
-    final node = nodes.first;
-    var offset = Offset.zero;
-    var size = node.rect.size;
-    final rect = offset & size;
-
-    final overlay = OverlayEntry(
-      builder: (context) => MobileSelectionWidget(
-        color: widget.selectionColor,
-        layerLink: node.layerLink,
-        rect: rect,
-        decoration: BoxDecoration(
-          color: widget.selectionColor,
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-    );
-    _selectionAreas.add(overlay);
-
-    Overlay.of(context)?.insertAll(_selectionAreas);
-  }
-
   void _updateSelectionAreas(Selection selection) {
     final nodes = editorState.getNodesInSelection(selection);
 
@@ -426,18 +396,26 @@ class _MobileSelectionServiceWidgetState
           }
         }
 
-        final rects = selectable.getRectsInSelection(newSelection);
+        final rects = selectable.getRectsInSelection(
+          newSelection,
+          shiftWithBaseOffset: true,
+        );
         for (final (j, rect) in rects.indexed) {
-          final selectionRect = selectable.transformRectToGlobal(rect);
+          final selectionRect = selectable.transformRectToGlobal(
+            rect,
+            shiftWithBaseOffset: true,
+          );
           selectionRects.add(selectionRect);
+          final showLeftHandler = i == 0 && j == 0;
+          final showRightHandler =
+              i == backwardNodes.length - 1 && j == rects.length - 1;
           final overlay = OverlayEntry(
             builder: (context) => MobileSelectionWidget(
-              color: widget.selectionColor,
+              color: Colors.transparent,
               layerLink: node.layerLink,
               rect: rect,
-              showLeftHandler: i == 0 && j == 0,
-              showRightHandler:
-                  i == backwardNodes.length - 1 && j == rects.length - 1,
+              showLeftHandler: showLeftHandler,
+              showRightHandler: showRightHandler,
             ),
           );
           _selectionAreas.add(overlay);
@@ -449,46 +427,6 @@ class _MobileSelectionServiceWidgetState
     overlay?.insertAll(
       _selectionAreas,
     );
-  }
-
-  void _updateCursorAreas(Position position) {
-    final node = editorState.document.root.childAtPath(position.path);
-
-    if (node == null) {
-      assert(false);
-      return;
-    }
-
-    currentSelectedNodes = [node];
-
-    _showCursor(node, position);
-  }
-
-  void _showCursor(Node node, Position position) {
-    final selectable = node.selectable;
-    final cursorRect = selectable?.getCursorRectInPosition(position);
-    if (selectable != null && cursorRect != null) {
-      final cursorArea = OverlayEntry(
-        builder: (context) => CursorWidget(
-          key: _cursorKey,
-          rect: cursorRect,
-          color: widget.cursorColor,
-          layerLink: node.layerLink,
-          shouldBlink: selectable.shouldCursorBlink,
-          cursorStyle: selectable.cursorStyle,
-        ),
-      );
-
-      _cursorAreas.add(cursorArea);
-      selectionRects.add(selectable.transformRectToGlobal(cursorRect));
-      Overlay.of(context)?.insertAll(_cursorAreas);
-
-      _forceShowCursor();
-    }
-  }
-
-  void _forceShowCursor() {
-    _cursorKey.currentState?.unwrapOrNull<CursorWidgetState>()?.show();
   }
 
   Node? _getNodeInOffset(
