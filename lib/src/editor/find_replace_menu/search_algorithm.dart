@@ -26,10 +26,8 @@ class BoyerMoore extends SearchAlgorithm {
   List<Range> searchMethod(Pattern pattern, String text) {
     if (pattern is String) {
       return _searchMethod(pattern, text);
-    } else if (pattern is RegExp) {
-      throw UnimplementedError();
     } else {
-      throw TypeError();
+      throw UnimplementedError();
     }
   }
 
@@ -71,6 +69,24 @@ class BoyerMoore extends SearchAlgorithm {
     for (int i = 0; i < size; i++) {
       String ch = pat[i];
       badchar[ch] = i;
+    }
+  }
+}
+
+class DartBuiltin extends SearchAlgorithm {
+  @override
+  List<Range> searchMethod(Pattern pattern, String text) {
+    return pattern.allMatches(text).map((e) => Range(start: e.start, end: e.end)).toList();
+  }
+}
+
+class Mixture extends SearchAlgorithm {
+  @override
+  List<Range> searchMethod(Pattern pattern, String text) {
+    if (pattern is String) {
+      return BoyerMoore().searchMethod(pattern, text);
+    } else {
+      return DartBuiltin().searchMethod(pattern, text);
     }
   }
 }

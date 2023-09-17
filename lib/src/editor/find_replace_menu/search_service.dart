@@ -27,7 +27,7 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Selection> matchedPositions = [];
-  SearchAlgorithm searchAlgorithm = BoyerMoore();
+  SearchAlgorithm searchAlgorithm = Mixture();
   Pattern queriedPattern = RegExp('');
   int selectedIndex = 0;
   bool isRegex = false;
