@@ -46,9 +46,11 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
 
   // merge the next node with delta
   if (position.offset == delta.length) {
-    final next = node.findDownward((element) => element.delta != null);
-    if (next != null) {
+    final next = node.findDownward((element) => element.delta != null || element.type.contains('table'));
+    // table node should be deleted using table menu
+    if (next != null && !next.type.contains('table')) {
       if (next.children.isNotEmpty) {
+
         final path = node.path + [node.children.length];
         transaction.insertNodes(path, next.children);
       }

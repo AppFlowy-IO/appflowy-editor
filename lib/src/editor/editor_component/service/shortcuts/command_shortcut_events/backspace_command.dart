@@ -68,22 +68,22 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
         );
     } else {
       // merge with the previous node contains delta.
-      final previousNodeWithDelta =
-          node.previousNodeWhere((element) => element.delta != null);
-      if (previousNodeWithDelta != null) {
-        assert(previousNodeWithDelta.delta != null);
+      final prev = node.previousNodeWhere((element) => element.delta != null || element.type.contains('table'));
+      // table node should be deleted using table menu
+      if (prev != null && (!prev.type.contains('table') && (prev.parent != null && !prev.parent!.type.contains('table')))) {
+        assert(prev.delta != null);
         transaction
-          ..mergeText(previousNodeWithDelta, node)
+          ..mergeText(prev, node)
           ..insertNodes(
             // insert children to previous node
-            previousNodeWithDelta.path.next,
+            prev.path.next,
             node.children.toList(),
           )
           ..deleteNode(node)
           ..afterSelection = Selection.collapsed(
             Position(
-              path: previousNodeWithDelta.path,
-              offset: previousNodeWithDelta.delta!.length,
+              path: prev.path,
+              offset: prev.delta!.length,
             ),
           );
       } else {
