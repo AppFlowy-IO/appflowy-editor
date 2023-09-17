@@ -3,17 +3,19 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.da
 
 void main() {
   group('search_algorithm_test.dart', () {
-    late SearchAlgorithm searchAlgorithm;
+    late SearchAlgorithm bmAlgorithm;
+    late SearchAlgorithm builtinAlgorithm;
 
     setUp(() {
-      searchAlgorithm = BoyerMoore();
+      bmAlgorithm = BoyerMoore();
+      builtinAlgorithm = DartBuiltin();
     });
 
     test('search algorithm returns the index of the only found pattern', () {
       const pattern = 'Appflowy';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result = searchAlgorithm
+      List<int> result = bmAlgorithm
           .searchMethod(pattern, text)
           .map((e) => e.start)
           .toList();
@@ -32,7 +34,7 @@ grouped by property. Design and modify Appflowy your way with an
 open core codebase. Appflowy is built with Flutter and Rust.
       ''';
 
-      List<int> result = searchAlgorithm
+      List<int> result = bmAlgorithm
           .searchMethod(pattern, text)
           .map((e) => e.start)
           .toList();
@@ -43,7 +45,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'Flutter';
       const text = 'Welcome to Appflowy 😁';
 
-      final result = searchAlgorithm.searchMethod(pattern, text);
+      final result = bmAlgorithm.searchMethod(pattern, text);
 
       expect(result, []);
     });
@@ -52,7 +54,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = '😁';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result = searchAlgorithm
+      List<int> result = bmAlgorithm
           .searchMethod(pattern, text)
           .map((e) => e.start)
           .toList();
@@ -65,7 +67,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'App';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result = searchAlgorithm
+      List<int> result = bmAlgorithm
           .searchMethod(pattern, text)
           .map((e) => e.start)
           .toList();
@@ -76,11 +78,33 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'APPFLOWY';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result = searchAlgorithm
+      List<int> result = bmAlgorithm
           .searchMethod(pattern, text)
           .map((e) => e.start)
           .toList();
       expect(result, []);
+    });
+
+    test('case insensitive search', () async {
+      final pattern = RegExp('APPFLOWY', caseSensitive: false);
+      const text = 'Welcome to Appflowy 😁';
+
+      List<int> result = builtinAlgorithm
+          .searchMethod(pattern, text)
+          .map((e) => e.start)
+          .toList();
+      expect(result, [11]);
+    });
+
+    test('regex search', () async {
+      final pattern = RegExp('a[a-z]p', caseSensitive: false);
+      const text = 'Welcome to Appflowy example app 😁';
+
+      List<int> result = builtinAlgorithm
+          .searchMethod(pattern, text)
+          .map((e) => e.start)
+          .toList();
+      expect(result, [11, 22, 28]);
     });
   });
 }
