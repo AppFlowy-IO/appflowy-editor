@@ -67,14 +67,18 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
           ),
         );
     } else {
-      Node? tableParent = node.findParent((element) => element.type == TableBlockKeys.type);
+      Node? tableParent =
+          node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
       // table node should be deleted using table menu,
       // in-table paragraph should only be deleted inside the table
       final prev = node.previousNodeWhere((element) {
-        prevTableParent = element.findParent((element) => element.type == TableBlockKeys.type);
-        return tableParent != prevTableParent // break if only one in table or they're in different tables
-            || element.delta != null; // merge with the previous node contains delta.
+        prevTableParent = element
+            .findParent((element) => element.type == TableBlockKeys.type);
+        // break if only one is in a table or they're in different tables
+        return tableParent != prevTableParent ||
+            // merge with the previous node contains delta.
+            element.delta != null;
       });
       // table node should be deleted using table menu
       // in-table paragraph should only be deleted inside the table
