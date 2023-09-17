@@ -79,33 +79,25 @@ extension NodeExtensions on Node {
   }
 
   // find the node from it's children or it's next sibling to find the node that matches the given predicate
-  Node? findDownward(bool? Function(Node element) test) {
+  Node? findDownward(bool Function(Node element) test) {
     final children = this.children.toList();
     for (final child in children) {
-      switch (test(child)) {
-        case null:
-          return null;
-        case true:
-          return child;
-        case false:
-          if (child.children.isNotEmpty) {
-            final node = child.findDownward(test);
-            if (node != null) {
-              return node;
-            }
-          }
+      if (test(child)) {
+        return child;
+      }
+      if (child.children.isNotEmpty) {
+        final node = child.findDownward(test);
+        if (node != null) {
+          return node;
+        }
       }
     }
     final next = this.next;
     if (next != null) {
-      switch (test(next)) {
-        case null:
-          return null;
-        case true:
-          return next;
-        case false:
-          return next.findDownward(test);
+      if (test(next)) {
+        return next;
       }
+      return next.findDownward(test);
     }
     return null;
   }
