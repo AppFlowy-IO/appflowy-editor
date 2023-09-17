@@ -36,7 +36,7 @@ class SearchService {
   Pattern _getPattern(String targetString) {
     if (isRegex) {
       return RegExp(targetString, caseSensitive: caseSensitive);
-    } else if (caseSensitive) {
+    } else if (!caseSensitive) {
       return RegExp(RegExp.escape(targetString), caseSensitive: caseSensitive);
     } else {
       return targetString;
