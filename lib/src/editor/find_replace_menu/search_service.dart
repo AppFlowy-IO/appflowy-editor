@@ -31,7 +31,7 @@ class SearchService {
   Pattern queriedPattern = RegExp('');
   int selectedIndex = 0;
   bool isRegex = false;
-  bool caseSensitive = false;
+  bool caseSensitive = true;
 
   Pattern _getPattern(String targetString) {
     if (isRegex) {
