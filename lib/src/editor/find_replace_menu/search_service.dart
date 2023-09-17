@@ -27,6 +27,7 @@ class SearchService {
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Selection> matchedPositions = [];
+  List<Match> matchedMatches = [];
   SearchAlgorithm searchAlgorithm = Mixture();
   Pattern queriedPattern = RegExp('');
   int selectedIndex = 0;
@@ -43,22 +44,16 @@ class SearchService {
     }
   }
 
-  String Function(Match match) _getReplacer(String replaceString) {
-    if (isRegex) {
-      return (match) {
-        List<String?> groups = match
-            .groups(List<int>.generate(match.groupCount + 1, (index) => index));
+  String _getRegexReplaced(String replaceText, Match match) {
+    List<String?> groups = match
+        .groups(List<int>.generate(match.groupCount + 1, (index) => index));
 
-        String replacedString = replaceString;
-        for (int i = 0; i <= match.groupCount; i++) {
-          replacedString = replacedString.replaceAll('\\$i', groups[i] ?? '');
-        }
-
-        return replacedString;
-      };
-    } else {
-      return (match) => replaceString;
+    String replacedText = replaceText;
+    for (int i = 0; i <= match.groupCount; i++) {
+      replacedText = replacedText.replaceAll('\\$i', groups[i] ?? '');
     }
+
+    return replacedText;
   }
 
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
@@ -72,6 +67,7 @@ class SearchService {
       // lets unhiglight the old pattern
       rFindAndHighlight(queriedPattern, unhighlight: true);
       matchedPositions.clear();
+      matchedMatches.clear();
       queriedPattern = pattern;
     }
 
@@ -83,13 +79,14 @@ class SearchService {
   void rFindAndHighlight(Pattern pattern, {bool unhighlight = false}) {
     //traversing all the nodes
     for (final n in _getAllNodes()) {
-      //matches list will contain the offsets where the desired word,
+      //matchedMatches list will contain the offsets where the desired word,
       //is found.
-      List<Range> matches =
-          searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText());
+      matchedMatches = searchAlgorithm
+          .searchMethod(pattern, n.delta!.toPlainText())
+          .toList();
       //we will store this list of offsets along with their path,
       //in a list of positions.
-      for (Range matchedOffset in matches) {
+      for (Match matchedOffset in matchedMatches) {
         matchedPositions.add(
           Selection(
             start: Position(path: n.path, offset: matchedOffset.start),
@@ -198,6 +195,7 @@ class SearchService {
       selectedIndex++;
     }
 
+    final match = matchedMatches[selectedIndex];
     final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
@@ -208,17 +206,12 @@ class SearchService {
       {AppFlowyRichTextKeys.findBackgroundColor: null},
     );
     editorState.undoManager.forgetRecentUndo();
-    final replacer = _getReplacer(replaceText);
 
-    final node = editorState.getNodeAtPath(position.start.path)!;
-    final text = node.delta!.toPlainText();
-    final String replacement;
-    if (isRegex || !caseSensitive) {
-      final firstMatch = (queriedPattern as RegExp)
-          .firstMatch(text.substring(position.startIndex, position.endIndex));
-      replacement = replacer.call(firstMatch!);
+    final String replaced;
+    if (isRegex) {
+      replaced = _getRegexReplaced(replaceText, match);
     } else {
-      replacement = replaceText;
+      replaced = replaceText;
     }
 
     final textNode = editorState.getNodeAtPath(position.start.path)!;
@@ -227,7 +220,7 @@ class SearchService {
         textNode,
         position.startIndex,
         position.length,
-        replacement,
+        replaced,
       );
 
     editorState.apply(transaction);
@@ -245,26 +238,22 @@ class SearchService {
     }
 
     _highlightAllMatches(unhighlight: true);
-    final replacer = _getReplacer(replaceText);
 
-    for (final match in matchedPositions.reversed.toList()) {
-      final node = editorState.getNodeAtPath(match.start.path)!;
-      final text = node.delta!.toPlainText();
-      final String replacement;
-      if (isRegex || !caseSensitive) {
-        final firstMatch = (queriedPattern as RegExp)
-            .firstMatch(text.substring(match.startIndex, match.endIndex));
-        replacement = replacer.call(firstMatch!);
+    for (final (index, position) in matchedPositions.reversed.indexed) {
+      final node = editorState.getNodeAtPath(position.start.path)!;
+      final String replaced;
+      if (isRegex) {
+        replaced = _getRegexReplaced(replaceText, matchedMatches[index]);
       } else {
-        replacement = replaceText;
+        replaced = replaceText;
       }
 
       final transaction = editorState.transaction
         ..replaceText(
           node,
-          match.startIndex,
-          match.length,
-          replacement,
+          position.startIndex,
+          position.length,
+          replaced,
         );
 
       editorState.apply(transaction);

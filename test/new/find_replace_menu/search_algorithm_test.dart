@@ -90,11 +90,11 @@ open core codebase. Appflowy is built with Flutter and Rust.
       final pattern = RegExp('a[a-z]p', caseSensitive: false);
       const text = 'Welcome to Appflowy example app 😁';
 
-      List<int> result = builtinAlgorithm
-          .searchMethod(pattern, text)
-          .map((e) => e.start)
-          .toList();
-      expect(result, [11, 22, 28]);
+      Iterable<Match> result = builtinAlgorithm.searchMethod(pattern, text);
+      final starts = result.map((e) => e.start).toList();
+      final ends = result.map((e) => e.end).toList();
+      expect(starts, [11, 22, 28]);
+      expect(ends, [14, 25, 31]);
     });
   });
 }
