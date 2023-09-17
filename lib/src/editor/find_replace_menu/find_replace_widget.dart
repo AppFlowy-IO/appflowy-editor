@@ -136,6 +136,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 setState(() {
                   searchService.isRegex = !searchService.isRegex;
                 });
+                _searchPattern();
               },
               icon: Text(
                 'R*',
@@ -152,6 +153,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                 setState(() {
                   searchService.caseSensitive = !searchService.caseSensitive;
                 });
+                _searchPattern();
               },
               icon: Text(
                 'Cc',
