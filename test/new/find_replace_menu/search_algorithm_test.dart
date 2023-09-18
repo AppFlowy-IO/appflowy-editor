@@ -8,7 +8,7 @@ void main() {
 
     setUp(() {
       bmAlgorithm = BoyerMoore();
-      builtinAlgorithm = DartBuiltin();
+      builtinAlgorithm = DartBuiltIn();
     });
 
     test('search algorithm returns the index of the only found pattern', () {

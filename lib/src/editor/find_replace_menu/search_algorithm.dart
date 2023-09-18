@@ -96,7 +96,7 @@ class BoyerMoore extends SearchAlgorithm {
   }
 }
 
-class DartBuiltin extends SearchAlgorithm {
+class DartBuiltIn extends SearchAlgorithm {
   @override
   Iterable<Match> searchMethod(Pattern pattern, String text) {
     return pattern.allMatches(text);
@@ -105,14 +105,14 @@ class DartBuiltin extends SearchAlgorithm {
 
 class Mixture extends SearchAlgorithm {
   SearchAlgorithm boyerMoore = BoyerMoore();
-  SearchAlgorithm builtin = DartBuiltin();
+  SearchAlgorithm builtIn = DartBuiltIn();
 
   @override
   Iterable<Match> searchMethod(Pattern pattern, String text) {
     if (pattern is String) {
       return boyerMoore.searchMethod(pattern, text);
     } else {
-      return builtin.searchMethod(pattern, text);
+      return builtIn.searchMethod(pattern, text);
     }
   }
 }
