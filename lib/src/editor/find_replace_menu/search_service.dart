@@ -57,7 +57,7 @@ class SearchService {
   }
 
   // Public entry method for _findAndHighlight, do necessary checks
-  // before calling _findAndHighlight
+  // and clear previous highlights before calling it
   void findAndHighlight(String targetString, {bool unhighlight = false}) {
     Pattern pattern = _getPattern(targetString);
 
