@@ -15,11 +15,6 @@ final CommandShortcutEvent cutCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _cutCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'cutCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   // plain text.
   handleCut(editorState);
   return KeyEventResult.handled;

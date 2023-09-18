@@ -16,11 +16,6 @@ final CommandShortcutEvent openLinksCommand = CommandShortcutEvent(
 KeyEventResult _openLinksHandler(
   EditorState editorState,
 ) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'open links is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;

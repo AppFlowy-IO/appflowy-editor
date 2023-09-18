@@ -30,14 +30,6 @@ final CommandShortcutEvent pasteTextWithoutFormattingCommand =
 
 CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(
-      false,
-      'pasteTextWithoutFormattingCommand is not supported on mobile platform.',
-    );
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -56,11 +48,6 @@ CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
 };
 
 CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'pasteCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;

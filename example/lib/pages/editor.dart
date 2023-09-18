@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:example/pages/mobile_editor.dart';
 import 'package:flutter/material.dart';
 
 class Editor extends StatelessWidget {
@@ -65,30 +66,9 @@ class Editor extends StatelessWidget {
               ),
             );
           } else if (PlatformExtension.isMobile) {
-            return Column(
-              children: [
-                Expanded(
-                  child: _buildMobileEditor(
-                    context,
-                    editorState,
-                    editorScrollController,
-                  ),
-                ),
-                MobileToolbar(
-                  editorState: editorState,
-                  toolbarItems: [
-                    textDecorationMobileToolbarItem,
-                    buildTextAndBackgroundColorMobileToolbarItem(),
-                    headingMobileToolbarItem,
-                    todoListMobileToolbarItem,
-                    listMobileToolbarItem,
-                    linkMobileToolbarItem,
-                    quoteMobileToolbarItem,
-                    dividerMobileToolbarItem,
-                    codeMobileToolbarItem,
-                  ],
-                ),
-              ],
+            return MobileEditor(
+              editorState: editorState,
+              onEditorStateChange: onEditorStateChange,
             );
           }
         }
@@ -96,18 +76,6 @@ class Editor extends StatelessWidget {
           child: CircularProgressIndicator(),
         );
       },
-    );
-  }
-
-  Widget _buildMobileEditor(
-    BuildContext context,
-    EditorState editorState,
-    EditorScrollController? editorScrollController,
-  ) {
-    return AppFlowyEditor(
-      editorStyle: const EditorStyle.mobile(),
-      editorState: editorState,
-      editorScrollController: editorScrollController,
     );
   }
 
