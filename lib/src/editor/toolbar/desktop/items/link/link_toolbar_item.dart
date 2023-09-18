@@ -2,6 +2,10 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
 
+const menuWidth = 300;
+const hasTextHeight = 244;
+const noTextHeight = 150;
+
 final linkItem = ToolbarItem(
   id: 'editor.link',
   group: 4,
@@ -35,7 +39,6 @@ void showLinkMenu(
 ) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
-  final rect = editorState.selectionRects().first;
 
   // get link address if the selection is already a link
   String? linkText;
@@ -46,22 +49,7 @@ void showLinkMenu(
     );
   }
 
-  // should abstract this logic to a method
-  // ----
-  final left = rect.left + 10;
-  double? top;
-  double? bottom;
-  final offset = rect.center;
-  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
-  final editorHeight = editorState.renderBox!.size.height;
-  final threshold =
-      editorOffset.dy + editorHeight - (linkText != null ? 244 : 150);
-  if (offset.dy > threshold) {
-    bottom = editorOffset.dy + editorHeight - rect.top - 5;
-  } else {
-    top = rect.bottom + 5;
-  }
-  // ----
+  final (left, top, right, bottom) = getPosition(editorState, linkText);
 
   // get node, index and length for formatting text when the link is removed
   final node = editorState.getNodeAtPath(selection.end.path);
@@ -84,6 +72,7 @@ void showLinkMenu(
     top: top,
     bottom: bottom,
     left: left,
+    right: right,
     dismissCallback: () => keepEditorFocusNotifier.value -= 1,
     builder: (context) {
       return LinkMenu(
@@ -120,3 +109,33 @@ void showLinkMenu(
 
   Overlay.of(context).insert(overlay!);
 }
+
+(double? left, double? top, double? right, double? bottom) getPosition(
+  EditorState editorState,
+  String? linkText,
+) {
+  final rect = editorState.selectionRects().first;
+
+  double? left, right, top, bottom;
+  final offset = rect.center;
+  final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
+  final editorWidth = editorState.renderBox!.size.width;
+  final thresholdX = editorOffset.dx + editorWidth - menuWidth;
+  if (offset.dx > thresholdX) {
+    right = editorOffset.dx + editorWidth - rect.left - 5;
+  } else {
+    left = rect.right + 5;
+  }
+  final editorHeight = editorState.renderBox!.size.height;
+  final thresholdY = editorOffset.dy +
+      editorHeight -
+      (linkText != null ? hasTextHeight : noTextHeight);
+  if (offset.dy > thresholdY) {
+    bottom = editorOffset.dy + editorHeight - rect.top - 5;
+  } else {
+    top = rect.bottom + 5;
+  }
+
+  return (left, top, right, bottom);
+}
+
