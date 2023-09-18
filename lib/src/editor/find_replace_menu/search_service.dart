@@ -56,16 +56,15 @@ class SearchService {
     return replacedText;
   }
 
-  /// Finds the pattern in editorState.document and stores it in matchedPositions.
-  /// Calls the highlightMatch method to highlight the pattern
-  /// if it is found.
+  // Public entry method for _findAndHighlight, do necessary checks
+  // before calling _findAndHighlight
   void findAndHighlight(String targetString, {bool unhighlight = false}) {
     Pattern pattern = _getPattern(targetString);
 
     if (queriedPattern != pattern) {
       // this means we have a new pattern, but before we highlight the new matches,
       // lets unhiglight the old pattern
-      rFindAndHighlight(queriedPattern, unhighlight: true);
+      _findAndHighlight(queriedPattern, unhighlight: true);
       matchedPositions.clear();
       matchedMatches.clear();
       queriedPattern = pattern;
@@ -73,10 +72,13 @@ class SearchService {
 
     if (targetString.isEmpty) return;
 
-    rFindAndHighlight(pattern, unhighlight: unhighlight);
+    _findAndHighlight(pattern, unhighlight: unhighlight);
   }
 
-  void rFindAndHighlight(Pattern pattern, {bool unhighlight = false}) {
+  /// Finds the pattern in editorState.document and stores it in matchedPositions.
+  /// Calls the highlightMatch method to highlight the pattern
+  /// if it is found.
+  void _findAndHighlight(Pattern pattern, {bool unhighlight = false}) {
     //traversing all the nodes
     for (final n in _getAllNodes()) {
       //matchedMatches list will contain the offsets where the desired word,
@@ -226,7 +228,7 @@ class SearchService {
     editorState.apply(transaction);
 
     matchedPositions.clear();
-    rFindAndHighlight(queriedPattern);
+    _findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurances of pattern with replaceText
