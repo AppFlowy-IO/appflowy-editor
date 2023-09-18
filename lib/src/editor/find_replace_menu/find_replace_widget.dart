@@ -130,7 +130,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   AppFlowyEditorLocalizations.current.closeFind,
             ),
             FindMenuIconButton(
-              key: const Key('findRegex'),
+              key: const Key('findRegexButton'),
               iconSize: _iconSize,
               onPressed: () {
                 setState(() {
@@ -147,7 +147,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               tooltip: AppFlowyEditorLocalizations.current.regex,
             ),
             FindMenuIconButton(
-              key: const Key('caseSensitive'),
+              key: const Key('caseSensitiveButton'),
               iconSize: _iconSize,
               onPressed: () {
                 setState(() {
