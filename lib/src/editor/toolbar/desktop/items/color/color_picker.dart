@@ -11,6 +11,7 @@ class ColorPicker extends StatefulWidget {
     required this.colorOptions,
     this.resetText,
     this.resetIconName,
+    this.showClearButton = false,
   });
 
   final String title;
@@ -18,6 +19,7 @@ class ColorPicker extends StatefulWidget {
   final void Function(String? color) onSubmittedColorHex;
   final String? resetText;
   final String? resetIconName;
+  final bool showClearButton;
 
   final List<ColorOption> colorOptions;
 
@@ -47,7 +49,7 @@ class _ColorPickerState extends State<ColorPicker> {
       children: [
         EditorOverlayTitle(text: widget.title),
         const SizedBox(height: 6),
-        widget.selectedColorHex != null &&
+        widget.showClearButton &&
                 widget.resetText != null &&
                 widget.resetIconName != null
             ? ResetColorButton(

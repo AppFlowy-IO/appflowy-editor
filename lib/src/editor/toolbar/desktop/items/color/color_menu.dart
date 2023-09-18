@@ -9,6 +9,7 @@ void showColorMenu(
   List<ColorOption>? textColorOptions,
   List<ColorOption>? highlightColorOptions,
   required bool isTextColor,
+  bool showClearButton = false,
 }) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
@@ -46,6 +47,7 @@ void showColorMenu(
         title: isTextColor
             ? AppFlowyEditorLocalizations.current.textColor
             : AppFlowyEditorLocalizations.current.highlightColor,
+        showClearButton: showClearButton,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
             ? textColorOptions ?? generateTextColorOptions()
