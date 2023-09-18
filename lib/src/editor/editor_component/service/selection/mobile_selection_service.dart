@@ -416,6 +416,7 @@ class _MobileSelectionServiceWidgetState
               rect: rect,
               showLeftHandler: showLeftHandler,
               showRightHandler: showRightHandler,
+              handlerColor: editorState.editorStyle.cursorColor,
             ),
           );
           _selectionAreas.add(overlay);

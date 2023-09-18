@@ -15,10 +15,6 @@ final CommandShortcutEvent endCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _endCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'endCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   final scrollService = editorState.service.scrollService;
   if (scrollService == null) {
     return KeyEventResult.ignored;

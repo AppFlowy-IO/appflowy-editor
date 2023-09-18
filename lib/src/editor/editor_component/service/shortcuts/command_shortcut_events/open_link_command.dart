@@ -15,11 +15,6 @@ final CommandShortcutEvent openInlineLinkCommand = CommandShortcutEvent(
 KeyEventResult _openInlineLink(
   EditorState editorState,
 ) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'open inline link is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   //TODO:If selection is collapsed, isHref is false.
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {

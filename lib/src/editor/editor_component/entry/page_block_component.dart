@@ -54,17 +54,19 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
       return Builder(
         builder: (context) {
           editorState.updateAutoScroller(Scrollable.of(context));
-          return Padding(
-            padding: editorState.editorStyle.padding,
-            child: Column(
-              children: [
-                if (header != null) header!,
-                ...items
-                    .map((e) => editorState.renderer.build(context, e))
-                    .toList(),
-                if (footer != null) footer!,
-              ],
-            ),
+          return Column(
+            children: [
+              if (header != null) header!,
+              ...items
+                  .map(
+                    (e) => Padding(
+                      padding: editorState.editorStyle.padding,
+                      child: editorState.renderer.build(context, e),
+                    ),
+                  )
+                  .toList(),
+              if (footer != null) footer!,
+            ],
           );
         },
       );
@@ -75,16 +77,19 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
 
       return ScrollablePositionedList.builder(
         shrinkWrap: scrollController.shrinkWrap,
-        padding: editorState.editorStyle.padding,
+        // padding: editorState.editorStyle.padding,
         scrollDirection: Axis.vertical,
         itemCount: items.length + extentCount,
         itemBuilder: (context, index) {
           editorState.updateAutoScroller(Scrollable.of(context));
           if (header != null && index == 0) return header!;
           if (footer != null && index == items.length + 1) return footer!;
-          return editorState.renderer.build(
-            context,
-            items[index - (header != null ? 1 : 0)],
+          return Padding(
+            padding: editorState.editorStyle.padding,
+            child: editorState.renderer.build(
+              context,
+              items[index - (header != null ? 1 : 0)],
+            ),
           );
         },
         itemScrollController: scrollController.itemScrollController,

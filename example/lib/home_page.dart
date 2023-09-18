@@ -83,7 +83,8 @@ class _HomePageState extends State<HomePage> {
       extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: const Color.fromARGB(255, 134, 46, 247),
+        foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text('AppFlowy Editor'),
       ),
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
             child: Image.asset(
-              'assets/images/icon.png',
+              'assets/images/icon.jpeg',
               fit: BoxFit.fill,
             ),
           ),

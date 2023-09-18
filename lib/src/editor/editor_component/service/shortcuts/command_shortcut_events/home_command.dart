@@ -15,10 +15,6 @@ final CommandShortcutEvent homeCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _homeCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'homeCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   final scrollService = editorState.service.scrollService;
   if (scrollService == null) {
     return KeyEventResult.ignored;

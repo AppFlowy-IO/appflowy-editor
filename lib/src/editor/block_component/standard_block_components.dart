@@ -7,8 +7,9 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   PageBlockKeys.type: PageBlockComponentBuilder(),
   ParagraphBlockKeys.type: TextBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) =>
-          AppFlowyEditorLocalizations.current.slashPlaceHolder,
+      placeholderText: (_) => PlatformExtension.isDesktopOrWeb
+          ? AppFlowyEditorLocalizations.current.slashPlaceHolder
+          : ' ',
     ),
   ),
   TodoListBlockKeys.type: TodoListBlockComponentBuilder(

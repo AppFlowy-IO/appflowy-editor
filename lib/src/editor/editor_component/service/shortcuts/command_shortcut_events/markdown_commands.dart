@@ -59,11 +59,6 @@ KeyEventResult _toggleAttribute(
   EditorState editorState,
   String key,
 ) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'toggle attribute is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;

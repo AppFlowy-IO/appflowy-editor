@@ -16,10 +16,6 @@ final CommandShortcutEvent pageDownCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _pageUpCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'pageDownCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   final scrollService = editorState.service.scrollService;
   if (scrollService == null) {
     return KeyEventResult.ignored;

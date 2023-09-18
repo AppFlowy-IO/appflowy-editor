@@ -15,10 +15,6 @@ final CommandShortcutEvent selectAllCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'selectAllCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (editorState.document.root.children.isEmpty) {
     return KeyEventResult.handled;
   }
