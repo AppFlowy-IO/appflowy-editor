@@ -45,6 +45,8 @@ class _DesktopSelectionServiceWidgetState
   Offset? _panStartOffset;
   double? _panStartScrollDy;
 
+  Position? _panStartPosition;
+
   late EditorState editorState = Provider.of<EditorState>(
     context,
     listen: false,
@@ -214,10 +216,7 @@ class _DesktopSelectionServiceWidgetState
             start: selectable.start(),
             end: selectable.end(),
           );
-    editorState.updateSelectionWithReason(
-      selection,
-      reason: SelectionUpdateReason.uiEvent,
-    );
+    updateSelection(selection);
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
@@ -260,19 +259,19 @@ class _DesktopSelectionServiceWidgetState
     _showContextMenu(details);
   }
 
-  Node? startNode;
-
   void _onPanStart(DragStartDetails details) {
     clearSelection();
 
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
-    startNode = getNodeInOffset(_panStartOffset!);
+    _panStartPosition = getNodeInOffset(_panStartOffset!)?.selectable?.start();
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (_panStartOffset == null || _panStartScrollDy == null) {
+    if (_panStartOffset == null ||
+        _panStartScrollDy == null ||
+        _panStartPosition == null) {
       return;
     }
 
@@ -283,30 +282,26 @@ class _DesktopSelectionServiceWidgetState
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
 
     // this one maybe redundant.
-    final first = startNode?.selectable;
     final last = getNodeInOffset(panEndOffset)?.selectable;
 
     // compute the selection in range.
-    if (first != null && last != null) {
-      // Log.selection.debug('first = $first, last = $last');
-      final start =
-          first.getSelectionInRange(panStartOffset, panEndOffset).start;
+    if (last != null) {
+      final start = _panStartPosition!;
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
       final selection = Selection(start: start, end: end);
       updateSelection(selection);
     }
-    final dragTarget = Rect.fromCenter(
-      center: panEndOffset,
-      width: 100,
-      height: 100,
+
+    editorState.service.scrollService?.startAutoScroll(
+      panEndOffset,
+      edgeOffset: 100,
     );
-    editorState.autoScroller?.startAutoScrollIfNecessary(dragTarget);
-    editorState.service.scrollService
-        ?.startAutoScroll(panEndOffset, edgeOffset: 100);
   }
 
   void _onPanEnd(DragEndDetails details) {
-    startNode = null;
+    _panStartPosition = null;
+
+    editorState.service.scrollService?.stopAutoScroll();
   }
 
   void _updateSelection() {}

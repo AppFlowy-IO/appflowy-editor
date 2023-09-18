@@ -57,12 +57,14 @@ void showColorMenu(
               ? formatFontColor(
                   editorState,
                   editorState.selection,
-                  color ?? Colors.black.toHex(),
+                  color,
+                  withUpdateSelection: true,
                 )
               : formatHighlightColor(
                   editorState,
                   editorState.selection,
-                  color ?? Colors.transparent.toHex(),
+                  color,
+                  withUpdateSelection: true,
                 );
           dismissOverlay();
           keepEditorFocusNotifier.value -= 1;

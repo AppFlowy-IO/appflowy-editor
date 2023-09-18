@@ -451,6 +451,7 @@ class EditorState {
       autoScroller?.stopAutoScroll();
       autoScroller = AutoScroller(
         scrollableState,
+        velocityScalar: PlatformExtension.isDesktopOrWeb ? 50 : 100,
         onScrollViewScrolled: () {},
       );
       this.scrollableState = scrollableState;

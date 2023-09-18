@@ -158,6 +158,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           if (prevBlockRect != null) {
             setState(() {
               prevBlockRect = null;
+              prevCursorRect = null;
+              prevSelectionRects = null;
             });
           }
         } else {
@@ -165,6 +167,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           if (prevBlockRect != rect) {
             setState(() {
               prevBlockRect = rect;
+              prevCursorRect = null;
+              prevSelectionRects = null;
             });
           }
         }
@@ -174,6 +178,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         if (rect != prevCursorRect) {
           setState(() {
             prevCursorRect = rect;
+            prevBlockRect = null;
+            prevSelectionRects = null;
           });
         }
       } else if (widget.supportTypes.contains(BlockSelectionType.selection)) {
@@ -181,6 +187,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         if (!_deepEqual(rects, prevSelectionRects)) {
           setState(() {
             prevSelectionRects = rects;
+            prevCursorRect = null;
+            prevBlockRect = null;
           });
         }
       }
