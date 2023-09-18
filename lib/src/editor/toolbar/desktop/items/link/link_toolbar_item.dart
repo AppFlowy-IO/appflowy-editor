@@ -49,7 +49,7 @@ void showLinkMenu(
     );
   }
 
-  final (left, top, right, bottom) = getPosition(editorState, linkText);
+  final (left, top, right, bottom) = _getPosition(editorState, linkText);
 
   // get node, index and length for formatting text when the link is removed
   final node = editorState.getNodeAtPath(selection.end.path);
@@ -110,7 +110,8 @@ void showLinkMenu(
   Overlay.of(context).insert(overlay!);
 }
 
-(double? left, double? top, double? right, double? bottom) getPosition(
+// get a proper position for link menu
+(double? left, double? top, double? right, double? bottom) _getPosition(
   EditorState editorState,
   String? linkText,
 ) {
@@ -120,7 +121,7 @@ void showLinkMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorWidth = editorState.renderBox!.size.width;
-  (left, right) = getLength(
+  (left, right) = _getStartEnd(
     editorWidth,
     offset.dx,
     editorOffset.dx,
@@ -130,7 +131,7 @@ void showLinkMenu(
   );
 
   final editorHeight = editorState.renderBox!.size.height;
-  (top, bottom) = getLength(
+  (top, bottom) = _getStartEnd(
     editorHeight,
     offset.dy,
     editorOffset.dy,
@@ -142,13 +143,15 @@ void showLinkMenu(
   return (left, top, right, bottom);
 }
 
-(double? start, double? end) getLength(
-  editorLength,
-  offsetD,
-  editorOffsetD,
-  menuLength,
-  rectStart,
-  rectEnd,
+// This method calculates the start and end position for a specific
+// direction (either horizontal or vertical) in the layout.
+(double? start, double? end) _getStartEnd(
+  double editorLength,
+  double offsetD,
+  double editorOffsetD,
+  int menuLength,
+  double rectStart,
+  double rectEnd,
 ) {
   final threshold = editorOffsetD + editorLength - _menuWidth;
   double? start, end;
