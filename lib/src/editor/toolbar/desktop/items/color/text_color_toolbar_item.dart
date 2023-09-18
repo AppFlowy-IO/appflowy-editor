@@ -25,6 +25,22 @@ ToolbarItem buildTextColorItem({
         iconSize: const Size.square(14),
         tooltip: AppFlowyEditorLocalizations.current.textColor,
         onPressed: () {
+          bool showClearButton = false;
+          nodes.allSatisfyInSelection(
+            selection,
+            (delta) {
+              if (!showClearButton) {
+                showClearButton = delta.whereType<TextInsert>().any(
+                  (element) {
+                    return element
+                            .attributes?[AppFlowyRichTextKeys.textColor] !=
+                        null;
+                  },
+                );
+              }
+              return true;
+            },
+          );
           showColorMenu(
             context,
             editorState,
@@ -32,6 +48,7 @@ ToolbarItem buildTextColorItem({
             currentColorHex: textColorHex,
             isTextColor: true,
             textColorOptions: colorOptions,
+            showClearButton: showClearButton,
           );
         },
       );
