@@ -76,24 +76,13 @@ TextDirection calculateNodeDirection({
   }
 
   if (value == blockComponentTextDirectionAuto) {
-    // previous line direction
-    final previousNodeContainsTextDirection =
-        previousOrParentNodeWithTextDirection(node);
-
     if (lastDirection != null) {
       defaultTextDirection = lastDirection.name;
-    } else if (previousNodeContainsTextDirection != null) {
-      final String previousValue = previousNodeContainsTextDirection
-          .attributes[blockComponentTextDirection];
-      if (previousValue == blockComponentTextDirectionAuto) {
-        defaultTextDirection = previousNodeContainsTextDirection.selectable
-                ?.textDirection()
-                .name ??
-            defaultTextDirection;
-      } else {
-        defaultTextDirection =
-            previousValue.toTextDirection()?.name ?? defaultTextDirection;
-      }
+    } else {
+      defaultTextDirection =
+          _getDirectionFromPreviousOrParentNode(node, defaultTextDirection)
+                  ?.name ??
+              defaultTextDirection;
     }
   }
 
@@ -106,6 +95,54 @@ TextDirection calculateNodeDirection({
 
   // if the value is auto and the text isn't null or empty,
   // calculate the text direction by the text
+  final direction = _determineTextDirection(text);
+  if (direction != null) {
+    return direction;
+  }
+
+  return defaultTextDirection?.toTextDirection() ?? layoutDirection;
+}
+
+TextDirection? _getDirectionFromPreviousOrParentNode(
+  Node node,
+  String? defaultTextDirection,
+) {
+  TextDirection? prevOrParentNodeDirection;
+  if (node.previous != null) {
+    prevOrParentNodeDirection =
+        _getDirectionFromNode(node.previous!, defaultTextDirection);
+  }
+  if (node.parent != null && prevOrParentNodeDirection == null) {
+    prevOrParentNodeDirection =
+        _getDirectionFromNode(node.parent!, defaultTextDirection);
+  }
+
+  return prevOrParentNodeDirection;
+}
+
+TextDirection? _getDirectionFromNode(Node node, String? defaultTextDirection) {
+  String? nodeDirection;
+  if (defaultTextDirection == blockComponentTextDirectionAuto) {
+    nodeDirection = blockComponentTextDirectionAuto;
+  }
+
+  if (node.attributes.containsKey(blockComponentTextDirection) &&
+      node.attributes[blockComponentTextDirection] != null) {
+    nodeDirection = node.attributes[blockComponentTextDirection];
+  }
+
+  if (nodeDirection != null) {
+    if (nodeDirection == blockComponentTextDirectionAuto) {
+      return node.selectable?.textDirection();
+    } else {
+      return nodeDirection.toTextDirection();
+    }
+  }
+
+  return null;
+}
+
+TextDirection? _determineTextDirection(String text) {
   final matches = _regex.firstMatch(text);
   if (matches != null) {
     if (matches.group(1) != null) {
@@ -114,22 +151,6 @@ TextDirection calculateNodeDirection({
       return TextDirection.ltr;
     }
   }
-
-  return defaultTextDirection?.toTextDirection() ?? layoutDirection;
-}
-
-Node? previousOrParentNodeWithTextDirection(Node node) {
-  bool textDirectionCheck(node) =>
-      node != null &&
-      node.attributes.containsKey(blockComponentTextDirection) &&
-      node.attributes[blockComponentTextDirection] != null;
-
-  if (textDirectionCheck(node.previous)) {
-    return node.previous;
-  } else if (textDirectionCheck(node.parent)) {
-    return node.parent;
-  }
-
   return null;
 }
 

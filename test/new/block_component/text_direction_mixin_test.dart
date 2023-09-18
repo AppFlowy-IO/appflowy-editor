@@ -358,5 +358,29 @@ void main() {
 
       await editor.dispose();
     });
+
+    testWidgets(
+        'use previous node direction calculated value (rtl) when its set by default text direction',
+        (tester) async {
+      final editor = tester.editor
+        ..addNode(
+          paragraphNode(
+            text: 'سلام',
+          ),
+        )
+        ..addNode(
+          paragraphNode(
+            text: '\$',
+          ),
+        );
+      await editor.startTesting(
+        defaultTextDirection: blockComponentTextDirectionAuto,
+      );
+
+      final node = editor.nodeAtPath([1])!;
+      expect(node.selectable?.textDirection(), TextDirection.rtl);
+
+      await editor.dispose();
+    });
   });
 }
