@@ -3,23 +3,25 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 void formatHighlightColor(
   EditorState editorState,
   Selection? selection,
-  String color,
-) {
+  String? color, {
+  bool withUpdateSelection = false,
+}) {
   editorState.formatDelta(
     selection,
     {AppFlowyRichTextKeys.highlightColor: color},
-    false,
+    withUpdateSelection,
   );
 }
 
 void formatFontColor(
   EditorState editorState,
   Selection? selection,
-  String color,
-) {
+  String? color, {
+  bool withUpdateSelection = false,
+}) {
   editorState.formatDelta(
     selection,
     {AppFlowyRichTextKeys.textColor: color},
-    false,
+    withUpdateSelection,
   );
 }
