@@ -49,9 +49,9 @@ class BoyerMoore extends SearchAlgorithm {
   List<Match> searchMethod(Pattern pattern, String text) {
     if (pattern is String) {
       return _searchMethod(pattern, text);
-    } else {
-      throw UnimplementedError();
     }
+
+    throw UnimplementedError();
   }
 
   List<Match> _searchMethod(String pattern, String text) {
