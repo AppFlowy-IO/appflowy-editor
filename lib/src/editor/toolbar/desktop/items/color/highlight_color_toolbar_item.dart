@@ -24,6 +24,19 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
         highlightColor: highlightColor,
         tooltip: AppFlowyEditorLocalizations.current.highlightColor,
         onPressed: () {
+          bool showClearButton = false;
+          nodes.allSatisfyInSelection(selection, (delta) {
+            if (!showClearButton) {
+              showClearButton = delta.whereType<TextInsert>().any(
+                (element) {
+                  return element
+                          .attributes?[AppFlowyRichTextKeys.highlightColor] !=
+                      null;
+                },
+              );
+            }
+            return true;
+          });
           showColorMenu(
             context,
             editorState,
@@ -31,6 +44,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
             currentColorHex: highlightColorHex,
             isTextColor: false,
             highlightColorOptions: colorOptions,
+            showClearButton: showClearButton,
           );
         },
       );
