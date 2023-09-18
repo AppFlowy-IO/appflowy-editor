@@ -2,9 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
 import 'package:flutter/material.dart';
 
-const menuWidth = 300;
-const hasTextHeight = 244;
-const noTextHeight = 150;
+const _menuWidth = 300;
+const _hasTextHeight = 244;
+const _noTextHeight = 150;
 
 final linkItem = ToolbarItem(
   id: 'editor.link',
@@ -120,22 +120,43 @@ void showLinkMenu(
   final offset = rect.center;
   final editorOffset = editorState.renderBox!.localToGlobal(Offset.zero);
   final editorWidth = editorState.renderBox!.size.width;
-  final thresholdX = editorOffset.dx + editorWidth - menuWidth;
-  if (offset.dx > thresholdX) {
-    right = editorOffset.dx + editorWidth - rect.left - 5;
-  } else {
-    left = rect.right + 5;
-  }
+  (left, right) = getLength(
+    editorWidth,
+    offset.dx,
+    editorOffset.dx,
+    _menuWidth,
+    rect.left,
+    rect.right,
+  );
+
   final editorHeight = editorState.renderBox!.size.height;
-  final thresholdY = editorOffset.dy +
-      editorHeight -
-      (linkText != null ? hasTextHeight : noTextHeight);
-  if (offset.dy > thresholdY) {
-    bottom = editorOffset.dy + editorHeight - rect.top - 5;
-  } else {
-    top = rect.bottom + 5;
-  }
+  (top, bottom) = getLength(
+    editorHeight,
+    offset.dy,
+    editorOffset.dy,
+    linkText != null ? _hasTextHeight : _noTextHeight,
+    rect.top,
+    rect.bottom,
+  );
 
   return (left, top, right, bottom);
 }
 
+(double? start, double? end) getLength(
+  editorLength,
+  offsetD,
+  editorOffsetD,
+  menuLength,
+  rectStart,
+  rectEnd,
+) {
+  final threshold = editorOffsetD + editorLength - _menuWidth;
+  double? start, end;
+  if (offsetD > threshold) {
+    end = editorOffsetD + editorLength - rectStart - 5;
+  } else {
+    start = rectEnd + 5;
+  }
+
+  return (start, end);
+}
