@@ -15,12 +15,7 @@ final CommandShortcutEvent copyCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _copyCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'copyCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
-  var selection = editorState.selection?.normalized;
+  final selection = editorState.selection?.normalized;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }

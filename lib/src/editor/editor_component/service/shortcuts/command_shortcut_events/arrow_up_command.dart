@@ -24,11 +24,6 @@ final CommandShortcutEvent moveCursorUpCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorUpCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow up key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;

@@ -26,10 +26,6 @@ final CommandShortcutEvent moveCursorLeftCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow left key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorBackward(SelectionMoveRange.character);
   } else {
@@ -48,10 +44,6 @@ final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow left key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorBackward(SelectionMoveRange.line);
   } else {

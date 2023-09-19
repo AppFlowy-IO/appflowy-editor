@@ -9,6 +9,7 @@ class MobileSelectionWidget extends StatelessWidget {
     this.decoration,
     this.showLeftHandler = false,
     this.showRightHandler = false,
+    this.handlerColor = Colors.black,
   }) : super(key: key);
 
   final Color color;
@@ -17,6 +18,7 @@ class MobileSelectionWidget extends StatelessWidget {
   final BoxDecoration? decoration;
   final bool showLeftHandler;
   final bool showRightHandler;
+  final Color handlerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class MobileSelectionWidget extends StatelessWidget {
             decoration: decoration,
             showLeftHandler: showLeftHandler,
             showRightHandler: showRightHandler,
+            handlerColor: handlerColor,
           ),
         ),
       ),
