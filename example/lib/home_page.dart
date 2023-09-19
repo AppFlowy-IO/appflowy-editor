@@ -159,6 +159,16 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }),
+          _buildListTile(context, 'RTL', () {
+            final jsonString = rootBundle.loadString(
+              'assets/arabic_example.json',
+            );
+            _loadEditor(
+              context,
+              jsonString,
+              textDirection: TextDirection.rtl,
+            );
+          }),
 
           // Encoder Demo
           _buildSeparator(context, 'Export To X Demo'),
@@ -227,8 +237,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadEditor(
     BuildContext context,
-    Future<String> jsonString,
-  ) async {
+    Future<String> jsonString, {
+    TextDirection textDirection = TextDirection.ltr,
+  }) async {
     final completer = Completer<void>();
     _jsonString = jsonString;
     setState(
@@ -238,6 +249,7 @@ class _HomePageState extends State<HomePage> {
               onEditorStateChange: (editorState) {
                 _editorState = editorState;
               },
+              textDirection: textDirection,
             );
       },
     );

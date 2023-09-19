@@ -104,10 +104,15 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
         configuration: configuration,
         iconBuilder: (context, node) {
-          return const Icon(
-            Icons.circle,
-            size: 20,
-            color: Colors.green,
+          return Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.circle,
+              size: 10,
+              color: Colors.red,
+            ),
           );
         },
       ),

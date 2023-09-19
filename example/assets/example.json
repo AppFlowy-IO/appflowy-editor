@@ -89,7 +89,7 @@
                 "bg_color": "0x6000BCF0"
               }
             },
-            { "insert": " as a component to build your own app." }
+            { "insert": " as a component to build your own app./" }
           ]
         }
       },
@@ -131,6 +131,98 @@
             },
             { "insert": " your notes." }
           ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    { "insert": "Insert a " },
+                    { "insert": "table", "attributes": { "bold": true } },
+                    { "insert": " via" },
+                    {
+                      "insert": " / ",
+                      "attributes": { "code": true, "bg_color": "0x4d9c27b0" }
+                    },
+                    { "insert": "command" }
+                  ],
+                  "align": "center"
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "height": 47.0,
+              "width": 553.09375
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [{ "type": "paragraph", "data": { "delta": [] } }],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "height": 46.0,
+              "width": 553.09375
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    { "insert": "the " },
+                    {
+                      "insert": "contents",
+                      "attributes": { "underline": true }
+                    },
+                    { "insert": " in the table also support " },
+                    {
+                      "insert": "rich-text format",
+                      "attributes": { "bold": true, "italic": true }
+                    }
+                  ],
+                  "align": "center"
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "height": 47.0,
+              "width": 490.3984375,
+              "colBackgroundColor": "0x4dffeb3b"
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [{ "type": "paragraph", "data": { "delta": [] } }],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "height": 46.0,
+              "width": 490.3984375,
+              "colBackgroundColor": "0x4dffeb3b"
+            }
+          }
+        ],
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 80.0,
+          "rowDefaultHeight": 40.0,
+          "colMinimumWidth": 40.0,
+          "colsHeight": 99.0
         }
       },
       { "type": "paragraph", "data": { "delta": [] } },

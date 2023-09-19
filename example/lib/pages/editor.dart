@@ -11,11 +11,14 @@ class Editor extends StatelessWidget {
     required this.jsonString,
     required this.onEditorStateChange,
     this.editorStyle,
+    this.textDirection = TextDirection.ltr,
   });
 
   final Future<String> jsonString;
   final EditorStyle? editorStyle;
   final void Function(EditorState editorState) onEditorStateChange;
+
+  final TextDirection textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +48,7 @@ class Editor extends StatelessWidget {
           if (PlatformExtension.isDesktopOrWeb) {
             return DesktopEditor(
               editorState: editorState,
+              textDirection: textDirection,
             );
           } else if (PlatformExtension.isMobile) {
             return MobileEditor(

@@ -6,11 +6,11 @@ class DesktopEditor extends StatefulWidget {
   const DesktopEditor({
     super.key,
     required this.editorState,
-    this.editorStyle,
+    this.textDirection = TextDirection.ltr,
   });
 
   final EditorState editorState;
-  final EditorStyle? editorStyle;
+  final TextDirection textDirection;
 
   @override
   State<DesktopEditor> createState() => _DesktopEditorState();
@@ -67,22 +67,25 @@ class _DesktopEditorState extends State<DesktopEditor> {
       ],
       editorState: editorState,
       editorScrollController: editorScrollController,
-      child: AppFlowyEditor(
-        editorState: editorState,
-        editorScrollController: editorScrollController,
-        blockComponentBuilders: blockComponentBuilders,
-        commandShortcutEvents: commandShortcuts,
-        editorStyle: editorStyle,
-        header: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: Image.asset(
-            'assets/images/header.png',
-            fit: BoxFit.fitWidth,
-            height: 150,
+      child: Directionality(
+        textDirection: widget.textDirection,
+        child: AppFlowyEditor(
+          editorState: editorState,
+          editorScrollController: editorScrollController,
+          blockComponentBuilders: blockComponentBuilders,
+          commandShortcutEvents: commandShortcuts,
+          editorStyle: editorStyle,
+          header: Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Image.asset(
+              'assets/images/header.png',
+              fit: BoxFit.fitWidth,
+              height: 150,
+            ),
           ),
-        ),
-        footer: const SizedBox(
-          height: 100,
+          footer: const SizedBox(
+            height: 100,
+          ),
         ),
       ),
     );
