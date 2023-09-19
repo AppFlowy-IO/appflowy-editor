@@ -422,21 +422,6 @@ class EditorState {
       }
     }
 
-    /*
-    final rects = nodes
-        .map(
-          (node) => node.selectable
-              ?.getRectsInSelection(selection)
-              .map(
-                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
-              )
-              .whereNotNull(),
-        )
-        .whereNotNull()
-        .expand((element) => element)
-        .toList();
-    */
-
     return rects;
   }
 
