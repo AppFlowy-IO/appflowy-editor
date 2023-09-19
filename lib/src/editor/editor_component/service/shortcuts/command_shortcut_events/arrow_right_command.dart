@@ -26,10 +26,6 @@ final CommandShortcutEvent moveCursorRightCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow right key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorForward(SelectionMoveRange.character);
   } else {
@@ -48,10 +44,6 @@ final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow right key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorForward(SelectionMoveRange.line);
   } else {

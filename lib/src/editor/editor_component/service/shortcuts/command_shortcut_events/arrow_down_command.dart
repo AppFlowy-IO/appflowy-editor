@@ -24,11 +24,6 @@ final CommandShortcutEvent moveCursorDownCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorDownCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow down key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;

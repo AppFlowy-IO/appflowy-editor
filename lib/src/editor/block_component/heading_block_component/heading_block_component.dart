@@ -144,11 +144,14 @@ class _HeadingBlockComponentWidgetState
               node: widget.node,
               editorState: editorState,
               textAlign: alignment?.toTextAlign,
-              textSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(textStyle).updateTextStyle(
-                        widget.textStyleBuilder?.call(level) ??
-                            defaultTextStyle(level),
-                      ),
+              textSpanDecorator: (textSpan) {
+                var result = textSpan.updateTextStyle(textStyle);
+                result = result.updateTextStyle(
+                  widget.textStyleBuilder?.call(level) ??
+                      defaultTextStyle(level),
+                );
+                return result;
+              },
               placeholderText: placeholderText,
               placeholderTextSpanDecorator: (textSpan) => textSpan
                   .updateTextStyle(
