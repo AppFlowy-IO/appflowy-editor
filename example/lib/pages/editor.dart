@@ -22,43 +22,46 @@ class Editor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: jsonString,
-      builder: (context, snapshot) {
-        if (snapshot.hasData &&
-            snapshot.connectionState == ConnectionState.done) {
-          final editorState = EditorState(
-            document: Document.fromJson(
-              Map<String, Object>.from(
-                json.decode(snapshot.data!),
+    return Container(
+      color: Colors.white,
+      child: FutureBuilder<String>(
+        future: jsonString,
+        builder: (context, snapshot) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
+            final editorState = EditorState(
+              document: Document.fromJson(
+                Map<String, Object>.from(
+                  json.decode(snapshot.data!),
+                ),
               ),
-            ),
-          );
+            );
 
-          editorState.logConfiguration
-            ..handler = debugPrint
-            ..level = LogLevel.off;
+            editorState.logConfiguration
+              ..handler = debugPrint
+              ..level = LogLevel.off;
 
-          editorState.transactionStream.listen((event) {
-            if (event.$1 == TransactionTime.after) {
-              onEditorStateChange(editorState);
+            editorState.transactionStream.listen((event) {
+              if (event.$1 == TransactionTime.after) {
+                onEditorStateChange(editorState);
+              }
+            });
+
+            if (PlatformExtension.isDesktopOrWeb) {
+              return DesktopEditor(
+                editorState: editorState,
+                textDirection: textDirection,
+              );
+            } else if (PlatformExtension.isMobile) {
+              return MobileEditor(
+                editorState: editorState,
+              );
             }
-          });
-
-          if (PlatformExtension.isDesktopOrWeb) {
-            return DesktopEditor(
-              editorState: editorState,
-              textDirection: textDirection,
-            );
-          } else if (PlatformExtension.isMobile) {
-            return MobileEditor(
-              editorState: editorState,
-            );
           }
-        }
 
-        return const SizedBox.shrink();
-      },
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }
