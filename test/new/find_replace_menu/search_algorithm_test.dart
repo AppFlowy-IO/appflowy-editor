@@ -3,12 +3,10 @@ import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.da
 
 void main() {
   group('search_algorithm_test.dart', () {
-    late SearchAlgorithm bmAlgorithm;
-    late SearchAlgorithm builtinAlgorithm;
+    late SearchAlgorithm algorithm;
 
     setUp(() {
-      bmAlgorithm = BoyerMoore();
-      builtinAlgorithm = DartBuiltIn();
+      algorithm = DartBuiltIn();
     });
 
     test('search algorithm returns the index of the only found pattern', () {
@@ -16,7 +14,7 @@ void main() {
       const text = 'Welcome to Appflowy 😁';
 
       List<int> result =
-          bmAlgorithm.searchMethod(pattern, text).map((e) => e.start).toList();
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
 
@@ -33,7 +31,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       ''';
 
       List<int> result =
-          bmAlgorithm.searchMethod(pattern, text).map((e) => e.start).toList();
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11, 24, 80, 196, 324, 371]);
     });
 
@@ -41,7 +39,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'Flutter';
       const text = 'Welcome to Appflowy 😁';
 
-      final result = bmAlgorithm.searchMethod(pattern, text);
+      final result = algorithm.searchMethod(pattern, text);
 
       expect(result, []);
     });
@@ -51,7 +49,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const text = 'Welcome to Appflowy 😁';
 
       List<int> result =
-          bmAlgorithm.searchMethod(pattern, text).map((e) => e.start).toList();
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [20]);
     });
 
@@ -62,7 +60,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const text = 'Welcome to Appflowy 😁';
 
       List<int> result =
-          bmAlgorithm.searchMethod(pattern, text).map((e) => e.start).toList();
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
 
@@ -71,7 +69,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const text = 'Welcome to Appflowy 😁';
 
       List<int> result =
-          bmAlgorithm.searchMethod(pattern, text).map((e) => e.start).toList();
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, []);
     });
 
@@ -79,10 +77,8 @@ open core codebase. Appflowy is built with Flutter and Rust.
       final pattern = RegExp('APPFLOWY', caseSensitive: false);
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result = builtinAlgorithm
-          .searchMethod(pattern, text)
-          .map((e) => e.start)
-          .toList();
+      List<int> result =
+          algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
 
@@ -90,7 +86,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       final pattern = RegExp('a[a-z]p', caseSensitive: false);
       const text = 'Welcome to Appflowy example app 😁';
 
-      Iterable<Match> result = builtinAlgorithm.searchMethod(pattern, text);
+      Iterable<Match> result = algorithm.searchMethod(pattern, text);
       final starts = result.map((e) => e.start).toList();
       final ends = result.map((e) => e.end).toList();
       expect(starts, [11, 22, 28]);

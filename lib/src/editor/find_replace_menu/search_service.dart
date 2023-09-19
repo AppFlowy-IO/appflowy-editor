@@ -28,7 +28,7 @@ class SearchService {
   //matched pattern. We will use this to traverse between the matched patterns.
   List<Selection> matchedPositions = [];
   List<Match> matchedMatches = [];
-  SearchAlgorithm searchAlgorithm = Mixture();
+  SearchAlgorithm searchAlgorithm = DartBuiltIn();
   Pattern queriedPattern = RegExp('');
   int selectedIndex = 0;
   bool isRegex = false;
@@ -37,10 +37,8 @@ class SearchService {
   Pattern _getPattern(String targetString) {
     if (isRegex) {
       return RegExp(targetString, caseSensitive: caseSensitive);
-    } else if (!caseSensitive) {
-      return RegExp(RegExp.escape(targetString), caseSensitive: caseSensitive);
     } else {
-      return targetString;
+      return RegExp(RegExp.escape(targetString), caseSensitive: caseSensitive);
     }
   }
 
