@@ -40,13 +40,10 @@ Node todoListNode({
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.textStyleBuilder,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;

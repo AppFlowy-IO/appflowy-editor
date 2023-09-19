@@ -17,13 +17,10 @@ Node dividerNode() {
 
 class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.lineColor = Colors.grey,
     this.height = 10,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final Color lineColor;
   final double height;

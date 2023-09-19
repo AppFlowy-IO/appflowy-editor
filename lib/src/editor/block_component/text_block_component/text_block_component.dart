@@ -35,11 +35,8 @@ Node paragraphNode({
 
 class TextBlockComponentBuilder extends BlockComponentBuilder {
   TextBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {

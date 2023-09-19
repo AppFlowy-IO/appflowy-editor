@@ -6,13 +6,11 @@ class MobileEditor extends StatefulWidget {
   const MobileEditor({
     super.key,
     required this.editorState,
-    required this.onEditorStateChange,
     this.editorStyle,
   });
 
   final EditorState editorState;
   final EditorStyle? editorStyle;
-  final void Function(EditorState editorState) onEditorStateChange;
 
   @override
   State<MobileEditor> createState() => _MobileEditorState();
@@ -29,18 +27,6 @@ class _MobileEditorState extends State<MobileEditor> {
   @override
   void initState() {
     super.initState();
-
-    // customize the log configuration
-    editorState.logConfiguration
-      ..handler = debugPrint
-      ..level = LogLevel.off;
-
-    // listen to editor state change
-    editorState.transactionStream.listen((event) {
-      if (event.$1 == TransactionTime.after) {
-        widget.onEditorStateChange(editorState);
-      }
-    });
 
     editorScrollController = EditorScrollController(
       editorState: editorState,
@@ -61,6 +47,7 @@ class _MobileEditorState extends State<MobileEditor> {
 
   @override
   Widget build(BuildContext context) {
+    assert(PlatformExtension.isMobile);
     return Column(
       children: [
         // build appflowy editor
@@ -71,10 +58,13 @@ class _MobileEditorState extends State<MobileEditor> {
             editorScrollController: editorScrollController,
             blockComponentBuilders: blockComponentBuilders,
             // showcase 3: customize the header and footer.
-            header: Image.asset(
-              'assets/images/icon.jpeg',
-              fit: BoxFit.fitWidth,
-              height: 100,
+            header: Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Image.asset(
+                'assets/images/header.png',
+                fit: BoxFit.fitWidth,
+                height: 100,
+              ),
             ),
             footer: const SizedBox(
               height: 100,
