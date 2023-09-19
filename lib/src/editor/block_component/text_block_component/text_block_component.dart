@@ -119,7 +119,10 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
 
   void _onSelectionChange() {
     final selection = editorState.selection;
+    final tableParent = widget.node
+        .findParent((element) => element.type == TableBlockKeys.type);
     final showPlaceholder = selection != null &&
+        tableParent == null &&
         (selection.isSingle && selection.start.path.equals(node.path));
     if (showPlaceholder != _showPlaceholder) {
       setState(() => _showPlaceholder = showPlaceholder);
