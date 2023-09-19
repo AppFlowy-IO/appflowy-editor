@@ -77,9 +77,18 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     TextDirection direction =
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
+      TextDirection? lastDirection;
+      if (node.children.first.key.currentState != null) {
+        lastDirection = (node.children.first.key.currentState
+                as BlockComponentTextDirectionMixin)
+            .lastDirection;
+      }
+
       direction = calculateNodeDirection(
         node: node.children.first,
         layoutDirection: direction,
+        defaultTextDirection: editorState.editorStyle.defaultTextDirection,
+        lastDirection: lastDirection,
       );
     }
     return configuration.indentPadding(node, direction);
