@@ -109,6 +109,8 @@ KeyEventResult _showFindAndReplaceDialog(
     replaceFlag: openReplace,
     localizations: localizations,
     style: style,
+    regexFlag: true,
+    caseSensitiveFlag: true,
   );
 
   _findReplaceService?.show();

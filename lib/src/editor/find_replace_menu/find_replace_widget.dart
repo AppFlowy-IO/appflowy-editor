@@ -13,6 +13,8 @@ class FindMenuWidget extends StatefulWidget {
     required this.replaceFlag,
     this.localizations,
     required this.style,
+    this.regexFlag = true,
+    this.caseSensitiveFlag = true,
   });
 
   final VoidCallback dismiss;
@@ -20,6 +22,8 @@ class FindMenuWidget extends StatefulWidget {
   final bool replaceFlag;
   final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
+  final bool regexFlag;
+  final bool caseSensitiveFlag;
 
   @override
   State<FindMenuWidget> createState() => _FindMenuWidgetState();
