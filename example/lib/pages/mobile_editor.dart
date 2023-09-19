@@ -62,8 +62,6 @@ class _MobileEditorState extends State<MobileEditor> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Image.asset(
                 'assets/images/header.png',
-                fit: BoxFit.fitWidth,
-                height: 100,
               ),
             ),
             footer: const SizedBox(
@@ -102,7 +100,7 @@ class _MobileEditorState extends State<MobileEditor> {
         ),
         code: GoogleFonts.badScript(),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
     );
   }
 

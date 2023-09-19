@@ -1,0 +1,140 @@
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "level": 2,
+          "delta": [
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": { "italic": false, "bold": true }
+            }
+          ],
+          "align": "center"
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            { "insert": "AppFlowy Editor is a" },
+            { "insert": " " },
+            {
+              "insert": "highly customizable",
+              "attributes": { "bold": true, "bg_color": "0x7fffeb3b" }
+            },
+            { "insert": " " },
+            { "insert": "rich-text editor", "attributes": { "italic": true } },
+            { "insert": " for " },
+            { "insert": "Flutter", "attributes": { "underline": true } }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Customizable",
+              "attributes": { "bg_color": "0x4d00BCF0" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Test-covered",
+              "attributes": { "bg_color": "0x4d00BCF0" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            { "insert": "More to come!", "attributes": { "code": true } }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [{ "insert": "Here is an example you can give it a try" }],
+          "level": 4,
+          "align": "center"
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            { "insert": "Use " },
+            {
+              "insert": "AppFlowy Editor",
+              "attributes": {
+                "italic": true,
+                "bold": true,
+                "font_color": "0xffD70040",
+                "bg_color": "0x6000BCF0"
+              }
+            },
+            { "insert": " as a component to build your own app." }
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            { "insert": "Select text to " },
+            {
+              "insert": "trigger the toolbar",
+              "attributes": { "bg_color": "0x4de91e63" }
+            },
+            { "insert": " to " },
+            {
+              "insert": "format",
+              "attributes": {
+                "code": true,
+                "bold": true,
+                "underline": true,
+                "italic": true,
+                "font_color": "0xfff44336",
+                "bg_color": "0x4d4caf50"
+              }
+            },
+            { "insert": " your notes." }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            { "insert": "If you have questions or feedback, please " },
+            {
+              "insert": "submit an issue",
+              "attributes": { "bg_color": "0x4de91e63" }
+            },
+            {
+              "insert": " on Github or join the community along with 1000+ builders!"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

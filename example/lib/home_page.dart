@@ -51,7 +51,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _jsonString = rootBundle.loadString('assets/example.json');
+    _jsonString = PlatformExtension.isDesktopOrWeb
+        ? rootBundle.loadString('assets/example.json')
+        : rootBundle.loadString('assets/mobile_example.json');
 
     _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
@@ -109,7 +111,9 @@ class _HomePageState extends State<HomePage> {
           // AppFlowy Editor Demo
           _buildSeparator(context, 'AppFlowy Editor Demo'),
           _buildListTile(context, 'With Example.json', () {
-            final jsonString = rootBundle.loadString('assets/example.json');
+            final jsonString = PlatformExtension.isDesktopOrWeb
+                ? rootBundle.loadString('assets/example.json')
+                : rootBundle.loadString('assets/mobile_example.json');
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Large Document (10000+ lines)', () {

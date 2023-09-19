@@ -20,7 +20,10 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   void initState() {
     super.initState();
 
-    editorState = rootBundle.loadString('assets/example.json').then((value) {
+    final jsonString = PlatformExtension.isDesktopOrWeb
+        ? rootBundle.loadString('assets/example.json')
+        : rootBundle.loadString('assets/mobile_example.json');
+    editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
           Map<String, Object>.from(
