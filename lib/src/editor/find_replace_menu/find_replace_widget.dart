@@ -36,12 +36,16 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
   final replaceController = TextEditingController();
   String queriedPattern = '';
   bool replaceFlag = false;
+  bool regexFlag = true;
+  bool caseSensitiveFlag = true;
   late SearchService searchService;
 
   @override
   void initState() {
     super.initState();
     replaceFlag = widget.replaceFlag;
+    regexFlag = widget.regexFlag;
+    caseSensitiveFlag = widget.caseSensitiveFlag;
     searchService = SearchService(
       editorState: widget.editorState,
       style: SearchStyle(
@@ -133,41 +137,44 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
               tooltip: widget.localizations?.close ??
                   AppFlowyEditorLocalizations.current.closeFind,
             ),
-            FindMenuIconButton(
-              key: const Key('findRegexButton'),
-              iconSize: _iconSize,
-              onPressed: () {
-                setState(() {
-                  searchService.isRegex = !searchService.isRegex;
-                });
-                _searchPattern();
-              },
-              icon: Text(
-                'R*',
-                style: TextStyle(
-                  color: searchService.isRegex ? Colors.black : Colors.grey,
+            if (regexFlag)
+              FindMenuIconButton(
+                key: const Key('findRegexButton'),
+                iconSize: _iconSize,
+                onPressed: () {
+                  setState(() {
+                    searchService.isRegex = !searchService.isRegex;
+                  });
+                  _searchPattern();
+                },
+                icon: Text(
+                  'R*',
+                  style: TextStyle(
+                    color: searchService.isRegex ? Colors.black : Colors.grey,
+                  ),
                 ),
+                tooltip: AppFlowyEditorLocalizations.current.regex,
               ),
-              tooltip: AppFlowyEditorLocalizations.current.regex,
-            ),
-            FindMenuIconButton(
-              key: const Key('caseSensitiveButton'),
-              iconSize: _iconSize,
-              onPressed: () {
-                setState(() {
-                  searchService.caseSensitive = !searchService.caseSensitive;
-                });
-                _searchPattern();
-              },
-              icon: Text(
-                'Cc',
-                style: TextStyle(
-                  color:
-                      searchService.caseSensitive ? Colors.black : Colors.grey,
+            if (caseSensitiveFlag)
+              FindMenuIconButton(
+                key: const Key('caseSensitiveButton'),
+                iconSize: _iconSize,
+                onPressed: () {
+                  setState(() {
+                    searchService.caseSensitive = !searchService.caseSensitive;
+                  });
+                  _searchPattern();
+                },
+                icon: Text(
+                  'Cc',
+                  style: TextStyle(
+                    color: searchService.caseSensitive
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
                 ),
+                tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
               ),
-              tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
-            ),
           ],
         ),
         replaceFlag
