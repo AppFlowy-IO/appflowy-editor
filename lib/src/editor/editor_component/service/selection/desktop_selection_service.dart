@@ -265,7 +265,9 @@ class _DesktopSelectionServiceWidgetState
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
-    _panStartPosition = getNodeInOffset(_panStartOffset!)?.selectable?.start();
+    _panStartPosition = getNodeInOffset(_panStartOffset!)
+        ?.selectable
+        ?.getPositionInOffset(_panStartOffset!);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {

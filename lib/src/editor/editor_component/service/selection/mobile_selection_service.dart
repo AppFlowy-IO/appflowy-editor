@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
-import 'package:appflowy_editor/src/render/selection/selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
@@ -88,9 +87,9 @@ class _MobileSelectionServiceWidgetState
       onPanStart: _onPanStart,
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
-      onTapDown: _onTapDown,
-      onDoubleTapDown: _onDoubleTapDown,
-      onTripleTapDown: _onTripleTapDown,
+      onTapUp: _onTapUp,
+      onDoubleTapUp: _onDoubleTapUp,
+      onTripleTapUp: _onTripleTapUp,
       child: widget.child,
     );
   }
@@ -220,11 +219,11 @@ class _MobileSelectionServiceWidgetState
     }
   }
 
-  void _onTapDown(TapDownDetails details) {
-    final canTap = _interceptors.every(
-      (element) => element.canTap?.call(details) ?? true,
-    );
-    if (!canTap) return;
+  void _onTapUp(TapUpDetails details) {
+    // final canTap = _interceptors.every(
+    //   (element) => element.canTap?.call(details) ?? true,
+    // );
+    // if (!canTap) return;
 
     clearSelection();
 
@@ -239,7 +238,7 @@ class _MobileSelectionServiceWidgetState
     editorState.selection = Selection.collapsed(position);
   }
 
-  void _onDoubleTapDown(TapDownDetails details) {
+  void _onDoubleTapUp(TapUpDetails details) {
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
@@ -250,7 +249,7 @@ class _MobileSelectionServiceWidgetState
     updateSelection(selection);
   }
 
-  void _onTripleTapDown(TapDownDetails details) {
+  void _onTripleTapUp(TapUpDetails details) {
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
@@ -353,74 +352,64 @@ class _MobileSelectionServiceWidgetState
 
     Log.selection.debug('update selection areas, $normalizedSelection');
 
-    if (editorState.selectionType == SelectionType.block) {
-      final node = backwardNodes.first;
-      final rect = Offset.zero & node.rect.size;
-      final overlay = OverlayEntry(
-        builder: (context) => SelectionWidget(
-          color: widget.selectionColor,
-          layerLink: node.layerLink,
-          rect: rect,
-        ),
+    for (var i = 0; i < backwardNodes.length; i++) {
+      final node = backwardNodes[i];
+
+      final selectable = node.selectable;
+      if (selectable == null) {
+        continue;
+      }
+
+      var newSelection = normalizedSelection.copyWith();
+
+      /// In the case of multiple selections,
+      ///  we need to return a new selection for each selected node individually.
+      ///
+      /// < > means selected.
+      /// text: abcd<ef
+      /// text: ghijkl
+      /// text: mn>opqr
+      ///
+      if (!normalizedSelection.isSingle) {
+        if (i == 0) {
+          newSelection = newSelection.copyWith(end: selectable.end());
+        } else if (i == nodes.length - 1) {
+          newSelection = newSelection.copyWith(start: selectable.start());
+        } else {
+          newSelection = Selection(
+            start: selectable.start(),
+            end: selectable.end(),
+          );
+        }
+      }
+
+      final rects = selectable.getRectsInSelection(
+        newSelection,
+        shiftWithBaseOffset: true,
       );
-      _selectionAreas.add(overlay);
-    } else {
-      for (var i = 0; i < backwardNodes.length; i++) {
-        final node = backwardNodes[i];
-
-        final selectable = node.selectable;
-        if (selectable == null) {
-          continue;
-        }
-
-        var newSelection = normalizedSelection.copyWith();
-
-        /// In the case of multiple selections,
-        ///  we need to return a new selection for each selected node individually.
-        ///
-        /// < > means selected.
-        /// text: abcd<ef
-        /// text: ghijkl
-        /// text: mn>opqr
-        ///
-        if (!normalizedSelection.isSingle) {
-          if (i == 0) {
-            newSelection = newSelection.copyWith(end: selectable.end());
-          } else if (i == nodes.length - 1) {
-            newSelection = newSelection.copyWith(start: selectable.start());
-          } else {
-            newSelection = Selection(
-              start: selectable.start(),
-              end: selectable.end(),
-            );
-          }
-        }
-
-        final rects = selectable.getRectsInSelection(
-          newSelection,
+      for (var (j, rect) in rects.indexed) {
+        final selectionRect = selectable.transformRectToGlobal(
+          rect,
           shiftWithBaseOffset: true,
         );
-        for (final (j, rect) in rects.indexed) {
-          final selectionRect = selectable.transformRectToGlobal(
-            rect,
-            shiftWithBaseOffset: true,
-          );
-          selectionRects.add(selectionRect);
-          final showLeftHandler = i == 0 && j == 0;
-          final showRightHandler =
-              i == backwardNodes.length - 1 && j == rects.length - 1;
-          final overlay = OverlayEntry(
-            builder: (context) => MobileSelectionWidget(
-              color: Colors.transparent,
-              layerLink: node.layerLink,
-              rect: rect,
-              showLeftHandler: showLeftHandler,
-              showRightHandler: showRightHandler,
-              handlerColor: editorState.editorStyle.cursorColor,
-            ),
-          );
-          _selectionAreas.add(overlay);
+        selectionRects.add(selectionRect);
+        final showLeftHandler = i == 0 && j == 0;
+        final showRightHandler =
+            i == backwardNodes.length - 1 && j == rects.length - 1;
+        if (rect.width <= 0) {
+          rect = Rect.fromLTWH(rect.left, rect.top, 8.0, rect.height);
         }
+        final overlay = OverlayEntry(
+          builder: (context) => MobileSelectionWidget(
+            color: Colors.transparent,
+            layerLink: node.layerLink,
+            rect: rect,
+            showLeftHandler: showLeftHandler,
+            showRightHandler: showRightHandler,
+            handlerColor: editorState.editorStyle.cursorColor,
+          ),
+        );
+        _selectionAreas.add(overlay);
       }
     }
 
@@ -465,32 +454,57 @@ class _MobileSelectionServiceWidgetState
   }
 
   bool _isOverlayOnHandler(Offset point, MobileSelectionHandlerType type) {
-    if (selectionRects.isEmpty) {
+    final selection = editorState.selection;
+    if (selection == null) {
       return false;
     }
 
-    const extend = 40.0;
+    SelectableMixin? selectable;
+    Rect? rect;
+
     switch (type) {
       case MobileSelectionHandlerType.leftHandler:
       case MobileSelectionHandlerType.cursorHandler:
-        final first = selectionRects.first;
-        final handlerRect = Rect.fromLTWH(
-          first.left - extend,
-          first.top - extend,
-          extend * 2,
-          first.height + 2 * extend,
+        selectable =
+            editorState.getNodeAtPath(selection.start.path)?.selectable;
+        if (selectable == null) {
+          return false;
+        }
+        rect = selectable.getCursorRectInPosition(
+          selection.start,
+          shiftWithBaseOffset: true,
         );
-        return handlerRect.contains(point);
-
+        if (rect == null) {
+          return false;
+        }
+        break;
       case MobileSelectionHandlerType.rightHandler:
-        final last = selectionRects.last;
-        final rightHandlerRect = Rect.fromLTWH(
-          last.right - extend,
-          last.top - extend,
-          extend * 2,
-          last.height + 2 * extend,
+        selectable =
+            editorState.getNodeAtPath(selection.start.path)?.selectable;
+        if (selectable == null) {
+          return false;
+        }
+        rect = selectable.getCursorRectInPosition(
+          selection.end,
+          shiftWithBaseOffset: true,
         );
-        return rightHandlerRect.contains(point);
+        if (rect == null) {
+          return false;
+        }
+        break;
     }
+
+    const extend = 20.0;
+    final handlerRect = selectable.transformRectToGlobal(
+      Rect.fromLTWH(
+        rect.left - extend,
+        rect.top - extend,
+        extend * 2,
+        rect.height + 2 * extend,
+      ),
+      shiftWithBaseOffset: true,
+    );
+
+    return handlerRect.contains(point);
   }
 }
