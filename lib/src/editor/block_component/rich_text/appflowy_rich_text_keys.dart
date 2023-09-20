@@ -8,6 +8,8 @@ class AppFlowyRichTextKeys {
   static String findBackgroundColor = 'find_bg_color';
   static String code = 'code';
   static String href = 'href';
+  static String fontFamily = 'font_family';
+  static String fontSize = 'font_size';
 
   static List<String> supportSliced = [
     bold,
