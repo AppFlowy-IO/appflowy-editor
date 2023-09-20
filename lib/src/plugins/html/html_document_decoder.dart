@@ -379,9 +379,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   }
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
-    LinkedHashMap<Object, String> htmlAttributes, {
-    HtmlAttributeType attributeType = HtmlAttributeType.none,
-  }) {
+    LinkedHashMap<Object, String> htmlAttributes,
+  ) {
     final Attributes attributes = {};
     final style = htmlAttributes['style'];
     final css = _getCssFromString(style);
@@ -416,58 +415,38 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
       }
     }
-    if (attributeType == HtmlAttributeType.none) {
-      // background color
-      final backgroundColor = css['background-color'];
-      if (backgroundColor != null) {
-        final highlightColor = backgroundColor.tryToColor()?.toHex();
-        if (highlightColor != null) {
-          attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
-        }
-      }
 
-      // background
-      final background = css['background'];
-      if (background != null) {
-        final highlightColor = background.tryToColor()?.toHex();
-        if (highlightColor != null) {
-          attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
-        }
-      }
-
-      // color
-      final color = css['color'];
-      if (color != null) {
-        final textColor = color.tryToColor()?.toHex();
-        if (textColor != null) {
-          attributes[AppFlowyRichTextKeys.textColor] = textColor;
-        }
-      }
-
-      // italic
-      final fontStyle = css['font-style'];
-      if (fontStyle == 'italic') {
-        attributes[AppFlowyRichTextKeys.italic] = true;
+    // background color
+    final backgroundColor = css['background-color'];
+    if (backgroundColor != null) {
+      final highlightColor = backgroundColor.tryToColor()?.toHex();
+      if (highlightColor != null) {
+        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
       }
     }
-    if (attributeType == HtmlAttributeType.tablerow) {
-      final regex = RegExp('[^0-9]');
-      final width = css['width'];
-      if (width != null) {
-        String rowWidth = width.toString();
-        rowWidth = rowWidth.replaceAll(regex, '');
-        int newrowWidth = int.parse(rowWidth);
 
-        attributes[TableCellBlockKeys.width] = newrowWidth;
+    // background
+    final background = css['background'];
+    if (background != null) {
+      final highlightColor = background.tryToColor()?.toHex();
+      if (highlightColor != null) {
+        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
       }
-      final height = css['height'];
-      if (height != null) {
-        String rowHeight = height.toString();
-        rowHeight = rowHeight.replaceAll(regex, '');
-        int newhieght = int.parse(rowHeight);
+    }
 
-        attributes[TableCellBlockKeys.height] = newhieght;
+    // color
+    final color = css['color'];
+    if (color != null) {
+      final textColor = color.tryToColor()?.toHex();
+      if (textColor != null) {
+        attributes[AppFlowyRichTextKeys.textColor] = textColor;
       }
+    }
+
+    // italic
+    final fontStyle = css['font-style'];
+    if (fontStyle == 'italic') {
+      attributes[AppFlowyRichTextKeys.italic] = true;
     }
 
     return attributes.isEmpty ? null : attributes;
@@ -561,5 +540,3 @@ class HTMLTags {
         tag == blockQuote;
   }
 }
-
-enum HtmlAttributeType { table, tablerow, none }
