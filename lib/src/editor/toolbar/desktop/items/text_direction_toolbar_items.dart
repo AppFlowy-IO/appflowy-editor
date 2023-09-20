@@ -1,24 +1,23 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 
 final List<ToolbarItem> textDirectionItems = [
   _TextDirectionToolbarItem(
     id: 'text_direction_auto',
     name: blockComponentTextDirectionAuto,
     tooltip: AppFlowyEditorLocalizations.current.auto,
-    icon: Icons.swap_horiz,
+    iconName: 'text_direction_auto',
   ),
   _TextDirectionToolbarItem(
     id: 'text_direction_ltr',
     name: blockComponentTextDirectionLTR,
     tooltip: AppFlowyEditorLocalizations.current.ltr,
-    icon: Icons.format_textdirection_l_to_r,
+    iconName: 'text_direction_left',
   ),
   _TextDirectionToolbarItem(
     id: 'text_direction_rtl',
     name: blockComponentTextDirectionRTL,
     tooltip: AppFlowyEditorLocalizations.current.rtl,
-    icon: Icons.format_textdirection_r_to_l,
+    iconName: 'text_direction_right',
   ),
 ];
 
@@ -27,7 +26,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
     required String id,
     required String name,
     required String tooltip,
-    required IconData icon,
+    required String iconName,
   }) : super(
           id: 'editor.$id',
           group: 7,
@@ -39,11 +38,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
               (n) => n.attributes[blockComponentTextDirection] == name,
             );
             return SVGIconItemWidget(
-              iconBuilder: (_) => Icon(
-                icon,
-                size: 16,
-                color: isHighlight ? highlightColor : Colors.white,
-              ),
+              iconName: 'toolbar/$iconName',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               tooltip: tooltip,

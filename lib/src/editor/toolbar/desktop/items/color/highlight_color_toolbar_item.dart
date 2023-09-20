@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 
 ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
   return ToolbarItem(
@@ -19,7 +18,6 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       });
       return SVGIconItemWidget(
         iconName: 'toolbar/highlight_color',
-        iconSize: const Size.square(14),
         isHighlight: isHighlight,
         highlightColor: highlightColor,
         tooltip: AppFlowyEditorLocalizations.current.highlightColor,
