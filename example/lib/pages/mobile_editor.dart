@@ -52,20 +52,24 @@ class _MobileEditorState extends State<MobileEditor> {
       children: [
         // build appflowy editor
         Expanded(
-          child: AppFlowyEditor(
-            editorStyle: editorStyle,
+          child: MobileFloatingToolbar(
             editorState: editorState,
             editorScrollController: editorScrollController,
-            blockComponentBuilders: blockComponentBuilders,
-            // showcase 3: customize the header and footer.
-            header: Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Image.asset(
-                'assets/images/header.png',
+            child: AppFlowyEditor(
+              editorStyle: editorStyle,
+              editorState: editorState,
+              editorScrollController: editorScrollController,
+              blockComponentBuilders: blockComponentBuilders,
+              // showcase 3: customize the header and footer.
+              header: Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Image.asset(
+                  'assets/images/header.png',
+                ),
               ),
-            ),
-            footer: const SizedBox(
-              height: 100,
+              footer: const SizedBox(
+                height: 100,
+              ),
             ),
           ),
         ),

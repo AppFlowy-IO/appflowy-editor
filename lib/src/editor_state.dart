@@ -321,7 +321,7 @@ class EditorState {
             blockComponentDelta: delta
                 .slice(
                   selection.startIndex,
-                  delta.length,
+                  selection.isSingle ? selection.endIndex : delta.length,
                 )
                 .toJson(),
           },
@@ -333,7 +333,7 @@ class EditorState {
         node = node.children.last;
       }
       delta = node.delta;
-      if (delta != null) {
+      if (delta != null && !selection.isSingle) {
         if (node.parent != null) {
           node.insertBefore(
             node.copyWith(
