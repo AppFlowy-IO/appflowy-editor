@@ -40,12 +40,9 @@ Node headingNode({
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   HeadingBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.textStyleBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;

@@ -24,12 +24,9 @@ class TableCellBlockKeys {
 
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.menuBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final TableBlockComponentMenuBuilder? menuBuilder;
 

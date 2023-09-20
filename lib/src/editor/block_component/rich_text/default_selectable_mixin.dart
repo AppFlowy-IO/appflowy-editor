@@ -88,5 +88,7 @@ mixin DefaultSelectableMixin {
 
   Position end() => forward.end();
 
-  TextDirection textDirection() => forward.textDirection();
+  TextDirection textDirection() => forwardKey.currentState != null
+      ? forward.textDirection()
+      : TextDirection.ltr;
 }

@@ -20,7 +20,10 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   void initState() {
     super.initState();
 
-    editorState = rootBundle.loadString('assets/example.json').then((value) {
+    final jsonString = PlatformExtension.isDesktopOrWeb
+        ? rootBundle.loadString('assets/example.json')
+        : rootBundle.loadString('assets/mobile_example.json');
+    editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
           Map<String, Object>.from(
@@ -104,10 +107,15 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
         configuration: configuration,
         iconBuilder: (context, node) {
-          return const Icon(
-            Icons.circle,
-            size: 20,
-            color: Colors.green,
+          return Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.circle,
+              size: 10,
+              color: Colors.red,
+            ),
           );
         },
       ),

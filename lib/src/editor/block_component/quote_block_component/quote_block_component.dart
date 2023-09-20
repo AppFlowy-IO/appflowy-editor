@@ -34,12 +34,9 @@ Node quoteNode({
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   QuoteBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final BlockIconBuilder? iconBuilder;
 
