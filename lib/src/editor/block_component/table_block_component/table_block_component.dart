@@ -58,15 +58,12 @@ typedef TableBlockComponentMenuBuilder = Widget Function(
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.addIcon = TableDefaults.addIcon,
     this.borderColor = TableDefaults.borderColor,
     this.borderHoverColor = TableDefaults.borderHoverColor,
     this.menuBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final Widget addIcon;
   final TableBlockComponentMenuBuilder? menuBuilder;

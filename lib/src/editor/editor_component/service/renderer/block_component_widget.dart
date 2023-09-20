@@ -21,12 +21,15 @@ class BlockComponentStatelessWidget extends StatelessWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,15 @@ class BlockComponentStatefulWidget extends StatefulWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   State<BlockComponentStatefulWidget> createState() =>
@@ -77,10 +83,18 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     TextDirection direction =
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
-      direction = calculateNodeDirection(
-        node: node.children.first,
-        layoutDirection: direction,
-      );
+      final firstChild = node.children.first;
+      final currentState =
+          firstChild.key.currentState as BlockComponentTextDirectionMixin?;
+      if (currentState != null) {
+        final lastDirection = currentState.lastDirection;
+        direction = calculateNodeDirection(
+          node: firstChild,
+          layoutDirection: direction,
+          defaultTextDirection: editorState.editorStyle.defaultTextDirection,
+          lastDirection: lastDirection,
+        );
+      }
     }
     return configuration.indentPadding(node, direction);
   }
