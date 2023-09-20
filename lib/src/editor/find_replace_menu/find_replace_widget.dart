@@ -147,11 +147,13 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   });
                   _searchPattern();
                 },
-                icon: Text(
-                  'R*',
-                  style: TextStyle(
-                    color: searchService.isRegex ? Colors.black : Colors.grey,
-                  ),
+                icon: EditorSvg(
+                  name: 'regex',
+                  width: 20,
+                  height: 20,
+                  color: searchService.isRegex
+                      ? Colors.black
+                      : Colors.grey,
                 ),
                 tooltip: AppFlowyEditorLocalizations.current.regex,
               ),
@@ -165,13 +167,13 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   });
                   _searchPattern();
                 },
-                icon: Text(
-                  'Cc',
-                  style: TextStyle(
-                    color: searchService.caseSensitive
-                        ? Colors.black
-                        : Colors.grey,
-                  ),
+                icon: EditorSvg(
+                  name: 'case_sensitive',
+                  width: 20,
+                  height: 20,
+                  color: searchService.isRegex
+                      ? Colors.black
+                      : Colors.grey,
                 ),
                 tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
               ),
