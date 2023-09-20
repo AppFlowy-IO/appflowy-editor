@@ -36,12 +36,9 @@ Node bulletedListNode({
 
 class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   BulletedListBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final BlockIconBuilder? iconBuilder;
 

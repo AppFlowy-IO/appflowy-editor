@@ -1,0 +1,109 @@
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "delta": [{ "insert": "👋 مرحبًا بك في محرر AppFlowy" }],
+          "level": 2,
+          "align": "center"
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "محرر AppFlowy هو محرر نصوص غني قابل للتخصيص بشكل كبير لـ Flutter"
+            }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "قابل للتخصيص",
+              "attributes": { "bg_color": "0x4d2196f3" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "مُغطى بالاختبارات",
+              "attributes": { "bg_color": "0x4d2196f3" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            { "insert": "المزيد قادم قريبًا!", "attributes": { "code": true } }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [{ "insert": "إليك مثال يمكنك تجربته" }],
+          "level": 4,
+          "align": "center"
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            { "insert": "استخدم محرر AppFlowy كمكون لبناء تطبيقك الخاص." }
+          ]
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "delta": [
+            { "insert": "استخدم" },
+            {
+              "insert": " / ",
+              "attributes": { "code": true, "bg_color": "0x4d2196f3" }
+            },
+            { "insert": "لإدراج الكتل." }
+          ],
+          "checked": false
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            { "insert": "حدد النص لتشغيل شريط الأدوات وتنسيق ملاحظاتك." }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {
+              "insert": "إذا كانت لديك أسئلة أو ملاحظات، يرجى تقديم مشكلة على Github أو الانضمام إلى المجتمع مع أكثر من 1000 بنّاء!"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

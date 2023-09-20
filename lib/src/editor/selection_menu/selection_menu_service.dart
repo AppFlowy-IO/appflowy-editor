@@ -58,6 +58,12 @@ class SelectionMenu extends SelectionMenuService {
 
   @override
   void show() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _show();
+    });
+  }
+
+  void _show() {
     dismiss();
 
     final selectionService = editorState.service.selectionService;

@@ -321,7 +321,7 @@ class EditorState {
             blockComponentDelta: delta
                 .slice(
                   selection.startIndex,
-                  delta.length,
+                  selection.isSingle ? selection.endIndex : delta.length,
                 )
                 .toJson(),
           },
@@ -333,7 +333,7 @@ class EditorState {
         node = node.children.last;
       }
       delta = node.delta;
-      if (delta != null) {
+      if (delta != null && !selection.isSingle) {
         if (node.parent != null) {
           node.insertBefore(
             node.copyWith(
@@ -421,21 +421,6 @@ class EditorState {
         }
       }
     }
-
-    /*
-    final rects = nodes
-        .map(
-          (node) => node.selectable
-              ?.getRectsInSelection(selection)
-              .map(
-                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
-              )
-              .whereNotNull(),
-        )
-        .whereNotNull()
-        .expand((element) => element)
-        .toList();
-    */
 
     return rects;
   }

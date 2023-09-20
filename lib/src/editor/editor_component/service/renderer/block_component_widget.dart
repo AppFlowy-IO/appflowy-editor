@@ -21,12 +21,15 @@ class BlockComponentStatelessWidget extends StatelessWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,15 @@ class BlockComponentStatefulWidget extends StatefulWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   State<BlockComponentStatefulWidget> createState() =>

@@ -12,7 +12,9 @@ abstract class BlockComponentActionState {
 
 /// BlockComponentBuilder is used to build a BlockComponentWidget.
 abstract class BlockComponentBuilder with BlockComponentSelectable {
-  BlockComponentBuilder();
+  BlockComponentBuilder({
+    this.configuration = const BlockComponentConfiguration(),
+  });
 
   /// validate the node.
   ///
@@ -27,7 +29,7 @@ abstract class BlockComponentBuilder with BlockComponentSelectable {
 
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 
-  BlockComponentConfiguration get configuration =>
+  BlockComponentConfiguration configuration =
       const BlockComponentConfiguration();
 }
 

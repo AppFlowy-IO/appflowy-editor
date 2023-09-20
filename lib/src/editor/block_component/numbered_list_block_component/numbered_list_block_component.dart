@@ -41,12 +41,9 @@ Node numberedListNode({
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final BlockIconBuilder? iconBuilder;
 

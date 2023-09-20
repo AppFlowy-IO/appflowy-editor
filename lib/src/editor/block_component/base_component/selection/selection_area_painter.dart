@@ -117,8 +117,15 @@ class SelectionAreaPainter extends CustomPainter {
       ..color = selectionColor
       ..style = PaintingStyle.fill;
 
-    for (final rect in rects) {
-      canvas.drawRect(rect, paint);
+    for (var rect in rects) {
+      // if rect.width is 0, we draw a small rect to indicate the selection area
+      if (rect.width <= 0) {
+        rect = Rect.fromLTWH(rect.left, rect.top, 8.0, rect.height);
+      }
+      canvas.drawRect(
+        rect,
+        paint,
+      );
     }
   }
 

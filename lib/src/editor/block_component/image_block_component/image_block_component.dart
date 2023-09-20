@@ -56,13 +56,10 @@ typedef ImageBlockComponentMenuBuilder = Widget Function(
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.showMenu = false,
     this.menuBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// Whether to show the menu of this block component.
   final bool showMenu;
