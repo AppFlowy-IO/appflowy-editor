@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../infra/testable_editor.dart';
@@ -355,6 +355,127 @@ void main() {
 
       final node = editor.nodeAtPath([1])!;
       expect(node.selectable?.textDirection(), TextDirection.rtl);
+
+      await editor.dispose();
+    });
+
+    testWidgets(
+        'use previous node direction calculated value (rtl) when its set by default text direction',
+        (tester) async {
+      final editor = tester.editor
+        ..addNode(
+          paragraphNode(
+            text: 'سلام',
+          ),
+        )
+        ..addNode(
+          paragraphNode(
+            text: '\$',
+          ),
+        );
+      await editor.startTesting(
+        defaultTextDirection: blockComponentTextDirectionAuto,
+      );
+
+      final node = editor.nodeAtPath([1])!;
+      expect(node.selectable?.textDirection(), TextDirection.rtl);
+
+      await editor.dispose();
+    });
+
+    testWidgets('indent padding on rtl direction', (tester) async {
+      final node = paragraphNode(
+        text: 'سلام',
+        textDirection: blockComponentTextDirectionRTL,
+        children: [
+          paragraphNode(
+            text: 'س',
+            textDirection: blockComponentTextDirectionRTL,
+          )
+        ],
+      );
+      final editor = tester.editor..addNode(node);
+      await editor.startTesting();
+
+      final nestedBlock =
+          node.key.currentState as NestedBlockComponentStatefulWidgetMixin;
+
+      expect(
+        nestedBlock.indentPadding,
+        const BlockComponentConfiguration()
+            .indentPadding(node, TextDirection.rtl),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('indent padding on fallback to default direction auto',
+        (tester) async {
+      final node = paragraphNode(
+        text: 'سلام',
+        children: [paragraphNode(text: 'س')],
+      );
+      final editor = tester.editor..addNode(node);
+      await editor.startTesting(
+        defaultTextDirection: blockComponentTextDirectionAuto,
+      );
+
+      final nestedBlock =
+          node.key.currentState as NestedBlockComponentStatefulWidgetMixin;
+
+      expect(
+        nestedBlock.indentPadding,
+        const BlockComponentConfiguration()
+            .indentPadding(node, TextDirection.rtl),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('indent padding respect last direction', (tester) async {
+      final editor = tester.editor
+        ..addNode(
+          paragraphNode(
+            text: 'سلام',
+            children: [paragraphNode()],
+          ),
+        );
+      await editor.startTesting(
+        defaultTextDirection: blockComponentTextDirectionAuto,
+      );
+
+      final node = editor.editorState.getNodeAtPath([0])!;
+
+      var nestedBlock =
+          node.key.currentState as NestedBlockComponentStatefulWidgetMixin;
+      expect(
+        nestedBlock.indentPadding,
+        const BlockComponentConfiguration()
+            .indentPadding(node, TextDirection.rtl),
+      );
+
+      final selection = Selection.single(path: [0, 0], startOffset: 0);
+      await editor.updateSelection(selection);
+      await editor.ime.typeText('a');
+
+      nestedBlock =
+          node.key.currentState as NestedBlockComponentStatefulWidgetMixin;
+      expect(
+        nestedBlock.indentPadding,
+        const BlockComponentConfiguration()
+            .indentPadding(node, TextDirection.ltr),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
+
+      nestedBlock =
+          node.key.currentState as NestedBlockComponentStatefulWidgetMixin;
+      expect(
+        nestedBlock.indentPadding,
+        const BlockComponentConfiguration()
+            .indentPadding(node, TextDirection.ltr),
+      );
 
       await editor.dispose();
     });
