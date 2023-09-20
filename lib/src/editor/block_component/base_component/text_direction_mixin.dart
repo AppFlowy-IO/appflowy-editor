@@ -95,12 +95,9 @@ TextDirection calculateNodeDirection({
 
   // if the value is auto and the text isn't null or empty,
   // calculate the text direction by the text
-  final direction = _determineTextDirection(text);
-  if (direction != null) {
-    return direction;
-  }
-
-  return defaultTextDirection?.toTextDirection() ?? layoutDirection;
+  return _determineTextDirection(text) ??
+      defaultTextDirection?.toTextDirection() ??
+      layoutDirection;
 }
 
 TextDirection? _getDirectionFromPreviousOrParentNode(
@@ -109,34 +106,31 @@ TextDirection? _getDirectionFromPreviousOrParentNode(
 ) {
   TextDirection? prevOrParentNodeDirection;
   if (node.previous != null) {
-    prevOrParentNodeDirection =
-        _getDirectionFromNode(node.previous!, defaultTextDirection);
+    prevOrParentNodeDirection = _getDirectionFromNode(
+      node.previous!,
+      defaultTextDirection,
+    );
   }
   if (node.parent != null && prevOrParentNodeDirection == null) {
-    prevOrParentNodeDirection =
-        _getDirectionFromNode(node.parent!, defaultTextDirection);
+    prevOrParentNodeDirection = _getDirectionFromNode(
+      node.parent!,
+      defaultTextDirection,
+    );
   }
-
   return prevOrParentNodeDirection;
 }
 
 TextDirection? _getDirectionFromNode(Node node, String? defaultTextDirection) {
-  String? nodeDirection;
-  if (defaultTextDirection == blockComponentTextDirectionAuto) {
-    nodeDirection = blockComponentTextDirectionAuto;
+  final nodeDirection = node.direction(
+    defaultTextDirection == blockComponentTextDirectionAuto
+        ? blockComponentTextDirectionAuto
+        : null,
+  );
+  if (nodeDirection == blockComponentTextDirectionAuto) {
+    return node.selectable?.textDirection();
+  } else {
+    return nodeDirection?.toTextDirection();
   }
-
-  nodeDirection = node.direction(nodeDirection);
-
-  if (nodeDirection != null) {
-    if (nodeDirection == blockComponentTextDirectionAuto) {
-      return node.selectable?.textDirection();
-    } else {
-      return nodeDirection.toTextDirection();
-    }
-  }
-
-  return null;
 }
 
 TextDirection? _determineTextDirection(String text) {
@@ -152,10 +146,8 @@ TextDirection? _determineTextDirection(String text) {
 }
 
 extension on Node {
-  String? direction(String? defaultDirection) {
-    return (attributes[blockComponentTextDirection] as String?) ??
-        defaultDirection;
-  }
+  String? direction(String? defaultDirection) =>
+      attributes[blockComponentTextDirection] as String? ?? defaultDirection;
 }
 
 extension on String {
