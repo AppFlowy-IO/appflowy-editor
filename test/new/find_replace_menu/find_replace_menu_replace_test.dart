@@ -315,7 +315,8 @@ void main() async {
     testWidgets('replace all regex matches', (tester) async {
       const patternToBeFound = 'a[a-z]p';
       const replacePattern = 'axp';
-      const expectedText = 'Welcome to the Appflowy exaxple axp, an axpha-level editor for caxpuses 😁';
+      const expectedText =
+          'Welcome to the Appflowy exaxple axp, an axpha-level editor for caxpuses 😁';
       const replaceAllBtn = Key('replaceAllButton');
       const regexButton = Key('findRegexButton');
 
@@ -356,10 +357,12 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('replace all regex matches with case insensitive', (tester) async {
+    testWidgets('replace all regex matches with case insensitive',
+        (tester) async {
       const patternToBeFound = 'a[a-z]p';
       const replacePattern = 'axp';
-      const expectedText = 'Welcome to the axpflowy exaxple axp, an axpha-level editor for caxpuses 😁';
+      const expectedText =
+          'Welcome to the axpflowy exaxple axp, an axpha-level editor for caxpuses 😁';
       const replaceAllBtn = Key('replaceAllButton');
       const regexButton = Key('findRegexButton');
       const caseSensitiveButton = Key('caseSensitiveButton');
@@ -406,7 +409,8 @@ void main() async {
     testWidgets('replace all regex matches with backreference', (tester) async {
       const patternToBeFound = 'a([a-z])p';
       const replacePattern = r'b\1q';
-      const expectedText = 'Welcome to the Appflowy exbmqle bpq, an blqha-level editor for cbmquses 😁';
+      const expectedText =
+          'Welcome to the Appflowy exbmqle bpq, an blqha-level editor for cbmquses 😁';
       const replaceAllBtn = Key('replaceAllButton');
       const regexButton = Key('findRegexButton');
 
