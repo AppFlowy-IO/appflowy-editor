@@ -1,3 +1,6 @@
+## 1.4.1
+* fix: build error on Flutter 3.13 by @LucasXu0 in ([#488](https://github.com/AppFlowy-IO/appflowy-editor/pull/488))
+
 ## 1.4.0
 * feat: adjust the loading large document optimization in mobile platform by @LucasXu0 in ([#474](https://github.com/AppFlowy-IO/appflowy-editor/pull/474))
 * feat: simplify auto scroll behavior in ScrollServiceWidget by @LucasXu0 in ([#437](https://github.com/AppFlowy-IO/appflowy-editor/pull/437))

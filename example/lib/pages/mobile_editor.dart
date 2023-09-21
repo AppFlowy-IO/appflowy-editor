@@ -55,6 +55,18 @@ class _MobileEditorState extends State<MobileEditor> {
           child: MobileFloatingToolbar(
             editorState: editorState,
             editorScrollController: editorScrollController,
+            toolbarBuilder: (context, anchor) {
+              return AdaptiveTextSelectionToolbar.editable(
+                clipboardStatus: ClipboardStatus.pasteable,
+                onCopy: () => copyCommand.execute(editorState),
+                onCut: () => cutCommand.execute(editorState),
+                onPaste: () => pasteCommand.execute(editorState),
+                onSelectAll: () => selectAllCommand.execute(editorState),
+                anchors: TextSelectionToolbarAnchors(
+                  primaryAnchor: anchor,
+                ),
+              );
+            },
             child: AppFlowyEditor(
               editorStyle: editorStyle,
               editorState: editorState,
@@ -126,6 +138,11 @@ class _MobileEditorState extends State<MobileEditor> {
       textStyleBuilder: (level) => GoogleFonts.poppins(
         fontSize: levelToFontSize.elementAtOrNull(level - 1) ?? 14.0,
         fontWeight: FontWeight.w600,
+      ),
+    );
+    map[ParagraphBlockKeys.type] = TextBlockComponentBuilder(
+      configuration: BlockComponentConfiguration(
+        placeholderText: (node) => 'Type something...',
       ),
     );
     return map;
