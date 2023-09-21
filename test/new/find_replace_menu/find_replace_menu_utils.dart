@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../infra/testable_editor.dart';
 
 const text = 'Welcome to Appflowy 😁';
+const regexTarget = 'Welcome to the Appflowy example app, an alpha-level editor for campuses 😁';
 const Color kSelectedHighlightColor = Colors.yellow;
 const Color kUnselectedHighlightColor = Colors.lightGreen;
 String kSelectedHCHex = kSelectedHighlightColor.toHex();

@@ -239,11 +239,12 @@ class SearchService {
 
     _highlightAllMatches(unhighlight: true);
 
+    final reversedMatches = matchedMatches.reversed.toList();
     for (final (index, position) in matchedPositions.reversed.indexed) {
       final node = editorState.getNodeAtPath(position.start.path)!;
       final String replaced;
       if (isRegex) {
-        replaced = _getRegexReplaced(replaceText, matchedMatches[index]);
+        replaced = _getRegexReplaced(replaceText, reversedMatches[index]);
       } else {
         replaced = replaceText;
       }
