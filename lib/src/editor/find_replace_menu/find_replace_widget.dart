@@ -151,9 +151,7 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   name: 'regex',
                   width: 20,
                   height: 20,
-                  color: searchService.isRegex
-                      ? Colors.black
-                      : Colors.grey,
+                  color: searchService.isRegex ? Colors.black : Colors.grey,
                 ),
                 tooltip: AppFlowyEditorLocalizations.current.regex,
               ),
@@ -171,9 +169,8 @@ class _FindMenuWidgetState extends State<FindMenuWidget> {
                   name: 'case_sensitive',
                   width: 20,
                   height: 20,
-                  color: searchService.isRegex
-                      ? Colors.black
-                      : Colors.grey,
+                  color:
+                      searchService.caseSensitive ? Colors.black : Colors.grey,
                 ),
                 tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
               ),
