@@ -19,11 +19,13 @@ class MobileFloatingToolbar extends StatefulWidget {
     required this.editorState,
     required this.editorScrollController,
     required this.child,
+    required this.toolbarBuilder,
   });
 
   final EditorState editorState;
   final EditorScrollController editorScrollController;
   final Widget child;
+  final Widget Function(BuildContext context, Offset anchor) toolbarBuilder;
 
   @override
   State<MobileFloatingToolbar> createState() => _MobileFloatingToolbarState();
@@ -149,18 +151,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
 
   Widget _buildToolbar(
     BuildContext context,
-    Offset? offset,
+    Offset offset,
   ) {
-    return AdaptiveTextSelectionToolbar.editable(
-      clipboardStatus: ClipboardStatus.pasteable,
-      onCopy: () => copyCommand.execute(editorState),
-      onCut: () => cutCommand.execute(editorState),
-      onPaste: () => pasteCommand.execute(editorState),
-      onSelectAll: () => selectAllCommand.execute(editorState),
-      anchors: TextSelectionToolbarAnchors(
-        primaryAnchor: offset ?? Offset.zero,
-      ),
-    );
+    return widget.toolbarBuilder(context, offset);
   }
 
   Rect _findSuitableRect(Iterable<Rect> rects) {
