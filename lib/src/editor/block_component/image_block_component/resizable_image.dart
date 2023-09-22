@@ -1,6 +1,11 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:string_validator/string_validator.dart';
+
+import 'base64_image.dart';
 
 class ResizableImage extends StatefulWidget {
   const ResizableImage({
@@ -25,6 +30,8 @@ class ResizableImage extends StatefulWidget {
   State<ResizableImage> createState() => _ResizableImageState();
 }
 
+const _kImageBlockComponentMinWidth = 30.0;
+
 class _ResizableImageState extends State<ResizableImage> {
   late double imageWidth;
 
@@ -48,7 +55,7 @@ class _ResizableImageState extends State<ResizableImage> {
     return Align(
       alignment: widget.alignment,
       child: SizedBox(
-        width: imageWidth - moveDistance,
+        width: max(_kImageBlockComponentMinWidth, imageWidth - moveDistance),
         height: widget.height,
         child: MouseRegion(
           onEnter: (event) => setState(() {
@@ -65,9 +72,14 @@ class _ResizableImageState extends State<ResizableImage> {
 
   Widget _buildResizableImage(BuildContext context) {
     Widget child;
-    final regex = RegExp('^(http|https)://');
-    final url = widget.src;
-    if (regex.hasMatch(url)) {
+    final src = widget.src;
+    if (isBase64(src)) {
+      // load base64 image (url is raw base64 from web)
+      _cacheImage ??= Image.memory(
+        dataFromBase64String(src),
+      );
+      child = _cacheImage!;
+    } else if (isURL(src)) {
       // load network image
       _cacheImage ??= Image.network(
         widget.src,
@@ -86,7 +98,7 @@ class _ResizableImageState extends State<ResizableImage> {
       child = _cacheImage!;
     } else {
       // load local file
-      _cacheImage ??= Image.file(File(url));
+      _cacheImage ??= Image.file(File(src));
       child = _cacheImage!;
     }
     return Stack(
@@ -135,7 +147,7 @@ class _ResizableImageState extends State<ResizableImage> {
           SizedBox.fromSize(
             size: const Size(10, 10),
           ),
-          const Text('Loading'),
+          Text(AppFlowyEditorLocalizations.current.loading),
         ],
       ),
     );
@@ -151,7 +163,7 @@ class _ResizableImageState extends State<ResizableImage> {
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         border: Border.all(width: 1, color: Colors.black),
       ),
-      child: const Text('Could not load the image'),
+      child: Text(AppFlowyEditorLocalizations.current.imageLoadFailed),
     );
   }
 
@@ -180,7 +192,8 @@ class _ResizableImageState extends State<ResizableImage> {
           }
         },
         onHorizontalDragEnd: (details) {
-          imageWidth = imageWidth - moveDistance;
+          imageWidth =
+              max(_kImageBlockComponentMinWidth, imageWidth - moveDistance);
           initialOffset = 0;
           moveDistance = 0;
 

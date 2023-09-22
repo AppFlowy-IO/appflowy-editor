@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:collection/collection.dart';
 
 class HeadingBlockKeys {
   const HeadingBlockKeys._();
@@ -40,12 +40,9 @@ Node headingNode({
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   HeadingBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.textStyleBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;
@@ -98,7 +95,8 @@ class _HeadingBlockComponentWidgetState
         DefaultSelectableMixin,
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -116,6 +114,7 @@ class _HeadingBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   int get level => widget.node.attributes[HeadingBlockKeys.level] as int? ?? 1;
@@ -123,12 +122,13 @@ class _HeadingBlockComponentWidgetState
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
       // make the width of the rich text as small as possible to avoid
       child: Row(
@@ -137,13 +137,18 @@ class _HeadingBlockComponentWidgetState
           Flexible(
             child: AppFlowyRichText(
               key: forwardKey,
+              delegate: this,
               node: widget.node,
               editorState: editorState,
-              textSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(textStyle).updateTextStyle(
-                        widget.textStyleBuilder?.call(level) ??
-                            defaultTextStyle(level),
-                      ),
+              textAlign: alignment?.toTextAlign,
+              textSpanDecorator: (textSpan) {
+                var result = textSpan.updateTextStyle(textStyle);
+                result = result.updateTextStyle(
+                  widget.textStyleBuilder?.call(level) ??
+                      defaultTextStyle(level),
+                );
+                return result;
+              },
               placeholderText: placeholderText,
               placeholderTextSpanDecorator: (textSpan) => textSpan
                   .updateTextStyle(
@@ -154,6 +159,8 @@ class _HeadingBlockComponentWidgetState
                         defaultTextStyle(level),
                   ),
               textDirection: textDirection,
+              cursorColor: editorState.editorStyle.cursorColor,
+              selectionColor: editorState.editorStyle.selectionColor,
             ),
           ),
         ],
@@ -163,6 +170,17 @@ class _HeadingBlockComponentWidgetState
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 

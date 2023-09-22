@@ -33,8 +33,15 @@ abstract class AppFlowyScrollService implements AutoScrollerService {
   /// Only within the range of minScrollExtent and maxScrollExtent are legal values.
   void scrollTo(
     double dy, {
-    Duration? duration,
+    Duration duration,
   });
+
+  void jumpTo(
+    int index,
+  );
+
+  void jumpToTop();
+  void jumpToBottom();
 
   void goBallistic(double velocity);
 

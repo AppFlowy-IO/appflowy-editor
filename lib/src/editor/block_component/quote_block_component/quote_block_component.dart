@@ -34,12 +34,9 @@ Node quoteNode({
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   QuoteBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final BlockIconBuilder? iconBuilder;
 
@@ -86,7 +83,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         DefaultSelectableMixin,
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -104,17 +102,19 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
   @override
   Node get node => widget.node;
 
+  @override
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
       color: backgroundColor,
       width: double.infinity,
+      alignment: alignment,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,8 +128,10 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
             Flexible(
               child: AppFlowyRichText(
                 key: forwardKey,
+                delegate: this,
                 node: widget.node,
                 editorState: editorState,
+                textAlign: alignment?.toTextAlign,
                 placeholderText: placeholderText,
                 textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
                   textStyle,
@@ -139,6 +141,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                   placeholderTextStyle,
                 ),
                 textDirection: textDirection,
+                cursorColor: editorState.editorStyle.cursorColor,
+                selectionColor: editorState.editorStyle.selectionColor,
               ),
             ),
           ],
@@ -149,6 +153,17 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 

@@ -9,19 +9,20 @@ final _regex = RegExp(
 );
 
 mixin BlockComponentTextDirectionMixin {
+  EditorState get editorState;
   Node get node;
 
   TextDirection? lastDirection;
 
   /// Calculate the text direction of a block component.
   // defaultTextDirection will be ltr if caller hasn't passed any value.
-  TextDirection calculateTextDirection({
-    TextDirection? defaultTextDirection,
-  }) {
-    defaultTextDirection ??= TextDirection.ltr;
+  TextDirection calculateTextDirection({TextDirection? layoutDirection}) {
+    layoutDirection ??= TextDirection.ltr;
+    final defaultTextDirection = editorState.editorStyle.defaultTextDirection;
 
     final direction = calculateNodeDirection(
       node: node,
+      layoutDirection: layoutDirection,
       defaultTextDirection: defaultTextDirection,
       lastDirection: lastDirection,
     );
@@ -35,7 +36,7 @@ mixin BlockComponentTextDirectionMixin {
     // recalculate the indent padding.
     if (node.level > 1 &&
         direction != lastDirection &&
-        node.attributes[blockComponentTextDirection] ==
+        node.direction(defaultTextDirection) ==
             blockComponentTextDirectionAuto) {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => node.parent?.notify());
@@ -47,45 +48,41 @@ mixin BlockComponentTextDirectionMixin {
 }
 
 /// Calculate the text direction of a node.
-// If the textDirection attribute is not set we will use defaultTextDirection.
+// If the textDirection attribute is not set, we will use defaultTextDirection if
+// it has a value (defaultTextDirection != null). If not will use layoutDirection.
 // If the textDirection is ltr or rtl we will apply that.
 // If the textDirection is auto we go by these priorities:
 // 1. Determine the direction by first character with strong directionality
 // 2. lastDirection which is the node last determined direction
 // 3. previous line direction
 // 4. defaultTextDirection
+// 5. layoutDirection
 // We will move from first priority when for example the node text is empty or
 // it only has characters without strong directionality e.g. '@'.
 TextDirection calculateNodeDirection({
   required Node node,
-  required TextDirection defaultTextDirection,
+  required TextDirection layoutDirection,
+  String? defaultTextDirection,
   TextDirection? lastDirection,
 }) {
-  defaultTextDirection = lastDirection ?? defaultTextDirection;
-
   // if the block component has a text direction attribute which is not auto,
   // use it
-  final value = node.attributes[blockComponentTextDirection] as String?;
+  final value = node.direction(defaultTextDirection);
   if (value != null && value != blockComponentTextDirectionAuto) {
-    return value.toTextDirection(fallback: defaultTextDirection);
+    final direction = value.toTextDirection();
+    if (direction != null) {
+      return direction;
+    }
   }
 
-  // previous line direction
-  final previousNodeContainsTextDirection = node.previousNodeWhere(
-    (element) => element.attributes.containsKey(blockComponentTextDirection),
-  );
-  if (lastDirection == null &&
-      value == blockComponentTextDirectionAuto &&
-      previousNodeContainsTextDirection != null) {
-    final String previousValue = previousNodeContainsTextDirection
-        .attributes[blockComponentTextDirection];
-    if (previousValue == blockComponentTextDirectionAuto) {
-      defaultTextDirection =
-          previousNodeContainsTextDirection.selectable?.textDirection() ??
-              defaultTextDirection;
+  if (value == blockComponentTextDirectionAuto) {
+    if (lastDirection != null) {
+      defaultTextDirection = lastDirection.name;
     } else {
       defaultTextDirection =
-          previousValue.toTextDirection(fallback: defaultTextDirection);
+          _getDirectionFromPreviousOrParentNode(node, defaultTextDirection)
+                  ?.name ??
+              defaultTextDirection;
     }
   }
 
@@ -93,11 +90,50 @@ TextDirection calculateNodeDirection({
   // use the default text direction
   final text = node.delta?.toPlainText();
   if (value == null || text == null || text.isEmpty) {
-    return defaultTextDirection;
+    return defaultTextDirection?.toTextDirection() ?? layoutDirection;
   }
 
   // if the value is auto and the text isn't null or empty,
   // calculate the text direction by the text
+  return _determineTextDirection(text) ??
+      defaultTextDirection?.toTextDirection() ??
+      layoutDirection;
+}
+
+TextDirection? _getDirectionFromPreviousOrParentNode(
+  Node node,
+  String? defaultTextDirection,
+) {
+  TextDirection? prevOrParentNodeDirection;
+  if (node.previous != null) {
+    prevOrParentNodeDirection = _getDirectionFromNode(
+      node.previous!,
+      defaultTextDirection,
+    );
+  }
+  if (node.parent != null && prevOrParentNodeDirection == null) {
+    prevOrParentNodeDirection = _getDirectionFromNode(
+      node.parent!,
+      defaultTextDirection,
+    );
+  }
+  return prevOrParentNodeDirection;
+}
+
+TextDirection? _getDirectionFromNode(Node node, String? defaultTextDirection) {
+  final nodeDirection = node.direction(
+    defaultTextDirection == blockComponentTextDirectionAuto
+        ? blockComponentTextDirectionAuto
+        : null,
+  );
+  if (nodeDirection == blockComponentTextDirectionAuto) {
+    return node.selectable?.textDirection();
+  } else {
+    return nodeDirection?.toTextDirection();
+  }
+}
+
+TextDirection? _determineTextDirection(String text) {
   final matches = _regex.firstMatch(text);
   if (matches != null) {
     if (matches.group(1) != null) {
@@ -106,17 +142,21 @@ TextDirection calculateNodeDirection({
       return TextDirection.ltr;
     }
   }
+  return null;
+}
 
-  return defaultTextDirection;
+extension on Node {
+  String? direction(String? defaultDirection) =>
+      attributes[blockComponentTextDirection] as String? ?? defaultDirection;
 }
 
 extension on String {
-  TextDirection toTextDirection({required TextDirection fallback}) {
+  TextDirection? toTextDirection() {
     if (this == blockComponentTextDirectionLTR) {
       return TextDirection.ltr;
     } else if (this == blockComponentTextDirectionRTL) {
       return TextDirection.rtl;
     }
-    return fallback;
+    return null;
   }
 }

@@ -1,9 +1,9 @@
-import 'dart:collection';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:appflowy_editor/src/core/document/attributes.dart';
+import 'package:collection/collection.dart';
+import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../editor/block_component/rich_text/appflowy_rich_text_keys.dart';
@@ -204,9 +204,9 @@ class Delta extends Iterable<TextOperation> {
     while ((end == null || index < end) && iterator.hasNext) {
       TextOperation? nextOp;
       if (index < start) {
-        nextOp = iterator._next(start - index);
+        nextOp = iterator.next(start - index);
       } else {
-        nextOp = iterator._next(end == null ? null : end - index);
+        nextOp = iterator.next(end == null ? null : end - index);
         result.add(nextOp);
       }
 
@@ -255,27 +255,27 @@ class Delta extends Iterable<TextOperation> {
       while (
           thisIter.peek() is TextInsert && thisIter.peekLength() <= firstLeft) {
         firstLeft -= thisIter.peekLength();
-        final next = thisIter._next();
+        final next = thisIter.next();
         operations.add(next);
       }
       if (firstOther.length - firstLeft > 0) {
-        otherIter._next(firstOther.length - firstLeft);
+        otherIter.next(firstOther.length - firstLeft);
       }
     }
 
     final delta = Delta(operations: operations);
     while (thisIter.hasNext || otherIter.hasNext) {
       if (otherIter.peek() is TextInsert) {
-        final next = otherIter._next();
+        final next = otherIter.next();
         delta.add(next);
       } else if (thisIter.peek() is TextDelete) {
-        final next = thisIter._next();
+        final next = thisIter.next();
         delta.add(next);
       } else {
         // otherIs
         final length = min(thisIter.peekLength(), otherIter.peekLength());
-        final thisOp = thisIter._next(length);
-        final otherOp = otherIter._next(length);
+        final thisOp = thisIter.next(length);
+        final otherOp = otherIter.next(length);
         final attributes = composeAttributes(
           thisOp.attributes,
           otherOp.attributes,
@@ -308,6 +308,80 @@ class Delta extends Iterable<TextOperation> {
     }
 
     return delta..chop();
+  }
+
+  Delta diff(Delta other) {
+    if (_operations.equals(other._operations)) {
+      return Delta();
+    }
+
+    final strings = [this, other].map((e) {
+      final text = e.map((op) {
+        if (op is TextInsert) {
+          return op.text;
+        }
+        throw Exception('diff() called $e');
+      }).join();
+      return text;
+    }).toList();
+
+    final retDelta = Delta();
+    final diffResult = diff_match_patch.diff(strings[0], strings[1]);
+    diff_match_patch.DiffMatchPatch().diffCleanupSemantic(diffResult);
+
+    final thisIter = _OpIterator(this);
+    final otherIter = _OpIterator(other);
+
+    for (final diff in diffResult) {
+      var length = diff.text.length;
+      while (length > 0) {
+        var opLength = 0;
+        switch (diff.operation) {
+          case diff_match_patch.DIFF_INSERT:
+            opLength = min(otherIter.peekLength(), length);
+            retDelta.add(otherIter.next(opLength));
+            break;
+          case diff_match_patch.DIFF_DELETE:
+            opLength = min(length, thisIter.peekLength());
+            thisIter.next(opLength);
+            retDelta.delete(opLength);
+            break;
+          case diff_match_patch.DIFF_EQUAL:
+            opLength = min(
+              min(thisIter.peekLength(), otherIter.peekLength()),
+              length,
+            );
+            final thisOp = thisIter.next(opLength);
+            final otherOp = otherIter.next(opLength);
+            if (isAttributesEqual(thisOp.attributes, otherOp.attributes)) {
+              retDelta.retain(
+                opLength,
+                attributes: invertAttributes(
+                  thisOp.attributes,
+                  otherOp.attributes,
+                ),
+              );
+            } else {
+              retDelta
+                ..add(otherOp)
+                ..delete(opLength);
+            }
+            break;
+        }
+        length -= opLength;
+      }
+    }
+    return retDelta..trim();
+  }
+
+  void trim() {
+    if (isNotEmpty) {
+      final last = _operations.last;
+      if (last is TextRetain &&
+          (last.attributes == null || last.attributes!.isEmpty)) {
+        _operations.removeLast();
+      }
+    }
   }
 
   /// This method joins two Delta together.
@@ -488,7 +562,7 @@ class _OpIterator {
     return _maxInt;
   }
 
-  TextOperation _next([int? length]) {
+  TextOperation next([int? length]) {
     length ??= _maxInt;
 
     if (_index >= _operations.length) {
@@ -528,7 +602,7 @@ class _OpIterator {
     } else {
       final offset = _offset;
       final index = _index;
-      final next = _next();
+      final next = this.next();
       final rest = _operations.sublist(_index);
       _offset = offset;
       _index = index;

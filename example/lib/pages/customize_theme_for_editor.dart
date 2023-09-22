@@ -20,7 +20,10 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   void initState() {
     super.initState();
 
-    editorState = rootBundle.loadString('assets/example.json').then((value) {
+    final jsonString = PlatformExtension.isDesktopOrWeb
+        ? rootBundle.loadString('assets/example.json')
+        : rootBundle.loadString('assets/mobile_example.json');
+    editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
           Map<String, Object>.from(
@@ -55,7 +58,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
 
   Widget buildEditor(EditorState editorState) {
     return Container(
-      color: Colors.black,
+      color: Colors.grey[900],
       child: AppFlowyEditor(
         editorState: editorState,
         editorStyle: customizeEditorStyle(),
@@ -104,10 +107,15 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
         configuration: configuration,
         iconBuilder: (context, node) {
-          return const Icon(
-            Icons.circle,
-            size: 20,
-            color: Colors.green,
+          return Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.circle,
+              size: 10,
+              color: Colors.red,
+            ),
           );
         },
       ),
@@ -134,11 +142,11 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
           ? const EdgeInsets.only(left: 100, right: 100, top: 20)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,
-      selectionColor: Colors.green,
+      selectionColor: Colors.green.withOpacity(0.5),
       textStyleConfiguration: TextStyleConfiguration(
         text: const TextStyle(
           fontSize: 18.0,
-          color: Colors.white54,
+          color: Colors.white,
         ),
         bold: const TextStyle(
           fontWeight: FontWeight.w900,

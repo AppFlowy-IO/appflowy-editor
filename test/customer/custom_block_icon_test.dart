@@ -10,6 +10,9 @@ void main() async {
   /// - bulleted list
   /// - todo list
   /// - quote
+  await AppFlowyEditorLocalizations.load(
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('custom block icon', (tester) async {
     await mockNetworkImagesFor(() async {
       const widget = CustomBlockIcon();

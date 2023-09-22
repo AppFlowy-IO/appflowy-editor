@@ -15,10 +15,13 @@ final CommandShortcutEvent deleteCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _deleteCommandHandler = (editorState) {
   final selection = editorState.selection;
+  final selectionType = editorState.selectionType;
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
+  if (selectionType == SelectionType.block) {
+    return _deleteInBlockSelection(editorState);
+  } else if (selection.isCollapsed) {
     return _deleteInCollapsedSelection(editorState);
   } else {
     return _deleteInNotCollapsedSelection(editorState);
@@ -41,10 +44,21 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
 
   final transaction = editorState.transaction;
 
-  // merge the next node with delta
   if (position.offset == delta.length) {
-    final next = node.findDownward((element) => element.delta != null);
-    if (next != null) {
+    Node? tableParent =
+        node.findParent((element) => element.type == TableBlockKeys.type);
+    Node? nextTableParent;
+    final next = node.findDownward((element) {
+      nextTableParent =
+          element.findParent((element) => element.type == TableBlockKeys.type);
+      // break if only one is in a table or they're in different tables
+      return tableParent != nextTableParent ||
+          // merge the next node with delta
+          element.delta != null;
+    });
+    // table nodes should be deleted using the table menu
+    // in-table paragraphs should only be deleted inside the table
+    if (next != null && tableParent == nextTableParent) {
       if (next.children.isNotEmpty) {
         final path = node.path + [node.children.length];
         transaction.insertNodes(path, next.children);
@@ -81,5 +95,19 @@ CommandShortcutEventHandler _deleteInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _deleteInBlockSelection = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || editorState.selectionType != SelectionType.block) {
+    return KeyEventResult.ignored;
+  }
+  final transaction = editorState.transaction;
+  transaction.deleteNodesAtPath(selection.start.path);
+  editorState
+      .apply(transaction)
+      .then((value) => editorState.selectionType = null);
+
   return KeyEventResult.handled;
 };

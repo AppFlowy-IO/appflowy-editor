@@ -14,14 +14,14 @@ class FindReplaceMenu implements FindReplaceService {
     required this.context,
     required this.editorState,
     required this.replaceFlag,
-    required this.localizations,
+    this.localizations,
     required this.style,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final bool replaceFlag;
-  final FindReplaceLocalizations localizations;
+  final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
 
   final double topOffset = 52;

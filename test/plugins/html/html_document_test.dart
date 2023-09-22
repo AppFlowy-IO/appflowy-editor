@@ -97,24 +97,27 @@ void main() {
           {"insert": "There's a line with different formats, such as "},
           {
             "insert": "bold",
-            "attributes": {"bold": true}
+            "attributes": {"bold": true},
           },
           {"insert": ", "},
           {
             "insert": "italic",
-            "attributes": {"italic": true}
+            "attributes": {"italic": true},
           },
           {"insert": ", underline, "},
           {
             "insert": "strikethrough",
-            "attributes": {"strikethrough": true}
+            "attributes": {"strikethrough": true},
           },
           {"insert": ", and "},
           {
             "insert": "inline code",
-            "attributes": {"bg_color": "0x26878378", "font_color": "0xffeb5757"}
+            "attributes": {
+              "bg_color": "0x26878378",
+              "font_color": "0xffeb5757",
+            },
           },
-          {"insert": "."}
+          {"insert": "."},
         ],
       );
     });
@@ -213,24 +216,24 @@ void main() {
         {"insert": "There's a line with different formats, such as "},
         {
           "insert": "bold",
-          "attributes": {"bold": true}
+          "attributes": {"bold": true},
         },
         {"insert": ", "},
         {
           "insert": "italic",
-          "attributes": {"italic": true}
+          "attributes": {"italic": true},
         },
         {"insert": ", underline, "},
         {
           "insert": "strikethrough",
-          "attributes": {"strikethrough": true}
+          "attributes": {"strikethrough": true},
         },
         {"insert": ", and "},
         {
           "insert": "inline code",
-          "attributes": {"code": true}
+          "attributes": {"code": true},
         },
-        {"insert": "."}
+        {"insert": "."},
       ],
     );
   });

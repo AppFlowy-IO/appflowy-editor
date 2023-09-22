@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_events/copy_paste_extension.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> pasteCommands = [
@@ -29,36 +30,17 @@ final CommandShortcutEvent pasteTextWithoutFormattingCommand =
 
 CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(
-      false,
-      'pasteTextWithoutFormattingCommand is not supported on mobile platform.',
-    );
-    return KeyEventResult.ignored;
-  }
-
-  var selection = editorState.selection;
+  final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-
-  // delete the selection first.
-  if (!selection.isCollapsed) {
-    editorState.deleteSelection(selection);
-  }
-
-  // fetch selection again.
-  selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.skipRemainingHandlers;
-  }
-  assert(selection.isCollapsed);
 
   () async {
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
     if (text != null && text.isNotEmpty) {
-      handlePastePlainText(editorState, text);
+      await editorState.deleteSelectionIfNeeded();
+      await editorState.pastePlainText(text);
     }
   }();
 
@@ -66,45 +48,82 @@ CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
 };
 
 CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'pasteCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
-  var selection = editorState.selection;
+  final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-
-  // delete the selection first.
-  if (!selection.isCollapsed) {
-    editorState.deleteSelection(selection);
-  }
-
-  // fetch selection again.
-  selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.skipRemainingHandlers;
-  }
-  assert(selection.isCollapsed);
 
   () async {
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
     final html = data.html;
     if (html != null && html.isNotEmpty) {
-      editorState.pasteHtml(html);
-    } else if (text != null && text.isNotEmpty) {
-      handlePastePlainText(editorState, data.text!);
+      await editorState.deleteSelectionIfNeeded();
+      // if the html is pasted successfully, then return
+      // otherwise, paste the plain text
+      if (await editorState.pasteHtml(html)) {
+        return;
+      }
+    }
+
+    if (text != null && text.isNotEmpty) {
+      await editorState.deleteSelectionIfNeeded();
+      editorState.pastePlainText(text);
     }
   }();
 
   return KeyEventResult.handled;
 };
 
+RegExp _hrefRegex = RegExp(
+  r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
+);
+
 extension on EditorState {
-  Future<void> pasteHtml(String html) async {
-    final nodes = htmlToDocument(html).root.children;
+  Future<bool> pasteHtml(String html) async {
+    final nodes = htmlToDocument(html).root.children.toList();
+    // remove the front and back empty line
+    while (nodes.isNotEmpty && nodes.first.delta?.isEmpty == true) {
+      nodes.removeAt(0);
+    }
+    while (nodes.isNotEmpty && nodes.last.delta?.isEmpty == true) {
+      nodes.removeLast();
+    }
+    if (nodes.isEmpty) {
+      return false;
+    }
+    if (nodes.length == 1) {
+      await pasteSingleLineNode(nodes.first);
+    } else {
+      await pasteMultiLineNodes(nodes.toList());
+    }
+    return true;
+  }
+
+  Future<void> pastePlainText(String plainText) async {
+    if (await pasteHtmlIfAvailable(plainText)) {
+      return;
+    }
+
+    await deleteSelectionIfNeeded();
+
+    final nodes = plainText
+        .split('\n')
+        .map(
+          (e) => e
+            ..replaceAll(r'\r', '')
+            ..trimRight(),
+        )
+        .map((e) {
+          // parse the url content
+          final Attributes attributes = {};
+          if (_hrefRegex.hasMatch(e)) {
+            attributes[AppFlowyRichTextKeys.href] = e;
+          }
+          return Delta()..insert(e, attributes: attributes);
+        })
+        .map((e) => paragraphNode(delta: e))
+        .toList();
     if (nodes.isEmpty) {
       return;
     }
@@ -115,142 +134,25 @@ extension on EditorState {
     }
   }
 
-  Future<void> pasteSingleLineNode(Node insertedNode) async {
-    final selection = await _deleteSelectionIfNeeded();
-    if (selection == null) {
-      return;
+  Future<bool> pasteHtmlIfAvailable(String plainText) async {
+    final selection = this.selection;
+    if (selection == null ||
+        !selection.isSingle ||
+        selection.isCollapsed ||
+        !_hrefRegex.hasMatch(plainText)) {
+      return false;
     }
+
     final node = getNodeAtPath(selection.start.path);
-    final delta = node?.delta;
-    if (node == null || delta == null) {
-      return;
+    if (node == null) {
+      return false;
     }
+
     final transaction = this.transaction;
-    final insertedDelta = insertedNode.delta;
-    // if the node is empty, replace it with the inserted node.
-    if (delta.isEmpty || insertedDelta == null) {
-      transaction.insertNode(selection.end.path.next, insertedNode);
-      transaction.deleteNode(node);
-      transaction.afterSelection = Selection.collapsed(
-        Position(
-          path: selection.end.path,
-          offset: insertedDelta?.length ?? 0,
-        ),
-      );
-    } else {
-      // if the node is not empty, insert the delta from inserted node after the selection.
-      transaction.insertTextDelta(node, selection.endIndex, insertedDelta);
-    }
+    transaction.formatText(node, selection.startIndex, selection.length, {
+      AppFlowyRichTextKeys.href: plainText,
+    });
     await apply(transaction);
-  }
-
-  Future<void> pasteMultiLineNodes(List<Node> nodes) async {
-    assert(nodes.length > 1);
-
-    final selection = await _deleteSelectionIfNeeded();
-    if (selection == null) {
-      return;
-    }
-    final node = getNodeAtPath(selection.start.path);
-    final delta = node?.delta;
-    if (node == null || delta == null) {
-      return;
-    }
-    final transaction = this.transaction;
-
-    final lastNodeLength = nodes.last.delta?.length ?? 0;
-    // merge the current selected node delta into the nodes.
-    if (delta.isNotEmpty) {
-      nodes.first.insertDelta(
-        delta.slice(0, selection.startIndex),
-        insertAfter: false,
-      );
-      nodes[0] = nodes.first.copyWith(
-        type: node.type,
-        attributes: {
-          ...node.attributes,
-          ...nodes.first.attributes,
-        },
-      );
-      nodes.last.insertDelta(
-        delta.slice(selection.endIndex),
-        insertAfter: true,
-      );
-    }
-
-    for (final child in node.children) {
-      nodes.last.insert(child);
-    }
-
-    transaction.insertNodes(selection.end.path, nodes);
-
-    // delete the current node.
-    transaction.deleteNode(node);
-
-    var path = selection.end.path;
-    for (var i = 0; i < nodes.length; i++) {
-      path = path.next;
-    }
-    transaction.afterSelection = Selection.collapsed(
-      Position(
-        path: path.previous, // because a node is deleted.
-        offset: lastNodeLength,
-      ),
-    );
-
-    await apply(transaction);
-  }
-
-  // delete the selection if it's not collapsed.
-  Future<Selection?> _deleteSelectionIfNeeded() async {
-    var selection = this.selection;
-    if (selection == null) {
-      return null;
-    }
-
-    // delete the selection first.
-    if (!selection.isCollapsed) {
-      deleteSelection(selection);
-    }
-
-    // fetch selection again.selection = editorState.selection;
-    assert(this.selection?.isCollapsed == true);
-    return this.selection;
-  }
-}
-
-extension on Node {
-  void insertDelta(Delta delta, {bool insertAfter = true}) {
-    assert(delta.every((element) => element is TextInsert));
-    if (this.delta == null) {
-      updateAttributes({
-        blockComponentDelta: delta.toJson(),
-      });
-    } else if (insertAfter) {
-      updateAttributes(
-        {
-          blockComponentDelta: this
-              .delta!
-              .compose(
-                Delta()
-                  ..retain(this.delta!.length)
-                  ..addAll(delta),
-              )
-              .toJson(),
-        },
-      );
-    } else {
-      updateAttributes(
-        {
-          blockComponentDelta: delta
-              .compose(
-                Delta()
-                  ..retain(delta.length)
-                  ..addAll(this.delta!),
-              )
-              .toJson(),
-        },
-      );
-    }
+    return true;
   }
 }

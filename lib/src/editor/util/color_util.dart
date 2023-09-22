@@ -1,44 +1,49 @@
 import 'package:flutter/material.dart';
 
 extension ColorExtension on String {
-  Color? toColor() {
-    var hexString = replaceFirst('0x', '');
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    final value = int.tryParse(buffer.toString(), radix: 16);
-    return value != null ? Color(value) : null;
-  }
-
   Color? tryToColor() {
-    if (startsWith('#') || startsWith('0x')) {
-      return toColor();
+    final rgbRegex = RegExp(r'^rgb\((\d+),\s*(\d+),\s*(\d+)\)$');
+    final rgbaRegex = RegExp(r'^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$');
+    final hexRegex = RegExp(r'^(0x|#)([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$');
+
+    if (rgbRegex.hasMatch(this)) {
+      final match = rgbRegex.firstMatch(this);
+      if (match != null && match.groupCount == 3) {
+        final r = int.tryParse(match.group(1)!);
+        final g = int.tryParse(match.group(2)!);
+        final b = int.tryParse(match.group(3)!);
+        if (r != null && g != null && b != null) {
+          return Color.fromARGB(255, r, g, b);
+        }
+      }
+    } else if (rgbaRegex.hasMatch(this)) {
+      final match = rgbaRegex.firstMatch(this);
+      if (match != null && match.groupCount == 4) {
+        final r = int.tryParse(match.group(1)!);
+        final g = int.tryParse(match.group(2)!);
+        final b = int.tryParse(match.group(3)!);
+        final a = double.tryParse(match.group(4)!);
+        if (r != null && g != null && b != null && a != null) {
+          return Color.fromARGB((a * 255).toInt(), r, g, b);
+        }
+      }
+    } else if (hexRegex.hasMatch(this)) {
+      final match = hexRegex.firstMatch(this);
+      if (match != null && match.groupCount == 2) {
+        final hexValue = int.tryParse(match.group(2)!, radix: 16);
+        if (hexValue != null) {
+          if (match.group(2)!.length == 6) {
+            // 6-character hex format without alpha
+            return Color(hexValue).withAlpha(255);
+          } else {
+            // 8-character hex format with alpha
+            return Color(hexValue);
+          }
+        }
+      }
     }
 
-    final reg = RegExp(r'rgba\((\d+),(\d+),(\d+),([\d.]+)\)');
-    final match = reg.firstMatch(replaceAll(' ', ''));
-    if (match == null) {
-      return null;
-    }
-
-    if (match.groupCount < 4) {
-      return null;
-    }
-    final redStr = match.group(1);
-    final greenStr = match.group(2);
-    final blueStr = match.group(3);
-    final alphaStr = match.group(4);
-
-    final red = redStr != null ? int.tryParse(redStr) : null;
-    final green = greenStr != null ? int.tryParse(greenStr) : null;
-    final blue = blueStr != null ? int.tryParse(blueStr) : null;
-    final alpha = alphaStr != null ? double.tryParse(alphaStr) ?? 1.0 : 1.0;
-
-    if (red == null || green == null || blue == null) {
-      return null;
-    }
-
-    return Color.fromARGB((alpha * 255).toInt(), red, green, blue);
+    return null; // Return null if parsing fails
   }
 }
 

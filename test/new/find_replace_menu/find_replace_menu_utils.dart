@@ -75,6 +75,16 @@ Future<void> enterInputIntoFindDialog(
   await tester.pumpAndSettle();
 }
 
+Future<void> enterInputIntoReplaceDialog(
+  WidgetTester tester,
+  String pattern,
+) async {
+  const textInputKey = Key('replaceTextField');
+  await tester.tap(find.byKey(textInputKey));
+  await tester.enterText(find.byKey(textInputKey), pattern);
+  await tester.pumpAndSettle();
+}
+
 Future<void> pressFindAndReplaceCommand(
   TestableEditor editor, {
   bool openReplace = false,
@@ -128,8 +138,7 @@ void checkCurrentSelection(
   int startOffset,
   int endOffset,
 ) {
-  final selection =
-      editor.editorState.service.selectionService.currentSelection.value;
+  final selection = editor.editorState.selection;
 
   expect(selection != null, true);
   expect(selection!.start, Position(path: path, offset: startOffset));

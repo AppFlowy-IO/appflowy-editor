@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -36,6 +37,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   final String debounceKey = 'updateEditingValue';
 
+  int skipUpdateEditingValue = 0;
+
   @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
@@ -69,21 +72,21 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         configuration,
-        // TextInputConfiguration(
-        //   enableDeltaModel: false,
-        //   inputType: TextInputType.multiline,
-        //   textCapitalization: TextCapitalization.sentences,
-        //   inputAction: TextInputAction.newline,
-        //   keyboardAppearance: Theme.of(context).brightness,
-        // ),
       );
     }
 
     Debounce.cancel(debounceKey);
 
+    // the set editing state will update the text editing value in macOS.
+    // we just skip the unnecessary update.
+    if (Platform.isMacOS) {
+      skipUpdateEditingValue += 1;
+    }
+
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
+
     currentTextEditingValue = formattedValue;
 
     Log.input.debug(
@@ -93,6 +96,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
+    if (Platform.isMacOS && skipUpdateEditingValue > 0) {
+      skipUpdateEditingValue -= 1;
+      return;
+    }
     if (currentTextEditingValue == value) {
       return;
     }
@@ -179,6 +186,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       } else {
         composingTextRange = delta.composing;
       }
+    }
+
+    if (PlatformExtension.isWindows && delta is TextEditingDeltaNonTextUpdate) {
+      composingTextRange = delta.composing;
     }
   }
 }

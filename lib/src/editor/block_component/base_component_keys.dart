@@ -22,3 +22,9 @@ const blockComponentTextDirection = 'textDirection';
 const blockComponentTextDirectionAuto = 'auto';
 const blockComponentTextDirectionLTR = 'ltr';
 const blockComponentTextDirectionRTL = 'rtl';
+
+/// text align
+///
+/// its value must be one of the following:
+///  - left, right, center.
+const blockComponentAlign = 'align';

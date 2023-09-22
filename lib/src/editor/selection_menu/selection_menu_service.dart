@@ -58,6 +58,12 @@ class SelectionMenu extends SelectionMenuService {
 
   @override
   void show() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _show();
+    });
+  }
+
+  void _show() {
     dismiss();
 
     final selectionService = editorState.service.selectionService;
@@ -113,7 +119,7 @@ class SelectionMenu extends SelectionMenuService {
                       deleteSlashByDefault: deleteSlashByDefault,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -339,4 +345,5 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   dividerMenuItem,
+  tableMenuItem,
 ];

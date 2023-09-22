@@ -26,10 +26,6 @@ final CommandShortcutEvent moveCursorLeftCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow left key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorBackward(SelectionMoveRange.character);
   } else {
@@ -48,10 +44,6 @@ final CommandShortcutEvent moveCursorToBeginCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'arrow left key is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
   if (isRTL(editorState)) {
     editorState.moveCursorBackward(SelectionMoveRange.line);
   } else {
@@ -75,9 +67,45 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
   if (selection == null) {
     return KeyEventResult.ignored;
   }
+
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final delta = node?.delta;
+
+  if (node == null || delta == null) {
+    return KeyEventResult.ignored;
+  }
+
   if (isRTL(editorState)) {
+    final endOfWord = selection.end.moveHorizontal(
+      editorState,
+      forward: false,
+      selectionRange: SelectionRange.word,
+    );
+    final selectedWord = delta.toPlainText().substring(
+          selection.end.offset,
+          endOfWord?.offset,
+        );
+    // check if the selected word is whitespace
+    if (selectedWord.trim().isEmpty) {
+      editorState.moveCursorBackward(SelectionMoveRange.word);
+    }
     editorState.moveCursorBackward(SelectionMoveRange.word);
   } else {
+    final startOfWord = selection.end.moveHorizontal(
+      editorState,
+      selectionRange: SelectionRange.word,
+    );
+    if (startOfWord == null) {
+      return KeyEventResult.handled;
+    }
+    final selectedWord = delta.toPlainText().substring(
+          startOfWord.offset,
+          selection.end.offset,
+        );
+    // check if the selected word is whitespace
+    if (selectedWord.trim().isEmpty) {
+      editorState.moveCursorForward(SelectionMoveRange.word);
+    }
     editorState.moveCursorForward(SelectionMoveRange.word);
   }
   return KeyEventResult.handled;

@@ -21,12 +21,15 @@ class BlockComponentStatelessWidget extends StatelessWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,15 @@ class BlockComponentStatefulWidget extends StatefulWidget
 
   @override
   final Node node;
-  @override
-  final BlockComponentConfiguration configuration;
+
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
   @override
   final bool showActions;
+
+  @override
+  final BlockComponentConfiguration configuration;
 
   @override
   State<BlockComponentStatefulWidget> createState() =>
@@ -77,10 +83,18 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     TextDirection direction =
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
-      direction = calculateNodeDirection(
-        node: node.children.first,
-        defaultTextDirection: direction,
-      );
+      final firstChild = node.children.first;
+      final currentState =
+          firstChild.key.currentState as BlockComponentTextDirectionMixin?;
+      if (currentState != null) {
+        final lastDirection = currentState.lastDirection;
+        direction = calculateNodeDirection(
+          node: firstChild,
+          layoutDirection: direction,
+          defaultTextDirection: editorState.editorStyle.defaultTextDirection,
+          lastDirection: lastDirection,
+        );
+      }
     }
     return configuration.indentPadding(node, direction);
   }
@@ -92,7 +106,8 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final left = node.selectable?.getBlockRect().left;
+      final left =
+          node.selectable?.getBlockRect(shiftWithBaseOffset: true).left;
       if (cachedLeft != left) {
         setState(() => cachedLeft = left);
       }
@@ -102,7 +117,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
   @override
   Widget build(BuildContext context) {
     return node.children.isEmpty
-        ? buildComponent(context)
+        ? buildComponent(context, withBackgroundColor: true)
         : buildComponentWithChildren(context);
   }
 
@@ -117,15 +132,18 @@ mixin NestedBlockComponentStatefulWidgetMixin<
         ),
         NestedListWidget(
           indentPadding: indentPadding,
-          child: buildComponent(context),
+          child: buildComponent(context, withBackgroundColor: false),
           children: editorState.renderer.buildList(
             context,
             widget.node.children,
           ),
-        )
+        ),
       ],
     );
   }
 
-  Widget buildComponent(BuildContext context);
+  Widget buildComponent(
+    BuildContext context, {
+    bool withBackgroundColor = true,
+  });
 }

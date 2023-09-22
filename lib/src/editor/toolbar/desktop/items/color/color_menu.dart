@@ -9,6 +9,7 @@ void showColorMenu(
   List<ColorOption>? textColorOptions,
   List<ColorOption>? highlightColorOptions,
   required bool isTextColor,
+  bool showClearButton = false,
 }) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
@@ -36,14 +37,17 @@ void showColorMenu(
     overlay = null;
   }
 
+  keepEditorFocusNotifier.value += 1;
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
     left: left,
     builder: (context) {
       return ColorPicker(
-        isTextColor: isTextColor,
-        editorState: editorState,
+        title: isTextColor
+            ? AppFlowyEditorLocalizations.current.textColor
+            : AppFlowyEditorLocalizations.current.highlightColor,
+        showClearButton: showClearButton,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
             ? textColorOptions ?? generateTextColorOptions()
@@ -54,15 +58,22 @@ void showColorMenu(
                   editorState,
                   editorState.selection,
                   color,
+                  withUpdateSelection: true,
                 )
               : formatHighlightColor(
                   editorState,
                   editorState.selection,
                   color,
+                  withUpdateSelection: true,
                 );
           dismissOverlay();
+          keepEditorFocusNotifier.value -= 1;
         },
-        onDismiss: dismissOverlay,
+        resetText: isTextColor
+            ? AppFlowyEditorLocalizations.current.resetToDefaultColor
+            : AppFlowyEditorLocalizations.current.clearHighlightColor,
+        resetIconName:
+            isTextColor ? 'reset_text_color' : 'clear_highlight_color',
       );
     },
   ).build();

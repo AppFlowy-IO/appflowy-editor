@@ -19,7 +19,7 @@ void main() {
 
       await tester.buildAndPump(
         MobileSelectionGestureDetector(
-          onTapDown: (_) => onTapDown = true,
+          onTapUp: (_) => onTapDown = true,
           child: const SizedBox.square(dimension: 50),
         ),
       );
@@ -36,7 +36,7 @@ void main() {
 
       await tester.buildAndPump(
         MobileSelectionGestureDetector(
-          onDoubleTapDown: (_) => onDoubleTapDown = true,
+          onDoubleTapUp: (_) => onDoubleTapDown = true,
           child: const SizedBox.square(dimension: 50),
         ),
       );
@@ -57,7 +57,7 @@ void main() {
 
       await tester.buildAndPump(
         MobileSelectionGestureDetector(
-          onTripleTapDown: (_) => onTripleTapDown = true,
+          onTripleTapUp: (_) => onTripleTapDown = true,
           child: const SizedBox.square(dimension: 50),
         ),
       );

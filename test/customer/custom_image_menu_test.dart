@@ -7,6 +7,9 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 void main() async {
   /// customize the image menu
+  await AppFlowyEditorLocalizations.load(
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('customize the image block\'s menu', (tester) async {
     await mockNetworkImagesFor(() async {
       const widget = CustomImageMenu();
@@ -58,7 +61,7 @@ class CustomImageMenu extends StatelessWidget {
             child: Text(menu),
           );
         },
-      )
+      ),
     };
 
     final editorState = EditorState(document: document);

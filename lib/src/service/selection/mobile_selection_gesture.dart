@@ -9,10 +9,10 @@ class MobileSelectionGestureDetector extends StatefulWidget {
   const MobileSelectionGestureDetector({
     super.key,
     this.child,
-    this.onTapDown,
-    this.onDoubleTapDown,
-    this.onTripleTapDown,
-    this.onSecondaryTapDown,
+    this.onTapUp,
+    this.onDoubleTapUp,
+    this.onTripleTapUp,
+    this.onSecondaryTapUp,
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,
@@ -24,10 +24,10 @@ class MobileSelectionGestureDetector extends StatefulWidget {
 
   final Widget? child;
 
-  final GestureTapDownCallback? onTapDown;
-  final GestureTapDownCallback? onDoubleTapDown;
-  final GestureTapDownCallback? onTripleTapDown;
-  final GestureTapDownCallback? onSecondaryTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapUpCallback? onDoubleTapUp;
+  final GestureTapUpCallback? onTripleTapUp;
+  final GestureTapUpCallback? onSecondaryTapUp;
   final GestureDragStartCallback? onPanStart;
   final GestureDragUpdateCallback? onPanUpdate;
   final GestureDragEndCallback? onPanEnd;
@@ -61,6 +61,7 @@ class MobileSelectionGestureDetectorState
           ),
           (recognizer) {
             recognizer
+              ..dragStartBehavior = DragStartBehavior.down
               ..onStart = widget.onPanStart
               ..onUpdate = widget.onPanUpdate
               ..onEnd = widget.onPanEnd;
@@ -70,8 +71,10 @@ class MobileSelectionGestureDetectorState
             GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
           () => TapGestureRecognizer(),
           (recognizer) {
-            recognizer.onTapDown = _tapDownDelegate;
-            recognizer.onSecondaryTapDown = widget.onSecondaryTapDown;
+            // use tap up instead of tap down to avoid this gesture detector
+            //  being responded before the pan gesture detector.
+            recognizer.onTapUp = _tapDownDelegate;
+            recognizer.onSecondaryTapUp = widget.onSecondaryTapUp;
           },
         ),
       },
@@ -79,25 +82,25 @@ class MobileSelectionGestureDetectorState
     );
   }
 
-  void _tapDownDelegate(TapDownDetails tapDownDetails) {
+  void _tapDownDelegate(TapUpDetails tapDownDetails) {
     if (_tripleTapCount == 2) {
       _tripleTapCount = 0;
       _tripleTapTimer?.cancel();
       _tripleTapTimer = null;
-      if (widget.onTripleTapDown != null) {
-        widget.onTripleTapDown!(tapDownDetails);
+      if (widget.onTripleTapUp != null) {
+        widget.onTripleTapUp!(tapDownDetails);
       }
     } else if (_isDoubleTap) {
       _isDoubleTap = false;
       _doubleTapTimer?.cancel();
       _doubleTapTimer = null;
-      if (widget.onDoubleTapDown != null) {
-        widget.onDoubleTapDown!(tapDownDetails);
+      if (widget.onDoubleTapUp != null) {
+        widget.onDoubleTapUp!(tapDownDetails);
       }
       _tripleTapCount++;
     } else {
-      if (widget.onTapDown != null) {
-        widget.onTapDown!(tapDownDetails);
+      if (widget.onTapUp != null) {
+        widget.onTapUp!(tapDownDetails);
       }
 
       _isDoubleTap = true;

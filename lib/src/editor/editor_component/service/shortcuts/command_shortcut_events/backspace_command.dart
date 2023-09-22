@@ -14,41 +14,17 @@ final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   handler: _backspaceCommandHandler,
 );
 
-final CommandShortcutEvent deleteLeftSentenceCommand = CommandShortcutEvent(
-  key: 'delete the left word',
-  command: 'ctrl+alt+backspace',
-  macOSCommand: 'cmd+backspace',
-  handler: _deleteLeftSentenceCommandHandler,
-);
-
-CommandShortcutEventHandler _deleteLeftSentenceCommandHandler = (editorState) {
-  final selection = editorState.selection;
-  if (selection == null || !selection.isCollapsed) {
-    return KeyEventResult.ignored;
-  }
-
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final delta = node?.delta;
-  if (node == null || delta == null) {
-    return KeyEventResult.ignored;
-  }
-
-  final transaction = editorState.transaction;
-  transaction.deleteText(
-    node,
-    0,
-    selection.endIndex,
-  );
-  editorState.apply(transaction);
-  return KeyEventResult.handled;
-};
-
 CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
   final selection = editorState.selection;
+  final selectionType = editorState.selectionType;
+
   if (selection == null) {
     return KeyEventResult.ignored;
   }
-  if (selection.isCollapsed) {
+
+  if (selectionType == SelectionType.block) {
+    return _backspaceInBlockSelection(editorState);
+  } else if (selection.isCollapsed) {
     return _backspaceInCollapsedSelection(editorState);
   } else {
     return _backspaceInNotCollapsedSelection(editorState);
@@ -91,23 +67,33 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
           ),
         );
     } else {
-      // merge with the previous node contains delta.
-      final previousNodeWithDelta =
-          node.previousNodeWhere((element) => element.delta != null);
-      if (previousNodeWithDelta != null) {
-        assert(previousNodeWithDelta.delta != null);
+      Node? tableParent =
+          node.findParent((element) => element.type == TableBlockKeys.type);
+      Node? prevTableParent;
+      final prev = node.previousNodeWhere((element) {
+        prevTableParent = element
+            .findParent((element) => element.type == TableBlockKeys.type);
+        // break if only one is in a table or they're in different tables
+        return tableParent != prevTableParent ||
+            // merge with the previous node contains delta.
+            element.delta != null;
+      });
+      // table nodes should be deleted using the table menu
+      // in-table paragraphs should only be deleted inside the table
+      if (prev != null && tableParent == prevTableParent) {
+        assert(prev.delta != null);
         transaction
-          ..mergeText(previousNodeWithDelta, node)
+          ..mergeText(prev, node)
           ..insertNodes(
             // insert children to previous node
-            previousNodeWithDelta.path.next,
+            prev.path.next,
             node.children.toList(),
           )
           ..deleteNode(node)
           ..afterSelection = Selection.collapsed(
             Position(
-              path: previousNodeWithDelta.path,
-              offset: previousNodeWithDelta.delta!.length,
+              path: prev.path,
+              offset: prev.delta!.length,
             ),
           );
       } else {
@@ -136,5 +122,19 @@ CommandShortcutEventHandler _backspaceInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _backspaceInBlockSelection = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null || editorState.selectionType != SelectionType.block) {
+    return KeyEventResult.ignored;
+  }
+  final transaction = editorState.transaction;
+  transaction.deleteNodesAtPath(selection.start.path);
+  editorState
+      .apply(transaction)
+      .then((value) => editorState.selectionType = null);
+
   return KeyEventResult.handled;
 };

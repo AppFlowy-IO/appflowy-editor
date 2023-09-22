@@ -21,14 +21,14 @@ class FloatingToolbar extends StatefulWidget {
     super.key,
     required this.items,
     required this.editorState,
-    required this.scrollController,
+    required this.editorScrollController,
     required this.child,
     this.style = const FloatingToolbarStyle(),
   });
 
   final List<ToolbarItem> items;
   final EditorState editorState;
-  final ScrollController scrollController;
+  final EditorScrollController editorScrollController;
   final Widget child;
   final FloatingToolbarStyle style;
 
@@ -49,7 +49,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
-    widget.scrollController.addListener(_onScrollPositionChanged);
+    widget.editorScrollController.offsetNotifier.addListener(
+      _onScrollPositionChanged,
+    );
   }
 
   @override
@@ -59,16 +61,14 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (widget.editorState != oldWidget.editorState) {
       editorState.selectionNotifier.addListener(_onSelectionChanged);
     }
-
-    if (widget.scrollController != oldWidget.scrollController) {
-      widget.scrollController.addListener(_onScrollPositionChanged);
-    }
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
-    widget.scrollController.removeListener(_onScrollPositionChanged);
+    widget.editorScrollController.offsetNotifier.removeListener(
+      _onScrollPositionChanged,
+    );
     WidgetsBinding.instance.removeObserver(this);
 
     _clear();
@@ -111,9 +111,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   void _onScrollPositionChanged() {
-    final offset = widget.scrollController.offset;
-    Log.toolbar.debug('offset = $offset');
-
     _clear();
 
     // TODO: optimize the toolbar showing logic, making it more smooth.
@@ -152,6 +149,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     final rect = _findSuitableRect(rects);
     final (left, top, right) = calculateToolbarOffset(rect);
+    // if the selection is not visible, then don't show the toolbar.
+    if (top <= floatingToolbarHeight || (left == 0 && right == 0)) {
+      return;
+    }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
@@ -208,20 +209,19 @@ class _FloatingToolbarState extends State<FloatingToolbar>
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorSize = editorState.renderBox?.size ?? Size.zero;
     final editorRect = editorOffset & editorSize;
-    final editorCenter = editorRect.center;
-    final left = (rect.left - editorCenter.dx).abs();
-    final right = (rect.right - editorCenter.dx).abs();
+    final left = (rect.left - editorOffset.dx).abs();
+    final right = (rect.right - editorOffset.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
     final top = rect.top < floatingToolbarHeight
         ? rect.bottom + floatingToolbarHeight
         : rect.top;
-    if (rect.left >= threshold && rect.right <= threshold * 2.0) {
-      // show in center
-      return (threshold, top, null);
-    } else if (left >= right && rect.left <= threshold) {
+    if (left <= threshold) {
       // show in left
       return (rect.left, top, null);
+    } else if (left >= threshold && right <= threshold * 2.0) {
+      // show in center
+      return (threshold, top, null);
     } else {
       // show in right
       return (null, top, editorRect.right - rect.right);

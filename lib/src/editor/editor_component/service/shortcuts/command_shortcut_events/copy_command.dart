@@ -15,12 +15,7 @@ final CommandShortcutEvent copyCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _copyCommandHandler = (editorState) {
-  if (PlatformExtension.isMobile) {
-    assert(false, 'copyCommand is not supported on mobile platform.');
-    return KeyEventResult.ignored;
-  }
-
-  var selection = editorState.selection?.normalized;
+  final selection = editorState.selection?.normalized;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }
@@ -29,14 +24,18 @@ CommandShortcutEventHandler _copyCommandHandler = (editorState) {
   final text = editorState.getTextInSelection(selection).join('\n');
 
   // html
-  final nodes = editorState.getSelectedNodes(selection);
+  final nodes = editorState.getSelectedNodes(
+    selection: selection,
+  );
   final document = Document.blank()..insert([0], nodes);
   final html = documentToHTML(document);
 
-  AppFlowyClipboard.setData(
-    text: text.isEmpty ? null : text,
-    html: html.isEmpty ? null : html,
-  );
+  () async {
+    await AppFlowyClipboard.setData(
+      text: text.isEmpty ? null : text,
+      html: html.isEmpty ? null : html,
+    );
+  }();
 
   return KeyEventResult.handled;
 };

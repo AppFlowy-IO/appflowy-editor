@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 
 ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
   return ToolbarItem(
@@ -19,11 +18,23 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       });
       return SVGIconItemWidget(
         iconName: 'toolbar/highlight_color',
-        iconSize: const Size.square(14),
         isHighlight: isHighlight,
         highlightColor: highlightColor,
         tooltip: AppFlowyEditorLocalizations.current.highlightColor,
         onPressed: () {
+          bool showClearButton = false;
+          nodes.allSatisfyInSelection(selection, (delta) {
+            if (!showClearButton) {
+              showClearButton = delta.whereType<TextInsert>().any(
+                (element) {
+                  return element
+                          .attributes?[AppFlowyRichTextKeys.highlightColor] !=
+                      null;
+                },
+              );
+            }
+            return true;
+          });
           showColorMenu(
             context,
             editorState,
@@ -31,6 +42,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
             currentColorHex: highlightColorHex,
             isTextColor: false,
             highlightColorOptions: colorOptions,
+            showClearButton: showClearButton,
           );
         },
       );

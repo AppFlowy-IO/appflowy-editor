@@ -1,128 +1,85 @@
 {
   "document": {
     "type": "page",
-    "children": [{
+    "children": [
+      {
         "type": "heading",
         "data": {
           "level": 2,
-          "delta": [{
-              "insert": "👋 "
-            },
-            {
-              "insert": "Welcome to",
-              "attributes": {
-                "bold": true
-              }
-            },
-            {
-              "insert": " "
-            },
+          "delta": [
+            { "insert": "👋 " },
+            { "insert": "Welcome to", "attributes": { "bold": true } },
+            { "insert": " " },
             {
               "insert": "AppFlowy Editor",
-              "attributes": {
-                "href": "appflowy.io",
-                "italic": true,
-                "bold": true
-              }
+              "attributes": { "italic": false, "bold": true }
             }
-          ]
+          ],
+          "align": "center"
         }
       },
       {
         "type": "paragraph",
         "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [{
-              "insert": "AppFlowy Editor is a"
-            },
-            {
-              "insert": " "
-            },
+          "delta": [
+            { "insert": "AppFlowy Editor is a" },
+            { "insert": " " },
             {
               "insert": "highly customizable",
-              "attributes": {
-                "bold": true
-              }
+              "attributes": { "bold": true, "bg_color": "0x7fffeb3b" }
             },
+            { "insert": " " },
+            { "insert": "rich-text editor", "attributes": { "italic": true } },
+            { "insert": " for " },
+            { "insert": "Flutter", "attributes": { "underline": true } }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
             {
-              "insert": " "
-            },
-            {
-              "insert": "rich-text editor",
-              "attributes": {
-                "italic": true
-              }
-            },
-            {
-              "insert": " for "
-            },
-            {
-              "insert": "Flutter",
-              "attributes": {
-                "underline": true
-              }
+              "insert": "Customizable",
+              "attributes": { "bg_color": "0x4d00BCF0" }
             }
           ]
         }
       },
       {
-        "type": "todo_list",
+        "type": "bulleted_list",
         "data": {
-          "checked": true,
-          "delta": [{
-            "insert": "Customizable"
-          }]
+          "delta": [
+            {
+              "insert": "Test-covered",
+              "attributes": { "bg_color": "0x4d00BCF0" }
+            }
+          ]
         }
       },
       {
-        "type": "todo_list",
+        "type": "bulleted_list",
         "data": {
-          "checked": true,
-          "delta": [{
-            "insert": "Test-covered"
-          }]
+          "delta": [
+            { "insert": "More to come!", "attributes": { "code": true } }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [{ "insert": "Here is an example you can give it a try" }],
+          "level": 4,
+          "align": "center"
         }
       },
       {
         "type": "todo_list",
         "data": {
           "checked": false,
-          "delta": [{
-            "insert": "more to come!"
-          }]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "quote",
-        "data": {
-          "delta": [{
-            "insert": "Here is an example you can give a try"
-          }]
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [{
-              "insert": "You can also use "
-            },
+          "delta": [
+            { "insert": "Use " },
             {
               "insert": "AppFlowy Editor",
               "attributes": {
@@ -132,47 +89,156 @@
                 "bg_color": "0x6000BCF0"
               }
             },
-            {
-              "insert": " as a component to build your own app."
-            }
+            { "insert": " as a component to build your own app./" }
           ]
         }
       },
       {
+        "type": "todo_list",
+        "data": {
+          "delta": [
+            { "insert": "Use the " },
+            {
+              "insert": " / ",
+              "attributes": { "bg_color": "0x4d00BCF0", "code": true }
+            },
+            { "insert": " to insert blocks." }
+          ],
+          "checked": false
+        }
+      },
+      {
+        "type": "todo_list",
+        "data": {
+          "checked": false,
+          "delta": [
+            { "insert": "Select text to " },
+            {
+              "insert": "trigger the toolbar",
+              "attributes": { "bg_color": "0x4de91e63" }
+            },
+            { "insert": " to " },
+            {
+              "insert": "format",
+              "attributes": {
+                "code": true,
+                "bold": true,
+                "underline": true,
+                "italic": true,
+                "font_color": "0xfff44336",
+                "bg_color": "0x4d4caf50"
+              }
+            },
+            { "insert": " your notes." }
+          ]
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
+        "type": "table",
+        "children": [
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    { "insert": "Insert a " },
+                    { "insert": "table", "attributes": { "bold": true } },
+                    { "insert": " via" },
+                    {
+                      "insert": " / ",
+                      "attributes": { "code": true, "bg_color": "0x4d9c27b0" }
+                    },
+                    { "insert": "command" }
+                  ],
+                  "align": "center"
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 0,
+              "height": 47.0,
+              "width": 553.09375
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [{ "type": "paragraph", "data": { "delta": [] } }],
+            "data": {
+              "colPosition": 0,
+              "rowPosition": 1,
+              "height": 46.0,
+              "width": 553.09375
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [
+              {
+                "type": "paragraph",
+                "data": {
+                  "delta": [
+                    { "insert": "the " },
+                    {
+                      "insert": "contents",
+                      "attributes": { "underline": true }
+                    },
+                    { "insert": " in the table also support " },
+                    {
+                      "insert": "rich-text format",
+                      "attributes": { "bold": true, "italic": true }
+                    }
+                  ],
+                  "align": "center"
+                }
+              }
+            ],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 0,
+              "height": 47.0,
+              "width": 490.3984375,
+              "colBackgroundColor": "0x4dffeb3b"
+            }
+          },
+          {
+            "type": "table/cell",
+            "children": [{ "type": "paragraph", "data": { "delta": [] } }],
+            "data": {
+              "colPosition": 1,
+              "rowPosition": 1,
+              "height": 46.0,
+              "width": 490.3984375,
+              "colBackgroundColor": "0x4dffeb3b"
+            }
+          }
+        ],
+        "data": {
+          "colsLen": 2,
+          "rowsLen": 2,
+          "colDefaultWidth": 80.0,
+          "rowDefaultHeight": 40.0,
+          "colMinimumWidth": 40.0,
+          "colsHeight": 99.0
+        }
+      },
+      { "type": "paragraph", "data": { "delta": [] } },
+      {
         "type": "paragraph",
         "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "bulleted_list",
-        "data": {
-          "delta": [{
-            "insert": "Use / to insert blocks"
-          }]
-        }
-      },
-      {
-        "type": "bulleted_list",
-        "data": {
-          "delta": [{
-            "insert": "Select text to trigger to the toolbar to format your notes."
-          }]
-        }
-
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": []
-        }
-      },
-      {
-        "type": "paragraph",
-        "data": {
-          "delta": [{
-            "insert": "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!"
-          }]
+          "delta": [
+            { "insert": "If you have questions or feedback, please " },
+            {
+              "insert": "submit an issue",
+              "attributes": { "bg_color": "0x4de91e63" }
+            },
+            {
+              "insert": " on Github or join the community along with 1000+ builders!"
+            }
+          ]
         }
       }
     ]

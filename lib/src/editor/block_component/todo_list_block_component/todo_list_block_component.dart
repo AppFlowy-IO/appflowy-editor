@@ -40,13 +40,10 @@ Node todoListNode({
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.textStyleBuilder,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
@@ -104,7 +101,8 @@ class _TodoListBlockComponentWidgetState
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
-        BlockComponentTextDirectionMixin {
+        BlockComponentTextDirectionMixin,
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -125,14 +123,18 @@ class _TodoListBlockComponentWidgetState
   bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
 
   @override
-  Widget buildComponent(BuildContext context) {
+  Widget buildComponent(
+    BuildContext context, {
+    bool withBackgroundColor = true,
+  }) {
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
-      color: backgroundColor,
+      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
+      alignment: alignment,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -148,8 +150,10 @@ class _TodoListBlockComponentWidgetState
           Flexible(
             child: AppFlowyRichText(
               key: forwardKey,
+              delegate: this,
               node: widget.node,
               editorState: editorState,
+              textAlign: alignment?.toTextAlign,
               placeholderText: placeholderText,
               textDirection: textDirection,
               textSpanDecorator: (textSpan) =>
@@ -161,6 +165,8 @@ class _TodoListBlockComponentWidgetState
                   textSpan.updateTextStyle(
                 placeholderTextStyle,
               ),
+              cursorColor: editorState.editorStyle.cursorColor,
+              selectionColor: editorState.editorStyle.selectionColor,
             ),
           ),
         ],
@@ -170,6 +176,17 @@ class _TodoListBlockComponentWidgetState
     child = Padding(
       key: blockComponentKey,
       padding: padding,
+      child: child,
+    );
+
+    child = BlockSelectionContainer(
+      node: node,
+      delegate: this,
+      listenable: editorState.selectionNotifier,
+      blockColor: editorState.editorStyle.selectionColor,
+      supportTypes: const [
+        BlockSelectionType.block,
+      ],
       child: child,
     );
 

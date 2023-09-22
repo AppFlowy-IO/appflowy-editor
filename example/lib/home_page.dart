@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
@@ -50,7 +51,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _jsonString = rootBundle.loadString('assets/example.json');
+    _jsonString = PlatformExtension.isDesktopOrWeb
+        ? rootBundle.loadString('assets/example.json')
+        : rootBundle.loadString('assets/mobile_example.json');
+
     _widgetBuilder = (context) => Editor(
           jsonString: _jsonString,
           onEditorStateChange: (editorState) {
@@ -81,7 +85,8 @@ class _HomePageState extends State<HomePage> {
       extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: const Color.fromARGB(255, 134, 46, 247),
+        foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text('AppFlowy Editor'),
       ),
@@ -98,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
             child: Image.asset(
-              'assets/images/icon.png',
+              'assets/images/icon.jpeg',
               fit: BoxFit.fill,
             ),
           ),
@@ -106,7 +111,23 @@ class _HomePageState extends State<HomePage> {
           // AppFlowy Editor Demo
           _buildSeparator(context, 'AppFlowy Editor Demo'),
           _buildListTile(context, 'With Example.json', () {
-            final jsonString = rootBundle.loadString('assets/example.json');
+            final jsonString = PlatformExtension.isDesktopOrWeb
+                ? rootBundle.loadString('assets/example.json')
+                : rootBundle.loadString('assets/mobile_example.json');
+            _loadEditor(context, jsonString);
+          }),
+          _buildListTile(context, 'With Large Document (10000+ lines)', () {
+            final nodes = List.generate(
+              10000,
+              (index) =>
+                  paragraphNode(text: '$index ${generateRandomString(50)}'),
+            );
+            final editorState = EditorState(
+              document: Document(root: pageNode(children: nodes)),
+            );
+            final jsonString = Future.value(
+              jsonEncode(editorState.document.toJson()),
+            );
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Example.html', () async {
@@ -140,6 +161,16 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(
                 builder: (context) => const CustomizeThemeForEditor(),
               ),
+            );
+          }),
+          _buildListTile(context, 'RTL', () {
+            final jsonString = rootBundle.loadString(
+              'assets/arabic_example.json',
+            );
+            _loadEditor(
+              context,
+              jsonString,
+              textDirection: TextDirection.rtl,
             );
           }),
 
@@ -210,8 +241,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadEditor(
     BuildContext context,
-    Future<String> jsonString,
-  ) async {
+    Future<String> jsonString, {
+    TextDirection textDirection = TextDirection.ltr,
+  }) async {
     final completer = Completer<void>();
     _jsonString = jsonString;
     setState(
@@ -221,6 +253,7 @@ class _HomePageState extends State<HomePage> {
               onEditorStateChange: (editorState) {
                 _editorState = editorState;
               },
+              textDirection: textDirection,
             );
       },
     );
@@ -314,4 +347,11 @@ class _HomePageState extends State<HomePage> {
       _loadEditor(context, Future<String>.value(jsonString));
     }
   }
+}
+
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+    List.generate(len, (index) => r.nextInt(33) + 89),
+  );
 }

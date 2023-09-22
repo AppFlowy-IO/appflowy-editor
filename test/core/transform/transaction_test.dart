@@ -75,7 +75,7 @@ void main() async {
       final withOperation = {
         "operations": [
           io.toJson(),
-        ]
+        ],
       };
 
       final withAfterSelection = {

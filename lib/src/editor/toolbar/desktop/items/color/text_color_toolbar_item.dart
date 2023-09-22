@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 
 ToolbarItem buildTextColorItem({
   List<ColorOption>? colorOptions,
@@ -22,9 +21,24 @@ ToolbarItem buildTextColorItem({
         iconName: 'toolbar/text_color',
         isHighlight: isHighlight,
         highlightColor: highlightColor,
-        iconSize: const Size.square(14),
         tooltip: AppFlowyEditorLocalizations.current.textColor,
         onPressed: () {
+          bool showClearButton = false;
+          nodes.allSatisfyInSelection(
+            selection,
+            (delta) {
+              if (!showClearButton) {
+                showClearButton = delta.whereType<TextInsert>().any(
+                  (element) {
+                    return element
+                            .attributes?[AppFlowyRichTextKeys.textColor] !=
+                        null;
+                  },
+                );
+              }
+              return true;
+            },
+          );
           showColorMenu(
             context,
             editorState,
@@ -32,6 +46,7 @@ ToolbarItem buildTextColorItem({
             currentColorHex: textColorHex,
             isTextColor: true,
             textColorOptions: colorOptions,
+            showClearButton: showClearButton,
           );
         },
       );
