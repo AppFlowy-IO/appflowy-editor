@@ -319,14 +319,17 @@ class _MobileSelectionServiceWidgetState
     if (end != null) {
       if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
         updateSelection(
-          selection.copyWith(
+          Selection(
+            start: _panStartSelection!.normalized.end,
             end: end,
-            start: _panStartSelection?.normalized.end,
-          ),
+          ).normalized,
         );
       } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
         updateSelection(
-          selection.copyWith(end: end),
+          Selection(
+            start: _panStartSelection!.normalized.start,
+            end: end,
+          ).normalized,
         );
       } else if (dragMode == MobileSelectionDragMode.cursor) {
         updateSelection(
@@ -479,8 +482,7 @@ class _MobileSelectionServiceWidgetState
         }
         break;
       case MobileSelectionHandlerType.rightHandler:
-        selectable =
-            editorState.getNodeAtPath(selection.start.path)?.selectable;
+        selectable = editorState.getNodeAtPath(selection.end.path)?.selectable;
         if (selectable == null) {
           return false;
         }
