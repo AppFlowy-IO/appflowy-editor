@@ -118,11 +118,26 @@ class EditorState {
   BlockComponentRendererService get renderer => service.rendererService;
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
+    _renderTitleBlock();
   }
+
+  void _renderTitleBlock() {
+    if (!_shouldHaveTitle) {
+      return;
+    }
+
+    final node = document.nodeAtPath([0]);
+    if (node?.type != TitleBlockKeys.type) {
+      node?.insertBefore(titleNode());
+    }
+  }
+
+  bool get _shouldHaveTitle => renderer.builders[TitleBlockKeys.type] != null;
 
   /// store the auto scroller instance in here temporarily.
   AutoScroller? autoScroller;
   ScrollableState? scrollableState;
+
 
   /// Configures log output parameters,
   /// such as log level and log output callbacks,

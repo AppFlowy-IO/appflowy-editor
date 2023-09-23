@@ -176,21 +176,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _autoFocusIfNeeded();
     });
-
-    if (_shouldHaveTitle) {
-      _renderTitleBlock();
-    }
   }
-
-  void _renderTitleBlock() {
-    final node = editorState.document.nodeAtPath([0]);
-    if (node?.type != TitleBlockKeys.type) {
-      node?.insertBefore(titleNode());
-    }
-  }
-
-  bool get _shouldHaveTitle =>
-      widget.blockComponentBuilders[TitleBlockKeys.type] != null;
 
   @override
   void dispose() {

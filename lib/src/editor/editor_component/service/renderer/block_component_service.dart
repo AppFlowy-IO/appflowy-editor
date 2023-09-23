@@ -49,6 +49,8 @@ mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
 }
 
 abstract class BlockComponentRendererService {
+  Map<String, BlockComponentBuilder> get builders;
+
   /// Register render plugin with specified [type].
   ///
   /// [type] should be [Node].type and should not be empty.
@@ -105,6 +107,9 @@ class BlockComponentRenderer extends BlockComponentRendererService {
   }) {
     registerAll(builders);
   }
+
+  @override
+  Map<String, BlockComponentBuilder> get builders => _builders;
 
   final Map<String, BlockComponentBuilder> _builders = {};
 
