@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:collection/collection.dart';
 
 class TitleBlockKeys {
   const TitleBlockKeys._();
@@ -25,7 +24,7 @@ Node titleNode({
     type: TitleBlockKeys.type,
     attributes: {
       ...attributes,
-      if (textDirection != null) HeadingBlockKeys.textDirection: textDirection,
+      if (textDirection != null) TitleBlockKeys.textDirection: textDirection,
     },
   );
 }
@@ -45,7 +44,7 @@ class TitleBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       node: node,
       configuration: configuration,
-      showActions: showActions(node),
+      showActions: false,
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
         state,
@@ -103,7 +102,7 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
       return const SizedBox.shrink();
     }
     final textDirection = calculateTextDirection(
-      defaultTextDirection: Directionality.maybeOf(context),
+      layoutDirection: Directionality.maybeOf(context),
     );
 
     return Container(
@@ -120,6 +119,7 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
             child: AppFlowyRichText(
               key: forwardKey,
               node: widget.node,
+              delegate: this,
               editorState: editorState,
               textSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(textStyle).updateTextStyle(
@@ -139,16 +139,6 @@ class _TitleBlockComponentWidgetState extends State<TitleBlockComponentWidget>
         ],
       ),
     );
-
-/*
-    if (widget.showActions && widget.actionBuilder != null) {
-      child = BlockComponentActionWrapper(
-        node: node,
-        actionBuilder: widget.actionBuilder!,
-        child: child,
-      );
-    }
-    */
   }
 
   TextStyle? defaultTextStyle() {

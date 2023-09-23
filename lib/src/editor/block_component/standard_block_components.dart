@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/title_block_component/title_block_component.dart';
 import 'package:flutter/material.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
