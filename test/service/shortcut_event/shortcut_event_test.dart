@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:appflowy_editor/src/service/shortcut_event/shortcut_event.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../../new/infra/testable_editor.dart';
 
@@ -15,10 +14,10 @@ void main() async {
 
   group('shortcut_event.dart', () {
     test('redefine shortcut event command', () {
-      final shortcutEvent = ShortcutEvent(
+      final shortcutEvent = CommandShortcutEvent(
         key: 'Sample',
         command: 'cmd+shift+alt+ctrl+a',
-        handler: (editorState, event) {
+        handler: (editorState) {
           return KeyEventResult.handled;
         },
       );
