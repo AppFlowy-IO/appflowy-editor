@@ -1,4 +1,7 @@
 ## 1.4.1
+* fix: platform issue on Web by @LucasXu0 in ([#498](https://github.com/AppFlowy-IO/appflowy-editor/pull/498))
+
+## 1.4.1
 * fix: build error on Flutter 3.13 by @LucasXu0 in ([#488](https://github.com/AppFlowy-IO/appflowy-editor/pull/488))
 
 ## 1.4.0
