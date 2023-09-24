@@ -4,6 +4,13 @@ import 'package:flutter/foundation.dart';
 
 // TODO(Xazin): Refactor to honor `Theme.platform`
 extension PlatformExtension on Platform {
+  static bool get isMacOS {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isMacOS;
+  }
+
   static bool get isWindows {
     if (kIsWeb) {
       return false;
