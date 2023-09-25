@@ -202,7 +202,7 @@ void main() {
     expect(baz2.delta!.toPlainText(), 'Baz');
   });
 
-// copy from Notion
+  // copy from Notion
   // There's a line with different formats, such as **bold**, __italic__, underline, ~~strikethrough~~, and `inline code`.
   test('sample 9', () {
     const html =
@@ -234,6 +234,69 @@ void main() {
           "attributes": {"code": true},
         },
         {"insert": "."},
+      ],
+    );
+  });
+
+  test('sample 10', () {
+    const html =
+        '''<meta charset='utf-8'><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">DTrace is a<span> </span></span><mark class="ael aco ao" style="box-sizing: inherit; cursor: pointer; color: currentcolor; background-color: rgb(187, 219, 186); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><strong class="mq fp" style="box-sizing: inherit; font-weight: 700; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif;"><em class="mp" style="box-sizing: inherit; font-style: italic;">dynamic tracing</em></strong></mark><mark class="ael aco ao" style="box-sizing: inherit; cursor: pointer; color: currentcolor; background-color: rgb(187, 219, 186); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span> </span>technology</mark><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span> </span>that can be used to locate<span> </span></span><mark class="acn aco ao" style="box-sizing: inherit; cursor: pointer; background-color: rgb(232, 243, 232); color: currentcolor; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;">system performance issues</mark><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">, obtain information about<span> </span></span><mark class="acn aco ao" style="box-sizing: inherit; cursor: pointer; background-color: rgb(232, 243, 232); color: currentcolor; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;">system function calls</mark><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">, or monitor system runtime information. And worth noting is that DTrace is<span> </span></span><mark class="acn aco ao" style="box-sizing: inherit; cursor: pointer; background-color: rgb(232, 243, 232); color: currentcolor; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><strong class="mq fp" style="box-sizing: inherit; font-weight: 700; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif;">non-intrusive</strong></mark><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span> </span>to existing code. Also, there is no need to modify the existing code or use<span> </span></span><mark class="acn aco ao" style="box-sizing: inherit; cursor: pointer; background-color: rgb(232, 243, 232); color: currentcolor; font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;">instrumentation technology</mark><span style="color: rgb(36, 36, 36); font-family: source-serif-pro, Georgia, Cambria, &quot;Times New Roman&quot;, Times, serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: -0.06px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span> </span>to obtain more system information.</span>''';
+    final document = htmlToDocument(html);
+    expect(document.root.children.length, 1);
+    final delta = document.nodeAtPath([0])!.delta!;
+    expect(
+      delta.toJson(),
+      [
+        {
+          "insert": "DTrace is a ",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        },
+        {
+          "insert": "dynamic tracing",
+          "attributes": {"bg_color": "0xffbbdbba", "bold": true, "italic": true}
+        },
+        {
+          "insert": " technology",
+          "attributes": {"bg_color": "0xffbbdbba"}
+        },
+        {
+          "insert": " that can be used to locate ",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        },
+        {
+          "insert": "system performance issues",
+          "attributes": {"bg_color": "0xffe8f3e8"}
+        },
+        {
+          "insert": ", obtain information about ",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        },
+        {
+          "insert": "system function calls",
+          "attributes": {"bg_color": "0xffe8f3e8"}
+        },
+        {
+          "insert":
+              ", or monitor system runtime information. And worth noting is that DTrace is ",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        },
+        {
+          "insert": "non-intrusive",
+          "attributes": {"bg_color": "0xffe8f3e8", "bold": true}
+        },
+        {
+          "insert":
+              " to existing code. Also, there is no need to modify the existing code or use ",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        },
+        {
+          "insert": "instrumentation technology",
+          "attributes": {"bg_color": "0xffe8f3e8"}
+        },
+        {
+          "insert": " to obtain more system information.",
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+        }
       ],
     );
   });

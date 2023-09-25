@@ -117,7 +117,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         break;
       case HTMLTags.code:
         attributes = {AppFlowyRichTextKeys.code: true};
-      case HTMLTags.span:
+      case HTMLTags.span || HTMLTags.mark:
         final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
               element.attributes,
             ) ??
@@ -362,6 +362,7 @@ class HTMLTags {
   static const divider = 'hr';
   static const section = 'section';
   static const font = 'font';
+  static const mark = 'mark';
 
   static List<String> formattingElements = [
     HTMLTags.anchor,
@@ -375,6 +376,7 @@ class HTMLTags {
     HTMLTags.code,
     HTMLTags.strikethrough,
     HTMLTags.font,
+    HTMLTags.mark,
   ];
 
   static List<String> specialElements = [

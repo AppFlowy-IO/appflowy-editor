@@ -233,7 +233,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   Rect getBlockRect({
     bool shiftWithBaseOffset = false,
   }) {
-    return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
+    final imageBox = imageKey.currentContext?.findRenderObject();
+    if (imageBox is RenderBox) {
+      return Offset.zero & imageBox.size;
+    }
+    return Rect.zero;
   }
 
   @override
@@ -257,11 +261,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       return [];
     }
     final parentBox = context.findRenderObject();
-    final dividerBox = imageKey.currentContext?.findRenderObject();
-    if (parentBox is RenderBox && dividerBox is RenderBox) {
+    final imageBox = imageKey.currentContext?.findRenderObject();
+    if (parentBox is RenderBox && imageBox is RenderBox) {
       return [
-        dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
-            dividerBox.size,
+        imageBox.localToGlobal(Offset.zero, ancestor: parentBox) &
+            imageBox.size,
       ];
     }
     return [Offset.zero & _renderBox!.size];
