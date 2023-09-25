@@ -188,7 +188,11 @@ class _ResizableImageState extends State<ResizableImage> {
         },
         onHorizontalDragUpdate: (details) {
           if (onUpdate != null) {
-            onUpdate((details.globalPosition.dx - initialOffset) * 2.0);
+            var offset = (details.globalPosition.dx - initialOffset);
+            if (widget.alignment == Alignment.center) {
+              offset *= 2.0;
+            }
+            onUpdate(offset);
           }
         },
         onHorizontalDragEnd: (details) {
