@@ -42,6 +42,7 @@ class TestableEditor {
     Widget Function(Widget child)? wrapper,
     TargetPlatform? platform,
     String? defaultTextDirection,
+    TextDirection toolbarLayoutDirection=TextDirection.ltr,
   }) async {
     await AppFlowyEditorLocalizations.load(locale);
 
@@ -118,6 +119,7 @@ class TestableEditor {
             buildHighlightColorItem(),
           ],
           editorState: editorState,
+          layoutDirection: toolbarLayoutDirection,
           editorScrollController: editorScrollController,
           child: editor,
         );

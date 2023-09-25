@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 const floatingToolbarHeight = 32.0;
@@ -9,14 +8,16 @@ class FloatingToolbarWidget extends StatefulWidget {
     super.key,
     this.backgroundColor = Colors.black,
     required this.toolbarActiveColor,
-    required this.items,
+    required this.activeItems,
     required this.editorState,
+    required this.layoutDirection,
   });
 
-  final List<ToolbarItem> items;
+  final List<ToolbarItem> activeItems;
   final Color backgroundColor;
   final Color toolbarActiveColor;
   final EditorState editorState;
+  final TextDirection layoutDirection;
 
   @override
   State<FloatingToolbarWidget> createState() => _FloatingToolbarWidgetState();
@@ -25,8 +26,7 @@ class FloatingToolbarWidget extends StatefulWidget {
 class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
   @override
   Widget build(BuildContext context) {
-    var activeItems = _computeActiveItems();
-    if (activeItems.isEmpty) {
+    if (widget.activeItems.isEmpty) {
       return const SizedBox.shrink();
     }
     return Material(
@@ -39,7 +39,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: activeItems.map((item) {
+            children: widget.activeItems.map((item) {
               final builder = item.builder;
               return Center(
                 child: builder!(
@@ -54,21 +54,5 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       ),
     );
   }
-
-  Iterable<ToolbarItem> _computeActiveItems() {
-    final activeItems = widget.items
-        .where((e) => e.isActive?.call(widget.editorState) ?? false)
-        .toList();
-    if (activeItems.isEmpty) {
-      return [];
-    }
-    // sort by group.
-    activeItems.sort((a, b) => a.group.compareTo(b.group));
-    // insert the divider.
-    return activeItems
-        .splitBetween((first, second) => first.group != second.group)
-        .expand((element) => [...element, placeholderItem])
-        .toList()
-      ..removeLast();
-  }
 }
+
