@@ -149,9 +149,6 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     _cacheChildren = null;
 
     if (_children.isEmpty) {
-      if (entry.list != null) {
-        entry.unlink();
-      }
       _children.add(entry);
       notifyListeners();
       return;
