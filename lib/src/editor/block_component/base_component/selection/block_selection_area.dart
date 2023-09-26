@@ -192,6 +192,14 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           });
         }
       }
+    } else if (prevBlockRect != null ||
+        prevSelectionRects != null ||
+        prevCursorRect != null) {
+      setState(() {
+        prevBlockRect = null;
+        prevSelectionRects = null;
+        prevCursorRect = null;
+      });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
