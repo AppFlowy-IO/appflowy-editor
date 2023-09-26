@@ -42,7 +42,7 @@ class TestableEditor {
     Widget Function(Widget child)? wrapper,
     TargetPlatform? platform,
     String? defaultTextDirection,
-    TextDirection toolbarLayoutDirection=TextDirection.ltr,
+    TextDirection toolbarLayoutDirection = TextDirection.ltr,
   }) async {
     await AppFlowyEditorLocalizations.load(locale);
 

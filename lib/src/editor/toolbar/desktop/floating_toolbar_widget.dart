@@ -55,4 +55,3 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     );
   }
 }
-
