@@ -211,6 +211,7 @@ class EditorState {
   }
 
   Timer? _debouncedSealHistoryItemTimer;
+  final bool _enableCheckIntegrity = false;
 
   /// Apply the transaction to the state.
   ///
@@ -229,6 +230,11 @@ class EditorState {
   }) async {
     if (!editable) {
       return;
+    }
+
+    // it's a time consuming task, only enable it if necessary.
+    if (_enableCheckIntegrity) {
+      document.root.checkDocumentIntegrity();
     }
 
     final completer = Completer<void>();
