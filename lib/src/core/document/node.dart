@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 
@@ -144,6 +145,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     Log.editor.debug('insert Node $entry at path ${path + [index]}}');
 
+    entry._resetRelationshipIfNeeded();
     entry.parent = this;
 
     _cacheChildren = null;
@@ -189,9 +191,9 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   @override
-  void unlink() {
+  bool unlink() {
     if (parent == null) {
-      return;
+      return false;
     }
     Log.editor.debug('delete Node $this from path $path');
     super.unlink();
@@ -200,6 +202,17 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     parent?.notifyListeners();
     parent = null;
+    return true;
+  }
+
+  // reset the relationship of the node before inserting it to another node
+  //  to ensure it is not in the tree
+  // otherwise, it will throw a state error
+  //  'Bad state: LinkedNode is already in a LinkedList'
+  void _resetRelationshipIfNeeded() {
+    if (parent != null || list != null) {
+      unlink();
+    }
   }
 
   @override
@@ -265,6 +278,30 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     }
     final index = parent.children.indexOf(this);
     return parent._computePath([index, ...previous]);
+  }
+
+  /// check the integrity of the document (for DEBUG only)
+  void checkDocumentIntegrity() {
+    // skip the root node
+    if (path.isNotEmpty) {
+      // if node is rendered in the tree, its parent should not be null
+      final errorMessage =
+          '''Please submit an issue to https://github.com/AppFlowy-IO/appflowy-editor/issues if you see this error!
+          node = ${toJson()}''';
+      assert(
+        parent != null,
+        errorMessage,
+      );
+      // also, its parent should contain this node
+      assert(
+        parent!.children.where((element) => element.id == id).length == 1,
+        errorMessage,
+      );
+    }
+
+    for (final child in children) {
+      child.checkDocumentIntegrity();
+    }
   }
 }
 
