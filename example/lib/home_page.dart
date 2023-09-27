@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/editor.dart';
+import 'package:example/pages/focus_example_for_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> {
           }),
 
           // Theme Demo
-          _buildSeparator(context, 'Theme Demo'),
+          _buildSeparator(context, 'Showcases'),
           _buildListTile(context, 'Custom Theme', () {
             Navigator.push(
               context,
@@ -171,6 +172,14 @@ class _HomePageState extends State<HomePage> {
               context,
               jsonString,
               textDirection: TextDirection.rtl,
+            );
+          }),
+          _buildListTile(context, 'Focus Example', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FocusExampleForEditor(),
+              ),
             );
           }),
 

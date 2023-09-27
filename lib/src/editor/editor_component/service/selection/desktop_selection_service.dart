@@ -306,7 +306,12 @@ class _DesktopSelectionServiceWidgetState
     editorState.service.scrollService?.stopAutoScroll();
   }
 
-  void _updateSelection() {}
+  void _updateSelection() {
+    final selection = editorState.selectionNotifier.value;
+    if (selection == null) {
+      clearSelection();
+    }
+  }
 
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
