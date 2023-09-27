@@ -103,11 +103,11 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       final endTouchPoint = selectionRect.last.centerRight;
 
-      if (editorState.selectionUpdateReason ==
-          SelectionUpdateReason.searchNavigate) {
-        return widget.editorScrollController
-            .jumpTo(offset: endTouchPoint.dy - 100);
-      }
+      // if (editorState.selectionUpdateReason ==
+      //     SelectionUpdateReason.searchNavigate) {
+      //   return widget.editorScrollController
+      //       .jumpTo(offset: endTouchPoint.dy - 100);
+      // }
 
       if (PlatformExtension.isMobile) {
         // soft keyboard

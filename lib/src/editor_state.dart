@@ -109,6 +109,8 @@ class EditorState {
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
+  Map? selectionExtraInfo;
+
   // Service reference.
   final service = EditorService();
 
@@ -175,6 +177,7 @@ class EditorState {
   Future<void> updateSelectionWithReason(
     Selection? selection, {
     SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+    Map? extraInfo,
   }) async {
     final completer = Completer<void>();
 
@@ -185,6 +188,7 @@ class EditorState {
     }
 
     // broadcast to other users here
+    selectionExtraInfo = extraInfo;
     _selectionUpdateReason = reason;
     this.selection = selection;
 

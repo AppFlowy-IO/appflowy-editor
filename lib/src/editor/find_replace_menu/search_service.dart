@@ -34,11 +34,11 @@ class SearchService {
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
-  void findAndHighlight(String pattern, {bool unhighlight = false}) {
+  void findAndHighlight(String pattern, {bool unHighlight = false}) {
     if (queriedPattern != pattern) {
       //this means we have a new pattern, but before we highlight the new matches,
       //lets unhiglight the old pattern
-      findAndHighlight(queriedPattern, unhighlight: true);
+      findAndHighlight(queriedPattern, unHighlight: true);
       matchedPositions.clear();
       queriedPattern = pattern;
     }
@@ -58,7 +58,7 @@ class SearchService {
       }
     }
     //finally we will highlight all the mathces.
-    _highlightAllMatches(pattern.length, unhighlight: unhighlight);
+    _highlightAllMatches(pattern.length, unhighlight: unHighlight);
 
     selectedIndex = -1;
   }
@@ -100,16 +100,9 @@ class SearchService {
       );
 
       final selection = Selection(start: start, end: end);
-
-      if (unhighlight) {
-        editorState.formatDelta(
-          selection,
-          {AppFlowyRichTextKeys.findBackgroundColor: null},
-        );
-      } else {
-        _applySelectedHighlightColor(selection);
+      if (!unhighlight) {
+        editorState.selection = selection;
       }
-      editorState.undoManager.forgetRecentUndo();
     }
   }
 
