@@ -67,16 +67,16 @@ void main() async {
 
       final floatingToolbar = find.byType(FloatingToolbarWidget);
       expect(floatingToolbar, findsOneWidget);
+      Key toolbarContainer = const Key('toolbar-container');
+      final List<Widget> toolbarActiveItems =
+          tester.widget<Row>(find.byKey(toolbarContainer)).children;
 
-      final List<ToolbarItem> toolbarActiveItems =
-          tester.widget<FloatingToolbarWidget>(floatingToolbar).activeItems;
       expect(toolbarActiveItems.length, expectedToolbarItemsOrder.length);
 
       for (int index = 0; index < toolbarActiveItems.length; index++) {
-        expect(
-          toolbarActiveItems[index].id,
-          expectedToolbarItemsOrder[toolbarActiveItems.length - index - 1],
-        );
+        String id =
+            expectedToolbarItemsOrder[toolbarActiveItems.length - index - 1];
+        expect(toolbarActiveItems[index].key, Key('$id-$index'));
       }
       expect(tester.getTopLeft(floatingToolbar).dy >= 0, true);
       await editor.dispose();
@@ -96,16 +96,17 @@ void main() async {
       );
       await editor.updateSelection(selection);
       await tester.pumpAndSettle();
-
       final floatingToolbar = find.byType(FloatingToolbarWidget);
       expect(floatingToolbar, findsOneWidget);
+      Key toolbarContainer = const Key('toolbar-container');
+      final List<Widget> toolbarActiveItems =
+          tester.widget<Row>(find.byKey(toolbarContainer)).children;
 
-      final List<ToolbarItem> toolbarActiveItems =
-          tester.widget<FloatingToolbarWidget>(floatingToolbar).activeItems;
       expect(toolbarActiveItems.length, expectedToolbarItemsOrder.length);
 
       for (int index = 0; index < toolbarActiveItems.length; index++) {
-        expect(toolbarActiveItems[index].id, expectedToolbarItemsOrder[index]);
+        String id = expectedToolbarItemsOrder[index];
+        expect(toolbarActiveItems[index].key, Key('$id-$index'));
       }
       expect(tester.getTopLeft(floatingToolbar).dy >= 0, true);
       await editor.dispose();

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class FloatingToolbarStyle {
@@ -170,37 +169,13 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   Widget _buildToolbar(BuildContext context) {
     _toolbarWidget ??= FloatingToolbarWidget(
-      activeItems: _computeActiveItems(),
+      items: widget.items,
       editorState: editorState,
       backgroundColor: widget.style.backgroundColor,
       toolbarActiveColor: widget.style.toolbarActiveColor,
       layoutDirection: widget.layoutDirection,
     );
     return _toolbarWidget!;
-  }
-
-  List<ToolbarItem> _computeActiveItems() {
-    List<ToolbarItem> activeItems = widget.items
-        .where((e) => e.isActive?.call(editorState) ?? false)
-        .toList();
-    if (activeItems.isEmpty) {
-      return [];
-    }
-    if (widget.layoutDirection == TextDirection.rtl) {
-      activeItems = activeItems.reversed.toList();
-    }
-    // sort by group.
-    activeItems.sort(
-      (a, b) => widget.layoutDirection == TextDirection.ltr
-          ? a.group.compareTo(b.group)
-          : b.group.compareTo(a.group),
-    );
-    // insert the divider.
-    return activeItems
-        .splitBetween((first, second) => first.group != second.group)
-        .expand((element) => [...element, placeholderItem])
-        .toList()
-      ..removeLast();
   }
 
   Rect _findSuitableRect(Iterable<Rect> rects) {
