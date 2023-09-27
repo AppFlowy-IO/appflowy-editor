@@ -44,6 +44,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
       buildHighlightColorItem(),
     ],
     editorState: editor.editorState,
+    textDirection: TextDirection.ltr,
     editorScrollController: EditorScrollController(
       editorState: editor.editorState,
       scrollController: scrollController,
