@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class FloatingToolbar extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.editorScrollController,
-    required this.layoutDirection,
+    required this.textDirection,
     required this.child,
     this.style = const FloatingToolbarStyle(),
   });
@@ -29,7 +30,7 @@ class FloatingToolbar extends StatefulWidget {
   final List<ToolbarItem> items;
   final EditorState editorState;
   final EditorScrollController editorScrollController;
-  final TextDirection layoutDirection;
+  final TextDirection? textDirection;
   final Widget child;
   final FloatingToolbarStyle style;
 
@@ -173,7 +174,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       editorState: editorState,
       backgroundColor: widget.style.backgroundColor,
       toolbarActiveColor: widget.style.toolbarActiveColor,
-      layoutDirection: widget.layoutDirection,
+      textDirection: widget.textDirection ?? Directionality.of(context),
     );
     return _toolbarWidget!;
   }

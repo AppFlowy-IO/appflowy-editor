@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 
 const floatingToolbarHeight = 32.0;
 
+@visibleForTesting
+const floatingToolbarContainerKey =
+    Key('appflowy_editor_floating_toolbar_container');
+@visibleForTesting
+const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
+
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -11,14 +17,14 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.toolbarActiveColor,
     required this.items,
     required this.editorState,
-    required this.layoutDirection,
+    required this.textDirection,
   });
 
   final List<ToolbarItem> items;
   final Color backgroundColor;
   final Color toolbarActiveColor;
   final EditorState editorState;
-  final TextDirection layoutDirection;
+  final TextDirection textDirection;
 
   @override
   State<FloatingToolbarWidget> createState() => _FloatingToolbarWidgetState();
@@ -39,42 +45,41 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
         child: SizedBox(
           height: floatingToolbarHeight,
           child: Row(
-            key: const Key('toolbar-container'),
+            key: floatingToolbarContainerKey,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: activeItems.mapIndexed((index, item) {
-              final builder = item.builder;
-              return Center(
-                key: Key('${item.id}-$index'),
-                child: builder!(
-                  context,
-                  widget.editorState,
-                  widget.toolbarActiveColor,
-                ),
-              );
-            }).toList(growable: false),
+            textDirection: widget.textDirection,
+            children: activeItems
+                .mapIndexed(
+                  (index, item) => Center(
+                    key: Key(
+                      '${floatingToolbarItemPrefixKey}_${item.id}_$index',
+                    ),
+                    child: item.builder!(
+                      context,
+                      widget.editorState,
+                      widget.toolbarActiveColor,
+                    ),
+                  ),
+                )
+                .toList(growable: false),
           ),
         ),
       ),
     );
   }
 
-  List<ToolbarItem> _computeActiveItems() {
-    List<ToolbarItem> activeItems = widget.items
+  Iterable<ToolbarItem> _computeActiveItems() {
+    final activeItems = widget.items
         .where((e) => e.isActive?.call(widget.editorState) ?? false)
         .toList();
     if (activeItems.isEmpty) {
       return [];
     }
-    if (widget.layoutDirection == TextDirection.rtl) {
-      activeItems = activeItems.reversed.toList();
-    }
+
     // sort by group.
-    activeItems.sort(
-      (a, b) => widget.layoutDirection == TextDirection.ltr
-          ? a.group.compareTo(b.group)
-          : b.group.compareTo(a.group),
-    );
+    activeItems.sort((a, b) => a.group.compareTo(b.group));
+
     // insert the divider.
     return activeItems
         .splitBetween((first, second) => first.group != second.group)

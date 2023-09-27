@@ -1,29 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../infra/testable_editor.dart';
 
 void main() async {
-  final List<String> expectedToolbarItemsOrder = [
-    'editor.paragraph',
-    'editor.h1',
-    'editor.h2',
-    'editor.h3',
-    'editor.placeholder',
-    'editor.underline',
-    'editor.bold',
-    'editor.italic',
-    'editor.strikethrough',
-    'editor.code',
-    'editor.placeholder',
-    'editor.quote',
-    'editor.bulleted_list',
-    'editor.numbered_list',
-    'editor.placeholder',
-    'editor.link',
-    'editor.textColor',
-    'editor.highlightColor',
-  ];
   group('floating toolbar', () {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
@@ -41,74 +22,59 @@ void main() async {
         endOffset: text.length,
       );
       await editor.updateSelection(selection);
-      await tester.pumpAndSettle();
 
       final floatingToolbar = find.byType(FloatingToolbarWidget);
       expect(floatingToolbar, findsOneWidget);
       expect(tester.getTopLeft(floatingToolbar).dy >= 0, true);
+
       await editor.dispose();
     });
 
     testWidgets(
-        'select the first line of the document, the toolbar layout should be right to left',
+        'select the first line of the document, the toolbar layout should be right to left in RTL mode',
         (tester) async {
       final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting(
         withFloatingToolbar: true,
-        toolbarLayoutDirection: TextDirection.rtl,
+        textDirection: TextDirection.rtl,
       );
+
       final selection = Selection.single(
         path: [0],
         startOffset: 0,
         endOffset: text.length,
       );
       await editor.updateSelection(selection);
-      await tester.pumpAndSettle();
 
       final floatingToolbar = find.byType(FloatingToolbarWidget);
       expect(floatingToolbar, findsOneWidget);
-      Key toolbarContainer = const Key('toolbar-container');
-      final List<Widget> toolbarActiveItems =
-          tester.widget<Row>(find.byKey(toolbarContainer)).children;
-
-      expect(toolbarActiveItems.length, expectedToolbarItemsOrder.length);
-
-      for (int index = 0; index < toolbarActiveItems.length; index++) {
-        String id =
-            expectedToolbarItemsOrder[toolbarActiveItems.length - index - 1];
-        expect(toolbarActiveItems[index].key, Key('$id-$index'));
-      }
-      expect(tester.getTopLeft(floatingToolbar).dy >= 0, true);
-      await editor.dispose();
-    });
-
-    testWidgets(
-        'select the first line of the document, the toolbar layout should be left to right',
-        (tester) async {
-      final editor = tester.editor..addParagraphs(3, initialText: text);
-      await editor.startTesting(
-        withFloatingToolbar: true,
+      final floatingToolbarContainer = tester.widget<Row>(
+        find.byKey(floatingToolbarContainerKey),
       );
-      final selection = Selection.single(
-        path: [0],
-        startOffset: 0,
-        endOffset: text.length,
+      expect(floatingToolbarContainer.textDirection, TextDirection.rtl);
+      final List<Widget> toolbarItemWidgets = floatingToolbarContainer.children;
+      expect(
+        toolbarItemWidgets.length,
+        // the floating toolbar items will add the divider between the groups,
+        //  so the length of the toolbar items will be the sum of the (floatingToolbarItems.length +
+        //  the number of the groups) - 1.
+        floatingToolbarItems.length +
+            floatingToolbarItems.map((e) => e.group).toSet().length -
+            1,
       );
-      await editor.updateSelection(selection);
-      await tester.pumpAndSettle();
-      final floatingToolbar = find.byType(FloatingToolbarWidget);
-      expect(floatingToolbar, findsOneWidget);
-      Key toolbarContainer = const Key('toolbar-container');
-      final List<Widget> toolbarActiveItems =
-          tester.widget<Row>(find.byKey(toolbarContainer)).children;
 
-      expect(toolbarActiveItems.length, expectedToolbarItemsOrder.length);
-
-      for (int index = 0; index < toolbarActiveItems.length; index++) {
-        String id = expectedToolbarItemsOrder[index];
-        expect(toolbarActiveItems[index].key, Key('$id-$index'));
+      final expectedIds = floatingToolbarItems.map((e) => e.id).toList();
+      var j = 0;
+      for (int i = 0; i < toolbarItemWidgets.length; i++) {
+        final id = '${floatingToolbarItemPrefixKey}_${expectedIds[j]}_$i';
+        final key = toolbarItemWidgets[i].key as ValueKey;
+        if (key.value.contains(placeholderItem.id)) {
+          continue;
+        }
+        expect(key, Key(id));
+        j++;
       }
-      expect(tester.getTopLeft(floatingToolbar).dy >= 0, true);
+
       await editor.dispose();
     });
   });
