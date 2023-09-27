@@ -1,3 +1,6 @@
+## 1.4.3
+* fix: the text within the `<mark>` tag didn't parse correctly when pasting HTML by @LucasXu0 in ([#501](https://github.com/AppFlowy-IO/appflowy-editor/pull/501))
+
 ## 1.4.2
 * fix: platform issue on Web by @LucasXu0 in ([#498](https://github.com/AppFlowy-IO/appflowy-editor/pull/498))
 

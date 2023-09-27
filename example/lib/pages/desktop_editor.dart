@@ -66,6 +66,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ...alignmentItems,
       ],
       editorState: editorState,
+      textDirection: widget.textDirection,
       editorScrollController: editorScrollController,
       child: Directionality(
         textDirection: widget.textDirection,
