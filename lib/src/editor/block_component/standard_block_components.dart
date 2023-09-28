@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_events/vim.dart';
 import 'package:flutter/material.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
@@ -141,4 +142,6 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   copyCommand,
   ...pasteCommands,
   cutCommand,
+
+  moveMentCommand,
 ];
