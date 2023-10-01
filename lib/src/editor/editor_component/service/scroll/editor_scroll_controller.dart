@@ -181,7 +181,10 @@ class EditorScrollController {
       );
     }
 
-    scrollOffsetController.jumpTo(offset: max(0, offset));
+    itemScrollController.jumpTo(
+      index: max(0, offset.toInt()),
+      alignment: 0.5,
+    );
   }
 
   void jumpToTop() {

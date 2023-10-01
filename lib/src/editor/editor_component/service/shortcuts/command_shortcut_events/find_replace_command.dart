@@ -24,12 +24,23 @@ class FindReplaceStyle {
   FindReplaceStyle({
     this.selectedHighlightColor = const Color(0xFFFFB931),
     this.unselectedHighlightColor = const Color(0x60ECBC5F),
+    this.findMenuBuilder,
   });
 
   //selected highlight color is used as background color on the selected found pattern.
   final Color selectedHighlightColor;
   //unselected highlight color is used on every other found pattern which can be selected.
   final Color unselectedHighlightColor;
+
+  // find menu builder
+  Widget Function(
+    BuildContext context,
+    EditorState editorState,
+    FindReplaceLocalizations? localizations,
+    FindReplaceStyle style,
+    bool showReplaceMenu,
+    VoidCallback onDismiss,
+  )? findMenuBuilder;
 }
 
 class FindReplaceLocalizations {
@@ -108,7 +119,7 @@ KeyEventResult _showFindAndReplaceDialog(
   _findReplaceService = FindReplaceMenu(
     context: context,
     editorState: editorState,
-    replaceFlag: openReplace,
+    showReplaceMenu: openReplace,
     localizations: localizations,
     style: style,
   );
