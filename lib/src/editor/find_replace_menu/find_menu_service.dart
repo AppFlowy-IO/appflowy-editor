@@ -68,29 +68,37 @@ class FindReplaceMenu implements FindReplaceService {
         return Positioned(
           top: topOffset,
           right: rightOffset,
-          child: Material(
-            borderRadius: BorderRadius.circular(8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: editorState.editorStyle.selectionColor,
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 5,
-                    spreadRadius: 1,
-                    color: Colors.black.withOpacity(0.1),
+          child: style.findMenuBuilder?.call(
+                context,
+                editorState,
+                localizations,
+                style,
+                showReplaceMenu,
+                dismiss,
+              ) ??
+              Material(
+                borderRadius: BorderRadius.circular(8.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: editorState.editorStyle.selectionColor,
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 5,
+                        spreadRadius: 1,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(6.0),
                   ),
-                ],
-                borderRadius: BorderRadius.circular(6.0),
+                  child: FindAndReplaceMenuWidget(
+                    onDismiss: dismiss,
+                    editorState: editorState,
+                    showReplaceMenu: showReplaceMenu,
+                    localizations: localizations,
+                    style: style,
+                  ),
+                ),
               ),
-              child: FindAndReplaceMenuWidget(
-                onDismiss: dismiss,
-                editorState: editorState,
-                showReplaceMenu: showReplaceMenu,
-                localizations: localizations,
-                style: style,
-              ),
-            ),
-          ),
         );
       },
     );

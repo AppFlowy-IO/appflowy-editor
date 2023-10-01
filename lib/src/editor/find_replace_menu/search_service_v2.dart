@@ -111,8 +111,9 @@ class SearchServiceV2 {
     // we can't scroll to the index without animation.
     // so we just scroll the position if the index is the first or the last.
     final length = matchedPositions.value.length - 1;
-    if ((_prevSelectedIndex == length && selectedIndex == 0) ||
-        (_prevSelectedIndex == 0 && selectedIndex == length)) {
+    if (_prevSelectedIndex != selectedIndex &&
+        ((_prevSelectedIndex == length && selectedIndex == 0) ||
+            (_prevSelectedIndex == 0 && selectedIndex == length))) {
       editorState.scrollService?.jumpTo(start.path.first);
     }
 
