@@ -216,6 +216,16 @@ class EditorState {
   Timer? _debouncedSealHistoryItemTimer;
   final bool _enableCheckIntegrity = false;
 
+  // the value of the notifier is meaningless, just for triggering the callbacks.
+  final ValueNotifier<int> onDispose = ValueNotifier(0);
+
+  void dispose() {
+    _observer.close();
+    _debouncedSealHistoryItemTimer?.cancel();
+    onDispose.value += 1;
+    onDispose.dispose();
+  }
+
   /// Apply the transaction to the state.
   ///
   /// The options can be used to determine whether the editor

@@ -36,6 +36,8 @@ class FindReplaceMenu implements FindReplaceService {
       editorState.service.scrollService?.enable();
     }
 
+    editorState.onDispose.removeListener(dismiss);
+
     _findReplaceMenuEntry?.remove();
     _findReplaceMenuEntry = null;
 
@@ -58,6 +60,8 @@ class FindReplaceMenu implements FindReplaceService {
     if (selectionRects.isEmpty) {
       return;
     }
+
+    editorState.onDispose.addListener(dismiss);
 
     _findReplaceMenuEntry = OverlayEntry(
       builder: (context) {
