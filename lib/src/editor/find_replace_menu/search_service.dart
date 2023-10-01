@@ -58,7 +58,7 @@ class SearchService {
       }
     }
     //finally we will highlight all the mathces.
-    _highlightAllMatches(pattern.length, unhighlight: unHighlight);
+    _highlightAllMatches(pattern.length, unHighlight: unHighlight);
 
     selectedIndex = -1;
   }
@@ -90,7 +90,7 @@ class SearchService {
 
   void _highlightAllMatches(
     int patternLength, {
-    bool unhighlight = false,
+    bool unHighlight = false,
   }) {
     for (final match in matchedPositions) {
       final start = Position(path: match.path, offset: match.offset);
@@ -100,7 +100,7 @@ class SearchService {
       );
 
       final selection = Selection(start: start, end: end);
-      if (!unhighlight) {
+      if (!unHighlight) {
         editorState.selection = selection;
       }
     }
@@ -117,13 +117,6 @@ class SearchService {
 
     final selection = Selection(start: start, end: end);
     _applySelectedHighlightColor(selection, isSelected: true);
-
-    await editorState.updateSelectionWithReason(
-      selection,
-      reason: isNavigating
-          ? SelectionUpdateReason.searchNavigate
-          : SelectionUpdateReason.searchHighlight,
-    );
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
@@ -173,7 +166,7 @@ class SearchService {
     final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
-    //unhighlight the selected word before it is replaced
+    //unHighlight the selected word before it is replaced
     final selection = editorState.selection!;
     editorState.formatDelta(
       selection,
@@ -204,7 +197,7 @@ class SearchService {
       return;
     }
 
-    _highlightAllMatches(queriedPattern.length, unhighlight: true);
+    _highlightAllMatches(queriedPattern.length, unHighlight: true);
     for (final match in matchedPositions.reversed.toList()) {
       final node = editorState.getNodeAtPath(match.path)!;
 

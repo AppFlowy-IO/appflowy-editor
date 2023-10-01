@@ -174,6 +174,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           close: 'Close',
           replace: 'Replace',
           replaceAll: 'Replace all',
+          noResult: 'No result',
         ),
       ),
     ];

@@ -78,10 +78,10 @@ class FindReplaceMenu implements FindReplaceService {
                 ],
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              child: FindMenuWidget(
-                dismiss: dismiss,
+              child: FindAndReplaceMenuWidget(
+                onDismiss: dismiss,
                 editorState: editorState,
-                replaceFlag: replaceFlag,
+                showReplaceMenu: replaceFlag,
                 localizations: localizations,
                 style: style,
               ),

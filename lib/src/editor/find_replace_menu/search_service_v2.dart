@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/search_algorithm.dart';
-import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart';
 import 'package:flutter/foundation.dart';
 
 const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
@@ -8,11 +7,9 @@ const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
 class SearchServiceV2 {
   SearchServiceV2({
     required this.editorState,
-    required this.style,
   });
 
   final EditorState editorState;
-  final SearchStyle style;
 
   //matchedPositions.value will contain a list of positions of the matched patterns
   //the position here consists of the node and the starting offset of the
@@ -30,15 +27,18 @@ class SearchServiceV2 {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
-    if (matchedPositions.value.isEmpty) {
-      _selectedIndex = -1;
-    } else {
-      _selectedIndex = index.clamp(0, matchedPositions.value.length - 1);
-    }
+    _selectedIndex = matchedPositions.value.isEmpty
+        ? -1
+        : index.clamp(0, matchedPositions.value.length - 1);
     currentSelectedIndex.value = _selectedIndex;
   }
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
+
+  void dispose() {
+    matchedPositions.dispose();
+    currentSelectedIndex.dispose();
+  }
 
   void findAndHighlight(
     String pattern, {
@@ -103,7 +103,6 @@ class SearchServiceV2 {
     );
     editorState.updateSelectionWithReason(
       Selection(start: start, end: end),
-      reason: SelectionUpdateReason.searchNavigate,
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
       },
@@ -162,7 +161,7 @@ class SearchServiceV2 {
       return;
     }
 
-    // _highlightAllMatches(queriedPattern.length, unhighlight: true);
+    // _highlightAllMatches(queriedPattern.length, unHighlight: true);
     for (final match in matchedPositions.value.reversed.toList()) {
       final node = editorState.getNodeAtPath(match.path)!;
 
