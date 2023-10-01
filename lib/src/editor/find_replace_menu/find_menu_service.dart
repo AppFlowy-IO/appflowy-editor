@@ -13,14 +13,14 @@ class FindReplaceMenu implements FindReplaceService {
   FindReplaceMenu({
     required this.context,
     required this.editorState,
-    required this.replaceFlag,
+    required this.showReplaceMenu,
     this.localizations,
     required this.style,
   });
 
   final BuildContext context;
   final EditorState editorState;
-  final bool replaceFlag;
+  final bool showReplaceMenu;
   final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
 
@@ -85,7 +85,7 @@ class FindReplaceMenu implements FindReplaceService {
               child: FindAndReplaceMenuWidget(
                 onDismiss: dismiss,
                 editorState: editorState,
-                showReplaceMenu: replaceFlag,
+                showReplaceMenu: showReplaceMenu,
                 localizations: localizations,
                 style: style,
               ),

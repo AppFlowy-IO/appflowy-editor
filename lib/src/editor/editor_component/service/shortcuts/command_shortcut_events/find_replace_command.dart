@@ -108,7 +108,7 @@ KeyEventResult _showFindAndReplaceDialog(
   _findReplaceService = FindReplaceMenu(
     context: context,
     editorState: editorState,
-    replaceFlag: openReplace,
+    showReplaceMenu: openReplace,
     localizations: localizations,
     style: style,
   );
