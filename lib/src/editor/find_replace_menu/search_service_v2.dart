@@ -27,11 +27,15 @@ class SearchServiceV2 {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
+    _prevSelectedIndex = _selectedIndex;
     _selectedIndex = matchedPositions.value.isEmpty
         ? -1
         : index.clamp(0, matchedPositions.value.length - 1);
     currentSelectedIndex.value = _selectedIndex;
   }
+
+  // only used for scrolling to the first or the last match.
+  int _prevSelectedIndex = 0;
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
 
@@ -101,6 +105,18 @@ class SearchServiceV2 {
       path: start.path,
       offset: start.offset + pattern.length,
     );
+
+    // https://github.com/google/flutter.widgets/issues/151
+    // there's a bug in the scrollable_positioned_list package
+    // we can't scroll to the index without animation.
+    // so we just scroll the position if the index is the first or the last.
+    final length = matchedPositions.value.length - 1;
+    if (_prevSelectedIndex != selectedIndex &&
+        ((_prevSelectedIndex == length && selectedIndex == 0) ||
+            (_prevSelectedIndex == 0 && selectedIndex == length))) {
+      editorState.scrollService?.jumpTo(start.path.first);
+    }
+
     editorState.updateSelectionWithReason(
       Selection(start: start, end: end),
       extraInfo: {

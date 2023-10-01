@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_menu_icon_button.dart';
-import 'package:appflowy_editor/src/editor/find_replace_menu/search_service_v2.dart';
 import 'package:flutter/material.dart';
 
 const double _iconButtonSize = 30;
