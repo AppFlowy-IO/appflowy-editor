@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/search_service_v2.dart';
 import 'package:flutter/material.dart';
 
 class FloatingToolbarStyle {
@@ -102,9 +103,12 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onSelectionChanged() {
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
+
     if (selection == null ||
         selection.isCollapsed ||
-        selectionType == SelectionType.block) {
+        selectionType == SelectionType.block ||
+        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+            true) {
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.
@@ -142,6 +146,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   void _showToolbar() {
     if (editorState.selection?.isCollapsed ?? true) {
+      return;
+    }
+    if (editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+        true) {
       return;
     }
     final rects = editorState.selectionRects();

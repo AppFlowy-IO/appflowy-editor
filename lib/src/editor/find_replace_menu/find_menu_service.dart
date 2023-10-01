@@ -36,6 +36,8 @@ class FindReplaceMenu implements FindReplaceService {
       editorState.service.scrollService?.enable();
     }
 
+    editorState.onDispose.removeListener(dismiss);
+
     _findReplaceMenuEntry?.remove();
     _findReplaceMenuEntry = null;
 
@@ -59,6 +61,8 @@ class FindReplaceMenu implements FindReplaceService {
       return;
     }
 
+    editorState.onDispose.addListener(dismiss);
+
     _findReplaceMenuEntry = OverlayEntry(
       builder: (context) {
         return Positioned(
@@ -78,10 +82,10 @@ class FindReplaceMenu implements FindReplaceService {
                 ],
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              child: FindMenuWidget(
-                dismiss: dismiss,
+              child: FindAndReplaceMenuWidget(
+                onDismiss: dismiss,
                 editorState: editorState,
-                replaceFlag: replaceFlag,
+                showReplaceMenu: replaceFlag,
                 localizations: localizations,
                 style: style,
               ),
