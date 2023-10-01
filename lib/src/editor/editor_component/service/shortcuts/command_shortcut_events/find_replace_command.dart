@@ -40,6 +40,7 @@ class FindReplaceLocalizations {
     required this.close,
     required this.replace,
     required this.replaceAll,
+    required this.noResult,
   });
 
   final String find;
@@ -48,6 +49,7 @@ class FindReplaceLocalizations {
   final String close;
   final String replace;
   final String replaceAll;
+  final String noResult;
 }
 
 /// Show the slash menu

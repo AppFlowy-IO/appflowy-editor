@@ -1,237 +1,374 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/find_replace_menu/search_service.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_menu_icon_button.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/search_service_v2.dart';
 import 'package:flutter/material.dart';
 
-const double _iconSize = 20;
-const double _iconButtonSize = 40;
+const double _iconButtonSize = 30;
 
-class FindMenuWidget extends StatefulWidget {
-  const FindMenuWidget({
+class FindAndReplaceMenuWidget extends StatefulWidget {
+  const FindAndReplaceMenuWidget({
     super.key,
-    required this.dismiss,
-    required this.editorState,
-    required this.replaceFlag,
     this.localizations,
+    this.defaultFindText = '',
+    this.caseSensitive = false,
+    required this.onDismiss,
+    required this.editorState,
+    required this.showReplaceMenu,
     required this.style,
   });
 
-  final VoidCallback dismiss;
   final EditorState editorState;
-  final bool replaceFlag;
-  final FindReplaceLocalizations? localizations;
+  final VoidCallback onDismiss;
+
+  /// Whether to show the replace menu or not
+  final bool showReplaceMenu;
+
+  /// The style of the find and replace menu
+  ///
+  /// only works for SearchService, not for SearchServiceV2
   final FindReplaceStyle style;
 
+  /// The localizations of the find and replace menu
+  final FindReplaceLocalizations? localizations;
+
+  /// The default text to search for
+  final String defaultFindText;
+
+  /// Whether the search should be case sensitive or not
+  final bool caseSensitive;
+
   @override
-  State<FindMenuWidget> createState() => _FindMenuWidgetState();
+  State<FindAndReplaceMenuWidget> createState() =>
+      _FindAndReplaceMenuWidgetState();
 }
 
-class _FindMenuWidgetState extends State<FindMenuWidget> {
-  final focusNode = FocusNode();
-  final replaceFocusNode = FocusNode();
-  final findController = TextEditingController();
-  final replaceController = TextEditingController();
-  String queriedPattern = '';
-  bool replaceFlag = false;
-  late SearchService searchService;
+class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
+  bool showReplaceMenu = false;
+
+  late SearchServiceV2 searchService = SearchServiceV2(
+    editorState: widget.editorState,
+  );
 
   @override
   void initState() {
     super.initState();
-    replaceFlag = widget.replaceFlag;
-    searchService = SearchService(
-      editorState: widget.editorState,
-      style: SearchStyle(
-        selectedHighlightColor: widget.style.selectedHighlightColor,
-        unselectedHighlightColor: widget.style.unselectedHighlightColor,
-      ),
-    );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      focusNode.requestFocus();
-    });
-
-    findController.addListener(_searchPattern);
-  }
-
-  @override
-  void dispose() {
-    findController.removeListener(_searchPattern);
-    focusNode.dispose();
-    super.dispose();
+    showReplaceMenu = widget.showReplaceMenu;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            IconButton(
-              onPressed: () => setState(
-                () => replaceFlag = !replaceFlag,
-              ),
-              icon: replaceFlag
-                  ? const Icon(Icons.expand_less)
-                  : const Icon(Icons.expand_more),
-            ),
-            SizedBox(
-              width: 200,
-              height: 30,
-              child: TextField(
-                key: const Key('findTextField'),
-                focusNode: focusNode,
-                controller: findController,
-                onSubmitted: (_) {
-                  searchService.navigateToMatch();
-
-                  // Workaround for editor forcing focus
-                  Future.delayed(const Duration(milliseconds: 50)).then(
-                    (value) => FocusScope.of(context).requestFocus(focusNode),
-                  );
-                },
-                decoration: _buildInputDecoration(
-                  widget.localizations?.find ??
-                      AppFlowyEditorLocalizations.current.find,
-                ),
-              ),
-            ),
-            FindMenuIconButton(
-              buttonKey: const Key('previousMatchButton'),
-              iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(moveUp: true),
-              icon: const Icon(Icons.arrow_upward),
-              tooltip: widget.localizations?.previousMatch ??
-                  AppFlowyEditorLocalizations.current.previousMatch,
-            ),
-            FindMenuIconButton(
-              buttonKey: const Key('nextMatchButton'),
-              iconSize: _iconSize,
-              onPressed: () => searchService.navigateToMatch(),
-              icon: const Icon(Icons.arrow_downward),
-              tooltip: widget.localizations?.nextMatch ??
-                  AppFlowyEditorLocalizations.current.nextMatch,
-            ),
-            FindMenuIconButton(
-              buttonKey: const Key('closeButton'),
-              iconSize: _iconSize,
-              onPressed: () {
-                widget.dismiss();
-                searchService.findAndHighlight(
-                  queriedPattern,
-                  unhighlight: true,
-                );
-                queriedPattern = '';
-              },
-              icon: const Icon(Icons.close),
-              tooltip: widget.localizations?.close ??
-                  AppFlowyEditorLocalizations.current.closeFind,
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: FindMenu(
+            onDismiss: widget.onDismiss,
+            editorState: widget.editorState,
+            style: widget.style,
+            searchService: searchService,
+            defaultFindText: widget.defaultFindText,
+            caseSensitive: widget.caseSensitive,
+            localizations: widget.localizations,
+            showReplaceMenu: showReplaceMenu,
+            onShowReplace: (value) => setState(() {
+              showReplaceMenu = value;
+            }),
+          ),
         ),
-        replaceFlag
-            ? Row(
-                children: [
-                  SizedBox(
-                    width: 200,
-                    height: 30,
-                    child: TextField(
-                      key: const Key('replaceTextField'),
-                      focusNode: replaceFocusNode,
-                      autofocus: false,
-                      controller: replaceController,
-                      onSubmitted: (_) {
-                        _replaceSelectedWord();
-
-                        Future.delayed(const Duration(milliseconds: 50)).then(
-                          (value) => FocusScope.of(context)
-                              .requestFocus(replaceFocusNode),
-                        );
-                      },
-                      decoration: _buildInputDecoration(
-                        widget.localizations?.replace ??
-                            AppFlowyEditorLocalizations.current.replace,
-                      ),
-                    ),
-                  ),
-                  FindMenuIconButton(
-                    buttonKey: const Key('replaceSelectedButton'),
-                    onPressed: () => _replaceSelectedWord(),
-                    icon: const Icon(Icons.find_replace),
-                    iconSize: _iconSize,
-                    tooltip: widget.localizations?.replace ??
-                        AppFlowyEditorLocalizations.current.replace,
-                  ),
-                  FindMenuIconButton(
-                    buttonKey: const Key('replaceAllButton'),
-                    onPressed: () => _replaceAllMatches(),
-                    icon: const Icon(Icons.change_circle_outlined),
-                    iconSize: _iconSize,
-                    tooltip: widget.localizations?.replaceAll ??
-                        AppFlowyEditorLocalizations.current.replaceAll,
-                  ),
-                ],
+        showReplaceMenu
+            ? Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 8.0,
+                ),
+                child: ReplaceMenu(
+                  editorState: widget.editorState,
+                  searchService: searchService,
+                  localizations: widget.localizations,
+                ),
               )
             : const SizedBox.shrink(),
       ],
     );
   }
-
-  void _searchPattern() {
-    searchService.findAndHighlight(findController.text);
-    setState(() => queriedPattern = findController.text);
-  }
-
-  void _replaceSelectedWord() {
-    if (findController.text != queriedPattern) {
-      _searchPattern();
-    }
-    searchService.replaceSelectedWord(replaceController.text);
-  }
-
-  void _replaceAllMatches() {
-    if (findController.text != queriedPattern) {
-      _searchPattern();
-    }
-    searchService.replaceAllMatches(replaceController.text);
-  }
-
-  InputDecoration _buildInputDecoration(String hintText) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      border: const OutlineInputBorder(),
-      hintText: hintText,
-    );
-  }
 }
 
-class FindMenuIconButton extends StatelessWidget {
-  const FindMenuIconButton({
+class FindMenu extends StatefulWidget {
+  const FindMenu({
     super.key,
-    required this.icon,
-    this.onPressed,
-    this.iconSize,
-    this.tooltip,
-    this.buttonKey,
+    this.localizations,
+    this.defaultFindText = '',
+    this.caseSensitive = false,
+    this.showReplaceMenu = false,
+    required this.onDismiss,
+    required this.editorState,
+    required this.style,
+    required this.searchService,
+    required this.onShowReplace,
   });
 
-  final Widget icon;
-  final Key? buttonKey;
-  final VoidCallback? onPressed;
-  final double? iconSize;
-  final String? tooltip;
+  final EditorState editorState;
+  final VoidCallback onDismiss;
+
+  /// The style of the find and replace menu
+  ///
+  /// only works for SearchService, not for SearchServiceV2
+  final FindReplaceStyle style;
+
+  /// The localizations of the find and replace menu
+  final FindReplaceLocalizations? localizations;
+
+  /// The default text to search for
+  final String defaultFindText;
+
+  /// Whether the search should be case sensitive or not
+  final bool caseSensitive;
+
+  /// Whether to show the replace menu or not
+  final bool showReplaceMenu;
+
+  final void Function(bool showReplaceMenu) onShowReplace;
+
+  final SearchServiceV2 searchService;
+
+  @override
+  State<FindMenu> createState() => _FindMenuState();
+}
+
+class _FindMenuState extends State<FindMenu> {
+  final findTextFieldFocusNode = FocusNode();
+
+  final findTextEditingController = TextEditingController();
+
+  String queriedPattern = '';
+
+  bool showReplaceMenu = false;
+  bool caseSensitive = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    showReplaceMenu = widget.showReplaceMenu;
+    caseSensitive = widget.caseSensitive;
+
+    widget.searchService.matchedPositions.addListener(_setState);
+    widget.searchService.currentSelectedIndex.addListener(_setState);
+
+    findTextEditingController.addListener(_searchPattern);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      findTextFieldFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.searchService.matchedPositions.removeListener(_setState);
+    widget.searchService.currentSelectedIndex.removeListener(_setState);
+    widget.searchService.dispose();
+    findTextEditingController.removeListener(_searchPattern);
+    findTextEditingController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: _iconButtonSize,
-      height: _iconButtonSize,
-      child: IconButton(
-        key: buttonKey,
-        onPressed: onPressed,
-        icon: icon,
-        iconSize: iconSize,
-        tooltip: tooltip,
-      ),
+    // the selectedIndex from searchService is 0-based
+    final selectedIndex = widget.searchService.selectedIndex + 1;
+    final matches = widget.searchService.matchedPositions.value;
+    return Row(
+      children: [
+        // expand/collapse button
+        FindAndReplaceMenuIconButton(
+          icon: Icon(
+            showReplaceMenu ? Icons.expand_less : Icons.expand_more,
+          ),
+          onPressed: () {
+            widget.onShowReplace(!showReplaceMenu);
+            setState(() {
+              showReplaceMenu = !showReplaceMenu;
+            });
+          },
+        ),
+        // find text field
+        SizedBox(
+          width: 200,
+          height: 30,
+          child: TextField(
+            key: const Key('findTextField'),
+            focusNode: findTextFieldFocusNode,
+            controller: findTextEditingController,
+            onSubmitted: (_) {
+              widget.searchService.navigateToMatch();
+
+              // after update selection or navigate to match, the editor
+              //  will request focus, here's a workaround to request the
+              //  focus back to the findTextField
+              Future.delayed(const Duration(milliseconds: 50), () {
+                FocusScope.of(context).requestFocus(
+                  findTextFieldFocusNode,
+                );
+              });
+            },
+            decoration: _buildInputDecoration(
+              widget.localizations?.find ??
+                  AppFlowyEditorLocalizations.current.find,
+            ),
+          ),
+        ),
+        // the count of matches
+        Container(
+          constraints: const BoxConstraints(minWidth: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            matches.isEmpty
+                ? widget.localizations?.noResult ?? 'No Result'
+                : '$selectedIndex of ${matches.length}',
+          ),
+        ),
+        // case sensitive button
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: caseSensitive ? Colors.blue.shade400 : Colors.transparent,
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          child: FindAndReplaceMenuIconButton(
+            onPressed: () => setState(() {
+              caseSensitive = !caseSensitive;
+              widget.searchService.caseSensitive = caseSensitive;
+            }),
+            icon: const Icon(Icons.keyboard_capslock),
+            tooltip: 'Aa',
+          ),
+        ),
+        // previous match button
+        FindAndReplaceMenuIconButton(
+          iconButtonKey: const Key('previousMatchButton'),
+          onPressed: () => widget.searchService.navigateToMatch(moveUp: true),
+          icon: const Icon(Icons.arrow_upward),
+          tooltip: widget.localizations?.previousMatch ??
+              AppFlowyEditorLocalizations.current.previousMatch,
+        ),
+        // next match button
+        FindAndReplaceMenuIconButton(
+          iconButtonKey: const Key('nextMatchButton'),
+          onPressed: () => widget.searchService.navigateToMatch(),
+          icon: const Icon(Icons.arrow_downward),
+          tooltip: widget.localizations?.nextMatch ??
+              AppFlowyEditorLocalizations.current.nextMatch,
+        ),
+        FindAndReplaceMenuIconButton(
+          iconButtonKey: const Key('closeButton'),
+          onPressed: widget.onDismiss,
+          icon: const Icon(Icons.close),
+          tooltip: widget.localizations?.close ??
+              AppFlowyEditorLocalizations.current.closeFind,
+        ),
+      ],
     );
   }
+
+  void _searchPattern() {
+    if (findTextEditingController.text.isEmpty) {
+      return;
+    }
+    widget.searchService.findAndHighlight(findTextEditingController.text);
+    setState(() => queriedPattern = findTextEditingController.text);
+  }
+
+  void _setState() {
+    setState(() {});
+  }
+}
+
+class ReplaceMenu extends StatefulWidget {
+  const ReplaceMenu({
+    super.key,
+    required this.editorState,
+    required this.searchService,
+    this.localizations,
+  });
+
+  final EditorState editorState;
+
+  /// The localizations of the find and replace menu
+  final FindReplaceLocalizations? localizations;
+
+  final SearchServiceV2 searchService;
+
+  @override
+  State<ReplaceMenu> createState() => _ReplaceMenuState();
+}
+
+class _ReplaceMenuState extends State<ReplaceMenu> {
+  final replaceTextFieldFocusNode = FocusNode();
+  final replaceTextEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // placeholder for aligning the replace menu
+        const SizedBox(
+          width: _iconButtonSize,
+        ),
+        SizedBox(
+          width: 200,
+          height: 30,
+          child: TextField(
+            key: const Key('replaceTextField'),
+            focusNode: replaceTextFieldFocusNode,
+            autofocus: false,
+            controller: replaceTextEditingController,
+            onSubmitted: (_) {
+              _replaceSelectedWord();
+
+              Future.delayed(const Duration(milliseconds: 50), () {
+                FocusScope.of(context).requestFocus(
+                  replaceTextFieldFocusNode,
+                );
+              });
+            },
+            decoration: _buildInputDecoration(
+              widget.localizations?.replace ??
+                  AppFlowyEditorLocalizations.current.replace,
+            ),
+          ),
+        ),
+        FindAndReplaceMenuIconButton(
+          iconButtonKey: const Key('replaceSelectedButton'),
+          onPressed: _replaceSelectedWord,
+          icon: const Icon(Icons.find_replace),
+          tooltip: widget.localizations?.replace ??
+              AppFlowyEditorLocalizations.current.replace,
+        ),
+        FindAndReplaceMenuIconButton(
+          iconButtonKey: const Key('replaceAllButton'),
+          onPressed: () => widget.searchService.replaceAllMatches(
+            replaceTextEditingController.text,
+          ),
+          icon: const Icon(Icons.change_circle_outlined),
+          tooltip: widget.localizations?.replaceAll ??
+              AppFlowyEditorLocalizations.current.replaceAll,
+        ),
+      ],
+    );
+  }
+
+  void _replaceSelectedWord() {
+    widget.searchService.replaceSelectedWord(replaceTextEditingController.text);
+  }
+}
+
+InputDecoration _buildInputDecoration(String hintText) {
+  return InputDecoration(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+    border: const OutlineInputBorder(),
+    hintText: hintText,
+  );
 }
