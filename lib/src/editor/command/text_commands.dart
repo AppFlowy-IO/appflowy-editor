@@ -173,7 +173,11 @@ extension TextTransforms on EditorState {
       withUpdateSelection: withUpdateSelection,
     );
   }
- bool iswhiteSpaceBeforeSelected(Selection selection) {
+
+  static const whiteSpaceCharacter = " ";
+  // A function to check if the character before the selection is a white space.
+  // Returs true if the character is a white space, false otherwise.
+  bool iswhiteSpaceBeforeSelected(Selection selection) {
     if (selection.end.offset == 0) {
       return false;
     }
@@ -182,11 +186,9 @@ extension TextTransforms on EditorState {
             start: selection.end.copyWith(offset: selection.end.offset - 1),
             end: selection.end.copyWith(offset: selection.end.offset),
           ),
-        ).first ==
-        " ";
+        ).first == whiteSpaceCharacter;
   }
 
-  
   /// Toggles the given attribute on or off for the selected text.
   ///
   /// If the [Selection] is not passed in, use the current selection.
@@ -199,10 +201,10 @@ extension TextTransforms on EditorState {
       return;
     }
     final nodes = getNodesInSelection(selection);
-
+// If the selection is collapsed, insert a white space character at the current selection. and format it.
     if (selection.length == 0) {
       if (selection.end.offset == 0) {
-        insertTextAtCurrentSelection(" ");
+        insertTextAtCurrentSelection(whiteSpaceCharacter);
         selection = selection.copyWith(
           start: selection.end.copyWith(offset: selection.end.offset),
           end: selection.end.copyWith(offset: selection.end.offset + 1),
@@ -214,7 +216,7 @@ extension TextTransforms on EditorState {
             end: selection.end.copyWith(offset: selection.end.offset),
           );
         } else {
-          insertTextAtCurrentSelection(" ");
+          insertTextAtCurrentSelection(whiteSpaceCharacter);
           selection = selection.copyWith(
             start: selection.end.copyWith(offset: selection.end.offset),
             end: selection.end.copyWith(offset: selection.end.offset + 1),
