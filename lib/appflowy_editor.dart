@@ -9,6 +9,7 @@ export 'src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
 export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
 // editor part, including editor component, block component, etc.
 export 'src/editor/editor.dart';
+export 'src/editor/find_replace_menu/find_and_replace.dart';
 export 'src/editor/selection_menu/selection_menu.dart';
 // editor state
 export 'src/editor_state.dart';

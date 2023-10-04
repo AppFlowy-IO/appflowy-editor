@@ -97,7 +97,6 @@ class SearchService {
     }
     //finally we will highlight all the mathces.
     _highlightAllMatches(unhighlight: unhighlight);
-
     selectedIndex = -1;
   }
 
@@ -138,7 +137,6 @@ class SearchService {
       } else {
         _applySelectedHighlightColor(selection);
       }
-      editorState.undoManager.forgetRecentUndo();
     }
   }
 
@@ -147,13 +145,6 @@ class SearchService {
     bool isNavigating = false,
   ]) async {
     _applySelectedHighlightColor(selection, isSelected: true);
-
-    await editorState.updateSelectionWithReason(
-      selection,
-      reason: isNavigating
-          ? SelectionUpdateReason.searchNavigate
-          : SelectionUpdateReason.searchHighlight,
-    );
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
@@ -199,7 +190,7 @@ class SearchService {
     final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
-    //unhighlight the selected word before it is replaced
+    //unHighlight the selected word before it is replaced
     final selection = editorState.selection!;
     editorState.formatDelta(
       selection,

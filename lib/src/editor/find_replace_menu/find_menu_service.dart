@@ -13,7 +13,7 @@ class FindReplaceMenu implements FindReplaceService {
   FindReplaceMenu({
     required this.context,
     required this.editorState,
-    required this.replaceFlag,
+    required this.showReplaceMenu,
     this.localizations,
     required this.style,
     this.regexFlag = true,
@@ -22,7 +22,7 @@ class FindReplaceMenu implements FindReplaceService {
 
   final BuildContext context;
   final EditorState editorState;
-  final bool replaceFlag;
+  final bool showReplaceMenu;
   final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
   final bool regexFlag;
@@ -39,6 +39,8 @@ class FindReplaceMenu implements FindReplaceService {
       editorState.service.keyboardService?.enable();
       editorState.service.scrollService?.enable();
     }
+
+    editorState.onDispose.removeListener(dismiss);
 
     _findReplaceMenuEntry?.remove();
     _findReplaceMenuEntry = null;
@@ -63,37 +65,47 @@ class FindReplaceMenu implements FindReplaceService {
       return;
     }
 
+    editorState.onDispose.addListener(dismiss);
+
     _findReplaceMenuEntry = OverlayEntry(
       builder: (context) {
         return Positioned(
           top: topOffset,
           right: rightOffset,
-          child: Material(
-            borderRadius: BorderRadius.circular(8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: editorState.editorStyle.selectionColor,
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 5,
-                    spreadRadius: 1,
-                    color: Colors.black.withOpacity(0.1),
+          child: style.findMenuBuilder?.call(
+                context,
+                editorState,
+                localizations,
+                style,
+                showReplaceMenu,
+                dismiss,
+              ) ??
+              Material(
+                borderRadius: BorderRadius.circular(8.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: editorState.editorStyle.selectionColor,
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 5,
+                        spreadRadius: 1,
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(6.0),
                   ),
-                ],
-                borderRadius: BorderRadius.circular(6.0),
+                  child: FindAndReplaceMenuWidget(
+                    onDismiss: dismiss,
+                    editorState: editorState,
+                    showReplaceMenu: showReplaceMenu,
+                    localizations: localizations,
+                    style: style,
+                    regexFlag: regexFlag,
+                    caseSensitiveFlag: caseSensitiveFlag,
+                  ),
+                ),
               ),
-              child: FindMenuWidget(
-                dismiss: dismiss,
-                editorState: editorState,
-                replaceFlag: replaceFlag,
-                localizations: localizations,
-                style: style,
-                regexFlag: regexFlag,
-                caseSensitiveFlag: caseSensitiveFlag,
-              ),
-            ),
-          ),
-        );
+            );
       },
     );
 

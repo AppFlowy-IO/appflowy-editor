@@ -1,9 +1,8 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:appflowy_editor/src/editor/find_replace_menu/find_replace_widget.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../infra/testable_editor.dart';
 import 'find_replace_menu_utils.dart';
@@ -31,7 +30,7 @@ void main() async {
       await tester.tap(find.byKey(const Key('closeButton')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsNothing);
+      expect(find.byType(FindAndReplaceMenuWidget), findsNothing);
       expect(find.byType(TextField), findsNothing);
       expect(find.byType(IconButton), findsNothing);
     });
@@ -49,7 +48,7 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       await enterInputIntoFindDialog(tester, pattern, isReplaceField: true);
 
@@ -77,7 +76,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, pattern);
@@ -116,14 +115,10 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
-      await tester.pumpAndSettle();
 
       //we expect the found pattern to be highlighted
       final node = editor.nodeAtPath([0]);
@@ -148,7 +143,7 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('''within multiple matched patterns replace 
+    testWidgets('''within multiple matched patterns replace
       should only replace the currently selected match''', (tester) async {
       const patternToBeFound = 'Welcome';
       const replacePattern = 'Salute';
@@ -163,7 +158,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       // we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -213,7 +208,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -251,7 +246,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -292,7 +287,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -329,7 +324,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -376,7 +371,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
@@ -423,7 +418,7 @@ void main() async {
       await pressFindAndReplaceCommand(editor, openReplace: true);
 
       await tester.pumpAndSettle();
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
