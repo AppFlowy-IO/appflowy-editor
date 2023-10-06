@@ -100,10 +100,6 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   void updateSelection(Selection? selection) {
-    if (currentSelection.value == selection) {
-      return;
-    }
-
     currentSelection.value = selection;
     editorState.updateSelectionWithReason(
       selection,
