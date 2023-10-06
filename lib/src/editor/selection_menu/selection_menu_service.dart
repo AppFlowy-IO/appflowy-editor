@@ -52,6 +52,8 @@ class SelectionMenu extends SelectionMenuService {
         editorState.service.selectionServiceKey.currentState == null;
     if (!isSelectionDisposed) {
       final selectionService = editorState.service.selectionService;
+      // focus to reload the selection after the menu dismissed.
+      editorState.selection = editorState.selection;
       selectionService.currentSelection.removeListener(_onSelectionChange);
     }
   }
