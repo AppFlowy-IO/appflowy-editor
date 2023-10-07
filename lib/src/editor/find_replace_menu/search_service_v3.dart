@@ -99,7 +99,7 @@ class SearchServiceV3 {
     Pattern pattern, {
     bool unHighlight = false,
   }) {
-    matchWrappers.value = _getMatchWrappes(
+    matchWrappers.value = _getMatchWrappers(
       pattern: pattern,
       nodes: editorState.document.root.children,
     );
@@ -114,7 +114,7 @@ class SearchServiceV3 {
     }
   }
 
-  List<MatchWrapper> _getMatchWrappes({
+  List<MatchWrapper> _getMatchWrappers({
     required Pattern pattern,
     Iterable<Node> nodes = const [],
   }) {
@@ -132,7 +132,7 @@ class SearchServiceV3 {
         }
       }
       result.addAll(
-        _getMatchWrappes(pattern: pattern, nodes: node.children),
+        _getMatchWrappers(pattern: pattern, nodes: node.children),
       );
     }
     return result;
