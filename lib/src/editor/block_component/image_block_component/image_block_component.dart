@@ -2,8 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'resizable_image.dart';
-
 class ImageBlockKeys {
   const ImageBlockKeys._();
 

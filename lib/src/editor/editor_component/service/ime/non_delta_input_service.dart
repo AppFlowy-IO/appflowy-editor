@@ -119,6 +119,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void close() {
+    keepEditorFocusNotifier.value = 0;
     currentTextEditingValue = null;
     composingTextRange = null;
     _textInputConnection?.close();
