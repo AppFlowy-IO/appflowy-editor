@@ -14,22 +14,24 @@ class SearchServiceV2 {
   //matchedPositions.value will contain a list of positions of the matched patterns
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
-  ValueNotifier<List<Position>> matchedPositions = ValueNotifier([]);
-  SearchAlgorithm searchAlgorithm = BoyerMoore();
-  String queriedPattern = '';
+  ValueNotifier<List<Selection>> matchedPositions = ValueNotifier([]);
+  ValueNotifier<List<Match>> matchedMatches = ValueNotifier([]);
+  SearchAlgorithm searchAlgorithm = DartBuiltIn();
+  String targetString = '';
+  Pattern queriedPattern = RegExp('');
 
   bool _regex = false;
   bool get regex => _regex;
   set regex(bool value) {
     _regex = value;
-    findAndHighlight(queriedPattern);
+    findAndHighlight(targetString);
   }
 
   bool _caseSensitive = false;
   bool get caseSensitive => _caseSensitive;
   set caseSensitive(bool value) {
     _caseSensitive = value;
-    findAndHighlight(queriedPattern);
+    findAndHighlight(targetString);
   }
 
   int _selectedIndex = 0;
@@ -47,22 +49,60 @@ class SearchServiceV2 {
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
 
+
+  Pattern _getPattern(String targetString) {
+    if (regex) {
+      return RegExp(targetString, caseSensitive: caseSensitive);
+    } else {
+      return RegExp(RegExp.escape(targetString), caseSensitive: caseSensitive);
+    }
+  }
+
+  String _getRegexReplaced(String replaceText, Match match) {
+    List<String?> groups = match
+        .groups(List<int>.generate(match.groupCount + 1, (index) => index));
+
+    String replacedText = replaceText;
+    for (int i = 0; i <= match.groupCount; i++) {
+      replacedText = replacedText.replaceAll('\\$i', groups[i] ?? '');
+    }
+
+    return replacedText;
+  }
+
   void dispose() {
     matchedPositions.dispose();
     currentSelectedIndex.dispose();
   }
 
-  void findAndHighlight(
-    String pattern, {
-    bool unHighlight = false,
-  }) {
+
+  // Public entry method for _findAndHighlight, do necessary checks
+  // and clear previous highlights before calling it
+  void findAndHighlight(String target, {bool unHighlight = false}) {
+    Pattern pattern = _getPattern(target);
+
     if (queriedPattern != pattern) {
+      // this means we have a new pattern, but before we highlight the new matches,
+      // lets unhiglight the old pattern
+      _findAndHighlight(queriedPattern, unHighlight: true);
       matchedPositions.value.clear();
+      matchedMatches.value.clear();
       queriedPattern = pattern;
+      targetString = target;
     }
 
-    if (pattern.isEmpty) return;
+    if (target.isEmpty) return;
 
+    _findAndHighlight(pattern, unHighlight: unHighlight);
+  }
+
+  /// Finds the pattern in editorState.document and stores it in matchedPositions.
+  /// Calls the highlightMatch method to highlight the pattern
+  /// if it is found.
+  void _findAndHighlight(
+    Pattern pattern, {
+    bool unHighlight = false,
+  }) {
     matchedPositions.value = _getMatchedPositions(
       pattern: pattern,
       nodes: editorState.document.root.children,
@@ -78,23 +118,23 @@ class SearchServiceV2 {
     }
   }
 
-  List<Position> _getMatchedPositions({
-    required String pattern,
+  List<Selection> _getMatchedPositions({
+    required Pattern pattern,
     Iterable<Node> nodes = const [],
   }) {
-    final List<Position> result = [];
+    final List<Selection> result = [];
     for (final node in nodes) {
       if (node.delta != null) {
         final text = node.delta!.toPlainText();
-        Iterable<Match> matches = searchAlgorithm.searchMethod(
-          caseSensitive ? pattern : pattern.toLowerCase(),
-          caseSensitive ? text : text.toLowerCase(),
-        );
+        Iterable<Match> matches = searchAlgorithm.searchMethod(pattern, text);
         // we will store this list of offsets along with their path,
         // in a list of positions.
         for (Match match in matches) {
           result.add(
-            Position(path: node.path, offset: match.start),
+            Selection(
+              start: Position(path: node.path, offset: match.start),
+              end: Position(path: node.path, offset: match.end),
+            ),
           );
         }
       }
@@ -106,13 +146,9 @@ class SearchServiceV2 {
   }
 
   void _highlightCurrentMatch(
-    String pattern,
+    Pattern pattern,
   ) {
-    final start = matchedPositions.value[selectedIndex];
-    final end = Position(
-      path: start.path,
-      offset: start.offset + pattern.length,
-    );
+    final selection = matchedPositions.value[selectedIndex];
 
     // https://github.com/google/flutter.widgets/issues/151
     // there's a bug in the scrollable_positioned_list package
@@ -122,11 +158,11 @@ class SearchServiceV2 {
     if (_prevSelectedIndex != selectedIndex &&
         ((_prevSelectedIndex == length && selectedIndex == 0) ||
             (_prevSelectedIndex == 0 && selectedIndex == length))) {
-      editorState.scrollService?.jumpTo(start.path.first);
+      editorState.scrollService?.jumpTo(selection.start.path.first);
     }
 
     editorState.updateSelectionWithReason(
-      Selection(start: start, end: end),
+      selection,
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
       },
@@ -157,44 +193,60 @@ class SearchServiceV2 {
   /// matched word if that exists.
   Future<void> replaceSelectedWord(String replaceText) async {
     if (replaceText.isEmpty ||
-        queriedPattern.isEmpty ||
+        queriedPattern.toString().isEmpty ||
         matchedPositions.value.isEmpty) {
       return;
     }
 
-    final start = matchedPositions.value[selectedIndex];
-    final node = editorState.getNodeAtPath(start.path)!;
+    final selection = matchedPositions.value[selectedIndex];
+    final node = editorState.getNodeAtPath(selection.start.path)!;
+    final match = matchedMatches.value[selectedIndex];
+
+    final String replaced;
+    if (regex) {
+      replaced = _getRegexReplaced(replaceText, match);
+    } else {
+      replaced = replaceText;
+    }
+
     final transaction = editorState.transaction
       ..replaceText(
         node,
-        start.offset,
-        queriedPattern.length,
-        replaceText,
+        selection.start.offset,
+        selection.length,
+        replaced,
       );
     await editorState.apply(transaction);
 
     matchedPositions.value.clear();
-    findAndHighlight(queriedPattern);
+    _findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurances of pattern with replaceText
   void replaceAllMatches(String replaceText) {
     if (replaceText.isEmpty ||
-        queriedPattern.isEmpty ||
+        queriedPattern.toString().isEmpty ||
         matchedPositions.value.isEmpty) {
       return;
     }
 
     // _highlightAllMatches(queriedPattern.length, unHighlight: true);
-    for (final match in matchedPositions.value.reversed.toList()) {
-      final node = editorState.getNodeAtPath(match.path)!;
+    final reversedMatches = matchedMatches.value.reversed.toList();
+    for (final (index, position) in matchedPositions.value.reversed.indexed) {
+      final node = editorState.getNodeAtPath(position.start.path)!;
+      final String replaced;
+      if (regex) {
+        replaced = _getRegexReplaced(replaceText, reversedMatches[index]);
+      } else {
+        replaced = replaceText;
+      }
 
       final transaction = editorState.transaction
         ..replaceText(
           node,
-          match.offset,
-          queriedPattern.length,
-          replaceText,
+          position.startIndex,
+          position.length,
+          replaced,
         );
 
       editorState.apply(transaction);
