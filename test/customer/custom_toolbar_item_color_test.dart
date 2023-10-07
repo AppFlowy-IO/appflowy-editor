@@ -61,6 +61,7 @@ class CustomToolbarItemColor extends StatelessWidget {
               border: Border.all(color: Colors.blue),
             ),
             child: FloatingToolbar(
+              textDirection: TextDirection.ltr,
               items: [bulletedListItem],
               style: const FloatingToolbarStyle(
                 backgroundColor: Colors.red,

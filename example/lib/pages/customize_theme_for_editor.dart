@@ -4,6 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomizeThemeForEditor extends StatefulWidget {
   const CustomizeThemeForEditor({super.key});
@@ -63,6 +64,11 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         editorState: editorState,
         editorStyle: customizeEditorStyle(),
         blockComponentBuilders: customBuilder(),
+        header: Image.asset(
+          'assets/images/header.png',
+          height: 200,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -74,7 +80,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         if (HeadingBlockKeys.type == node.type) {
           return const EdgeInsets.symmetric(vertical: 30);
         }
-        return const EdgeInsets.symmetric(vertical: 10);
+        return const EdgeInsets.symmetric(vertical: 5);
       },
       textStyle: (node) {
         if (HeadingBlockKeys.type == node.type) {
@@ -139,13 +145,13 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   EditorStyle customizeEditorStyle() {
     return EditorStyle(
       padding: PlatformExtension.isDesktopOrWeb
-          ? const EdgeInsets.only(left: 100, right: 100, top: 20)
+          ? const EdgeInsets.only(left: 200, right: 200)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,
       selectionColor: Colors.green.withOpacity(0.5),
       textStyleConfiguration: TextStyleConfiguration(
-        text: const TextStyle(
-          fontSize: 18.0,
+        text: GoogleFonts.poppins(
+          fontSize: 14.0,
           color: Colors.white,
         ),
         bold: const TextStyle(

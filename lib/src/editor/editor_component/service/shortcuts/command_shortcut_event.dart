@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 typedef CommandShortcutEventHandler = KeyEventResult Function(
@@ -67,23 +64,17 @@ class CommandShortcutEvent {
       return;
     }
     var matched = false;
-    if (kIsWeb) {
-      // We shouldn't continue to run the below `else if` code in Web platform, it will throw an `_operatingSystem` exception.
-      if (command != null && command.isNotEmpty) {
-        this.command = command;
-        matched = true;
-      }
-    } else if (Platform.isWindows &&
+    if ((PlatformExtension.isWindows || PlatformExtension.isWebOnWindows) &&
         windowsCommand != null &&
         windowsCommand.isNotEmpty) {
       this.command = windowsCommand;
       matched = true;
-    } else if (Platform.isMacOS &&
+    } else if ((PlatformExtension.isMacOS || PlatformExtension.isWebOnMacOS) &&
         macOSCommand != null &&
         macOSCommand.isNotEmpty) {
       this.command = macOSCommand;
       matched = true;
-    } else if (Platform.isLinux &&
+    } else if ((PlatformExtension.isLinux || PlatformExtension.isWebOnLinux) &&
         linuxCommand != null &&
         linuxCommand.isNotEmpty) {
       this.command = linuxCommand;

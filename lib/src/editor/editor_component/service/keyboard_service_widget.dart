@@ -257,6 +257,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       'keyboard service - focus changed: ${focusNode.hasFocus}}',
     );
 
+    /// On web, we don't need to close the keyboard when the focus is lost.
+    if (kIsWeb) {
+      return;
+    }
+
     // clear the selection when the focus is lost.
     if (!focusNode.hasFocus) {
       if (PlatformExtension.isDesktopOrWeb) {

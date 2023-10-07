@@ -114,6 +114,84 @@ void main() async {
 
       await editor.dispose();
     });
+
+    // Before
+    // Welcome to AppFlowy 0| <- cursor here
+    //  Welcome to AppFlowy 0 - 1
+    //
+    // press enter key at the cursor position
+    // and then, press tab key to indent the empty line
+    // After
+    // Welcome to AppFlowy 0
+    //  | <- cursor here
+    //    Welcome to AppFlowy 0 - 1
+    //
+    // execute undo command twice
+    //
+    // then it should be like this
+    // Welcome to AppFlowy 0| <- cursor here
+    //  Welcome to AppFlowy 0 - 1
+    //
+    // after that, execute redo command twice
+    //
+    // Welcome to AppFlowy 0
+    //  | <- cursor here
+    //    Welcome to AppFlowy 0 - 1
+    testWidgets('Undo the nested list', (tester) async {
+      const text0 = 'Welcome to AppFlowy 0';
+      const text01 = 'Welcome to AppFlowy 0 - 1';
+
+      // Welcome to AppFlowy 0
+      // |Welcome to AppFlowy 0 - 1
+      final editor = tester.editor
+        ..addParagraph(initialText: text0)
+        ..addParagraph(initialText: text01);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [1], offset: 0)),
+      );
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+
+      // Welcome to AppFlowy 0|
+      //  Welcome to AppFlowy 0 - 1
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [0], offset: text0.length)),
+      );
+      await editor.pressKey(character: '\n');
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
+      expect(editor.nodeAtPath([0, 0])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([0, 0, 0])!.delta!.toPlainText(), text01);
+
+      // first undo
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
+      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
+
+      // second undo
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
+      expect(editor.nodeAtPath([0, 0])!.delta!.toPlainText(), text01);
+
+      // first redo
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
+      expect(editor.nodeAtPath([0])!.children, isEmpty);
+      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
+
+      // second redo
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
+      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
+
+      await editor.dispose();
+    });
   });
 }
 

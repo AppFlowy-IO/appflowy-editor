@@ -34,11 +34,11 @@ class SearchService {
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
-  void findAndHighlight(String pattern, {bool unhighlight = false}) {
+  void findAndHighlight(String pattern, {bool unHighlight = false}) {
     if (queriedPattern != pattern) {
       //this means we have a new pattern, but before we highlight the new matches,
       //lets unhiglight the old pattern
-      findAndHighlight(queriedPattern, unhighlight: true);
+      findAndHighlight(queriedPattern, unHighlight: true);
       matchedPositions.clear();
       queriedPattern = pattern;
     }
@@ -58,7 +58,7 @@ class SearchService {
       }
     }
     //finally we will highlight all the mathces.
-    _highlightAllMatches(pattern.length, unhighlight: unhighlight);
+    _highlightAllMatches(pattern.length, unHighlight: unHighlight);
 
     selectedIndex = -1;
   }
@@ -90,7 +90,7 @@ class SearchService {
 
   void _highlightAllMatches(
     int patternLength, {
-    bool unhighlight = false,
+    bool unHighlight = false,
   }) {
     for (final match in matchedPositions) {
       final start = Position(path: match.path, offset: match.offset);
@@ -100,16 +100,9 @@ class SearchService {
       );
 
       final selection = Selection(start: start, end: end);
-
-      if (unhighlight) {
-        editorState.formatDelta(
-          selection,
-          {AppFlowyRichTextKeys.findBackgroundColor: null},
-        );
-      } else {
-        _applySelectedHighlightColor(selection);
+      if (!unHighlight) {
+        editorState.selection = selection;
       }
-      editorState.undoManager.forgetRecentUndo();
     }
   }
 
@@ -124,13 +117,6 @@ class SearchService {
 
     final selection = Selection(start: start, end: end);
     _applySelectedHighlightColor(selection, isSelected: true);
-
-    await editorState.updateSelectionWithReason(
-      selection,
-      reason: isNavigating
-          ? SelectionUpdateReason.searchNavigate
-          : SelectionUpdateReason.searchHighlight,
-    );
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
@@ -180,7 +166,7 @@ class SearchService {
     final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
-    //unhighlight the selected word before it is replaced
+    //unHighlight the selected word before it is replaced
     final selection = editorState.selection!;
     editorState.formatDelta(
       selection,
@@ -211,7 +197,7 @@ class SearchService {
       return;
     }
 
-    _highlightAllMatches(queriedPattern.length, unhighlight: true);
+    _highlightAllMatches(queriedPattern.length, unHighlight: true);
     for (final match in matchedPositions.reversed.toList()) {
       final node = editorState.getNodeAtPath(match.path)!;
 
