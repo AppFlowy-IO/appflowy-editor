@@ -80,7 +80,7 @@ class SearchServiceV3 {
 
     if (queriedPattern != pattern) {
       // this means we have a new pattern, but before we highlight the new matches,
-      // lets unHiglight the old pattern
+      // lets unhighlight the old pattern
       _findAndHighlight(queriedPattern, unHighlight: true);
       matchWrappers.value.clear();
       queriedPattern = pattern;
@@ -214,7 +214,7 @@ class SearchServiceV3 {
     _findAndHighlight(queriedPattern);
   }
 
-  /// Replaces all the found occurances of pattern with replaceText
+  /// Replaces all the found occurrences of pattern with replaceText
   void replaceAllMatches(String replaceText) {
     if (replaceText.isEmpty ||
         queriedPattern.toString().isEmpty ||
