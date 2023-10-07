@@ -48,7 +48,6 @@ class SearchServiceV3 {
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
 
-
   Pattern _getPattern(String targetString) {
     if (regex) {
       return RegExp(targetString, caseSensitive: caseSensitive);
@@ -73,7 +72,6 @@ class SearchServiceV3 {
     matchWrappes.dispose();
     currentSelectedIndex.dispose();
   }
-
 
   // Public entry method for _findAndHighlight, do necessary checks
   // and clear previous highlights before calling the private method
@@ -255,7 +253,7 @@ class MatchWrap {
   final Path path;
 
   Selection get selection => Selection(
-    start: Position(path: path, offset: match.start),
-    end: Position(path: path, offset: match.end),
-  );
+        start: Position(path: path, offset: match.start),
+        end: Position(path: path, offset: match.end),
+      );
 }

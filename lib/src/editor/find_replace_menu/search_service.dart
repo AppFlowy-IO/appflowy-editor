@@ -49,8 +49,10 @@ class SearchService {
     for (final n in _getAllNodes()) {
       //matches list will contain the offsets where the desired word,
       //is found.
-      List<int> matches =
-      searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText()).map((e) => e.start).toList();
+      List<int> matches = searchAlgorithm
+          .searchMethod(pattern, n.delta!.toPlainText())
+          .map((e) => e.start)
+          .toList();
       //we will store this list of offsets along with their path,
       //in a list of positions.
       for (int matchedOffset in matches) {
@@ -69,11 +71,11 @@ class SearchService {
     if (contents.isEmpty) return [];
 
     final firstNode = contents.firstWhere(
-          (el) => el.delta != null,
+      (el) => el.delta != null,
     );
 
     final lastNode = contents.lastWhere(
-          (el) => el.delta != null,
+      (el) => el.delta != null,
     );
 
     //iterate within all the text nodes of the document.
@@ -89,9 +91,9 @@ class SearchService {
   }
 
   void _highlightAllMatches(
-      int patternLength, {
-        bool unHighlight = false,
-      }) {
+    int patternLength, {
+    bool unHighlight = false,
+  }) {
     for (final match in matchedPositions) {
       final start = Position(path: match.path, offset: match.offset);
       final end = Position(
@@ -107,9 +109,9 @@ class SearchService {
   }
 
   Future<void> _selectWordAtPosition(
-      Position start, [
-        bool isNavigating = false,
-      ]) async {
+    Position start, [
+    bool isNavigating = false,
+  ]) async {
     Position end = Position(
       path: start.path,
       offset: start.offset + queriedPattern.length,
@@ -140,10 +142,10 @@ class SearchService {
 
     if (moveUp) {
       selectedIndex =
-      selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
+          selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
     } else {
       selectedIndex =
-      (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
+          (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
     }
     final match = matchedPositions[selectedIndex];
     _selectWordAtPosition(match, true);
@@ -215,9 +217,9 @@ class SearchService {
   }
 
   void _applySelectedHighlightColor(
-      Selection selection, {
-        bool isSelected = false,
-      }) {
+    Selection selection, {
+    bool isSelected = false,
+  }) {
     final color = isSelected
         ? style.selectedHighlightColor.toHex()
         : style.unselectedHighlightColor.toHex();

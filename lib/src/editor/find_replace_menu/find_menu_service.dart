@@ -105,7 +105,7 @@ class FindReplaceMenu implements FindReplaceService {
                   ),
                 ),
               ),
-            );
+        );
       },
     );
 

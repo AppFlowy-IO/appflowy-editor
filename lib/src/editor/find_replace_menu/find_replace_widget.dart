@@ -65,7 +65,7 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
     showReplaceMenu = widget.showReplaceMenu;
     showRegexButton = widget.showRegexButton;
     showCaseSensitiveButton = widget.showCaseSensitiveButton;
-    
+
     showReplaceMenu = widget.showReplaceMenu;
   }
 
@@ -93,15 +93,15 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
         ),
         showReplaceMenu
             ? Padding(
-          padding: const EdgeInsets.only(
-            bottom: 8.0,
-          ),
-          child: ReplaceMenu(
-            editorState: widget.editorState,
-            searchService: searchService,
-            localizations: widget.localizations,
-          ),
-        )
+                padding: const EdgeInsets.only(
+                  bottom: 8.0,
+                ),
+                child: ReplaceMenu(
+                  editorState: widget.editorState,
+                  searchService: searchService,
+                  localizations: widget.localizations,
+                ),
+              )
             : const SizedBox.shrink(),
       ],
     );
@@ -302,7 +302,8 @@ class _FindMenuState extends State<FindMenu> {
             key: const Key('caseSensitiveButton'),
             onPressed: () {
               setState(() {
-                widget.searchService.caseSensitive = !widget.searchService.caseSensitive;
+                widget.searchService.caseSensitive =
+                    !widget.searchService.caseSensitive;
               });
               _searchPattern();
             },
@@ -310,8 +311,9 @@ class _FindMenuState extends State<FindMenu> {
               name: 'case_sensitive',
               width: 20,
               height: 20,
-              color:
-              widget.searchService.caseSensitive ? Colors.black : Colors.grey,
+              color: widget.searchService.caseSensitive
+                  ? Colors.black
+                  : Colors.grey,
             ),
             tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
           ),
