@@ -4,7 +4,7 @@ final ToolbarItem bulletedListItem = ToolbarItem(
   id: 'editor.bulleted_list',
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor) {
+  builder: (context, editorState, highlightColor,iconColor) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'bulleted_list';
@@ -12,6 +12,7 @@ final ToolbarItem bulletedListItem = ToolbarItem(
       iconName: 'toolbar/bulleted_list',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
+      iconColor: iconColor,
       tooltip: AppFlowyEditorLocalizations.current.bulletedList,
       onPressed: () => editorState.formatNode(
         selection,

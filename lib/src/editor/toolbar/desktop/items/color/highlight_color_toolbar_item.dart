@@ -5,7 +5,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
     id: 'editor.highlightColor',
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState, highlightColor) {
+    builder: (context, editorState, highlightColor, iconColor) {
       String? highlightColorHex;
 
       final selection = editorState.selection!;
@@ -20,6 +20,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
         iconName: 'toolbar/highlight_color',
         isHighlight: isHighlight,
         highlightColor: highlightColor,
+        iconColor: iconColor,
         tooltip: AppFlowyEditorLocalizations.current.highlightColor,
         onPressed: () {
           bool showClearButton = false;
@@ -27,9 +28,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
             if (!showClearButton) {
               showClearButton = delta.whereType<TextInsert>().any(
                 (element) {
-                  return element
-                          .attributes?[AppFlowyRichTextKeys.highlightColor] !=
-                      null;
+                  return element.attributes?[AppFlowyRichTextKeys.highlightColor] != null;
                 },
               );
             }

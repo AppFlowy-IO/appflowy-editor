@@ -31,7 +31,7 @@ class _AlignmentToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 6,
           isActive: onlyShowInTextType,
-          builder: (context, editorState, highlightColor) {
+          builder: (context, editorState, highlightColor,iconColor) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every(
@@ -42,6 +42,7 @@ class _AlignmentToolbarItem extends ToolbarItem {
               iconName: 'toolbar/$name',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
+              iconColor: iconColor,
               tooltip: tooltip,
               onPressed: () => editorState.updateNode(
                 selection,

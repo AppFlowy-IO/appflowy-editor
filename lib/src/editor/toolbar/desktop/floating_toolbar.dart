@@ -7,10 +7,16 @@ class FloatingToolbarStyle {
   const FloatingToolbarStyle({
     this.backgroundColor = Colors.black,
     this.toolbarActiveColor = Colors.lightBlue,
+    this.toolbarIconColor = Colors.white,
+    this.toolbarShadowColor,
+    this.toolbarElevation = 0,
   });
 
   final Color backgroundColor;
   final Color toolbarActiveColor;
+  final Color toolbarIconColor;
+  final Color? toolbarShadowColor;
+  final double toolbarElevation;
 }
 
 /// A floating toolbar that displays at the top of the editor when the selection
@@ -38,8 +44,7 @@ class FloatingToolbar extends StatefulWidget {
   State<FloatingToolbar> createState() => _FloatingToolbarState();
 }
 
-class _FloatingToolbarState extends State<FloatingToolbar>
-    with WidgetsBindingObserver {
+class _FloatingToolbarState extends State<FloatingToolbar> with WidgetsBindingObserver {
   OverlayEntry? _toolbarContainer;
   FloatingToolbarWidget? _toolbarWidget;
 
@@ -103,11 +108,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
 
-    if (selection == null ||
-        selection.isCollapsed ||
-        selectionType == SelectionType.block ||
-        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-            true) {
+    if (selection == null || selection.isCollapsed || selectionType == SelectionType.block || editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] == true) {
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.
@@ -124,6 +125,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   final String _debounceKey = 'show the toolbar';
+
   void _clear() {
     Debounce.cancel(_debounceKey);
 
@@ -147,8 +149,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (editorState.selection?.isCollapsed ?? true) {
       return;
     }
-    if (editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-        true) {
+    if (editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] == true) {
       return;
     }
     final rects = editorState.selectionRects();
@@ -181,6 +182,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       editorState: editorState,
       backgroundColor: widget.style.backgroundColor,
       toolbarActiveColor: widget.style.toolbarActiveColor,
+      toolbarIconColor: widget.style.toolbarIconColor,
+      toolbarElevation: widget.style.toolbarElevation,
+      toolbarShadowColor: widget.style.toolbarShadowColor,
       textDirection: widget.textDirection ?? Directionality.of(context),
     );
     return _toolbarWidget!;
@@ -189,8 +193,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   Rect _findSuitableRect(Iterable<Rect> rects) {
     assert(rects.isNotEmpty);
 
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final editorOffset = editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
 
     // find the min offset with non-negative dy.
     final rectsWithNonNegativeDy = rects.where(
@@ -215,17 +218,14 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   (double? left, double top, double? right) calculateToolbarOffset(Rect rect) {
-    final editorOffset =
-        editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final editorOffset = editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final editorSize = editorState.renderBox?.size ?? Size.zero;
     final editorRect = editorOffset & editorSize;
     final left = (rect.left - editorOffset.dx).abs();
     final right = (rect.right - editorOffset.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
-    final top = rect.top < floatingToolbarHeight
-        ? rect.bottom + floatingToolbarHeight
-        : rect.top;
+    final top = rect.top < floatingToolbarHeight ? rect.bottom + floatingToolbarHeight : rect.top;
     if (left <= threshold) {
       // show in left
       return (rect.left, top, null);

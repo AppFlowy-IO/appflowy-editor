@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 const floatingToolbarHeight = 32.0;
 
 @visibleForTesting
-const floatingToolbarContainerKey =
-    Key('appflowy_editor_floating_toolbar_container');
+const floatingToolbarContainerKey = Key('appflowy_editor_floating_toolbar_container');
 @visibleForTesting
 const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
 
@@ -15,6 +14,9 @@ class FloatingToolbarWidget extends StatefulWidget {
     super.key,
     this.backgroundColor = Colors.black,
     required this.toolbarActiveColor,
+    this.toolbarIconColor,
+    this.toolbarElevation = 0,
+    this.toolbarShadowColor,
     required this.items,
     required this.editorState,
     required this.textDirection,
@@ -23,6 +25,9 @@ class FloatingToolbarWidget extends StatefulWidget {
   final List<ToolbarItem> items;
   final Color backgroundColor;
   final Color toolbarActiveColor;
+  final Color? toolbarIconColor;
+  final double toolbarElevation;
+  final Color? toolbarShadowColor;
   final EditorState editorState;
   final TextDirection textDirection;
 
@@ -40,6 +45,8 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
       color: widget.backgroundColor,
+      shadowColor: widget.toolbarShadowColor,
+      elevation: widget.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SizedBox(
@@ -59,6 +66,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
                       context,
                       widget.editorState,
                       widget.toolbarActiveColor,
+                      widget.toolbarIconColor,
                     ),
                   ),
                 )
@@ -70,9 +78,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
   }
 
   Iterable<ToolbarItem> _computeActiveItems() {
-    final activeItems = widget.items
-        .where((e) => e.isActive?.call(widget.editorState) ?? false)
-        .toList();
+    final activeItems = widget.items.where((e) => e.isActive?.call(widget.editorState) ?? false).toList();
     if (activeItems.isEmpty) {
       return [];
     }
@@ -81,10 +87,6 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     activeItems.sort((a, b) => a.group.compareTo(b.group));
 
     // insert the divider.
-    return activeItems
-        .splitBetween((first, second) => first.group != second.group)
-        .expand((element) => [...element, placeholderItem])
-        .toList()
-      ..removeLast();
+    return activeItems.splitBetween((first, second) => first.group != second.group).expand((element) => [...element, placeholderItem]).toList()..removeLast();
   }
 }
