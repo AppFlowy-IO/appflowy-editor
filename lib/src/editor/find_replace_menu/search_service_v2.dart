@@ -72,18 +72,19 @@ class SearchServiceV2 {
 
   void dispose() {
     matchedPositions.dispose();
+    matchedMatches.dispose();
     currentSelectedIndex.dispose();
   }
 
 
   // Public entry method for _findAndHighlight, do necessary checks
-  // and clear previous highlights before calling it
+  // and clear previous highlights before calling the private method
   void findAndHighlight(String target, {bool unHighlight = false}) {
     Pattern pattern = _getPattern(target);
 
     if (queriedPattern != pattern) {
       // this means we have a new pattern, but before we highlight the new matches,
-      // lets unhiglight the old pattern
+      // lets unHiglight the old pattern
       _findAndHighlight(queriedPattern, unHighlight: true);
       matchedPositions.value.clear();
       matchedMatches.value.clear();
@@ -126,10 +127,10 @@ class SearchServiceV2 {
     for (final node in nodes) {
       if (node.delta != null) {
         final text = node.delta!.toPlainText();
-        Iterable<Match> matches = searchAlgorithm.searchMethod(pattern, text);
+        matchedMatches.value = searchAlgorithm.searchMethod(pattern, text).toList();
         // we will store this list of offsets along with their path,
         // in a list of positions.
-        for (Match match in matches) {
+        for (Match match in matchedMatches.value) {
           result.add(
             Selection(
               start: Position(path: node.path, offset: match.start),

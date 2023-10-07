@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'find_replace_menu_icon_button.dart';
-import 'search_service.dart';
 import 'package:flutter/material.dart';
 
 const double _iconButtonSize = 30;
@@ -15,8 +14,8 @@ class FindAndReplaceMenuWidget extends StatefulWidget {
     required this.editorState,
     required this.showReplaceMenu,
     required this.style,
-    this.regexFlag = true,
-    this.caseSensitiveFlag = true,
+    this.showRegexButton = true,
+    this.showCaseSensitiveButton = true,
   });
 
   final EditorState editorState;
@@ -29,8 +28,8 @@ class FindAndReplaceMenuWidget extends StatefulWidget {
   ///
   /// only works for SearchService, not for SearchServiceV2
   final FindReplaceStyle style;
-  final bool regexFlag;
-  final bool caseSensitiveFlag;
+  final bool showRegexButton;
+  final bool showCaseSensitiveButton;
 
   /// The localizations of the find and replace menu
   final FindReplaceLocalizations? localizations;
@@ -52,12 +51,11 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
   final findController = TextEditingController();
   final replaceController = TextEditingController();
   String queriedPattern = '';
-  bool regexFlag = true;
-  bool caseSensitiveFlag = true;
-  late SearchService searchService;
+  bool showRegexButton = true;
+  bool showCaseSensitiveButton = true;
   bool showReplaceMenu = false;
 
-  late SearchServiceV2 searchServiceV2 = SearchServiceV2(
+  late SearchServiceV2 searchService = SearchServiceV2(
     editorState: widget.editorState,
   );
 
@@ -65,15 +63,8 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
   void initState() {
     super.initState();
     showReplaceMenu = widget.showReplaceMenu;
-    regexFlag = widget.regexFlag;
-    caseSensitiveFlag = widget.caseSensitiveFlag;
-    searchService = SearchService(
-      editorState: widget.editorState,
-      style: SearchStyle(
-        selectedHighlightColor: widget.style.selectedHighlightColor,
-        unselectedHighlightColor: widget.style.unselectedHighlightColor,
-      ),
-    );
+    showRegexButton = widget.showRegexButton;
+    showCaseSensitiveButton = widget.showCaseSensitiveButton;
     
     showReplaceMenu = widget.showReplaceMenu;
   }
@@ -90,7 +81,7 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
             onDismiss: widget.onDismiss,
             editorState: widget.editorState,
             style: widget.style,
-            searchService: searchServiceV2,
+            searchService: searchService,
             defaultFindText: widget.defaultFindText,
             caseSensitive: widget.caseSensitive,
             localizations: widget.localizations,
@@ -107,7 +98,7 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
           ),
           child: ReplaceMenu(
             editorState: widget.editorState,
-            searchService: searchServiceV2,
+            searchService: searchService,
             localizations: widget.localizations,
           ),
         )
@@ -129,8 +120,8 @@ class FindMenu extends StatefulWidget {
     required this.style,
     required this.searchService,
     required this.onShowReplace,
-    this.regexFlag = true,
-    this.caseSensitiveFlag = true,
+    this.showRegexButton = true,
+    this.showCaseSensitiveButton = true,
   });
 
   final EditorState editorState;
@@ -153,8 +144,8 @@ class FindMenu extends StatefulWidget {
   /// Whether to show the replace menu or not
   final bool showReplaceMenu;
 
-  final bool regexFlag;
-  final bool caseSensitiveFlag;
+  final bool showRegexButton;
+  final bool showCaseSensitiveButton;
 
   final void Function(bool showReplaceMenu) onShowReplace;
 
@@ -174,8 +165,8 @@ class _FindMenuState extends State<FindMenu> {
   bool showReplaceMenu = false;
   bool caseSensitive = false;
 
-  bool regexFlag = true;
-  bool caseSensitiveFlag = true;
+  bool showRegexButton = true;
+  bool showCaseSensitiveButton = true;
 
   @override
   void initState() {
@@ -184,8 +175,8 @@ class _FindMenuState extends State<FindMenu> {
     showReplaceMenu = widget.showReplaceMenu;
     caseSensitive = widget.caseSensitive;
 
-    regexFlag = widget.regexFlag;
-    caseSensitiveFlag = widget.caseSensitiveFlag;
+    showRegexButton = widget.showRegexButton;
+    showCaseSensitiveButton = widget.showCaseSensitiveButton;
 
     widget.searchService.matchedPositions.addListener(_setState);
     widget.searchService.currentSelectedIndex.addListener(_setState);
@@ -264,21 +255,6 @@ class _FindMenuState extends State<FindMenu> {
                 : '$selectedIndex of ${matches.length}',
           ),
         ),
-        // case sensitive button
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: caseSensitive ? Colors.blue.shade400 : Colors.transparent,
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          child: FindAndReplaceMenuIconButton(
-            onPressed: () => setState(() {
-              caseSensitive = !caseSensitive;
-              widget.searchService.caseSensitive = caseSensitive;
-            }),
-            icon: const Icon(Icons.keyboard_capslock),
-            tooltip: 'Aa',
-          ),
-        ),
         // previous match button
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('previousMatchButton'),
@@ -302,7 +278,8 @@ class _FindMenuState extends State<FindMenu> {
           tooltip: widget.localizations?.close ??
               AppFlowyEditorLocalizations.current.closeFind,
         ),
-        if (regexFlag)
+        // regex button
+        if (showRegexButton)
           FindAndReplaceMenuIconButton(
             key: const Key('findRegexButton'),
             onPressed: () {
@@ -319,7 +296,8 @@ class _FindMenuState extends State<FindMenu> {
             ),
             tooltip: AppFlowyEditorLocalizations.current.regex,
           ),
-        if (caseSensitiveFlag)
+        // case sensitive button
+        if (showCaseSensitiveButton)
           FindAndReplaceMenuIconButton(
             key: const Key('caseSensitiveButton'),
             onPressed: () {
