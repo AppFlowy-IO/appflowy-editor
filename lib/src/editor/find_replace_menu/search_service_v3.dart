@@ -14,7 +14,7 @@ class SearchServiceV3 {
   //matchedPositions.value will contain a list of positions of the matched patterns
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
-  ValueNotifier<List<MatchWrap>> matchWrappes = ValueNotifier([]);
+  ValueNotifier<List<MatchWrapper>> matchWrappers = ValueNotifier([]);
   SearchAlgorithm searchAlgorithm = DartBuiltIn();
   String targetString = '';
   Pattern queriedPattern = RegExp('');
@@ -37,9 +37,9 @@ class SearchServiceV3 {
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
     _prevSelectedIndex = _selectedIndex;
-    _selectedIndex = matchWrappes.value.isEmpty
+    _selectedIndex = matchWrappers.value.isEmpty
         ? -1
-        : index.clamp(0, matchWrappes.value.length - 1);
+        : index.clamp(0, matchWrappers.value.length - 1);
     currentSelectedIndex.value = _selectedIndex;
   }
 
@@ -69,7 +69,7 @@ class SearchServiceV3 {
   }
 
   void dispose() {
-    matchWrappes.dispose();
+    matchWrappers.dispose();
     currentSelectedIndex.dispose();
   }
 
@@ -82,7 +82,7 @@ class SearchServiceV3 {
       // this means we have a new pattern, but before we highlight the new matches,
       // lets unHiglight the old pattern
       _findAndHighlight(queriedPattern, unHighlight: true);
-      matchWrappes.value.clear();
+      matchWrappers.value.clear();
       queriedPattern = pattern;
       targetString = target;
     }
@@ -99,12 +99,12 @@ class SearchServiceV3 {
     Pattern pattern, {
     bool unHighlight = false,
   }) {
-    matchWrappes.value = _getMatchWrappes(
+    matchWrappers.value = _getMatchWrappes(
       pattern: pattern,
       nodes: editorState.document.root.children,
     );
 
-    if (matchWrappes.value.isNotEmpty) {
+    if (matchWrappers.value.isNotEmpty) {
       selectedIndex = selectedIndex;
       _highlightCurrentMatch(
         pattern,
@@ -114,11 +114,11 @@ class SearchServiceV3 {
     }
   }
 
-  List<MatchWrap> _getMatchWrappes({
+  List<MatchWrapper> _getMatchWrappes({
     required Pattern pattern,
     Iterable<Node> nodes = const [],
   }) {
-    final List<MatchWrap> result = [];
+    final List<MatchWrapper> result = [];
     for (final node in nodes) {
       if (node.delta != null) {
         final text = node.delta!.toPlainText();
@@ -127,7 +127,7 @@ class SearchServiceV3 {
         // in a list of positions.
         for (Match match in matches) {
           result.add(
-            MatchWrap(match, node.path),
+            MatchWrapper(match, node.path),
           );
         }
       }
@@ -141,13 +141,13 @@ class SearchServiceV3 {
   void _highlightCurrentMatch(
     Pattern pattern,
   ) {
-    final selection = matchWrappes.value[selectedIndex].selection;
+    final selection = matchWrappers.value[selectedIndex].selection;
 
     // https://github.com/google/flutter.widgets/issues/151
     // there's a bug in the scrollable_positioned_list package
     // we can't scroll to the index without animation.
     // so we just scroll the position if the index is the first or the last.
-    final length = matchWrappes.value.length - 1;
+    final length = matchWrappers.value.length - 1;
     if (_prevSelectedIndex != selectedIndex &&
         ((_prevSelectedIndex == length && selectedIndex == 0) ||
             (_prevSelectedIndex == 0 && selectedIndex == length))) {
@@ -166,14 +166,14 @@ class SearchServiceV3 {
   /// the match located above the current selected match is newly selected.
   /// Otherwise the match below the current selected match is newly selected.
   void navigateToMatch({bool moveUp = false}) {
-    if (matchWrappes.value.isEmpty) return;
+    if (matchWrappers.value.isEmpty) return;
 
     if (moveUp) {
       selectedIndex = selectedIndex <= 0
-          ? matchWrappes.value.length - 1
+          ? matchWrappers.value.length - 1
           : selectedIndex - 1;
     } else {
-      selectedIndex = selectedIndex >= matchWrappes.value.length - 1
+      selectedIndex = selectedIndex >= matchWrappers.value.length - 1
           ? 0
           : selectedIndex + 1;
     }
@@ -187,11 +187,11 @@ class SearchServiceV3 {
   Future<void> replaceSelectedWord(String replaceText) async {
     if (replaceText.isEmpty ||
         queriedPattern.toString().isEmpty ||
-        matchWrappes.value.isEmpty) {
+        matchWrappers.value.isEmpty) {
       return;
     }
 
-    final matchWrap = matchWrappes.value[selectedIndex];
+    final matchWrap = matchWrappers.value[selectedIndex];
     final node = editorState.getNodeAtPath(matchWrap.path)!;
 
     final String replaced;
@@ -210,7 +210,7 @@ class SearchServiceV3 {
       );
     await editorState.apply(transaction);
 
-    matchWrappes.value.clear();
+    matchWrappers.value.clear();
     _findAndHighlight(queriedPattern);
   }
 
@@ -218,12 +218,12 @@ class SearchServiceV3 {
   void replaceAllMatches(String replaceText) {
     if (replaceText.isEmpty ||
         queriedPattern.toString().isEmpty ||
-        matchWrappes.value.isEmpty) {
+        matchWrappers.value.isEmpty) {
       return;
     }
 
     // _highlightAllMatches(queriedPattern.length, unHighlight: true);
-    for (final matchWrap in matchWrappes.value.reversed) {
+    for (final matchWrap in matchWrappers.value.reversed) {
       final node = editorState.getNodeAtPath(matchWrap.path)!;
       final String replaced;
       if (regex) {
@@ -242,12 +242,12 @@ class SearchServiceV3 {
 
       editorState.apply(transaction);
     }
-    matchWrappes.value.clear();
+    matchWrappers.value.clear();
   }
 }
 
-class MatchWrap {
-  MatchWrap(this.match, this.path);
+class MatchWrapper {
+  MatchWrapper(this.match, this.path);
 
   final Match match;
   final Path path;

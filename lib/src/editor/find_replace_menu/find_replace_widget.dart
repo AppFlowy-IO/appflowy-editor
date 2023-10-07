@@ -178,7 +178,7 @@ class _FindMenuState extends State<FindMenu> {
     showRegexButton = widget.showRegexButton;
     showCaseSensitiveButton = widget.showCaseSensitiveButton;
 
-    widget.searchService.matchWrappes.addListener(_setState);
+    widget.searchService.matchWrappers.addListener(_setState);
     widget.searchService.currentSelectedIndex.addListener(_setState);
 
     findTextEditingController.addListener(_searchPattern);
@@ -190,7 +190,7 @@ class _FindMenuState extends State<FindMenu> {
 
   @override
   void dispose() {
-    widget.searchService.matchWrappes.removeListener(_setState);
+    widget.searchService.matchWrappers.removeListener(_setState);
     widget.searchService.currentSelectedIndex.removeListener(_setState);
     widget.searchService.dispose();
     findTextEditingController.removeListener(_searchPattern);
@@ -203,7 +203,7 @@ class _FindMenuState extends State<FindMenu> {
   Widget build(BuildContext context) {
     // the selectedIndex from searchService is 0-based
     final selectedIndex = widget.searchService.selectedIndex + 1;
-    final matches = widget.searchService.matchWrappes.value;
+    final matches = widget.searchService.matchWrappers.value;
     return Row(
       children: [
         // expand/collapse button
