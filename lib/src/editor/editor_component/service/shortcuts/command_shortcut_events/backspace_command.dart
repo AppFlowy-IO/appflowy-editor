@@ -40,14 +40,29 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
 
   final position = selection.start;
   final node = editorState.getNodeAtPath(position.path);
-  if (node == null || node.delta == null) {
+  if (node == null) {
     return KeyEventResult.ignored;
+  }
+
+  final transaction = editorState.transaction;
+
+  // delete the entire node if the delta is empty
+  if (node.delta == null) {
+    transaction.deleteNode(node);
+    transaction.afterSelection = Selection.collapsed(
+      Position(
+        path: position.path,
+        offset: 0,
+      ),
+    );
+    editorState.apply(transaction);
+    return KeyEventResult.handled;
   }
 
   // Why do we use prevRunPosition instead of the position start offset?
   // Because some character's length > 1, for example, emoji.
   final index = node.delta!.prevRunePosition(position.offset);
-  final transaction = editorState.transaction;
+
   if (index < 0) {
     // move this node to it's parent in below case.
     // the node's next is null

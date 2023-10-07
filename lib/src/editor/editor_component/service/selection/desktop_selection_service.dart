@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -99,10 +100,6 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   void updateSelection(Selection? selection) {
-    if (currentSelection.value == selection) {
-      return;
-    }
-
     currentSelection.value = selection;
     editorState.updateSelectionWithReason(
       selection,
@@ -198,24 +195,35 @@ class _DesktopSelectionServiceWidgetState
     );
     if (!canTap) return;
 
-    // clear old state.
-    _panStartOffset = null;
-
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
     if (selectable == null) {
-      clearSelection();
-      return;
+      // Clear old start offset
+      _panStartOffset = null;
+      return clearSelection();
     }
-    final selection = selectable.cursorStyle == CursorStyle.verticalLine
-        ? Selection.collapsed(
-            selectable.getPositionInOffset(offset),
-          )
-        : Selection(
-            start: selectable.start(),
-            end: selectable.end(),
-          );
+
+    Selection? selection;
+    if (RawKeyboard.instance.isShiftPressed && _panStartOffset != null) {
+      final first = getNodeInOffset(_panStartOffset!)?.selectable;
+
+      if (first != null) {
+        final start = first.getSelectionInRange(_panStartOffset!, offset).start;
+        final end =
+            selectable.getSelectionInRange(_panStartOffset!, offset).end;
+
+        selection = Selection(start: start, end: end);
+      }
+    } else {
+      selection = selectable.cursorStyle == CursorStyle.verticalLine
+          ? Selection.collapsed(selectable.getPositionInOffset(offset))
+          : Selection(start: selectable.start(), end: selectable.end());
+
+      // Reset old start offset
+      _panStartOffset = offset;
+    }
+
     updateSelection(selection);
   }
 
@@ -306,7 +314,12 @@ class _DesktopSelectionServiceWidgetState
     editorState.service.scrollService?.stopAutoScroll();
   }
 
-  void _updateSelection() {}
+  void _updateSelection() {
+    final selection = editorState.selectionNotifier.value;
+    if (selection == null) {
+      clearSelection();
+    }
+  }
 
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();

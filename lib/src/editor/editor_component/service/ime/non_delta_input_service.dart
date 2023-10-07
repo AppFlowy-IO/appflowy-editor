@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -79,7 +78,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     // the set editing state will update the text editing value in macOS.
     // we just skip the unnecessary update.
-    if (Platform.isMacOS) {
+    if (PlatformExtension.isMacOS) {
       skipUpdateEditingValue += 1;
     }
 
@@ -96,7 +95,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
-    if (Platform.isMacOS && skipUpdateEditingValue > 0) {
+    if (PlatformExtension.isMacOS && skipUpdateEditingValue > 0) {
       skipUpdateEditingValue -= 1;
       return;
     }
@@ -120,6 +119,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void close() {
+    keepEditorFocusNotifier.value = 0;
     currentTextEditingValue = null;
     composingTextRange = null;
     _textInputConnection?.close();

@@ -8,6 +8,18 @@ import 'package:flutter_test/flutter_test.dart';
 import '../find_replace_menu/find_replace_menu_utils.dart';
 import '../util/util.dart';
 
+final floatingToolbarItems = [
+  paragraphItem,
+  ...headingItems,
+  ...markdownFormatItems,
+  quoteItem,
+  bulletedListItem,
+  numberedListItem,
+  linkItem,
+  buildTextColorItem(),
+  buildHighlightColorItem(),
+];
+
 class TestableEditor {
   TestableEditor({
     required this.tester,
@@ -44,6 +56,7 @@ class TestableEditor {
     Widget Function(Widget child)? wrapper,
     TargetPlatform? platform,
     String? defaultTextDirection,
+    TextDirection textDirection = TextDirection.ltr,
   }) async {
     await AppFlowyEditorLocalizations.load(locale);
 
@@ -112,23 +125,20 @@ class TestableEditor {
         );
       } else {
         editor = FloatingToolbar(
-          items: [
-            paragraphItem,
-            ...headingItems,
-            ...markdownFormatItems,
-            quoteItem,
-            bulletedListItem,
-            numberedListItem,
-            linkItem,
-            buildTextColorItem(),
-            buildHighlightColorItem(),
-          ],
+          items: floatingToolbarItems,
           editorState: editorState,
+          textDirection: textDirection,
           editorScrollController: editorScrollController,
           child: editor,
         );
       }
     }
+
+    editor = Directionality(
+      textDirection: textDirection,
+      child: editor,
+    );
+
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(platform: platform),

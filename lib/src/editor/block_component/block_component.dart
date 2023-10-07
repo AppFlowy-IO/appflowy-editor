@@ -34,6 +34,7 @@ export 'title_block_component/title_block_component.dart';
 // image
 export 'image_block_component/image_block_component.dart';
 export 'image_block_component/image_upload_widget.dart';
+export 'image_block_component/resizable_image.dart';
 // numbered list
 export 'numbered_list_block_component/numbered_list_block_component.dart';
 export 'numbered_list_block_component/numbered_list_character_shortcut.dart';

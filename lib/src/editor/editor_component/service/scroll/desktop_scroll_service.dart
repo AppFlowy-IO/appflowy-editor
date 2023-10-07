@@ -80,7 +80,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void jumpTo(int index) {
-    throw UnimplementedError();
+    editorScrollController.jumpTo(offset: index.toDouble());
   }
 
   @override

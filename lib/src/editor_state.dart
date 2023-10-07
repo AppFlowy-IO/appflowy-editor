@@ -29,7 +29,6 @@ enum SelectionUpdateReason {
   transaction, // like insert, delete, format
   selectAll,
   searchHighlight, // Highlighting search results
-  searchNavigate, // Navigate to a search result
 }
 
 enum SelectionType {
@@ -108,6 +107,8 @@ class EditorState {
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
+
+  Map? selectionExtraInfo;
 
   // Service reference.
   final service = EditorService();
@@ -190,6 +191,7 @@ class EditorState {
   Future<void> updateSelectionWithReason(
     Selection? selection, {
     SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+    Map? extraInfo,
   }) async {
     final completer = Completer<void>();
 
@@ -200,6 +202,7 @@ class EditorState {
     }
 
     // broadcast to other users here
+    selectionExtraInfo = extraInfo;
     _selectionUpdateReason = reason;
     this.selection = selection;
 
@@ -226,6 +229,17 @@ class EditorState {
   }
 
   Timer? _debouncedSealHistoryItemTimer;
+  final bool _enableCheckIntegrity = false;
+
+  // the value of the notifier is meaningless, just for triggering the callbacks.
+  final ValueNotifier<int> onDispose = ValueNotifier(0);
+
+  void dispose() {
+    _observer.close();
+    _debouncedSealHistoryItemTimer?.cancel();
+    onDispose.value += 1;
+    onDispose.dispose();
+  }
 
   /// Apply the transaction to the state.
   ///
@@ -244,6 +258,11 @@ class EditorState {
   }) async {
     if (!editable) {
       return;
+    }
+
+    // it's a time consuming task, only enable it if necessary.
+    if (_enableCheckIntegrity) {
+      document.root.checkDocumentIntegrity();
     }
 
     final completer = Completer<void>();
