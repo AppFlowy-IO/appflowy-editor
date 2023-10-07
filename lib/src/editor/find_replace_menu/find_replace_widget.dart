@@ -55,7 +55,7 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
   bool showCaseSensitiveButton = true;
   bool showReplaceMenu = false;
 
-  late SearchServiceV2 searchService = SearchServiceV2(
+  late SearchServiceV3 searchService = SearchServiceV3(
     editorState: widget.editorState,
   );
 
@@ -149,7 +149,7 @@ class FindMenu extends StatefulWidget {
 
   final void Function(bool showReplaceMenu) onShowReplace;
 
-  final SearchServiceV2 searchService;
+  final SearchServiceV3 searchService;
 
   @override
   State<FindMenu> createState() => _FindMenuState();
@@ -345,7 +345,7 @@ class ReplaceMenu extends StatefulWidget {
   /// The localizations of the find and replace menu
   final FindReplaceLocalizations? localizations;
 
-  final SearchServiceV2 searchService;
+  final SearchServiceV3 searchService;
 
   @override
   State<ReplaceMenu> createState() => _ReplaceMenuState();

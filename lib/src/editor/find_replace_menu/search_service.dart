@@ -26,77 +26,40 @@ class SearchService {
   //matchedPositions will contain a list of positions of the matched patterns
   //the position here consists of the node and the starting offset of the
   //matched pattern. We will use this to traverse between the matched patterns.
-  List<Selection> matchedPositions = [];
-  List<Match> matchedMatches = [];
-  SearchAlgorithm searchAlgorithm = DartBuiltIn();
-  Pattern queriedPattern = RegExp('');
+  List<Position> matchedPositions = [];
+  SearchAlgorithm searchAlgorithm = BoyerMoore();
+  String queriedPattern = '';
   int selectedIndex = 0;
-  bool isRegex = false;
-  bool caseSensitive = true;
-
-  Pattern _getPattern(String targetString) {
-    if (isRegex) {
-      return RegExp(targetString, caseSensitive: caseSensitive);
-    } else {
-      return RegExp(RegExp.escape(targetString), caseSensitive: caseSensitive);
-    }
-  }
-
-  String _getRegexReplaced(String replaceText, Match match) {
-    List<String?> groups = match
-        .groups(List<int>.generate(match.groupCount + 1, (index) => index));
-
-    String replacedText = replaceText;
-    for (int i = 0; i <= match.groupCount; i++) {
-      replacedText = replacedText.replaceAll('\\$i', groups[i] ?? '');
-    }
-
-    return replacedText;
-  }
-
-  // Public entry method for _findAndHighlight, do necessary checks
-  // and clear previous highlights before calling it
-  void findAndHighlight(String targetString, {bool unhighlight = false}) {
-    Pattern pattern = _getPattern(targetString);
-
-    if (queriedPattern != pattern) {
-      // this means we have a new pattern, but before we highlight the new matches,
-      // lets unhiglight the old pattern
-      _findAndHighlight(queriedPattern, unhighlight: true);
-      matchedPositions.clear();
-      matchedMatches.clear();
-      queriedPattern = pattern;
-    }
-
-    if (targetString.isEmpty) return;
-
-    _findAndHighlight(pattern, unhighlight: unhighlight);
-  }
 
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
-  void _findAndHighlight(Pattern pattern, {bool unhighlight = false}) {
+  void findAndHighlight(String pattern, {bool unHighlight = false}) {
+    if (queriedPattern != pattern) {
+      //this means we have a new pattern, but before we highlight the new matches,
+      //lets unhiglight the old pattern
+      findAndHighlight(queriedPattern, unHighlight: true);
+      matchedPositions.clear();
+      queriedPattern = pattern;
+    }
+
+    if (pattern.isEmpty) return;
+
     //traversing all the nodes
     for (final n in _getAllNodes()) {
-      //matchedMatches list will contain the offsets where the desired word,
+      //matches list will contain the offsets where the desired word,
       //is found.
-      matchedMatches = searchAlgorithm
-          .searchMethod(pattern, n.delta!.toPlainText())
-          .toList();
+      List<int> matches =
+      searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText()).map((e) => e.start).toList();
       //we will store this list of offsets along with their path,
       //in a list of positions.
-      for (Match matchedOffset in matchedMatches) {
-        matchedPositions.add(
-          Selection(
-            start: Position(path: n.path, offset: matchedOffset.start),
-            end: Position(path: n.path, offset: matchedOffset.end),
-          ),
-        );
+      for (int matchedOffset in matches) {
+        matchedPositions.add(Position(path: n.path, offset: matchedOffset));
       }
     }
     //finally we will highlight all the mathces.
-    _highlightAllMatches(unhighlight: unhighlight);
+    _highlightAllMatches(pattern.length, unHighlight: unHighlight);
+
     selectedIndex = -1;
   }
 
@@ -106,11 +69,11 @@ class SearchService {
     if (contents.isEmpty) return [];
 
     final firstNode = contents.firstWhere(
-      (el) => el.delta != null,
+          (el) => el.delta != null,
     );
 
     final lastNode = contents.lastWhere(
-      (el) => el.delta != null,
+          (el) => el.delta != null,
     );
 
     //iterate within all the text nodes of the document.
@@ -125,25 +88,34 @@ class SearchService {
     return nodes;
   }
 
-  void _highlightAllMatches({
-    bool unhighlight = false,
-  }) {
-    for (final selection in matchedPositions) {
-      if (unhighlight) {
-        editorState.formatDelta(
-          selection,
-          {AppFlowyRichTextKeys.findBackgroundColor: null},
-        );
-      } else {
-        _applySelectedHighlightColor(selection);
+  void _highlightAllMatches(
+      int patternLength, {
+        bool unHighlight = false,
+      }) {
+    for (final match in matchedPositions) {
+      final start = Position(path: match.path, offset: match.offset);
+      final end = Position(
+        path: match.path,
+        offset: match.offset + patternLength,
+      );
+
+      final selection = Selection(start: start, end: end);
+      if (!unHighlight) {
+        editorState.selection = selection;
       }
     }
   }
 
   Future<void> _selectWordAtPosition(
-    Selection selection, [
-    bool isNavigating = false,
-  ]) async {
+      Position start, [
+        bool isNavigating = false,
+      ]) async {
+    Position end = Position(
+      path: start.path,
+      offset: start.offset + queriedPattern.length,
+    );
+
+    final selection = Selection(start: start, end: end);
     _applySelectedHighlightColor(selection, isSelected: true);
   }
 
@@ -156,17 +128,22 @@ class SearchService {
     //lets change the highlight color to indicate that the current match is
     //not selected.
     if (selectedIndex > -1) {
-      final selection = matchedPositions[selectedIndex];
+      final currentMatch = matchedPositions[selectedIndex];
+      Position end = Position(
+        path: currentMatch.path,
+        offset: currentMatch.offset + queriedPattern.length,
+      );
 
+      final selection = Selection(start: currentMatch, end: end);
       _applySelectedHighlightColor(selection);
     }
 
     if (moveUp) {
       selectedIndex =
-          selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
+      selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
     } else {
       selectedIndex =
-          (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
+      (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
     }
     final match = matchedPositions[selectedIndex];
     _selectWordAtPosition(match, true);
@@ -177,7 +154,7 @@ class SearchService {
   /// matched word if that exists.
   void replaceSelectedWord(String replaceText) {
     if (replaceText.isEmpty ||
-        queriedPattern.toString().isEmpty ||
+        queriedPattern.isEmpty ||
         matchedPositions.isEmpty) {
       return;
     }
@@ -186,7 +163,6 @@ class SearchService {
       selectedIndex++;
     }
 
-    final match = matchedMatches[selectedIndex];
     final position = matchedPositions[selectedIndex];
     _selectWordAtPosition(position);
 
@@ -198,54 +174,39 @@ class SearchService {
     );
     editorState.undoManager.forgetRecentUndo();
 
-    final String replaced;
-    if (isRegex) {
-      replaced = _getRegexReplaced(replaceText, match);
-    } else {
-      replaced = replaceText;
-    }
-
-    final textNode = editorState.getNodeAtPath(position.start.path)!;
+    final textNode = editorState.getNodeAtPath(position.path)!;
     final transaction = editorState.transaction
       ..replaceText(
         textNode,
-        position.startIndex,
-        position.length,
-        replaced,
+        position.offset,
+        queriedPattern.length,
+        replaceText,
       );
 
     editorState.apply(transaction);
 
     matchedPositions.clear();
-    _findAndHighlight(queriedPattern);
+    findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurances of pattern with replaceText
   void replaceAllMatches(String replaceText) {
     if (replaceText.isEmpty ||
-        queriedPattern.toString().isEmpty ||
+        queriedPattern.isEmpty ||
         matchedPositions.isEmpty) {
       return;
     }
 
-    _highlightAllMatches(unhighlight: true);
-
-    final reversedMatches = matchedMatches.reversed.toList();
-    for (final (index, position) in matchedPositions.reversed.indexed) {
-      final node = editorState.getNodeAtPath(position.start.path)!;
-      final String replaced;
-      if (isRegex) {
-        replaced = _getRegexReplaced(replaceText, reversedMatches[index]);
-      } else {
-        replaced = replaceText;
-      }
+    _highlightAllMatches(queriedPattern.length, unHighlight: true);
+    for (final match in matchedPositions.reversed.toList()) {
+      final node = editorState.getNodeAtPath(match.path)!;
 
       final transaction = editorState.transaction
         ..replaceText(
           node,
-          position.startIndex,
-          position.length,
-          replaced,
+          match.offset,
+          queriedPattern.length,
+          replaceText,
         );
 
       editorState.apply(transaction);
@@ -254,9 +215,9 @@ class SearchService {
   }
 
   void _applySelectedHighlightColor(
-    Selection selection, {
-    bool isSelected = false,
-  }) {
+      Selection selection, {
+        bool isSelected = false,
+      }) {
     final color = isSelected
         ? style.selectedHighlightColor.toHex()
         : style.unselectedHighlightColor.toHex();
