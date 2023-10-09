@@ -30,16 +30,45 @@ void main() async {
     expect(widget.focusNode.hasFocus, false);
     expect(widget.editorFocusNode.hasFocus, true);
   });
+
+  testWidgets('text field + editor, focus issue', (tester) async {
+    final editorState = EditorState.blank();
+    final widget = TextFieldAndEditor(
+      editorState: editorState,
+    );
+    await tester.pumpWidget(widget);
+    await tester.pumpAndSettle();
+
+    final selection = Selection.collapsed(Position(path: [0]));
+    editorState.selection = selection;
+
+    final textField = find.byType(TextField);
+    await tester.tap(textField);
+    await tester.pumpAndSettle();
+    expect(widget.focusNode.hasFocus, true);
+    expect(widget.editorFocusNode.hasFocus, false);
+    expect(editorState.selection, null);
+
+    await tester.tapAt(
+      tester.getTopLeft(find.byType(TextBlockComponentWidget)),
+    );
+    await tester.pumpAndSettle();
+    expect(widget.focusNode.hasFocus, false);
+    expect(widget.editorFocusNode.hasFocus, true);
+    expect(editorState.selection, selection);
+  });
 }
 
 class TextFieldAndEditor extends StatelessWidget {
   TextFieldAndEditor({
     super.key,
+    this.editorState,
   });
 
   final controller = TextEditingController();
   final focusNode = FocusNode();
   final editorFocusNode = FocusNode();
+  final EditorState? editorState;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +90,7 @@ class TextFieldAndEditor extends StatelessWidget {
                   ),
                   child: AppFlowyEditor(
                     focusNode: editorFocusNode,
-                    editorState: EditorState.blank(),
+                    editorState: editorState ?? EditorState.blank(),
                     editorStyle: const EditorStyle.mobile(),
                   ),
                 ),

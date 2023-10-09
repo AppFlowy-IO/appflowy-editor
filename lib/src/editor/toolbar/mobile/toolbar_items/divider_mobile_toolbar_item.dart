@@ -15,10 +15,18 @@ final dividerMobileToolbarItem = MobileToolbarItem.action(
       return;
     }
     final insertedPath = delta.isEmpty ? path : path.next;
-    final transaction = editorState.transaction
-      ..insertNode(insertedPath, dividerNode())
-      ..insertNode(insertedPath, paragraphNode())
-      ..afterSelection = Selection.collapsed(Position(path: insertedPath.next));
+    final transaction = editorState.transaction;
+    transaction.insertNode(insertedPath, dividerNode());
+    // only insert a new paragraph node when the next node is not a paragraph node
+    //  and its delta is not empty.
+    final next = node.next;
+    if (next == null ||
+        next.type != ParagraphBlockKeys.type ||
+        next.delta?.isNotEmpty == true) {
+      transaction.insertNode(insertedPath, paragraphNode());
+    }
+    transaction.afterSelection =
+        Selection.collapsed(Position(path: insertedPath.next));
     editorState.apply(transaction);
   }),
 );
