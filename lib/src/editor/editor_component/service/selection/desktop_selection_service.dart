@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
@@ -156,7 +158,8 @@ class _DesktopSelectionServiceWidgetState
     final List<Node> sortedNodes = [];
     final positions =
         context.read<EditorScrollController>().visibleRangeNotifier.value;
-    final min = positions.$1;
+    // https://github.com/AppFlowy-IO/AppFlowy/issues/3651
+    final min = math.max(positions.$1 - 1, 0);
     final max = positions.$2;
     if (min < 0 || max < 0) {
       return sortedNodes;
