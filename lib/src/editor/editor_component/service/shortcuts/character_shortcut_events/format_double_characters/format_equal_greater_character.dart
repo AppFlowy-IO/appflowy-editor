@@ -1,31 +1,32 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-const _equalGreater = '=>';
-const _doubleArrow = '⇒';
+const _greater = '>';
+const _equals = '=';
+const _arrow = '⇒'; 
 
-/// format '=' + '>' into an ⇒ 
-///
-/// - support
-///   - desktop
-///   - mobile
-///   - web
-///
-final CharacterShortcutEvent formatEqualGreaterDoubleArrow = CharacterShortcutEvent(
-  key: 'format equals to and greater than into Rightwards double arrow',
-  character: _equalGreater,
-  handler: (editorState) async => handleEqualDoubleReplacement(
+// /// format '=' + '>' into an ⇒ 
+// ///
+// /// - support
+// ///   - desktop
+// ///   - mobile
+// ///   - web
+// ///
+final CharacterShortcutEvent formatGreaterEqual = CharacterShortcutEvent(
+  key: 'format = + > into ⇒',
+  character: _greater,
+  handler: (editorState) async => handleEqualGreaterReplacement(
     editorState: editorState,
-    character: _equalGreater,
-    replacement: _doubleArrow,
+    character: _greater,
+    replacement: _arrow,
   ),
 );
 
-Future<bool> handleEqualDoubleReplacement({
+Future<bool> handleEqualGreaterReplacement({
   required EditorState editorState,
   required String character,
   required String replacement,
 }) async {
-  assert(character.isNotEmpty);
+  assert(character.length == 1);
 
   Selection? selection = editorState.selection;
   if (selection == null) {
@@ -51,7 +52,7 @@ Future<bool> handleEqualDoubleReplacement({
     final plain = delta.toPlainText();
 
     final previousCharacter = plain[selection.end.offset - 1];
-    if (previousCharacter != _equalGreater) {
+    if (previousCharacter != _equals) {
       return false;
     }
 
@@ -60,7 +61,7 @@ Future<bool> handleEqualDoubleReplacement({
         node,
         selection.end.offset - 1,
         1,
-        _doubleArrow,
+        _arrow,
       );
 
     await editorState.apply(replace);
