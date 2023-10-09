@@ -22,6 +22,7 @@ class FloatingToolbar extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.editorScrollController,
+    required this.textDirection,
     required this.child,
     this.style = const FloatingToolbarStyle(),
   });
@@ -29,6 +30,7 @@ class FloatingToolbar extends StatefulWidget {
   final List<ToolbarItem> items;
   final EditorState editorState;
   final EditorScrollController editorScrollController;
+  final TextDirection? textDirection;
   final Widget child;
   final FloatingToolbarStyle style;
 
@@ -100,9 +102,12 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onSelectionChanged() {
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
+
     if (selection == null ||
         selection.isCollapsed ||
-        selectionType == SelectionType.block) {
+        selectionType == SelectionType.block ||
+        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+            true) {
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.
@@ -142,6 +147,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (editorState.selection?.isCollapsed ?? true) {
       return;
     }
+    if (editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+        true) {
+      return;
+    }
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;
@@ -172,6 +181,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       editorState: editorState,
       backgroundColor: widget.style.backgroundColor,
       toolbarActiveColor: widget.style.toolbarActiveColor,
+      textDirection: widget.textDirection ?? Directionality.of(context),
     );
     return _toolbarWidget!;
   }

@@ -40,6 +40,14 @@ class _DesktopEditorState extends State<DesktopEditor> {
   }
 
   @override
+  void dispose() {
+    editorScrollController.dispose();
+    editorState.dispose();
+
+    super.dispose();
+  }
+
+  @override
   void reassemble() {
     super.reassemble();
 
@@ -66,6 +74,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ...alignmentItems,
       ],
       editorState: editorState,
+      textDirection: widget.textDirection,
       editorScrollController: editorScrollController,
       child: Directionality(
         textDirection: widget.textDirection,
@@ -173,6 +182,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           close: 'Close',
           replace: 'Replace',
           replaceAll: 'Replace all',
+          noResult: 'No result',
         ),
       ),
     ];

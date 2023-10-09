@@ -32,7 +32,7 @@ void main() async {
       await tester.tap(find.byKey(const Key('closeButton')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsNothing);
+      expect(find.byType(FindAndReplaceMenuWidget), findsNothing);
       expect(find.byType(TextField), findsNothing);
       expect(find.byType(IconButton), findsNothing);
 
@@ -68,19 +68,22 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       await enterInputIntoFindDialog(tester, pattern);
 
       // Checking if current selection consists an occurance of matched pattern.
-      final selection = editor.editorState.selection;
-
       // We expect the first occurance of the pattern to be found and selected,
       // this is because we send a testTextInput.receiveAction(TextInputAction.done)
       // event during submitting our text input, thus the second match is selected.
-      expect(selection != null, true);
-      expect(selection!.start, Position(path: [0], offset: 0));
-      expect(selection.end, Position(path: [0], offset: pattern.length));
+      expect(
+        editor.editorState.selection,
+        Selection.single(
+          path: [0],
+          startOffset: 0,
+          endOffset: pattern.length,
+        ),
+      );
 
       await editor.dispose();
     });
@@ -101,7 +104,7 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       await enterInputIntoFindDialog(tester, pattern);
 
@@ -164,11 +167,6 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      // This will call naviateToMatch and select the first match
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
-
       // We expect the first occurance of the pattern to be found and selected
       checkCurrentSelection(editor, [0], 0, pattern.length);
 
@@ -190,7 +188,7 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('found matches are unhighlighted when findMenu closed',
+    testWidgets('found matches are unHighlighted when findMenu closed',
         (tester) async {
       const pattern = 'Welcome';
       const closeBtnKey = Key('closeButton');
@@ -205,7 +203,7 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       await enterInputIntoFindDialog(tester, pattern);
 
@@ -227,7 +225,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       // Closes the findMenuWidget
-      expect(find.byType(FindMenuWidget), findsNothing);
+      expect(find.byType(FindAndReplaceMenuWidget), findsNothing);
 
       // We expect that the current selected node is NOT highlighted.
       checkIfNotHighlighted(node, selection, expectedResult: true);
@@ -235,7 +233,7 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('old matches are unhighlighted when new pattern is searched',
+    testWidgets('old matches are unHighlighted when new pattern is searched',
         (tester) async {
       const textLine1 = 'Welcome to Appflowy 😁';
       const textLine2 = 'Appflowy is made with Flutter, Rust and ❤️';
@@ -252,7 +250,7 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FindMenuWidget), findsOneWidget);
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
       await enterInputIntoFindDialog(tester, pattern);
 
@@ -307,7 +305,7 @@ Future<void> _prepareFindAndInputPattern(
 
   await tester.pumpAndSettle();
 
-  expect(find.byType(FindMenuWidget), findsOneWidget);
+  expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
   await enterInputIntoFindDialog(tester, pattern);
 
