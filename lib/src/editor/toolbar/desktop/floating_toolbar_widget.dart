@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 const floatingToolbarHeight = 32.0;
 
 @visibleForTesting
-const floatingToolbarContainerKey = Key('appflowy_editor_floating_toolbar_container');
+const floatingToolbarContainerKey =
+    Key('appflowy_editor_floating_toolbar_container');
 @visibleForTesting
 const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
 
@@ -78,7 +79,9 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
   }
 
   Iterable<ToolbarItem> _computeActiveItems() {
-    final activeItems = widget.items.where((e) => e.isActive?.call(widget.editorState) ?? false).toList();
+    final activeItems = widget.items
+        .where((e) => e.isActive?.call(widget.editorState) ?? false)
+        .toList();
     if (activeItems.isEmpty) {
       return [];
     }
@@ -87,6 +90,10 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     activeItems.sort((a, b) => a.group.compareTo(b.group));
 
     // insert the divider.
-    return activeItems.splitBetween((first, second) => first.group != second.group).expand((element) => [...element, placeholderItem]).toList()..removeLast();
+    return activeItems
+        .splitBetween((first, second) => first.group != second.group)
+        .expand((element) => [...element, placeholderItem])
+        .toList()
+      ..removeLast();
   }
 }

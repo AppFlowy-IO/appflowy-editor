@@ -12,7 +12,7 @@ class _HeadingToolbarItem extends ToolbarItem {
           id: 'editor.h$level',
           group: 1,
           isActive: onlyShowInSingleSelectionAndTextType,
-          builder: (context, editorState, highlightColor,iconColor) {
+          builder: (context, editorState, highlightColor, iconColor) {
             final selection = editorState.selection!;
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =

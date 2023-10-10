@@ -43,7 +43,8 @@ class ToolbarItem {
   final ToolbarItemEventHandler? handler;
   final ToolbarItemHighlightCallback? highlightCallback;
 
-  final Widget Function(BuildContext context, EditorState editorState)? itemBuilder;
+  final Widget Function(BuildContext context, EditorState editorState)?
+      itemBuilder;
 
   factory ToolbarItem.divider() {
     return ToolbarItem(

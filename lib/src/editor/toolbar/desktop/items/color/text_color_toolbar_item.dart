@@ -31,7 +31,9 @@ ToolbarItem buildTextColorItem({
               if (!showClearButton) {
                 showClearButton = delta.whereType<TextInsert>().any(
                   (element) {
-                    return element.attributes?[AppFlowyRichTextKeys.textColor] != null;
+                    return element
+                            .attributes?[AppFlowyRichTextKeys.textColor] !=
+                        null;
                   },
                 );
               }

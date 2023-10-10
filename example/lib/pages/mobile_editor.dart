@@ -64,7 +64,7 @@ class _MobileEditorState extends State<MobileEditor> {
                 onSelectAll: () => selectAllCommand.execute(editorState),
                 anchors: TextSelectionToolbarAnchors(
                   primaryAnchor: anchor,
-                ), onLiveTextInput: () {  },
+                ),
               );
             },
             child: AppFlowyEditor(

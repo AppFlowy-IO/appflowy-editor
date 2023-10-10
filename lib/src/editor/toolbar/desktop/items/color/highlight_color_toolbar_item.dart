@@ -28,7 +28,9 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
             if (!showClearButton) {
               showClearButton = delta.whereType<TextInsert>().any(
                 (element) {
-                  return element.attributes?[AppFlowyRichTextKeys.highlightColor] != null;
+                  return element
+                          .attributes?[AppFlowyRichTextKeys.highlightColor] !=
+                      null;
                 },
               );
             }

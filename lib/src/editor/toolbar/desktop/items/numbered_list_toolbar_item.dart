@@ -4,7 +4,7 @@ final ToolbarItem numberedListItem = ToolbarItem(
   id: 'editor.numbered_list',
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor,iconColor) {
+  builder: (context, editorState, highlightColor, iconColor) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'numbered_list';
