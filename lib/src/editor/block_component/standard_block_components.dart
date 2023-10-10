@@ -53,6 +53,7 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
   insertNewLineAfterBulletedList,
   insertNewLineAfterTodoList,
   insertNewLineAfterNumberedList,
+  insertNewLineAfterHeading,
   insertNewLine,
 
   // bulleted list
