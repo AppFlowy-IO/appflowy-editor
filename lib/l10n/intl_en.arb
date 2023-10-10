@@ -126,6 +126,8 @@
   "closeFind": "Close",
   "replace": "Replace",
   "replaceAll": "Replace all",
+  "regex": "Regex",
+  "caseSensitive": "Case sensitive",
   "uploadImage": "Upload Image",
   "urlImage": "URL Image",
   "incorrectLink": "Incorrect Link",

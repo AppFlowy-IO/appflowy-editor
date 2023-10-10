@@ -306,5 +306,147 @@ void main() async {
       expect(node!.delta!.toPlainText(), replacePattern * 5);
       await editor.dispose();
     });
+
+    testWidgets('replace all regex matches', (tester) async {
+      const patternToBeFound = 'a[a-z]p';
+      const replacePattern = 'axp';
+      const expectedText =
+          'Welcome to the Appflowy exaxple axp, an axpha-level editor for caxpuses 😁';
+      const replaceAllBtn = Key('replaceAllButton');
+      const regexButton = Key('findRegexButton');
+      const caseSensitiveButton = Key('caseSensitiveButton');
+
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: regexTarget);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(regexButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(caseSensitiveButton));
+      await tester.pumpAndSettle();
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+
+      await tester.tap(find.byKey(replaceAllBtn));
+      await tester.pumpAndSettle();
+
+      //all matches should be replaced
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), expectedText);
+      await editor.dispose();
+    });
+
+    testWidgets('replace all regex matches with case insensitive',
+        (tester) async {
+      const patternToBeFound = 'a[a-z]p';
+      const replacePattern = 'axp';
+      const expectedText =
+          'Welcome to the axpflowy exaxple axp, an axpha-level editor for caxpuses 😁';
+      const replaceAllBtn = Key('replaceAllButton');
+      const regexButton = Key('findRegexButton');
+
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: regexTarget);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(regexButton));
+      await tester.pumpAndSettle();
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+
+      await tester.tap(find.byKey(replaceAllBtn));
+      await tester.pumpAndSettle();
+
+      //all matches should be replaced
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), expectedText);
+      await editor.dispose();
+    });
+
+    testWidgets('replace all regex matches with backreference', (tester) async {
+      const patternToBeFound = 'a([a-z])p';
+      const replacePattern = r'b\1q';
+      const expectedText =
+          'Welcome to the Appflowy exbmqle bpq, an blqha-level editor for cbmquses 😁';
+      const replaceAllBtn = Key('replaceAllButton');
+      const regexButton = Key('findRegexButton');
+      const caseSensitiveButton = Key('caseSensitiveButton');
+
+      final editor = tester.editor;
+      editor.addParagraphs(1, initialText: regexTarget);
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+
+      await pressFindAndReplaceCommand(editor, openReplace: true);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
+
+      //we put the pattern in the find dialog and press enter
+      await enterInputIntoFindDialog(tester, patternToBeFound);
+      await editor.pressKey(
+        key: LogicalKeyboardKey.enter,
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(regexButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(caseSensitiveButton));
+      await tester.pumpAndSettle();
+
+      //now we input some text into the replace text field and try replace all
+      await enterInputIntoFindDialog(
+        tester,
+        replacePattern,
+        isReplaceField: true,
+      );
+
+      await tester.tap(find.byKey(replaceAllBtn));
+      await tester.pumpAndSettle();
+
+      //all matches should be replaced
+      final node = editor.nodeAtPath([0]);
+      expect(node!.delta!.toPlainText(), expectedText);
+      await editor.dispose();
+    });
   });
 }

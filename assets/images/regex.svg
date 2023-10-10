@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="5.325356mm"
+   height="5.321744mm"
+   viewBox="0 0 5.3253561 5.321744"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="regex.svg"
+   inkscape:export-filename="case_sensitive.png"
+   inkscape:export-xdpi="95.280991"
+   inkscape:export-ydpi="95.280991"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="18.712277"
+     inkscape:cx="10.207202"
+     inkscape:cy="6.4930634"
+     inkscape:window-width="1440"
+     inkscape:window-height="831"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text1"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-39.417839,-61.454391)">
+    <g
+       id="text1"
+       style="font-weight:500;font-size:4.23333px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Medium';stroke-width:1.32292;stroke-linecap:round"
+       aria-label="R*">
+      <path
+         d="m 40.871683,62.61275 q 0.617793,0 0.910907,0.229981 0.297622,0.229981 0.297622,0.698963 0,0.248019 -0.0947,0.419377 -0.09019,0.16685 -0.234492,0.275076 -0.144301,0.103721 -0.302132,0.16685 l 0.901888,1.429491 h -0.559169 l -0.775623,-1.303227 h -0.55917 v 1.303227 h -0.48702 V 62.61275 Z m -0.03156,0.414868 h -0.383302 v 1.095793 h 0.405849 q 0.374284,0 0.545642,-0.139792 0.171359,-0.144303 0.171359,-0.423888 0,-0.288604 -0.180377,-0.410358 -0.180379,-0.121755 -0.559171,-0.121755 z"
+         id="path2"
+         style="stroke-width:1.4092" />
+      <path
+         style="font-weight:bold;font-family:'Droid Sans Fallback';-inkscape-font-specification:'Droid Sans Fallback';stroke-width:1.23353"
+         d="m 44.213106,62.806718 -0.636032,0.333435 0.636032,0.335363 -0.146479,0.27176 -0.641815,-0.354636 v 0.663015 H 43.097158 V 63.39264 l -0.643742,0.354636 -0.146481,-0.27176 0.643743,-0.335363 -0.643743,-0.333435 0.146481,-0.27176 0.643742,0.350781 v -0.663015 h 0.327654 v 0.663015 l 0.641815,-0.350781 z"
+         id="path3"
+         sodipodi:nodetypes="ccccccccccccccccccc" />
+    </g>
+  </g>
+</svg>

@@ -941,6 +941,26 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Regex`
+  String get regex {
+    return Intl.message(
+      'Regex',
+      name: 'regex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Case sensitive`
+  String get caseSensitive {
+    return Intl.message(
+      'Case sensitive',
+      name: 'caseSensitive',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Upload Image`
   String get uploadImage {
     return Intl.message(

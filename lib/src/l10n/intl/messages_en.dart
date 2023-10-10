@@ -49,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bold": MessageLookupByLibrary.simpleMessage("Bold"),
         "bulletedList": MessageLookupByLibrary.simpleMessage("Bulleted List"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "caseSensitive": MessageLookupByLibrary.simpleMessage("Case sensitive"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Checkbox"),
         "chooseImage": MessageLookupByLibrary.simpleMessage("Choose an image"),
         "clearHighlightColor":
@@ -118,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paste": MessageLookupByLibrary.simpleMessage("Paste"),
         "previousMatch": MessageLookupByLibrary.simpleMessage("Previous match"),
         "quote": MessageLookupByLibrary.simpleMessage("Quote"),
+        "regex": MessageLookupByLibrary.simpleMessage("Regex"),
         "removeLink": MessageLookupByLibrary.simpleMessage("Remove link"),
         "replace": MessageLookupByLibrary.simpleMessage("Replace"),
         "replaceAll": MessageLookupByLibrary.simpleMessage("Replace all"),

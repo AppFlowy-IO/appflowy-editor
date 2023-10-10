@@ -16,6 +16,8 @@ class FindReplaceMenu implements FindReplaceService {
     required this.showReplaceMenu,
     this.localizations,
     required this.style,
+    this.showRegexButton = true,
+    this.showCaseSensitiveButton = true,
   });
 
   final BuildContext context;
@@ -23,6 +25,8 @@ class FindReplaceMenu implements FindReplaceService {
   final bool showReplaceMenu;
   final FindReplaceLocalizations? localizations;
   final FindReplaceStyle style;
+  final bool showRegexButton;
+  final bool showCaseSensitiveButton;
 
   final double topOffset = 52;
   final double rightOffset = 40;
@@ -96,6 +100,8 @@ class FindReplaceMenu implements FindReplaceService {
                     showReplaceMenu: showReplaceMenu,
                     localizations: localizations,
                     style: style,
+                    showRegexButton: showRegexButton,
+                    showCaseSensitiveButton: showCaseSensitiveButton,
                   ),
                 ),
               ),
