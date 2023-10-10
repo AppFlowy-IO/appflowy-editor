@@ -203,6 +203,7 @@ class _MobileSelectionServiceWidgetState
   void _updateSelection() {
     final selection = editorState.selection;
     if (currentSelection.value != selection) {
+      clearSelection();
       return;
     }
 
