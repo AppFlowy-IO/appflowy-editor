@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+const errorBlockComponentBuilderKey = 'errorBlockComponentBuilderKey';
+
 typedef BlockActionBuilder = Widget Function(
   BlockComponentContext blockComponentContext,
   BlockComponentActionState state,
@@ -121,17 +123,18 @@ class BlockComponentRenderer extends BlockComponentRendererService {
       header: header,
       footer: footer,
     );
+    final errorBuilder = _builders[errorBlockComponentBuilderKey];
     final builder = blockComponentBuilder(node.type);
-    if (builder == null) {
-      assert(false, 'no builder for node type(${node.type})');
-      return _buildPlaceHolderWidget(blockComponentContext);
-    }
-    if (!builder.validate(node)) {
-      assert(
-        false,
-        'node(${node.type}) is invalid, attributes: ${node.attributes}, children: ${node.children}',
-      );
-      return _buildPlaceHolderWidget(blockComponentContext);
+    if (builder == null || !builder.validate(node)) {
+      if (errorBuilder != null) {
+        return BlockComponentContainer(
+          node: node,
+          configuration: errorBuilder.configuration,
+          builder: (_) => errorBuilder.build(blockComponentContext),
+        );
+      } else {
+        return _buildPlaceHolderWidget(blockComponentContext);
+      }
     }
 
     return BlockComponentContainer(

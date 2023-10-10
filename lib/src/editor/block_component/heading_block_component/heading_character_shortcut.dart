@@ -30,3 +30,34 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     },
   ),
 );
+
+/// Insert a new block after the heading block.
+///
+/// - support
+///   - desktop
+///   - web
+///   - mobile
+///
+CharacterShortcutEvent insertNewLineAfterHeading = CharacterShortcutEvent(
+  key: 'insert new block after heading',
+  character: '\n',
+  handler: (editorState) async {
+    final selection = editorState.selection;
+    if (selection == null ||
+        !selection.isCollapsed ||
+        selection.startIndex != 0) {
+      return false;
+    }
+    final node = editorState.getNodeAtPath(selection.end.path);
+    if (node == null || node.type != HeadingBlockKeys.type) {
+      return false;
+    }
+    final transaction = editorState.transaction;
+    transaction.insertNode(selection.start.path, paragraphNode());
+    transaction.afterSelection = Selection.collapsed(
+      Position(path: selection.start.path.next, offset: 0),
+    );
+    await editorState.apply(transaction);
+    return true;
+  },
+);

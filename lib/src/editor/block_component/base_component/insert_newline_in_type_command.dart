@@ -19,7 +19,6 @@ Future<bool> insertNewLineInType(
 
   if (selection.startIndex == 0 && delta.isEmpty) {
     // clear the style
-
     return KeyEventResult.ignored !=
         convertToParagraphCommand.execute(editorState);
   }
