@@ -122,6 +122,8 @@ KeyEventResult _showFindAndReplaceDialog(
     showReplaceMenu: openReplace,
     localizations: localizations,
     style: style,
+    showRegexButton: true,
+    showCaseSensitiveButton: true,
   );
 
   _findReplaceService?.show();
