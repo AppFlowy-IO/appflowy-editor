@@ -10,6 +10,7 @@ class SVGIconItemWidget extends StatelessWidget {
     this.iconBuilder,
     required this.isHighlight,
     required this.highlightColor,
+    this.iconColor,
     this.tooltip,
     this.onPressed,
   });
@@ -20,6 +21,7 @@ class SVGIconItemWidget extends StatelessWidget {
   final WidgetBuilder? iconBuilder;
   final bool isHighlight;
   final Color highlightColor;
+  final Color? iconColor;
   final String? tooltip;
   final VoidCallback? onPressed;
 
@@ -29,7 +31,7 @@ class SVGIconItemWidget extends StatelessWidget {
         ? iconBuilder!(context)
         : EditorSvg(
             name: iconName,
-            color: isHighlight ? highlightColor : null,
+            color: isHighlight ? highlightColor : iconColor,
             width: iconSize.width,
             height: iconSize.height,
           );

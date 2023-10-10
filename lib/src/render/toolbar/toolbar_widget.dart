@@ -1,9 +1,8 @@
+import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_item.dart';
 import 'package:appflowy_editor/src/render/toolbar/toolbar_item_widget.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
-import 'package:appflowy_editor/src/editor_state.dart';
 
 mixin ToolbarMixin<T extends StatefulWidget> on State<T> {
   void hide();
@@ -16,6 +15,7 @@ class ToolbarWidget extends StatefulWidget {
     required this.layerLink,
     required this.offset,
     required this.highlightColor,
+    this.iconColor,
     required this.items,
     this.alignment = Alignment.topLeft,
   }) : super(key: key);
@@ -24,6 +24,7 @@ class ToolbarWidget extends StatefulWidget {
   final LayerLink layerLink;
   final Offset offset;
   final Color highlightColor;
+  final Color? iconColor;
 
   final List<ToolbarItem> items;
 
@@ -46,7 +47,7 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
         showWhenUnlinked: true,
         offset: widget.offset,
         followerAnchor: widget.alignment,
-        child: _buildToolbar(context, widget.highlightColor),
+        child: _buildToolbar(context, widget.highlightColor, widget.iconColor),
       ),
     );
   }
@@ -57,7 +58,11 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
     _listToolbarOverlay = null;
   }
 
-  Widget _buildToolbar(BuildContext context, Color highlightColor) {
+  Widget _buildToolbar(
+    BuildContext context,
+    Color highlightColor,
+    Color? iconColor,
+  ) {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
       child: Padding(
@@ -73,6 +78,7 @@ class _ToolbarWidgetState extends State<ToolbarWidget> with ToolbarMixin {
                           context,
                           widget.editorState,
                           highlightColor,
+                          iconColor,
                         ) ??
                         item.itemBuilder?.call(context, widget.editorState) ??
                         ToolbarItemWidget(

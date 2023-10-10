@@ -15,6 +15,9 @@ class FloatingToolbarWidget extends StatefulWidget {
     super.key,
     this.backgroundColor = Colors.black,
     required this.toolbarActiveColor,
+    this.toolbarIconColor,
+    this.toolbarElevation = 0,
+    this.toolbarShadowColor,
     required this.items,
     required this.editorState,
     required this.textDirection,
@@ -23,6 +26,9 @@ class FloatingToolbarWidget extends StatefulWidget {
   final List<ToolbarItem> items;
   final Color backgroundColor;
   final Color toolbarActiveColor;
+  final Color? toolbarIconColor;
+  final double toolbarElevation;
+  final Color? toolbarShadowColor;
   final EditorState editorState;
   final TextDirection textDirection;
 
@@ -40,6 +46,8 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     return Material(
       borderRadius: BorderRadius.circular(8.0),
       color: widget.backgroundColor,
+      shadowColor: widget.toolbarShadowColor,
+      elevation: widget.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SizedBox(
@@ -59,6 +67,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
                       context,
                       widget.editorState,
                       widget.toolbarActiveColor,
+                      widget.toolbarIconColor,
                     ),
                   ),
                 )

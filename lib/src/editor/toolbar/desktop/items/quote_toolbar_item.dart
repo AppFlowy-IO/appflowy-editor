@@ -4,7 +4,7 @@ final ToolbarItem quoteItem = ToolbarItem(
   id: 'editor.quote',
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor) {
+  builder: (context, editorState, highlightColor, iconColor) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'quote';
@@ -12,6 +12,7 @@ final ToolbarItem quoteItem = ToolbarItem(
       iconName: 'toolbar/quote',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
+      iconColor: iconColor,
       tooltip: AppFlowyEditorLocalizations.current.quote,
       onPressed: () => editorState.formatNode(
         selection,
