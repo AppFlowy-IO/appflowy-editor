@@ -27,6 +27,10 @@ export 'divider_block_component/divider_menu_item.dart';
 // heading
 export 'heading_block_component/heading_block_component.dart';
 export 'heading_block_component/heading_character_shortcut.dart';
+
+//Title
+export 'title_block_component/title_block_component.dart';
+
 // image
 export 'image_block_component/image_block_component.dart';
 export 'image_block_component/image_upload_widget.dart';
@@ -34,6 +38,7 @@ export 'image_block_component/resizable_image.dart';
 // numbered list
 export 'numbered_list_block_component/numbered_list_block_component.dart';
 export 'numbered_list_block_component/numbered_list_character_shortcut.dart';
+
 // quote
 export 'quote_block_component/quote_block_component.dart';
 export 'quote_block_component/quote_character_shortcut.dart';
@@ -41,6 +46,7 @@ export 'rich_text/appflowy_rich_text.dart';
 export 'rich_text/appflowy_rich_text_keys.dart';
 // rich text
 export 'rich_text/default_selectable_mixin.dart';
+
 export 'standard_block_components.dart';
 export 'table_block_component/table_action.dart';
 // table

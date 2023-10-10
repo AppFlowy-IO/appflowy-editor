@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/title_block_component/title_block_component.dart';
 import 'package:flutter/material.dart';
 
 class FloatingToolbarStyle {
@@ -54,7 +55,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
     widget.editorScrollController.offsetNotifier.addListener(
@@ -65,7 +65,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   @override
   void didUpdateWidget(FloatingToolbar oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.editorState != oldWidget.editorState) {
       editorState.selectionNotifier.addListener(_onSelectionChanged);
     }
@@ -96,7 +95,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-
     _showAfterDelay();
   }
 
@@ -160,6 +158,11 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     }
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
+      return;
+    }
+
+    var titleNodeBlock = editorState.getSelectedNodes();
+    if (titleNodeBlock.first.type == TitleBlockKeys.type) {
       return;
     }
 
