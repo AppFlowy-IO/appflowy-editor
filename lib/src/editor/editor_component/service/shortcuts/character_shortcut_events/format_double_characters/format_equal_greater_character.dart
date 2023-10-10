@@ -21,6 +21,8 @@ final CharacterShortcutEvent formatGreaterEqual = CharacterShortcutEvent(
   ),
 );
 
+// TODO(Xazin): Combine two character replacement methods into
+//  a helper function
 Future<bool> handleEqualGreaterReplacement({
   required EditorState editorState,
   required String character,
