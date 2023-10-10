@@ -34,14 +34,14 @@ CharacterShortcutEvent customSlashCommand(
   );
 }
 
-final supportSlashMenuNodeWhiteList = [
+final Set<String> supportSlashMenuNodeWhiteList = {
   ParagraphBlockKeys.type,
   HeadingBlockKeys.type,
   TodoListBlockKeys.type,
   BulletedListBlockKeys.type,
   NumberedListBlockKeys.type,
   QuoteBlockKeys.type,
-];
+};
 
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
