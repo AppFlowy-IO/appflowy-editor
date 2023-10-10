@@ -30,6 +30,7 @@ class ToolbarItem {
     BuildContext context,
     EditorState editorState,
     Color highlightColor,
+    Color? iconColor,
   )? builder;
 
   // deprecated

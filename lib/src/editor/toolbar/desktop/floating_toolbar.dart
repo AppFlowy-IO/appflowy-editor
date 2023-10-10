@@ -7,10 +7,16 @@ class FloatingToolbarStyle {
   const FloatingToolbarStyle({
     this.backgroundColor = Colors.black,
     this.toolbarActiveColor = Colors.lightBlue,
+    this.toolbarIconColor = Colors.white,
+    this.toolbarShadowColor,
+    this.toolbarElevation = 0,
   });
 
   final Color backgroundColor;
   final Color toolbarActiveColor;
+  final Color toolbarIconColor;
+  final Color? toolbarShadowColor;
+  final double toolbarElevation;
 }
 
 /// A floating toolbar that displays at the top of the editor when the selection
@@ -124,6 +130,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   final String _debounceKey = 'show the toolbar';
+
   void _clear() {
     Debounce.cancel(_debounceKey);
 
@@ -181,6 +188,9 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       editorState: editorState,
       backgroundColor: widget.style.backgroundColor,
       toolbarActiveColor: widget.style.toolbarActiveColor,
+      toolbarIconColor: widget.style.toolbarIconColor,
+      toolbarElevation: widget.style.toolbarElevation,
+      toolbarShadowColor: widget.style.toolbarShadowColor,
       textDirection: widget.textDirection ?? Directionality.of(context),
     );
     return _toolbarWidget!;
