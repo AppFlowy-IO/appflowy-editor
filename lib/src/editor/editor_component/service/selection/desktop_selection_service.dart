@@ -196,7 +196,9 @@ class _DesktopSelectionServiceWidgetState
     final canTap = _interceptors.every(
       (element) => element.canTap?.call(details) ?? true,
     );
-    if (!canTap) return;
+    if (!canTap) {
+      return updateSelection(null);
+    }
 
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);

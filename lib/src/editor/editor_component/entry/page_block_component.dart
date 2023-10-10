@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/base_component/widget/ignore_parent_gesture.dart';
 import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -82,8 +83,16 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
         itemCount: items.length + extentCount,
         itemBuilder: (context, index) {
           editorState.updateAutoScroller(Scrollable.of(context));
-          if (header != null && index == 0) return header!;
-          if (footer != null && index == items.length + 1) return footer!;
+          if (header != null && index == 0) {
+            return IgnoreEditorSelectionGesture(
+              child: header!,
+            );
+          }
+          if (footer != null && index == items.length + 1) {
+            return IgnoreEditorSelectionGesture(
+              child: footer!,
+            );
+          }
           return Padding(
             padding: editorState.editorStyle.padding,
             child: editorState.renderer.build(

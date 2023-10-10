@@ -37,7 +37,7 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Custom Theme For Editor'),
+        title: const Text('Focus Node Example'),
         titleTextStyle: const TextStyle(color: Colors.white),
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -52,7 +52,21 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
               builder: (context, snapshot) {
                 return !snapshot.hasData
                     ? const Center(child: CircularProgressIndicator())
-                    : AppFlowyEditor(editorState: snapshot.data!);
+                    : AppFlowyEditor(
+                        editorState: snapshot.data!,
+                        header: const TextField(
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            hintText: 'Header: Please input something ...',
+                          ),
+                        ),
+                        footer: const TextField(
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            hintText: 'Footer: Please input something ...',
+                          ),
+                        ),
+                      );
               },
             ),
           ),
