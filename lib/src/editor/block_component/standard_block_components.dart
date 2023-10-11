@@ -5,7 +5,7 @@ const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
 final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   PageBlockKeys.type: PageBlockComponentBuilder(),
-  ParagraphBlockKeys.type: TextBlockComponentBuilder(
+  ParagraphBlockKeys.type: ParagraphBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => PlatformExtension.isDesktopOrWeb
           ? AppFlowyEditorLocalizations.current.slashPlaceHolder

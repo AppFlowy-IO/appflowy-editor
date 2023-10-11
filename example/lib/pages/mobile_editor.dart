@@ -142,7 +142,7 @@ class _MobileEditorState extends State<MobileEditor> {
         fontWeight: FontWeight.w600,
       ),
     );
-    map[ParagraphBlockKeys.type] = TextBlockComponentBuilder(
+    map[ParagraphBlockKeys.type] = ParagraphBlockComponentBuilder(
       configuration: BlockComponentConfiguration(
         placeholderText: (node) => 'Type something...',
       ),

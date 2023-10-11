@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
@@ -11,7 +13,7 @@ import 'package:provider/provider.dart';
 // decrease the value when the popover is closed
 // only grab the focus when the value is 0
 // the operation must be paired
-ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
+KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
@@ -266,4 +268,27 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   BlockComponentRendererService get _renderer => BlockComponentRenderer(
         builders: {...widget.blockComponentBuilders},
       );
+}
+
+class KeepEditorFocusNotifier extends ValueNotifier<int> {
+  KeepEditorFocusNotifier() : super(0);
+
+  bool get shouldKeepFocus => value > 0;
+
+  @override
+  set value(int v) {
+    super.value = max(0, v);
+  }
+
+  void increase() {
+    value++;
+  }
+
+  void decrease() {
+    value--;
+  }
+
+  void reset() {
+    value = 0;
+  }
 }
