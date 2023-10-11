@@ -188,7 +188,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       }
     }
 
-    if (PlatformExtension.isWindows && delta is TextEditingDeltaNonTextUpdate) {
+    if ((PlatformExtension.isWindows || PlatformExtension.isLinux) &&
+        delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
     }
   }
