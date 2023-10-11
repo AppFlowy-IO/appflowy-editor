@@ -50,6 +50,7 @@ class BlockSelectionContainer extends StatelessWidget {
           ? AlignmentDirectional.topStart
           : AlignmentDirectional.topEnd,
       children: [
+        // block selection or selection area
         BlockSelectionArea(
           node: node,
           delegate: delegate,
@@ -57,9 +58,24 @@ class BlockSelectionContainer extends StatelessWidget {
           cursorColor: cursorColor,
           selectionColor: selectionColor,
           blockColor: blockColor,
-          supportTypes: supportTypes,
+          supportTypes: supportTypes
+              .where(
+                (element) => element != BlockSelectionType.cursor,
+              )
+              .toList(),
         ),
         child,
+        // cursor
+        if (supportTypes.contains(BlockSelectionType.cursor))
+          BlockSelectionArea(
+            node: node,
+            delegate: delegate,
+            listenable: listenable,
+            cursorColor: cursorColor,
+            selectionColor: selectionColor,
+            blockColor: blockColor,
+            supportTypes: const [BlockSelectionType.cursor],
+          ),
       ],
     );
   }

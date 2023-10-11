@@ -268,7 +268,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     _showingItems = widget.items;
 
-    keepEditorFocusNotifier.value += 1;
+    keepEditorFocusNotifier.increase();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -277,7 +277,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   @override
   void dispose() {
     _focusNode.dispose();
-    keepEditorFocusNotifier.value -= 1;
+    keepEditorFocusNotifier.decrease();
 
     super.dispose();
   }

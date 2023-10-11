@@ -126,7 +126,6 @@ class _HeadingBlockComponentWidgetState
     );
 
     Widget child = Container(
-      color: backgroundColor,
       width: double.infinity,
       alignment: alignment,
       // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
@@ -170,10 +169,13 @@ class _HeadingBlockComponentWidgetState
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: backgroundColor,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(

@@ -21,7 +21,7 @@ void main() async {
       addTearDown(gesture.removePointer);
       await tester.pump();
       await gesture.moveTo(
-        tester.getCenter(find.byType(TextBlockComponentWidget)),
+        tester.getCenter(find.byType(ParagraphBlockComponentWidget)),
       );
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
@@ -60,7 +60,7 @@ class CustomActionBuilder extends StatelessWidget {
 
     final editorState = EditorState(document: document);
 
-    final paragraphBuilder = TextBlockComponentBuilder(
+    final paragraphBuilder = ParagraphBlockComponentBuilder(
       configuration: standardBlockComponentConfiguration,
     );
     paragraphBuilder.showActions = (_) => true;

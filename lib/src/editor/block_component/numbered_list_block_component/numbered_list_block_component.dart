@@ -121,7 +121,6 @@ class _NumberedListBlockComponentWidgetState
     );
 
     Widget child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Row(
@@ -161,10 +160,13 @@ class _NumberedListBlockComponentWidgetState
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: withBackgroundColor ? backgroundColor : null,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(
@@ -206,15 +208,18 @@ class _NumberedListIcon extends StatelessWidget {
     final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
     final level = _NumberedListIconBuilder(node: node).level;
-    return Padding(
-      padding: const EdgeInsets.only(right: 5.0),
-      child: Text.rich(
-        textHeightBehavior: const TextHeightBehavior(
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
+    return Container(
+      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      padding: const EdgeInsets.only(right: 4.0),
+      child: Center(
+        child: Text.rich(
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
+          TextSpan(text: '$level.', style: text.combine(textStyle)),
+          textDirection: direction,
         ),
-        TextSpan(text: '$level.', style: text.combine(textStyle)),
-        textDirection: direction,
       ),
     );
   }

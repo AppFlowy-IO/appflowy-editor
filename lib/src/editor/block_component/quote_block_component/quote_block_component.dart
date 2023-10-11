@@ -112,7 +112,6 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     );
 
     Widget child = Container(
-      color: backgroundColor,
       width: double.infinity,
       alignment: alignment,
       child: IntrinsicHeight(
@@ -150,10 +149,13 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: backgroundColor,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(
@@ -184,11 +186,17 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const EditorSvg(
-      width: 20,
-      height: 20,
-      padding: EdgeInsets.only(right: 5.0),
-      name: 'quote',
+    return Container(
+      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      padding: const EdgeInsets.only(right: 4.0),
+      child: const Center(
+        child: EditorSvg(
+          width: 20,
+          height: 20,
+          padding: EdgeInsets.only(right: 4.0),
+          name: 'quote',
+        ),
+      ),
     );
   }
 }
