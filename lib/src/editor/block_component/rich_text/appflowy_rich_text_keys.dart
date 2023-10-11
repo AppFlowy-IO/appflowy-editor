@@ -19,4 +19,13 @@ class AppFlowyRichTextKeys {
     textColor,
     highlightColor,
   ];
+
+  // The values supported toggled even if the selection is collapsed.
+  static List<String> supportToggled = [
+    bold,
+    italic,
+    underline,
+    strikethrough,
+    code,
+  ];
 }
