@@ -377,5 +377,50 @@ void main() async {
       expect(editor.editorState.toggledStyle, isEmpty);
       await editor.dispose();
     });
+
+    testWidgets('toggle twice to reset the toggled style', (tester) async {
+      const text = '';
+      final editor = tester.editor..addParagraph(initialText: text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+
+      // toggle bold, italic, underline
+      final keys = [
+        LogicalKeyboardKey.keyB,
+        LogicalKeyboardKey.keyI,
+        LogicalKeyboardKey.keyU,
+      ];
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      // reset
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      await editor.ime.insertText('Hello');
+      final delta1 = editor.nodeAtPath([0])!.delta!;
+      expect(delta1.toJson(), [
+        {
+          "insert": "Hello",
+          "attributes": {"bold": false, "italic": false, "underline": false}
+        }
+      ]);
+
+      expect(editor.editorState.toggledStyle, isEmpty);
+      await editor.dispose();
+    });
   });
 }

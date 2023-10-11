@@ -190,21 +190,25 @@ extension TextTransforms on EditorState {
 
     final nodes = getNodesInSelection(selection);
     if (selection.isCollapsed) {
-      // get the attributes from the previous one character.
-      selection = selection.copyWith(
-        start: selection.start.copyWith(
-          offset: max(
-            selection.startIndex - 1,
-            0,
+      if (toggledStyle.containsKey(key)) {
+        toggledStyle[key] = !toggledStyle[key]!;
+      } else {
+        // get the attributes from the previous one character.
+        selection = selection.copyWith(
+          start: selection.start.copyWith(
+            offset: max(
+              selection.startIndex - 1,
+              0,
+            ),
           ),
-        ),
-      );
-      final toggled = nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[key] == true,
         );
-      });
-      toggledStyle[key] = !toggled;
+        final toggled = nodes.allSatisfyInSelection(selection, (delta) {
+          return delta.everyAttributes(
+            (attributes) => attributes[key] == true,
+          );
+        });
+        toggledStyle[key] = !toggled;
+      }
     } else {
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
         return delta.everyAttributes(
