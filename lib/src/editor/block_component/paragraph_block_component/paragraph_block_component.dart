@@ -33,15 +33,15 @@ Node paragraphNode({
   );
 }
 
-class TextBlockComponentBuilder extends BlockComponentBuilder {
-  TextBlockComponentBuilder({
+class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
+  ParagraphBlockComponentBuilder({
     super.configuration,
   });
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
-    return TextBlockComponentWidget(
+    return ParagraphBlockComponentWidget(
       node: node,
       key: node.key,
       configuration: configuration,
@@ -59,8 +59,8 @@ class TextBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class TextBlockComponentWidget extends BlockComponentStatefulWidget {
-  const TextBlockComponentWidget({
+class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
+  const ParagraphBlockComponentWidget({
     super.key,
     required super.node,
     super.showActions,
@@ -69,11 +69,12 @@ class TextBlockComponentWidget extends BlockComponentStatefulWidget {
   });
 
   @override
-  State<TextBlockComponentWidget> createState() =>
-      _TextBlockComponentWidgetState();
+  State<ParagraphBlockComponentWidget> createState() =>
+      _ParagraphBlockComponentWidgetState();
 }
 
-class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
+class _ParagraphBlockComponentWidgetState
+    extends State<ParagraphBlockComponentWidget>
     with
         SelectableMixin,
         DefaultSelectableMixin,
@@ -133,7 +134,6 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
     );
 
     Widget child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Column(
@@ -161,10 +161,13 @@ class _TextBlockComponentWidgetState extends State<TextBlockComponentWidget>
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: withBackgroundColor ? backgroundColor : null,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(

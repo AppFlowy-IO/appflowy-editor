@@ -63,18 +63,18 @@ void showLinkMenu(
   OverlayEntry? overlay;
 
   void dismissOverlay() {
-    keepEditorFocusNotifier.value -= 1;
+    keepEditorFocusNotifier.decrease();
     overlay?.remove();
     overlay = null;
   }
 
-  keepEditorFocusNotifier.value += 1;
+  keepEditorFocusNotifier.increase();
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
     left: left,
     right: right,
-    dismissCallback: () => keepEditorFocusNotifier.value -= 1,
+    dismissCallback: () => keepEditorFocusNotifier.decrease(),
     builder: (context) {
       return LinkMenu(
         linkText: linkText,

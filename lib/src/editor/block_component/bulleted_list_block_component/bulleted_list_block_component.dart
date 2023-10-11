@@ -116,7 +116,6 @@ class _BulletedListBlockComponentWidgetState
     );
 
     Widget child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Row(
@@ -155,10 +154,13 @@ class _BulletedListBlockComponentWidgetState
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: withBackgroundColor ? backgroundColor : null,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(
@@ -215,17 +217,14 @@ class _BulletedListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 22,
-      height: 22,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 5.0),
-        child: Center(
-          child: Text(
-            icon,
-            style: textStyle,
-            textScaleFactor: 0.5,
-          ),
+    return Container(
+      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      padding: const EdgeInsets.only(right: 4.0),
+      child: Center(
+        child: Text(
+          icon,
+          style: textStyle,
+          textScaleFactor: 0.5,
         ),
       ),
     );

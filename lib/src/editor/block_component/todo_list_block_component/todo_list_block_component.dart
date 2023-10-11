@@ -132,7 +132,6 @@ class _TodoListBlockComponentWidgetState
     );
 
     Widget child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Row(
@@ -173,10 +172,13 @@ class _TodoListBlockComponentWidgetState
       ),
     );
 
-    child = Padding(
-      key: blockComponentKey,
-      padding: padding,
-      child: child,
+    child = Container(
+      color: withBackgroundColor ? backgroundColor : null,
+      child: Padding(
+        key: blockComponentKey,
+        padding: padding,
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(
@@ -236,11 +238,14 @@ class _TodoListIcon extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: EditorSvg(
-          width: 22,
-          height: 22,
-          padding: const EdgeInsets.only(right: 5.0),
-          name: checked ? 'check' : 'uncheck',
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+          padding: const EdgeInsets.only(right: 4.0),
+          child: EditorSvg(
+            width: 22,
+            height: 22,
+            name: checked ? 'check' : 'uncheck',
+          ),
         ),
       ),
     );

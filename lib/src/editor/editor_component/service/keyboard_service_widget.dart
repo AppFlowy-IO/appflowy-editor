@@ -265,7 +265,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // clear the selection when the focus is lost.
     if (!focusNode.hasFocus) {
       if (PlatformExtension.isDesktopOrWeb) {
-        if (keepEditorFocusNotifier.value > 0) {
+        if (keepEditorFocusNotifier.shouldKeepFocus) {
           return;
         }
       }
@@ -283,7 +283,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       'keyboard service - on keep editor focus changed: ${keepEditorFocusNotifier.value}}',
     );
 
-    if (keepEditorFocusNotifier.value == 0) {
+    if (!keepEditorFocusNotifier.shouldKeepFocus) {
       focusNode.requestFocus();
     }
   }
@@ -302,7 +302,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (renderBox != null && selectable != null) {
       final size = renderBox.size;
       final transform = renderBox.getTransformTo(null);
-      final rect = selectable.getCursorRectInPosition(selection.end);
+      final rect = selectable.getCursorRectInPosition(
+        selection.end,
+        shiftWithBaseOffset: true,
+      );
       if (rect != null) {
         textInputService.updateCaretPosition(size, transform, rect);
       }
