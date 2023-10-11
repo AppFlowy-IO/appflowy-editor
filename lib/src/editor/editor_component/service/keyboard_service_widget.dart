@@ -182,6 +182,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onSelectionChanged() {
+    final doNotAttach = editorState
+        .selectionExtraInfo?[selectionExtraInfoDoNotAttachTextService];
+    if (doNotAttach == true) {
+      return;
+    }
     enableShortcuts = true;
     // attach the delta text input service if needed
     final selection = editorState.selection;

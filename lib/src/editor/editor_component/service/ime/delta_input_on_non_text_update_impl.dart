@@ -1,6 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 
+const selectionExtraInfoDoNotAttachTextService =
+    'selectionExtraInfoDoNotAttachTextService';
+
 Future<void> onNonTextUpdate(
   TextEditingDeltaNonTextUpdate nonTextUpdate,
   EditorState editorState,
@@ -9,9 +12,9 @@ Future<void> onNonTextUpdate(
   //
   // when typing characters with CJK IME on Windows, a non-text update is sent
   // with the selection range.
+  final selection = editorState.selection;
 
   if (PlatformExtension.isWindows) {
-    final selection = editorState.selection;
     if (selection != null &&
         nonTextUpdate.composing == TextRange.empty &&
         nonTextUpdate.selection.isCollapsed) {
@@ -20,6 +23,20 @@ Future<void> onNonTextUpdate(
           path: selection.start.path,
           offset: nonTextUpdate.selection.start,
         ),
+      );
+    }
+  } else if (PlatformExtension.isLinux) {
+    if (selection != null) {
+      editorState.updateSelectionWithReason(
+        Selection.collapsed(
+          Position(
+            path: selection.start.path,
+            offset: nonTextUpdate.selection.start,
+          ),
+        ),
+        extraInfo: {
+          selectionExtraInfoDoNotAttachTextService: true,
+        },
       );
     }
   }
