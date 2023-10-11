@@ -73,6 +73,14 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSelectionIfNeeded();
     });
+    widget.listenable.addListener(_clearCursorRect);
+  }
+
+  @override
+  void dispose() {
+    widget.listenable.removeListener(_clearCursorRect);
+
+    super.dispose();
   }
 
   @override
@@ -205,5 +213,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateSelectionIfNeeded();
     });
+  }
+
+  void _clearCursorRect() {
+    prevCursorRect = null;
   }
 }
