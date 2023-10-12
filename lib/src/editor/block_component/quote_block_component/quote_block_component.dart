@@ -187,15 +187,12 @@ class _QuoteIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
       padding: const EdgeInsets.only(right: 4.0),
-      child: const Center(
-        child: EditorSvg(
-          width: 20,
-          height: 20,
-          padding: EdgeInsets.only(right: 4.0),
-          name: 'quote',
-        ),
+      child: Container(
+        width: 4,
+        color: '#00BCF0'.tryToColor(),
       ),
     );
   }
