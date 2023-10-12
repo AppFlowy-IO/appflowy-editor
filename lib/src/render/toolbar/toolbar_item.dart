@@ -73,13 +73,25 @@ class ToolbarItem {
   int get hashCode => id.hashCode;
 }
 
+final Set<String> toolbarItemWhiteList = {
+  ParagraphBlockKeys.type,
+  NumberedListBlockKeys.type,
+  BulletedListBlockKeys.type,
+  QuoteBlockKeys.type,
+  TodoListBlockKeys.type,
+  HeadingBlockKeys.type,
+};
+
 bool onlyShowInSingleSelectionAndTextType(EditorState editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isSingle) {
     return false;
   }
   final node = editorState.getNodeAtPath(selection.start.path);
-  return node?.delta != null;
+  if (node == null) {
+    return false;
+  }
+  return node.delta != null && toolbarItemWhiteList.contains(node.type);
 }
 
 bool onlyShowInTextType(EditorState editorState) {
@@ -88,5 +100,8 @@ bool onlyShowInTextType(EditorState editorState) {
     return false;
   }
   final nodes = editorState.getNodesInSelection(selection);
-  return nodes.every((element) => element.delta != null);
+  return nodes.every(
+    (element) =>
+        element.delta != null && toolbarItemWhiteList.contains(element.type),
+  );
 }
