@@ -27,7 +27,7 @@ void main() async {
           'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const BulletedListNodeParser().transform(node, null), '* $text');
+      expect(const BulletedListNodeParser().transform(node, null), '* $text\n');
     });
 
     test('numbered list style', () {
@@ -36,7 +36,10 @@ void main() async {
           'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const NumberedListNodeParser().transform(node, null), '1. $text');
+      expect(
+        const NumberedListNodeParser().transform(node, null),
+        '1. $text\n',
+      );
     });
 
     test('todo list style', () {
@@ -54,11 +57,11 @@ void main() async {
       );
       expect(
         const TodoListNodeParser().transform(checkedNode, null),
-        '- [x] $text',
+        '- [x] $text\n',
       );
       expect(
         const TodoListNodeParser().transform(uncheckedNode, null),
-        '- [ ] $text',
+        '- [ ] $text\n',
       );
     });
 
@@ -68,7 +71,7 @@ void main() async {
           'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const QuoteNodeParser().transform(node, null), '> $text');
+      expect(const QuoteNodeParser().transform(node, null), '> $text\n');
     });
 
     test('code block style', () {
@@ -91,7 +94,7 @@ void main() async {
           'bold': true,
         },
       );
-      expect(const TextNodeParser().transform(node, null), text);
+      expect(const TextNodeParser().transform(node, null), '$text\n');
     });
   });
 }

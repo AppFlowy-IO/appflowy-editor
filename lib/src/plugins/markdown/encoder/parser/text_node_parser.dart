@@ -11,7 +11,14 @@ class TextNodeParser extends NodeParser {
     final delta = node.delta ?? Delta()
       ..insert('');
     final children = encoder?.convertNodes(node.children, withIndent: true);
-    String markdown = '${DeltaMarkdownEncoder().convert(delta)}\n';
+    String markdown = DeltaMarkdownEncoder().convert(delta);
+    if (markdown.isEmpty && children == null) {
+      return '';
+    } else if (node
+            .findParent((element) => element.type == TableBlockKeys.type) ==
+        null) {
+      markdown += '\n';
+    }
     if (children != null && children.isNotEmpty) {
       markdown += children;
     }
