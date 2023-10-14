@@ -4,16 +4,12 @@ class HeadingNodeParser extends NodeParser {
   const HeadingNodeParser();
 
   @override
-  String get id => 'heading';
+  String get id => HeadingBlockKeys.type;
 
   @override
-  String transform(Node node) {
-    assert(node.type == 'heading');
-
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
-    }
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
+    final delta = node.delta ?? Delta()
+      ..insert('');
     final markdown = DeltaMarkdownEncoder().convert(delta);
     final attributes = node.attributes;
     final level = attributes[HeadingBlockKeys.level] as int? ?? 1;

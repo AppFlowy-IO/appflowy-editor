@@ -4,20 +4,18 @@ class NumberedListNodeParser extends NodeParser {
   const NumberedListNodeParser();
 
   @override
-  String get id => 'numbered_list';
+  String get id => NumberedListBlockKeys.type;
 
   @override
-  String transform(Node node) {
-    assert(node.type == 'numbered_list');
-
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
+    final delta = node.delta ?? Delta()
+      ..insert('');
+    final number = node.attributes[NumberedListBlockKeys.number] ?? '1';
+    final children = encoder?.convertNodes(node.children, withIndent: true);
+    String markdown = '$number. ${DeltaMarkdownEncoder().convert(delta)}\n';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
     }
-    final markdown = DeltaMarkdownEncoder().convert(delta);
-    final result = '1. $markdown'; // FIXME: support parse the number
-    final suffix = node.next == null ? '' : '\n';
-
-    return '$result$suffix';
+    return markdown;
   }
 }

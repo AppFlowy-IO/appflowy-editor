@@ -7,7 +7,7 @@ class CodeBlockNodeParser extends NodeParser {
   String get id => 'code';
 
   @override
-  String transform(Node node) {
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
     assert(node.type == 'code');
 
     final delta = node.delta;
