@@ -142,6 +142,5 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   copyCommand,
   ...pasteCommands,
   cutCommand,
-
-  moveMentCommand,
+  ...vimKeyModes
 ];
