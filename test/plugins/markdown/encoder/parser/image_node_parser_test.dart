@@ -11,7 +11,7 @@ void main() async {
         },
       );
 
-      final result = const ImageNodeParser().transform(node);
+      final result = const ImageNodeParser().transform(node, null);
       expect(result, '![](https://appflowy.io)');
     });
 

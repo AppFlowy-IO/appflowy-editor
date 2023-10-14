@@ -52,8 +52,10 @@ void main() async {
           'delta': (Delta()..insert(text)).toJson(),
         },
       );
-      expect(const TodoListNodeParser().transform(checkedNode, null),
-          '- [x] $text');
+      expect(
+        const TodoListNodeParser().transform(checkedNode, null),
+        '- [x] $text',
+      );
       expect(
         const TodoListNodeParser().transform(uncheckedNode, null),
         '- [ ] $text',
@@ -77,7 +79,9 @@ void main() async {
         },
       );
       expect(
-          const CodeBlockNodeParser().transform(node, null), '```\n$text\n```');
+        const CodeBlockNodeParser().transform(node, null),
+        '```\n$text\n```',
+      );
     });
 
     test('fallback', () {

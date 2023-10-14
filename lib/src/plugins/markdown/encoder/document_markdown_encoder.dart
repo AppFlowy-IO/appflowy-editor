@@ -30,7 +30,10 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
   }) {
     final result = convert(Document(root: pageNode(children: nodes)));
     if (result.isNotEmpty && withIndent) {
-      return result.split('\n').map((e) => '    $e').join('\n');
+      return result
+          .split('\n')
+          .map((e) => e.isNotEmpty ? '\t$e' : e)
+          .join('\n');
     }
     return result;
   }

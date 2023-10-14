@@ -4,7 +4,7 @@ class ImageNodeParser extends NodeParser {
   const ImageNodeParser();
 
   @override
-  String get id => 'image';
+  String get id => ImageBlockKeys.type;
 
   @override
   String transform(Node node, DocumentMarkdownEncoder? encoder) {

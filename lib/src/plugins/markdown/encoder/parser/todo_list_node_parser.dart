@@ -13,9 +13,9 @@ class TodoListNodeParser extends NodeParser {
     final checked =
         node.attributes[TodoListBlockKeys.checked] == true ? '- [x]' : '- [ ]';
     final children = encoder?.convertNodes(node.children, withIndent: true);
-    String markdown = '$checked ${DeltaMarkdownEncoder().convert(delta)}';
-    if (children != null) {
-      markdown += '\n$children';
+    String markdown = '$checked ${DeltaMarkdownEncoder().convert(delta)}\n';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
     }
     return markdown;
   }

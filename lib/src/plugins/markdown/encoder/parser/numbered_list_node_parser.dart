@@ -12,9 +12,9 @@ class NumberedListNodeParser extends NodeParser {
       ..insert('');
     final number = node.attributes[NumberedListBlockKeys.number] ?? '1';
     final children = encoder?.convertNodes(node.children, withIndent: true);
-    String markdown = '$number. ${DeltaMarkdownEncoder().convert(delta)}';
-    if (children != null) {
-      markdown += '\n$children';
+    String markdown = '$number. ${DeltaMarkdownEncoder().convert(delta)}\n';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
     }
     return markdown;
   }

@@ -11,9 +11,9 @@ class BulletedListNodeParser extends NodeParser {
     final delta = node.delta ?? Delta()
       ..insert('');
     final children = encoder?.convertNodes(node.children, withIndent: true);
-    String markdown = '* ${DeltaMarkdownEncoder().convert(delta)}';
-    if (children != null) {
-      markdown += '\n$children';
+    String markdown = '* ${DeltaMarkdownEncoder().convert(delta)}\n';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
     }
     return markdown;
   }
