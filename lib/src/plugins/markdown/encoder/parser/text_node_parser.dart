@@ -4,17 +4,24 @@ class TextNodeParser extends NodeParser {
   const TextNodeParser();
 
   @override
-  String get id => 'paragraph';
+  String get id => ParagraphBlockKeys.type;
 
   @override
-  String transform(Node node) {
-    final delta = node.delta;
-    if (delta == null) {
-      assert(false, 'Delta is null');
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
+    final delta = node.delta ?? Delta()
+      ..insert('');
+    final children = encoder?.convertNodes(node.children, withIndent: true);
+    String markdown = DeltaMarkdownEncoder().convert(delta);
+    if (markdown.isEmpty && children == null) {
       return '';
+    } else if (node
+            .findParent((element) => element.type == TableBlockKeys.type) ==
+        null) {
+      markdown += '\n';
     }
-    final markdown = DeltaMarkdownEncoder().convert(delta);
-    final suffix = node.next == null ? '' : '\n';
-    return '$markdown$suffix';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
+    }
+    return markdown;
   }
 }

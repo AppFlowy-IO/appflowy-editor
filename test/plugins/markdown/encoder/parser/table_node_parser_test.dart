@@ -1,5 +1,5 @@
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
+import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/table_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -10,7 +10,7 @@ void main() async {
         ['b'],
       ]).node;
 
-      final result = const TableNodeParser().transform(node);
+      final result = const TableNodeParser().transform(node, null);
       expect(result, '|a|b|\n|-|-|');
     });
 
@@ -20,7 +20,7 @@ void main() async {
         [''],
       ]).node;
 
-      final result = const TableNodeParser().transform(node);
+      final result = const TableNodeParser().transform(node, null);
       expect(result, '| | |\n|-|-|');
     });
   });
