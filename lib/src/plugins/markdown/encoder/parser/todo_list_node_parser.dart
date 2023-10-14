@@ -4,22 +4,19 @@ class TodoListNodeParser extends NodeParser {
   const TodoListNodeParser();
 
   @override
-  String get id => 'todo_list';
+  String get id => TodoListBlockKeys.type;
 
   @override
-  String transform(Node node) {
-    assert(node.type == 'todo_list');
-
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
+    final delta = node.delta ?? Delta()
+      ..insert('');
+    final checked =
+        node.attributes[TodoListBlockKeys.checked] == true ? '- [x]' : '- [ ]';
+    final children = encoder?.convertNodes(node.children, withIndent: true);
+    String markdown = '$checked ${DeltaMarkdownEncoder().convert(delta)}';
+    if (children != null) {
+      markdown += '\n$children';
     }
-    final markdown = DeltaMarkdownEncoder().convert(delta);
-    final attributes = node.attributes;
-    final checked = attributes[TodoListBlockKeys.checked] == true;
-    final result = checked ? '- [x] $markdown' : '- [ ] $markdown';
-    final suffix = node.next == null ? '' : '\n';
-
-    return '$result$suffix';
+    return markdown;
   }
 }

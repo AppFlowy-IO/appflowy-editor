@@ -1,5 +1,4 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/node_parser.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 class ImageNodeParser extends NodeParser {
   const ImageNodeParser();
@@ -8,7 +7,7 @@ class ImageNodeParser extends NodeParser {
   String get id => 'image';
 
   @override
-  String transform(Node node) {
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
     return '![](${node.attributes['image_src']})';
   }
 }

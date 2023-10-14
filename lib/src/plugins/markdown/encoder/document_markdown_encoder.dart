@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/node_parser.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 
 class DocumentMarkdownEncoder extends Converter<Document, String> {
@@ -19,9 +18,20 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
         (element) => element.id == node.type,
       );
       if (parser != null) {
-        buffer.write(parser.transform(node));
+        buffer.write(parser.transform(node, this));
       }
     }
     return buffer.toString();
+  }
+
+  String convertNodes(
+    List<Node> nodes, {
+    bool withIndent = false,
+  }) {
+    final result = convert(Document(root: pageNode(children: nodes)));
+    if (result.isNotEmpty && withIndent) {
+      return result.split('\n').map((e) => '    $e').join('\n');
+    }
+    return result;
   }
 }
