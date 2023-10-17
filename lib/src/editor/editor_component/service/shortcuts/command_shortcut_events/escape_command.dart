@@ -14,6 +14,7 @@ final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _exitEditingCommandHandler = (editorState) {
+  editorState.prevSelection = editorState.selection;
   editorState.selection = null;
   editorState.service.keyboardService?.closeKeyboard();
   return KeyEventResult.handled;

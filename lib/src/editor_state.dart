@@ -95,12 +95,24 @@ class EditorState {
   final PropertyValueNotifier<Selection?> selectionNotifier =
       PropertyValueNotifier<Selection?>(null);
 
+  /// The previous selection notifier of the editor.
+  final PropertyValueNotifier<Selection?> prevSelectionNotifier =
+      PropertyValueNotifier<Selection?>(null);
+
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
+
+  /// The previous selection of the editor.
+  Selection? get prevSelection => prevSelectionNotifier.value;
 
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     selectionNotifier.value = value;
+  }
+
+  /// Sets the previous selection of the editor.
+  set prevSelection(Selection? value) {
+    prevSelectionNotifier.value = value;
   }
 
   SelectionType? selectionType;

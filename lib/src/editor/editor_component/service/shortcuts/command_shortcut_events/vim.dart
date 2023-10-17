@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> vimKeyModes = [
   insertOnNewLineCommand,
+  insertInlineCommand,
+  insertNextInlineCommand,
   jumpDownCommand,
 ];
 /*
@@ -48,7 +50,7 @@ CommandShortcutEventHandler _moveMentCommand = (editorState) {
 */
 
 final CommandShortcutEvent insertOnNewLineCommand = CommandShortcutEvent(
-  key: 'insert new line with "o"',
+  key: 'insert new line below previous selection',
   command: 'o',
   handler: _insertOnNewLineCommandHandler,
 );
@@ -59,26 +61,13 @@ CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection == null) {
-      //NOTE: Force selection at the last node
-      final end = editorState.document.last;
-      Position pos = Position(path: end!.path, offset: end.delta!.length);
-      Selection sel = Selection(start: pos, end: pos);
-      editorState.selection = sel;
-      editorState.insertNewLine(position: sel.start);
+      editorState.selection = editorState.prevSelection;
+      editorState.insertNewLine();
       editorState.selectionService.updateSelection(editorState.selection);
-
       return KeyEventResult.handled;
     } else {
-      //NOTE: Do Nothing
       return KeyEventResult.ignored;
     }
-    /*
-    // editorState.service.keyboardService?.enableKeyBoard();
-    //NOTE: This would work if the selection was not null
-    final currentSelection = editorState.selection;
-    editorState.insertNewLine(position: currentSelection?.end);
-    editorState.selectionService.updateSelection(editorState.selection);
-    */
   }
   return KeyEventResult.ignored;
 };
@@ -102,22 +91,49 @@ CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
     } else {
       return KeyEventResult.ignored;
     }
-    //NOTE: This caused selection to be null
-    /*
-    final selection = editorState.selection;
-    if (selection == null) {
+  }
+  return KeyEventResult.ignored;
+};
+
+final CommandShortcutEvent insertInlineCommand = CommandShortcutEvent(
+  key: 'enter insert mode from previous selection',
+  command: 'i',
+  handler: _insertInlineCommandHandler,
+);
+
+CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection == null) {
+      editorState.selection = editorState.prevSelection;
+      editorState.selectionService.updateSelection(editorState.selection);
+      return KeyEventResult.handled;
+    } else {
       return KeyEventResult.ignored;
     }
+  }
+  return KeyEventResult.ignored;
+};
 
-    final downPosition =
-        selection.end.moveVertical(editorState, upwards: false);
-    editorState.updateSelectionWithReason(
-      downPosition == null ? null : Selection.collapsed(downPosition),
-      reason: SelectionUpdateReason.uiEvent,
-    );
-    */
+final CommandShortcutEvent insertNextInlineCommand = CommandShortcutEvent(
+  key: 'enter insert mode on next character',
+  command: 'a',
+  handler: _insertNextInlineCommandHandler,
+);
 
-    return KeyEventResult.ignored;
+CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection == null) {
+      editorState.selection = editorState.prevSelection;
+      editorState.moveCursor(SelectionMoveDirection.backward);
+      editorState.selectionService.updateSelection(editorState.selection);
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
   }
   return KeyEventResult.ignored;
 };
