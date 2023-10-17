@@ -48,13 +48,18 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
   @override
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
-    final scrollController = context.read<EditorScrollController>();
+    final scrollController = context.read<EditorScrollController?>();
     final items = node.children;
 
-    if (scrollController.shrinkWrap) {
+    if (scrollController == null ||
+        scrollController.shrinkWrap ||
+        !editorState.editable) {
       return Builder(
         builder: (context) {
-          editorState.updateAutoScroller(Scrollable.of(context));
+          final scroller = Scrollable.maybeOf(context);
+          if (scroller != null) {
+            editorState.updateAutoScroller(scroller);
+          }
           return Column(
             children: [
               if (header != null) header!,

@@ -42,7 +42,12 @@ void main() async {
           )
           ..addParagraph(initialText: text);
 
-        await editor.startTesting(editable: false);
+        await editor.startTesting(
+          editable: false,
+          wrapper: (child) => SingleChildScrollView(
+            child: child,
+          ),
+        );
         await tester.pumpAndSettle();
 
         expect(editor.documentRootLen, 3);

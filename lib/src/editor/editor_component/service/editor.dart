@@ -123,6 +123,9 @@ class AppFlowyEditor extends StatefulWidget {
   final EditorScrollController? editorScrollController;
 
   /// Set the value to false to disable editing.
+  ///
+  /// if false, the editor will only render the block components and
+  ///   without the editing, selecting, scrolling features.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -207,6 +210,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
+    if (!widget.editable) {
+      return Provider.value(
+        value: editorState,
+        child: services!,
+      );
+    }
+
     return Provider.value(
       value: editorState,
       child: FocusScope(
@@ -229,21 +239,23 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       footer: widget.footer,
     );
 
-    if (widget.editable) {
-      child = SelectionServiceWidget(
-        key: editorState.service.selectionServiceKey,
-        cursorColor: widget.editorStyle.cursorColor,
-        selectionColor: widget.editorStyle.selectionColor,
-        contextMenuItems: widget.contextMenuItems,
-        child: KeyboardServiceWidget(
-          key: editorState.service.keyboardServiceKey,
-          characterShortcutEvents: widget.characterShortcutEvents,
-          commandShortcutEvents: widget.commandShortcutEvents,
-          focusNode: widget.focusNode,
-          child: child,
-        ),
-      );
+    if (!widget.editable) {
+      return child;
     }
+
+    child = SelectionServiceWidget(
+      key: editorState.service.selectionServiceKey,
+      cursorColor: widget.editorStyle.cursorColor,
+      selectionColor: widget.editorStyle.selectionColor,
+      contextMenuItems: widget.contextMenuItems,
+      child: KeyboardServiceWidget(
+        key: editorState.service.keyboardServiceKey,
+        characterShortcutEvents: widget.characterShortcutEvents,
+        commandShortcutEvents: widget.commandShortcutEvents,
+        focusNode: widget.focusNode,
+        child: child,
+      ),
+    );
 
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
