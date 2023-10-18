@@ -102,10 +102,20 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         configuration: configuration,
         iconBuilder: (context, node) {
           final checked = node.attributes[TodoListBlockKeys.checked] as bool;
-          return Icon(
-            checked ? Icons.check_box : Icons.check_box_outline_blank,
-            size: 20,
-            color: Colors.white,
+          return InkWell(
+            onTap: () async {
+              final state = await editorState;
+              final transaction = state.transaction
+                ..updateNode(node, {
+                  TodoListBlockKeys.checked: !checked,
+                });
+              state.apply(transaction);
+            },
+            child: Icon(
+              checked ? Icons.check_box : Icons.check_box_outline_blank,
+              size: 20,
+              color: Colors.white,
+            ),
           );
         },
       ),
