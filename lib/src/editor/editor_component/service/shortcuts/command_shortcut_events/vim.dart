@@ -49,6 +49,7 @@ CommandShortcutEventHandler _moveMentCommand = (editorState) {
 };
 */
 
+/// Insert trigger keys
 final CommandShortcutEvent insertOnNewLineCommand = CommandShortcutEvent(
   key: 'insert new line below previous selection',
   command: 'o',
@@ -64,29 +65,7 @@ CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
       editorState.selection = editorState.prevSelection;
       editorState.insertNewLine();
       editorState.selectionService.updateSelection(editorState.selection);
-      return KeyEventResult.handled;
-    } else {
-      return KeyEventResult.ignored;
-    }
-  }
-  return KeyEventResult.ignored;
-};
-
-final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
-  key: 'move the cursor downward',
-  command: 'j',
-  handler: _jumpDownCommandHandler,
-);
-
-CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
-  final afKeyboard = editorState.service.keyboardServiceKey;
-  if (afKeyboard.currentState != null &&
-      afKeyboard.currentState is AppFlowyKeyboardService) {
-    // editorState.scrollService!.goBallistic(4);
-    if (editorState.selection == null) {
-      int scroll = 4;
-      //TODO: Figure out a way to jump line by line
-      editorState.scrollService?.jumpTo(scroll++);
+      editorState.prevSelection = null;
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
@@ -108,6 +87,7 @@ CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
     if (editorState.selection == null) {
       editorState.selection = editorState.prevSelection;
       editorState.selectionService.updateSelection(editorState.selection);
+      editorState.prevSelection = null;
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
@@ -130,6 +110,31 @@ CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
       editorState.selection = editorState.prevSelection;
       editorState.moveCursor(SelectionMoveDirection.backward);
       editorState.selectionService.updateSelection(editorState.selection);
+      editorState.prevSelection = null;
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
+/// Motion Keys
+final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
+  key: 'move the cursor downward',
+  command: 'j',
+  handler: _jumpDownCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    // editorState.scrollService!.goBallistic(4);
+    if (editorState.selection == null) {
+      int scroll = 4;
+      //TODO: Figure out a way to jump line by line
+      editorState.scrollService?.jumpTo(scroll++);
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
