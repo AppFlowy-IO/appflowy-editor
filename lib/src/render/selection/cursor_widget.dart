@@ -91,6 +91,12 @@ class CursorWidgetState extends State<CursorWidget> {
             border: Border.all(color: color, width: 2),
           ),
         );
+      case CursorStyle.block:
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: color, width: 8),
+          ),
+        );
       case CursorStyle.cover:
         final size = widget.rect.size;
         return Container(

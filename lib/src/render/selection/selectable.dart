@@ -6,6 +6,7 @@ enum CursorStyle {
   verticalLine,
   borderLine,
   cover,
+  block
 }
 
 /// [SelectableMixin] is used for the editor to calculate the position
