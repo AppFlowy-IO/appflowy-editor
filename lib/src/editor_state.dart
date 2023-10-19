@@ -107,6 +107,9 @@ class EditorState {
 
   /// Sets the selection of the editor.
   set selection(Selection? value) {
+    // clear the toggled style when the selection is changed.
+    toggledStyle.clear();
+
     selectionNotifier.value = value;
   }
 
@@ -156,6 +159,13 @@ class EditorState {
       StreamController.broadcast(
     sync: true,
   );
+
+  /// Store the toggled format style, like bold, italic, etc.
+  /// All the values must be the key from [AppFlowyRichTextKeys.supportToggled].
+  ///
+  /// NOTES: It only works once;
+  ///   after the selection is changed, the toggled style will be cleared.
+  final toggledStyle = <String, bool>{};
 
   final UndoManager undoManager = UndoManager();
 

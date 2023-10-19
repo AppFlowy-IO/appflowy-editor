@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 Future<void> onInsert(
@@ -42,11 +43,21 @@ Future<void> onInsert(
   }
   assert(node.delta != null);
 
+  if (kDebugMode) {
+    // verify the toggled keys are supported.
+    assert(
+      editorState.toggledStyle.keys.every(
+        (element) => AppFlowyRichTextKeys.supportToggled.contains(element),
+      ),
+    );
+  }
+
   final transaction = editorState.transaction
     ..insertText(
       node,
       selection.startIndex,
       insertion.textInserted,
+      toggledAttributes: editorState.toggledStyle,
     );
   return editorState.apply(transaction);
 }

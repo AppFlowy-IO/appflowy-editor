@@ -34,6 +34,7 @@ export 'image_block_component/resizable_image.dart';
 // numbered list
 export 'numbered_list_block_component/numbered_list_block_component.dart';
 export 'numbered_list_block_component/numbered_list_character_shortcut.dart';
+export 'paragraph_block_component/paragraph_block_component.dart';
 // quote
 export 'quote_block_component/quote_block_component.dart';
 export 'quote_block_component/quote_character_shortcut.dart';
@@ -47,7 +48,6 @@ export 'table_block_component/table_action.dart';
 export 'table_block_component/table_block_component.dart';
 export 'table_block_component/table_cell_block_component.dart';
 export 'table_block_component/table_commands.dart';
-export 'text_block_component/text_block_component.dart';
 // to-do list
 export 'todo_list_block_component/todo_list_block_component.dart';
 export 'todo_list_block_component/todo_list_character_shortcut.dart';

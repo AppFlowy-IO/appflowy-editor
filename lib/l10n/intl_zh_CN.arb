@@ -126,6 +126,8 @@
   "closeFind": "关闭",
   "replace": "替换",
   "replaceAll": "替换全部",
+  "regex": "正则表达式",
+  "caseSensitive": "区分大小写",
   "uploadImage": "上传图片",
   "urlImage": "网络图片",
   "incorrectLink": "链接错误",

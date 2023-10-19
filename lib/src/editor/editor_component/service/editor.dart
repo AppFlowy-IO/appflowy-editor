@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
@@ -11,7 +13,7 @@ import 'package:provider/provider.dart';
 // decrease the value when the popover is closed
 // only grab the focus when the value is 0
 // the operation must be paired
-ValueNotifier<int> keepEditorFocusNotifier = ValueNotifier(0);
+KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
@@ -121,6 +123,9 @@ class AppFlowyEditor extends StatefulWidget {
   final EditorScrollController? editorScrollController;
 
   /// Set the value to false to disable editing.
+  ///
+  /// if false, the editor will only render the block components and
+  ///   without the editing, selecting, scrolling features.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -205,6 +210,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
+    if (!widget.editable) {
+      return Provider.value(
+        value: editorState,
+        child: services!,
+      );
+    }
+
     return Provider.value(
       value: editorState,
       child: FocusScope(
@@ -227,21 +239,23 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       footer: widget.footer,
     );
 
-    if (widget.editable) {
-      child = SelectionServiceWidget(
-        key: editorState.service.selectionServiceKey,
-        cursorColor: widget.editorStyle.cursorColor,
-        selectionColor: widget.editorStyle.selectionColor,
-        contextMenuItems: widget.contextMenuItems,
-        child: KeyboardServiceWidget(
-          key: editorState.service.keyboardServiceKey,
-          characterShortcutEvents: widget.characterShortcutEvents,
-          commandShortcutEvents: widget.commandShortcutEvents,
-          focusNode: widget.focusNode,
-          child: child,
-        ),
-      );
+    if (!widget.editable) {
+      return child;
     }
+
+    child = SelectionServiceWidget(
+      key: editorState.service.selectionServiceKey,
+      cursorColor: widget.editorStyle.cursorColor,
+      selectionColor: widget.editorStyle.selectionColor,
+      contextMenuItems: widget.contextMenuItems,
+      child: KeyboardServiceWidget(
+        key: editorState.service.keyboardServiceKey,
+        characterShortcutEvents: widget.characterShortcutEvents,
+        commandShortcutEvents: widget.commandShortcutEvents,
+        focusNode: widget.focusNode,
+        child: child,
+      ),
+    );
 
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
@@ -266,4 +280,27 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   BlockComponentRendererService get _renderer => BlockComponentRenderer(
         builders: {...widget.blockComponentBuilders},
       );
+}
+
+class KeepEditorFocusNotifier extends ValueNotifier<int> {
+  KeepEditorFocusNotifier() : super(0);
+
+  bool get shouldKeepFocus => value > 0;
+
+  @override
+  set value(int v) {
+    super.value = max(0, v);
+  }
+
+  void increase() {
+    value++;
+  }
+
+  void decrease() {
+    value--;
+  }
+
+  void reset() {
+    value = 0;
+  }
 }

@@ -50,7 +50,7 @@ void main() async {
     expect(editorState.selection, null);
 
     await tester.tapAt(
-      tester.getTopLeft(find.byType(TextBlockComponentWidget)),
+      tester.getTopLeft(find.byType(ParagraphBlockComponentWidget)),
     );
     await tester.pumpAndSettle();
     expect(widget.focusNode.hasFocus, false);

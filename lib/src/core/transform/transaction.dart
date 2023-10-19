@@ -195,6 +195,7 @@ extension TextTransaction on Transaction {
     int index,
     String text, {
     Attributes? attributes,
+    Attributes? toggledAttributes,
   }) {
     final delta = node.delta;
     if (delta == null) {
@@ -207,7 +208,11 @@ extension TextTransaction on Transaction {
       'The index($index) is out of range or negative.',
     );
 
-    final newAttributes = attributes ?? delta.sliceAttributes(index);
+    final newAttributes = attributes ?? delta.sliceAttributes(index) ?? {};
+
+    if (toggledAttributes != null) {
+      newAttributes.addAll(toggledAttributes);
+    }
 
     final insert = Delta()
       ..retain(index)
@@ -316,6 +321,7 @@ extension TextTransaction on Transaction {
       return;
     }
     afterSelection = beforeSelection;
+
     final format = Delta()
       ..retain(index)
       ..retain(length, attributes: attributes);

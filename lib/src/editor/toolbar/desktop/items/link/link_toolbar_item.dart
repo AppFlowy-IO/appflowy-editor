@@ -10,7 +10,7 @@ final linkItem = ToolbarItem(
   id: 'editor.link',
   group: 4,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor) {
+  builder: (context, editorState, highlightColor, iconColor) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
     final isHref = nodes.allSatisfyInSelection(selection, (delta) {
@@ -23,6 +23,7 @@ final linkItem = ToolbarItem(
       iconName: 'toolbar/link',
       isHighlight: isHref,
       highlightColor: highlightColor,
+      iconColor: iconColor,
       tooltip: AppFlowyEditorLocalizations.current.link,
       onPressed: () {
         showLinkMenu(context, editorState, selection, isHref);
@@ -62,18 +63,18 @@ void showLinkMenu(
   OverlayEntry? overlay;
 
   void dismissOverlay() {
-    keepEditorFocusNotifier.value -= 1;
+    keepEditorFocusNotifier.decrease();
     overlay?.remove();
     overlay = null;
   }
 
-  keepEditorFocusNotifier.value += 1;
+  keepEditorFocusNotifier.increase();
   overlay = FullScreenOverlayEntry(
     top: top,
     bottom: bottom,
     left: left,
     right: right,
-    dismissCallback: () => keepEditorFocusNotifier.value -= 1,
+    dismissCallback: () => keepEditorFocusNotifier.decrease(),
     builder: (context) {
       return LinkMenu(
         linkText: linkText,

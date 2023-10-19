@@ -97,6 +97,10 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   NodeExternalValues? externalValues;
 
+  /// this value is used to store temporary data,
+  ///   and will be cleared after the node is rendered
+  Map? extraInfos;
+
   // Render Part
   final key = GlobalKey();
   final layerLink = LayerLink();
@@ -268,6 +272,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
       }
     }
     node.externalValues = externalValues;
+    node.extraInfos = extraInfos;
     return node;
   }
 

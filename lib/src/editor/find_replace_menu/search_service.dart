@@ -49,8 +49,10 @@ class SearchService {
     for (final n in _getAllNodes()) {
       //matches list will contain the offsets where the desired word,
       //is found.
-      List<int> matches =
-          searchAlgorithm.searchMethod(pattern, n.delta!.toPlainText());
+      List<int> matches = searchAlgorithm
+          .searchMethod(pattern, n.delta!.toPlainText())
+          .map((e) => e.start)
+          .toList();
       //we will store this list of offsets along with their path,
       //in a list of positions.
       for (int matchedOffset in matches) {

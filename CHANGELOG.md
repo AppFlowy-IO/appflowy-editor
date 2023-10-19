@@ -1,3 +1,22 @@
+## 1.4.4
+* feat: support customizing error block by @LucasXu0 in ([#524](https://github.com/AppFlowy-IO/appflowy-editor/pull/524))
+* feat: export JSON in mobile and update mobile_example.json by @hyj1204 in ([#515](https://github.com/AppFlowy-IO/appflowy-editor/pull/515))
+* feat: add regex and case sensitive to `FindReplaceMenu` by @sun-jiao in ([#480](https://github.com/AppFlowy-IO/appflowy-editor/pull/480))
+* feat: customize desktop toolbar style by @q200892907 in ([#519](https://github.com/AppFlowy-IO/appflowy-editor/pull/519))
+* feat: support RTL in toolbar by @1akhanBaheti in ([#496](https://github.com/AppFlowy-IO/appflowy-editor/pull/496))
+* feat: optimize the find and replace logic by @LucasXu0 in ([#510](https://github.com/AppFlowy-IO/appflowy-editor/pull/510))
+* feat: enable shift+press for selection range by @Xazin in ([#512](https://github.com/AppFlowy-IO/appflowy-editor/pull/512))
+* feat: image block revamp by @LucasXu0 in ([#516](https://github.com/AppFlowy-IO/appflowy-editor/pull/516))
+* fix: undo failed in a nested list in a special case by @LucasXu0 in ([#503](https://github.com/AppFlowy-IO/appflowy-editor/pull/503))
+* fix: the cursor will flicker one frame to its previous position by @LucasXu0 in ([#506](https://github.com/AppFlowy-IO/appflowy-editor/pull/506))
+* fix: delete the divider on mobile will raise an error by @LucasXu0 in ([#508](https://github.com/AppFlowy-IO/appflowy-editor/pull/508))
+* fix: unable to update selection sometimes when the editor lost focus by @LucasXu0 in ([#509](https://github.com/AppFlowy-IO/appflowy-editor/pull/509))
+* fix: search integration issues by @LucasXu0 in ([#511](https://github.com/AppFlowy-IO/appflowy-editor/pull/511))
+* fix: image block revamp issues by @LucasXu0 in ([#517](https://github.com/AppFlowy-IO/appflowy-editor/pull/517))
+* fix: impossible to click on any sub-items if the top level item is off-screen by @LucasXu0 in ([#522](https://github.com/AppFlowy-IO/appflowy-editor/pull/522))
+* fix: the selection should be clear if header or footer is focusing by @LucasXu0 in ([#525](https://github.com/AppFlowy-IO/appflowy-editor/pull/525))
+* fix: the selection handles remain on the screen after cutting the text ([#526](https://github.com/AppFlowy-IO/appflowy-editor/pull/526))
+
 ## 1.4.3
 * fix: the text within the `<mark>` tag didn't parse correctly when pasting HTML by @LucasXu0 in ([#501](https://github.com/AppFlowy-IO/appflowy-editor/pull/501))
 

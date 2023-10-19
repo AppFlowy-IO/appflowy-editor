@@ -4,20 +4,17 @@ class BulletedListNodeParser extends NodeParser {
   const BulletedListNodeParser();
 
   @override
-  String get id => 'bulleted_list';
+  String get id => BulletedListBlockKeys.type;
 
   @override
-  String transform(Node node) {
-    assert(node.type == 'bulleted_list');
-
-    final delta = node.delta;
-    if (delta == null) {
-      throw Exception('Delta is null');
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
+    final delta = node.delta ?? Delta()
+      ..insert('');
+    final children = encoder?.convertNodes(node.children, withIndent: true);
+    String markdown = '* ${DeltaMarkdownEncoder().convert(delta)}\n';
+    if (children != null && children.isNotEmpty) {
+      markdown += children;
     }
-    final markdown = DeltaMarkdownEncoder().convert(delta);
-    final result = '* $markdown';
-    final suffix = node.next == null ? '' : '\n';
-
-    return '$result$suffix';
+    return markdown;
   }
 }

@@ -1,8 +1,8 @@
-import 'package:appflowy_editor/src/core/document/node.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 abstract class NodeParser {
   const NodeParser();
 
   String get id;
-  String transform(Node node);
+  String transform(Node node, DocumentMarkdownEncoder? encoder);
 }

@@ -6,11 +6,13 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/editor.dart';
+import 'package:example/pages/editor_list.dart';
 import 'package:example/pages/focus_example_for_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 
 enum ExportFileType {
@@ -182,6 +184,14 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }),
+          _buildListTile(context, 'Editor List', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const EditorList(),
+              ),
+            );
+          }),
 
           // Encoder Demo
           _buildSeparator(context, 'Export To X Demo'),
@@ -290,7 +300,31 @@ class _HomePageState extends State<HomePage> {
         throw UnimplementedError();
     }
 
-    if (!kIsWeb) {
+    if (kIsWeb) {
+      final blob = html.Blob([result], 'text/plain', 'native');
+      html.AnchorElement(
+        href: html.Url.createObjectUrlFromBlob(blob).toString(),
+      )
+        ..setAttribute('download', 'document.${fileType.extension}')
+        ..click();
+    } else if (PlatformExtension.isMobile) {
+      final appStorageDirectory = await getApplicationDocumentsDirectory();
+
+      final path = File(
+        '${appStorageDirectory.path}/${DateTime.now()}.${fileType.extension}',
+      );
+      await path.writeAsString(result);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'This document is saved to the ${appStorageDirectory.path}',
+            ),
+          ),
+        );
+      }
+    } else {
+      // for desktop
       final path = await FilePicker.platform.saveFile(
         fileName: 'document.${fileType.extension}',
       );
@@ -304,13 +338,6 @@ class _HomePageState extends State<HomePage> {
           );
         }
       }
-    } else {
-      final blob = html.Blob([result], 'text/plain', 'native');
-      html.AnchorElement(
-        href: html.Url.createObjectUrlFromBlob(blob).toString(),
-      )
-        ..setAttribute('download', 'document.${fileType.extension}')
-        ..click();
     }
   }
 

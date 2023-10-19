@@ -8,7 +8,7 @@ class TableNodeParser extends NodeParser {
   String get id => 'table';
 
   @override
-  String transform(Node node) {
+  String transform(Node node, DocumentMarkdownEncoder? encoder) {
     final int rowsLen = node.attributes['rowsLen'],
         colsLen = node.attributes['colsLen'];
     String result = '';

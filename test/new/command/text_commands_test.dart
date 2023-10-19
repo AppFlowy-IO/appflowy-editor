@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../infra/testable_editor.dart';
 import '../util/util.dart';
 
 void main() async {
@@ -311,6 +315,112 @@ void main() async {
       editorState.selection = selection;
       final texts = editorState.getTextInSelection(selection);
       expect(texts, ['come', 'To', 'App']);
+    });
+  });
+
+  group('toggle style', () {
+    testWidgets('toggle the style if the previous character isn\'t formatted',
+        (tester) async {
+      const text = '';
+      final editor = tester.editor..addParagraph(initialText: text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+
+      // toggle bold, italic, underline
+      final keys = [
+        LogicalKeyboardKey.keyB,
+        LogicalKeyboardKey.keyI,
+        LogicalKeyboardKey.keyU,
+      ];
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      await editor.ime.insertText('Hello');
+      final delta1 = editor.nodeAtPath([0])!.delta!;
+      expect(delta1.toJson(), [
+        {
+          "insert": "Hello",
+          "attributes": {"bold": true, "italic": true, "underline": true}
+        }
+      ]);
+
+      // cancel the toggled style
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      await editor.ime.insertText('World');
+      final delta2 = editor.nodeAtPath([0])!.delta!;
+      expect(delta2.toJson(), [
+        {
+          "insert": "Hello",
+          "attributes": {"bold": true, "italic": true, "underline": true}
+        },
+        {
+          "insert": "World",
+          "attributes": {"bold": false, "italic": false, "underline": false}
+        },
+      ]);
+
+      expect(editor.editorState.toggledStyle, isEmpty);
+      await editor.dispose();
+    });
+
+    testWidgets('toggle twice to reset the toggled style', (tester) async {
+      const text = '';
+      final editor = tester.editor..addParagraph(initialText: text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+
+      // toggle bold, italic, underline
+      final keys = [
+        LogicalKeyboardKey.keyB,
+        LogicalKeyboardKey.keyI,
+        LogicalKeyboardKey.keyU,
+      ];
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      // reset
+      for (final key in keys) {
+        await editor.pressKey(
+          key: key,
+          isControlPressed: !Platform.isMacOS,
+          isMetaPressed: Platform.isMacOS,
+        );
+      }
+
+      await editor.ime.insertText('Hello');
+      final delta1 = editor.nodeAtPath([0])!.delta!;
+      expect(delta1.toJson(), [
+        {
+          "insert": "Hello",
+          "attributes": {"bold": false, "italic": false, "underline": false}
+        }
+      ]);
+
+      expect(editor.editorState.toggledStyle, isEmpty);
+      await editor.dispose();
     });
   });
 }

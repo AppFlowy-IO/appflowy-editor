@@ -34,14 +34,14 @@ CharacterShortcutEvent customSlashCommand(
   );
 }
 
-final supportSlashMenuNodeWhiteList = [
+final Set<String> supportSlashMenuNodeWhiteList = {
   ParagraphBlockKeys.type,
   HeadingBlockKeys.type,
   TodoListBlockKeys.type,
   BulletedListBlockKeys.type,
   NumberedListBlockKeys.type,
   QuoteBlockKeys.type,
-];
+};
 
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
@@ -81,10 +81,10 @@ Future<bool> _showSlashMenu(
   if (shouldInsertSlash) {
     if (kIsWeb) {
       // Have no idea why the focus will lose after inserting on web.
-      keepEditorFocusNotifier.value += 1;
+      keepEditorFocusNotifier.increase();
       await editorState.insertTextAtPosition('/', position: selection.start);
       WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) => keepEditorFocusNotifier.value -= 1,
+        (timeStamp) => keepEditorFocusNotifier.decrease(),
       );
     } else {
       await editorState.insertTextAtPosition('/', position: selection.start);
