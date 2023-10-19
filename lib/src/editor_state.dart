@@ -31,6 +31,12 @@ enum SelectionUpdateReason {
   searchHighlight, // Highlighting search results
 }
 
+//Enum for VIM Mode
+enum VimModes {
+  insertMode,
+  normalMode,
+}
+
 enum SelectionType {
   inline,
   block,
@@ -104,6 +110,8 @@ class EditorState {
 
   /// The previous selection of the editor.
   Selection? get prevSelection => prevSelectionNotifier.value;
+
+  var mode = VimModes.normalMode;
 
   /// Sets the selection of the editor.
   set selection(Selection? value) {

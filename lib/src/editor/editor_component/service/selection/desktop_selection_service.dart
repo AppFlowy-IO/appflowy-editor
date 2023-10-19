@@ -221,12 +221,21 @@ class _DesktopSelectionServiceWidgetState
         selection = Selection(start: start, end: end);
       }
     } else {
-      selection = selectable.cursorStyle == CursorStyle.verticalLine
-          ? Selection.collapsed(selectable.getPositionInOffset(offset))
-          : Selection(start: selectable.start(), end: selectable.end());
+      if (editorState.mode == VimModes.normalMode) {
+        print('Normal mode');
+        selectable.cursorStyle;
+        selection = Selection.collapsed(selectable.getPositionInOffset(offset));
 
-      // Reset old start offset
-      _panStartOffset = offset;
+        // Reset old start offset
+        _panStartOffset = offset;
+      } else {
+        selection = selectable.cursorStyle == CursorStyle.verticalLine
+            ? Selection.collapsed(selectable.getPositionInOffset(offset))
+            : Selection(start: selectable.start(), end: selectable.end());
+
+        // Reset old start offset
+        _panStartOffset = offset;
+      }
     }
 
     updateSelection(selection);

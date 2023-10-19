@@ -91,16 +91,36 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
       builder: ((context, value, child) {
         final sizedBox = child ?? const SizedBox.shrink();
         final selection = value?.normalized;
-
+        final editorState = context.watch<EditorState>();
+        final rect = prevCursorRect ?? Rect.zero;
         if (selection == null) {
+          //NOTE: This just makes every node that can be selected
           return sizedBox;
         }
 
         final path = widget.node.path;
+        if (editorState.mode == VimModes.normalMode) {
+          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
+              prevSelectionRects == null ||
+              prevSelectionRects!.isEmpty) {
+            return sizedBox;
+          }
+
+          final cursor = Cursor(
+            key: cursorKey,
+            rect: rect,
+            shouldBlink: false,
+            cursorStyle: CursorStyle.block,
+            color: Colors.blue,
+          );
+          cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
+          return cursor;
+        }
+
         if (!path.inSelection(selection)) {
           return sizedBox;
         }
-
+        //NOTE: Include this in Insert Mode?
         if (context.read<EditorState>().selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.equals(selection.start.path) ||
@@ -118,7 +138,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           );
         }
         // show the cursor when the selection is collapsed
-        else if (selection.isCollapsed) {
+        else if (selection.isCollapsed &&
+            editorState.mode == VimModes.insertMode) {
           if (!widget.supportTypes.contains(BlockSelectionType.cursor) ||
               prevCursorRect == null) {
             return sizedBox;

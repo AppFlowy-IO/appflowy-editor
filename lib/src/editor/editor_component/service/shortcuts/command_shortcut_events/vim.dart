@@ -62,6 +62,7 @@ CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection == null) {
+      editorState.mode = VimModes.insertMode;
       editorState.selection = editorState.prevSelection;
       editorState.insertNewLine();
       editorState.selectionService.updateSelection(editorState.selection);
@@ -85,6 +86,7 @@ CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection == null) {
+      editorState.mode = VimModes.insertMode;
       editorState.selection = editorState.prevSelection;
       editorState.selectionService.updateSelection(editorState.selection);
       editorState.prevSelection = null;
@@ -107,6 +109,7 @@ CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection == null) {
+      editorState.mode = VimModes.insertMode;
       editorState.selection = editorState.prevSelection;
       editorState.moveCursor(SelectionMoveDirection.backward);
       editorState.selectionService.updateSelection(editorState.selection);
@@ -132,6 +135,7 @@ CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
       afKeyboard.currentState is AppFlowyKeyboardService) {
     // editorState.scrollService!.goBallistic(4);
     if (editorState.selection == null) {
+      editorState.mode = VimModes.normalMode;
       int scroll = 4;
       //TODO: Figure out a way to jump line by line
       editorState.scrollService?.jumpTo(scroll++);
