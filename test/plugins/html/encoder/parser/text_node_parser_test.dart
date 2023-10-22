@@ -10,6 +10,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
+    const HtmlTableNodeParser(),
   ];
   group('html_text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
@@ -240,7 +241,6 @@ void main() async {
               .toJson(),
         },
       );
-
       expect(
         const HTMLTextNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),

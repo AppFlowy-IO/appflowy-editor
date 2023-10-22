@@ -28,6 +28,7 @@ String documentToHTML(
       const HTMLQuoteNodeParser(),
       const HTMLHeadingNodeParser(),
       const HTMLImageNodeParser(),
+      const HtmlTableNodeParser()
     ],
   ).encode(document);
 }
