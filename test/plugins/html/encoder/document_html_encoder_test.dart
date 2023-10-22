@@ -10,6 +10,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
+    const HtmlTableNodeParser()
   ];
   group('document_html_encoder_test.dart', () {
     setUpAll(() {
