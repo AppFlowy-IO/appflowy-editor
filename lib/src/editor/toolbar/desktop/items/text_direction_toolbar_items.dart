@@ -4,19 +4,19 @@ final List<ToolbarItem> textDirectionItems = [
   _TextDirectionToolbarItem(
     id: 'text_direction_auto',
     name: blockComponentTextDirectionAuto,
-    tooltip: AppFlowyEditorLocalizations.current.auto,
+    tooltip: AppFlowyEditorL10n.current.auto,
     iconName: 'text_direction_auto',
   ),
   _TextDirectionToolbarItem(
     id: 'text_direction_ltr',
     name: blockComponentTextDirectionLTR,
-    tooltip: AppFlowyEditorLocalizations.current.ltr,
+    tooltip: AppFlowyEditorL10n.current.ltr,
     iconName: 'text_direction_left',
   ),
   _TextDirectionToolbarItem(
     id: 'text_direction_rtl',
     name: blockComponentTextDirectionRTL,
-    tooltip: AppFlowyEditorLocalizations.current.rtl,
+    tooltip: AppFlowyEditorL10n.current.rtl,
     iconName: 'text_direction_right',
   ),
 ];

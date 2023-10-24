@@ -21,7 +21,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
         isHighlight: isHighlight,
         highlightColor: highlightColor,
         iconColor: iconColor,
-        tooltip: AppFlowyEditorLocalizations.current.highlightColor,
+        tooltip: AppFlowyEditorL10n.current.highlightColor,
         onPressed: () {
           bool showClearButton = false;
           nodes.allSatisfyInSelection(selection, (delta) {

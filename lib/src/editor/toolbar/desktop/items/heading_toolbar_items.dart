@@ -46,11 +46,11 @@ class _HeadingToolbarItem extends ToolbarItem {
 
   static String levelToTooltips(int level) {
     if (level == 1) {
-      return AppFlowyEditorLocalizations.current.heading1;
+      return AppFlowyEditorL10n.current.heading1;
     } else if (level == 2) {
-      return AppFlowyEditorLocalizations.current.heading2;
+      return AppFlowyEditorL10n.current.heading2;
     } else if (level == 3) {
-      return AppFlowyEditorLocalizations.current.heading3;
+      return AppFlowyEditorL10n.current.heading3;
     }
     return '';
   }
