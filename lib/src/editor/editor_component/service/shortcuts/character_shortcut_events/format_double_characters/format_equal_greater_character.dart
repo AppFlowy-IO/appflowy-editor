@@ -2,15 +2,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 const _greater = '>';
 const _equals = '=';
-const _arrow = '⇒'; 
+const _arrow = '⇒';
 
-// /// format '=' + '>' into an ⇒ 
-// ///
-// /// - support
-// ///   - desktop
-// ///   - mobile
-// ///   - web
-// ///
+/// format '=' + '>' into an ⇒
+///
+/// - support
+///   - desktop
+///   - mobile
+///   - web
+///
 final CharacterShortcutEvent formatGreaterEqual = CharacterShortcutEvent(
   key: 'format = + > into ⇒',
   character: _greater,
