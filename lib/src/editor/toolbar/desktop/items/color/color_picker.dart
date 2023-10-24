@@ -231,7 +231,7 @@ class _CustomColorItemState extends State<CustomColorItem> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              AppFlowyEditorLocalizations.current.customColor,
+              AppFlowyEditorL10n.current.customColor,
               style: Theme.of(context).textTheme.labelLarge,
               // same style as TextButton.icon
             ),
@@ -241,7 +241,7 @@ class _CustomColorItemState extends State<CustomColorItem> {
       children: [
         const SizedBox(height: 6),
         _customColorDetailsTextField(
-          labelText: AppFlowyEditorLocalizations.current.hexValue,
+          labelText: AppFlowyEditorL10n.current.hexValue,
           controller: widget.colorController,
           // update the color sample box when the text changes
           onChanged: (_) => setState(() {}),
@@ -249,7 +249,7 @@ class _CustomColorItemState extends State<CustomColorItem> {
         ),
         const SizedBox(height: 10),
         _customColorDetailsTextField(
-          labelText: AppFlowyEditorLocalizations.current.opacity,
+          labelText: AppFlowyEditorL10n.current.opacity,
           controller: widget.opacityController,
           // update the color sample box when the text changes
           onChanged: (_) => setState(() {}),

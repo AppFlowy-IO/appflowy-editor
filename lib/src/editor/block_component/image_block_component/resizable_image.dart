@@ -147,7 +147,7 @@ class _ResizableImageState extends State<ResizableImage> {
           SizedBox.fromSize(
             size: const Size(10, 10),
           ),
-          Text(AppFlowyEditorLocalizations.current.loading),
+          Text(AppFlowyEditorL10n.current.loading),
         ],
       ),
     );
@@ -163,7 +163,7 @@ class _ResizableImageState extends State<ResizableImage> {
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         border: Border.all(width: 1, color: Colors.black),
       ),
-      child: Text(AppFlowyEditorLocalizations.current.imageLoadFailed),
+      child: Text(AppFlowyEditorL10n.current.imageLoadFailed),
     );
   }
 

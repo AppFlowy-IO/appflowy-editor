@@ -13,7 +13,7 @@ final ToolbarItem bulletedListItem = ToolbarItem(
       isHighlight: isHighlight,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      tooltip: AppFlowyEditorLocalizations.current.bulletedList,
+      tooltip: AppFlowyEditorL10n.current.bulletedList,
       onPressed: () => editorState.formatNode(
         selection,
         (node) => node.copyWith(

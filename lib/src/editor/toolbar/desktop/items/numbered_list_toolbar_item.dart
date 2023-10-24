@@ -13,7 +13,7 @@ final ToolbarItem numberedListItem = ToolbarItem(
       isHighlight: isHighlight,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      tooltip: AppFlowyEditorLocalizations.current.numberedList,
+      tooltip: AppFlowyEditorL10n.current.numberedList,
       onPressed: () => editorState.formatNode(
         selection,
         (node) => node.copyWith(

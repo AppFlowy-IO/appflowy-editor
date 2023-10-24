@@ -1,7 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter_test/flutter_test.dart';
-import '../../../../new/infra/testable_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../../../new/infra/testable_editor.dart';
 
 void main() {
   group('mobile_text_span_decorator_for_attribute.dart', () {
@@ -84,17 +85,17 @@ void main() {
           await tester.tap(
             find.widgetWithText(
               TextButton,
-              AppFlowyEditorLocalizations.current.done,
+              AppFlowyEditorL10n.current.done,
             ),
           );
           await tester.pumpAndSettle(const Duration(seconds: 1));
           // show error prompt
           expect(
-            find.text(AppFlowyEditorLocalizations.current.linkTextHint),
+            find.text(AppFlowyEditorL10n.current.linkTextHint),
             findsOneWidget,
           );
           expect(
-            find.text(AppFlowyEditorLocalizations.current.linkAddressHint),
+            find.text(AppFlowyEditorL10n.current.linkAddressHint),
             findsOneWidget,
           );
         },
@@ -132,7 +133,7 @@ void main() {
           await tester.tap(
             find.widgetWithText(
               TextButton,
-              AppFlowyEditorLocalizations.current.done,
+              AppFlowyEditorL10n.current.done,
             ),
           );
           await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -180,7 +181,7 @@ void main() {
           await tester.tap(
             find.widgetWithText(
               TextButton,
-              AppFlowyEditorLocalizations.current.removeLink,
+              AppFlowyEditorL10n.current.removeLink,
             ),
           );
           await tester.pumpAndSettle(const Duration(seconds: 1));

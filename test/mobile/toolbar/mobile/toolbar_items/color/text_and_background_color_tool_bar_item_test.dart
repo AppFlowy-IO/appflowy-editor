@@ -1,6 +1,7 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
+
 import '../../../../../new/infra/testable_editor.dart';
 import '../../test_helpers/mobile_app_with_toolbar_widget.dart';
 
@@ -36,11 +37,11 @@ void main() {
     // Show its menu and it has a tabbar to switch between text and background color
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(
-      find.text(AppFlowyEditorLocalizations.current.textColor),
+      find.text(AppFlowyEditorL10n.current.textColor),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.backgroundColor),
+      find.text(AppFlowyEditorL10n.current.backgroundColor),
       findsOneWidget,
     );
 
@@ -80,7 +81,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         TabBar,
-        AppFlowyEditorLocalizations.current.backgroundColor,
+        AppFlowyEditorL10n.current.backgroundColor,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));

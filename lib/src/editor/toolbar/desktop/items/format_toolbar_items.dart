@@ -6,31 +6,31 @@ final List<ToolbarItem> markdownFormatItems = [
     id: 'underline',
     name: 'underline',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.underline}${shortcutTooltips('⌘ + U', 'CTRL + U', 'CTRL + U')}',
+        '${AppFlowyEditorL10n.current.underline}${shortcutTooltips('⌘ + U', 'CTRL + U', 'CTRL + U')}',
   ),
   _FormatToolbarItem(
     id: 'bold',
     name: 'bold',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.bold}${shortcutTooltips('⌘ + B', 'CTRL + B', 'CTRL + B')}',
+        '${AppFlowyEditorL10n.current.bold}${shortcutTooltips('⌘ + B', 'CTRL + B', 'CTRL + B')}',
   ),
   _FormatToolbarItem(
     id: 'italic',
     name: 'italic',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.italic}${shortcutTooltips('⌘ + I', 'CTRL + I', 'CTRL + I')}',
+        '${AppFlowyEditorL10n.current.italic}${shortcutTooltips('⌘ + I', 'CTRL + I', 'CTRL + I')}',
   ),
   _FormatToolbarItem(
     id: 'strikethrough',
     name: 'strikethrough',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.strikethrough}${shortcutTooltips('⌘ + SHIFT + S', 'CTRL + SHIFT + S', 'CTRL + SHIFT + S')}',
+        '${AppFlowyEditorL10n.current.strikethrough}${shortcutTooltips('⌘ + SHIFT + S', 'CTRL + SHIFT + S', 'CTRL + SHIFT + S')}',
   ),
   _FormatToolbarItem(
     id: 'code',
     name: 'code',
     tooltip:
-        '${AppFlowyEditorLocalizations.current.embedCode}${shortcutTooltips('⌘ + E', 'CTRL + E', 'CTRL + E')}',
+        '${AppFlowyEditorL10n.current.embedCode}${shortcutTooltips('⌘ + E', 'CTRL + E', 'CTRL + E')}',
   ),
 ];
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +51,7 @@ TextSpan mobileTextSpanDecoratorForAttribute(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(AppFlowyEditorLocalizations.current.editLink),
+              title: Text(AppFlowyEditorL10n.current.editLink),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
@@ -122,12 +121,12 @@ class _LinkEditFormState extends State<LinkEditForm> {
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return AppFlowyEditorLocalizations.current.linkTextHint;
+                return AppFlowyEditorL10n.current.linkTextHint;
               }
               return null;
             },
             decoration: InputDecoration(
-              hintText: AppFlowyEditorLocalizations.current.linkText,
+              hintText: AppFlowyEditorL10n.current.linkText,
               suffixIcon: IconButton(
                 icon: const Icon(
                   Icons.clear_rounded,
@@ -143,12 +142,12 @@ class _LinkEditFormState extends State<LinkEditForm> {
             keyboardType: TextInputType.url,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return AppFlowyEditorLocalizations.current.linkAddressHint;
+                return AppFlowyEditorL10n.current.linkAddressHint;
               }
               return null;
             },
             decoration: InputDecoration(
-              hintText: AppFlowyEditorLocalizations.current.urlHint,
+              hintText: AppFlowyEditorL10n.current.urlHint,
               suffixIcon: IconButton(
                 icon: const Icon(
                   Icons.clear_rounded,
@@ -164,7 +163,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
             children: [
               TextButton(
                 child: Text(
-                  AppFlowyEditorLocalizations.current.removeLink,
+                  AppFlowyEditorL10n.current.removeLink,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
                 onPressed: () async {
@@ -184,7 +183,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                 style: TextButton.styleFrom(
                   textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-                child: Text(AppFlowyEditorLocalizations.current.done),
+                child: Text(AppFlowyEditorL10n.current.done),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final bool textChanged =

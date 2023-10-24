@@ -1,26 +1,27 @@
-import 'context_menu.dart';
-import '../../l10n/l10n.dart';
+import 'package:appflowy_editor/src/editor/l10n/appflowy_editor_l10n.dart';
+
 import '../internal_key_event_handlers/copy_paste_handler.dart';
+import 'context_menu.dart';
 
 final standardContextMenuItems = [
   [
     // cut
     ContextMenuItem(
-      name: AppFlowyEditorLocalizations.current.cut,
+      name: AppFlowyEditorL10n.current.cut,
       onPressed: (editorState) {
         handleCut(editorState);
       },
     ),
     // copy
     ContextMenuItem(
-      name: AppFlowyEditorLocalizations.current.copy,
+      name: AppFlowyEditorL10n.current.copy,
       onPressed: (editorState) {
         handleCopy(editorState);
       },
     ),
     // Paste
     ContextMenuItem(
-      name: AppFlowyEditorLocalizations.current.paste,
+      name: AppFlowyEditorL10n.current.paste,
       onPressed: (editorState) {
         handlePaste(editorState);
       },

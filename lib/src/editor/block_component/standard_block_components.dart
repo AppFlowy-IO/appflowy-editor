@@ -8,7 +8,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   ParagraphBlockKeys.type: ParagraphBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => PlatformExtension.isDesktopOrWeb
-          ? AppFlowyEditorLocalizations.current.slashPlaceHolder
+          ? AppFlowyEditorL10n.current.slashPlaceHolder
           : ' ',
     ),
   ),

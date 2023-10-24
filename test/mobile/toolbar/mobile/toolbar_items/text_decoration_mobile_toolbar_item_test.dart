@@ -1,6 +1,7 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
+
 import '../../../../new/infra/testable_editor.dart';
 
 void main() {
@@ -27,19 +28,19 @@ void main() {
     // Show its menu and it has 4 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(
-      find.text(AppFlowyEditorLocalizations.current.bold),
+      find.text(AppFlowyEditorL10n.current.bold),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.italic),
+      find.text(AppFlowyEditorL10n.current.italic),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.underline),
+      find.text(AppFlowyEditorL10n.current.underline),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.strikethrough),
+      find.text(AppFlowyEditorL10n.current.strikethrough),
       findsOneWidget,
     );
 
@@ -47,7 +48,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.bold,
+        AppFlowyEditorL10n.current.bold,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -66,7 +67,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.italic,
+        AppFlowyEditorL10n.current.italic,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -84,7 +85,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.underline,
+        AppFlowyEditorL10n.current.underline,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -102,7 +103,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.strikethrough,
+        AppFlowyEditorL10n.current.strikethrough,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));

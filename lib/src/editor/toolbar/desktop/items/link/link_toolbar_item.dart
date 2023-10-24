@@ -24,7 +24,7 @@ final linkItem = ToolbarItem(
       isHighlight: isHref,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      tooltip: AppFlowyEditorLocalizations.current.link,
+      tooltip: AppFlowyEditorL10n.current.link,
       onPressed: () {
         showLinkMenu(context, editorState, selection, isHref);
       },
