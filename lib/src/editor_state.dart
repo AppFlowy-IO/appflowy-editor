@@ -111,7 +111,7 @@ class EditorState {
   /// The previous selection of the editor.
   Selection? get prevSelection => prevSelectionNotifier.value;
 
-  var mode = VimModes.normalMode;
+  var mode = VimModes.insertMode;
 
   /// Sets the selection of the editor.
   set selection(Selection? value) {
