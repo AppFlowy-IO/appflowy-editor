@@ -14,9 +14,14 @@ final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _exitEditingCommandHandler = (editorState) {
-  editorState.prevSelection = editorState.selection;
-  editorState.selection = null;
-  editorState.service.keyboardService?.closeKeyboard();
-  editorState.mode = VimModes.normalMode;
-  return KeyEventResult.handled;
+  if (editorState.mode == VimModes.insertMode && editorState.editable == true) {
+    editorState.prevSelection = editorState.selection;
+    editorState.selection = null;
+    editorState.mode = VimModes.normalMode;
+    editorState.service.keyboardService?.closeKeyboard();
+    editorState.editable = false;
+    editorState.selection = editorState.prevSelection;
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
 };

@@ -92,23 +92,23 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         final sizedBox = child ?? const SizedBox.shrink();
         final selection = value?.normalized;
         final editorState = context.watch<EditorState>();
-        final rect = prevCursorRect ?? Rect.zero;
         if (selection == null) {
-          //NOTE: This just makes every node that can be selected
           return sizedBox;
         }
 
         final path = widget.node.path;
-        if (editorState.mode == VimModes.normalMode) {
+        if (editorState.mode == VimModes.normalMode &&
+            editorState.selection != null) {
           if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
               prevSelectionRects == null ||
               prevSelectionRects!.isEmpty) {
             return sizedBox;
           }
 
+          final rect = widget.delegate.getCursorRectInPosition(selection.start);
           final cursor = Cursor(
             key: cursorKey,
-            rect: rect,
+            rect: rect!,
             shouldBlink: false,
             cursorStyle: CursorStyle.block,
             color: Colors.blue,
@@ -121,6 +121,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return sizedBox;
         }
         //NOTE: Include this in Insert Mode?
+        //NOTE: Box decoration for selection
         if (context.read<EditorState>().selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.equals(selection.start.path) ||

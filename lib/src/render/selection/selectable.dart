@@ -2,12 +2,7 @@ import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:flutter/material.dart';
 
-enum CursorStyle {
-  verticalLine,
-  borderLine,
-  cover,
-  block
-}
+enum CursorStyle { verticalLine, borderLine, cover, block }
 
 /// [SelectableMixin] is used for the editor to calculate the position
 ///   and size of the selection.
@@ -84,6 +79,7 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   bool get shouldCursorBlink => true;
 
   CursorStyle get cursorStyle => CursorStyle.verticalLine;
+  CursorStyle get blockCursorStyle => CursorStyle.block;
 
   Rect transformRectToGlobal(
     Rect r, {

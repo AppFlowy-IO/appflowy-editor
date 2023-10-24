@@ -5,49 +5,11 @@ final List<CommandShortcutEvent> vimKeyModes = [
   insertOnNewLineCommand,
   insertInlineCommand,
   insertNextInlineCommand,
+  jumpUpCommand,
   jumpDownCommand,
+  jumpLeftCommand,
+  jumpRightCommand,
 ];
-/*
-final CommandShortcutEvent moveMentCommand = CommandShortcutEvent(
-  key: 'move down with j',
-  command: 'j',
-  handler: _moveMentCommand,
-);
-
-CommandShortcutEventHandler _moveMentCommand = (editorState) {
-  final keyboardServiceKey = editorState.service.keyboardServiceKey;
-  final selection = editorState.selection;
-  print('Passed through event handler');
-  /*
-  if (selection == null) {
-    return KeyEventResult.ignored;
-  }
-  */
-  if (keyboardServiceKey.currentState != null &&
-      keyboardServiceKey.currentState is AppFlowyKeyboardService) {
-    // editorState.service.keyboardService?.enableKeyBoard(selection!);
-    // final downPos = selection?.end.moveVertical(editorState, upwards: false);
-    if (selection == null) {
-      //NOTE: This works fine
-      // editorState.scrollService?.jumpToBottom();
-      // final s = editorState.service.selectionService.currentSelection.value;
-      //editorState.service.keyboardService?.enableKeyBoard(s!);
-
-      return KeyEventResult.handled;
-    }
-
-    return KeyEventResult.ignored;
-    /*
-    editorState.updateSelectionWithReason(
-      downPos == null ? null : Selection.collapsed(downPos),
-      reason: SelectionUpdateReason.uiEvent,
-    );
-    */
-  }
-  // editorState.scrollService?.disable();
-  return KeyEventResult.ignored;
-};
-*/
 
 /// Insert trigger keys
 final CommandShortcutEvent insertOnNewLineCommand = CommandShortcutEvent(
@@ -61,9 +23,11 @@ CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
 
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection == null) {
+    if (editorState.selection == null || editorState.prevSelection != null) {
+      //NOTE: Call editable first before changing mode
+      editorState.editable = true;
       editorState.mode = VimModes.insertMode;
-      editorState.selection = editorState.prevSelection;
+      editorState.selection = editorState.selection;
       editorState.insertNewLine();
       editorState.selectionService.updateSelection(editorState.selection);
       editorState.prevSelection = null;
@@ -85,9 +49,11 @@ CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection == null) {
+    if (editorState.selection == null || editorState.prevSelection != null) {
+      //NOTE: Call editable first before changing mode
+      editorState.editable = true;
       editorState.mode = VimModes.insertMode;
-      editorState.selection = editorState.prevSelection;
+      editorState.selection = editorState.selection;
       editorState.selectionService.updateSelection(editorState.selection);
       editorState.prevSelection = null;
       return KeyEventResult.handled;
@@ -108,9 +74,11 @@ CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection == null) {
+    if (editorState.selection == null || editorState.prevSelection != null) {
+      //NOTE: Call editable first before changing mode
+      editorState.editable = true;
       editorState.mode = VimModes.insertMode;
-      editorState.selection = editorState.prevSelection;
+      editorState.selection = editorState.selection;
       editorState.moveCursor(SelectionMoveDirection.backward);
       editorState.selectionService.updateSelection(editorState.selection);
       editorState.prevSelection = null;
@@ -124,7 +92,7 @@ CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
 
 /// Motion Keys
 final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
-  key: 'move the cursor downward',
+  key: 'move the cursor downward in normal mode',
   command: 'j',
   handler: _jumpDownCommandHandler,
 );
@@ -133,12 +101,96 @@ CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+      final downPosition =
+          selection?.end.moveVertical(editorState, upwards: false);
+      editorState.updateSelectionWithReason(
+          downPosition == null ? null : Selection.collapsed(downPosition),
+          reason: SelectionUpdateReason.uiEvent);
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
+final CommandShortcutEvent jumpUpCommand = CommandShortcutEvent(
+  key: 'move the cursor upward in normal mode',
+  command: 'k',
+  handler: _jumpUpCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpUpCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
     // editorState.scrollService!.goBallistic(4);
-    if (editorState.selection == null) {
-      editorState.mode = VimModes.normalMode;
-      int scroll = 4;
-      //TODO: Figure out a way to jump line by line
-      editorState.scrollService?.jumpTo(scroll++);
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+      final downPosition =
+          selection?.end.moveVertical(editorState, upwards: true);
+      editorState.updateSelectionWithReason(
+        downPosition == null ? null : Selection.collapsed(downPosition),
+        reason: SelectionUpdateReason.uiEvent,
+      );
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
+final CommandShortcutEvent jumpLeftCommand = CommandShortcutEvent(
+  key: 'move the cursor to the left',
+  command: 'h',
+  handler: _jumpLeftCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpLeftCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+      final downPosition =
+          selection?.end.moveHorizontal(editorState, forward: true);
+      editorState.updateSelectionWithReason(
+        downPosition == null ? null : Selection.collapsed(downPosition),
+        reason: SelectionUpdateReason.uiEvent,
+      );
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
+final CommandShortcutEvent jumpRightCommand = CommandShortcutEvent(
+  key: 'move the cursor downward',
+  command: 'l',
+  handler: _jumpRightCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpRightCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+      final downPosition =
+          selection?.end.moveHorizontal(editorState, forward: false);
+      editorState.updateSelectionWithReason(
+        downPosition == null ? null : Selection.collapsed(downPosition),
+        reason: SelectionUpdateReason.uiEvent,
+      );
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;

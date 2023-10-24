@@ -222,9 +222,10 @@ class _DesktopSelectionServiceWidgetState
       }
     } else {
       if (editorState.mode == VimModes.normalMode) {
-        print('Normal mode');
-        selectable.cursorStyle;
+        //NOTE: It throws a transaction error when I mimic the else statement for selection
+        //NOTE: So settled for a single selection
         selection = Selection.collapsed(selectable.getPositionInOffset(offset));
+        editorState.prevSelection = selection;
 
         // Reset old start offset
         _panStartOffset = offset;
