@@ -1,3 +1,17 @@
+## 1.5.0
+* feat: enable toggling and canceling of formatting with shortcuts by @LucasXu0 in ([#528](https://github.com/AppFlowy-IO/appflowy-editor/pull/528))
+* feat: disable the toolbar in the code block by @LucasXu0 in ([#534](https://github.com/AppFlowy-IO/appflowy-editor/pull/534))
+* feat: refactor logic for converting color string to Color in background_color_mixin.dart by @LucasXu0 in ([#538](https://github.com/AppFlowy-IO/appflowy-editor/pull/538))
+* feat: add an extra info parameter to the node by @LucasXu0 in ([#539](https://github.com/AppFlowy-IO/appflowy-editor/pull/539))
+* feat: support parsing the nested list when exporting the document to markdown format by @LucasXu0 in ([#540](https://github.com/AppFlowy-IO/appflowy-editor/pull/540))
+* feat: optimize editable features by @LucasXu0 in ([#541](https://github.com/AppFlowy-IO/appflowy-editor/pull/541))
+* feat: table HTML encoder and decoder added by @alihassan143 in ([#449](https://github.com/AppFlowy-IO/appflowy-editor/pull/449))
+* feat: support overriding i18n by @LucasXu0 in ([#550](https://github.com/AppFlowy-IO/appflowy-editor/pull/550))
+* feat: convert = and > to ⇒ by @Gen1us1100 in ([#523](https://github.com/AppFlowy-IO/appflowy-editor/pull/523))
+* fix: cursor blinks at the wrong location when inserting text by @LucasXu0 in ([#529](https://github.com/AppFlowy-IO/appflowy-editor/pull/529))
+* fix: pinyin IME on Linux by @LucasXu0 in ([#531](https://github.com/AppFlowy-IO/appflowy-editor/pull/531))
+* fix: unable to clear the style by toggling twice by @LucasXu0 in ([#532](https://github.com/AppFlowy-IO/appflowy-editor/pull/532))
+
 ## 1.4.4
 * feat: support customizing error block by @LucasXu0 in ([#524](https://github.com/AppFlowy-IO/appflowy-editor/pull/524))
 * feat: export JSON in mobile and update mobile_example.json by @hyj1204 in ([#515](https://github.com/AppFlowy-IO/appflowy-editor/pull/515))
