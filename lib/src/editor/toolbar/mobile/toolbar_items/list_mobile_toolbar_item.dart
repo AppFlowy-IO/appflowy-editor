@@ -26,12 +26,12 @@ class _ListMenuState extends State<_ListMenu> {
   final lists = [
     ListUnit(
       icon: AFMobileIcons.bulletedList,
-      label: AppFlowyEditorLocalizations.current.bulletedList,
+      label: AppFlowyEditorL10n.current.bulletedList,
       name: 'bulleted_list',
     ),
     ListUnit(
       icon: AFMobileIcons.numberedList,
-      label: AppFlowyEditorLocalizations.current.numberedList,
+      label: AppFlowyEditorL10n.current.numberedList,
       name: 'numbered_list',
     ),
   ];
