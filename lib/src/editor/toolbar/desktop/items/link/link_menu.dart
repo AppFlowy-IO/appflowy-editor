@@ -1,9 +1,7 @@
-import 'package:appflowy_editor/src/editor_state.dart';
-import 'package:appflowy_editor/src/infra/flowy_svg.dart';
-import 'package:appflowy_editor/src/l10n/l10n.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
@@ -56,7 +54,7 @@ class _LinkMenuState extends State<LinkMenu> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           EditorOverlayTitle(
-            text: AppFlowyEditorLocalizations.current.addYourLink,
+            text: AppFlowyEditorL10n.current.addYourLink,
           ),
           const SizedBox(height: 16.0),
           _buildInput(),
@@ -64,17 +62,17 @@ class _LinkMenuState extends State<LinkMenu> {
           if (widget.linkText != null) ...[
             _buildIconButton(
               iconName: 'link',
-              text: AppFlowyEditorLocalizations.current.openLink,
+              text: AppFlowyEditorL10n.current.openLink,
               onPressed: widget.onOpenLink,
             ),
             _buildIconButton(
               iconName: 'copy',
-              text: AppFlowyEditorLocalizations.current.copyLink,
+              text: AppFlowyEditorL10n.current.copyLink,
               onPressed: widget.onCopyLink,
             ),
             _buildIconButton(
               iconName: 'delete',
-              text: AppFlowyEditorLocalizations.current.removeLink,
+              text: AppFlowyEditorL10n.current.removeLink,
               onPressed: widget.onRemoveLink,
             ),
           ],
@@ -98,7 +96,7 @@ class _LinkMenuState extends State<LinkMenu> {
         controller: _textEditingController,
         onSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
-          hintText: AppFlowyEditorLocalizations.current.urlHint,
+          hintText: AppFlowyEditorL10n.current.urlHint,
           contentPadding: const EdgeInsets.all(16.0),
           isDense: true,
           suffixIcon: IconButton(

@@ -44,9 +44,9 @@ class _TextAndBackgroundColorMenuState
     final style = MobileToolbarStyle.of(context);
     List<Tab> myTabs = <Tab>[
       Tab(
-        text: AppFlowyEditorLocalizations.current.textColor,
+        text: AppFlowyEditorL10n.current.textColor,
       ),
-      Tab(text: AppFlowyEditorLocalizations.current.backgroundColor),
+      Tab(text: AppFlowyEditorL10n.current.backgroundColor),
     ];
 
     return DefaultTabController(

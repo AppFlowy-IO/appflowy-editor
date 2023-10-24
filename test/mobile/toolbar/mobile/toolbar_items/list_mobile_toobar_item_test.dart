@@ -1,6 +1,7 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
+
 import '../../../../new/infra/testable_editor.dart';
 import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
@@ -35,11 +36,11 @@ void main() {
     // Show its menu and it has 2 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(
-      find.text(AppFlowyEditorLocalizations.current.bulletedList),
+      find.text(AppFlowyEditorL10n.current.bulletedList),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.numberedList),
+      find.text(AppFlowyEditorL10n.current.numberedList),
       findsOneWidget,
     );
 
@@ -47,7 +48,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.bulletedList,
+        AppFlowyEditorL10n.current.bulletedList,
       ),
     );
     var node = editor.editorState.getNodeAtPath([1]);
@@ -61,7 +62,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.numberedList,
+        AppFlowyEditorL10n.current.numberedList,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
