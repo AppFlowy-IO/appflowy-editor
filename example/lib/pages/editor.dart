@@ -36,7 +36,7 @@ class Editor extends StatelessWidget {
                 ),
               ),
             );
-
+            editorState.selectionType = SelectionType.block;
             editorState.logConfiguration
               ..handler = debugPrint
               ..level = LogLevel.off;
