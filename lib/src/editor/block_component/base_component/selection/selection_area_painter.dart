@@ -122,10 +122,17 @@ class SelectionAreaPainter extends CustomPainter {
       if (rect.width <= 0) {
         rect = Rect.fromLTWH(rect.left, rect.top, 8.0, rect.height);
       }
-      canvas.drawRect(
-        rect,
-        paint,
-      );
+      
+      // customizable border radius
+      final borderRadius = BorderRadius.circular(2.0);
+
+      final rrect = RRect.fromRectAndCorners(rect,
+          topLeft: borderRadius.topLeft,
+          topRight: borderRadius.topRight,
+          bottomLeft: borderRadius.bottomLeft,
+          bottomRight: borderRadius.bottomRight);
+
+      canvas.drawRRect(rrect, paint);
     }
   }
 
