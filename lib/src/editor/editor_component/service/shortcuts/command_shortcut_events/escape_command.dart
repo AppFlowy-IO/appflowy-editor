@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
+//TODO: Allow custom escape key
 final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
   key: 'exit the editing mode',
   command: 'escape',

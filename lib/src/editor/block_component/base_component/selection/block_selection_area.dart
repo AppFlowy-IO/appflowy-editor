@@ -97,6 +97,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         }
 
         final path = widget.node.path;
+
+        ///Force cursor on in normal mode
         if (editorState.mode == VimModes.normalMode &&
             editorState.selection != null) {
           if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
@@ -136,6 +138,18 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
                 borderRadius: BorderRadius.circular(0.0),
               ),
             ),
+          );
+        }
+        //BUG: This does not show selection in normal mode
+        if (editorState.mode == VimModes.normalMode) {
+          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
+              prevSelectionRects == null ||
+              prevSelectionRects!.isEmpty) {
+            return sizedBox;
+          }
+          return SelectionAreaPaint(
+            rects: prevSelectionRects!,
+            selectionColor: widget.selectionColor,
           );
         }
         // show the cursor when the selection is collapsed
