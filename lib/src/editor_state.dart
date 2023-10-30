@@ -200,6 +200,7 @@ class EditorState {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
+      selectionType = SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
@@ -208,6 +209,7 @@ class EditorState {
     // broadcast to other users here
     selectionExtraInfo = extraInfo;
     _selectionUpdateReason = reason;
+
     this.selection = selection;
 
     return completer.future;
