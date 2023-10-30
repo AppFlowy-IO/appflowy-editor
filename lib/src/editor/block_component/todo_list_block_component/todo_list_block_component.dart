@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TodoListBlockKeys {
   const TodoListBlockKeys._();
@@ -43,12 +44,15 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
     super.configuration,
     this.textStyleBuilder,
     this.iconBuilder,
+    this.toggleChildrenTriggers,
   });
 
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
 
   final BlockIconBuilder? iconBuilder;
+
+  final List<LogicalKeyboardKey>? toggleChildrenTriggers;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -64,6 +68,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      toggleChildrenTriggers: toggleChildrenTriggers,
     );
   }
 
@@ -83,10 +88,12 @@ class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
     super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.iconBuilder,
+    this.toggleChildrenTriggers,
   });
 
   final TextStyle Function(bool checked)? textStyleBuilder;
   final BlockIconBuilder? iconBuilder;
+  final List<LogicalKeyboardKey>? toggleChildrenTriggers;
 
   @override
   State<TodoListBlockComponentWidget> createState() =>
@@ -203,12 +210,40 @@ class _TodoListBlockComponentWidgetState
     return child;
   }
 
-  Future<void> checkOrUncheck() async {
+  void checkOrUncheck() {
     final transaction = editorState.transaction
       ..updateNode(widget.node, {
         TodoListBlockKeys.checked: !checked,
       });
-    return editorState.apply(transaction);
+
+    if (widget.toggleChildrenTriggers != null &&
+        RawKeyboard.instance.keysPressed.any(
+          (element) => widget.toggleChildrenTriggers!.contains(element),
+        )) {
+      checkOrUncheckChildren(!checked, widget.node);
+    }
+
+    editorState.apply(transaction);
+  }
+
+  void checkOrUncheckChildren(
+    bool checked,
+    Node node,
+  ) {
+    for (final child in node.children) {
+      if (child.children.isNotEmpty) {
+        checkOrUncheckChildren(checked, child);
+      }
+
+      if (child.type == TodoListBlockKeys.type) {
+        final transaction = editorState.transaction
+          ..updateNode(child, {
+            TodoListBlockKeys.checked: checked,
+          });
+
+        editorState.apply(transaction);
+      }
+    }
   }
 
   TextStyle? defaultTextStyle() {
