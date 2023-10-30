@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
@@ -16,6 +17,11 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'To-do',
     ),
+    toggleChildrenTriggers: [
+      LogicalKeyboardKey.shift,
+      LogicalKeyboardKey.shiftLeft,
+      LogicalKeyboardKey.shiftRight,
+    ],
   ),
   BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
