@@ -191,7 +191,7 @@ extension TextTransforms on EditorState {
     final nodes = getNodesInSelection(selection);
     if (selection.isCollapsed) {
       if (toggledStyle.containsKey(key)) {
-        toggledStyle[key] = !toggledStyle[key]!;
+        updateToggledStyle(key, !toggledStyle[key]!);
       } else {
         // get the attributes from the previous one character.
         selection = selection.copyWith(
@@ -207,7 +207,7 @@ extension TextTransforms on EditorState {
             (attributes) => attributes[key] == true,
           );
         });
-        toggledStyle[key] = !toggled;
+        updateToggledStyle(key, !toggled);
       }
     } else {
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
