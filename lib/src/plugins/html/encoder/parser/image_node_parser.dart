@@ -27,12 +27,12 @@ class HTMLImageNodeParser extends HTMLNodeParser {
 
     final height = node.attributes[ImageBlockKeys.height];
     if (height != null) {
-      anchor.attributes['height'] = height;
+      anchor.attributes['height'] = height.toString();
     }
 
     final width = node.attributes[ImageBlockKeys.width];
     if (width != null) {
-      anchor.attributes['width'] = width;
+      anchor.attributes['width'] = width.toString();
     }
 
     final align = node.attributes[ImageBlockKeys.align];
