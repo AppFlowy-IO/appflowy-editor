@@ -36,7 +36,6 @@ class Editor extends StatelessWidget {
                 ),
               ),
             );
-
             editorState.logConfiguration
               ..handler = debugPrint
               ..level = LogLevel.off;

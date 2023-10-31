@@ -151,9 +151,18 @@ class EditorState {
   /// Store the toggled format style, like bold, italic, etc.
   /// All the values must be the key from [AppFlowyRichTextKeys.supportToggled].
   ///
+  /// Use the method [updateToggledStyle] to update key-value pairs
+  ///
   /// NOTES: It only works once;
   ///   after the selection is changed, the toggled style will be cleared.
   final toggledStyle = <String, bool>{};
+  late final toggledStyleNotifier =
+      ValueNotifier<Map<String, bool>>(toggledStyle);
+
+  void updateToggledStyle(String key, bool value) {
+    toggledStyle[key] = value;
+    toggledStyleNotifier.value = {...toggledStyle};
+  }
 
   final UndoManager undoManager = UndoManager();
 
@@ -191,6 +200,7 @@ class EditorState {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
+      selectionType = SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
@@ -199,6 +209,7 @@ class EditorState {
     // broadcast to other users here
     selectionExtraInfo = extraInfo;
     _selectionUpdateReason = reason;
+
     this.selection = selection;
 
     return completer.future;
