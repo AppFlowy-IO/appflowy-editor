@@ -35,6 +35,8 @@ final List<CommandShortcutEvent> vimKeyModes = [
   ///Navigate line Commands
   vimMoveCursorToStartCommand,
   vimMoveCursorToEndCommand,
+  jumpWordBackwardCommand,
+  jumpWordForwardCommand,
   //BUG: Selection doesnt show up to user
   // vimSelectLineCommand,
 
@@ -459,6 +461,7 @@ CommandShortcutEventHandler _vimHalfPageUpCommandHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
+///Navigate on the current line
 final CommandShortcutEvent vimMoveCursorToStartCommand = CommandShortcutEvent(
   key: 'vim move cursor to start of line in normal mode',
   command: 'Digit 0',
@@ -509,6 +512,135 @@ CommandShortcutEventHandler _vimMoveCursorToEndHandler = (editorState) {
   }
   return KeyEventResult.ignored;
 };
+
+final CommandShortcutEvent jumpWordBackwardCommand = CommandShortcutEvent(
+  key: 'move the cursor backward to the next wordl in normal mode',
+  command: 'b',
+  handler: _jumpWordBackwardCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpWordBackwardCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+
+      final node = editorState.getNodeAtPath(selection!.end.path);
+      final delta = node?.delta;
+
+      if (node == null || delta == null) {
+        return KeyEventResult.ignored;
+      }
+
+      if (isRTL(editorState)) {
+        final endOfWord = selection.end.moveHorizontal(
+          editorState,
+          forward: false,
+          selectionRange: SelectionRange.word,
+        );
+        final selectedWord = delta.toPlainText().substring(
+              selection.end.offset,
+              endOfWord?.offset,
+            );
+        // check if the selected word is whitespace
+        if (selectedWord.trim().isEmpty) {
+          editorState.moveCursorBackward(SelectionMoveRange.word);
+        }
+        editorState.moveCursorBackward(SelectionMoveRange.word);
+      } else {
+        final startOfWord = selection.end.moveHorizontal(
+          editorState,
+          selectionRange: SelectionRange.word,
+        );
+        if (startOfWord == null) {
+          return KeyEventResult.handled;
+        }
+        final selectedWord = delta.toPlainText().substring(
+              startOfWord.offset,
+              selection.end.offset,
+            );
+        // check if the selected word is whitespace
+        if (selectedWord.trim().isEmpty) {
+          editorState.moveCursorForward(SelectionMoveRange.word);
+        }
+        editorState.moveCursorForward(SelectionMoveRange.word);
+      }
+
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
+final CommandShortcutEvent jumpWordForwardCommand = CommandShortcutEvent(
+  key: 'move the cursor backward to the next wordl in normal mode',
+  command: 'w',
+  handler: _jumpWordForwardCommandHandler,
+);
+
+CommandShortcutEventHandler _jumpWordForwardCommandHandler = (editorState) {
+  final afKeyboard = editorState.service.keyboardServiceKey;
+  if (afKeyboard.currentState != null &&
+      afKeyboard.currentState is AppFlowyKeyboardService) {
+    if (editorState.selection != null &&
+        editorState.mode == VimModes.normalMode) {
+      final selection = editorState.selection;
+      final node = editorState.getNodeAtPath(selection!.end.path);
+      final delta = node?.delta;
+
+      if (node == null || delta == null) {
+        return KeyEventResult.ignored;
+      }
+
+      if (isRTL(editorState)) {
+        final startOfWord = selection.end.moveHorizontal(
+          editorState,
+          selectionRange: SelectionRange.word,
+        );
+        if (startOfWord == null) {
+          return KeyEventResult.ignored;
+        }
+        final selectedWord = delta.toPlainText().substring(
+              startOfWord.offset,
+              selection.end.offset,
+            );
+        // check if the selected word is whitespace
+        if (selectedWord.trim().isEmpty) {
+          editorState.moveCursorForward(SelectionMoveRange.word);
+        }
+        editorState.moveCursorForward(SelectionMoveRange.word);
+      } else {
+        final endOfWord = selection.end.moveHorizontal(
+          editorState,
+          forward: false,
+          selectionRange: SelectionRange.word,
+        );
+        if (endOfWord == null) {
+          return KeyEventResult.handled;
+        }
+        final selectedLine = delta.toPlainText();
+        final selectedWord = selectedLine.substring(
+          selection.end.offset,
+          endOfWord.offset,
+        );
+        // check if the selected word is whitespace
+        if (selectedWord.trim().isEmpty) {
+          editorState.moveCursorBackward(SelectionMoveRange.word);
+        }
+        editorState.moveCursorBackward(SelectionMoveRange.word);
+      }
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+  return KeyEventResult.ignored;
+};
+
 final numList = List.generate(10, (i) => i);
 final movements = [
   jumpDownCommand,
@@ -526,7 +658,7 @@ final CommandShortcutEvent vimJumpToLineCommand = CommandShortcutEvent(
   key: 'vim move cursor to start of line in normal mode',
   //TODO: Find a way to await & chain shortcuts or key presses
   // command: 'Digit 5',
-  command: 'Digit 5j',
+  command: 'Digit 5',
   handler: _vimJumpToLineHandler,
 );
 
@@ -540,6 +672,10 @@ CommandShortcutEventHandler _vimJumpToLineHandler = (editorState) {
       //NOTE: Hard wired for now
       //Besides this is just for scrolling doesnt move the cursor
       editorState.scrollService?.jumpTo(5);
+      SelectionMoveRange downRange = SelectionMoveRange.line;
+      //This will be tricky need to modify 'select_commands.dart'
+      //BUG: It throws an error on a blank line
+      editorState.moveCursor(SelectionMoveDirection.backward, downRange);
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
