@@ -94,6 +94,9 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 
   // markdown syntax
   ...markdownSyntaxShortcutEvents,
+
+  // convert => to arrow
+  formatGreaterEqual,
 ];
 
 final List<CommandShortcutEvent> standardCommandShortcutEvents = [
