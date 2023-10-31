@@ -1,3 +1,11 @@
+## 1.5.1
+* feat: toggledStyle notifier by @Xazin in ([#562](https://github.com/AppFlowy-IO/appflowy-editor/pull/562))
+* feat: power checkbox shortcut by @Xazin in ([#553](https://github.com/AppFlowy-IO/appflowy-editor/pull/553))
+* * fix: Applied Corner Radius to Block Selection Area by @0xJaskeerat in ([#557](https://github.com/AppFlowy-IO/appflowy-editor/pull/557))
+* fix: do not select all if selection is null by @Xazin in ([#563](https://github.com/AppFlowy-IO/appflowy-editor/pull/563))
+* fix: on ui event reset selection type by @Xazin in ([#55](https://github.com/AppFlowy-IO/appflowy-editor/pull/555))
+* fix: image copy error width/height is double by @q200892907 in ([#566](https://github.com/AppFlowy-IO/appflowy-editor/pull/566))
+
 ## 1.5.0
 * feat: enable toggling and canceling of formatting with shortcuts by @LucasXu0 in ([#528](https://github.com/AppFlowy-IO/appflowy-editor/pull/528))
 * feat: disable the toolbar in the code block by @LucasXu0 in ([#534](https://github.com/AppFlowy-IO/appflowy-editor/pull/534))
