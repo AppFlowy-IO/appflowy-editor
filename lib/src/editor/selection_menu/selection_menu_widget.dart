@@ -362,15 +362,15 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Material(
-        borderRadius: BorderRadius.circular(5),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 43, vertical: 11),
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 140,
+        child: Material(
           child: Text(
-            'No results',
-            style: TextStyle(color: Colors.grey),
+            "No results",
+            style: TextStyle(fontSize: 18.0, color: Colors.grey),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
