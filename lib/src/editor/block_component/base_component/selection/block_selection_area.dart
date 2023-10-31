@@ -135,7 +135,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             child: Container(
               decoration: BoxDecoration(
                 color: widget.blockColor,
-                borderRadius: BorderRadius.circular(0.0),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
           );

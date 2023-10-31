@@ -45,8 +45,8 @@ void showColorMenu(
     builder: (context) {
       return ColorPicker(
         title: isTextColor
-            ? AppFlowyEditorLocalizations.current.textColor
-            : AppFlowyEditorLocalizations.current.highlightColor,
+            ? AppFlowyEditorL10n.current.textColor
+            : AppFlowyEditorL10n.current.highlightColor,
         showClearButton: showClearButton,
         selectedColorHex: currentColorHex,
         colorOptions: isTextColor
@@ -70,8 +70,8 @@ void showColorMenu(
           keepEditorFocusNotifier.decrease();
         },
         resetText: isTextColor
-            ? AppFlowyEditorLocalizations.current.resetToDefaultColor
-            : AppFlowyEditorLocalizations.current.clearHighlightColor,
+            ? AppFlowyEditorL10n.current.resetToDefaultColor
+            : AppFlowyEditorL10n.current.clearHighlightColor,
         resetIconName:
             isTextColor ? 'reset_text_color' : 'clear_highlight_color',
       );
