@@ -32,6 +32,4 @@ final List<CharacterShortcutEvent> markdownSyntaxShortcutEvents = [
 
   // format -- into em dash
   formatDoubleHyphenEmDash,
-  // format = + > into ⇒
-  formatGreaterEqual,
 ];

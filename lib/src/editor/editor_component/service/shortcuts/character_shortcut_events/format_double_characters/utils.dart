@@ -1,32 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-const _greater = '>';
-const _equals = '=';
-const _arrow = '⇒';
-
-/// format '=' + '>' into an ⇒
-///
-/// - support
-///   - desktop
-///   - mobile
-///   - web
-///
-final CharacterShortcutEvent formatGreaterEqual = CharacterShortcutEvent(
-  key: 'format = + > into ⇒',
-  character: _greater,
-  handler: (editorState) async => handleEqualGreaterReplacement(
-    editorState: editorState,
-    character: _greater,
-    replacement: _arrow,
-  ),
-);
-
-// TODO(Xazin): Combine two character replacement methods into
-//  a helper function
-Future<bool> handleEqualGreaterReplacement({
+/// If [prefixCharacter] is null or empty, [character] is used
+Future<bool> handleDoubleCharacterReplacement({
   required EditorState editorState,
   required String character,
   required String replacement,
+  String? prefixCharacter,
 }) async {
   assert(character.length == 1);
 
@@ -53,8 +32,11 @@ Future<bool> handleEqualGreaterReplacement({
   if (selection.end.offset > 0) {
     final plain = delta.toPlainText();
 
+    final expectedPrevious =
+        prefixCharacter?.isEmpty ?? true ? character : prefixCharacter;
+
     final previousCharacter = plain[selection.end.offset - 1];
-    if (previousCharacter != _equals) {
+    if (previousCharacter != expectedPrevious) {
       return false;
     }
 
@@ -63,7 +45,7 @@ Future<bool> handleEqualGreaterReplacement({
         node,
         selection.end.offset - 1,
         1,
-        _arrow,
+        replacement,
       );
 
     await editorState.apply(replace);
