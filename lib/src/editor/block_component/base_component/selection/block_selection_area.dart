@@ -98,32 +98,10 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
 
         final path = widget.node.path;
 
-        ///Force cursor on in normal mode
-        if (editorState.mode == VimModes.normalMode &&
-            editorState.selection != null) {
-          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
-              prevSelectionRects == null ||
-              prevSelectionRects!.isEmpty) {
-            return sizedBox;
-          }
-
-          final rect = widget.delegate.getCursorRectInPosition(selection.start);
-          final cursor = Cursor(
-            key: cursorKey,
-            rect: rect!,
-            shouldBlink: false,
-            cursorStyle: CursorStyle.block,
-            color: Colors.blue,
-          );
-          cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
-          return cursor;
-        }
-
         if (!path.inSelection(selection)) {
           return sizedBox;
         }
-        //NOTE: Include this in Insert Mode?
-        //NOTE: Box decoration for selection
+
         if (context.read<EditorState>().selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.equals(selection.start.path) ||
@@ -140,21 +118,10 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             ),
           );
         }
-        //BUG: This does not show selection in normal mode
-        if (editorState.mode == VimModes.normalMode) {
-          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
-              prevSelectionRects == null ||
-              prevSelectionRects!.isEmpty) {
-            return sizedBox;
-          }
-          return SelectionAreaPaint(
-            rects: prevSelectionRects!,
-            selectionColor: widget.selectionColor,
-          );
-        }
+
         // show the cursor when the selection is collapsed
         else if (selection.isCollapsed &&
-            editorState.mode == VimModes.insertMode) {
+            (editorState.mode == VimModes.insertMode || !editorState.vimMode)) {
           if (!widget.supportTypes.contains(BlockSelectionType.cursor) ||
               prevCursorRect == null) {
             return sizedBox;
@@ -167,6 +134,25 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             color: widget.cursorColor,
           );
           // force to show the cursor
+          cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
+          return cursor;
+        } else if (selection.isCollapsed &&
+            editorState.mode == VimModes.normalMode &&
+            editorState.vimMode) {
+          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
+              prevSelectionRects == null) {
+            return sizedBox;
+          }
+
+          final rect = widget.delegate.getCursorRectInPosition(selection.start);
+          //NOTE: Hard coded cursor style
+          final cursor = Cursor(
+            key: cursorKey,
+            rect: rect ?? prevCursorRect!,
+            shouldBlink: false,
+            cursorStyle: CursorStyle.block,
+            color: Colors.blue,
+          );
           cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
           return cursor;
         } else {
