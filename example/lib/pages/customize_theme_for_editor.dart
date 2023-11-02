@@ -104,7 +104,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         configuration: configuration,
         iconBuilder: (context, node) {
           final checked = node.attributes[TodoListBlockKeys.checked] as bool;
-          return InkWell(
+          return GestureDetector(
             onTap: () => editorState.apply(
               editorState.transaction
                 ..updateNode(node, {TodoListBlockKeys.checked: !checked}),
