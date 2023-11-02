@@ -18,11 +18,6 @@ Future<bool> handleDoubleCharacterReplacement({
     await editorState.deleteSelection(selection);
   }
 
-  selection = editorState.selection;
-  if (selection == null) {
-    return false;
-  }
-
   final node = editorState.getNodeAtPath(selection.end.path);
   final delta = node?.delta;
   if (node == null || delta == null || delta.isEmpty) {
