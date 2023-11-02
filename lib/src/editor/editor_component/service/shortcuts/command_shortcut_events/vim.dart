@@ -657,8 +657,9 @@ final movements = [
 final CommandShortcutEvent vimJumpToLineCommand = CommandShortcutEvent(
   key: 'vim move cursor to start of line in normal mode',
   //TODO: Find a way to await & chain shortcuts or key presses
+  //Well modifying the keyevent directly won't end well. Since the focus node only reads one keyevent at a time
   // command: 'Digit 5',
-  command: 'Digit 5',
+  command: 'Digit 5' 'j',
   handler: _vimJumpToLineHandler,
 );
 
