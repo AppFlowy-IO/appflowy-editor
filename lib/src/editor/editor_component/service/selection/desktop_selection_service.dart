@@ -221,7 +221,7 @@ class _DesktopSelectionServiceWidgetState
         selection = Selection(start: start, end: end);
       }
     } else {
-      if (editorState.mode == VimModes.normalMode) {
+      if (editorState.mode == VimModes.normalMode && editorState.vimMode) {
         //NOTE: It throws a transaction error when I mimic the else statement for selection
         //NOTE: So settled for a single selection
         selection = Selection.collapsed(selectable.getPositionInOffset(offset));

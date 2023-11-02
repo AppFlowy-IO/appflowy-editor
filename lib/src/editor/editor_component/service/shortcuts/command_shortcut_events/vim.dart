@@ -41,7 +41,8 @@ final List<CommandShortcutEvent> vimKeyModes = [
   // vimSelectLineCommand,
 
   ///Text operations
-  //BUG: Transaction doesn't apply until delete keyword is pressed
+  //BUG: Deleting at the end of text will cause the widget tree to panic
+  //NOTE: Probably try using the 'delete' button instead
   // vimDeleteUnderCursorCommand,
 ];
 
@@ -132,6 +133,9 @@ final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -158,6 +162,9 @@ final CommandShortcutEvent jumpUpCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpUpCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -186,6 +193,9 @@ final CommandShortcutEvent jumpLeftCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpLeftCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -213,6 +223,9 @@ final CommandShortcutEvent jumpRightCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpRightCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -280,6 +293,9 @@ final CommandShortcutEvent vimUndoCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimUndoCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -303,6 +319,9 @@ final CommandShortcutEvent vimRedoCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimRedoCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -325,6 +344,9 @@ final CommandShortcutEvent vimPageDownCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimPageDownCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -359,6 +381,9 @@ final CommandShortcutEvent vimHalfPageDownCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimHalfPageDownCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -395,6 +420,10 @@ final CommandShortcutEvent vimPageUpCommand = CommandShortcutEvent(
 CommandShortcutEventHandler _vimPageUpCommandHandler = (editorState) {
   if (PlatformExtension.isMobile) {
     assert(false, 'pageUpCommand is not supported on mobile platform.');
+    return KeyEventResult.ignored;
+  }
+
+  if (!editorState.vimMode) {
     return KeyEventResult.ignored;
   }
   final afKeyboard = editorState.service.keyboardServiceKey;
@@ -435,6 +464,10 @@ CommandShortcutEventHandler _vimHalfPageUpCommandHandler = (editorState) {
     assert(false, 'pageUpCommand is not supported on mobile platform.');
     return KeyEventResult.ignored;
   }
+
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -469,6 +502,9 @@ final CommandShortcutEvent vimMoveCursorToStartCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -495,6 +531,9 @@ final CommandShortcutEvent vimMoveCursorToEndCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimMoveCursorToEndHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -520,6 +559,9 @@ final CommandShortcutEvent jumpWordBackwardCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpWordBackwardCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -583,6 +625,9 @@ final CommandShortcutEvent jumpWordForwardCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _jumpWordForwardCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -664,6 +709,9 @@ final CommandShortcutEvent vimJumpToLineCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimJumpToLineHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -693,6 +741,9 @@ final CommandShortcutEvent vimDeleteUnderCursorCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _vimDeleteUnderCursorHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -711,8 +762,6 @@ CommandShortcutEventHandler _vimDeleteUnderCursorHandler = (editorState) {
         print('not in collapsed section!');
         return _deleteInNotCollapsedSelection(editorState);
       }
-    } else {
-      return KeyEventResult.ignored;
     }
   }
   return KeyEventResult.ignored;
@@ -755,9 +804,6 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
         final path = node.path + [node.children.length];
         transaction.insertNodes(path, next.children);
       }
-      /*NOTE: So transaction doesnt get applied 
-      unless its in insert mode so need to work around it
-      */
       transaction
         ..deleteNode(next)
         ..mergeText(
@@ -776,7 +822,6 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
         position.offset,
         nextIndex - position.offset,
       );
-      //BUG: The transaction is not being applied
       editorState.apply(transaction);
       return KeyEventResult.handled;
     }

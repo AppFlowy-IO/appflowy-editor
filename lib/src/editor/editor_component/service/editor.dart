@@ -24,6 +24,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CommandShortcutEvent>? commandShortcutEvents,
     List<List<ContextMenuItem>>? contextMenuItems,
     this.editable = true,
+    this.vimMode = false,
     this.autoFocus = false,
     this.focusedSelection,
     this.shrinkWrap = false,
@@ -128,6 +129,12 @@ class AppFlowyEditor extends StatefulWidget {
   ///   without the editing, selecting, scrolling features.
   final bool editable;
 
+  /// Set the value to false to disable Vim Mode.
+  ///
+  /// if false, the editor will work normally like any other
+  ///   without the vim motion features and keybindings.
+  final bool vimMode;
+
   /// Set the value to true to focus the editor on the start of the document.
   final bool autoFocus;
 
@@ -175,6 +182,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.editorStyle = widget.editorStyle;
     editorState.renderer = _renderer;
     editorState.editable = widget.editable;
+    editorState.vimMode = widget.vimMode;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -198,6 +206,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     editorState.editorStyle = widget.editorStyle;
     editorState.editable = widget.editable;
+    editorState.vimMode = widget.vimMode;
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.renderer = _renderer;

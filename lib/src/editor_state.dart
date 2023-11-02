@@ -113,6 +113,9 @@ class EditorState {
 
   var mode = VimModes.insertMode;
 
+  /// Whether Vim mode is enabled or not
+  bool vimMode = false;
+
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     // clear the toggled style when the selection is changed.
@@ -271,7 +274,7 @@ class EditorState {
     ApplyOptions options = const ApplyOptions(recordUndo: true),
     bool withUpdateSelection = true,
   }) async {
-    if (!editable) {
+    if (!editable && (!vimMode && mode == VimModes.normalMode)) {
       return;
     }
 
