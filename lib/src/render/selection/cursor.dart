@@ -85,7 +85,7 @@ class CursorState extends State<Cursor> {
       case CursorStyle.block:
         return Container(
           decoration: BoxDecoration(
-            border: Border.all(color: color, width: 6),
+            border: Border.all(color: color, width: 4),
           ),
         );
       case CursorStyle.cover:
