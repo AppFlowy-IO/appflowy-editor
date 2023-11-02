@@ -93,12 +93,13 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               child: header!,
             );
           }
-          if (footer != null &&
-              index == items.length + (header != null ? 1 : 0)) {
+
+          if (footer != null && index == (items.length - 1) + extentCount) {
             return IgnoreEditorSelectionGesture(
               child: footer!,
             );
           }
+
           return Padding(
             padding: editorState.editorStyle.padding,
             child: editorState.renderer.build(
