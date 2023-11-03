@@ -274,7 +274,9 @@ class EditorState {
     ApplyOptions options = const ApplyOptions(recordUndo: true),
     bool withUpdateSelection = true,
   }) async {
-    if (!editable && (!vimMode && mode == VimModes.normalMode)) {
+    if (!editable && !vimMode && mode == VimModes.normalMode) {
+      return;
+    } else if (!editable && vimMode) {
       return;
     }
 
