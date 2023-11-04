@@ -11,8 +11,8 @@ class SearchServiceV3 {
 
   final EditorState editorState;
 
-  //matchedPositions.value will contain a list of positions of the matched patterns
-  //the position here consists of the node and the starting offset of the
+  //matchWrappers.value will contain a list of matchWrappers of the matched patterns
+  //the position here consists of the match and the node path of
   //matched pattern. We will use this to traverse between the matched patterns.
   ValueNotifier<List<MatchWrapper>> matchWrappers = ValueNotifier([]);
   SearchAlgorithm searchAlgorithm = DartBuiltIn();

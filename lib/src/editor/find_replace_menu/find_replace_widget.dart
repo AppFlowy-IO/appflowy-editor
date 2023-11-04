@@ -161,7 +161,7 @@ class _FindMenuState extends State<FindMenu> {
 
   final findTextEditingController = TextEditingController();
 
-  String errorMessage = '';
+  String message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
 
   bool showReplaceMenu = false;
   bool caseSensitive = false;
@@ -251,7 +251,7 @@ class _FindMenuState extends State<FindMenu> {
           alignment: Alignment.centerLeft,
           child: Text(
             matches.isEmpty
-                ? errorMessage
+                ? message
                 : '$selectedIndex of ${matches.length}',
           ),
         ),
@@ -324,21 +324,23 @@ class _FindMenuState extends State<FindMenu> {
   void _searchPattern() {
     String error;
 
-    if (findTextEditingController.text.isEmpty) {
-      error = 'Empty';
-    } else {
-      error =
-          widget.searchService.findAndHighlight(findTextEditingController.text);
-    }
+    // the following line needs to be executed even if
+    // findTextEditingController.text.isEmpty, otherwise the previous
+    // matches will persist
+    error = widget.searchService
+        .findAndHighlight(findTextEditingController.text);
 
     switch (error) {
       case 'Regex':
-        errorMessage = 'Regex error';
+        message = AppFlowyEditorLocalizations.current.regexError;
       case 'Empty':
-        errorMessage = widget.localizations?.noResult ?? 'No Result';
+        message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
       default:
-        errorMessage = '';
+        message = widget.localizations?.noResult ??
+            AppFlowyEditorLocalizations.current.noFindResult;
     }
+
+    _setState();
   }
 
   void _setState() {
