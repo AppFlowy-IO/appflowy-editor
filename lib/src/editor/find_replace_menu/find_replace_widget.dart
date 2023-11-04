@@ -250,9 +250,7 @@ class _FindMenuState extends State<FindMenu> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           alignment: Alignment.centerLeft,
           child: Text(
-            matches.isEmpty
-                ? message
-                : '$selectedIndex of ${matches.length}',
+            matches.isEmpty ? message : '$selectedIndex of ${matches.length}',
           ),
         ),
         // previous match button
@@ -327,8 +325,8 @@ class _FindMenuState extends State<FindMenu> {
     // the following line needs to be executed even if
     // findTextEditingController.text.isEmpty, otherwise the previous
     // matches will persist
-    error = widget.searchService
-        .findAndHighlight(findTextEditingController.text);
+    error =
+        widget.searchService.findAndHighlight(findTextEditingController.text);
 
     switch (error) {
       case 'Regex':
