@@ -327,7 +327,8 @@ class _FindMenuState extends State<FindMenu> {
     if (findTextEditingController.text.isEmpty) {
       error = 'Empty';
     } else {
-      error = widget.searchService.findAndHighlight(findTextEditingController.text);
+      error =
+          widget.searchService.findAndHighlight(findTextEditingController.text);
     }
 
     switch (error) {
