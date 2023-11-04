@@ -1,6 +1,7 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
+
 import '../../../../new/infra/testable_editor.dart';
 import '../test_helpers/mobile_app_with_toolbar_widget.dart';
 
@@ -35,15 +36,15 @@ void main() {
     // Show its menu and it has 3 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
     expect(
-      find.text(AppFlowyEditorLocalizations.current.mobileHeading1),
+      find.text(AppFlowyEditorL10n.current.mobileHeading1),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.mobileHeading2),
+      find.text(AppFlowyEditorL10n.current.mobileHeading2),
       findsOneWidget,
     );
     expect(
-      find.text(AppFlowyEditorLocalizations.current.mobileHeading3),
+      find.text(AppFlowyEditorL10n.current.mobileHeading3),
       findsOneWidget,
     );
 
@@ -51,7 +52,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading1,
+        AppFlowyEditorL10n.current.mobileHeading1,
       ),
     );
     var node = editor.editorState.getNodeAtPath([1]);
@@ -66,7 +67,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading2,
+        AppFlowyEditorL10n.current.mobileHeading2,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -82,7 +83,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(
         MobileToolbarItemMenuBtn,
-        AppFlowyEditorLocalizations.current.mobileHeading3,
+        AppFlowyEditorL10n.current.mobileHeading3,
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 500));

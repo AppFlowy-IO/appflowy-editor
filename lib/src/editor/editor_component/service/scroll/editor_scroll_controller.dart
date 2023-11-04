@@ -142,8 +142,10 @@ class EditorScrollController {
       scrollController.dispose();
     }
 
-    _scrollOffsetSubscription.cancel();
-    _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
+    if (!shrinkWrap) {
+      _scrollOffsetSubscription.cancel();
+      _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
+    }
   }
 
   Future<void> animateTo({
