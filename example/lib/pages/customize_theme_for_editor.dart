@@ -63,7 +63,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       child: AppFlowyEditor(
         editorState: editorState,
         editorStyle: customizeEditorStyle(),
-        blockComponentBuilders: customBuilder(),
+        blockComponentBuilders: customBuilder(editorState),
         header: Image.asset(
           'assets/images/header.png',
           height: 200,
@@ -74,7 +74,9 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   }
 
   /// custom the block style
-  Map<String, BlockComponentBuilder> customBuilder() {
+  Map<String, BlockComponentBuilder> customBuilder(
+    EditorState editorState,
+  ) {
     final configuration = BlockComponentConfiguration(
       padding: (node) {
         if (HeadingBlockKeys.type == node.type) {
@@ -102,10 +104,16 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         configuration: configuration,
         iconBuilder: (context, node) {
           final checked = node.attributes[TodoListBlockKeys.checked] as bool;
-          return Icon(
-            checked ? Icons.check_box : Icons.check_box_outline_blank,
-            size: 20,
-            color: Colors.white,
+          return GestureDetector(
+            onTap: () => editorState.apply(
+              editorState.transaction
+                ..updateNode(node, {TodoListBlockKeys.checked: !checked}),
+            ),
+            child: Icon(
+              checked ? Icons.check_box : Icons.check_box_outline_blank,
+              size: 20,
+              color: Colors.white,
+            ),
           );
         },
       ),
