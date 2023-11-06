@@ -1,3 +1,13 @@
+## 1.5.2
+* feat: show placeholder override for paragraph block by @Xazin in ([#571](https://github.com/AppFlowy-IO/appflowy-editor/pull/571))
+* feat: Checkbox unresponsive in custom Theme example in editor example app by @johansutrisno in ([#543](https://github.com/AppFlowy-IO/appflowy-editor/pul/543))
+* fix: quit editing button doesn't work by @LucasXu0 in ([#5677](https://github.com/AppFlowy-IO/appflowy-editor/pull/577))
+* fix: check if header exists for footer by @MayurSMahajan in ([#559](https://github.com/AppFlowy-IO/appflowy-editor/pull/559))
+* fix: 'PageStorage.of' returns null by @LucasXu0 in ([#575](https://github.com/AppFlowy-IO/appflowy-editor/pull/575))
+* fix: catch regex `FormatException` and show a corresponding error message  by @sun-jiao in ([#573](https://github.com/AppFlowy-IO/appflowy-editor/pull/573))
+* chore: changed padding values and added borderRadius by @Kritarthsharma in ([#567](https://github.com/AppFlowy-IO/appflowy-editor/pull/567))
+* chore: refactor character replacement by @Xazin in ([#570](https://github.com/AppFlowy-IO/appflowy-editor/pull/570))
+
 ## 1.5.1
 * feat: toggledStyle notifier by @Xazin in ([#562](https://github.com/AppFlowy-IO/appflowy-editor/pull/562))
 * feat: power checkbox shortcut by @Xazin in ([#553](https://github.com/AppFlowy-IO/appflowy-editor/pull/553))
