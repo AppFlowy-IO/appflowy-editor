@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifiter.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
@@ -51,6 +52,7 @@ class _MobileSelectionServiceWidgetState
   List<Node> currentSelectedNodes = [];
 
   final List<SelectionGestureInterceptor> _interceptors = [];
+  final ValueNotifier<Offset?> _lastPanOffset = ValueNotifier(null);
 
   /// Pan
   Offset? _panStartOffset;
@@ -90,7 +92,29 @@ class _MobileSelectionServiceWidgetState
       onTapUp: _onTapUp,
       onDoubleTapUp: _onDoubleTapUp,
       onTripleTapUp: _onTripleTapUp,
-      child: widget.child,
+      child: Stack(
+        children: [
+          widget.child,
+          _buildMagnifier(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMagnifier() {
+    return ValueListenableBuilder(
+      valueListenable: _lastPanOffset,
+      builder: (_, offset, __) {
+        if (offset == null) {
+          return const SizedBox.shrink();
+        }
+        final renderBox = context.findRenderObject() as RenderBox;
+        final local = renderBox.globalToLocal(offset);
+        return MobileMagnifier(
+          size: const Size(72, 48),
+          offset: local,
+        );
+      },
     );
   }
 
@@ -337,11 +361,14 @@ class _MobileSelectionServiceWidgetState
           Selection.collapsed(end),
         );
       }
+
+      _lastPanOffset.value = panEndOffset;
     }
   }
 
   void _onPanEnd(DragEndDetails details) {
     // do nothing
+    _lastPanOffset.value = null;
   }
 
   void _updateSelectionAreas(Selection selection) {

@@ -100,6 +100,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       prevSelection = selection;
     } else {
       // uses debounce to avoid the computing the rects too frequently.
+      _clear();
       _showAfterDelay(const Duration(milliseconds: 400));
     }
   }
