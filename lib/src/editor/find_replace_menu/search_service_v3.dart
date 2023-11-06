@@ -11,8 +11,8 @@ class SearchServiceV3 {
 
   final EditorState editorState;
 
-  //matchedPositions.value will contain a list of positions of the matched patterns
-  //the position here consists of the node and the starting offset of the
+  //matchWrappers.value will contain a list of matchWrappers of the matched patterns
+  //the position here consists of the match and the node path of
   //matched pattern. We will use this to traverse between the matched patterns.
   ValueNotifier<List<MatchWrapper>> matchWrappers = ValueNotifier([]);
   SearchAlgorithm searchAlgorithm = DartBuiltIn();
@@ -75,8 +75,15 @@ class SearchServiceV3 {
 
   // Public entry method for _findAndHighlight, do necessary checks
   // and clear previous highlights before calling the private method
-  void findAndHighlight(String target, {bool unHighlight = false}) {
-    Pattern pattern = _getPattern(target);
+  String findAndHighlight(String target, {bool unHighlight = false}) {
+    Pattern pattern;
+
+    try {
+      pattern = _getPattern(target);
+    } on FormatException {
+      matchWrappers.value.clear();
+      return 'Regex';
+    }
 
     if (queriedPattern != pattern) {
       // this means we have a new pattern, but before we highlight the new matches,
@@ -87,9 +94,11 @@ class SearchServiceV3 {
       targetString = target;
     }
 
-    if (target.isEmpty) return;
+    if (target.isEmpty) return 'Empty';
 
     _findAndHighlight(pattern, unHighlight: unHighlight);
+
+    return '';
   }
 
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
@@ -186,7 +195,7 @@ class SearchServiceV3 {
   /// matched word if that exists.
   Future<void> replaceSelectedWord(String replaceText) async {
     if (replaceText.isEmpty ||
-        queriedPattern.toString().isEmpty ||
+        queriedPattern.isEmpty ||
         matchWrappers.value.isEmpty) {
       return;
     }
@@ -217,7 +226,7 @@ class SearchServiceV3 {
   /// Replaces all the found occurrences of pattern with replaceText
   void replaceAllMatches(String replaceText) {
     if (replaceText.isEmpty ||
-        queriedPattern.toString().isEmpty ||
+        queriedPattern.isEmpty ||
         matchWrappers.value.isEmpty) {
       return;
     }
@@ -256,4 +265,16 @@ class MatchWrapper {
         start: Position(path: path, offset: match.start),
         end: Position(path: path, offset: match.end),
       );
+}
+
+extension on Pattern {
+  bool get isEmpty {
+    if (this is String) {
+      return (this as String).isEmpty;
+    } else if (this is RegExp) {
+      return (this as RegExp).pattern.isEmpty;
+    } else {
+      return toString().isEmpty;
+    }
+  }
 }

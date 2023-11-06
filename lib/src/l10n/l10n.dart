@@ -961,6 +961,36 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `Regex Error`
+  String get regexError {
+    return Intl.message(
+      'Regex Error',
+      name: 'regexError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No result`
+  String get noFindResult {
+    return Intl.message(
+      'No result',
+      name: 'noFindResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a pattern`
+  String get emptySearchBoxHint {
+    return Intl.message(
+      'Enter a pattern',
+      name: 'emptySearchBoxHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Upload Image`
   String get uploadImage {
     return Intl.message(
