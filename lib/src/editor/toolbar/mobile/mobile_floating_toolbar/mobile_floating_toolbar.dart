@@ -94,7 +94,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     } else if (selection.isCollapsed) {
       if (_isToolbarVisible) {
         _clear();
-      } else if (prevSelection == selection) {
+      } else if (prevSelection == selection &&
+          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         _showAfterDelay(const Duration(milliseconds: 400));
       }
       prevSelection = selection;

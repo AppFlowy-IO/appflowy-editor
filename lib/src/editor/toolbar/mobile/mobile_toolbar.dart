@@ -210,7 +210,7 @@ class _QuitEditingBtn extends StatelessWidget {
       alignment: Alignment.centerLeft,
       onPressed: () {
         // clear selection to close keyboard and toolbar
-        editorState.selectionService.updateSelection(null);
+        editorState.selection = null;
       },
       icon: const Icon(Icons.keyboard_hide),
     );
