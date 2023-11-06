@@ -24,12 +24,18 @@ class MobileSelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.showMagnifier = true,
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
+
+  /// Show the magnifier or not.
+  ///
+  /// only works on iOS or Android.
+  final bool showMagnifier;
 
   @override
   State<MobileSelectionServiceWidget> createState() =>
@@ -95,7 +101,7 @@ class _MobileSelectionServiceWidgetState
       child: Stack(
         children: [
           widget.child,
-          _buildMagnifier(),
+          if (widget.showMagnifier) _buildMagnifier(),
         ],
       ),
     );
