@@ -71,7 +71,7 @@ class MobileToolbar extends StatelessWidget {
           buttonSelectedBorderWidth: buttonSelectedBorderWidth,
           child: MobileToolbarWidget(
             // Use selection as key to force rebuild toolbar widget when selection changed.
-            key: ValueKey(selection),
+            // key: ValueKey(selection),
             editorState: editorState,
             selection: selection,
             toolbarItems: toolbarItems,
