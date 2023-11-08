@@ -52,29 +52,31 @@ class MobileToolbar extends StatelessWidget {
         if (selection == null) {
           return const SizedBox.shrink();
         }
-        return MobileToolbarStyle(
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-          clearDiagonalLineColor: clearDiagonalLineColor,
-          itemHighlightColor: itemHighlightColor,
-          itemOutlineColor: itemOutlineColor,
-          tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
-          tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
-          primaryColor: primaryColor,
-          onPrimaryColor: onPrimaryColor,
-          outlineColor: outlineColor,
-          toolbarHeight: toolbarHeight,
-          borderRadius: borderRadius,
-          buttonHeight: buttonHeight,
-          buttonSpacing: buttonSpacing,
-          buttonBorderWidth: buttonBorderWidth,
-          buttonSelectedBorderWidth: buttonSelectedBorderWidth,
-          child: MobileToolbarWidget(
-            // Use selection as key to force rebuild toolbar widget when selection changed.
-            // key: ValueKey(selection),
-            editorState: editorState,
-            selection: selection,
-            toolbarItems: toolbarItems,
+        return RepaintBoundary(
+          child: MobileToolbarStyle(
+            backgroundColor: backgroundColor,
+            foregroundColor: foregroundColor,
+            clearDiagonalLineColor: clearDiagonalLineColor,
+            itemHighlightColor: itemHighlightColor,
+            itemOutlineColor: itemOutlineColor,
+            tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+            tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+            primaryColor: primaryColor,
+            onPrimaryColor: onPrimaryColor,
+            outlineColor: outlineColor,
+            toolbarHeight: toolbarHeight,
+            borderRadius: borderRadius,
+            buttonHeight: buttonHeight,
+            buttonSpacing: buttonSpacing,
+            buttonBorderWidth: buttonBorderWidth,
+            buttonSelectedBorderWidth: buttonSelectedBorderWidth,
+            child: MobileToolbarWidget(
+              // Use selection as key to force rebuild toolbar widget when selection changed.
+              // key: ValueKey(selection),
+              editorState: editorState,
+              selection: selection,
+              toolbarItems: toolbarItems,
+            ),
           ),
         );
       },
