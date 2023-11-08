@@ -15,15 +15,23 @@ Node dividerNode() {
   );
 }
 
+typedef DividerBlockWrapper = Widget Function(
+  BuildContext context,
+  Node node,
+  Widget child,
+);
+
 class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({
     super.configuration,
     this.lineColor = Colors.grey,
     this.height = 10,
+    this.wrapper,
   });
 
   final Color lineColor;
   final double height;
+  final DividerBlockWrapper? wrapper;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -34,6 +42,7 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       lineColor: lineColor,
       height: height,
+      wrapper: wrapper,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -55,10 +64,12 @@ class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
     super.configuration = const BlockComponentConfiguration(),
     this.lineColor = Colors.grey,
     this.height = 10,
+    this.wrapper,
   });
 
   final Color lineColor;
   final double height;
+  final DividerBlockWrapper? wrapper;
 
   @override
   State<DividerBlockComponentWidget> createState() =>
@@ -117,6 +128,10 @@ class _DividerBlockComponentWidgetState
         actionBuilder: widget.actionBuilder!,
         child: child,
       );
+    }
+
+    if (widget.wrapper != null) {
+      child = widget.wrapper!(context, node, child);
     }
 
     return child;
