@@ -8,14 +8,14 @@ import 'package:provider/provider.dart';
 
 class TableCol extends StatefulWidget {
   const TableCol({
-    Key? key,
+    super.key,
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
     required this.borderColor,
     required this.borderHoverColor,
     this.menuBuilder,
-  }) : super(key: key);
+  });
 
   final int colIdx;
   final EditorState editorState;

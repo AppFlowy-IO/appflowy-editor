@@ -39,11 +39,11 @@ enum AFMobileIcons {
 /// {@end-tool}
 class AFMobileIcon extends StatelessWidget {
   const AFMobileIcon({
-    Key? key,
+    super.key,
     required this.afMobileIcons,
     this.size = 24,
     this.color,
-  }) : super(key: key);
+  });
 
   final AFMobileIcons afMobileIcons;
   final double? size;

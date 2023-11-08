@@ -6,14 +6,14 @@ import 'package:appflowy_editor/src/editor/block_component/table_block_component
 
 class TableView extends StatefulWidget {
   const TableView({
-    Key? key,
+    super.key,
     required this.editorState,
     required this.tableNode,
     required this.addIcon,
     required this.borderColor,
     required this.borderHoverColor,
     this.menuBuilder,
-  }) : super(key: key);
+  });
 
   final EditorState editorState;
   final TableNode tableNode;

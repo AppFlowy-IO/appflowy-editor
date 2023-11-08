@@ -11,9 +11,8 @@ final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
 class _TextDecorationMenu extends StatefulWidget {
   const _TextDecorationMenu(
     this.editorState,
-    this.selection, {
-    Key? key,
-  }) : super(key: key);
+    this.selection,
+  );
 
   final EditorState editorState;
   final Selection selection;

@@ -36,8 +36,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   final String debounceKey = 'updateEditingValue';
 
-  int skipUpdateEditingValue = 0;
-
   @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
@@ -76,12 +74,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     Debounce.cancel(debounceKey);
 
-    // the set editing state will update the text editing value in macOS.
-    // we just skip the unnecessary update.
-    if (PlatformExtension.isMacOS) {
-      skipUpdateEditingValue += 1;
-    }
-
     _textInputConnection!
       ..setEditingState(formattedValue)
       ..show();
@@ -95,10 +87,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
-    if (PlatformExtension.isMacOS && skipUpdateEditingValue > 0) {
-      skipUpdateEditingValue -= 1;
-      return;
-    }
     if (currentTextEditingValue == value) {
       return;
     }

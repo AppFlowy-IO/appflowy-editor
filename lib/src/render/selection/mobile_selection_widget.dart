@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MobileSelectionWidget extends StatelessWidget {
   const MobileSelectionWidget({
-    Key? key,
+    super.key,
     required this.layerLink,
     required this.rect,
     required this.color,
@@ -10,7 +10,7 @@ class MobileSelectionWidget extends StatelessWidget {
     this.showLeftHandler = false,
     this.showRightHandler = false,
     this.handlerColor = Colors.black,
-  }) : super(key: key);
+  });
 
   final Color color;
   final Rect rect;
