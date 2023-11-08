@@ -61,13 +61,13 @@ void showImageMenu(
 
 class UploadImageMenu extends StatefulWidget {
   const UploadImageMenu({
-    Key? key,
+    super.key,
     this.backgroundColor = Colors.white,
     this.headerColor = Colors.black,
     this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final Color headerColor;

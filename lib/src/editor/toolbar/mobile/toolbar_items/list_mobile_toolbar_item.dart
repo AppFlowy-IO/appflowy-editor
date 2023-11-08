@@ -11,9 +11,8 @@ final listMobileToolbarItem = MobileToolbarItem.withMenu(
 class _ListMenu extends StatefulWidget {
   const _ListMenu(
     this.editorState,
-    this.selection, {
-    Key? key,
-  }) : super(key: key);
+    this.selection,
+  );
 
   final Selection selection;
   final EditorState editorState;

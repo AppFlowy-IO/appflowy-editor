@@ -24,8 +24,7 @@ class _TextAndBackgroundColorMenu extends StatefulWidget {
     this.selection, {
     this.textColorOptions,
     this.backgroundColorOptions,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final EditorState editorState;
   final Selection selection;

@@ -26,7 +26,7 @@ class MobileToolbarStyle extends InheritedWidget {
   final double buttonSelectedBorderWidth;
 
   const MobileToolbarStyle({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.foregroundColor,
     required this.clearDiagonalLineColor,
@@ -43,8 +43,8 @@ class MobileToolbarStyle extends InheritedWidget {
     required this.buttonSpacing,
     required this.buttonBorderWidth,
     required this.buttonSelectedBorderWidth,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   static MobileToolbarStyle of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MobileToolbarStyle>()!;
