@@ -20,7 +20,7 @@ class _EditorListState extends State<EditorList> {
     for (var i = 0; i < 100; i++) {
       final document = Document.blank()
         ..insert([
-          0
+          0,
         ], [
           headingNode(level: 3, delta: Delta()..insert('Heading $i')),
           paragraphNode(

@@ -15,12 +15,12 @@ class ContextMenuItem {
 
 class ContextMenu extends StatelessWidget {
   const ContextMenu({
-    Key? key,
+    super.key,
     required this.position,
     required this.editorState,
     required this.items,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final Offset position;
   final EditorState editorState;

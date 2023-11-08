@@ -4,11 +4,11 @@ import 'toolbar_item.dart';
 
 class ToolbarItemWidget extends StatelessWidget {
   const ToolbarItemWidget({
-    Key? key,
+    super.key,
     required this.item,
     required this.isHighlight,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final ToolbarItem item;
   final VoidCallback onPressed;

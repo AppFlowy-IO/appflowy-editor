@@ -8,10 +8,10 @@ import 'package:provider/provider.dart';
 
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
-    Key? key,
+    super.key,
     required this.editorScrollController,
     required this.child,
-  }) : super(key: key);
+  });
 
   final EditorScrollController editorScrollController;
 

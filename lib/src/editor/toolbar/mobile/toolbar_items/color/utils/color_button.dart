@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class ColorButton extends StatelessWidget {
   const ColorButton({
-    Key? key,
+    super.key,
     required this.colorOption,
     required this.isSelected,
     required this.onPressed,
     this.isBackgroundColor = false,
-  }) : super(key: key);
+  });
 
   final ColorOption colorOption;
   final bool isBackgroundColor;

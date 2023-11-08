@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class SelectionMenuItemWidget extends StatefulWidget {
   const SelectionMenuItemWidget({
-    Key? key,
+    super.key,
     required this.editorState,
     required this.menuService,
     required this.item,
     required this.isSelected,
     required this.selectionMenuStyle,
     this.width = 140.0,
-  }) : super(key: key);
+  });
 
   final EditorState editorState;
   final SelectionMenuService menuService;

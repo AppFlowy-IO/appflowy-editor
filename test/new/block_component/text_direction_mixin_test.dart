@@ -391,7 +391,7 @@ void main() {
           paragraphNode(
             text: 'س',
             textDirection: blockComponentTextDirectionRTL,
-          )
+          ),
         ],
       );
       final editor = tester.editor..addNode(node);

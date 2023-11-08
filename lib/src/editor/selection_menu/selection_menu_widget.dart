@@ -187,7 +187,7 @@ class SelectionMenuStyle {
 
 class SelectionMenuWidget extends StatefulWidget {
   const SelectionMenuWidget({
-    Key? key,
+    super.key,
     required this.items,
     required this.maxItemInRow,
     required this.editorState,
@@ -197,7 +197,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.selectionMenuStyle,
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
-  }) : super(key: key);
+  });
 
   final List<SelectionMenuItem> items;
   final int itemCountFilter;

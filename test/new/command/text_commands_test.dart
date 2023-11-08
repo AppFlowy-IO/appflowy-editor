@@ -348,7 +348,7 @@ void main() async {
       expect(delta1.toJson(), [
         {
           "insert": "Hello",
-          "attributes": {"bold": true, "italic": true, "underline": true}
+          "attributes": {"bold": true, "italic": true, "underline": true},
         }
       ]);
 
@@ -366,11 +366,11 @@ void main() async {
       expect(delta2.toJson(), [
         {
           "insert": "Hello",
-          "attributes": {"bold": true, "italic": true, "underline": true}
+          "attributes": {"bold": true, "italic": true, "underline": true},
         },
         {
           "insert": "World",
-          "attributes": {"bold": false, "italic": false, "underline": false}
+          "attributes": {"bold": false, "italic": false, "underline": false},
         },
       ]);
 
@@ -415,7 +415,7 @@ void main() async {
       expect(delta1.toJson(), [
         {
           "insert": "Hello",
-          "attributes": {"bold": false, "italic": false, "underline": false}
+          "attributes": {"bold": false, "italic": false, "underline": false},
         }
       ]);
 

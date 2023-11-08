@@ -63,14 +63,12 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
           return Column(
             children: [
               if (header != null) header!,
-              ...items
-                  .map(
-                    (e) => Padding(
-                      padding: editorState.editorStyle.padding,
-                      child: editorState.renderer.build(context, e),
-                    ),
-                  )
-                  .toList(),
+              ...items.map(
+                (e) => Padding(
+                  padding: editorState.editorStyle.padding,
+                  child: editorState.renderer.build(context, e),
+                ),
+              ),
               if (footer != null) footer!,
             ],
           );

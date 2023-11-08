@@ -219,13 +219,12 @@ class _QuitEditingBtn extends StatelessWidget {
 
 class _ToolbarItemListView extends StatelessWidget {
   const _ToolbarItemListView({
-    Key? key,
     required this.itemWithMenuOnPressed,
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
     required this.toolbarWidgetService,
-  }) : super(key: key);
+  });
 
   final Function(int index) itemWithMenuOnPressed;
   final List<MobileToolbarItem> toolbarItems;

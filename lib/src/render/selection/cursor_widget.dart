@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class CursorWidget extends StatefulWidget {
   const CursorWidget({
-    Key? key,
+    super.key,
     required this.layerLink,
     required this.rect,
     required this.color,
     this.blinkingInterval = 0.5,
     this.shouldBlink = true,
     this.cursorStyle = CursorStyle.verticalLine,
-  }) : super(key: key);
+  });
 
   final double blinkingInterval; // milliseconds
   final bool shouldBlink;
