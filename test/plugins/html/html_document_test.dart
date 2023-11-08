@@ -256,7 +256,7 @@ void main() {
           "attributes": {
             "bg_color": "0xffbbdbba",
             "bold": true,
-            "italic": true
+            "italic": true,
           },
         },
         {
