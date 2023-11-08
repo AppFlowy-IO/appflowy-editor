@@ -3,6 +3,12 @@ description: A highly customizable rich-text editor for Flutter. The AppFlowy Ed
 version: 1.5.2
 homepage: https://github.com/AppFlowy-IO/appflowy-editor
 
+topics:
+ - ui
+ - widgets
+ - editor
+ - appflowy
+
 platforms:
   android:
   ios:
@@ -12,8 +18,8 @@ platforms:
   web:
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.5 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
