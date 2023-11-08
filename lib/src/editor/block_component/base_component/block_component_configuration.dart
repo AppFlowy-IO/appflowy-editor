@@ -73,7 +73,7 @@ EdgeInsets _indentPadding(Node node, TextDirection textDirection) {
     case TextDirection.ltr:
       return const EdgeInsets.only(left: 24.0);
     case TextDirection.rtl:
-      return const EdgeInsets.only(right: 30.0);
+      return const EdgeInsets.only(right: 24.0);
   }
 }
 
