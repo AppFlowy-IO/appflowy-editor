@@ -277,6 +277,8 @@ class EditorState {
     if (!editable && !vimMode && mode == VimModes.normalMode) {
       return;
     } else if (!editable && vimMode) {
+      //NOTE: This statement blocks editor transactions
+      //So to apply transactions just remove it
       return;
     }
 

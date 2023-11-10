@@ -79,6 +79,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
       child: Directionality(
         textDirection: widget.textDirection,
         child: AppFlowyEditor(
+          vimMode: true,
           editorState: editorState,
           editorScrollController: editorScrollController,
           blockComponentBuilders: blockComponentBuilders,

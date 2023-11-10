@@ -54,6 +54,9 @@ final CommandShortcutEvent insertOnNewLineCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
 
   if (afKeyboard.currentState != null &&
@@ -81,6 +84,9 @@ final CommandShortcutEvent insertInlineCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -106,6 +112,9 @@ final CommandShortcutEvent insertNextInlineCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -299,10 +308,13 @@ CommandShortcutEventHandler _vimUndoCommandHandler = (editorState) {
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection != null &&
-        editorState.mode == VimModes.normalMode) {
+    if (editorState.mode == VimModes.normalMode) {
       //BUG: undo doesnt work in Normal mode
       //NOTE: Could be something to do with selection
+      /*
+        The cursor does update but also disappears so makes it hard
+        for the block cursor to follow & track the current position
+       */
       editorState.undoManager.undo();
       return KeyEventResult.handled;
     } else {
