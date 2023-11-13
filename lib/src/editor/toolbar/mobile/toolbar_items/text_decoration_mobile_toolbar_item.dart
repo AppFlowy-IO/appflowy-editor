@@ -2,7 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.textDecoration),
+  itemIconBuilder: (_, __) =>
+      const AFMobileIcon(afMobileIcons: AFMobileIcons.textDecoration),
   itemMenuBuilder: (editorState, selection, _) {
     return _TextDecorationMenu(editorState, selection);
   },
