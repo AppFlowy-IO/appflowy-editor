@@ -16,20 +16,23 @@ typedef MobileToolbarItemActionHandler = void Function(
 class MobileToolbarItem {
   /// Tool bar item that implements attribute directly(without opening menu)
   const MobileToolbarItem.action({
-    required this.itemIcon,
+    required this.itemIconBuilder,
     required this.actionHandler,
   })  : hasMenu = false,
         itemMenuBuilder = null;
 
   /// Tool bar item that opens a menu to show options
   const MobileToolbarItem.withMenu({
-    required this.itemIcon,
+    required this.itemIconBuilder,
     required this.itemMenuBuilder,
   })  : hasMenu = true,
         actionHandler = null;
 
   final bool hasMenu;
-  final Widget itemIcon;
+  final Widget? Function(
+    BuildContext context,
+    EditorState editorState,
+  ) itemIconBuilder;
   final MobileToolbarItemMenuBuilder? itemMenuBuilder;
   final MobileToolbarItemActionHandler? actionHandler;
 }
