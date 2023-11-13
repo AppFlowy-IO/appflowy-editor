@@ -61,7 +61,10 @@ class _HeadingMenuState extends State<_HeadingMenu> {
           width: (size.width - 4 * style.buttonSpacing) / 3,
         ),
         child: MobileToolbarItemMenuBtn(
-          icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
+          icon: AFMobileIcon(
+            afMobileIcons: currentHeading.icon,
+            size: 20,
+          ),
           label: Text(
             currentHeading.label,
             maxLines: 2,

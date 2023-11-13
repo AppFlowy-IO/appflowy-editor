@@ -11,9 +11,8 @@ final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
 class _TextDecorationMenu extends StatefulWidget {
   const _TextDecorationMenu(
     this.editorState,
-    this.selection, {
-    Key? key,
-  }) : super(key: key);
+    this.selection,
+  );
 
   final EditorState editorState;
   final Selection selection;
@@ -50,12 +49,20 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
     final style = MobileToolbarStyle.of(context);
     final btnList = textDecorations.map((currentDecoration) {
       // Check current decoration is active or not
-      final nodes = widget.editorState.getNodesInSelection(widget.selection);
-      final isSelected = nodes.allSatisfyInSelection(widget.selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[currentDecoration.name] == true,
+      final selection = widget.selection;
+      final nodes = widget.editorState.getNodesInSelection(selection);
+      final bool isSelected;
+      if (selection.isCollapsed) {
+        isSelected = widget.editorState.toggledStyle.containsKey(
+          currentDecoration.name,
         );
-      });
+      } else {
+        isSelected = nodes.allSatisfyInSelection(selection, (delta) {
+          return delta.everyAttributes(
+            (attributes) => attributes[currentDecoration.name] == true,
+          );
+        });
+      }
 
       return MobileToolbarItemMenuBtn(
         icon: AFMobileIcon(
@@ -64,13 +71,9 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
         label: Text(currentDecoration.label),
         isSelected: isSelected,
         onPressed: () {
-          if (widget.selection.isCollapsed) {
-            // TODO(yijing): handle collapsed selection
-          } else {
-            setState(() {
-              widget.editorState.toggleAttribute(currentDecoration.name);
-            });
-          }
+          setState(() {
+            widget.editorState.toggleAttribute(currentDecoration.name);
+          });
         },
       );
     }).toList();
