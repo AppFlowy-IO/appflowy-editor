@@ -69,7 +69,8 @@ final CommandShortcutEvent moveCursorToLeftWordCommand = CommandShortcutEvent(
   handler: _moveCursorToLeftWordCommandHandler,
 );
 
-CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler = (editorState) {
+CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
+    (editorState) {
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -119,14 +120,16 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler = (editorState) 
 };
 
 // arrow left key + alt + shift
-final CommandShortcutEvent moveCursorLeftWordSelectCommand = CommandShortcutEvent(
+final CommandShortcutEvent moveCursorLeftWordSelectCommand =
+    CommandShortcutEvent(
   key: 'move the cursor to select the left word',
   command: 'ctrl+shift+arrow left',
   macOSCommand: 'alt+shift+arrow left',
   handler: _moveCursorLeftWordSelectCommandHandler,
 );
 
-CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler = (editorState) {
+CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
+    (editorState) {
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -158,7 +161,8 @@ final CommandShortcutEvent moveCursorLeftSelectCommand = CommandShortcutEvent(
   handler: _moveCursorLeftSelectCommandHandler,
 );
 
-CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler = (editorState) {
+CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
+    (editorState) {
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -186,7 +190,8 @@ final CommandShortcutEvent moveCursorBeginSelectCommand = CommandShortcutEvent(
   handler: _moveCursorBeginSelectCommandHandler,
 );
 
-CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler = (editorState) {
+CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
+    (editorState) {
   final selection = editorState.selection;
   if (selection == null) {
     return KeyEventResult.ignored;
@@ -196,7 +201,9 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler = (editorState)
     return KeyEventResult.ignored;
   }
   var end = selection.end;
-  final position = isRTL(editorState) ? nodes.last.selectable?.end() : nodes.last.selectable?.start();
+  final position = isRTL(editorState)
+      ? nodes.last.selectable?.end()
+      : nodes.last.selectable?.start();
   if (position != null) {
     end = position;
   }
