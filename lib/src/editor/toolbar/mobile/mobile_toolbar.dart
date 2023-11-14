@@ -239,8 +239,15 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toolbarItem = toolbarItems[index];
+        final icon = toolbarItem.itemIconBuilder(
+          context,
+          editorState,
+        );
+        if (icon == null) {
+          return const SizedBox.shrink();
+        }
         return IconButton(
-          icon: toolbarItem.itemIcon,
+          icon: icon,
           onPressed: () {
             if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
