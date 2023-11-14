@@ -1,7 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final dividerMobileToolbarItem = MobileToolbarItem.action(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.divider),
+  itemIconBuilder: (_, __) =>
+      const AFMobileIcon(afMobileIcons: AFMobileIcons.divider),
   actionHandler: ((editorState, selection) {
     // same as the [handler] of [dividerMenuItem] in Desktop
     final selection = editorState.selection;

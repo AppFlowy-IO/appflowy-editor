@@ -6,7 +6,8 @@ MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
   List<ColorOption>? backgroundColorOptions,
 }) {
   return MobileToolbarItem.withMenu(
-    itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.color),
+    itemIconBuilder: (_, __) =>
+        const AFMobileIcon(afMobileIcons: AFMobileIcons.color),
     itemMenuBuilder: (editorState, selection, _) {
       return _TextAndBackgroundColorMenu(
         editorState,
