@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 @immutable
 class SelectionGestureDetector extends StatefulWidget {
   const SelectionGestureDetector({
-    Key? key,
+    super.key,
     this.child,
     this.onTapDown,
     this.onDoubleTapDown,
@@ -17,7 +17,7 @@ class SelectionGestureDetector extends StatefulWidget {
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,
-  }) : super(key: key);
+  });
 
   @override
   State<SelectionGestureDetector> createState() =>

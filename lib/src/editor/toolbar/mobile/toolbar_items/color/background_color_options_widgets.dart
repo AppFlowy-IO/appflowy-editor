@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 class BackgroundColorOptionsWidgets extends StatefulWidget {
   const BackgroundColorOptionsWidgets(
     this.editorState,
     this.selection, {
     this.backgroundColorOptions,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Selection selection;
   final EditorState editorState;
@@ -82,7 +82,7 @@ class _BackgroundColorOptionsWidgetsState
               },
               isSelected: isSelected,
             );
-          }).toList(),
+          }),
         ],
       ),
     );

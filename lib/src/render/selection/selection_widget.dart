@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class SelectionWidget extends StatefulWidget {
   const SelectionWidget({
-    Key? key,
+    super.key,
     required this.layerLink,
     required this.rect,
     required this.color,
     this.decoration,
-  }) : super(key: key);
+  });
 
   final Color color;
   final Rect rect;

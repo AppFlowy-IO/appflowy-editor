@@ -125,15 +125,13 @@ class _ColorPickerState extends State<ColorPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _buildCustomColorItem(colorOptionList),
-        ...colorOptionList.colorOptions
-            .map(
-              (colorOption) => _buildColorItem(
-                colorOptionList.onSubmittedAction,
-                colorOption,
-                colorOption.colorHex == colorOptionList.selectedColorHex,
-              ),
-            )
-            .toList(),
+        ...colorOptionList.colorOptions.map(
+          (colorOption) => _buildColorItem(
+            colorOptionList.onSubmittedAction,
+            colorOption,
+            colorOption.colorHex == colorOptionList.selectedColorHex,
+          ),
+        ),
       ],
     );
   }

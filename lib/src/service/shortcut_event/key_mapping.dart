@@ -1,8 +1,6 @@
 /// Keyboard key to keycode mapping table
 ///
 /// Copy from flutter project, keyboard_key.dart.
-///
-
 Map<String, int> keyToCodeMapping = <String, int>{
   'Space': 0x00000000020,
   'Exclamation': 0x00000000021,

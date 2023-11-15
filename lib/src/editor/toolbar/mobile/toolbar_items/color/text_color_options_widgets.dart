@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 class TextColorOptionsWidgets extends StatefulWidget {
   const TextColorOptionsWidgets(
     this.editorState,
     this.selection, {
     this.textColorOptions,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Selection selection;
   final EditorState editorState;
@@ -80,7 +80,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
               },
               isSelected: isSelected,
             );
-          }).toList(),
+          }),
         ],
       ),
     );

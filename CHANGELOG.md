@@ -1,3 +1,6 @@
+## 2.0.0-beta.1
+* feat: support Flutter stable channel by @LucasXu0 in ([#581](https://github.com/AppFlowy-IO/appflowy-editor/pull/581))
+
 ## 1.5.2
 * feat: show placeholder override for paragraph block by @Xazin in ([#571](https://github.com/AppFlowy-IO/appflowy-editor/pull/571))
 * feat: Checkbox unresponsive in custom Theme example in editor example app by @johansutrisno in ([#543](https://github.com/AppFlowy-IO/appflowy-editor/pul/543))

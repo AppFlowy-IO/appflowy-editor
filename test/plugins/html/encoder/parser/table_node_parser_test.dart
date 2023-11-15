@@ -11,7 +11,7 @@ void main() async {
     const HTMLQuoteNodeParser(),
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
-    const HtmlTableNodeParser()
+    const HtmlTableNodeParser(),
   ];
   group('html_image_node_parser.dart', () {
     test('table node parser test', () {

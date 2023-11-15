@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class TableActionButton extends StatefulWidget {
   const TableActionButton({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.padding,
     required this.onPressed,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final double width, height;
   final EdgeInsetsGeometry padding;

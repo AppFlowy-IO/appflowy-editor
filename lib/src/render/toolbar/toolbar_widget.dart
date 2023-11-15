@@ -10,7 +10,7 @@ mixin ToolbarMixin<T extends StatefulWidget> on State<T> {
 
 class ToolbarWidget extends StatefulWidget {
   const ToolbarWidget({
-    Key? key,
+    super.key,
     required this.editorState,
     required this.layerLink,
     required this.offset,
@@ -18,7 +18,7 @@ class ToolbarWidget extends StatefulWidget {
     this.iconColor,
     required this.items,
     this.alignment = Alignment.topLeft,
-  }) : super(key: key);
+  });
 
   final EditorState editorState;
   final LayerLink layerLink;

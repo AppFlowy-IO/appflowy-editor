@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 class DesktopScrollService extends StatefulWidget {
   const DesktopScrollService({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

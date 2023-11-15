@@ -249,53 +249,57 @@ void main() {
       [
         {
           "insert": "DTrace is a ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         },
         {
           "insert": "dynamic tracing",
-          "attributes": {"bg_color": "0xffbbdbba", "bold": true, "italic": true}
+          "attributes": {
+            "bg_color": "0xffbbdbba",
+            "bold": true,
+            "italic": true,
+          },
         },
         {
           "insert": " technology",
-          "attributes": {"bg_color": "0xffbbdbba"}
+          "attributes": {"bg_color": "0xffbbdbba"},
         },
         {
           "insert": " that can be used to locate ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         },
         {
           "insert": "system performance issues",
-          "attributes": {"bg_color": "0xffe8f3e8"}
+          "attributes": {"bg_color": "0xffe8f3e8"},
         },
         {
           "insert": ", obtain information about ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         },
         {
           "insert": "system function calls",
-          "attributes": {"bg_color": "0xffe8f3e8"}
+          "attributes": {"bg_color": "0xffe8f3e8"},
         },
         {
           "insert":
               ", or monitor system runtime information. And worth noting is that DTrace is ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         },
         {
           "insert": "non-intrusive",
-          "attributes": {"bg_color": "0xffe8f3e8", "bold": true}
+          "attributes": {"bg_color": "0xffe8f3e8", "bold": true},
         },
         {
           "insert":
               " to existing code. Also, there is no need to modify the existing code or use ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         },
         {
           "insert": "instrumentation technology",
-          "attributes": {"bg_color": "0xffe8f3e8"}
+          "attributes": {"bg_color": "0xffe8f3e8"},
         },
         {
           "insert": " to obtain more system information.",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"}
+          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
         }
       ],
     );
