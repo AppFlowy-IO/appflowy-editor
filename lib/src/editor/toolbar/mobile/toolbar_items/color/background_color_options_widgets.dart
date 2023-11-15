@@ -22,7 +22,7 @@ class _BackgroundColorOptionsWidgetsState
     extends State<BackgroundColorOptionsWidgets> {
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     final colorOptions =
         widget.backgroundColorOptions ?? generateHighlightColorOptions();
     final selection = widget.selection;

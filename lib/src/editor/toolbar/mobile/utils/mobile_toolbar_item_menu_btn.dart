@@ -17,7 +17,7 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: icon ?? const SizedBox.shrink(),

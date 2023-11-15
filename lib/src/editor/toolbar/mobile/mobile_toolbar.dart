@@ -53,14 +53,14 @@ class MobileToolbar extends StatelessWidget {
           return const SizedBox.shrink();
         }
         return RepaintBoundary(
-          child: MobileToolbarStyle(
+          child: MobileToolbarTheme(
             backgroundColor: backgroundColor,
             foregroundColor: foregroundColor,
             clearDiagonalLineColor: clearDiagonalLineColor,
             itemHighlightColor: itemHighlightColor,
             itemOutlineColor: itemOutlineColor,
-            tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
-            tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+            tabBarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+            tabBarSelectedForegroundColor: tabbarSelectedForegroundColor,
             primaryColor: primaryColor,
             onPrimaryColor: onPrimaryColor,
             outlineColor: outlineColor,
@@ -126,7 +126,7 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (updateKeyboardHeight) {
@@ -219,7 +219,7 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                   itemMenuBuilder: () => widget
                       .toolbarItems[_selectedToolbarItemIndex!]
                       // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
-                      .itemMenuBuilder!(widget.editorState, widget.selection, this),
+                      .itemMenuBuilder!(context, widget.editorState, this),
                 ),
               )
             : SizedBox(
@@ -269,9 +269,10 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toolbarItem = toolbarItems[index];
-        final icon = toolbarItem.itemIconBuilder(
+        final icon = toolbarItem.itemIconBuilder?.call(
           context,
           editorState,
+          toolbarWidgetService,
         );
         if (icon == null) {
           return const SizedBox.shrink();
@@ -286,8 +287,8 @@ class _ToolbarItemListView extends StatelessWidget {
               // close menu if other item's menu is still on the screen
               toolbarWidgetService.closeItemMenu();
               toolbarItems[index].actionHandler?.call(
+                    context,
                     editorState,
-                    selection,
                   );
             }
           },
