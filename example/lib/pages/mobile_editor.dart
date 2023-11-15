@@ -93,16 +93,11 @@ class _MobileEditorState extends State<MobileEditor> {
         MobileToolbarV2(
           editorState: editorState,
           toolbarItems: [
-            textDecorationMobileToolbarItem,
             textDecorationMobileToolbarItemV2,
             buildTextAndBackgroundColorMobileToolbarItem(),
-            headingMobileToolbarItem,
-            todoListMobileToolbarItem,
-            listMobileToolbarItem,
+            blocksMobileToolbarItem,
             linkMobileToolbarItem,
-            quoteMobileToolbarItem,
             dividerMobileToolbarItem,
-            codeMobileToolbarItem,
           ],
         ),
       ],

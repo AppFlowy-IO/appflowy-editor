@@ -1,3 +1,4 @@
+export 'blocks_mobile_toolbar_item.dart';
 export 'code_mobile_toolbar_item.dart';
 export 'color/color.dart';
 export 'divider_mobile_toolbar_item.dart';

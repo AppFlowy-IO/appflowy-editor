@@ -149,6 +149,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
         color: style.backgroundColor,
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // toolbar list view
           Expanded(
@@ -191,9 +192,10 @@ class _MobileToolbarState extends State<_MobileToolbar>
           const Padding(
             padding: EdgeInsets.symmetric(
               vertical: 8,
-              horizontal: 4.0,
             ),
-            child: VerticalDivider(),
+            child: VerticalDivider(
+              width: 1,
+            ),
           ),
           // close menu or close keyboard button
           ValueListenableBuilder(
@@ -214,6 +216,9 @@ class _MobileToolbarState extends State<_MobileToolbar>
                 },
               );
             },
+          ),
+          const SizedBox(
+            width: 4.0,
           ),
         ],
       ),
@@ -326,7 +331,6 @@ class _CloseKeyboardOrMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       padding: EdgeInsets.zero,
-      alignment: Alignment.centerLeft,
       onPressed: onPressed,
       icon: showingMenu
           ? const AFMobileIcon(
