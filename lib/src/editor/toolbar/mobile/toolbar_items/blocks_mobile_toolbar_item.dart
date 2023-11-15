@@ -73,6 +73,8 @@ class _BlocksMenuState extends State<_BlocksMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final style = MobileToolbarTheme.of(context);
+
     final children = lists.map((list) {
       // Check if current node is list and its type
       final node = widget.editorState.getNodeAtPath(
@@ -111,11 +113,10 @@ class _BlocksMenuState extends State<_BlocksMenu> {
 
     return GridView(
       shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      padding: EdgeInsets.zero,
+      gridDelegate: buildMobileToolbarMenuGridDelegate(
+        mobileToolbarStyle: style,
         crossAxisCount: 2,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: 5,
       ),
       children: children,
     );
