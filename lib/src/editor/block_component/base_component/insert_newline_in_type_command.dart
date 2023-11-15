@@ -18,6 +18,10 @@ Future<bool> insertNewLineInType(
   }
 
   if (selection.startIndex == 0 && delta.isEmpty) {
+    // outdent the block
+    if (selection.start.path.length > 1) {
+      return KeyEventResult.ignored != outdentCommand.execute(editorState);
+    }
     // clear the style
     return KeyEventResult.ignored !=
         convertToParagraphCommand.execute(editorState);
