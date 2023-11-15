@@ -6,7 +6,7 @@ void main() {
   group('MobileToolbarItem', () {
     test('action item should not have a menu', () {
       final item = MobileToolbarItem.action(
-        itemIconBuilder: (_, __) => const Icon(Icons.format_bold),
+        itemIconBuilder: (_, __, ___) => const Icon(Icons.format_bold),
         actionHandler: (editorState, selection) {},
       );
 
@@ -15,8 +15,8 @@ void main() {
 
     test('menu item should have a menu', () {
       final item = MobileToolbarItem.withMenu(
-        itemIconBuilder: (_, __) => const Icon(Icons.format_color_text),
-        itemMenuBuilder: (editorState, selection, _) {
+        itemIconBuilder: (_, __, ___) => const Icon(Icons.format_color_text),
+        itemMenuBuilder: (_, editorState, __) {
           return Container();
         },
       );

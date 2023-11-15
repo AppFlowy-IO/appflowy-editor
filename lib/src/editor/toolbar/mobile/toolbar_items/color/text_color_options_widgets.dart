@@ -21,7 +21,7 @@ class TextColorOptionsWidgets extends StatefulWidget {
 class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
 
     final selection = widget.selection;
     final nodes = widget.editorState.getNodesInSelection(selection);
