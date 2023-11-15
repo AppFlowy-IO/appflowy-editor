@@ -26,6 +26,10 @@ final CommandShortcutEvent moveCursorRightCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
   if (isRTL(editorState)) {
     editorState.moveCursorForward(SelectionMoveRange.character);
   } else {
@@ -44,6 +48,10 @@ final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
   if (isRTL(editorState)) {
     editorState.moveCursorForward(SelectionMoveRange.line);
   } else {
