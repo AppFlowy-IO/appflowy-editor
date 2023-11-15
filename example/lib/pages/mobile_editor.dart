@@ -94,6 +94,7 @@ class _MobileEditorState extends State<MobileEditor> {
           editorState: editorState,
           toolbarItems: [
             textDecorationMobileToolbarItem,
+            textDecorationMobileToolbarItemV2,
             buildTextAndBackgroundColorMobileToolbarItem(),
             headingMobileToolbarItem,
             todoListMobileToolbarItem,

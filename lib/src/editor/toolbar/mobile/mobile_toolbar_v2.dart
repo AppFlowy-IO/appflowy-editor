@@ -15,21 +15,16 @@ class MobileToolbarV2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Selection?>(
       valueListenable: editorState.selectionNotifier,
-      builder: (_, Selection? selection, __) {
+      builder: (_, Selection? selection, child) {
         // if the selection is null, hide the toolbar
         if (selection == null) {
           return const SizedBox.shrink();
         }
 
-        Widget child = _MobileToolbar(
-          editorState: editorState,
-          toolbarItems: toolbarItems,
-        );
-
         // if the MobileToolbarTheme is not provided, provide it
         if (MobileToolbarTheme.maybeOf(context) == null) {
           child = MobileToolbarTheme(
-            child: child,
+            child: child!,
           );
         }
 
@@ -37,6 +32,10 @@ class MobileToolbarV2 extends StatelessWidget {
           child: child,
         );
       },
+      child: _MobileToolbar(
+        editorState: editorState,
+        toolbarItems: toolbarItems,
+      ),
     );
   }
 }
@@ -57,7 +56,7 @@ class _MobileToolbar extends StatefulWidget {
 class _MobileToolbarState extends State<_MobileToolbar>
     implements MobileToolbarWidgetService {
   // used to control the toolbar menu items
-  ValueNotifier<bool> showMenuNotifier = ValueNotifier(false);
+  PropertyValueNotifier<bool> showMenuNotifier = PropertyValueNotifier(false);
 
   // when the users click the menu item, the keyboard will be hidden,
   //  but in this case, we don't want to update the cached keyboard height.
@@ -68,6 +67,25 @@ class _MobileToolbarState extends State<_MobileToolbar>
 
   // used to check if click the same item again
   int? selectedMenuIndex;
+
+  Selection? currentSelection;
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentSelection = widget.editorState.selection;
+  }
+
+  @override
+  void didUpdateWidget(covariant _MobileToolbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (currentSelection != widget.editorState.selection) {
+      currentSelection = widget.editorState.selection;
+      closeItemMenu();
+    }
+  }
 
   @override
   void dispose() {
@@ -138,6 +156,17 @@ class _MobileToolbarState extends State<_MobileToolbar>
               toolbarItems: widget.toolbarItems,
               editorState: widget.editorState,
               toolbarWidgetService: this,
+              itemWithActionOnPressed: (_) {
+                if (showMenuNotifier.value) {
+                  closeItemMenu();
+                  _showKeyboard();
+                  // update the cached keyboard height after the keyboard is shown
+                  Debounce.debounce('canUpdateCachedKeyboardHeight',
+                      const Duration(milliseconds: 500), () {
+                    canUpdateCachedKeyboardHeight = true;
+                  });
+                }
+              },
               itemWithMenuOnPressed: (index) {
                 // click the same one
                 if (selectedMenuIndex == index && showMenuNotifier.value) {
@@ -145,7 +174,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
                   closeItemMenu();
                   _showKeyboard();
                   // update the cached keyboard height after the keyboard is shown
-                  Future.delayed(const Duration(milliseconds: 500), () {
+                  Debounce.debounce('canUpdateCachedKeyboardHeight',
+                      const Duration(milliseconds: 500), () {
                     canUpdateCachedKeyboardHeight = true;
                   });
                 } else {
@@ -200,9 +230,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
           builder: (_, showingMenu, __) {
             return ConstrainedBox(
               constraints: BoxConstraints(minHeight: height),
-              child: !(showMenuNotifier.value && selectedMenuIndex != null)
-                  ? const SizedBox.shrink()
-                  : MobileToolbarItemMenu(
+              child: (showingMenu && selectedMenuIndex != null)
+                  ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
                       itemMenuBuilder: () => widget
                           .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
@@ -211,7 +240,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
                         widget.editorState,
                         this,
                       ),
-                    ),
+                    )
+                  : const SizedBox.shrink(),
             );
           },
         );
@@ -237,9 +267,11 @@ class _ToolbarItemListView extends StatelessWidget {
     required this.editorState,
     required this.toolbarWidgetService,
     required this.itemWithMenuOnPressed,
+    required this.itemWithActionOnPressed,
   });
 
   final Function(int index) itemWithMenuOnPressed;
+  final Function(int index) itemWithActionOnPressed;
   final List<MobileToolbarItem> toolbarItems;
   final EditorState editorState;
   final MobileToolbarWidgetService toolbarWidgetService;
@@ -262,8 +294,9 @@ class _ToolbarItemListView extends StatelessWidget {
           onPressed: () {
             if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
-              itemWithMenuOnPressed.call(index);
+              itemWithMenuOnPressed(index);
             } else {
+              itemWithActionOnPressed(index);
               // close menu if other item's menu is still on the screen
               toolbarWidgetService.closeItemMenu();
               toolbarItems[index].actionHandler?.call(
