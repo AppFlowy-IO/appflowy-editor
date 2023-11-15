@@ -35,13 +35,13 @@ dependencies:
   provider: ^6.0.3
   url_launcher: ^6.1.5
   path_provider: ^2.0.15
-  google_fonts: ^4.0.4
+  google_fonts: ^6.1.0
   flutter_localizations:
     sdk: flutter
-  file_picker: ^5.0.1
+  file_picker: ^6.1.1
   universal_html: ^2.0.8
   highlight: ^0.7.0
-  http: ^0.13.5
+  http: ^1.1.0
   show_fps: ^1.0.6
 
 dev_dependencies:
@@ -53,7 +53,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

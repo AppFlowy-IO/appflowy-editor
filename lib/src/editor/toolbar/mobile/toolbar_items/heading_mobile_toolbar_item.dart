@@ -15,9 +15,8 @@ final headingMobileToolbarItem = MobileToolbarItem.withMenu(
 class _HeadingMenu extends StatefulWidget {
   const _HeadingMenu(
     this.selection,
-    this.editorState, {
-    Key? key,
-  }) : super(key: key);
+    this.editorState,
+  );
 
   final Selection selection;
   final EditorState editorState;
