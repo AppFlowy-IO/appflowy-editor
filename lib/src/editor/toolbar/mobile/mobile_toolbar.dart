@@ -90,7 +90,7 @@ abstract class MobileToolbarWidgetService {
   void closeItemMenu();
 }
 
-class MobileToolbarWidget extends StatefulWidget {
+class MobileToolbarWidget extends StatefulWidget with WidgetsBindingObserver {
   const MobileToolbarWidget({
     super.key,
     required this.editorState,
@@ -111,6 +111,9 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
   bool _showItemMenu = false;
   int? _selectedToolbarItemIndex;
 
+  double previousKeyboardHeight = 0.0;
+  bool updateKeyboardHeight = true;
+
   @override
   void closeItemMenu() {
     if (_showItemMenu) {
@@ -124,6 +127,13 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final style = MobileToolbarStyle.of(context);
+
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    if (updateKeyboardHeight) {
+      previousKeyboardHeight = keyboardHeight;
+    }
+    // print('object $keyboardHeight');
+
     return Column(
       children: [
         Container(
@@ -147,15 +157,27 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                   toolbarItems: widget.toolbarItems,
                   toolbarWidgetService: this,
                   itemWithMenuOnPressed: (selectedItemIndex) {
+                    updateKeyboardHeight = false;
                     setState(() {
                       // If last selected item is selected again, toggle item menu
                       if (_selectedToolbarItemIndex == selectedItemIndex) {
                         _showItemMenu = !_showItemMenu;
+
+                        if (!_showItemMenu) {
+                          // updateKeyboardHeight = true;
+                          widget.editorState.service.keyboardService
+                              ?.enableKeyBoard(widget.selection);
+                        } else {
+                          updateKeyboardHeight = false;
+                          widget.editorState.service.keyboardService
+                              ?.closeKeyboard();
+                        }
                       } else {
                         _selectedToolbarItemIndex = selectedItemIndex;
                         // If not, show item menu
                         _showItemMenu = true;
                         // close keyboard when menu pop up
+
                         widget.editorState.service.keyboardService
                             ?.closeKeyboard();
                       }
@@ -174,8 +196,8 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                       onPressed: () {
                         setState(() {
                           _showItemMenu = false;
-                          widget.editorState.service.keyboardService!
-                              .enableKeyBoard(widget.selection);
+                          widget.editorState.service.keyboardService
+                              ?.enableKeyBoard(widget.selection);
                         });
                       },
                       icon: const AFMobileIcon(
@@ -187,14 +209,22 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
           ),
         ),
         // only for MobileToolbarItem.withMenu
-        if (_showItemMenu && _selectedToolbarItemIndex != null)
-          MobileToolbarItemMenu(
-            editorState: widget.editorState,
-            itemMenuBuilder: () => widget
-                .toolbarItems[_selectedToolbarItemIndex!]
-                // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
-                .itemMenuBuilder!(widget.editorState, widget.selection, this),
-          ),
+        (_showItemMenu && _selectedToolbarItemIndex != null)
+            ? Container(
+                constraints: BoxConstraints(
+                  minHeight: previousKeyboardHeight,
+                ),
+                child: MobileToolbarItemMenu(
+                  editorState: widget.editorState,
+                  itemMenuBuilder: () => widget
+                      .toolbarItems[_selectedToolbarItemIndex!]
+                      // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
+                      .itemMenuBuilder!(widget.editorState, widget.selection, this),
+                ),
+              )
+            : SizedBox(
+                height: previousKeyboardHeight,
+              ),
       ],
     );
   }
