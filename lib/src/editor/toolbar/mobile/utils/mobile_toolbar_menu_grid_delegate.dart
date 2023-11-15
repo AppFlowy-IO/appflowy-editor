@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/rendering.dart';
 
 SliverGridDelegate buildMobileToolbarMenuGridDelegate({
-  required MobileToolbarStyle mobileToolbarStyle,
+  required MobileToolbarTheme mobileToolbarStyle,
   required int crossAxisCount,
 }) {
   return SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(

@@ -14,7 +14,7 @@ class MobileToolbarItemMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
 
     return Container(
       width: size.width,

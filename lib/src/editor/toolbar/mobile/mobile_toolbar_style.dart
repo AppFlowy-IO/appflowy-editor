@@ -7,14 +7,35 @@ import 'package:flutter/material.dart';
 /// itemHighlightColor -> selected item border color
 ///
 /// itemOutlineColor -> item border color
-class MobileToolbarStyle extends InheritedWidget {
+class MobileToolbarTheme extends InheritedWidget {
+  const MobileToolbarTheme({
+    super.key,
+    this.backgroundColor = Colors.white,
+    this.foregroundColor = const Color(0xff676666),
+    this.clearDiagonalLineColor = const Color(0xffB3261E),
+    this.itemHighlightColor = const Color(0xff1F71AC),
+    this.itemOutlineColor = const Color(0xFFE3E3E3),
+    this.tabBarSelectedBackgroundColor = const Color(0x23808080),
+    this.tabBarSelectedForegroundColor = Colors.black,
+    this.primaryColor = const Color(0xff1F71AC),
+    this.onPrimaryColor = Colors.white,
+    this.outlineColor = const Color(0xFFE3E3E3),
+    this.toolbarHeight = 50.0,
+    this.borderRadius = 6.0,
+    this.buttonHeight = 40.0,
+    this.buttonSpacing = 8.0,
+    this.buttonBorderWidth = 1.0,
+    this.buttonSelectedBorderWidth = 2.0,
+    required super.child,
+  });
+
   final Color backgroundColor;
   final Color foregroundColor;
   final Color clearDiagonalLineColor;
   final Color itemHighlightColor;
   final Color itemOutlineColor;
-  final Color tabbarSelectedBackgroundColor;
-  final Color tabbarSelectedForegroundColor;
+  final Color tabBarSelectedBackgroundColor;
+  final Color tabBarSelectedForegroundColor;
   final Color primaryColor;
   final Color onPrimaryColor;
   final Color outlineColor;
@@ -25,44 +46,25 @@ class MobileToolbarStyle extends InheritedWidget {
   final double buttonBorderWidth;
   final double buttonSelectedBorderWidth;
 
-  const MobileToolbarStyle({
-    super.key,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    required this.clearDiagonalLineColor,
-    required this.itemHighlightColor,
-    required this.itemOutlineColor,
-    required this.tabbarSelectedBackgroundColor,
-    required this.tabbarSelectedForegroundColor,
-    required this.primaryColor,
-    required this.onPrimaryColor,
-    required this.outlineColor,
-    required this.toolbarHeight,
-    required this.borderRadius,
-    required this.buttonHeight,
-    required this.buttonSpacing,
-    required this.buttonBorderWidth,
-    required this.buttonSelectedBorderWidth,
-    required super.child,
-  });
+  static MobileToolbarTheme of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MobileToolbarTheme>()!;
+  }
 
-  static MobileToolbarStyle of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MobileToolbarStyle>()!;
+  static MobileToolbarTheme? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MobileToolbarTheme>();
   }
 
   @override
-  bool updateShouldNotify(covariant MobileToolbarStyle oldWidget) {
-    // This function is called whenever the inherited widget is rebuilt.
-    // It should return true if the new widget's values are different from the old widget's values.
+  bool updateShouldNotify(covariant MobileToolbarTheme oldWidget) {
     return backgroundColor != oldWidget.backgroundColor ||
         foregroundColor != oldWidget.foregroundColor ||
         clearDiagonalLineColor != oldWidget.clearDiagonalLineColor ||
         itemHighlightColor != oldWidget.itemHighlightColor ||
         itemOutlineColor != oldWidget.itemOutlineColor ||
-        tabbarSelectedBackgroundColor !=
-            oldWidget.tabbarSelectedBackgroundColor ||
-        tabbarSelectedForegroundColor !=
-            oldWidget.tabbarSelectedForegroundColor ||
+        tabBarSelectedBackgroundColor !=
+            oldWidget.tabBarSelectedBackgroundColor ||
+        tabBarSelectedForegroundColor !=
+            oldWidget.tabBarSelectedForegroundColor ||
         primaryColor != oldWidget.primaryColor ||
         onPrimaryColor != oldWidget.onPrimaryColor ||
         outlineColor != oldWidget.outlineColor ||

@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
+final textDecorationMobileToolbarItemV2 = MobileToolbarItem.withMenu(
   itemIconBuilder: (_, __, ___) => const AFMobileIcon(
     afMobileIcons: AFMobileIcons.textDecoration,
   ),
@@ -29,6 +29,7 @@ class _TextDecorationMenu extends StatefulWidget {
 
 class _TextDecorationMenuState extends State<_TextDecorationMenu> {
   final textDecorations = [
+    // BIUS
     TextDecorationUnit(
       icon: AFMobileIcons.bold,
       label: AppFlowyEditorL10n.current.bold,
@@ -49,11 +50,20 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
       label: AppFlowyEditorL10n.current.strikethrough,
       name: AppFlowyRichTextKeys.strikethrough,
     ),
+
+    // Code
+    TextDecorationUnit(
+      icon: AFMobileIcons.code,
+      label: AppFlowyEditorL10n.current.embedCode,
+      name: AppFlowyRichTextKeys.code,
+    ),
   ];
+
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
-    final btnList = textDecorations.map((currentDecoration) {
+
+    final bius = textDecorations.map((currentDecoration) {
       // Check current decoration is active or not
       final selection = widget.selection;
       final nodes = widget.editorState.getNodesInSelection(selection);
@@ -90,19 +100,7 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
         mobileToolbarStyle: style,
         crossAxisCount: 2,
       ),
-      children: btnList,
+      children: bius,
     );
   }
-}
-
-class TextDecorationUnit {
-  final AFMobileIcons icon;
-  final String label;
-  final String name;
-
-  TextDecorationUnit({
-    required this.icon,
-    required this.label,
-    required this.name,
-  });
 }

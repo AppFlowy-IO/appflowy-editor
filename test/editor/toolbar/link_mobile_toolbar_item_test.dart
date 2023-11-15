@@ -80,14 +80,14 @@ void main() {
   });
 }
 
-Widget _wrapWithStyle({required Widget child}) => MobileToolbarStyle(
+Widget _wrapWithStyle({required Widget child}) => MobileToolbarTheme(
       backgroundColor: Colors.blue,
       foregroundColor: Colors.blue,
       clearDiagonalLineColor: Colors.blue,
       itemHighlightColor: Colors.blue,
       itemOutlineColor: Colors.blue,
-      tabbarSelectedBackgroundColor: Colors.blue,
-      tabbarSelectedForegroundColor: Colors.blue,
+      tabBarSelectedBackgroundColor: Colors.blue,
+      tabBarSelectedForegroundColor: Colors.blue,
       primaryColor: Colors.blue,
       onPrimaryColor: Colors.blue,
       outlineColor: Colors.blue,

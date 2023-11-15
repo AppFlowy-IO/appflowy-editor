@@ -33,6 +33,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
+  // previous selection
+  Selection? previousSelection;
+
   // use for IME only
   bool enableShortcuts = true;
 
@@ -187,9 +190,17 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if (doNotAttach == true) {
       return;
     }
-    enableShortcuts = true;
+
     // attach the delta text input service if needed
     final selection = editorState.selection;
+
+    if (PlatformExtension.isMobile && previousSelection == selection) {
+      // no need to attach the text input service if the selection is not changed.
+      return;
+    }
+
+    enableShortcuts = true;
+
     if (selection == null) {
       textInputService.close();
     } else {
@@ -202,6 +213,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         Log.editor.debug('keyboard service - request focus');
       }
     }
+
+    previousSelection = selection;
   }
 
   void _attachTextInputService(Selection selection) {

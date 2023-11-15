@@ -2,9 +2,14 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final listMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (_, __) =>
-      const AFMobileIcon(afMobileIcons: AFMobileIcons.list),
-  itemMenuBuilder: (editorState, selection, _) {
+  itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+    afMobileIcons: AFMobileIcons.list,
+  ),
+  itemMenuBuilder: (_, editorState, __) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return const SizedBox.shrink();
+    }
     return _ListMenu(editorState, selection);
   },
 );

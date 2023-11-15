@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 /// Used in testing mobile app with toolbar
 class MobileToolbarStyleTestWidget extends StatelessWidget {
@@ -45,14 +45,14 @@ class MobileToolbarStyleTestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MobileToolbarStyle(
+      home: MobileToolbarTheme(
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
         clearDiagonalLineColor: clearDiagonalLineColor,
         itemHighlightColor: itemHighlightColor,
         itemOutlineColor: itemOutlineColor,
-        tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
-        tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+        tabBarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+        tabBarSelectedForegroundColor: tabbarSelectedForegroundColor,
         primaryColor: primaryColor,
         onPrimaryColor: onPrimaryColor,
         outlineColor: outlineColor,
