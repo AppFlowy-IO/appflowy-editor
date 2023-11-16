@@ -109,7 +109,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         return Future.delayed(const Duration(milliseconds: 300), () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: 50,
+            edgeOffset: 100,
             duration: Duration.zero,
           );
         });
