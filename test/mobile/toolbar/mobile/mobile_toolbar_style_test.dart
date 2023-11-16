@@ -1,6 +1,6 @@
+import 'package:appflowy_editor/src/editor/toolbar/mobile/mobile_toolbar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/src/editor/toolbar/mobile/mobile_toolbar_style.dart';
 
 void main() {
   testWidgets('MobileToolbarStyle should have correct values',
@@ -23,14 +23,14 @@ void main() {
     const buttonSelectedBorderWidth = 2.0;
 
     await tester.pumpWidget(
-      const MobileToolbarStyle(
+      const MobileToolbarTheme(
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
         clearDiagonalLineColor: clearDiagonalLineColor,
         itemHighlightColor: itemHighlightColor,
         itemOutlineColor: itemOutlineColor,
-        tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
-        tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
+        tabBarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+        tabBarSelectedForegroundColor: tabbarSelectedForegroundColor,
         primaryColor: primaryColor,
         onPrimaryColor: onPrimaryColor,
         outlineColor: outlineColor,
@@ -45,7 +45,7 @@ void main() {
     );
 
     final mobileToolbarStyle =
-        MobileToolbarStyle.of(tester.element(find.byType(MobileToolbarStyle)));
+        MobileToolbarTheme.of(tester.element(find.byType(MobileToolbarTheme)));
 
     expect(mobileToolbarStyle.backgroundColor, equals(backgroundColor));
     expect(mobileToolbarStyle.foregroundColor, equals(foregroundColor));
