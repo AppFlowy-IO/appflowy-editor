@@ -20,7 +20,7 @@ class MobileToolbarTheme extends InheritedWidget {
     this.primaryColor = const Color(0xff1F71AC),
     this.onPrimaryColor = Colors.white,
     this.outlineColor = const Color(0xFFE3E3E3),
-    this.toolbarHeight = 50.0,
+    this.toolbarHeight = 48.0,
     this.borderRadius = 6.0,
     this.buttonHeight = 40.0,
     this.buttonSpacing = 8.0,
