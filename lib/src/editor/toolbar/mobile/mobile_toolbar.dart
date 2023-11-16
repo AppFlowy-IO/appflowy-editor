@@ -216,10 +216,12 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                 ),
                 child: MobileToolbarItemMenu(
                   editorState: widget.editorState,
-                  itemMenuBuilder: () => widget
-                      .toolbarItems[_selectedToolbarItemIndex!]
-                      // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
-                      .itemMenuBuilder!(context, widget.editorState, this),
+                  itemMenuBuilder: () =>
+                      widget
+                          .toolbarItems[_selectedToolbarItemIndex!]
+                          // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
+                          .itemMenuBuilder!(context, widget.editorState, this) ??
+                      const SizedBox.shrink(),
                 ),
               )
             : SizedBox(

@@ -1,7 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-typedef MobileToolbarItemIconBuilder = Widget Function(
+// if the result is null, the item will be hidden
+typedef MobileToolbarItemIconBuilder = Widget? Function(
   BuildContext context,
   EditorState editorState,
   // To access to the state of MobileToolbarWidget
