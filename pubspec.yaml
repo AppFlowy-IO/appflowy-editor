@@ -46,6 +46,7 @@ dependencies:
   diff_match_patch: ^0.4.1
   string_validator: ^1.0.0
   universal_html: ^2.2.4
+  keyboard_height_plugin: ^0.0.4
 
 dev_dependencies:
   flutter_test:

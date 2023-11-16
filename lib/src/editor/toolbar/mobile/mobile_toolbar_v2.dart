@@ -1,20 +1,58 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_height_plugin/keyboard_height_plugin.dart';
 
-class MobileToolbarV2 extends StatelessWidget {
+class MobileToolbarV2 extends StatefulWidget {
   const MobileToolbarV2({
     super.key,
     required this.editorState,
     required this.toolbarItems,
+    this.bottomOffset = 0.0,
+    required this.child,
   });
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
+  final double bottomOffset;
+  final Widget child;
+
+  @override
+  State<MobileToolbarV2> createState() => _MobileToolbarV2State();
+}
+
+class _MobileToolbarV2State extends State<MobileToolbarV2> {
+  OverlayEntry? toolbarOverlay;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _insertKeyboardToolbar();
+  }
+
+  @override
+  void dispose() {
+    _removeKeyboardToolbar();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Selection?>(
-      valueListenable: editorState.selectionNotifier,
+    return widget.child;
+  }
+
+  void _removeKeyboardToolbar() {
+    toolbarOverlay?.remove();
+    toolbarOverlay?.dispose();
+    toolbarOverlay = null;
+  }
+
+  void _insertKeyboardToolbar() {
+    _removeKeyboardToolbar();
+
+    Widget child = ValueListenableBuilder<Selection?>(
+      valueListenable: widget.editorState.selectionNotifier,
       builder: (_, Selection? selection, child) {
         // if the selection is null, hide the toolbar
         if (selection == null) {
@@ -33,10 +71,34 @@ class MobileToolbarV2 extends StatelessWidget {
         );
       },
       child: _MobileToolbar(
-        editorState: editorState,
-        toolbarItems: toolbarItems,
+        editorState: widget.editorState,
+        toolbarItems: widget.toolbarItems,
+        bottomOffset: widget.bottomOffset,
       ),
     );
+
+    child = Stack(
+      children: [
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Material(
+            child: child,
+          ),
+        ),
+      ],
+    );
+
+    toolbarOverlay = OverlayEntry(
+      builder: (context) {
+        return child;
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Overlay.of(context, rootOverlay: true).insert(toolbarOverlay!);
+    });
   }
 }
 
@@ -44,10 +106,12 @@ class _MobileToolbar extends StatefulWidget {
   const _MobileToolbar({
     required this.editorState,
     required this.toolbarItems,
+    required this.bottomOffset,
   });
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
+  final double bottomOffset;
 
   @override
   State<_MobileToolbar> createState() => _MobileToolbarState();
@@ -64,6 +128,9 @@ class _MobileToolbarState extends State<_MobileToolbar>
   bool canUpdateCachedKeyboardHeight = true;
   ValueNotifier<double> cachedKeyboardHeight = ValueNotifier(0.0);
   double get keyboardHeight => MediaQuery.of(context).viewInsets.bottom;
+  double get safeAreaBottomPadding => MediaQuery.of(context).viewPadding.bottom;
+
+  final keyboardHeightPlugin = KeyboardHeightPlugin();
 
   // used to check if click the same item again
   int? selectedMenuIndex;
@@ -75,6 +142,11 @@ class _MobileToolbarState extends State<_MobileToolbar>
     super.initState();
 
     currentSelection = widget.editorState.selection;
+    keyboardHeightPlugin.onKeyboardHeightChanged((height) {
+      if (canUpdateCachedKeyboardHeight) {
+        cachedKeyboardHeight.value = height;
+      }
+    });
   }
 
   @override
@@ -91,6 +163,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
   void dispose() {
     showMenuNotifier.dispose();
     cachedKeyboardHeight.dispose();
+    keyboardHeightPlugin.dispose();
 
     super.dispose();
   }
@@ -109,7 +182,11 @@ class _MobileToolbarState extends State<_MobileToolbar>
     // update the keyboard height here.
     // try to get the height in `didChangeMetrics`, but it's not accurate.
     if (canUpdateCachedKeyboardHeight) {
-      cachedKeyboardHeight.value = keyboardHeight;
+      // cachedKeyboardHeight.value = max(
+      //   0,
+      //   keyboardHeight - safeAreaBottomPadding - widget.bottomOffset,
+      // );
+      // print('cachedKeyboardHeight: ${cachedKeyboardHeight.value}');
     }
     // toolbar
     //  - if the menu is shown, the toolbar will be pushed up by the height of the menu
@@ -233,18 +310,20 @@ class _MobileToolbarState extends State<_MobileToolbar>
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(minHeight: height),
+            return SizedBox(
+              height: height,
               child: (showingMenu && selectedMenuIndex != null)
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
-                      itemMenuBuilder: () => widget
-                          .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
-                          .call(
-                        context,
-                        widget.editorState,
-                        this,
-                      ),
+                      itemMenuBuilder: () =>
+                          widget
+                              .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
+                              .call(
+                            context,
+                            widget.editorState,
+                            this,
+                          ) ??
+                          const SizedBox.shrink(),
                     )
                   : const SizedBox.shrink(),
             );
