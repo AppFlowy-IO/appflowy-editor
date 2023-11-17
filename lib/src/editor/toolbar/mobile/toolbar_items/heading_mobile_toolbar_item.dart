@@ -2,8 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final headingMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.heading,
+    color: MobileToolbarTheme.of(context).iconColor,
   ),
   itemMenuBuilder: (_, editorState, __) {
     final selection = editorState.selection;
@@ -69,6 +70,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
           icon: AFMobileIcon(
             afMobileIcons: currentHeading.icon,
             size: 20,
+            color: MobileToolbarTheme.of(context).iconColor,
           ),
           label: Text(
             currentHeading.label,
