@@ -2,8 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final linkMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.link,
+    color: MobileToolbarTheme.of(context).iconColor,
   ),
   itemMenuBuilder: (_, editorState, itemMenuService) {
     final selection = editorState.selection;

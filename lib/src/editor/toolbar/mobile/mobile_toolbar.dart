@@ -200,8 +200,9 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                               ?.enableKeyBoard(widget.selection);
                         });
                       },
-                      icon: const AFMobileIcon(
+                      icon: AFMobileIcon(
                         afMobileIcons: AFMobileIcons.close,
+                        color: MobileToolbarTheme.of(context).iconColor,
                       ),
                     )
                   : _QuitEditingBtn(widget.editorState),

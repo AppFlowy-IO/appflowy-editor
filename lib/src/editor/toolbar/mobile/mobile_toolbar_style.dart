@@ -11,6 +11,7 @@ class MobileToolbarTheme extends InheritedWidget {
   const MobileToolbarTheme({
     super.key,
     this.backgroundColor = Colors.white,
+    this.iconColor = Colors.black,
     this.foregroundColor = const Color(0xff676666),
     this.clearDiagonalLineColor = const Color(0xffB3261E),
     this.itemHighlightColor = const Color(0xff1F71AC),
@@ -31,6 +32,7 @@ class MobileToolbarTheme extends InheritedWidget {
 
   final Color backgroundColor;
   final Color foregroundColor;
+  final Color iconColor;
   final Color clearDiagonalLineColor;
   final Color itemHighlightColor;
   final Color itemOutlineColor;
