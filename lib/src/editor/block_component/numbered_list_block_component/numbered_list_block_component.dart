@@ -208,9 +208,6 @@ class _NumberedListIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
-    final builder = _NumberedListIconBuilder(node: node);
-    final level = builder.level;
-    final levelNumber = builder.levelNumber;
     return Container(
       constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
       padding: const EdgeInsets.only(right: 4.0),
@@ -221,7 +218,7 @@ class _NumberedListIcon extends StatelessWidget {
             applyHeightToLastDescent: false,
           ),
           TextSpan(
-            text: getLevel(level, levelNumber),
+            text: node.getLevelString(),
             style: text.combine(textStyle),
           ),
           textDirection: direction,
@@ -229,8 +226,13 @@ class _NumberedListIcon extends StatelessWidget {
       ),
     );
   }
+}
 
-  String getLevel(int level, int levelNumber) {
+extension NumberedListNodeExt on Node {
+  String getLevelString() {
+    final builder = _NumberedListIconBuilder(node: this);
+    final level = builder.level;
+    final levelNumber = builder.levelNumber;
     String levelStr = '$levelNumber';
     if (level % 3 == 1) {
       levelStr = levelNumber.toLatinString();
