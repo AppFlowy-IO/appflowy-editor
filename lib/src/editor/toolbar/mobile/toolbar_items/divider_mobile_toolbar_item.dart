@@ -1,8 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final dividerMobileToolbarItem = MobileToolbarItem.action(
-  itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.divider,
+    color: MobileToolbarTheme.of(context).iconColor,
   ),
   actionHandler: (_, editorState) {
     // same as the [handler] of [dividerMenuItem] in Desktop

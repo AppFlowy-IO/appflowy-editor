@@ -6,8 +6,9 @@ MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
   List<ColorOption>? backgroundColorOptions,
 }) {
   return MobileToolbarItem.withMenu(
-    itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+    itemIconBuilder: (context, __, ___) => AFMobileIcon(
       afMobileIcons: AFMobileIcons.color,
+      color: MobileToolbarTheme.of(context).iconColor,
     ),
     itemMenuBuilder: (_, editorState, ___) {
       final selection = editorState.selection;
@@ -63,7 +64,7 @@ class _TextAndBackgroundColorMenuState
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               tabs: myTabs,
-              labelColor: style.tabBarSelectedForegroundColor,
+              labelColor: style.tabBarSelectedBackgroundColor,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(style.borderRadius),
                 color: style.tabBarSelectedForegroundColor,

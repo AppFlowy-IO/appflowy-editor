@@ -5,16 +5,50 @@ import 'package:keyboard_height_plugin/keyboard_height_plugin.dart';
 class MobileToolbarV2 extends StatefulWidget {
   const MobileToolbarV2({
     super.key,
+    this.backgroundColor = Colors.white,
+    this.foregroundColor = const Color(0xff676666),
+    this.iconColor = Colors.black,
+    this.clearDiagonalLineColor = const Color(0xffB3261E),
+    this.itemHighlightColor = const Color(0xff1F71AC),
+    this.itemOutlineColor = const Color(0xFFE3E3E3),
+    this.tabBarSelectedBackgroundColor = const Color(0x23808080),
+    this.tabBarSelectedForegroundColor = Colors.black,
+    this.primaryColor = const Color(0xff1F71AC),
+    this.onPrimaryColor = Colors.white,
+    this.outlineColor = const Color(0xFFE3E3E3),
+    this.toolbarHeight = 50.0,
+    this.borderRadius = 6.0,
+    this.buttonHeight = 40.0,
+    this.buttonSpacing = 8.0,
+    this.buttonBorderWidth = 1.0,
+    this.buttonSelectedBorderWidth = 2.0,
     required this.editorState,
     required this.toolbarItems,
-    required this.toolbarHeight,
     required this.child,
   });
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
-  final double toolbarHeight;
   final Widget child;
+
+  // style
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color iconColor;
+  final Color clearDiagonalLineColor;
+  final Color itemHighlightColor;
+  final Color itemOutlineColor;
+  final Color tabBarSelectedBackgroundColor;
+  final Color tabBarSelectedForegroundColor;
+  final Color primaryColor;
+  final Color onPrimaryColor;
+  final Color outlineColor;
+  final double toolbarHeight;
+  final double borderRadius;
+  final double buttonHeight;
+  final double buttonSpacing;
+  final double buttonBorderWidth;
+  final double buttonSelectedBorderWidth;
 
   @override
   State<MobileToolbarV2> createState() => _MobileToolbarV2State();
@@ -80,20 +114,30 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
           return const SizedBox.shrink();
         }
 
-        Widget child = _MobileToolbar(
-          editorState: widget.editorState,
-          toolbarItems: widget.toolbarItems,
-        );
-
-        // if the MobileToolbarTheme is not provided, provide it
-        if (MobileToolbarTheme.maybeOf(context) == null) {
-          child = MobileToolbarTheme(
-            child: child,
-          );
-        }
-
         return RepaintBoundary(
-          child: child,
+          child: MobileToolbarTheme(
+            backgroundColor: widget.backgroundColor,
+            foregroundColor: widget.foregroundColor,
+            iconColor: widget.iconColor,
+            clearDiagonalLineColor: widget.clearDiagonalLineColor,
+            itemHighlightColor: widget.itemHighlightColor,
+            itemOutlineColor: widget.itemOutlineColor,
+            tabBarSelectedBackgroundColor: widget.tabBarSelectedBackgroundColor,
+            tabBarSelectedForegroundColor: widget.tabBarSelectedForegroundColor,
+            primaryColor: widget.primaryColor,
+            onPrimaryColor: widget.onPrimaryColor,
+            outlineColor: widget.outlineColor,
+            toolbarHeight: widget.toolbarHeight,
+            borderRadius: widget.borderRadius,
+            buttonHeight: widget.buttonHeight,
+            buttonSpacing: widget.buttonSpacing,
+            buttonBorderWidth: widget.buttonBorderWidth,
+            buttonSelectedBorderWidth: widget.buttonSelectedBorderWidth,
+            child: _MobileToolbar(
+              editorState: widget.editorState,
+              toolbarItems: widget.toolbarItems,
+            ),
+          ),
         );
       },
     );
@@ -419,10 +463,14 @@ class _CloseKeyboardOrMenuButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: onPressed,
       icon: showingMenu
-          ? const AFMobileIcon(
+          ? AFMobileIcon(
               afMobileIcons: AFMobileIcons.close,
+              color: MobileToolbarTheme.of(context).iconColor,
             )
-          : const Icon(Icons.keyboard_hide),
+          : Icon(
+              Icons.keyboard_hide,
+              color: MobileToolbarTheme.of(context).iconColor,
+            ),
     );
   }
 }

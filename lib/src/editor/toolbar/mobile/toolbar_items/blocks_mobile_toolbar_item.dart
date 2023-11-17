@@ -2,8 +2,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final blocksMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (_, __, ___) => const AFMobileIcon(
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.list,
+    color: MobileToolbarTheme.of(context).iconColor,
   ),
   itemMenuBuilder: (_, editorState, __) {
     final selection = editorState.selection;
@@ -86,7 +87,10 @@ class _BlocksMenuState extends State<_BlocksMenu> {
               node.attributes[HeadingBlockKeys.level] == list.level);
 
       return MobileToolbarItemMenuBtn(
-        icon: AFMobileIcon(afMobileIcons: list.icon),
+        icon: AFMobileIcon(
+          afMobileIcons: list.icon,
+          color: MobileToolbarTheme.of(context).iconColor,
+        ),
         label: Text(list.label),
         isSelected: isSelected,
         onPressed: () {
