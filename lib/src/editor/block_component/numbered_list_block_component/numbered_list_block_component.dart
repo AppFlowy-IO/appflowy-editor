@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:romanice/romanice.dart';
 
 class NumberedListBlockKeys {
   const NumberedListBlockKeys._();
@@ -207,7 +208,9 @@ class _NumberedListIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
-    final level = _NumberedListIconBuilder(node: node).level;
+    final builder = _NumberedListIconBuilder(node: node);
+    final level = builder.level;
+    final levelNumber = builder.levelNumber;
     return Container(
       constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
       padding: const EdgeInsets.only(right: 4.0),
@@ -217,11 +220,24 @@ class _NumberedListIcon extends StatelessWidget {
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
           ),
-          TextSpan(text: '$level.', style: text.combine(textStyle)),
+          TextSpan(
+            text: getLevel(level, levelNumber),
+            style: text.combine(textStyle),
+          ),
           textDirection: direction,
         ),
       ),
     );
+  }
+
+  String getLevel(int level, int levelNumber) {
+    String levelStr = '$levelNumber';
+    if (level % 3 == 1) {
+      levelStr = levelNumber.toLatinString();
+    } else if (level % 3 == 2) {
+      levelStr = levelNumber.toRomanString();
+    }
+    return '$levelStr.';
   }
 }
 
@@ -233,6 +249,18 @@ class _NumberedListIconBuilder {
   final Node node;
 
   int get level {
+    var level = 0;
+    var parent = node.parent;
+    while (parent != null) {
+      if (parent.type == NumberedListBlockKeys.type) {
+        level++;
+      }
+      parent = parent.parent;
+    }
+    return level;
+  }
+
+  int get levelNumber {
     int level = 1;
     Node? previous = node.previous;
 
@@ -251,5 +279,24 @@ class _NumberedListIconBuilder {
       return startNumber + level - 1;
     }
     return level;
+  }
+}
+
+extension AppflowyEditorIntToStringExt on int {
+  String toLatinString() {
+    String result = '';
+    int number = this;
+    while (number > 0) {
+      int remainder = (number - 1) % 26;
+      result = String.fromCharCode(remainder + 65) + result;
+      number = (number - 1) ~/ 26;
+    }
+    return result.toLowerCase();
+  }
+
+  String toRomanString() {
+    final ToRoman standardToRoman = ToRoman.standard();
+
+    return standardToRoman(this).toLowerCase();
   }
 }
