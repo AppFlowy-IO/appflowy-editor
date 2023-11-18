@@ -1,3 +1,13 @@
+## 2.0.0
+* feat: support Flutter stable channel by @LucasXu0 in ([#581](https://github.com/AppFlowy-IO/appflowy-editor/pull/581))
+* feat: support toggling format style when the selection is collapsed by @LucasXu0 in ([#586](https://github.com/AppFlowy-IO/appflowy-editor/pull/586))
+* feat: optimize editing experience on mobile by @LucasXu0 in ([#592](https://github.com/AppFlowy-IO/appflowy-editor/pull/592))
+* feat: support display number of the numbered list in latin or roman format by @q200892907 in ([#595](https://github.com/AppFlowy-IO/appflowy-editor/pull/595))
+* fix: don't rebuild mobile toolbar every time by @LucasXu0 in ([#579](https://github.com/AppFlowy-IO/appflowy-editor/pull/579))
+* fix: solve the left and right key bug by @q200892907 in ([#584](https://github.com/AppFlowy-IO/appflowy-editor/pull/584))
+* fix: unable to set toolbar icon theme by @LucasXu0 in ([#596](https://github.com/AppFlowy-IO/appflowy-editor/pull/596))
+
+
 ## 2.0.0-beta.1
 * feat: support Flutter stable channel by @LucasXu0 in ([#581](https://github.com/AppFlowy-IO/appflowy-editor/pull/581))
 
