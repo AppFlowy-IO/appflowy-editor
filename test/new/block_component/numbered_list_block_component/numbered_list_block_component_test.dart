@@ -124,5 +124,53 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets('number, latin and roman', (tester) async {
+      final delta = Delta()..insert(text);
+      final editor = tester.editor
+        ..addNode(
+          // 1.
+          numberedListNode(
+            delta: delta,
+            children: [
+              // a.
+              numberedListNode(
+                delta: delta,
+                children: [
+                  numberedListNode(delta: delta), // Ⅰ.
+                  numberedListNode(delta: delta), // ⅠⅠ.
+                  numberedListNode(delta: delta), // ⅠⅠⅠ.
+                ],
+              ),
+              // b.
+              numberedListNode(
+                delta: delta,
+                children: [
+                  numberedListNode(delta: delta), // Ⅰ.
+                  numberedListNode(delta: delta), // ⅠⅠ.
+                  numberedListNode(delta: delta), // ⅠⅠⅠ.
+                ],
+              ),
+            ],
+          ),
+        )
+        ..addNode(
+          // 2.
+          numberedListNode(
+            delta: delta,
+          ),
+        );
+
+      await editor.startTesting();
+      for (final number in ['1.', '2.']) {
+        expect(find.text(number, findRichText: true), findsOneWidget);
+      }
+      for (final latin in ['a.', 'b.']) {
+        expect(find.text(latin, findRichText: true), findsOneWidget);
+      }
+      for (final roman in ['I.', 'II.', 'III.']) {
+        expect(find.text(roman, findRichText: true), findsNWidgets(2));
+      }
+    });
   });
 }
