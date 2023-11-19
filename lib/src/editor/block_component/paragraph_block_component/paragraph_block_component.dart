@@ -33,10 +33,15 @@ Node paragraphNode({
   );
 }
 
+typedef ShowPlaceholder = bool Function(EditorState editorState, Node node);
+
 class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
   ParagraphBlockComponentBuilder({
     super.configuration,
+    this.showPlaceholder,
   });
+
+  final ShowPlaceholder? showPlaceholder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -46,6 +51,7 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
       key: node.key,
       configuration: configuration,
       showActions: showActions(node),
+      showPlaceholder: showPlaceholder,
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
         state,
@@ -66,7 +72,10 @@ class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
+    this.showPlaceholder,
   });
+
+  final ShowPlaceholder? showPlaceholder;
 
   @override
   State<ParagraphBlockComponentWidget> createState() =>
@@ -117,10 +126,17 @@ class _ParagraphBlockComponentWidgetState
 
   void _onSelectionChange() {
     final selection = editorState.selection;
-    final showPlaceholder = selection != null &&
-        (selection.isSingle && selection.start.path.equals(node.path));
-    if (showPlaceholder != _showPlaceholder) {
-      setState(() => _showPlaceholder = showPlaceholder);
+
+    if (widget.showPlaceholder != null) {
+      setState(() {
+        _showPlaceholder = widget.showPlaceholder!(editorState, node);
+      });
+    } else {
+      final showPlaceholder = selection != null &&
+          (selection.isSingle && selection.start.path.equals(node.path));
+      if (showPlaceholder != _showPlaceholder) {
+        setState(() => _showPlaceholder = showPlaceholder);
+      }
     }
   }
 

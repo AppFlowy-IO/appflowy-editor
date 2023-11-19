@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 class MobileScrollService extends StatefulWidget {
   const MobileScrollService({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

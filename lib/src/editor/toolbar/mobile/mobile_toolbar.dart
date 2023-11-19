@@ -52,29 +52,31 @@ class MobileToolbar extends StatelessWidget {
         if (selection == null) {
           return const SizedBox.shrink();
         }
-        return MobileToolbarStyle(
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-          clearDiagonalLineColor: clearDiagonalLineColor,
-          itemHighlightColor: itemHighlightColor,
-          itemOutlineColor: itemOutlineColor,
-          tabbarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
-          tabbarSelectedForegroundColor: tabbarSelectedForegroundColor,
-          primaryColor: primaryColor,
-          onPrimaryColor: onPrimaryColor,
-          outlineColor: outlineColor,
-          toolbarHeight: toolbarHeight,
-          borderRadius: borderRadius,
-          buttonHeight: buttonHeight,
-          buttonSpacing: buttonSpacing,
-          buttonBorderWidth: buttonBorderWidth,
-          buttonSelectedBorderWidth: buttonSelectedBorderWidth,
-          child: MobileToolbarWidget(
-            // Use selection as key to force rebuild toolbar widget when selection changed.
-            key: ValueKey(selection),
-            editorState: editorState,
-            selection: selection,
-            toolbarItems: toolbarItems,
+        return RepaintBoundary(
+          child: MobileToolbarTheme(
+            backgroundColor: backgroundColor,
+            foregroundColor: foregroundColor,
+            clearDiagonalLineColor: clearDiagonalLineColor,
+            itemHighlightColor: itemHighlightColor,
+            itemOutlineColor: itemOutlineColor,
+            tabBarSelectedBackgroundColor: tabbarSelectedBackgroundColor,
+            tabBarSelectedForegroundColor: tabbarSelectedForegroundColor,
+            primaryColor: primaryColor,
+            onPrimaryColor: onPrimaryColor,
+            outlineColor: outlineColor,
+            toolbarHeight: toolbarHeight,
+            borderRadius: borderRadius,
+            buttonHeight: buttonHeight,
+            buttonSpacing: buttonSpacing,
+            buttonBorderWidth: buttonBorderWidth,
+            buttonSelectedBorderWidth: buttonSelectedBorderWidth,
+            child: MobileToolbarWidget(
+              // Use selection as key to force rebuild toolbar widget when selection changed.
+              // key: ValueKey(selection),
+              editorState: editorState,
+              selection: selection,
+              toolbarItems: toolbarItems,
+            ),
           ),
         );
       },
@@ -88,7 +90,7 @@ abstract class MobileToolbarWidgetService {
   void closeItemMenu();
 }
 
-class MobileToolbarWidget extends StatefulWidget {
+class MobileToolbarWidget extends StatefulWidget with WidgetsBindingObserver {
   const MobileToolbarWidget({
     super.key,
     required this.editorState,
@@ -109,6 +111,9 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
   bool _showItemMenu = false;
   int? _selectedToolbarItemIndex;
 
+  double previousKeyboardHeight = 0.0;
+  bool updateKeyboardHeight = true;
+
   @override
   void closeItemMenu() {
     if (_showItemMenu) {
@@ -121,7 +126,14 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
+
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    if (updateKeyboardHeight) {
+      previousKeyboardHeight = keyboardHeight;
+    }
+    // print('object $keyboardHeight');
+
     return Column(
       children: [
         Container(
@@ -145,15 +157,27 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                   toolbarItems: widget.toolbarItems,
                   toolbarWidgetService: this,
                   itemWithMenuOnPressed: (selectedItemIndex) {
+                    updateKeyboardHeight = false;
                     setState(() {
                       // If last selected item is selected again, toggle item menu
                       if (_selectedToolbarItemIndex == selectedItemIndex) {
                         _showItemMenu = !_showItemMenu;
+
+                        if (!_showItemMenu) {
+                          // updateKeyboardHeight = true;
+                          widget.editorState.service.keyboardService
+                              ?.enableKeyBoard(widget.selection);
+                        } else {
+                          updateKeyboardHeight = false;
+                          widget.editorState.service.keyboardService
+                              ?.closeKeyboard();
+                        }
                       } else {
                         _selectedToolbarItemIndex = selectedItemIndex;
                         // If not, show item menu
                         _showItemMenu = true;
                         // close keyboard when menu pop up
+
                         widget.editorState.service.keyboardService
                             ?.closeKeyboard();
                       }
@@ -172,12 +196,13 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                       onPressed: () {
                         setState(() {
                           _showItemMenu = false;
-                          widget.editorState.service.keyboardService!
-                              .enableKeyBoard(widget.selection);
+                          widget.editorState.service.keyboardService
+                              ?.enableKeyBoard(widget.selection);
                         });
                       },
-                      icon: const AFMobileIcon(
+                      icon: AFMobileIcon(
                         afMobileIcons: AFMobileIcons.close,
+                        color: MobileToolbarTheme.of(context).iconColor,
                       ),
                     )
                   : _QuitEditingBtn(widget.editorState),
@@ -185,14 +210,24 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
           ),
         ),
         // only for MobileToolbarItem.withMenu
-        if (_showItemMenu && _selectedToolbarItemIndex != null)
-          MobileToolbarItemMenu(
-            editorState: widget.editorState,
-            itemMenuBuilder: () => widget
-                .toolbarItems[_selectedToolbarItemIndex!]
-                // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
-                .itemMenuBuilder!(widget.editorState, widget.selection, this),
-          ),
+        (_showItemMenu && _selectedToolbarItemIndex != null)
+            ? Container(
+                constraints: BoxConstraints(
+                  minHeight: previousKeyboardHeight,
+                ),
+                child: MobileToolbarItemMenu(
+                  editorState: widget.editorState,
+                  itemMenuBuilder: () =>
+                      widget
+                          .toolbarItems[_selectedToolbarItemIndex!]
+                          // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
+                          .itemMenuBuilder!(context, widget.editorState, this) ??
+                      const SizedBox.shrink(),
+                ),
+              )
+            : SizedBox(
+                height: previousKeyboardHeight,
+              ),
       ],
     );
   }
@@ -210,7 +245,7 @@ class _QuitEditingBtn extends StatelessWidget {
       alignment: Alignment.centerLeft,
       onPressed: () {
         // clear selection to close keyboard and toolbar
-        editorState.selectionService.updateSelection(null);
+        editorState.selection = null;
       },
       icon: const Icon(Icons.keyboard_hide),
     );
@@ -219,13 +254,12 @@ class _QuitEditingBtn extends StatelessWidget {
 
 class _ToolbarItemListView extends StatelessWidget {
   const _ToolbarItemListView({
-    Key? key,
     required this.itemWithMenuOnPressed,
     required this.toolbarItems,
     required this.editorState,
     required this.selection,
     required this.toolbarWidgetService,
-  }) : super(key: key);
+  });
 
   final Function(int index) itemWithMenuOnPressed;
   final List<MobileToolbarItem> toolbarItems;
@@ -238,8 +272,16 @@ class _ToolbarItemListView extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final toolbarItem = toolbarItems[index];
+        final icon = toolbarItem.itemIconBuilder?.call(
+          context,
+          editorState,
+          toolbarWidgetService,
+        );
+        if (icon == null) {
+          return const SizedBox.shrink();
+        }
         return IconButton(
-          icon: toolbarItem.itemIcon,
+          icon: icon,
           onPressed: () {
             if (toolbarItem.hasMenu) {
               // open /close current item menu through its parent widget(MobileToolbarWidget)
@@ -248,8 +290,8 @@ class _ToolbarItemListView extends StatelessWidget {
               // close menu if other item's menu is still on the screen
               toolbarWidgetService.closeItemMenu();
               toolbarItems[index].actionHandler?.call(
+                    context,
                     editorState,
-                    selection,
                   );
             }
           },

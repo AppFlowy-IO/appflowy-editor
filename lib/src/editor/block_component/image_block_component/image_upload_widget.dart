@@ -61,13 +61,13 @@ void showImageMenu(
 
 class UploadImageMenu extends StatefulWidget {
   const UploadImageMenu({
-    Key? key,
+    super.key,
     this.backgroundColor = Colors.white,
     this.headerColor = Colors.black,
     this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final Color headerColor;
@@ -133,8 +133,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                 height: 36,
                 child: TabBar(
                   tabs: [
-                    Tab(text: AppFlowyEditorLocalizations.current.uploadImage),
-                    Tab(text: AppFlowyEditorLocalizations.current.urlImage),
+                    Tab(text: AppFlowyEditorL10n.current.uploadImage),
+                    Tab(text: AppFlowyEditorL10n.current.urlImage),
                   ],
                   labelColor: widget.headerColor,
                   unselectedLabelColor: Colors.grey,
@@ -204,7 +204,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   Widget _buildInvalidLinkText() {
     return Text(
-      AppFlowyEditorLocalizations.current.incorrectLink,
+      AppFlowyEditorL10n.current.incorrectLink,
       style: const TextStyle(color: Colors.red, fontSize: 12),
     );
   }
@@ -240,7 +240,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           }
         },
         child: Text(
-          AppFlowyEditorLocalizations.current.upload,
+          AppFlowyEditorL10n.current.upload,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
             fontSize: 14.0,
@@ -339,7 +339,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                       ),
                       const SizedBox(height: 8.0),
                       Text(
-                        AppFlowyEditorLocalizations.current.chooseImage,
+                        AppFlowyEditorL10n.current.chooseImage,
                         style: const TextStyle(
                           fontSize: 14.0,
                           color: Color(0xff00BCF0),

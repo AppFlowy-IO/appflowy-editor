@@ -1,8 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final dividerMobileToolbarItem = MobileToolbarItem.action(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.divider),
-  actionHandler: ((editorState, selection) {
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+    afMobileIcons: AFMobileIcons.divider,
+    color: MobileToolbarTheme.of(context).iconColor,
+  ),
+  actionHandler: (_, editorState) {
     // same as the [handler] of [dividerMenuItem] in Desktop
     final selection = editorState.selection;
     if (selection == null || !selection.isCollapsed) {
@@ -28,5 +31,5 @@ final dividerMobileToolbarItem = MobileToolbarItem.action(
     transaction.afterSelection =
         Selection.collapsed(Position(path: insertedPath.next));
     editorState.apply(transaction);
-  }),
+  },
 );

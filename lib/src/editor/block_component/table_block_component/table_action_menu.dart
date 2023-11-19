@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
+import 'package:flutter/material.dart';
 
 void showActionMenu(
   BuildContext context,
@@ -41,8 +41,8 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorLocalizations.current.colAddAfter
-                  : AppFlowyEditorLocalizations.current.rowAddAfter,
+                  ? AppFlowyEditorL10n.current.colAddAfter
+                  : AppFlowyEditorL10n.current.rowAddAfter,
               dir == TableDirection.col
                   ? Icons.last_page
                   : Icons.vertical_align_bottom, () {
@@ -52,8 +52,8 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorLocalizations.current.colAddBefore
-                  : AppFlowyEditorLocalizations.current.rowAddBefore,
+                  ? AppFlowyEditorL10n.current.colAddBefore
+                  : AppFlowyEditorL10n.current.rowAddBefore,
               dir == TableDirection.col
                   ? Icons.first_page
                   : Icons.vertical_align_top, () {
@@ -63,8 +63,8 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorLocalizations.current.colRemove
-                  : AppFlowyEditorLocalizations.current.rowRemove,
+                  ? AppFlowyEditorL10n.current.colRemove
+                  : AppFlowyEditorL10n.current.rowRemove,
               Icons.delete, () {
             TableActions.delete(node, position, editorState, dir);
             dismissOverlay();
@@ -72,15 +72,15 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorLocalizations.current.colDuplicate
-                  : AppFlowyEditorLocalizations.current.rowDuplicate,
+                  ? AppFlowyEditorL10n.current.colDuplicate
+                  : AppFlowyEditorL10n.current.rowDuplicate,
               Icons.content_copy, () {
             TableActions.duplicate(node, position, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(
             context,
-            AppFlowyEditorLocalizations.current.backgroundColor,
+            AppFlowyEditorL10n.current.backgroundColor,
             Icons.format_color_fill,
             () {
               final cell = dir == TableDirection.col
@@ -112,8 +112,8 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorLocalizations.current.colClear
-                  : AppFlowyEditorLocalizations.current.rowClear,
+                  ? AppFlowyEditorL10n.current.colClear
+                  : AppFlowyEditorL10n.current.rowClear,
               Icons.clear, () {
             TableActions.clear(node, position, editorState, dir);
             dismissOverlay();
@@ -180,14 +180,14 @@ void _showColorMenu(
     left: left,
     builder: (context) {
       return ColorPicker(
-        title: AppFlowyEditorLocalizations.current.highlightColor,
+        title: AppFlowyEditorL10n.current.highlightColor,
         selectedColorHex: selectedColorHex,
         colorOptions: generateHighlightColorOptions(),
         onSubmittedColorHex: (color) {
           action(color);
           dismissOverlay();
         },
-        resetText: AppFlowyEditorLocalizations.current.clearHighlightColor,
+        resetText: AppFlowyEditorL10n.current.clearHighlightColor,
         resetIconName: 'clear_highlight_color',
       );
     },

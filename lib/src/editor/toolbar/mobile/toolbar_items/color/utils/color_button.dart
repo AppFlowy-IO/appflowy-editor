@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class ColorButton extends StatelessWidget {
   const ColorButton({
-    Key? key,
+    super.key,
     required this.colorOption,
     required this.isSelected,
     required this.onPressed,
     this.isBackgroundColor = false,
-  }) : super(key: key);
+  });
 
   final ColorOption colorOption;
   final bool isBackgroundColor;
@@ -17,7 +17,7 @@ class ColorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     return InkWell(
       onTap: onPressed,
       child: Container(

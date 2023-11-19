@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -78,6 +79,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
+      case HTMLTags.table:
+        return _parseTable(element);
       case HTMLTags.list:
         return [
           _parseListElement(
@@ -94,6 +97,134 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       default:
         return _parseParagraphElement(element);
     }
+  }
+
+  Iterable<Node> _parseTable(dom.Element element) {
+    final List<Node> tablenodes = [];
+    int columnLenth = 0;
+    int rowLength = 0;
+    for (final data in element.children) {
+      final (col, row, rwdata) = _parsetableRows(data);
+      columnLenth = columnLenth + col;
+      rowLength = rowLength + row;
+
+      tablenodes.addAll(rwdata);
+    }
+
+    return [
+      TableNode(
+        node: Node(
+          type: TableBlockKeys.type,
+          attributes: {
+            TableBlockKeys.rowsLen: rowLength,
+            TableBlockKeys.colsLen: columnLenth,
+            TableBlockKeys.colDefaultWidth: TableDefaults.colWidth,
+            TableBlockKeys.rowDefaultHeight: TableDefaults.rowHeight,
+            TableBlockKeys.colMinimumWidth: TableDefaults.colMinimumWidth,
+          },
+          children: tablenodes,
+        ),
+      ).node,
+    ];
+  }
+
+  (int, int, List<Node>) _parsetableRows(dom.Element element) {
+    final List<Node> nodes = [];
+    int colLength = 0;
+    int rowLength = 0;
+
+    for (final data in element.children) {
+      final tabledata = _parsetableData(data, rowPosition: rowLength);
+      if (colLength == 0) {
+        colLength = tabledata.length;
+      }
+      nodes.addAll(tabledata);
+      rowLength++;
+    }
+    return (colLength, rowLength, nodes);
+  }
+
+  Iterable<Node> _parsetableData(
+    dom.Element element, {
+    required int rowPosition,
+  }) {
+    final List<Node> nodes = [];
+    int columnPosition = 0;
+
+    for (final data in element.children) {
+      Attributes attributes = {
+        TableCellBlockKeys.colPosition: columnPosition,
+        TableCellBlockKeys.rowPosition: rowPosition,
+      };
+      if (data.attributes.isNotEmpty) {
+        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
+              element.attributes,
+            ) ??
+            {};
+        attributes.addAll(deltaAttributes);
+      }
+
+      List<Node> children;
+      if (data.children.isEmpty) {
+        children = [paragraphNode(text: data.text)];
+      } else {
+        children = _parseTableSpecialNodes(data).toList();
+      }
+
+      final node = Node(
+        type: TableCellBlockKeys.type,
+        attributes: attributes,
+        children: children,
+      );
+
+      nodes.add(node);
+      columnPosition++;
+    }
+
+    return nodes;
+  }
+
+  Iterable<Node> _parseTableSpecialNodes(dom.Element element) {
+    final List<Node> nodes = [];
+
+    if (element.children.isNotEmpty) {
+      for (final childrens in element.children) {
+        nodes.addAll(_parseTableDataElementsData(childrens));
+      }
+    } else {
+      nodes.addAll(_parseTableDataElementsData(element));
+    }
+    return nodes;
+  }
+
+  List<Node> _parseTableDataElementsData(dom.Element element) {
+    final List<Node> nodes = [];
+    final delta = Delta();
+    final localName = element.localName;
+
+    if (HTMLTags.formattingElements.contains(localName)) {
+      final attributes = _parserFormattingElementAttributes(element);
+      delta.insert(element.text, attributes: attributes);
+    } else if (HTMLTags.specialElements.contains(localName)) {
+      if (delta.isNotEmpty) {
+        nodes.add(paragraphNode(delta: delta));
+      }
+      nodes.addAll(
+        _parseSpecialElements(
+          element,
+          type: ParagraphBlockKeys.type,
+        ),
+      );
+    } else if (element is dom.Text) {
+      // skip the empty text node
+
+      delta.insert(element.text);
+    }
+
+    if (delta.isNotEmpty) {
+      nodes.add(paragraphNode(delta: delta));
+    }
+    return nodes;
   }
 
   Attributes _parserFormattingElementAttributes(
@@ -130,6 +261,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           attributes = {AppFlowyRichTextKeys.href: href};
         }
         break;
+
       case HTMLTags.strikethrough:
         attributes = {AppFlowyRichTextKeys.strikethrough: true};
         break;
@@ -360,6 +492,10 @@ class HTMLTags {
   static const blockQuote = 'blockquote';
   static const div = 'div';
   static const divider = 'hr';
+  static const table = 'table';
+  static const tableRow = 'tr';
+  static const tableheader = "th";
+  static const tabledata = "td";
   static const section = 'section';
   static const font = 'font';
   static const mark = 'mark';
@@ -387,6 +523,7 @@ class HTMLTags {
     HTMLTags.orderedList,
     HTMLTags.div,
     HTMLTags.list,
+    HTMLTags.table,
     HTMLTags.paragraph,
     HTMLTags.blockQuote,
     HTMLTags.checkbox,
@@ -398,6 +535,7 @@ class HTMLTags {
     return tag == h1 ||
         tag == h2 ||
         tag == h3 ||
+        tag == table ||
         tag == checkbox ||
         tag == paragraph ||
         tag == div ||

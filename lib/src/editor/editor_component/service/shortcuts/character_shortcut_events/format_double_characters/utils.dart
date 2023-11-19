@@ -1,29 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-const _hyphen = '-';
-const _emDash = '—'; // This is an em dash — not a single dash - !!
-
-/// format two hyphens into an em dash
-///
-/// - support
-///   - desktop
-///   - mobile
-///   - web
-///
-final CharacterShortcutEvent formatDoubleHyphenEmDash = CharacterShortcutEvent(
-  key: 'format double hyphen into an em dash',
-  character: _hyphen,
-  handler: (editorState) async => handleDoubleCharacterReplacement(
-    editorState: editorState,
-    character: _hyphen,
-    replacement: _emDash,
-  ),
-);
-
+/// If [prefixCharacter] is null or empty, [character] is used
 Future<bool> handleDoubleCharacterReplacement({
   required EditorState editorState,
   required String character,
   required String replacement,
+  String? prefixCharacter,
 }) async {
   assert(character.length == 1);
 
@@ -36,11 +18,6 @@ Future<bool> handleDoubleCharacterReplacement({
     await editorState.deleteSelection(selection);
   }
 
-  selection = editorState.selection;
-  if (selection == null) {
-    return false;
-  }
-
   final node = editorState.getNodeAtPath(selection.end.path);
   final delta = node?.delta;
   if (node == null || delta == null || delta.isEmpty) {
@@ -50,8 +27,11 @@ Future<bool> handleDoubleCharacterReplacement({
   if (selection.end.offset > 0) {
     final plain = delta.toPlainText();
 
+    final expectedPrevious =
+        prefixCharacter?.isEmpty ?? true ? character : prefixCharacter;
+
     final previousCharacter = plain[selection.end.offset - 1];
-    if (previousCharacter != _hyphen) {
+    if (previousCharacter != expectedPrevious) {
       return false;
     }
 
@@ -60,7 +40,7 @@ Future<bool> handleDoubleCharacterReplacement({
         node,
         selection.end.offset - 1,
         1,
-        _emDash,
+        replacement,
       );
 
     await editorState.apply(replace);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MobileSelectionWidget extends StatelessWidget {
   const MobileSelectionWidget({
-    Key? key,
+    super.key,
     required this.layerLink,
     required this.rect,
     required this.color,
@@ -10,7 +10,7 @@ class MobileSelectionWidget extends StatelessWidget {
     this.showLeftHandler = false,
     this.showRightHandler = false,
     this.handlerColor = Colors.black,
-  }) : super(key: key);
+  });
 
   final Color color;
   final Rect rect;
@@ -24,13 +24,15 @@ class MobileSelectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const handlerWidth = 2.0;
     const handlerBallWidth = 6.0;
+    // to avoid row overflow
+    const threshold = 0.25;
     // left and right add 2px to avoid the selection area from being too narrow
     var adjustedRect = rect;
     if (showLeftHandler || showRightHandler) {
       adjustedRect = Rect.fromLTWH(
-        rect.left - 2 * handlerWidth,
+        rect.left - 2 * (handlerWidth + threshold),
         rect.top - handlerBallWidth,
-        rect.width + 4 * handlerWidth,
+        rect.width + 4 * (handlerWidth + threshold),
         rect.height + 2 * handlerBallWidth,
       );
     }

@@ -25,7 +25,11 @@ class MobileFloatingToolbar extends StatefulWidget {
   final EditorState editorState;
   final EditorScrollController editorScrollController;
   final Widget child;
-  final Widget Function(BuildContext context, Offset anchor) toolbarBuilder;
+  final Widget Function(
+    BuildContext context,
+    Offset anchor,
+    Function closeToolbar,
+  ) toolbarBuilder;
 
   @override
   State<MobileFloatingToolbar> createState() => _MobileFloatingToolbarState();
@@ -94,7 +98,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     } else if (selection.isCollapsed) {
       if (_isToolbarVisible) {
         _clear();
-      } else if (prevSelection == selection) {
+      } else if (prevSelection == selection &&
+          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         _showAfterDelay(const Duration(milliseconds: 400));
       }
       prevSelection = selection;
@@ -153,7 +158,11 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     BuildContext context,
     Offset offset,
   ) {
-    return widget.toolbarBuilder(context, offset);
+    return widget.toolbarBuilder(
+      context,
+      offset,
+      _clear,
+    );
   }
 
   Rect _findSuitableRect(Iterable<Rect> rects) {

@@ -63,14 +63,12 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
           return Column(
             children: [
               if (header != null) header!,
-              ...items
-                  .map(
-                    (e) => Padding(
-                      padding: editorState.editorStyle.padding,
-                      child: editorState.renderer.build(context, e),
-                    ),
-                  )
-                  .toList(),
+              ...items.map(
+                (e) => Padding(
+                  padding: editorState.editorStyle.padding,
+                  child: editorState.renderer.build(context, e),
+                ),
+              ),
               if (footer != null) footer!,
             ],
           );
@@ -93,11 +91,13 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               child: header!,
             );
           }
-          if (footer != null && index == items.length + 1) {
+
+          if (footer != null && index == (items.length - 1) + extentCount) {
             return IgnoreEditorSelectionGesture(
               child: footer!,
             );
           }
+
           return Padding(
             padding: editorState.editorStyle.padding,
             child: editorState.renderer.build(

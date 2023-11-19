@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'find_replace_menu_icon_button.dart';
 import 'package:flutter/material.dart';
+
+import 'find_replace_menu_icon_button.dart';
 
 const double _iconButtonSize = 30;
 
@@ -160,7 +161,7 @@ class _FindMenuState extends State<FindMenu> {
 
   final findTextEditingController = TextEditingController();
 
-  String queriedPattern = '';
+  String message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
 
   bool showReplaceMenu = false;
   bool caseSensitive = false;
@@ -239,8 +240,7 @@ class _FindMenuState extends State<FindMenu> {
               });
             },
             decoration: _buildInputDecoration(
-              widget.localizations?.find ??
-                  AppFlowyEditorLocalizations.current.find,
+              widget.localizations?.find ?? AppFlowyEditorL10n.current.find,
             ),
           ),
         ),
@@ -250,9 +250,7 @@ class _FindMenuState extends State<FindMenu> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           alignment: Alignment.centerLeft,
           child: Text(
-            matches.isEmpty
-                ? widget.localizations?.noResult ?? 'No Result'
-                : '$selectedIndex of ${matches.length}',
+            matches.isEmpty ? message : '$selectedIndex of ${matches.length}',
           ),
         ),
         // previous match button
@@ -261,7 +259,7 @@ class _FindMenuState extends State<FindMenu> {
           onPressed: () => widget.searchService.navigateToMatch(moveUp: true),
           icon: const Icon(Icons.arrow_upward),
           tooltip: widget.localizations?.previousMatch ??
-              AppFlowyEditorLocalizations.current.previousMatch,
+              AppFlowyEditorL10n.current.previousMatch,
         ),
         // next match button
         FindAndReplaceMenuIconButton(
@@ -269,14 +267,14 @@ class _FindMenuState extends State<FindMenu> {
           onPressed: () => widget.searchService.navigateToMatch(),
           icon: const Icon(Icons.arrow_downward),
           tooltip: widget.localizations?.nextMatch ??
-              AppFlowyEditorLocalizations.current.nextMatch,
+              AppFlowyEditorL10n.current.nextMatch,
         ),
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('closeButton'),
           onPressed: widget.onDismiss,
           icon: const Icon(Icons.close),
           tooltip: widget.localizations?.close ??
-              AppFlowyEditorLocalizations.current.closeFind,
+              AppFlowyEditorL10n.current.closeFind,
         ),
         // regex button
         if (showRegexButton)
@@ -294,7 +292,7 @@ class _FindMenuState extends State<FindMenu> {
               height: 20,
               color: widget.searchService.regex ? Colors.black : Colors.grey,
             ),
-            tooltip: AppFlowyEditorLocalizations.current.regex,
+            tooltip: AppFlowyEditorL10n.current.regex,
           ),
         // case sensitive button
         if (showCaseSensitiveButton)
@@ -315,18 +313,32 @@ class _FindMenuState extends State<FindMenu> {
                   ? Colors.black
                   : Colors.grey,
             ),
-            tooltip: AppFlowyEditorLocalizations.current.caseSensitive,
+            tooltip: AppFlowyEditorL10n.current.caseSensitive,
           ),
       ],
     );
   }
 
   void _searchPattern() {
-    if (findTextEditingController.text.isEmpty) {
-      return;
+    String error;
+
+    // the following line needs to be executed even if
+    // findTextEditingController.text.isEmpty, otherwise the previous
+    // matches will persist
+    error =
+        widget.searchService.findAndHighlight(findTextEditingController.text);
+
+    switch (error) {
+      case 'Regex':
+        message = AppFlowyEditorLocalizations.current.regexError;
+      case 'Empty':
+        message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
+      default:
+        message = widget.localizations?.noResult ??
+            AppFlowyEditorLocalizations.current.noFindResult;
     }
-    widget.searchService.findAndHighlight(findTextEditingController.text);
-    setState(() => queriedPattern = findTextEditingController.text);
+
+    _setState();
   }
 
   void _setState() {
@@ -384,7 +396,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
             },
             decoration: _buildInputDecoration(
               widget.localizations?.replace ??
-                  AppFlowyEditorLocalizations.current.replace,
+                  AppFlowyEditorL10n.current.replace,
             ),
           ),
         ),
@@ -393,7 +405,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
           onPressed: _replaceSelectedWord,
           icon: const Icon(Icons.find_replace),
           tooltip: widget.localizations?.replace ??
-              AppFlowyEditorLocalizations.current.replace,
+              AppFlowyEditorL10n.current.replace,
         ),
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('replaceAllButton'),
@@ -402,7 +414,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
           ),
           icon: const Icon(Icons.change_circle_outlined),
           tooltip: widget.localizations?.replaceAll ??
-              AppFlowyEditorLocalizations.current.replaceAll,
+              AppFlowyEditorL10n.current.replaceAll,
         ),
       ],
     );

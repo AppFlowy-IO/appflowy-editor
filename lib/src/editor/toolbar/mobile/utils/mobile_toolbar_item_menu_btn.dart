@@ -6,24 +6,22 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.icon,
-    required this.label,
+    this.label,
     required this.isSelected,
   });
 
   final Function() onPressed;
   final Widget? icon;
-  final Widget label;
+  final Widget? label;
   final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
-    return OutlinedButton.icon(
+    final style = MobileToolbarTheme.of(context);
+    return OutlinedButton(
       onPressed: onPressed,
-      icon: icon ?? const SizedBox.shrink(),
-      label: label,
       style: ButtonStyle(
-        alignment: Alignment.centerLeft,
+        alignment: label == null ? Alignment.center : Alignment.centerLeft,
         foregroundColor: MaterialStateProperty.all(style.foregroundColor),
         splashFactory: NoSplash.splashFactory,
         side: MaterialStateProperty.resolveWith<BorderSide>(
@@ -43,11 +41,20 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
           ),
         ),
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(
-            vertical: 0,
-            horizontal: 8,
-          ),
+          EdgeInsets.zero,
         ),
+      ),
+      child: Row(
+        children: [
+          if (icon != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 6.0,
+              ),
+              child: icon!,
+            ),
+          label ?? const SizedBox.shrink(),
+        ],
       ),
     );
   }
