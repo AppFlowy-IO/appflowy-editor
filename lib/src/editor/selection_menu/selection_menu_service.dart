@@ -192,8 +192,8 @@ class SelectionMenu extends SelectionMenuService {
 
   void calculateSelectionMenuOffset(Rect rect) {
     // Workaround: We can customize the padding through the [EditorStyle],
-    //  but the coordinates of overlay are not properly converted currently.
-    //  Just subtract the padding here as a result.
+    // but the coordinates of overlay are not properly converted currently.
+    // Just subtract the padding here as a result.
     const menuHeight = 200.0;
     const menuOffset = Offset(0, 10);
     final editorOffset =
@@ -223,13 +223,13 @@ class SelectionMenu extends SelectionMenuService {
     }
 
     // show on left
-    if (_offset.dx > editorWidth / 2) {
+    if (_offset.dx - editorOffset.dx > editorWidth / 2) {
       _alignment = _alignment == Alignment.topLeft
           ? Alignment.topRight
           : Alignment.bottomRight;
 
       _offset = Offset(
-        editorWidth - _offset.dx,
+        editorWidth - _offset.dx + editorOffset.dx,
         _offset.dy,
       );
     }
