@@ -2,10 +2,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final linkMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIcon: const AFMobileIcon(
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.link,
+    color: MobileToolbarTheme.of(context).iconColor,
   ),
-  itemMenuBuilder: (editorState, selection, itemMenuService) {
+  itemMenuBuilder: (_, editorState, itemMenuService) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return const SizedBox.shrink();
+    }
     final String? linkText = editorState.getDeltaAttributeValueInSelection(
       AppFlowyRichTextKeys.href,
       selection,
@@ -65,7 +70,7 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     const double spacing = 8;
     return Material(
       // TextField widget needs to be wrapped in a Material widget to provide a visual appearance

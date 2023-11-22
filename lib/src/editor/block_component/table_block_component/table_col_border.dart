@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 
 class TableColBorder extends StatefulWidget {
   const TableColBorder({
-    Key? key,
+    super.key,
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
     required this.resizable,
     required this.borderColor,
     required this.borderHoverColor,
-  }) : super(key: key);
+  });
 
   final bool resizable;
   final int colIdx;

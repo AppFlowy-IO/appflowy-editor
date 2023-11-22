@@ -6,8 +6,15 @@ MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
   List<ColorOption>? backgroundColorOptions,
 }) {
   return MobileToolbarItem.withMenu(
-    itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.color),
-    itemMenuBuilder: (editorState, selection, _) {
+    itemIconBuilder: (context, __, ___) => AFMobileIcon(
+      afMobileIcons: AFMobileIcons.color,
+      color: MobileToolbarTheme.of(context).iconColor,
+    ),
+    itemMenuBuilder: (_, editorState, ___) {
+      final selection = editorState.selection;
+      if (selection == null) {
+        return const SizedBox.shrink();
+      }
       return _TextAndBackgroundColorMenu(
         editorState,
         selection,
@@ -24,8 +31,7 @@ class _TextAndBackgroundColorMenu extends StatefulWidget {
     this.selection, {
     this.textColorOptions,
     this.backgroundColorOptions,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final EditorState editorState;
   final Selection selection;
@@ -41,7 +47,7 @@ class _TextAndBackgroundColorMenuState
     extends State<_TextAndBackgroundColorMenu> {
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     List<Tab> myTabs = <Tab>[
       Tab(
         text: AppFlowyEditorL10n.current.textColor,
@@ -58,10 +64,10 @@ class _TextAndBackgroundColorMenuState
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               tabs: myTabs,
-              labelColor: style.tabbarSelectedForegroundColor,
+              labelColor: style.tabBarSelectedBackgroundColor,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(style.borderRadius),
-                color: style.tabbarSelectedBackgroundColor,
+                color: style.tabBarSelectedForegroundColor,
               ),
               // remove the bottom line of TabBar
               dividerColor: Colors.transparent,

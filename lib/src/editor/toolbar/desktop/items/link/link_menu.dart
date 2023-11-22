@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
-    Key? key,
+    super.key,
     this.linkText,
     this.editorState,
     required this.onSubmitted,
@@ -13,7 +13,7 @@ class LinkMenu extends StatefulWidget {
     required this.onCopyLink,
     required this.onRemoveLink,
     required this.onDismiss,
-  }) : super(key: key);
+  });
 
   final String? linkText;
   final EditorState? editorState;

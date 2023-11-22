@@ -48,60 +48,60 @@ class _MobileEditorState extends State<MobileEditor> {
   @override
   Widget build(BuildContext context) {
     assert(PlatformExtension.isMobile);
-    return Column(
-      children: [
-        // build appflowy editor
-        Expanded(
-          child: MobileFloatingToolbar(
-            editorState: editorState,
-            editorScrollController: editorScrollController,
-            toolbarBuilder: (context, anchor) {
-              return AdaptiveTextSelectionToolbar.editable(
-                clipboardStatus: ClipboardStatus.pasteable,
-                onCopy: () => copyCommand.execute(editorState),
-                onCut: () => cutCommand.execute(editorState),
-                onPaste: () => pasteCommand.execute(editorState),
-                onSelectAll: () => selectAllCommand.execute(editorState),
-                anchors: TextSelectionToolbarAnchors(
-                  primaryAnchor: anchor,
-                ),
-              );
-            },
-            child: AppFlowyEditor(
-              editorStyle: editorStyle,
+    return MobileToolbarV2(
+      toolbarHeight: 48.0,
+      toolbarItems: [
+        textDecorationMobileToolbarItemV2,
+        buildTextAndBackgroundColorMobileToolbarItem(),
+        blocksMobileToolbarItem,
+        linkMobileToolbarItem,
+        dividerMobileToolbarItem,
+      ],
+      editorState: editorState,
+      child: Column(
+        children: [
+          // build appflowy editor
+          Expanded(
+            child: MobileFloatingToolbar(
               editorState: editorState,
               editorScrollController: editorScrollController,
-              blockComponentBuilders: blockComponentBuilders,
-              showMagnifier: false,
-              // showcase 3: customize the header and footer.
-              header: Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Image.asset(
-                  'assets/images/header.png',
+              toolbarBuilder: (context, anchor, closeToolbar) {
+                return AdaptiveTextSelectionToolbar.editable(
+                  clipboardStatus: ClipboardStatus.pasteable,
+                  onCopy: () {
+                    copyCommand.execute(editorState);
+                    closeToolbar();
+                  },
+                  onCut: () => cutCommand.execute(editorState),
+                  onPaste: () => pasteCommand.execute(editorState),
+                  onSelectAll: () => selectAllCommand.execute(editorState),
+                  onLiveTextInput: null,
+                  anchors: TextSelectionToolbarAnchors(
+                    primaryAnchor: anchor,
+                  ),
+                );
+              },
+              child: AppFlowyEditor(
+                editorStyle: editorStyle,
+                editorState: editorState,
+                editorScrollController: editorScrollController,
+                blockComponentBuilders: blockComponentBuilders,
+                showMagnifier: true,
+                // showcase 3: customize the header and footer.
+                header: Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Image.asset(
+                    'assets/images/header.png',
+                  ),
                 ),
-              ),
-              footer: const SizedBox(
-                height: 100,
+                footer: const SizedBox(
+                  height: 100,
+                ),
               ),
             ),
           ),
-        ),
-        // build mobile toolbar
-        MobileToolbar(
-          editorState: editorState,
-          toolbarItems: [
-            textDecorationMobileToolbarItem,
-            buildTextAndBackgroundColorMobileToolbarItem(),
-            headingMobileToolbarItem,
-            todoListMobileToolbarItem,
-            listMobileToolbarItem,
-            linkMobileToolbarItem,
-            quoteMobileToolbarItem,
-            dividerMobileToolbarItem,
-            codeMobileToolbarItem,
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 

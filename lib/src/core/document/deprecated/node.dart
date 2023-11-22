@@ -229,12 +229,11 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
 final class TextNodeV0 extends NodeV0 {
   TextNodeV0({
     required Delta delta,
-    LinkedList<NodeV0>? children,
+    super.children,
     Attributes? attributes,
   })  : _delta = delta,
         super(
           type: 'text',
-          children: children,
           attributes: attributes ?? {},
         );
 

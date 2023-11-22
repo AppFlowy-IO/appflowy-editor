@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 class BackgroundColorOptionsWidgets extends StatefulWidget {
   const BackgroundColorOptionsWidgets(
     this.editorState,
     this.selection, {
     this.backgroundColorOptions,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Selection selection;
   final EditorState editorState;
@@ -22,7 +22,7 @@ class _BackgroundColorOptionsWidgetsState
     extends State<BackgroundColorOptionsWidgets> {
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     final colorOptions =
         widget.backgroundColorOptions ?? generateHighlightColorOptions();
     final selection = widget.selection;
@@ -82,7 +82,7 @@ class _BackgroundColorOptionsWidgetsState
               },
               isSelected: isSelected,
             );
-          }).toList(),
+          }),
         ],
       ),
     );

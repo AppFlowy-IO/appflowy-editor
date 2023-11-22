@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../infra/testable_editor.dart';
 
+const _padding = 24.0;
+
 void main() async {
   group('indentCommand - widget test indent padding', () {
     testWidgets("indent LTR line under LTR line", (tester) async {
@@ -17,7 +19,7 @@ void main() async {
       final nestedBlock = node.key.currentState!
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      expect(nestedBlock?.indentPadding.left, 30);
+      expect(nestedBlock?.indentPadding.left, _padding);
       expect(nestedBlock?.indentPadding.right, 0);
 
       await editor.dispose();
@@ -34,7 +36,7 @@ void main() async {
       final nestedBlock = node.key.currentState!
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      expect(nestedBlock?.indentPadding.left, 30);
+      expect(nestedBlock?.indentPadding.left, _padding);
       expect(nestedBlock?.indentPadding.right, 0);
 
       await editor.dispose();
@@ -55,7 +57,7 @@ void main() async {
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
       expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, 30);
+      expect(nestedBlock?.indentPadding.right, _padding);
 
       await editor.dispose();
     });
@@ -75,7 +77,7 @@ void main() async {
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
       expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, 30);
+      expect(nestedBlock?.indentPadding.right, _padding);
 
       await editor.dispose();
     });
@@ -95,7 +97,7 @@ void main() async {
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
       expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, 30);
+      expect(nestedBlock?.indentPadding.right, _padding);
 
       await editor.dispose();
     });
@@ -120,7 +122,7 @@ void main() async {
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
       expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, 30);
+      expect(nestedBlock?.indentPadding.right, _padding);
 
       final selection = Selection.single(
         path: [0, 0],
@@ -134,7 +136,7 @@ void main() async {
       final nestedBlockAfter = node.key.currentState!
           .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      expect(nestedBlockAfter?.indentPadding.left, 30);
+      expect(nestedBlockAfter?.indentPadding.left, _padding);
       expect(nestedBlockAfter?.indentPadding.right, 0);
 
       await editor.dispose();

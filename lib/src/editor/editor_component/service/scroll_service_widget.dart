@@ -8,10 +8,10 @@ import 'package:provider/provider.dart';
 
 class ScrollServiceWidget extends StatefulWidget {
   const ScrollServiceWidget({
-    Key? key,
+    super.key,
     required this.editorScrollController,
     required this.child,
-  }) : super(key: key);
+  });
 
   final EditorScrollController editorScrollController;
 
@@ -109,7 +109,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         return Future.delayed(const Duration(milliseconds: 300), () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: 50,
+            edgeOffset: 100,
             duration: Duration.zero,
           );
         });

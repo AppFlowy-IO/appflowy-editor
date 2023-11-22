@@ -2,8 +2,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final headingMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.heading),
-  itemMenuBuilder: (editorState, selection, _) {
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+    afMobileIcons: AFMobileIcons.heading,
+    color: MobileToolbarTheme.of(context).iconColor,
+  ),
+  itemMenuBuilder: (_, editorState, __) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return const SizedBox.shrink();
+    }
     return _HeadingMenu(
       selection,
       editorState,
@@ -14,9 +21,8 @@ final headingMobileToolbarItem = MobileToolbarItem.withMenu(
 class _HeadingMenu extends StatefulWidget {
   const _HeadingMenu(
     this.selection,
-    this.editorState, {
-    Key? key,
-  }) : super(key: key);
+    this.editorState,
+  );
 
   final Selection selection;
   final EditorState editorState;
@@ -46,7 +52,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final style = MobileToolbarStyle.of(context);
+    final style = MobileToolbarTheme.of(context);
     final size = MediaQuery.sizeOf(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
@@ -61,7 +67,11 @@ class _HeadingMenuState extends State<_HeadingMenu> {
           width: (size.width - 4 * style.buttonSpacing) / 3,
         ),
         child: MobileToolbarItemMenuBtn(
-          icon: AFMobileIcon(afMobileIcons: currentHeading.icon),
+          icon: AFMobileIcon(
+            afMobileIcons: currentHeading.icon,
+            size: 20,
+            color: MobileToolbarTheme.of(context).iconColor,
+          ),
           label: Text(
             currentHeading.label,
             maxLines: 2,
