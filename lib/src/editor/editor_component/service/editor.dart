@@ -27,6 +27,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoFocus = false,
     this.focusedSelection,
     this.shrinkWrap = false,
+    this.showMagnifier = true,
     this.editorScrollController,
     this.editorStyle = const EditorStyle.desktop(),
     this.header,
@@ -151,6 +152,11 @@ class AppFlowyEditor extends StatefulWidget {
   /// Notes: Must provide a scrollController when shrinkWrap is true.
   final bool shrinkWrap;
 
+  /// Show the magnifier or not.
+  ///
+  /// only works on iOS or Android.
+  final bool showMagnifier;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -247,6 +253,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       key: editorState.service.selectionServiceKey,
       cursorColor: widget.editorStyle.cursorColor,
       selectionColor: widget.editorStyle.selectionColor,
+      showMagnifier: widget.showMagnifier,
       contextMenuItems: widget.contextMenuItems,
       child: KeyboardServiceWidget(
         key: editorState.service.keyboardServiceKey,

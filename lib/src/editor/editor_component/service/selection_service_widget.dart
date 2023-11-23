@@ -8,6 +8,7 @@ class SelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.showMagnifier = true,
     required this.contextMenuItems,
     required this.child,
   });
@@ -16,6 +17,11 @@ class SelectionServiceWidget extends StatefulWidget {
   final Color cursorColor;
   final Color selectionColor;
   final List<List<ContextMenuItem>> contextMenuItems;
+
+  /// Show the magnifier or not.
+  ///
+  /// only works on iOS or Android.
+  final bool showMagnifier;
 
   @override
   State<SelectionServiceWidget> createState() => _SelectionServiceWidgetState();
@@ -46,6 +52,7 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       key: forwardKey,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
+      showMagnifier: widget.showMagnifier,
       child: widget.child,
     );
   }
