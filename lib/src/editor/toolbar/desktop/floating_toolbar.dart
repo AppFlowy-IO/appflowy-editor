@@ -241,7 +241,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       return (rect.left, top, null);
     } else if (left >= threshold && right <= threshold * 2.0) {
       // show in center
-      return (threshold, top, null);
+      return (editorRect.left + threshold, top, null);
     } else {
       // show in right
       return (null, top, editorRect.right - rect.right);
