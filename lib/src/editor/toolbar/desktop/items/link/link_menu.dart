@@ -90,11 +90,12 @@ class _LinkMenuState extends State<LinkMenu> {
           widget.onDismiss();
         }
       },
-      child: TextField(
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         focusNode: _focusNode,
         textAlign: TextAlign.left,
         controller: _textEditingController,
-        onSubmitted: widget.onSubmitted,
+        onFieldSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
           hintText: AppFlowyEditorL10n.current.urlHint,
           contentPadding: const EdgeInsets.all(16.0),
@@ -113,6 +114,14 @@ class _LinkMenuState extends State<LinkMenu> {
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
         ),
+        validator: (value) {
+          if (value == null ||
+              value.isEmpty ||
+              !UrlValidator.isValidUrl(value)) {
+            return AppFlowyEditorL10n.current.incorrectLink;
+          }
+          return null;
+        },
       ),
     );
   }

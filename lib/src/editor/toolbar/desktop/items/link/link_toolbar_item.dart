@@ -83,10 +83,12 @@ void showLinkMenu(
           await safeLaunchUrl(linkText);
         },
         onSubmitted: (text) async {
-          await editorState.formatDelta(selection, {
-            BuiltInAttributeKey.href: text,
-          });
-          dismissOverlay();
+          if (UrlValidator.isValidUrl(text)) {
+            await editorState.formatDelta(selection, {
+              BuiltInAttributeKey.href: text,
+            });
+            dismissOverlay();
+          }
         },
         onCopyLink: () {
           AppFlowyClipboard.setData(text: linkText);
