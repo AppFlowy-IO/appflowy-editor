@@ -86,6 +86,7 @@ class _MobileEditorState extends State<MobileEditor> {
                 editorState: editorState,
                 editorScrollController: editorScrollController,
                 blockComponentBuilders: blockComponentBuilders,
+                showMagnifier: true,
                 // showcase 3: customize the header and footer.
                 header: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
