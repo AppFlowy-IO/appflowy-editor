@@ -1,6 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_height_plugin/keyboard_height_plugin.dart';
+
+const String disableMobileToolbarKey = 'disableMobileToolbar';
 
 class MobileToolbarV2 extends StatefulWidget {
   const MobileToolbarV2({
@@ -56,7 +58,7 @@ class MobileToolbarV2 extends StatefulWidget {
 
 class _MobileToolbarV2State extends State<MobileToolbarV2> {
   OverlayEntry? toolbarOverlay;
-  final keyboardHeightPlugin = KeyboardHeightPlugin();
+
   final isKeyboardShow = ValueNotifier(false);
 
   @override
@@ -64,15 +66,13 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
     super.initState();
 
     _insertKeyboardToolbar();
-    keyboardHeightPlugin.onKeyboardHeightChanged((height) {
-      isKeyboardShow.value = height > 0;
-    });
+    KeyboardHeightObserver.instance.addListener(_onKeyboardHeightChanged);
   }
 
   @override
   void dispose() {
     _removeKeyboardToolbar();
-    keyboardHeightPlugin.dispose();
+    KeyboardHeightObserver.instance.removeListener(_onKeyboardHeightChanged);
 
     super.dispose();
   }
@@ -97,6 +97,10 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
     );
   }
 
+  void _onKeyboardHeightChanged(double height) {
+    isKeyboardShow.value = height > 0;
+  }
+
   void _removeKeyboardToolbar() {
     toolbarOverlay?.remove();
     toolbarOverlay?.dispose();
@@ -110,7 +114,9 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
       valueListenable: widget.editorState.selectionNotifier,
       builder: (_, Selection? selection, __) {
         // if the selection is null, hide the toolbar
-        if (selection == null) {
+        if (selection == null ||
+            widget.editorState.selectionExtraInfo?[disableMobileToolbarKey] ==
+                true) {
           return const SizedBox.shrink();
         }
 
@@ -190,7 +196,6 @@ class _MobileToolbarState extends State<_MobileToolbar>
   // This is because we want to keep the same height when the menu is shown.
   bool canUpdateCachedKeyboardHeight = true;
   ValueNotifier<double> cachedKeyboardHeight = ValueNotifier(0.0);
-  final keyboardHeightPlugin = KeyboardHeightPlugin();
 
   // used to check if click the same item again
   int? selectedMenuIndex;
@@ -202,11 +207,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
     super.initState();
 
     currentSelection = widget.editorState.selection;
-    keyboardHeightPlugin.onKeyboardHeightChanged((height) {
-      if (canUpdateCachedKeyboardHeight) {
-        cachedKeyboardHeight.value = height;
-      }
-    });
+    KeyboardHeightObserver.instance.addListener(_onKeyboardHeightChanged);
   }
 
   @override
@@ -223,7 +224,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
   void dispose() {
     showMenuNotifier.dispose();
     cachedKeyboardHeight.dispose();
-    keyboardHeightPlugin.dispose();
+    KeyboardHeightObserver.instance.removeListener(_onKeyboardHeightChanged);
 
     super.dispose();
   }
@@ -257,6 +258,12 @@ class _MobileToolbarState extends State<_MobileToolbar>
 
   void showItemMenu() {
     showMenuNotifier.value = true;
+  }
+
+  void _onKeyboardHeightChanged(double height) {
+    if (canUpdateCachedKeyboardHeight) {
+      cachedKeyboardHeight.value = height;
+    }
   }
 
   // toolbar list view and close keyboard/menu button
