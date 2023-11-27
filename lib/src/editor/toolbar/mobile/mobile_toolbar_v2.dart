@@ -202,6 +202,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
 
   Selection? currentSelection;
 
+  bool closeKeyboardInitiative = false;
+
   @override
   void initState() {
     super.initState();
@@ -264,6 +266,15 @@ class _MobileToolbarState extends State<_MobileToolbar>
     if (canUpdateCachedKeyboardHeight) {
       cachedKeyboardHeight.value = height;
     }
+
+    // if the keyboard is not closed initiative, we need to close the menu at same time
+    if (!closeKeyboardInitiative && height == 0) {
+      widget.editorState.selection = null;
+    }
+
+    if (height == 0) {
+      closeKeyboardInitiative = false;
+    }
   }
 
   // toolbar list view and close keyboard/menu button
@@ -318,6 +329,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
                   canUpdateCachedKeyboardHeight = false;
                   selectedMenuIndex = index;
                   showItemMenu();
+                  closeKeyboardInitiative = true;
                   _closeKeyboard();
                 }
               },
@@ -344,6 +356,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
                     closeItemMenu();
                     _showKeyboard();
                   } else {
+                    closeKeyboardInitiative = true;
                     // close the keyboard and clear the selection
                     // if the selection is null, the keyboard and the toolbar will be hidden automatically
                     widget.editorState.selection = null;
