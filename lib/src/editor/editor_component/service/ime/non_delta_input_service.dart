@@ -90,7 +90,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     if (currentTextEditingValue == value) {
       return;
     }
-    // composing text is not evaluated，fix #564
+    // composing text is not evaluated，fix #576
     if (value.isComposingRangeValid) {
       return;
     }
