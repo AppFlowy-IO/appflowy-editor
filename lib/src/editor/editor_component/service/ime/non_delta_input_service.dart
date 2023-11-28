@@ -90,6 +90,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     if (currentTextEditingValue == value) {
       return;
     }
+    // composing text is not evaluated，fix #564
+    if (value.isComposingRangeValid) {
+      return;
+    }
     final deltas = getTextEditingDeltas(currentTextEditingValue, value);
     // On mobile, the IME will send a lot of updateEditingValue events, so we
     // need to debounce it to combine them together.
