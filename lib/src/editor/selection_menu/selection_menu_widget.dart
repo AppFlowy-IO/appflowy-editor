@@ -187,7 +187,7 @@ class SelectionMenuStyle {
 
 class SelectionMenuWidget extends StatefulWidget {
   const SelectionMenuWidget({
-    Key? key,
+    super.key,
     required this.items,
     required this.maxItemInRow,
     required this.editorState,
@@ -197,7 +197,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.selectionMenuStyle,
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
-  }) : super(key: key);
+  });
 
   final List<SelectionMenuItem> items;
   final int itemCountFilter;
@@ -362,14 +362,15 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
-    return const Align(
-      alignment: Alignment.centerLeft,
-      child: Material(
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 140,
+        child: Material(
           child: Text(
-            'No results',
-            style: TextStyle(color: Colors.grey),
+            "No results",
+            style: TextStyle(fontSize: 18.0, color: Colors.grey),
+            textAlign: TextAlign.center,
           ),
         ),
       ),

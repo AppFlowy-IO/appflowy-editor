@@ -1,9 +1,19 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final quoteMobileToolbarItem = MobileToolbarItem.action(
-  itemIcon: const AFMobileIcon(afMobileIcons: AFMobileIcons.quote),
-  actionHandler: ((editorState, selection) {
-    final node = editorState.getNodeAtPath(selection.start.path)!;
+  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+    afMobileIcons: AFMobileIcons.quote,
+    color: MobileToolbarTheme.of(context).iconColor,
+  ),
+  actionHandler: (context, editorState) async {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return;
+    }
+    final node = editorState.getNodeAtPath(selection.start.path);
+    if (node == null) {
+      return;
+    }
     final isQuote = node.type == QuoteBlockKeys.type;
     editorState.formatNode(
       selection,
@@ -14,5 +24,5 @@ final quoteMobileToolbarItem = MobileToolbarItem.action(
         },
       ),
     );
-  }),
+  },
 );

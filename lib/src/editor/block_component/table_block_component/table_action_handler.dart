@@ -5,7 +5,7 @@ import 'dart:math' as math;
 
 class TableActionHandler extends StatefulWidget {
   const TableActionHandler({
-    Key? key,
+    super.key,
     this.visible = false,
     this.height,
     required this.node,
@@ -15,7 +15,7 @@ class TableActionHandler extends StatefulWidget {
     required this.transform,
     required this.dir,
     this.menuBuilder,
-  }) : super(key: key);
+  });
 
   final bool visible;
   final Node node;

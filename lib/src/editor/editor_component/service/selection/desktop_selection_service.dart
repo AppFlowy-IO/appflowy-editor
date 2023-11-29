@@ -449,43 +449,6 @@ class _DesktopSelectionServiceWidgetState
     return min.clamp(start, end);
   }
 
-  /*void _showDebugLayerIfNeeded() {
-     remove false to show debug overlay.
-     if (kDebugMode && false) {
-       _debugOverlay?.remove();
-       if (offset != null) {
-         _debugOverlay = OverlayEntry(
-           builder: (context) => Positioned.fromRect(
-             rect: Rect.fromPoints(offset, offset.translate(20, 20)),
-             child: Container(
-               color: Colors.red.withOpacity(0.2),
-             ),
-           ),
-         );
-         Overlay.of(context)?.insert(_debugOverlay!);
-       } else if (_panStartOffset != null) {
-         _debugOverlay = OverlayEntry(
-           builder: (context) => Positioned.fromRect(
-             rect: Rect.fromPoints(
-                 _panStartOffset?.translate(
-                       0,
-                       -(editorState.service.scrollService!.dy -
-                           _panStartScrollDy!),
-                     ) ??
-                     Offset.zero,
-                 offset ?? Offset.zero),
-             child: Container(
-               color: Colors.red.withOpacity(0.2),
-             ),
-           ),
-         );
-         Overlay.of(context)?.insert(_debugOverlay!);
-       } else {
-         _debugOverlay = null;
-       }
-     }
-  }*/
-
   @override
   void registerGestureInterceptor(SelectionGestureInterceptor interceptor) {
     _interceptors.add(interceptor);

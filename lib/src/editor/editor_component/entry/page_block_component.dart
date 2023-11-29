@@ -54,27 +54,27 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     if (scrollController == null ||
         scrollController.shrinkWrap ||
         !editorState.editable) {
-      return Builder(
-        builder: (context) {
-          final scroller = Scrollable.maybeOf(context);
-          if (scroller != null) {
-            editorState.updateAutoScroller(scroller);
-          }
-          return Column(
-            children: [
-              if (header != null) header!,
-              ...items
-                  .map(
-                    (e) => Padding(
-                      padding: editorState.editorStyle.padding,
-                      child: editorState.renderer.build(context, e),
-                    ),
-                  )
-                  .toList(),
-              if (footer != null) footer!,
-            ],
-          );
-        },
+      return SingleChildScrollView(
+        child: Builder(
+          builder: (context) {
+            final scroller = Scrollable.maybeOf(context);
+            if (scroller != null) {
+              editorState.updateAutoScroller(scroller);
+            }
+            return Column(
+              children: [
+                if (header != null) header!,
+                ...items.map(
+                  (e) => Padding(
+                    padding: editorState.editorStyle.padding,
+                    child: editorState.renderer.build(context, e),
+                  ),
+                ),
+                if (footer != null) footer!,
+              ],
+            );
+          },
+        ),
       );
     } else {
       int extentCount = 0;
@@ -93,11 +93,13 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               child: header!,
             );
           }
-          if (footer != null && index == items.length + 1) {
+
+          if (footer != null && index == (items.length - 1) + extentCount) {
             return IgnoreEditorSelectionGesture(
               child: footer!,
             );
           }
+
           return Padding(
             padding: editorState.editorStyle.padding,
             child: editorState.renderer.build(

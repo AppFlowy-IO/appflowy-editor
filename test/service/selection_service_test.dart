@@ -160,5 +160,29 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets('Block selection and then single tap', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraph(initialText: text);
+      await editor.startTesting();
+
+      final firstNode = editor.nodeAtPath([0]);
+      final finder = find.byKey(firstNode!.key);
+
+      final rect = tester.getRect(finder);
+
+      editor.editorState.selectionType = SelectionType.block;
+
+      // tap at the beginning
+      await tester.tapAt(rect.centerLeft);
+      expect(
+        editor.selection,
+        Selection.single(path: [0], startOffset: 0),
+      );
+
+      expect(editor.editorState.selectionType, SelectionType.inline);
+
+      await editor.dispose();
+    });
   });
 }

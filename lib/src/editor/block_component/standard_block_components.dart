@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_events/vim.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
@@ -17,6 +18,11 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (_) => 'To-do',
     ),
+    toggleChildrenTriggers: [
+      LogicalKeyboardKey.shift,
+      LogicalKeyboardKey.shiftLeft,
+      LogicalKeyboardKey.shiftRight,
+    ],
   ),
   BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
@@ -89,6 +95,9 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 
   // markdown syntax
   ...markdownSyntaxShortcutEvents,
+
+  // convert => to arrow
+  formatGreaterEqual,
 ];
 
 final List<CommandShortcutEvent> standardCommandShortcutEvents = [
