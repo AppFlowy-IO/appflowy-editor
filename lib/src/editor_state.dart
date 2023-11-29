@@ -277,9 +277,10 @@ class EditorState {
     if (!editable && !vimMode && mode == VimModes.normalMode) {
       return;
     } else if (!editable && vimMode) {
+      print(transaction.operations.toList());
       //NOTE: This statement blocks editor transactions
       //So to apply transactions just remove it
-      return;
+      //return;
     }
 
     // it's a time consuming task, only enable it if necessary.
@@ -294,7 +295,7 @@ class EditorState {
 
     for (final operation in transaction.operations) {
       Log.editor.debug('apply op: ${operation.toJson()}');
-      _applyOperation(operation);
+      _applyOperation(operation, editable, vimMode, mode);
     }
 
     // broadcast to other users here, after applying the transaction
@@ -532,13 +533,18 @@ class EditorState {
     });
   }
 
-  void _applyOperation(Operation op) {
+  void _applyOperation(Operation op, var edit, var mode, var vimMode) {
     if (op is InsertOperation) {
       document.insert(op.path, op.nodes);
     } else if (op is UpdateOperation) {
-      // ignore the update operation if the attributes are the same.
-      if (!mapEquals(op.attributes, op.oldAttributes)) {
-        document.update(op.path, op.attributes);
+      //NOTE: This does help block letter but blocks other operations like delete
+      if (!edit && mode && vimMode == VimModes.normalMode) {
+        return;
+      } // ignore the update operation if the attributes are the same.
+      if (edit) {
+        if (!mapEquals(op.attributes, op.oldAttributes)) {
+          document.update(op.path, op.attributes);
+        }
       }
     } else if (op is DeleteOperation) {
       document.delete(op.path, op.nodes.length);
