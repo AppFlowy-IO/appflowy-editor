@@ -28,6 +28,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   TextEditingValue? get currentTextEditingValue => _currentTextEditingValue;
 
   TextEditingValue? _currentTextEditingValue;
+
   set currentTextEditingValue(TextEditingValue? newValue) {
     _currentTextEditingValue = newValue;
   }
@@ -90,10 +91,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     if (currentTextEditingValue == value) {
       return;
     }
-    // composing text is not evaluated，fix #576
-    if (value.isComposingRangeValid) {
-      return;
-    }
+
     final deltas = getTextEditingDeltas(currentTextEditingValue, value);
     // On mobile, the IME will send a lot of updateEditingValue events, so we
     // need to debounce it to combine them together.
@@ -180,7 +178,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       }
     }
 
-    if ((PlatformExtension.isWindows || PlatformExtension.isLinux) &&
+    if ((PlatformExtension.isWindows ||
+            PlatformExtension.isLinux ||
+            PlatformExtension.isMacOS) &&
         delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
     }
@@ -260,7 +260,9 @@ extension on TextEditingDeltaNonTextUpdate {
 
 extension on TextSelection {
   TextSelection operator <<(int shiftAmount) => shift(-shiftAmount);
+
   TextSelection operator >>(int shiftAmount) => shift(shiftAmount);
+
   TextSelection shift(int shiftAmount) => TextSelection(
         baseOffset: max(0, baseOffset + shiftAmount),
         extentOffset: max(0, extentOffset + shiftAmount),
@@ -269,7 +271,9 @@ extension on TextSelection {
 
 extension on TextRange {
   TextRange operator <<(int shiftAmount) => shift(-shiftAmount);
+
   TextRange operator >>(int shiftAmount) => shift(shiftAmount);
+
   TextRange shift(int shiftAmount) => !isValid
       ? this
       : TextRange(
@@ -280,6 +284,7 @@ extension on TextRange {
 
 extension on String {
   String operator <<(int shiftAmount) => shift(shiftAmount);
+
   String shift(int shiftAmount) {
     if (shiftAmount > length) {
       return '';
