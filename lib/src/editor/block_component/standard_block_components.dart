@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_events/vim.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command/vim.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
