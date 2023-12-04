@@ -12,11 +12,12 @@ TextSpan mobileTextSpanDecoratorForAttribute(
   Node node,
   int index,
   TextInsert text,
-  TextSpan textSpan,
+  TextSpan before,
+  TextSpan after,
 ) {
   final attributes = text.attributes;
   if (attributes == null) {
-    return textSpan;
+    return before;
   }
   final editorState = context.read<EditorState>();
 
@@ -69,13 +70,13 @@ TextSpan mobileTextSpanDecoratorForAttribute(
       });
     };
     return TextSpan(
-      style: textSpan.style,
+      style: before.style,
       text: text.text,
       recognizer: tapGestureRecognizer,
     );
   }
 
-  return textSpan;
+  return before;
 }
 
 class LinkEditForm extends StatefulWidget {

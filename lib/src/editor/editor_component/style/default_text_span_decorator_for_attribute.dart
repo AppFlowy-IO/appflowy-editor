@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +12,12 @@ TextSpan defaultTextSpanDecoratorForAttribute(
   Node node,
   int index,
   TextInsert text,
-  TextSpan textSpan,
+  TextSpan before,
+  TextSpan after,
 ) {
   final attributes = text.attributes;
   if (attributes == null) {
-    return textSpan;
+    return before;
   }
   final editorState = context.read<EditorState>();
   final href = attributes[AppFlowyRichTextKeys.href] as String?;
@@ -52,10 +52,10 @@ TextSpan defaultTextSpanDecoratorForAttribute(
         });
       };
     return TextSpan(
-      style: textSpan.style,
+      style: before.style,
       text: text.text,
       recognizer: tapGestureRecognizer,
     );
   }
-  return textSpan;
+  return before;
 }

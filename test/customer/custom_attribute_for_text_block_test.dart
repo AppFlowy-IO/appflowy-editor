@@ -32,7 +32,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorStyle = EditorStyle.desktop(
       // Example for customizing a new attribute key.
-      textSpanDecorator: (_, __, ___, textInsert, textSpan) {
+      textSpanDecorator: (_, __, ___, textInsert, textSpan, ____) {
         final attributes = textInsert.attributes;
         if (attributes == null) {
           return textSpan;
