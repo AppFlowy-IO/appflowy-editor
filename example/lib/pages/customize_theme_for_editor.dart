@@ -181,20 +181,20 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
           backgroundColor: Colors.black12,
         ),
       ),
-      textSpanDecorator: (context, node, index, text, textSpan) {
+      textSpanDecorator: (context, node, index, text, before, _) {
         final attributes = text.attributes;
         final href = attributes?[AppFlowyRichTextKeys.href];
         if (href != null) {
           return TextSpan(
             text: text.text,
-            style: textSpan.style,
+            style: before.style,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 debugPrint('onTap: $href');
               },
           );
         }
-        return textSpan;
+        return before;
       },
     );
   }
