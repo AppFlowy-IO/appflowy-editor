@@ -627,6 +627,120 @@ void main() async {
   }
 }
 ''';
+    const example4 = '''
+{
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "Welcome to AppFlowy"
+            }
+          ],
+          "level": 1
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {
+              "insert": "Tasks"
+            }
+          ],
+          "level": 2
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "children": [
+          {
+            "type": "bulleted_list",
+            "children": [
+              {
+                "type": "bulleted_list",
+                "data": {
+                  "delta": [
+                    {
+                      "insert": "Task Two"
+                    }
+                  ]
+                }
+              }
+            ],
+            "data": {
+              "delta": [
+                {
+                  "insert": "Task One + Parent"
+                }
+              ]
+            }
+          },
+          {
+            "type": "bulleted_list",
+            "data": {
+              "delta": [
+                {
+                  "insert": "Task Three"
+                }
+              ]
+            }
+          }
+        ],
+        "data": {
+          "delta": [
+            {
+              "insert": "Task Parent One"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Task Four"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list",
+        "data": {
+          "delta": [
+            {
+              "insert": "Task Five"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "data": {
+          "delta": []
+        }
+      }
+    ]
+  }
+}
+''';
+
     setUpAll(() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
@@ -695,6 +809,24 @@ void main(){
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = jsonDecode(example2);
+      expect(result.toJson(), data);
+    });
+
+    test('test nested list', () async {
+      const markdown = '''
+# Welcome to AppFlowy
+
+## Tasks
+
+- Task Parent One
+  - Task One + Parent
+    - Task Two
+  - Task Three
+- Task Four
+- Task Five
+''';
+      final result = DocumentMarkdownDecoder().convert(markdown);
+      final data = jsonDecode(example4);
       expect(result.toJson(), data);
     });
 

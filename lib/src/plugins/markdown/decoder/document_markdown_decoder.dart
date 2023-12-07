@@ -41,13 +41,13 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
           [convertLineToNode(lines[i], customInlineSyntaxes)],
         );
         i++;
-      } else if (lines[i].startsWith("```")) {
-        String codeBlock = "";
-        codeBlock += "${lines[i]}\n";
+      } else if (lines[i].startsWith('```')) {
+        String codeBlock = '';
+        codeBlock += '${lines[i]}\n';
         int tempLinePointer = i;
         i++;
-        while (i < lines.length && !lines[i].endsWith("```")) {
-          codeBlock += "${lines[i]}\n";
+        while (i < lines.length && !lines[i].endsWith('```')) {
+          codeBlock += '${lines[i]}\n';
           i++;
         }
 
@@ -73,6 +73,53 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
         document.insert([i], [node]);
         i++;
+      } else if (i + 1 < lines.length && isNestedList(lines[i], lines[i + 1])) {
+        String text = lines[i];
+        int tempLinePointer = i;
+        int currentIndent = getIndentLevel(lines[i]);
+        i++;
+
+        while (i < lines.length &&
+            (lines[i].trimLeft().startsWith('- ') ||
+                lines[i].trimLeft().startsWith('* ')) &&
+            getIndentLevel(lines[i]) > currentIndent) {
+          text += '\n${lines[i]}';
+          i++;
+        }
+        List<String> listLines = text.split('\n');
+        Node? rootList;
+        Node? currentParent;
+        int indentLevel = 0;
+
+        for (String line in listLines) {
+          currentIndent = getIndentLevel(line);
+          Node newNode =
+              convertLineToNode(line.trimLeft(), customInlineSyntaxes);
+
+          if (rootList == null) {
+            rootList = newNode;
+            currentParent = newNode;
+          } else if (currentIndent > indentLevel) {
+            currentParent!.insert(newNode);
+            currentParent = newNode;
+          } else {
+            while (
+                currentIndent <= indentLevel && currentParent!.parent != null) {
+              currentParent = currentParent.parent;
+              indentLevel--;
+            }
+            if (currentParent != rootList) {
+              currentParent!.parent!.insert(newNode);
+            } else {
+              rootList.insert(newNode);
+            }
+            currentParent = newNode;
+          }
+          indentLevel = currentIndent;
+        }
+        if (rootList != null) {
+          document.insert([tempLinePointer], [rootList]);
+        }
       } else {
         document.insert(
           [i],
@@ -83,6 +130,24 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     }
 
     return document;
+  }
+
+  bool isNestedList(String line1, String line2) {
+    if ((line1.trimLeft().startsWith('- ') ||
+            line1.trimLeft().startsWith('* ')) &&
+        (line2.trimLeft().startsWith('- ') ||
+            line2.trimLeft().startsWith('* '))) {
+      return getIndentLevel(line2) > getIndentLevel(line1);
+    }
+    return false;
+  }
+
+  int getIndentLevel(String line) {
+    int indent = 0;
+    while (indent < line.length && line[indent] == ' ') {
+      indent++;
+    }
+    return (indent / 2).floor();
   }
 
   Node convertLineToNode(
