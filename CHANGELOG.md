@@ -1,3 +1,14 @@
+## 2.1.0
+* feat: show magnifier when dragging the handlers by @LucasXu0 in ([#601](https://github.com/AppFlowy-IO/appflowy-editor/pull/601))
+* feat: refactor keyboard height observer to support multiple listeners by @LucasXu0 in ([#602](https://github.com/AppFlowy-IO/appflowy-editor/pull/602))
+* fix: floating_toolbar_position_error by @q200892907 in ([#598](https://github.com/AppFlowy-IO/appflowy-editor/pull/598))
+* fix: selection menu positioning on right half of editor by @zoli in ([#600](https://github.com/AppFlowy-IO/appflowy-editor/pull/600))
+* fix: editor cannot scroll when editable is false by @LucasXu0 in ([#599](https://github.com/AppFlowy-IO/appflowy-editor/pull/599))
+* fix: markdown does not support nested lists by @JessicaJHee in ([#611](https://github.com/AppFlowy-IO/appflowy-editor/pull/611))
+* fix: input chinese issue by @q200892907 in ([#608](https://github.com/AppFlowy-IO/appflowy-editor/pull/608))
+* fix: header/footer focus issue by @q200892907 in ([#607](https://github.com/AppFlowy-IO/appflowy-editor/pull/607))
+* chore: upgrade to flutter 3.16 by @LucasXu0 in ([#614](https://github.com/AppFlowy-IO/appflowy-editor/pull/614))
+
 ## 2.0.0
 * feat: support Flutter stable channel by @LucasXu0 in ([#581](https://github.com/AppFlowy-IO/appflowy-editor/pull/581))
 * feat: support toggling format style when the selection is collapsed by @LucasXu0 in ([#586](https://github.com/AppFlowy-IO/appflowy-editor/pull/586))
@@ -6,7 +17,6 @@
 * fix: don't rebuild mobile toolbar every time by @LucasXu0 in ([#579](https://github.com/AppFlowy-IO/appflowy-editor/pull/579))
 * fix: solve the left and right key bug by @q200892907 in ([#584](https://github.com/AppFlowy-IO/appflowy-editor/pull/584))
 * fix: unable to set toolbar icon theme by @LucasXu0 in ([#596](https://github.com/AppFlowy-IO/appflowy-editor/pull/596))
-
 
 ## 2.0.0-beta.1
 * feat: support Flutter stable channel by @LucasXu0 in ([#581](https://github.com/AppFlowy-IO/appflowy-editor/pull/581))
