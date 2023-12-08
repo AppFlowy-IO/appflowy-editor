@@ -1,6 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scrollable_widget.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
 import 'package:flutter/material.dart';
@@ -51,15 +49,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   Widget build(BuildContext context) {
     return Provider.value(
       value: widget.editorScrollController,
-      child: AutoScrollableWidget(
-        scrollController: scrollController,
-        builder: (context, autoScroller) {
+      child: Builder(
+        builder: (context) {
           if (PlatformExtension.isDesktopOrWeb) {
-            return _buildDesktopScrollService(context, autoScroller);
+            return _buildDesktopScrollService(context);
           } else if (PlatformExtension.isMobile) {
-            return _buildMobileScrollService(context, autoScroller);
+            return _buildMobileScrollService(context);
           }
-
           throw UnimplementedError();
         },
       ),
@@ -68,7 +64,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   Widget _buildDesktopScrollService(
     BuildContext context,
-    AutoScroller autoScroller,
   ) {
     return DesktopScrollService(
       key: _forwardKey,
@@ -78,7 +73,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   Widget _buildMobileScrollService(
     BuildContext context,
-    AutoScroller autoScroller,
   ) {
     return MobileScrollService(
       key: _forwardKey,

@@ -86,6 +86,14 @@ class Document {
     return last;
   }
 
+  /// Must call this method when the [Document] is no longer needed.
+  void dispose() {
+    final nodes = NodeIterator(document: this, startNode: root).toList();
+    for (final node in nodes) {
+      node.dispose();
+    }
+  }
+
   /// Returns the node at the given [path].
   Node? nodeAtPath(Path path) {
     return root.childAtPath(path);
