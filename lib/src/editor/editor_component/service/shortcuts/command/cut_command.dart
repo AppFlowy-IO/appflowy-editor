@@ -15,6 +15,9 @@ final CommandShortcutEvent cutCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _cutCommandHandler = (editorState) {
+  if (editorState.selection == null) {
+    return KeyEventResult.ignored;
+  }
   // plain text.
   handleCut(editorState);
   return KeyEventResult.handled;
