@@ -151,6 +151,8 @@ class _PositionedListState extends State<PositionedList> {
   @override
   void dispose() {
     scrollController.removeListener(_schedulePositionNotificationUpdate);
+    scrollController.dispose();
+    registeredElements.dispose();
     super.dispose();
   }
 

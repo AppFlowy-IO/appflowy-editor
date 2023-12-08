@@ -82,6 +82,7 @@ class _DesktopSelectionServiceWidgetState
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
     editorState.selectionNotifier.removeListener(_updateSelection);
+    currentSelection.dispose();
 
     super.dispose();
   }
