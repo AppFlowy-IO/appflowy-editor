@@ -26,6 +26,12 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   late ScrollableState _scrollableState;
 
   @override
+  void dispose() {
+    _scrollableState.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget builder(context) {
       return widget.builder(context, _autoScroller);

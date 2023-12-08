@@ -245,6 +245,8 @@ class EditorState {
     _debouncedSealHistoryItemTimer?.cancel();
     onDispose.value += 1;
     onDispose.dispose();
+    document.dispose();
+    selectionNotifier.dispose();
   }
 
   /// Apply the transaction to the state.
