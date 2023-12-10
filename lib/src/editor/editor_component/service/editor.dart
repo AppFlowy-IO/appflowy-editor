@@ -166,7 +166,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
   EditorState get editorState => widget.editorState;
 
-  late final EditorScrollController editorScrollController;
+  late EditorScrollController editorScrollController;
 
   @override
   void initState() {
@@ -207,6 +207,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.renderer = _renderer;
+    }
+
+    if (oldWidget.editorScrollController != widget.editorScrollController) {
+      editorScrollController = widget.editorScrollController ??
+          EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: widget.shrinkWrap,
+          );
     }
 
     services = null;
