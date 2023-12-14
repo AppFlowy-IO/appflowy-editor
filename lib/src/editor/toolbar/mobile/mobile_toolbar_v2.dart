@@ -383,9 +383,10 @@ class _MobileToolbarState extends State<_MobileToolbar>
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
+            double safeAreaBottom = MediaQuery.of(context).padding.bottom;
             return SizedBox(
               height: height,
-              child: (showingMenu && selectedMenuIndex != null)
+              child: showingMenu && selectedMenuIndex != null
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
                       itemMenuBuilder: () =>
@@ -396,9 +397,9 @@ class _MobileToolbarState extends State<_MobileToolbar>
                             widget.editorState,
                             this,
                           ) ??
-                          const SizedBox.shrink(),
+                          SizedBox(height: safeAreaBottom),
                     )
-                  : const SizedBox.shrink(),
+                  : SizedBox(height: safeAreaBottom),
             );
           },
         );
