@@ -49,15 +49,13 @@ dependencies:
   keyboard_height_plugin: ^0.0.4
   numerus: ^2.1.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
-  leak_tracker_flutter_testing: ^1.0.10
-  leak_tracker: '>=9.0.0 <11.0.0'
+  leak_tracker: 9.0.16
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

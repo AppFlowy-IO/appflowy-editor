@@ -7,11 +7,13 @@ typedef KeyboardHeightCallback = void Function(double height);
 class KeyboardHeightObserver {
   KeyboardHeightObserver._() {
     _keyboardHeightPlugin.onKeyboardHeightChanged((height) {
+      currentKeyboardHeight = height;
       notify(height);
     });
   }
 
   static final KeyboardHeightObserver instance = KeyboardHeightObserver._();
+  static double currentKeyboardHeight = 0;
 
   final List<KeyboardHeightCallback> _listeners = [];
   final KeyboardHeightPlugin _keyboardHeightPlugin = KeyboardHeightPlugin();

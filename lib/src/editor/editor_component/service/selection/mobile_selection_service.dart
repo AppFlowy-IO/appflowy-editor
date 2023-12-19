@@ -19,12 +19,16 @@ enum MobileSelectionHandlerType {
   cursorHandler,
 }
 
+// the value type is MobileSelectionDragMode
+const String selectionDragModeKey = 'selection_drag_mode';
+
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     this.showMagnifier = true,
+    this.magnifierSize = const Size(72, 48),
     required this.child,
   });
 
@@ -36,6 +40,8 @@ class MobileSelectionServiceWidget extends StatefulWidget {
   ///
   /// only works on iOS or Android.
   final bool showMagnifier;
+
+  final Size magnifierSize;
 
   @override
   State<MobileSelectionServiceWidget> createState() =>
@@ -98,6 +104,9 @@ class _MobileSelectionServiceWidgetState
       onTapUp: _onTapUp,
       onDoubleTapUp: _onDoubleTapUp,
       onTripleTapUp: _onTripleTapUp,
+      onLongPressStart: _onLongPressStart,
+      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onLongPressEnd: _onLongPressEnd,
       child: Stack(
         children: [
           widget.child,
@@ -117,7 +126,7 @@ class _MobileSelectionServiceWidgetState
         final renderBox = context.findRenderObject() as RenderBox;
         final local = renderBox.globalToLocal(offset);
         return MobileMagnifier(
-          size: const Size(72, 48),
+          size: widget.magnifierSize,
           offset: local,
         );
       },
@@ -145,6 +154,9 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
+      extraInfo: {
+        selectionDragModeKey: dragMode,
+      },
     );
   }
 
@@ -266,7 +278,10 @@ class _MobileSelectionServiceWidgetState
       return;
     }
 
-    editorState.selection = Selection.collapsed(position);
+    editorState.updateSelectionWithReason(
+      Selection.collapsed(position),
+      extraInfo: null,
+    );
   }
 
   void _onDoubleTapUp(TapUpDetails details) {
@@ -375,6 +390,58 @@ class _MobileSelectionServiceWidgetState
   void _onPanEnd(DragEndDetails details) {
     // do nothing
     _lastPanOffset.value = null;
+
+    // clear the status
+    dragMode = MobileSelectionDragMode.none;
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      extraInfo: null,
+    );
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    clearSelection();
+
+    // clear old state.
+    _panStartOffset = null;
+
+    final position = getPositionInOffset(details.globalPosition);
+    if (position == null) {
+      return;
+    }
+
+    _lastPanOffset.value = details.globalPosition;
+
+    dragMode = MobileSelectionDragMode.cursor;
+    updateSelection(
+      Selection.collapsed(position),
+    );
+  }
+
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    final panEndOffset = details.globalPosition;
+    final position = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getPositionInOffset(panEndOffset);
+
+    if (position == null) {
+      return;
+    }
+
+    _lastPanOffset.value = panEndOffset;
+    updateSelection(
+      Selection.collapsed(position),
+    );
+  }
+
+  void _onLongPressEnd(LongPressEndDetails details) {
+    _lastPanOffset.value = null;
+
+    dragMode = MobileSelectionDragMode.none;
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      extraInfo: null,
+    );
   }
 
   void _updateSelectionAreas(Selection selection) {
@@ -444,6 +511,9 @@ class _MobileSelectionServiceWidgetState
             showLeftHandler: showLeftHandler,
             showRightHandler: showRightHandler,
             handlerColor: editorState.editorStyle.cursorColor,
+            handlerWidth: editorState.editorStyle.mobileDragHandleWidth,
+            handlerBallWidth:
+                editorState.editorStyle.mobileDragHandleBallSize.width,
           ),
         );
         _selectionAreas.add(overlay);

@@ -16,6 +16,9 @@ class MobileSelectionGestureDetector extends StatefulWidget {
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,
+    this.onLongPressStart,
+    this.onLongPressEnd,
+    this.onLongPressMoveUpdate,
   });
 
   @override
@@ -31,6 +34,9 @@ class MobileSelectionGestureDetector extends StatefulWidget {
   final GestureDragStartCallback? onPanStart;
   final GestureDragUpdateCallback? onPanUpdate;
   final GestureDragEndCallback? onPanEnd;
+  final GestureLongPressStartCallback? onLongPressStart;
+  final GestureLongPressEndCallback? onLongPressEnd;
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
 }
 
 class MobileSelectionGestureDetectorState
@@ -65,6 +71,16 @@ class MobileSelectionGestureDetectorState
               ..onStart = widget.onPanStart
               ..onUpdate = widget.onPanUpdate
               ..onEnd = widget.onPanEnd;
+          },
+        ),
+        LongPressGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+          () => LongPressGestureRecognizer(),
+          (recognizer) {
+            recognizer
+              ..onLongPressStart = widget.onLongPressStart
+              ..onLongPressEnd = widget.onLongPressEnd
+              ..onLongPressMoveUpdate = widget.onLongPressMoveUpdate;
           },
         ),
         TapGestureRecognizer:
