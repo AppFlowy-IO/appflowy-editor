@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart';
 
 class MobileFloatingToolbarItem {
@@ -104,8 +105,15 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       }
       prevSelection = selection;
     } else {
-      // uses debounce to avoid the computing the rects too frequently.
       _clear();
+      final dragMode = editorState.selectionExtraInfo?[selectionDragModeKey];
+      if ([
+        MobileSelectionDragMode.leftSelectionHandler,
+        MobileSelectionDragMode.rightSelectionHandler,
+      ].contains(dragMode)) {
+        return;
+      }
+      // uses debounce to avoid the computing the rects too frequently.
       _showAfterDelay(const Duration(milliseconds: 400));
     }
   }

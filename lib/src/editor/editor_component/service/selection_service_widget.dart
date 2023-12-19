@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:provider/provider.dart';
 
 class SelectionServiceWidget extends StatefulWidget {
   const SelectionServiceWidget({
@@ -48,11 +49,13 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       );
     }
 
+    final editorState = context.read<EditorState>();
     return MobileSelectionServiceWidget(
       key: forwardKey,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
       showMagnifier: widget.showMagnifier,
+      magnifierSize: editorState.editorStyle.magnifierSize,
       child: widget.child,
     );
   }
