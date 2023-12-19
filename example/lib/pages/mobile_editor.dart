@@ -123,6 +123,7 @@ class _MobileEditorState extends State<MobileEditor> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      magnifierSize: const Size(144, 96),
     );
   }
 

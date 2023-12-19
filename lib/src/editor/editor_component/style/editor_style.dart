@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-
 import 'package:flutter/material.dart';
 
 /// The style of the editor.
@@ -14,6 +13,7 @@ class EditorStyle {
     required this.selectionColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
+    this.magnifierSize = const Size(72, 48),
     this.defaultTextDirection,
   });
 
@@ -43,6 +43,10 @@ class EditorStyle {
 
   final String? defaultTextDirection;
 
+  /// The size of the magnifier.
+  /// Only works on mobile.
+  final Size magnifierSize;
+
   const EditorStyle.desktop({
     EdgeInsets? padding,
     Color? cursorColor,
@@ -59,7 +63,8 @@ class EditorStyle {
               text: TextStyle(fontSize: 16, color: Colors.black),
             ),
         textSpanDecorator =
-            textSpanDecorator ?? defaultTextSpanDecoratorForAttribute;
+            textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
+        magnifierSize = Size.zero;
 
   const EditorStyle.mobile({
     EdgeInsets? padding,
@@ -68,6 +73,7 @@ class EditorStyle {
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.defaultTextDirection,
+    this.magnifierSize = const Size(72, 48),
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =
