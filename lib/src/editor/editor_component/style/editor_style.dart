@@ -14,6 +14,8 @@ class EditorStyle {
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
     this.magnifierSize = const Size(72, 48),
+    this.mobileDragHandleBallSize = const Size(8, 8),
+    this.mobileDragHandleWidth = 2.0,
     this.defaultTextDirection,
   });
 
@@ -47,6 +49,12 @@ class EditorStyle {
   /// Only works on mobile.
   final Size magnifierSize;
 
+  /// mobile drag handler size.
+  /// /// Only works on mobile.
+  final Size mobileDragHandleBallSize;
+
+  final double mobileDragHandleWidth;
+
   const EditorStyle.desktop({
     EdgeInsets? padding,
     Color? cursorColor,
@@ -64,7 +72,9 @@ class EditorStyle {
             ),
         textSpanDecorator =
             textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
-        magnifierSize = Size.zero;
+        magnifierSize = Size.zero,
+        mobileDragHandleBallSize = Size.zero,
+        mobileDragHandleWidth = 0.0;
 
   const EditorStyle.mobile({
     EdgeInsets? padding,
@@ -74,6 +84,8 @@ class EditorStyle {
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.defaultTextDirection,
     this.magnifierSize = const Size(72, 48),
+    this.mobileDragHandleBallSize = const Size(8, 8),
+    this.mobileDragHandleWidth = 2.0,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =

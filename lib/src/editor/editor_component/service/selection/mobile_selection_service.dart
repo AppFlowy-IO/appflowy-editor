@@ -104,6 +104,9 @@ class _MobileSelectionServiceWidgetState
       onTapUp: _onTapUp,
       onDoubleTapUp: _onDoubleTapUp,
       onTripleTapUp: _onTripleTapUp,
+      onLongPressStart: _onLongPressStart,
+      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onLongPressEnd: _onLongPressEnd,
       child: Stack(
         children: [
           widget.child,
@@ -389,6 +392,52 @@ class _MobileSelectionServiceWidgetState
     _lastPanOffset.value = null;
 
     // clear the status
+    dragMode = MobileSelectionDragMode.none;
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      extraInfo: null,
+    );
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    clearSelection();
+
+    // clear old state.
+    _panStartOffset = null;
+
+    final position = getPositionInOffset(details.globalPosition);
+    if (position == null) {
+      return;
+    }
+
+    _lastPanOffset.value = details.globalPosition;
+
+    dragMode = MobileSelectionDragMode.cursor;
+    updateSelection(
+      Selection.collapsed(position),
+    );
+  }
+
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    final panEndOffset = details.globalPosition;
+    final position = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getPositionInOffset(panEndOffset);
+
+    if (position == null) {
+      return;
+    }
+
+    _lastPanOffset.value = panEndOffset;
+    updateSelection(
+      Selection.collapsed(position),
+    );
+  }
+
+  void _onLongPressEnd(LongPressEndDetails details) {
+    _lastPanOffset.value = null;
+
+    dragMode = MobileSelectionDragMode.none;
     editorState.updateSelectionWithReason(
       editorState.selection,
       extraInfo: null,
@@ -462,6 +511,9 @@ class _MobileSelectionServiceWidgetState
             showLeftHandler: showLeftHandler,
             showRightHandler: showRightHandler,
             handlerColor: editorState.editorStyle.cursorColor,
+            handlerWidth: editorState.editorStyle.mobileDragHandleWidth,
+            handlerBallWidth:
+                editorState.editorStyle.mobileDragHandleBallSize.width,
           ),
         );
         _selectionAreas.add(overlay);
