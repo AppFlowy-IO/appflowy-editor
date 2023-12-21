@@ -20,9 +20,25 @@ final CommandShortcutEvent indentCommand = CommandShortcutEvent(
   handler: _indentCommandHandler,
 );
 
+bool isIndentable(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isSingle) {
+    return false;
+  }
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final previous = node?.previous;
+  if (node == null ||
+      previous == null ||
+      !indentableBlockTypes.contains(previous.type) ||
+      !indentableBlockTypes.contains(node.type)) {
+    return false;
+  }
+  return true;
+}
+
 CommandShortcutEventHandler _indentCommandHandler = (editorState) {
   final selection = editorState.selection;
-  if (selection == null || !selection.isCollapsed) {
+  if (selection == null || !selection.isSingle) {
     return KeyEventResult.ignored;
   }
   final node = editorState.getNodeAtPath(selection.end.path);

@@ -13,9 +13,29 @@ final CommandShortcutEvent outdentCommand = CommandShortcutEvent(
   handler: _outdentCommandHandler,
 );
 
+bool isOutdentable(EditorState editorState) {
+  final selection = editorState.selection;
+  if (selection == null || !selection.isSingle) {
+    return false;
+  }
+  final node = editorState.getNodeAtPath(selection.end.path);
+  final parent = node?.parent;
+  if (node == null ||
+      parent == null ||
+      !indentableBlockTypes.contains(node.type) ||
+      !indentableBlockTypes.contains(parent.type) ||
+      node.path.length == 1) {
+    //  if the current node is having a path which is of size 1.
+    //  for example [0], then that means, it is not indented
+    //  thus we ignore this event.
+    return false;
+  }
+  return true;
+}
+
 CommandShortcutEventHandler _outdentCommandHandler = (editorState) {
   final selection = editorState.selection;
-  if (selection == null || !selection.isCollapsed) {
+  if (selection == null || !selection.isSingle) {
     return KeyEventResult.ignored;
   }
   final node = editorState.getNodeAtPath(selection.end.path);
