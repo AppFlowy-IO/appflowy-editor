@@ -9,6 +9,7 @@ final List<CommandShortcutEvent> tableCommands = [
   _upInTableCell,
   _downInTableCell,
   _tabInTableCell,
+  _shiftTabInTableCell,
   _backSpaceInTableCell,
 ];
 
@@ -46,6 +47,12 @@ final CommandShortcutEvent _tabInTableCell = CommandShortcutEvent(
   key: 'Navigate around the cells at same offset',
   command: 'tab',
   handler: _tabInTableCellHandler,
+);
+
+final CommandShortcutEvent _shiftTabInTableCell = CommandShortcutEvent(
+  key: 'Navigate around the cells at same offset in reverse',
+  command: 'shift+tab',
+  handler: _shiftTabInTableCellHandler,
 );
 
 final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
@@ -177,6 +184,24 @@ CommandShortcutEventHandler _tabInTableCellHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
+CommandShortcutEventHandler _shiftTabInTableCellHandler = (editorState) {
+  final inTableNodes = _inTableNodes(editorState);
+  final selection = editorState.selection;
+  if (_hasSelectionAndTableCell(inTableNodes, selection)) {
+    final nextNode = _getPreviousNode(inTableNodes, 1, 0);
+    if (_nodeHasTextChild(nextNode)) {
+      editorState.selectionService.updateSelection(
+        Selection.single(
+          path: nextNode!.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+    }
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
 CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -230,6 +255,25 @@ Node? _getNextNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
 
   if (isValidPosition(nextCol, nextRow, numCols, numRows)) {
     return getCellNode(table, nextCol, nextRow);
+  } else {
+    return null;
+  }
+}
+
+Node? _getPreviousNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
+  final cell = nodes.first.parent!;
+  final col = cell.attributes[TableCellBlockKeys.colPosition];
+  final row = cell.attributes[TableCellBlockKeys.rowPosition];
+  final table = cell.parent!;
+
+  final numCols = table.children.last.attributes['colPosition'] + 1;
+  final numRows = table.children.last.attributes['rowPosition'] + 1;
+
+  var prevCol = (col - colDiff + numCols) % numCols;
+  var prevRow = row - rowDiff - ((col - colDiff) < 0 ? 1 : 0);
+
+  if (isValidPosition(prevCol, prevRow, numCols, numRows)) {
+    return getCellNode(table, prevCol, prevRow);
   } else {
     return null;
   }
