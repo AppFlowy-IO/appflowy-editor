@@ -8,6 +8,7 @@ final List<CommandShortcutEvent> tableCommands = [
   _rightInTableCell,
   _upInTableCell,
   _downInTableCell,
+  _tabInTableCell,
   _backSpaceInTableCell,
 ];
 
@@ -39,6 +40,12 @@ final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
   key: 'Move to down cell at same offset',
   command: 'arrow down',
   handler: _downInTableCellHandler,
+);
+
+final CommandShortcutEvent _tabInTableCell = CommandShortcutEvent(
+  key: 'Navigate around the cells at same offset',
+  command: 'tab',
+  handler: _tabInTableCellHandler,
 );
 
 final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
@@ -152,6 +159,24 @@ CommandShortcutEventHandler _downInTableCellHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
+CommandShortcutEventHandler _tabInTableCellHandler = (editorState) {
+  final inTableNodes = _inTableNodes(editorState);
+  final selection = editorState.selection;
+  if (_hasSelectionAndTableCell(inTableNodes, selection)) {
+    final nextNode = _getNextNode(inTableNodes, 1, 0);
+    if (_nodeHasTextChild(nextNode)) {
+      editorState.selectionService.updateSelection(
+        Selection.single(
+          path: nextNode!.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+    }
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
 CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -191,14 +216,27 @@ bool _hasSelectionAndTableCell(
     selection.isCollapsed &&
     nodes.first.parent?.type == TableCellBlockKeys.type;
 
-Node? _getNextNode(Iterable<Node> nodes, int colDiff, rowDiff) {
+Node? _getNextNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
   final cell = nodes.first.parent!;
   final col = cell.attributes[TableCellBlockKeys.colPosition];
   final row = cell.attributes[TableCellBlockKeys.rowPosition];
-  return cell.parent != null
-      ? getCellNode(cell.parent!, col + colDiff, row + rowDiff)
-      : null;
+  final table = cell.parent!;
+
+  final numCols = table.children.last.attributes['colPosition'] + 1;
+  final numRows = table.children.last.attributes['rowPosition'] + 1;
+
+  var nextCol = (col + colDiff) % numCols;
+  var nextRow = row + rowDiff + ((col + colDiff) ~/ numCols);
+
+  if (isValidPosition(nextCol, nextRow, numCols, numRows)) {
+    return getCellNode(table, nextCol, nextRow);
+  } else {
+    return null;
+  }
 }
+
+bool isValidPosition(int col, int row, int numCols, int numRows) =>
+    col >= 0 && col < numCols && row >= 0 && row < numRows;
 
 bool _nodeHasTextChild(Node? n) =>
     n != null &&
