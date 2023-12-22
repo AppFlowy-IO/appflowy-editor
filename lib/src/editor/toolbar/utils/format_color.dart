@@ -9,7 +9,7 @@ void formatHighlightColor(
   editorState.formatDelta(
     selection,
     {AppFlowyRichTextKeys.highlightColor: color},
-    withUpdateSelection,
+    withUpdateSelection: withUpdateSelection,
   );
 }
 
@@ -22,6 +22,6 @@ void formatFontColor(
   editorState.formatDelta(
     selection,
     {AppFlowyRichTextKeys.textColor: color},
-    withUpdateSelection,
+    withUpdateSelection: withUpdateSelection,
   );
 }

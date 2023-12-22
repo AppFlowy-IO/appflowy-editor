@@ -290,6 +290,9 @@ class EditorState {
 
     if (withUpdateSelection) {
       _selectionUpdateReason = SelectionUpdateReason.transaction;
+      if (transaction.selectionExtraInfo != null) {
+        selectionExtraInfo = transaction.selectionExtraInfo;
+      }
       selection = transaction.afterSelection;
       _selectionUpdateReason = SelectionUpdateReason.uiEvent;
     }
