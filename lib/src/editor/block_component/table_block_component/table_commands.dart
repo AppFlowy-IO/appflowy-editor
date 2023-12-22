@@ -94,7 +94,7 @@ CommandShortcutEventHandler _leftInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection) &&
       selection!.start.offset == 0) {
-    final nextNode = _getNextNode(inTableNodes, -1, 0);
+    final nextNode = _getPreviousNode(inTableNodes, 1, 0);
     if (_nodeHasTextChild(nextNode)) {
       final target = nextNode!.childAtIndexOrNull(0)!;
       editorState.selectionService.updateSelection(
