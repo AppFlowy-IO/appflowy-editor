@@ -2,6 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart';
 
+const disableFloatingToolbar = 'disableFloatingToolbar';
+
 class MobileFloatingToolbarItem {
   const MobileFloatingToolbarItem({
     required this.builder,
@@ -100,7 +102,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       if (_isToolbarVisible) {
         _clear();
       } else if (prevSelection == selection &&
-          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
+          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
+          editorState.selectionExtraInfo?[disableFloatingToolbar] != true) {
         _showAfterDelay(const Duration(milliseconds: 400));
       }
       prevSelection = selection;
@@ -113,8 +116,11 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       ].contains(dragMode)) {
         return;
       }
-      // uses debounce to avoid the computing the rects too frequently.
-      _showAfterDelay(const Duration(milliseconds: 400));
+
+      if (editorState.selectionExtraInfo?[disableFloatingToolbar] != true) {
+        // uses debounce to avoid the computing the rects too frequently.
+        _showAfterDelay(const Duration(milliseconds: 400));
+      }
     }
   }
 
