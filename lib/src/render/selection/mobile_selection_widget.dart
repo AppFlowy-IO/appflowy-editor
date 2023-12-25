@@ -12,6 +12,7 @@ class MobileSelectionWidget extends StatelessWidget {
     this.handlerColor = Colors.black,
     this.handlerBallWidth = 6.0,
     this.handlerWidth = 2.0,
+    required this.onTapUp,
   });
 
   final Color color;
@@ -23,6 +24,7 @@ class MobileSelectionWidget extends StatelessWidget {
   final Color handlerColor;
   final double handlerWidth;
   final double handlerBallWidth;
+  final VoidCallback onTapUp;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,8 @@ class MobileSelectionWidget extends StatelessWidget {
         showWhenUnlinked: false,
         // Ignore the gestures in selection overlays
         //  to solve the problem that selection areas cannot overlap.
-        child: IgnorePointer(
+        child: GestureDetector(
+          onTapUp: (details) => onTapUp(),
           child: MobileSelectionWithHandler(
             color: color,
             decoration: decoration,
