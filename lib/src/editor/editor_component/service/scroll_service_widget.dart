@@ -1,8 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scrollable_widget.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
+import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,15 +50,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   Widget build(BuildContext context) {
     return Provider.value(
       value: widget.editorScrollController,
-      child: AutoScrollableWidget(
-        scrollController: scrollController,
-        builder: (context, autoScroller) {
+      child: Builder(
+        builder: (context) {
           if (PlatformExtension.isDesktopOrWeb) {
-            return _buildDesktopScrollService(context, autoScroller);
+            return _buildDesktopScrollService(context);
           } else if (PlatformExtension.isMobile) {
-            return _buildMobileScrollService(context, autoScroller);
+            return _buildMobileScrollService(context);
           }
-
           throw UnimplementedError();
         },
       ),
@@ -68,7 +65,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   Widget _buildDesktopScrollService(
     BuildContext context,
-    AutoScroller autoScroller,
   ) {
     return DesktopScrollService(
       key: _forwardKey,
@@ -78,7 +74,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   Widget _buildMobileScrollService(
     BuildContext context,
-    AutoScroller autoScroller,
   ) {
     return MobileScrollService(
       key: _forwardKey,
@@ -106,10 +101,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       if (PlatformExtension.isMobile) {
         // soft keyboard
         // workaround: wait for the soft keyboard to show up
-        return Future.delayed(const Duration(milliseconds: 300), () {
+        return Future.delayed(
+            Duration(
+              milliseconds:
+                  KeyboardHeightObserver.currentKeyboardHeight == 0 ? 250 : 0,
+            ), () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: 100,
+            edgeOffset: 150,
             duration: Duration.zero,
           );
         });

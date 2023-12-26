@@ -21,7 +21,8 @@ typedef TextSpanDecoratorForAttribute = InlineSpan Function(
   Node node,
   int index,
   TextInsert text,
-  TextSpan textSpan,
+  TextSpan before,
+  TextSpan after,
 );
 
 typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
@@ -380,6 +381,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
                 offset,
                 textInsert,
                 textSpan,
+                widget.textSpanDecorator?.call(textSpan) ?? textSpan,
               )
             : textSpan,
       );

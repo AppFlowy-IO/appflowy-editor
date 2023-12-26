@@ -268,6 +268,8 @@ class EditorState {
     _debouncedSealHistoryItemTimer?.cancel();
     onDispose.value += 1;
     onDispose.dispose();
+    document.dispose();
+    selectionNotifier.dispose();
   }
 
   /// Apply the transaction to the state.
@@ -316,6 +318,9 @@ class EditorState {
 
     if (withUpdateSelection) {
       _selectionUpdateReason = SelectionUpdateReason.transaction;
+      if (transaction.selectionExtraInfo != null) {
+        selectionExtraInfo = transaction.selectionExtraInfo;
+      }
       selection = transaction.afterSelection;
       _selectionUpdateReason = SelectionUpdateReason.uiEvent;
     }

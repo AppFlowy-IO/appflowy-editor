@@ -136,9 +136,10 @@ extension TextTransforms on EditorState {
   /// If the [Selection] is not passed in, use the current selection.
   Future<void> formatDelta(
     Selection? selection,
-    Attributes attributes, [
+    Attributes attributes, {
     bool withUpdateSelection = true,
-  ]) async {
+    Map? selectionExtraInfo,
+  }) async {
     selection ??= this.selection;
     selection = selection?.normalized;
 
@@ -167,7 +168,8 @@ extension TextTransforms on EditorState {
           endIndex - startIndex,
           attributes,
         )
-        ..afterSelection = transaction.beforeSelection;
+        ..afterSelection = transaction.beforeSelection
+        ..selectionExtraInfo = selectionExtraInfo;
     }
 
     return apply(
@@ -182,6 +184,7 @@ extension TextTransforms on EditorState {
   Future<void> toggleAttribute(
     String key, {
     Selection? selection,
+    Map? selectionExtraInfo,
   }) async {
     selection ??= this.selection;
     if (selection == null) {
@@ -220,6 +223,7 @@ extension TextTransforms on EditorState {
         {
           key: !isHighlight,
         },
+        selectionExtraInfo: selectionExtraInfo,
       );
     }
   }

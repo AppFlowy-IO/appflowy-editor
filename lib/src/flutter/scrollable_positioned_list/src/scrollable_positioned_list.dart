@@ -131,7 +131,6 @@ class ScrollablePositionedList extends StatefulWidget {
   /// See [ScrollView.reverse].
   final bool reverse;
 
-  /// {@template flutter.widgets.scroll_view.shrinkWrap}
   /// Whether the extent of the scroll view in the [scrollDirection] should be
   /// determined by the contents being viewed.
   ///
@@ -381,6 +380,9 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     secondary.itemPositionsNotifier.itemPositions
         .removeListener(_updatePositions);
     _animationController?.dispose();
+    primary.itemPositionsNotifier.itemPositions.dispose();
+    secondary.itemPositionsNotifier.itemPositions.dispose();
+    secondary.scrollController.dispose();
     super.dispose();
   }
 
@@ -696,4 +698,8 @@ class _ListDisplayDetails {
   double alignment = 0;
 
   final Key key;
+
+  void dispose() {
+    itemPositionsNotifier.itemPositions.dispose();
+  }
 }

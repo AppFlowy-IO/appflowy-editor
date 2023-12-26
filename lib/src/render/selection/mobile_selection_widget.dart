@@ -10,6 +10,9 @@ class MobileSelectionWidget extends StatelessWidget {
     this.showLeftHandler = false,
     this.showRightHandler = false,
     this.handlerColor = Colors.black,
+    this.handlerBallWidth = 6.0,
+    this.handlerWidth = 2.0,
+    required this.onTapUp,
   });
 
   final Color color;
@@ -19,11 +22,12 @@ class MobileSelectionWidget extends StatelessWidget {
   final bool showLeftHandler;
   final bool showRightHandler;
   final Color handlerColor;
+  final double handlerWidth;
+  final double handlerBallWidth;
+  final VoidCallback onTapUp;
 
   @override
   Widget build(BuildContext context) {
-    const handlerWidth = 2.0;
-    const handlerBallWidth = 6.0;
     // to avoid row overflow
     const threshold = 0.25;
     // left and right add 2px to avoid the selection area from being too narrow
@@ -44,7 +48,8 @@ class MobileSelectionWidget extends StatelessWidget {
         showWhenUnlinked: false,
         // Ignore the gestures in selection overlays
         //  to solve the problem that selection areas cannot overlap.
-        child: IgnorePointer(
+        child: GestureDetector(
+          onTapUp: (details) => onTapUp(),
           child: MobileSelectionWithHandler(
             color: color,
             decoration: decoration,
@@ -91,27 +96,33 @@ class MobileSelectionWithHandler extends StatelessWidget {
       decoration: decoration,
     );
     if (showLeftHandler || showRightHandler) {
-      child = Row(
-        mainAxisSize: MainAxisSize.min,
+      child = Stack(
+        clipBehavior: Clip.none,
         children: [
           if (showLeftHandler)
-            _DragHandler(
-              handlerColor: handlerColor,
-              handlerWidth: handlerWidth,
-              handlerBallWidth: handlerBallWidth,
-              handlerHeight: handlerHeight,
-              showLeftHandler: true,
-              showRightHandler: false,
+            Positioned(
+              left: -handlerWidth,
+              child: _DragHandler(
+                handlerColor: handlerColor,
+                handlerWidth: handlerWidth,
+                handlerBallWidth: handlerBallWidth,
+                handlerHeight: handlerHeight,
+                showLeftHandler: true,
+                showRightHandler: false,
+              ),
             ),
-          Expanded(child: child),
+          child,
           if (showRightHandler)
-            _DragHandler(
-              handlerColor: handlerColor,
-              handlerWidth: handlerWidth,
-              handlerBallWidth: handlerBallWidth,
-              handlerHeight: handlerHeight,
-              showRightHandler: true,
-              showLeftHandler: false,
+            Positioned(
+              right: -handlerWidth,
+              child: _DragHandler(
+                handlerColor: handlerColor,
+                handlerWidth: handlerWidth,
+                handlerBallWidth: handlerBallWidth,
+                handlerHeight: handlerHeight,
+                showRightHandler: true,
+                showLeftHandler: false,
+              ),
             ),
         ],
       );

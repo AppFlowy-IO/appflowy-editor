@@ -17,7 +17,7 @@ final CommandShortcutEvent selectAllCommand = CommandShortcutEvent(
 CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
   if (editorState.document.root.children.isEmpty ||
       editorState.selection == null) {
-    return KeyEventResult.handled;
+    return KeyEventResult.ignored;
   }
   final firstSelectable = editorState.getFirstSelectable();
   final lastSelectable = editorState.getLastSelectable();

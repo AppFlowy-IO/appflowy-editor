@@ -37,6 +37,8 @@ class Transaction {
   /// The before selection is to be recovered if needed.
   Selection? beforeSelection;
 
+  Map? selectionExtraInfo;
+
   // mark needs to be composed
   bool markNeedsComposing = false;
 

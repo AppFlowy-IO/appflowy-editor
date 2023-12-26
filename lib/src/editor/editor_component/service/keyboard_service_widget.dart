@@ -159,6 +159,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   /// handle hardware keyboard
   KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
     if (event is! RawKeyDownEvent || !enableShortcuts) {
+      if (textInputService.composingTextRange != TextRange.empty) {
+        return KeyEventResult.skipRemainingHandlers;
+      }
       return KeyEventResult.ignored;
     }
 
@@ -282,11 +285,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     // clear the selection when the focus is lost.
     if (!focusNode.hasFocus) {
-      if (PlatformExtension.isDesktopOrWeb) {
-        if (keepEditorFocusNotifier.shouldKeepFocus) {
-          return;
-        }
+      if (keepEditorFocusNotifier.shouldKeepFocus) {
+        return;
       }
+
       final children =
           WidgetsBinding.instance.focusManager.primaryFocus?.children;
       if (children != null && !children.contains(focusNode)) {

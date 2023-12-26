@@ -76,6 +76,9 @@ class _MobileEditorState extends State<MobileEditor> {
                   onPaste: () => pasteCommand.execute(editorState),
                   onSelectAll: () => selectAllCommand.execute(editorState),
                   onLiveTextInput: null,
+                  onLookUp: null,
+                  onSearchWeb: null,
+                  onShare: null,
                   anchors: TextSelectionToolbarAnchors(
                     primaryAnchor: anchor,
                   ),
@@ -120,6 +123,8 @@ class _MobileEditorState extends State<MobileEditor> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      magnifierSize: const Size(144, 96),
+      mobileDragHandleBallSize: const Size(12, 12),
     );
   }
 

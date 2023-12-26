@@ -83,7 +83,6 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
 
       return ScrollablePositionedList.builder(
         shrinkWrap: scrollController.shrinkWrap,
-        // padding: editorState.editorStyle.padding,
         scrollDirection: Axis.vertical,
         itemCount: items.length + extentCount,
         itemBuilder: (context, index) {
