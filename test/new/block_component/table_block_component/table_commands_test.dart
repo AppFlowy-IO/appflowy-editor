@@ -304,5 +304,99 @@ void main() async {
       expect(selection.start.offset, 2);
       await editor.dispose();
     });
+
+    testWidgets('tab key navigates to next cell', (tester) async {
+      final tableNode = TableNode.fromList([
+        ['ab', 'cde'],
+        ['fghi', ''],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+
+      await editor.updateSelection(
+        Selection.single(
+          path: cell00.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      var selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
+      await editor.updateSelection(
+        Selection.single(
+          path: cell00.childAtIndexOrNull(0)!.path,
+          startOffset: 1,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
+      await editor.dispose();
+    });
+
+    testWidgets('shift+tab key navigates to the previous cell', (tester) async {
+      final tableNode = TableNode.fromList([
+        ['ab', 'cde'],
+        ['fghi', ''],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      var cell01 = getCellNode(tableNode.node, 0, 1)!;
+      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+
+      await editor.updateSelection(
+        Selection.single(
+          path: cell01.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      var selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
+      await editor.updateSelection(
+        Selection.single(
+          path: cell01.childAtIndexOrNull(0)!.path,
+          startOffset: 1,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
+      await editor.dispose();
+    });
   });
 }
