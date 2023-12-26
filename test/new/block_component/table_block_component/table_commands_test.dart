@@ -462,7 +462,7 @@ void main() async {
     testWidgets('tab key navigates to next cell', (tester) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cde'],
-        ['fghi', ''],
+        ['fghi', 'jk'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -471,6 +471,7 @@ void main() async {
 
       var cell00 = getCellNode(tableNode.node, 0, 0)!;
       var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      var cell11 = getCellNode(tableNode.node, 1, 1)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -502,6 +503,22 @@ void main() async {
       expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 0);
 
+      // tab doesn't navigate when at last cell
+      await editor.updateSelection(
+        Selection.single(
+          path: cell11.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell11.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
       await editor.dispose();
     });
 
@@ -515,6 +532,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
+      var cell00 = getCellNode(tableNode.node, 0, 0)!;
       var cell01 = getCellNode(tableNode.node, 0, 1)!;
       var cell10 = getCellNode(tableNode.node, 1, 0)!;
 
@@ -548,6 +566,23 @@ void main() async {
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
+      expect(selection.start.offset, 0);
+
+      // shift+tab doesn't navigate when at first cell
+      await editor.updateSelection(
+        Selection.single(
+          path: cell00.childAtIndexOrNull(0)!.path,
+          startOffset: 0,
+        ),
+      );
+
+      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+
+      selection = editor.selection!;
+
+      expect(selection.isCollapsed, true);
+      expect(selection.start.path, cell00.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 0);
 
       await editor.dispose();
