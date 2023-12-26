@@ -41,7 +41,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
     for (final delta in formattedDeltas) {
-      print('delta = $delta');
       _updateComposing(delta);
 
       if (delta is TextEditingDeltaInsertion) {

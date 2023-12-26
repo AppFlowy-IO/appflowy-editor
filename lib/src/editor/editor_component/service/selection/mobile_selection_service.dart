@@ -147,7 +147,6 @@ class _MobileSelectionServiceWidgetState
       return;
     }
 
-    selectionRects.clear();
     _clearSelection();
 
     if (selection != null) {
@@ -183,6 +182,8 @@ class _MobileSelectionServiceWidgetState
       ..forEach((overlay) => overlay.remove())
       ..clear();
     // clear cursor areas
+    _selectionAreas.clear();
+    selectionRects.clear();
   }
 
   @override
@@ -271,12 +272,18 @@ class _MobileSelectionServiceWidgetState
   }
 
   void _onTapUp(TapUpDetails details) {
+    final offset = details.globalPosition;
+    if (_isClickOnSelectionArea(offset)) {
+      appFlowyEditorOnTapSelectionArea.add(0);
+      return;
+    }
+
     clearSelection();
 
     // clear old state.
     _panStartOffset = null;
 
-    final position = getPositionInOffset(details.globalPosition);
+    final position = getPositionInOffset(offset);
     if (position == null) {
       return;
     }
@@ -289,6 +296,10 @@ class _MobileSelectionServiceWidgetState
 
   void _onDoubleTapUp(TapUpDetails details) {
     final offset = details.globalPosition;
+    if (_isClickOnSelectionArea(offset)) {
+      appFlowyEditorOnTapSelectionArea.add(0);
+      return;
+    }
     final node = getNodeInOffset(offset);
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
@@ -300,6 +311,10 @@ class _MobileSelectionServiceWidgetState
 
   void _onTripleTapUp(TapUpDetails details) {
     final offset = details.globalPosition;
+    // if (_isClickOnSelectionArea(offset)) {
+    //   appFlowyEditorOnTapSelectionArea.add(0);
+    //   return;
+    // }
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
     if (selectable == null) {
@@ -517,7 +532,6 @@ class _MobileSelectionServiceWidgetState
             handlerWidth: editorState.editorStyle.mobileDragHandleWidth,
             handlerBallWidth:
                 editorState.editorStyle.mobileDragHandleBallSize.width,
-            onTapUp: () => appFlowyEditorOnTapSelectionArea.add(0),
           ),
         );
         _selectionAreas.add(overlay);
@@ -616,5 +630,14 @@ class _MobileSelectionServiceWidgetState
     );
 
     return handlerRect.contains(point);
+  }
+
+  bool _isClickOnSelectionArea(Offset point) {
+    for (final rect in selectionRects) {
+      if (rect.contains(point)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
