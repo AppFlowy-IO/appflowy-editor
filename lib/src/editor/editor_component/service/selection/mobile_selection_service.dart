@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifiter.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
