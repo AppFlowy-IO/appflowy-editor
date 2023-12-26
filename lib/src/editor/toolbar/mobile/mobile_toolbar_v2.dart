@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
 import 'package:flutter/material.dart';
 
-const String disableMobileToolbarKey = 'disableMobileToolbar';
+const String selectionExtraInfoDisableMobileToolbarKey = 'disableMobileToolbar';
 
 class MobileToolbarV2 extends StatefulWidget {
   const MobileToolbarV2({
@@ -115,7 +115,8 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
       builder: (_, Selection? selection, __) {
         // if the selection is null, hide the toolbar
         if (selection == null ||
-            widget.editorState.selectionExtraInfo?[disableMobileToolbarKey] ==
+            widget.editorState.selectionExtraInfo?[
+                    selectionExtraInfoDisableMobileToolbarKey] ==
                 true) {
           return const SizedBox.shrink();
         }
