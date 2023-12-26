@@ -14,7 +14,6 @@ void main() {
         Stack(
           children: [
             MobileSelectionWidget(
-              onTapUp: () {},
               showLeftHandler: true,
               showRightHandler: true,
               layerLink: node.layerLink,

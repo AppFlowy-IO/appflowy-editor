@@ -223,7 +223,7 @@ class _TodoListBlockComponentWidgetState
       checkOrUncheckChildren(!checked, widget.node);
     }
 
-    editorState.apply(transaction);
+    editorState.apply(transaction, withUpdateSelection: false);
   }
 
   void checkOrUncheckChildren(

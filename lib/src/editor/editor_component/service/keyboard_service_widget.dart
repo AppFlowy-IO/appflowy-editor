@@ -197,10 +197,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // attach the delta text input service if needed
     final selection = editorState.selection;
 
-    if (PlatformExtension.isMobile && previousSelection == selection) {
-      // no need to attach the text input service if the selection is not changed.
-      return;
-    }
+    // if (PlatformExtension.isMobile && previousSelection == selection) {
+    //   // no need to attach the text input service if the selection is not changed.
+    //   return;
+    // }
 
     enableShortcuts = true;
 
