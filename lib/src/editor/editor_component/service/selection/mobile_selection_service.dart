@@ -271,11 +271,6 @@ class _MobileSelectionServiceWidgetState
   }
 
   void _onTapUp(TapUpDetails details) {
-    // final canTap = _interceptors.every(
-    //   (element) => element.canTap?.call(details) ?? true,
-    // );
-    // if (!canTap) return;
-
     clearSelection();
 
     // clear old state.

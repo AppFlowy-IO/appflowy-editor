@@ -271,8 +271,9 @@ extension TextTransforms on EditorState {
     Selection? selection,
     Node Function(
       Node node,
-    ) nodeBuilder,
-  ) async {
+    ) nodeBuilder, {
+    Map? selectionExtraInfo,
+  }) async {
     selection ??= this.selection;
     selection = selection?.normalized;
 
@@ -288,10 +289,11 @@ extension TextTransforms on EditorState {
     final transaction = this.transaction;
 
     for (final node in nodes) {
-      transaction
-        ..updateNode(node, nodeBuilder(node).attributes)
-        ..afterSelection = transaction.beforeSelection;
+      transaction..updateNode(node, nodeBuilder(node).attributes);
     }
+
+    transaction.afterSelection = transaction.beforeSelection;
+    transaction.selectionExtraInfo = selectionExtraInfo;
 
     return apply(transaction);
   }
