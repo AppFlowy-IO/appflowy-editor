@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifiter.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
@@ -5,6 +7,12 @@ import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dar
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
+
+/// only used in mobile
+///
+/// this will notify the developers when the selection is not collapsed.
+StreamController<int> appFlowyEditorOnTapSelectionArea =
+    StreamController<int>.broadcast();
 
 enum MobileSelectionDragMode {
   none,
@@ -514,6 +522,7 @@ class _MobileSelectionServiceWidgetState
             handlerWidth: editorState.editorStyle.mobileDragHandleWidth,
             handlerBallWidth:
                 editorState.editorStyle.mobileDragHandleBallSize.width,
+            onTapUp: () => appFlowyEditorOnTapSelectionArea.add(0),
           ),
         );
         _selectionAreas.add(overlay);
