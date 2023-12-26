@@ -184,6 +184,7 @@ extension TextTransforms on EditorState {
   Future<void> toggleAttribute(
     String key, {
     Selection? selection,
+    Map? selectionExtraInfo,
   }) async {
     selection ??= this.selection;
     if (selection == null) {
@@ -222,6 +223,7 @@ extension TextTransforms on EditorState {
         {
           key: !isHighlight,
         },
+        selectionExtraInfo: selectionExtraInfo,
       );
     }
   }
