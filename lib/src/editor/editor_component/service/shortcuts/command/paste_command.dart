@@ -22,7 +22,7 @@ final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent pasteTextWithoutFormattingCommand =
     CommandShortcutEvent(
-  key: 'paste the content',
+  key: 'paste the content as plain text',
   command: 'ctrl+shift+v',
   macOSCommand: 'cmd+shift+v',
   handler: _pasteTextWithoutFormattingCommandHandler,
