@@ -43,6 +43,7 @@ String documentToMarkdown(
       const HeadingNodeParser(),
       const ImageNodeParser(),
       const TableNodeParser(),
+      const DividerNodeParser(),
     ],
   ).encode(document);
 }
