@@ -171,13 +171,14 @@ CommandShortcutEventHandler _tabInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection)) {
     final nextNode = _getNextNode(inTableNodes, 1, 0);
-    if (_nodeHasTextChild(nextNode)) {
-      editorState.selectionService.updateSelection(
-        Selection.single(
-          path: nextNode!.childAtIndexOrNull(0)!.path,
+    if (nextNode != null && _nodeHasTextChild(nextNode)) {
+      final firstChild = nextNode.childAtIndexOrNull(0);
+      if (firstChild != null) {
+        editorState.selection = Selection.single(
+          path: firstChild.path,
           startOffset: 0,
-        ),
-      );
+        );
+      }
     }
     return KeyEventResult.handled;
   }
@@ -188,14 +189,15 @@ CommandShortcutEventHandler _shiftTabInTableCellHandler = (editorState) {
   final inTableNodes = _inTableNodes(editorState);
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection)) {
-    final nextNode = _getPreviousNode(inTableNodes, 1, 0);
-    if (_nodeHasTextChild(nextNode)) {
-      editorState.selectionService.updateSelection(
-        Selection.single(
-          path: nextNode!.childAtIndexOrNull(0)!.path,
+    final previousNode = _getPreviousNode(inTableNodes, 1, 0);
+    if (previousNode != null && _nodeHasTextChild(previousNode)) {
+      final firstChild = previousNode.childAtIndexOrNull(0);
+      if (firstChild != null) {
+        editorState.selection = Selection.single(
+          path: firstChild.path,
           startOffset: 0,
-        ),
-      );
+        );
+      }
     }
     return KeyEventResult.handled;
   }
