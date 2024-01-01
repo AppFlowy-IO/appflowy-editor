@@ -88,6 +88,7 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
 
     return GridView(
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       gridDelegate: buildMobileToolbarMenuGridDelegate(
         mobileToolbarStyle: style,
         crossAxisCount: 2,
