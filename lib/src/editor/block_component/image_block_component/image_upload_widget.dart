@@ -288,66 +288,69 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
 
   Widget _buildFileUploadContainer(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () async {
-          final result = await _filePicker.pickFiles(
-            dialogTitle: '',
-            allowMultiple: false,
-            type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
-            allowedExtensions: allowedExtensions,
-            withData: kIsWeb,
-          );
-          if (result != null && result.files.isNotEmpty) {
-            setState(() {
-              final bytes = result.files.first.bytes;
-              if (kIsWeb && bytes != null) {
-                _imagePathOrContent = base64String(bytes);
-              } else {
-                _imagePathOrContent = result.files.first.path;
-              }
-            });
-          }
-        },
-        child: Container(
-          height: 60,
-          margin: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xff00BCF0)),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: _imagePathOrContent != null
-              ? Align(
-                  alignment: Alignment.center,
-                  child: kIsWeb
-                      ? Image.memory(
-                          dataFromBase64String(_imagePathOrContent!),
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(_imagePathOrContent!),
-                          fit: BoxFit.cover,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () async {
+            final result = await _filePicker.pickFiles(
+              dialogTitle: '',
+              allowMultiple: false,
+              type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
+              allowedExtensions: allowedExtensions,
+              withData: kIsWeb,
+            );
+            if (result != null && result.files.isNotEmpty) {
+              setState(() {
+                final bytes = result.files.first.bytes;
+                if (kIsWeb && bytes != null) {
+                  _imagePathOrContent = base64String(bytes);
+                } else {
+                  _imagePathOrContent = result.files.first.path;
+                }
+              });
+            }
+          },
+          child: Container(
+            height: 60,
+            margin: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xff00BCF0)),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: _imagePathOrContent != null
+                ? Align(
+                    alignment: Alignment.center,
+                    child: kIsWeb
+                        ? Image.memory(
+                            dataFromBase64String(_imagePathOrContent!),
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(_imagePathOrContent!),
+                            fit: BoxFit.cover,
+                          ),
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const EditorSvg(
+                          name: 'upload_image',
+                          width: 32,
+                          height: 32,
                         ),
-                )
-              : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const EditorSvg(
-                        name: 'upload_image',
-                        width: 32,
-                        height: 32,
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        AppFlowyEditorL10n.current.chooseImage,
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                          color: Color(0xff00BCF0),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          AppFlowyEditorL10n.current.chooseImage,
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            color: Color(0xff00BCF0),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );
