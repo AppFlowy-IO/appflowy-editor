@@ -1,4 +1,3 @@
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// format the markdown link syntax to hyperlink
@@ -10,11 +9,11 @@ final CharacterShortcutEvent formatMarkdownLinkToLink = CharacterShortcutEvent(
   ),
 );
 
+final _linkRegex = RegExp(r'\[([^\]]*)\]\((.*?)\)');
+
 bool handleFormatMarkdownLinkToLink({
   required EditorState editorState,
 }) {
-  final linkRegex = RegExp(r'\[([^\]]*)\]\((.*?)\)');
-
   final selection = editorState.selection;
   // if the selection is not collapsed or the cursor is at the first 5 index range, we don't need to format it.
   // we should return false to let the IME handle it.
@@ -34,25 +33,22 @@ bool handleFormatMarkdownLinkToLink({
   final plainText = '${delta.toPlainText()})';
 
   // Determine if regex matches the plainText.
-  if (!linkRegex.hasMatch(plainText)) {
+  if (!_linkRegex.hasMatch(plainText)) {
     return false;
   }
 
-  final matches = linkRegex.allMatches(plainText);
+  final matches = _linkRegex.allMatches(plainText);
   final lastMatch = matches.last;
   final title = lastMatch.group(1);
   final link = lastMatch.group(2);
 
   // if all the conditions are met, we should format the text to a link.
-  final deletion = editorState.transaction
+  final transaction = editorState.transaction
     ..deleteText(
       node,
       lastMatch.start,
       lastMatch.end - lastMatch.start - 1,
-    );
-  editorState.apply(deletion);
-
-  final insert = editorState.transaction
+    )
     ..insertText(
       node,
       lastMatch.start,
@@ -61,7 +57,7 @@ bool handleFormatMarkdownLinkToLink({
         AppFlowyRichTextKeys.href: link,
       },
     );
-  editorState.apply(insert);
+  editorState.apply(transaction);
 
   return true;
 }

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../util/util.dart';
 
 void main() async {
@@ -29,8 +30,10 @@ void main() async {
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), text);
-      expect(after.delta!.toList()[0].attributes,
-          {AppFlowyRichTextKeys.href: link});
+      expect(
+        after.delta!.toList()[0].attributes,
+        {AppFlowyRichTextKeys.href: link},
+      );
     });
 
     // Before
@@ -59,8 +62,10 @@ void main() async {
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), '$text1$text2');
       expect(after.delta!.toList()[0].attributes, null);
-      expect(after.delta!.toList()[1].attributes,
-          {AppFlowyRichTextKeys.href: link});
+      expect(
+        after.delta!.toList()[1].attributes,
+        {AppFlowyRichTextKeys.href: link},
+      );
     });
 
     // Before
