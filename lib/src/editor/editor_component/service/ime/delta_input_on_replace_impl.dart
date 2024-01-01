@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
@@ -25,6 +27,20 @@ Future<void> onReplace(
 
     if (execution) {
       return;
+    }
+
+    if (Platform.isIOS) {
+      // remove the trailing '\n' when pressing the return key
+      if (replacement.replacementText.endsWith('\n')) {
+        replacement = TextEditingDeltaReplacement(
+          oldText: replacement.oldText,
+          replacementText: replacement.replacementText
+              .substring(0, replacement.replacementText.length - 1),
+          replacedRange: replacement.replacedRange,
+          selection: replacement.selection,
+          composing: replacement.composing,
+        );
+      }
     }
 
     final node = editorState.getNodesInSelection(selection).first;

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/selection/selection_area_painter.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/render/selection/cursor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -123,10 +124,15 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
               prevCursorRect == null) {
             return sizedBox;
           }
+          final editorState = context.read<EditorState>();
+          final dragMode =
+              editorState.selectionExtraInfo?[selectionDragModeKey];
+          final shouldBlink = widget.delegate.shouldCursorBlink &&
+              dragMode != MobileSelectionDragMode.cursor;
           final cursor = Cursor(
             key: cursorKey,
             rect: prevCursorRect!,
-            shouldBlink: widget.delegate.shouldCursorBlink,
+            shouldBlink: shouldBlink,
             cursorStyle: widget.delegate.cursorStyle,
             color: widget.cursorColor,
           );
@@ -137,7 +143,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           // show the selection area when the selection is not collapsed
           if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
               prevSelectionRects == null ||
-              prevSelectionRects!.isEmpty) {
+              prevSelectionRects!.isEmpty ||
+              (prevSelectionRects!.length == 1 &&
+                  prevSelectionRects!.first.width == 0)) {
             return sizedBox;
           }
           return SelectionAreaPaint(

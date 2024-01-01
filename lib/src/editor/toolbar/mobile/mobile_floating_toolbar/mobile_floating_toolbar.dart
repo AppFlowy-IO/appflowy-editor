@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart';
+
+const selectionExtraInfoDisableFloatingToolbar = 'disableFloatingToolbar';
 
 class MobileFloatingToolbarItem {
   const MobileFloatingToolbarItem({
@@ -45,6 +50,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   // use for skipping the first build for the toolbar when the selection is collapsed.
   Selection? prevSelection;
 
+  late final StreamSubscription _onTapSelectionAreaSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +61,10 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     widget.editorScrollController.offsetNotifier.addListener(
       _onScrollPositionChanged,
     );
+    _onTapSelectionAreaSubscription =
+        appFlowyEditorOnTapSelectionArea.stream.listen((event) {
+      _isToolbarVisible ? _clear() : _showAfterDelay();
+    });
   }
 
   @override
@@ -71,6 +82,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     widget.editorScrollController.offsetNotifier.removeListener(
       _onScrollPositionChanged,
     );
+    _onTapSelectionAreaSubscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
     _clear();
@@ -99,14 +111,29 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       if (_isToolbarVisible) {
         _clear();
       } else if (prevSelection == selection &&
-          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
+          editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
+          editorState.selectionExtraInfo?[
+                  selectionExtraInfoDisableFloatingToolbar] !=
+              true) {
         _showAfterDelay(const Duration(milliseconds: 400));
       }
       prevSelection = selection;
     } else {
-      // uses debounce to avoid the computing the rects too frequently.
       _clear();
-      _showAfterDelay(const Duration(milliseconds: 400));
+      final dragMode = editorState.selectionExtraInfo?[selectionDragModeKey];
+      if ([
+        MobileSelectionDragMode.leftSelectionHandler,
+        MobileSelectionDragMode.rightSelectionHandler,
+      ].contains(dragMode)) {
+        return;
+      }
+
+      if (editorState
+              .selectionExtraInfo?[selectionExtraInfoDisableFloatingToolbar] !=
+          true) {
+        // uses debounce to avoid the computing the rects too frequently.
+        _showAfterDelay(const Duration(milliseconds: 400));
+      }
     }
   }
 
