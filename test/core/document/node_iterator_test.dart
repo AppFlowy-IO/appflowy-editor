@@ -52,5 +52,17 @@ void main() async {
       expect(nodes[1].type, n1.childAtIndexOrNull(0)!.type);
       expect(nodes[nodes.length - 1].type, n2.type);
     });
+
+    test('toList - when we have Dangling node', () {
+      final doc = Document.blank();
+      final root = doc.root;
+
+      final nodes = NodeIterator(
+        document: doc,
+        startNode: root,
+      ).toList();
+
+      expect(nodes.length, 1);
+    });
   });
 }
