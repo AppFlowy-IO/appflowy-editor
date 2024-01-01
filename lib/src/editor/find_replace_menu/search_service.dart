@@ -226,7 +226,7 @@ class SearchService {
     editorState.formatDelta(
       selection,
       {AppFlowyRichTextKeys.findBackgroundColor: color},
-      false,
+      withUpdateSelection: false,
     );
   }
 }
