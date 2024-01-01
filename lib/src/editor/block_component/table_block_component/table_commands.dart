@@ -245,38 +245,50 @@ Node? _getNextNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
   final cell = nodes.first.parent!;
   final col = cell.attributes[TableCellBlockKeys.colPosition];
   final row = cell.attributes[TableCellBlockKeys.rowPosition];
-  final table = cell.parent!;
-
-  final numCols = table.children.last.attributes['colPosition'] + 1;
-  final numRows = table.children.last.attributes['rowPosition'] + 1;
-
-  var nextCol = (col + colDiff) % numCols;
-  var nextRow = row + rowDiff + ((col + colDiff) ~/ numCols);
-
-  if (isValidPosition(nextCol, nextRow, numCols, numRows)) {
-    return getCellNode(table, nextCol, nextRow);
-  } else {
+  final table = cell.parent;
+  if (table == null) {
     return null;
   }
+
+  final numCols =
+      table.children.last.attributes[TableCellBlockKeys.colPosition] + 1;
+  final numRows =
+      table.children.last.attributes[TableCellBlockKeys.rowPosition] + 1;
+
+  // Calculate the next column index, considering the column difference and wrapping around with modulo.
+  var nextCol = (col + colDiff) % numCols;
+
+  // Calculate the next row index, taking into account the row difference and adjusting for additional rows due to column change.
+  var nextRow = row + rowDiff + ((col + colDiff) ~/ numCols);
+
+  return isValidPosition(nextCol, nextRow, numCols, numRows)
+      ? getCellNode(table, nextCol, nextRow)
+      : null;
 }
 
 Node? _getPreviousNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
   final cell = nodes.first.parent!;
   final col = cell.attributes[TableCellBlockKeys.colPosition];
   final row = cell.attributes[TableCellBlockKeys.rowPosition];
-  final table = cell.parent!;
-
-  final numCols = table.children.last.attributes['colPosition'] + 1;
-  final numRows = table.children.last.attributes['rowPosition'] + 1;
-
-  var prevCol = (col - colDiff + numCols) % numCols;
-  var prevRow = row - rowDiff - ((col - colDiff) < 0 ? 1 : 0);
-
-  if (isValidPosition(prevCol, prevRow, numCols, numRows)) {
-    return getCellNode(table, prevCol, prevRow);
-  } else {
+  final table = cell.parent;
+  if (table == null) {
     return null;
   }
+
+  final numCols =
+      table.children.last.attributes[TableCellBlockKeys.colPosition] + 1;
+  final numRows =
+      table.children.last.attributes[TableCellBlockKeys.rowPosition] + 1;
+
+  // Calculate the previous column index, ensuring it wraps within the table boundaries using modulo.
+  var prevCol = (col - colDiff + numCols) % numCols;
+
+  // Calculate the previous row index, considering table boundaries and adjusting for potential column underflow.
+  var prevRow = row - rowDiff - ((col - colDiff) < 0 ? 1 : 0);
+
+  return isValidPosition(prevCol, prevRow, numCols, numRows)
+      ? getCellNode(table, prevCol, prevRow)
+      : null;
 }
 
 bool isValidPosition(int col, int row, int numCols, int numRows) =>
