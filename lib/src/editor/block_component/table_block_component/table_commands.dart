@@ -8,6 +8,8 @@ final List<CommandShortcutEvent> tableCommands = [
   _rightInTableCell,
   _upInTableCell,
   _downInTableCell,
+  _tabInTableCell,
+  _shiftTabInTableCell,
   _backSpaceInTableCell,
 ];
 
@@ -39,6 +41,18 @@ final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
   key: 'Move to down cell at same offset',
   command: 'arrow down',
   handler: _downInTableCellHandler,
+);
+
+final CommandShortcutEvent _tabInTableCell = CommandShortcutEvent(
+  key: 'Navigate around the cells at same offset',
+  command: 'tab',
+  handler: _tabInTableCellHandler,
+);
+
+final CommandShortcutEvent _shiftTabInTableCell = CommandShortcutEvent(
+  key: 'Navigate around the cells at same offset in reverse',
+  command: 'shift+tab',
+  handler: _shiftTabInTableCellHandler,
 );
 
 final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
@@ -80,7 +94,7 @@ CommandShortcutEventHandler _leftInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection) &&
       selection!.start.offset == 0) {
-    final nextNode = _getNextNode(inTableNodes, -1, 0);
+    final nextNode = _getPreviousNode(inTableNodes, 1, 0);
     if (_nodeHasTextChild(nextNode)) {
       final target = nextNode!.childAtIndexOrNull(0)!;
       editorState.selectionService.updateSelection(
@@ -152,6 +166,44 @@ CommandShortcutEventHandler _downInTableCellHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
+CommandShortcutEventHandler _tabInTableCellHandler = (editorState) {
+  final inTableNodes = _inTableNodes(editorState);
+  final selection = editorState.selection;
+  if (_hasSelectionAndTableCell(inTableNodes, selection)) {
+    final nextNode = _getNextNode(inTableNodes, 1, 0);
+    if (nextNode != null && _nodeHasTextChild(nextNode)) {
+      final firstChild = nextNode.childAtIndexOrNull(0);
+      if (firstChild != null) {
+        editorState.selection = Selection.single(
+          path: firstChild.path,
+          startOffset: 0,
+        );
+      }
+    }
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
+CommandShortcutEventHandler _shiftTabInTableCellHandler = (editorState) {
+  final inTableNodes = _inTableNodes(editorState);
+  final selection = editorState.selection;
+  if (_hasSelectionAndTableCell(inTableNodes, selection)) {
+    final previousNode = _getPreviousNode(inTableNodes, 1, 0);
+    if (previousNode != null && _nodeHasTextChild(previousNode)) {
+      final firstChild = previousNode.childAtIndexOrNull(0);
+      if (firstChild != null) {
+        editorState.selection = Selection.single(
+          path: firstChild.path,
+          startOffset: 0,
+        );
+      }
+    }
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
 CommandShortcutEventHandler _backspaceInTableCellHandler = (editorState) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -191,14 +243,58 @@ bool _hasSelectionAndTableCell(
     selection.isCollapsed &&
     nodes.first.parent?.type == TableCellBlockKeys.type;
 
-Node? _getNextNode(Iterable<Node> nodes, int colDiff, rowDiff) {
+Node? _getNextNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
   final cell = nodes.first.parent!;
   final col = cell.attributes[TableCellBlockKeys.colPosition];
   final row = cell.attributes[TableCellBlockKeys.rowPosition];
-  return cell.parent != null
-      ? getCellNode(cell.parent!, col + colDiff, row + rowDiff)
+  final table = cell.parent;
+  if (table == null) {
+    return null;
+  }
+
+  final numCols =
+      table.children.last.attributes[TableCellBlockKeys.colPosition] + 1;
+  final numRows =
+      table.children.last.attributes[TableCellBlockKeys.rowPosition] + 1;
+
+  // Calculate the next column index, considering the column difference and wrapping around with modulo.
+  var nextCol = (col + colDiff) % numCols;
+
+  // Calculate the next row index, taking into account the row difference and adjusting for additional rows due to column change.
+  var nextRow = row + rowDiff + ((col + colDiff) ~/ numCols);
+
+  return isValidPosition(nextCol, nextRow, numCols, numRows)
+      ? getCellNode(table, nextCol, nextRow)
       : null;
 }
+
+Node? _getPreviousNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
+  final cell = nodes.first.parent!;
+  final col = cell.attributes[TableCellBlockKeys.colPosition];
+  final row = cell.attributes[TableCellBlockKeys.rowPosition];
+  final table = cell.parent;
+  if (table == null) {
+    return null;
+  }
+
+  final numCols =
+      table.children.last.attributes[TableCellBlockKeys.colPosition] + 1;
+  final numRows =
+      table.children.last.attributes[TableCellBlockKeys.rowPosition] + 1;
+
+  // Calculate the previous column index, ensuring it wraps within the table boundaries using modulo.
+  var prevCol = (col - colDiff + numCols) % numCols;
+
+  // Calculate the previous row index, considering table boundaries and adjusting for potential column underflow.
+  var prevRow = row - rowDiff - ((col - colDiff) < 0 ? 1 : 0);
+
+  return isValidPosition(prevCol, prevRow, numCols, numRows)
+      ? getCellNode(table, prevCol, prevRow)
+      : null;
+}
+
+bool isValidPosition(int col, int row, int numCols, int numRows) =>
+    col >= 0 && col < numCols && row >= 0 && row < numRows;
 
 bool _nodeHasTextChild(Node? n) =>
     n != null &&
