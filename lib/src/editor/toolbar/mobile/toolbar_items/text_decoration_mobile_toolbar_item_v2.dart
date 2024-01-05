@@ -90,7 +90,12 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
         isSelected: isSelected,
         onPressed: () {
           setState(() {
-            widget.editorState.toggleAttribute(currentDecoration.name);
+            widget.editorState.toggleAttribute(
+              currentDecoration.name,
+              selectionExtraInfo: {
+                selectionExtraInfoDoNotAttachTextService: true,
+              },
+            );
           });
         },
       );
