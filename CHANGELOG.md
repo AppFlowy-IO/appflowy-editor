@@ -1,3 +1,20 @@
+## 2.2.0
+* feat: support customizing the mobile magnifier by @LucasXu0 in ([#625](https://github.com/AppFlowy-IO/appflowy-editor/pull/625))
+* feat: support keep editor focus on mobile by @LucasXu0 in ([#628](https://github.com/AppFlowy-IO/appflowy-editor/pull/628))
+* feat: support clicking the selection area to disable floating toolbar by @LucasXu0 in ([#632](https://github.com/AppFlowy-IO/appflowy-editor/pull/632))
+* feat: adding an ability to have a link check before embedding by @johansutrisno in ([#603](https://github.com/AppFlowy-IO/appflowy-editor/pull/603))
+* feat: Add markdown link syntax formatting by @jazima in ([#618](https://github.com/AppFlowy-IO/appflowy-editor/pull/618))
+* feat: Table navigation using TAB key by @AnsahMohammad in ([#627](https://github.com/AppFlowy-IO/appflowy-editor/pull/627))
+* feat: improve android selection gesture by @LucasXu0 in ([#647](https://github.com/AppFlowy-IO/appflowy-editor/pull/647))
+* feat: improve ios touch gesture by @LucasXu0 in ([#648](https://github.com/AppFlowy-IO/appflowy-editor/pull/648))
+* fix: indent/outdent doesn't work in not collapsed selection by @LucasXu0 in ([#626](https://github.com/AppFlowy-IO/appflowy-editor/pull/626))
+* fix: renamed duplicated shortcut key by @AnsahMohammad in ([#629](https://github.com/AppFlowy-IO/appflowy-editor/pull/629))
+* fix: todo list lost focus by @LucasXu0 in ([#633](https://github.com/AppFlowy-IO/appflowy-editor/pull/633))
+* fix: resolve dead loop in node_iterator toList by @Linij in ([#623](https://github.com/AppFlowy-IO/appflowy-editor/pull/623))
+* fix: active hover on upload image by @johansutrisno in ([#597](https://github.com/AppFlowy-IO/appflowy-editor/pull/597))
+* fix:text_decoration_mobile_toolbar_padding by @q200892907 in ([#621](https://github.com/AppFlowy-IO/appflowy-editor/pull/621))
+* fix: android 14 issues by @LucasXu0 in ([#649](https://github.com/AppFlowy-IO/appflowy-editor/pull/649))
+
 ## 2.1.0
 * feat: show magnifier when dragging the handlers by @LucasXu0 in ([#601](https://github.com/AppFlowy-IO/appflowy-editor/pull/601))
 * feat: refactor keyboard height observer to support multiple listeners by @LucasXu0 in ([#602](https://github.com/AppFlowy-IO/appflowy-editor/pull/602))
