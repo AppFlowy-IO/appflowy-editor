@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,11 +79,12 @@ class AndroidCollapsedHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Extend the click area to make it easier to click.
     final adjustedRect = Rect.fromLTWH(
       rect.left - 2 * (handleBallWidth),
       rect.top,
       rect.width + 4 * (handleBallWidth),
-      // enable the handle area outside the stack clickable.
+      // Enable clicking in the handle area outside the stack.
       // https://github.com/flutter/flutter/issues/75747
       rect.height + 2 * handleBallWidth,
     );
@@ -99,7 +99,6 @@ class AndroidCollapsedHandle extends StatelessWidget {
           children: [
             Positioned(
               top: 4.0,
-              // left: adjustedRect.width,
               child: _AndroidDragHandle(
                 handleHeight: adjustedRect.height,
                 handleType: HandleType.collapsed,
@@ -153,11 +152,12 @@ class MobileSelectionArea extends StatelessWidget {
         );
       } else if (Platform.isAndroid) {
         // on Android, normally the cursor will be hidden if the selection is not collapsed.
+        // Extend the click area to make it easier to click.
         adjustedRect = Rect.fromLTWH(
           rect.left - 2 * (handleBallWidth),
           rect.top,
           rect.width + 4 * (handleBallWidth),
-          // enable the handle area outside the stack clickable.
+          // Enable clicking in the handle area outside the stack.
           // https://github.com/flutter/flutter/issues/75747
           rect.height + 2 * handleBallWidth,
         );
@@ -440,12 +440,13 @@ class _AndroidDragHandle extends _IDragHandle {
       ),
     );
 
-    if (kDebugMode) {
-      child = ColoredBox(
-        color: Colors.red.withOpacity(0.5),
-        child: child,
-      );
-    }
+    // use it to debug the handle area.
+    // if (kDebugMode) {
+    //   child = ColoredBox(
+    //     color: Colors.red.withOpacity(0.5),
+    //     child: child,
+    //   );
+    // }
 
     return child;
   }

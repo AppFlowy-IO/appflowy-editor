@@ -6,6 +6,7 @@ import 'package:appflowy_editor/src/editor/editor_component/service/selection/mo
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 /// only used in mobile
@@ -109,6 +110,9 @@ class _MobileSelectionServiceWidgetState
       onTapUp: _onTapUp,
       onDoubleTapUp: _onDoubleTapUp,
       onTripleTapUp: _onTripleTapUp,
+      onLongPressStart: _onLongPressStart,
+      // onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      // onLongPressEnd: _onLongPressEnd,
       child: Stack(
         children: [
           widget.child,
@@ -490,6 +494,31 @@ class _MobileSelectionServiceWidgetState
       reason: SelectionUpdateReason.uiEvent,
       extraInfo: null,
     );
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    // on Android, long press to select a word.
+    final offset = details.globalPosition;
+    if (_isClickOnSelectionArea(offset)) {
+      appFlowyEditorOnTapSelectionArea.add(0);
+      return;
+    }
+    final node = getNodeInOffset(offset);
+    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
+    if (selection == null) {
+      clearSelection();
+      return;
+    }
+
+    if (editorState.editorStyle.enableHapticFeedbackOnAndroid) {
+      HapticFeedback.mediumImpact();
+    }
+
+    updateSelection(selection);
   }
 
   // delete this function in the future.
