@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
+import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
+import 'package:appflowy_editor/src/render/selection/mobile_collapsed_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -147,10 +149,6 @@ class _MobileSelectionServiceWidgetState
   }
 
   Widget _buildCollapsedHandle() {
-    if (Platform.isIOS) {
-      return const SizedBox.shrink();
-    }
-
     return ValueListenableBuilder(
       valueListenable: editorState.selectionNotifier,
       builder: (context, selection, _) {
@@ -175,7 +173,7 @@ class _MobileSelectionServiceWidgetState
         }
 
         final editorStyle = editorState.editorStyle;
-        return AndroidCollapsedHandle(
+        return MobileCollapsedHandle(
           layerLink: node.layerLink,
           rect: rect,
           handleColor: editorStyle.dragHandleColor,
@@ -226,7 +224,7 @@ class _MobileSelectionServiceWidgetState
         }
 
         final editorStyle = editorState.editorStyle;
-        return MobileSelectionArea(
+        return MobileSelectionHandle(
           layerLink: node.layerLink,
           rect: handleType == HandleType.left ? rects.first : rects.last,
           handleType: handleType,
