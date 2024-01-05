@@ -300,10 +300,8 @@ class EditorState {
         selectionExtraInfo = transaction.selectionExtraInfo;
       }
       selection = transaction.afterSelection;
-      _selectionUpdateReason = SelectionUpdateReason.uiEvent;
     }
 
-    // TODO: execute this line after the UI has been updated.
     completer.complete();
 
     return completer.future;

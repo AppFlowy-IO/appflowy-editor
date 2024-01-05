@@ -93,4 +93,25 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   @override
   void updateSelection(Selection? selection) =>
       forward.updateSelection(selection);
+
+  @override
+  Selection? onPanStart(
+    DragStartDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanStart(details, mode);
+
+  @override
+  Selection? onPanUpdate(
+    DragUpdateDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanUpdate(details, mode);
+
+  @override
+  void onPanEnd(
+    DragEndDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanEnd(details, mode);
 }
