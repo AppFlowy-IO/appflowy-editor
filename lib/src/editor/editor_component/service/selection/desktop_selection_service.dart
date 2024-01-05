@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -189,6 +190,30 @@ class _DesktopSelectionServiceWidgetState
       return null;
     }
     return selectable.getPositionInOffset(offset);
+  }
+
+  @override
+  Selection? onPanStart(
+    DragStartDetails details,
+    MobileSelectionDragMode mode,
+  ) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Selection? onPanUpdate(
+    DragUpdateDetails details,
+    MobileSelectionDragMode mode,
+  ) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void onPanEnd(
+    DragEndDetails details,
+    MobileSelectionDragMode mode,
+  ) {
+    throw UnimplementedError();
   }
 
   void _onTapDown(TapDownDetails details) {

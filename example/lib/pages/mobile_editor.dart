@@ -112,6 +112,7 @@ class _MobileEditorState extends State<MobileEditor> {
   EditorStyle _buildMobileEditorStyle() {
     return EditorStyle.mobile(
       cursorColor: const Color.fromARGB(255, 134, 46, 247),
+      dragHandleColor: const Color.fromARGB(255, 134, 46, 247),
       selectionColor: const Color.fromARGB(50, 134, 46, 247),
       textStyleConfiguration: TextStyleConfiguration(
         text: GoogleFonts.poppins(

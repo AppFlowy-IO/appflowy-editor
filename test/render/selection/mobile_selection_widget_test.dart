@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/src/core/document/node.dart';
-import 'package:appflowy_editor/src/render/selection/mobile_selection_widget.dart';
+import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,19 +13,16 @@ void main() {
       await tester.buildAndPump(
         Stack(
           children: [
-            MobileSelectionWidget(
-              showLeftHandler: true,
-              showRightHandler: true,
+            MobileSelectionArea(
               layerLink: node.layerLink,
               rect: const Rect.fromLTWH(0, 0, 100, 100),
-              color: Colors.red,
             ),
           ],
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(MobileSelectionWidget), findsOneWidget);
+      expect(find.byType(MobileSelectionArea), findsOneWidget);
     });
   });
 }

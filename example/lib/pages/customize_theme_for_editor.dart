@@ -156,6 +156,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
           ? const EdgeInsets.only(left: 200, right: 200)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,
+      dragHandleColor: Colors.green,
       selectionColor: Colors.green.withOpacity(0.5),
       textStyleConfiguration: TextStyleConfiguration(
         text: GoogleFonts.poppins(
