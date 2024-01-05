@@ -8,11 +8,6 @@ class DividerNodeParser extends NodeParser {
 
   @override
   String transform(Node node, DocumentMarkdownEncoder? encoder) {
-    final children = encoder?.convertNodes(node.children);
-    String markdown = '---\n';
-    if (children != null && children.isNotEmpty) {
-      markdown += children;
-    }
-    return markdown;
+    return '---\n';
   }
 }
