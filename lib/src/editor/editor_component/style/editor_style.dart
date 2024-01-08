@@ -17,6 +17,7 @@ class EditorStyle {
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
+    this.cursorWidth = 2.0,
     this.defaultTextDirection,
     this.enableHapticFeedbackOnAndroid = true,
   });
@@ -26,6 +27,9 @@ class EditorStyle {
 
   // The cursor color
   final Color cursorColor;
+
+  // The cursor width
+  final double cursorWidth;
 
   // The drag handle color
   // only works on mobile
@@ -73,6 +77,7 @@ class EditorStyle {
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.defaultTextDirection,
+    this.cursorWidth = 2.0,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =
@@ -100,6 +105,7 @@ class EditorStyle {
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
+    this.cursorWidth = 2.0,
     this.enableHapticFeedbackOnAndroid = true,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
@@ -125,6 +131,7 @@ class EditorStyle {
     Size? mobileDragHandleBallSize,
     double? mobileDragHandleWidth,
     bool? enableHapticFeedbackOnAndroid,
+    double? cursorWidth,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -142,6 +149,7 @@ class EditorStyle {
           mobileDragHandleWidth ?? this.mobileDragHandleWidth,
       enableHapticFeedbackOnAndroid:
           enableHapticFeedbackOnAndroid ?? this.enableHapticFeedbackOnAndroid,
+      cursorWidth: cursorWidth ?? this.cursorWidth,
     );
   }
 }

@@ -163,6 +163,7 @@ class _HeadingBlockComponentWidgetState
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
+              cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
         ],
