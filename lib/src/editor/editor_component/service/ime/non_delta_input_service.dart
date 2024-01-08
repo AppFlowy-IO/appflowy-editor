@@ -12,6 +12,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     required super.onReplace,
     required super.onNonTextUpdate,
     required super.onPerformAction,
+    super.onFloatingCursor,
   });
 
   @override
@@ -134,11 +135,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   Future<void> performAction(TextInputAction action) async {
+    Log.editor.debug('performAction: $action');
     return onPerformAction(action);
   }
 
   @override
-  void performPrivateCommand(String action, Map<String, dynamic> data) {}
+  void performPrivateCommand(String action, Map<String, dynamic> data) {
+    Log.editor.debug('performPrivateCommand: $action, $data');
+  }
 
   @override
   void removeTextPlaceholder() {}
@@ -150,7 +154,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   void showToolbar() {}
 
   @override
-  void updateFloatingCursor(RawFloatingCursorPoint point) {}
+  void updateFloatingCursor(RawFloatingCursorPoint point) {
+    onFloatingCursor?.call(point);
+  }
 
   @override
   void didChangeInputControl(
@@ -159,7 +165,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   ) {}
 
   @override
-  void performSelector(String selectorName) {}
+  void performSelector(String selectorName) {
+    Log.editor.debug('performSelector: $selectorName');
+  }
 
   @override
   void insertContent(KeyboardInsertedContent content) {}

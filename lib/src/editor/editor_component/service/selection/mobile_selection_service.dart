@@ -32,6 +32,7 @@ enum MobileSelectionHandlerType {
 
 // the value type is MobileSelectionDragMode
 const String selectionDragModeKey = 'selection_drag_mode';
+bool disableMagnifier = false;
 
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
@@ -113,8 +114,6 @@ class _MobileSelectionServiceWidgetState
       onDoubleTapUp: _onDoubleTapUp,
       onTripleTapUp: _onTripleTapUp,
       onLongPressStart: _onLongPressStart,
-      // onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      // onLongPressEnd: _onLongPressEnd,
       child: Stack(
         children: [
           widget.child,
@@ -135,7 +134,7 @@ class _MobileSelectionServiceWidgetState
     return ValueListenableBuilder(
       valueListenable: _lastPanOffset,
       builder: (_, offset, __) {
-        if (offset == null) {
+        if (offset == null || disableMagnifier) {
           return const SizedBox.shrink();
         }
         final renderBox = context.findRenderObject() as RenderBox;
@@ -260,6 +259,8 @@ class _MobileSelectionServiceWidgetState
       reason: SelectionUpdateReason.uiEvent,
       extraInfo: {
         selectionDragModeKey: dragMode,
+        selectionExtraInfoDoNotAttachTextService:
+            dragMode == MobileSelectionDragMode.cursor,
       },
     );
   }
@@ -490,7 +491,9 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: null,
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
     );
   }
 
