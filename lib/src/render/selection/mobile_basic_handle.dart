@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+GlobalKey _leftHandleKey = GlobalKey();
+GlobalKey _rightHandleKey = GlobalKey();
+GlobalKey _collapsedHandleKey = GlobalKey();
+
 enum HandleType {
   none,
   left,
@@ -37,6 +41,19 @@ enum HandleType {
         return CrossAxisAlignment.start;
       case HandleType.collapsed:
         return CrossAxisAlignment.center;
+    }
+  }
+
+  GlobalKey get key {
+    switch (this) {
+      case HandleType.none:
+        throw UnsupportedError('Unsupported handle type');
+      case HandleType.left:
+        return _leftHandleKey;
+      case HandleType.right:
+        return _rightHandleKey;
+      case HandleType.collapsed:
+        return _collapsedHandleKey;
     }
   }
 }
@@ -142,6 +159,7 @@ class _IOSDragHandle extends _IDragHandle {
     Widget child;
     if (handleType == HandleType.collapsed) {
       child = Container(
+        key: handleType.key,
         width: handleWidth,
         color: handleColor,
         height: handleHeight,
