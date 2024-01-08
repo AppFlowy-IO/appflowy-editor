@@ -8,6 +8,7 @@ abstract class TextInputService {
     required this.onReplace,
     required this.onNonTextUpdate,
     required this.onPerformAction,
+    this.onFloatingCursor,
   });
 
   Future<void> Function(TextEditingDeltaInsertion insertion) onInsert;
@@ -16,6 +17,7 @@ abstract class TextInputService {
   Future<void> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
       onNonTextUpdate;
   Future<void> Function(TextInputAction action) onPerformAction;
+  Future<void> Function(RawFloatingCursorPoint point)? onFloatingCursor;
 
   TextRange? get composingTextRange;
   bool get attached;
