@@ -7,7 +7,5 @@ export 'markdown/decoder/delta_markdown_decoder.dart';
 export 'markdown/document_markdown.dart';
 export 'markdown/encoder/delta_markdown_encoder.dart';
 export 'markdown/encoder/document_markdown_encoder.dart';
-export 'markdown/encoder/parser/image_node_parser.dart';
-export 'markdown/encoder/parser/node_parser.dart';
-export 'markdown/encoder/parser/text_node_parser.dart';
+export 'markdown/encoder/parser/parser.dart';
 export 'quill_delta/quill_delta_encoder.dart';
