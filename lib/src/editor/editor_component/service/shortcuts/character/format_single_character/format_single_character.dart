@@ -30,17 +30,25 @@ bool handleFormatByWrappingWithSingleCharacter({
   }
 
   final plainText = delta.toPlainText();
+  final lastCharIndex = plainText.lastIndexOf(character);
 
-  final headCharIndex = plainText.indexOf(character);
-  final endCharIndex = plainText.lastIndexOf(character);
+  /// triggerChar is the character that triggers the formatting.
+  /// for example, add '_'(triggerChar) after '_abc', it doesn't belong to the plainText.
+  final triggerCharIndex = selection.end.offset;
+  final textAfterLastChar = plainText.substring(
+    lastCharIndex + 1,
+  );
+  bool isFullOfSpaces = textAfterLastChar.trim().isEmpty;
 
-  // Determine if a 'Character' already exists in the node and only once.
-  // 1. This is no 'Character' in the plainText: indexOf returns -1.
-  // 2. More than one 'Character' in the plainText: the headCharIndex and endCharIndex are supposed to be the same, if not, which means plainText has more than one character. For example: when plainText is '_abc', it will trigger formatting(remind:the last char is used to trigger the formatting,so it won't be counted in the plainText.). But adding '_' after 'a__ab' won't trigger formatting.
-  // 3. there are two characters connecting together, like adding '_' after 'abc_' won't trigger formatting.
-  if (headCharIndex == -1 ||
-      headCharIndex != endCharIndex ||
-      headCharIndex == selection.end.offset - 1) {
+  // The following conditions are not supposed to trigger formatting:
+  // 1. This is no 'Character' in the plainText: lastIndexOf returns -1.
+  // 2. There are two characters connecting together, like adding '_' after 'abc_' won't trigger formatting.
+  // 3. The text between the last char and trigger char are all spaces. For example, adding '_' after '_abc_ ' won't trigger formatting.
+  // Note since we support using '\' to escape the character,it could be possible that multiple shortcut characters exist in the plainText.
+  // We should only format the last one. like adding '_' after '\_abc\_ _123' should format the text to '123'
+  if (lastCharIndex == -1 ||
+      lastCharIndex + 1 == triggerCharIndex ||
+      isFullOfSpaces) {
     return false;
   }
 
@@ -52,7 +60,7 @@ bool handleFormatByWrappingWithSingleCharacter({
   final deletion = editorState.transaction
     ..deleteText(
       node,
-      headCharIndex,
+      lastCharIndex,
       1,
     );
   editorState.apply(deletion);
@@ -77,7 +85,7 @@ bool handleFormatByWrappingWithSingleCharacter({
 
   // if the text is already formatted, we should remove the format.
   final sliced = delta.slice(
-    headCharIndex + 1,
+    lastCharIndex + 1,
     selection.end.offset,
   );
   final result = sliced.everyAttributes((element) => element[style] == true);
@@ -85,8 +93,8 @@ bool handleFormatByWrappingWithSingleCharacter({
   final format = editorState.transaction
     ..formatText(
       node,
-      headCharIndex,
-      selection.end.offset - headCharIndex - 1,
+      lastCharIndex,
+      selection.end.offset - lastCharIndex - 1,
       {
         style: !result,
       },
