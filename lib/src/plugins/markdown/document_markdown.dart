@@ -6,7 +6,6 @@ import 'package:appflowy_editor/src/core/document/document.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/image_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -43,6 +42,7 @@ String documentToMarkdown(
       const HeadingNodeParser(),
       const ImageNodeParser(),
       const TableNodeParser(),
+      const DividerNodeParser(),
     ],
   ).encode(document);
 }

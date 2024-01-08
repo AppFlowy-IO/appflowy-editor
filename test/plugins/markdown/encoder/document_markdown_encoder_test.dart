@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
