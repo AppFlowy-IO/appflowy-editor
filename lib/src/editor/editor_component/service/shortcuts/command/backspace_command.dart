@@ -14,6 +14,19 @@ final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   handler: _backspaceCommandHandler,
 );
 
+/// Windows / Linux / macOS : shift + backspace
+/// Enables the deletion of a character to the left while holding the shift key
+///
+/// - support
+///   - desktop
+///   - web
+///
+final CommandShortcutEvent deleteLeftCharacterCommand = CommandShortcutEvent(
+  key: 'delete the character on the left',
+  command: 'shift+backspace',
+  handler: _backspaceCommandHandler,
+);
+
 CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
   final selection = editorState.selection;
   final selectionType = editorState.selectionType;

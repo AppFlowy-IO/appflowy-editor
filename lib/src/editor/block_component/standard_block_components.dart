@@ -108,6 +108,7 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   convertToParagraphCommand,
   ...tableCommands,
   backspaceCommand,
+  deleteLeftCharacterCommand,
   deleteLeftWordCommand,
   deleteLeftSentenceCommand,
 
