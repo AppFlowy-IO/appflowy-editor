@@ -90,6 +90,43 @@ extension PositionExtension on Position {
           : rect.centerLeft.translate(0, rect.height);
     }
 
-    return editorState.service.selectionService.getPositionInOffset(offset);
+    final position =
+        editorState.service.selectionService.getPositionInOffset(offset);
+
+    if (position != null && !position.path.equals(path)) {
+      return position;
+    }
+
+    if (upwards) {
+      final previous = selection.start.path.previous;
+      if (previous.isNotEmpty && !previous.equals(selection.start.path)) {
+        final node = editorState.document.nodeAtPath(previous);
+        final selectable = node?.selectable;
+        var offset = selection.startIndex;
+        if (selectable != null) {
+          offset = offset.clamp(
+            selectable.start().offset,
+            selectable.end().offset,
+          );
+          return Position(path: previous, offset: offset);
+        }
+      }
+    } else {
+      final next = selection.end.path.next;
+      if (next.isNotEmpty && !next.equals(selection.end.path)) {
+        final node = editorState.document.nodeAtPath(next);
+        final selectable = node?.selectable;
+        var offset = selection.endIndex;
+        if (selectable != null) {
+          offset = offset.clamp(
+            selectable.start().offset,
+            selectable.end().offset,
+          );
+          return Position(path: next, offset: offset);
+        }
+      }
+    }
+
+    return this;
   }
 }
