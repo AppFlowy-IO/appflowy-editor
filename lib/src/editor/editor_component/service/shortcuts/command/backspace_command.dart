@@ -10,20 +10,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   key: 'backspace',
-  command: 'backspace',
-  handler: _backspaceCommandHandler,
-);
-
-/// Windows / Linux / macOS : shift + backspace
-/// Enables the deletion of a character to the left while holding the shift key
-///
-/// - support
-///   - desktop
-///   - web
-///
-final CommandShortcutEvent deleteLeftCharacterCommand = CommandShortcutEvent(
-  key: 'delete the character on the left',
-  command: 'shift+backspace',
+  command: 'backspace, shift+backspace',
   handler: _backspaceCommandHandler,
 );
 
