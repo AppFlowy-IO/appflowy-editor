@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   key: 'backspace',
-  command: 'backspace',
+  command: 'backspace, shift+backspace',
   handler: _backspaceCommandHandler,
 );
 
