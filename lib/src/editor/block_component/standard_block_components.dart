@@ -97,6 +97,9 @@ final List<CharacterShortcutEvent> standardCharacterShortcutEvents = [
 
   // convert => to arrow
   formatGreaterEqual,
+
+  // convert -> to single arrow (→)
+  formatGreaterHyphen,
 ];
 
 final List<CommandShortcutEvent> standardCommandShortcutEvents = [
