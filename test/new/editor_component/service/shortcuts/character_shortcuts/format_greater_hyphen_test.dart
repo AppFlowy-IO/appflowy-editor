@@ -8,7 +8,7 @@ const _greater = '>';
 const _singleArrow = '→';
 
 void main() async {
-  group('format_greater_hyphen.dart', () {
+  group('format_arrow_character.dart', () {
     testWidgets('hyphen + greater to single arrow', (tester) async {
       final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
