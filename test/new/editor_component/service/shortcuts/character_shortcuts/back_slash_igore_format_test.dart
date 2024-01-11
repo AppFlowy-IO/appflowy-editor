@@ -68,6 +68,26 @@ void main() async {
 
         await editor.dispose();
       });
+
+      testWidgets('`AppFlowy[backslash]` to `AppFlowy` ', (tester) async {
+        const originalText = '`AppFlowy\\';
+        const resultText = '`AppFlowy`';
+
+        final editor = tester.editor..addParagraph(initialText: originalText);
+        await editor.startTesting();
+
+        await editor.updateSelection(
+          Selection.collapsed(Position(path: [0], offset: originalText.length)),
+        );
+
+        await editor.ime.typeText('`');
+
+        final node = editor.nodeAtPath([0]);
+        expect(node!.delta!.toList()[0].attributes, null);
+        expect(node.delta!.toPlainText(), resultText);
+
+        await editor.dispose();
+      });
     });
 
     group('For the space enabled shortcut events', () {
@@ -91,9 +111,9 @@ void main() async {
         await editor.dispose();
       });
 
-      testWidgets('`AppFlowy[backslash]` to `AppFlowy` ', (tester) async {
-        const originalText = '`AppFlowy\\';
-        const resultText = '`AppFlowy`';
+      testWidgets('[{backslash}] to [] ', (tester) async {
+        const originalText = '[\\]';
+        const resultText = '[] ';
 
         final editor = tester.editor..addParagraph(initialText: originalText);
         await editor.startTesting();
@@ -102,7 +122,7 @@ void main() async {
           Selection.collapsed(Position(path: [0], offset: originalText.length)),
         );
 
-        await editor.ime.typeText('`');
+        await editor.ime.typeText(' ');
 
         final node = editor.nodeAtPath([0]);
         expect(node!.delta!.toList()[0].attributes, null);
