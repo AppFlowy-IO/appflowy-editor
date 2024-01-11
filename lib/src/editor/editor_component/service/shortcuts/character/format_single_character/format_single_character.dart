@@ -46,9 +46,12 @@ bool handleFormatByWrappingWithSingleCharacter({
   // 3. The text between the last char and trigger char are all spaces. For example, adding '_' after '_abc_ ' won't trigger formatting.
   // Note since we support using '\' to escape the character,it could be possible that multiple shortcut characters exist in the plainText.
   // We should only format the last one. like adding '_' after '\_abc\_ _123' should format the text to '123'
+  // 4. If the character before the last 'Character' is the same as the 'Character', we don't need to format it in single character case.
+  // For example, adding * after **a*, it skips the single character formatting and it will be handled by double character formatting.
   if (lastCharIndex == -1 ||
       lastCharIndex + 1 == triggerCharIndex ||
-      isFullOfSpaces) {
+      isFullOfSpaces ||
+      plainText[lastCharIndex - 1] == character) {
     return false;
   }
 
