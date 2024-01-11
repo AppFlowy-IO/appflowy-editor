@@ -76,6 +76,12 @@ class _MobileSelectionServiceWidgetState
   final List<SelectionGestureInterceptor> _interceptors = [];
   final ValueNotifier<Offset?> _lastPanOffset = ValueNotifier(null);
 
+  // the selection from editorState will be updated directly, but the cursor
+  // or selection area depends on the layout of the text, so we need to update
+  // the selection after the layout.
+  final PropertyValueNotifier<Selection?> selectionNotifierAfterLayout =
+      PropertyValueNotifier<Selection?>(null);
+
   /// Pan
   Offset? _panStartOffset;
   double? _panStartScrollDy;
@@ -102,6 +108,7 @@ class _MobileSelectionServiceWidgetState
   void dispose() {
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
+    selectionNotifierAfterLayout.dispose();
     editorState.selectionNotifier.removeListener(_updateSelection);
 
     super.dispose();
@@ -149,7 +156,7 @@ class _MobileSelectionServiceWidgetState
 
   Widget _buildCollapsedHandle() {
     return ValueListenableBuilder(
-      valueListenable: editorState.selectionNotifier,
+      valueListenable: selectionNotifierAfterLayout,
       builder: (context, selection, _) {
         if (selection == null ||
             !selection.isCollapsed ||
@@ -199,7 +206,7 @@ class _MobileSelectionServiceWidgetState
     }
 
     return ValueListenableBuilder(
-      valueListenable: editorState.selectionNotifier,
+      valueListenable: selectionNotifierAfterLayout,
       builder: (context, selection, _) {
         if (selection == null || selection.isCollapsed) {
           return const SizedBox.shrink();
@@ -341,6 +348,11 @@ class _MobileSelectionServiceWidgetState
 
   void _updateSelection() {
     final selection = editorState.selection;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      selectionNotifierAfterLayout.value = selection;
+    });
+
     if (currentSelection.value != selection) {
       clearSelection();
       return;
