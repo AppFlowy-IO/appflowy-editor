@@ -1,3 +1,12 @@
+## 2.3.0
+* feat: support customizing cursor width by @LucasXu0 in [#654](https://github.com/AppFlowy-IO/appflowy-editor/pull/654)
+* feat: support updating cursor position via spacebar by @LucasXu0 in [#655](https://github.com/AppFlowy-IO/appflowy-editor/pull/655)
+* feat: add markdown divider encoder parser by @hamishjohnson in [#639](https://github.com/AppFlowy-IO/appflowy-editor/pull/639)
+* fix: Chinese input issue by @q200892907 in [#652](https://github.com/AppFlowy-IO/appflowy-editor/pull/652)
+* fix: move cursor up/down issues by @LucasXu0 in [#657](https://github.com/AppFlowy-IO/appflowy-editor/pull/657)
+* fix: ignore parent gesture by @q200892907 in [#660](https://github.com/AppFlowy-IO/appflowy-editor/pull/660)
+* fix: support character deletion while holding down the Shift key by @Jayaprakash-dev in [#659](https://github.com/AppFlowy-IO/appflowy-editor/pull/659)
+
 ## 2.2.0
 * feat: support customizing the mobile magnifier by @LucasXu0 in ([#625](https://github.com/AppFlowy-IO/appflowy-editor/pull/625))
 * feat: support keep editor focus on mobile by @LucasXu0 in ([#628](https://github.com/AppFlowy-IO/appflowy-editor/pull/628))
