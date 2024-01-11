@@ -109,6 +109,9 @@ class _BlocksMenuState extends State<_BlocksMenu> {
                     HeadingBlockKeys.level: list.level,
                 },
               ),
+              selectionExtraInfo: {
+                selectionExtraInfoDoNotAttachTextService: true,
+              },
             );
           });
         },
