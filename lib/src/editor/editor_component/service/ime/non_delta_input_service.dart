@@ -192,6 +192,10 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
     }
+    //Solve the problem that Chinese ime cannot continue deleting after deleting input content
+    if (composingTextRange?.isCollapsed ?? false) {
+      composingTextRange = TextRange.empty;
+    }
   }
 }
 
