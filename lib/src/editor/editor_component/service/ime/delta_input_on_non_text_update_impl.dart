@@ -1,9 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 
-const selectionExtraInfoDoNotAttachTextService =
-    'selectionExtraInfoDoNotAttachTextService';
-
 Future<void> onNonTextUpdate(
   TextEditingDeltaNonTextUpdate nonTextUpdate,
   EditorState editorState,
@@ -15,13 +12,13 @@ Future<void> onNonTextUpdate(
   final selection = editorState.selection;
 
   if (PlatformExtension.isWindows) {
-    if (selection != null &&
-        nonTextUpdate.composing == TextRange.empty &&
-        nonTextUpdate.selection.isCollapsed) {
-      editorState.selection = Selection.collapsed(
-        Position(
-          path: selection.start.path,
-          offset: nonTextUpdate.selection.start,
+    if (selection != null) {
+      editorState.updateSelectionWithReason(
+        Selection.collapsed(
+          Position(
+            path: selection.start.path,
+            offset: nonTextUpdate.selection.start,
+          ),
         ),
       );
     }
@@ -34,9 +31,6 @@ Future<void> onNonTextUpdate(
             offset: nonTextUpdate.selection.start,
           ),
         ),
-        extraInfo: {
-          selectionExtraInfoDoNotAttachTextService: true,
-        },
       );
     }
   } else if (PlatformExtension.isMacOS) {

@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_on_floating_cursor_update.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,6 +80,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       ),
       onPerformAction: (action) async => await onPerformAction(
         action,
+        editorState,
+      ),
+      onFloatingCursor: (point) => onFloatingCursorUpdate(
+        point,
         editorState,
       ),
     );
@@ -197,10 +202,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // attach the delta text input service if needed
     final selection = editorState.selection;
 
-    if (PlatformExtension.isMobile && previousSelection == selection) {
-      // no need to attach the text input service if the selection is not changed.
-      return;
-    }
+    // if (PlatformExtension.isMobile && previousSelection == selection) {
+    //   // no need to attach the text input service if the selection is not changed.
+    //   return;
+    // }
 
     enableShortcuts = true;
 

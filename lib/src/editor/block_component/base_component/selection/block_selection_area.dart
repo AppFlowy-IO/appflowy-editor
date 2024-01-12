@@ -165,7 +165,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           // show the selection area when the selection is not collapsed
           if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
               prevSelectionRects == null ||
-              prevSelectionRects!.isEmpty) {
+              prevSelectionRects!.isEmpty ||
+              (prevSelectionRects!.length == 1 &&
+                  prevSelectionRects!.first.width == 0)) {
             return sizedBox;
           }
           return SelectionAreaPaint(

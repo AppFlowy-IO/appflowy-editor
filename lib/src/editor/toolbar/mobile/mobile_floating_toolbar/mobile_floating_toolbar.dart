@@ -4,7 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart';
 
-const disableFloatingToolbar = 'disableFloatingToolbar';
+const selectionExtraInfoDisableFloatingToolbar = 'disableFloatingToolbar';
 
 class MobileFloatingToolbarItem {
   const MobileFloatingToolbarItem({
@@ -112,7 +112,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
         _clear();
       } else if (prevSelection == selection &&
           editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
-          editorState.selectionExtraInfo?[disableFloatingToolbar] != true) {
+          editorState.selectionExtraInfo?[
+                  selectionExtraInfoDisableFloatingToolbar] !=
+              true) {
         _showAfterDelay(const Duration(milliseconds: 400));
       }
       prevSelection = selection;
@@ -126,7 +128,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
         return;
       }
 
-      if (editorState.selectionExtraInfo?[disableFloatingToolbar] != true) {
+      if (editorState
+              .selectionExtraInfo?[selectionExtraInfoDisableFloatingToolbar] !=
+          true) {
         // uses debounce to avoid the computing the rects too frequently.
         _showAfterDelay(const Duration(milliseconds: 400));
       }

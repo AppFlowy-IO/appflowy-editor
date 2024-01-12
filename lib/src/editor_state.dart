@@ -6,6 +6,12 @@ import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// the type of this value is bool.
+///
+/// set true to this key to prevent attaching the text service when selection is changed.
+const selectionExtraInfoDoNotAttachTextService =
+    'selectionExtraInfoDoNotAttachTextService';
+
 class ApplyOptions {
   /// This flag indicates that
   /// whether the transaction should be recorded into
@@ -322,10 +328,8 @@ class EditorState {
         selectionExtraInfo = transaction.selectionExtraInfo;
       }
       selection = transaction.afterSelection;
-      _selectionUpdateReason = SelectionUpdateReason.uiEvent;
     }
 
-    // TODO: execute this line after the UI has been updated.
     completer.complete();
 
     return completer.future;

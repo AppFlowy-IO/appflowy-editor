@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 /// [AppFlowySelectionService] is responsible for processing
@@ -66,6 +67,20 @@ abstract class AppFlowySelectionService {
 
   void registerGestureInterceptor(SelectionGestureInterceptor interceptor);
   void unregisterGestureInterceptor(String key);
+
+  /// The functions below are only for mobile.
+  Selection? onPanStart(
+    DragStartDetails details,
+    MobileSelectionDragMode mode,
+  );
+  Selection? onPanUpdate(
+    DragUpdateDetails details,
+    MobileSelectionDragMode mode,
+  );
+  void onPanEnd(
+    DragEndDetails details,
+    MobileSelectionDragMode mode,
+  );
 }
 
 class SelectionGestureInterceptor {

@@ -20,7 +20,6 @@ class IgnoreEditorSelectionGesture extends StatefulWidget {
 class _IgnoreEditorSelectionGestureState
     extends State<IgnoreEditorSelectionGesture> {
   final key = Random(10000).toString();
-  final FocusNode _focusNode = FocusNode();
   late final SelectionGestureInterceptor interceptor;
   late final EditorState editorState = context.read<EditorState>();
 
@@ -50,12 +49,14 @@ class _IgnoreEditorSelectionGestureState
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      focusNode: _focusNode,
-      onFocusChange: (value) {
-        // current has focus ，close editor
-        if (value) {
-          editorState.selection = null;
+    return Listener(
+      onPointerDown: (event) {
+        final renderObject = context.findRenderObject();
+        // touch to clear
+        if (renderObject != null && renderObject is RenderBox) {
+          if (renderObject.paintBounds.contains(event.localPosition)) {
+            editorState.selection = null;
+          }
         }
       },
       child: widget.child,

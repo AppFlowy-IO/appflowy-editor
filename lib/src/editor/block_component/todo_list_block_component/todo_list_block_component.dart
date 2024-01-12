@@ -173,6 +173,7 @@ class _TodoListBlockComponentWidgetState
               ),
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
+              cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
         ],
@@ -223,7 +224,7 @@ class _TodoListBlockComponentWidgetState
       checkOrUncheckChildren(!checked, widget.node);
     }
 
-    editorState.apply(transaction);
+    editorState.apply(transaction, withUpdateSelection: false);
   }
 
   void checkOrUncheckChildren(

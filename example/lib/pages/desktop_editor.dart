@@ -104,6 +104,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
   // showcase 1: customize the editor style.
   EditorStyle _buildDesktopEditorStyle() {
     return EditorStyle.desktop(
+      cursorWidth: 2.0,
       cursorColor: Colors.blue,
       selectionColor: Colors.grey.shade300,
       textStyleConfiguration: TextStyleConfiguration(
