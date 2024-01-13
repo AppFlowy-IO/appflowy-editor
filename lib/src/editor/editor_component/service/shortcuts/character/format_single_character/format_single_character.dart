@@ -14,8 +14,8 @@ bool handleFormatByWrappingWithSingleCharacter({
   assert(character.length == 1);
 
   final selection = editorState.selection;
-  // if the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
-  // we should return false to let the IME handle it.
+  // If the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
+  // We should return false to let the IME handle it.
   if (selection == null || !selection.isCollapsed || selection.end.offset < 2) {
     return false;
   }
@@ -23,36 +23,43 @@ bool handleFormatByWrappingWithSingleCharacter({
   final path = selection.end.path;
   final node = editorState.getNodeAtPath(path);
   final delta = node?.delta;
-  // if the node doesn't contain the delta(which means it isn't a text)
-  // we don't need to format it.
+  // If the node doesn't contain the delta(which means it isn't a text), we don't need to format it.
   if (node == null || delta == null) {
     return false;
   }
 
   final plainText = delta.toPlainText();
+  final lastCharIndex = plainText.lastIndexOf(character);
+  final textAfterLastChar = plainText.substring(lastCharIndex + 1);
+  bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
 
-  final headCharIndex = plainText.indexOf(character);
-  final endCharIndex = plainText.lastIndexOf(character);
-
-  // Determine if a 'Character' already exists in the node and only once.
-  // 1. This is no 'Character' in the plainText: indexOf returns -1.
-  // 2. More than one 'Character' in the plainText: the headCharIndex and endCharIndex are supposed to be the same, if not, which means plainText has more than one character. For example: when plainText is '_abc', it will trigger formatting(remind:the last char is used to trigger the formatting,so it won't be counted in the plainText.). But adding '_' after 'a__ab' won't trigger formatting.
-  // 3. there are two characters connecting together, like adding '_' after 'abc_' won't trigger formatting.
-  if (headCharIndex == -1 ||
-      headCharIndex != endCharIndex ||
-      headCharIndex == selection.end.offset - 1) {
+  // The following conditions won't trigger the single character formatting:
+  // 1. There is no 'Character' in the plainText: lastIndexOf returns -1.
+  if (lastCharIndex == -1) {
+    return false;
+  }
+  // 2. The text after last char is empty or only contains spaces.
+  if (textAfterLastCharIsEmpty) {
     return false;
   }
 
-  // if all the conditions are met, we should format the text to italic.
-  // 1. delete the previous 'Character',
-  // 2. update the style of the text surrounded by the two 'Character's to [formatStyle]
-  // 3. update the cursor position.
+  // 3. If it is in a double character case, we should skip the single character formatting.
+  // For example, adding * after **a*, it should skip the single character formatting and it will be handled by double character formatting.
+  if ((character == '*' || character == '_' || character == '~') &&
+      (lastCharIndex >= 1) &&
+      (plainText[lastCharIndex - 1] == character)) {
+    return false;
+  }
+
+  // If none of the above exclusive conditions are satisfied, we should format the text to [formatStyle].
+  // 1. Delete the previous 'Character'.
+  // 2. Update the style of the text surrounded by the two 'Character's to [formatStyle].
+  // 3. Update the cursor position.
 
   final deletion = editorState.transaction
     ..deleteText(
       node,
-      headCharIndex,
+      lastCharIndex,
       1,
     );
   editorState.apply(deletion);
@@ -77,7 +84,7 @@ bool handleFormatByWrappingWithSingleCharacter({
 
   // if the text is already formatted, we should remove the format.
   final sliced = delta.slice(
-    headCharIndex + 1,
+    lastCharIndex + 1,
     selection.end.offset,
   );
   final result = sliced.everyAttributes((element) => element[style] == true);
@@ -85,8 +92,8 @@ bool handleFormatByWrappingWithSingleCharacter({
   final format = editorState.transaction
     ..formatText(
       node,
-      headCharIndex,
-      selection.end.offset - headCharIndex - 1,
+      lastCharIndex,
+      selection.end.offset - lastCharIndex - 1,
       {
         style: !result,
       },
