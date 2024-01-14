@@ -81,6 +81,10 @@ class TestableEditor {
             ...TestableFindAndReplaceCommands(context: context)
                 .testableFindAndReplaceCommands,
           ],
+          characterShortcutEvents: [
+            ...standardCharacterShortcutEvents,
+            formatGreaterHyphen,
+          ],
           editorStyle: inMobile
               ? EditorStyle.mobile(
                   defaultTextDirection: defaultTextDirection,
