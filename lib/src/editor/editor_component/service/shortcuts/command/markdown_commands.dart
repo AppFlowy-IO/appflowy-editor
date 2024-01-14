@@ -74,12 +74,16 @@ KeyEventResult _toggleAttribute(
   EditorState editorState,
   String key,
 ) {
-  final selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.ignored;
+  //NOTE: This is a fix for vim  mode. Some keys are conflicting
+  if (editorState.mode == VimModes.insertMode || editorState.vimMode == false) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return KeyEventResult.ignored;
+    }
+
+    editorState.toggleAttribute(key);
+
+    return KeyEventResult.handled;
   }
-
-  editorState.toggleAttribute(key);
-
-  return KeyEventResult.handled;
+  return KeyEventResult.ignored;
 }

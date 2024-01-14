@@ -83,6 +83,10 @@ class CommandShortcutEvent {
       this.command = command;
       matched = true;
     }
+    /*NOTE: This is the main thing to look at for multiple key binds
+      Though the problem is it has to listen out for anything.
+      So defining the keys before hand well might just not work
+      */
 
     if (matched) {
       _keybindings = this

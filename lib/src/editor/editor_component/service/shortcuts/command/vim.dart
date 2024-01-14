@@ -19,16 +19,24 @@ final List<CommandShortcutEvent> vimKeyModes = [
   // vimJumpToLineCommand,
 
   ///Page Movements
-  //BUG: Conflicts with ctrl+b key
-  // vimPageUpCommand,
+  //NOTE: Conflicts with ctrl+b key
+  vimPageUpCommand,
   vimHalfPageDownCommand,
   vimPageDownCommand,
-  //BUG: Conflicts with ctrl+u key
-  // vimHalfPageUpCommand,
+  //BUG: Not working for some reason
+  //vimHalfPageUpCommand,
 
   ///Undo Commands
   //BUG: These commands won't work not sure why but
   //The undoManager doesnt work in normal mode
+  /*
+  There is an issue with transactions.
+  When the editor is in Normal mode, transactions are closed. What ever happens 
+  then
+  well wont work. Problem is undo & redo needs that transaction window open.
+  Unless something is implemented to ignore all other keys unless they match 
+  a VIM key?
+  */
   // vimUndoCommand,
   // vimRedoCommand,
 
@@ -38,7 +46,7 @@ final List<CommandShortcutEvent> vimKeyModes = [
   jumpWordBackwardCommand,
   jumpWordForwardCommand,
   //BUG: Selection doesnt show up to user
-  // vimSelectLineCommand,
+  vimSelectLineCommand,
 
   ///Text operations
   //BUG: Deleting at the end of text will cause the widget tree to panic
@@ -261,14 +269,17 @@ final CommandShortcutEvent vimSelectLineCommand = CommandShortcutEvent(
   command: 'shift+v',
   handler: _vimSelectLineCommandHandler,
 );
-
+/*
+What we probably need is to follow the `select all command`
+Except that we want to get the cursor position or line.
+When we get line/position then select the whole line.
+*/
 CommandShortcutEventHandler _vimSelectLineCommandHandler = (editorState) {
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection == null || editorState.prevSelection != null) {
-      //NOTE: Call editable first before changing mode
-      editorState.selection = editorState.selection;
+      //BUG: Throwing issue on PropertyValueNotifier
       final selection = editorState.selection;
       editorState.selectionService.updateSelection(selection);
       editorState.prevSelection = null;
@@ -422,7 +433,7 @@ CommandShortcutEventHandler _vimHalfPageDownCommandHandler = (editorState) {
   }
   return KeyEventResult.ignored;
 };
-//NOTE: Bug page up event not triggered could be conflicting with other keys
+
 final CommandShortcutEvent vimPageUpCommand = CommandShortcutEvent(
   key: 'scroll one page up in normal mode',
   command: 'ctrl+b',
@@ -565,7 +576,7 @@ CommandShortcutEventHandler _vimMoveCursorToEndHandler = (editorState) {
 };
 
 final CommandShortcutEvent jumpWordBackwardCommand = CommandShortcutEvent(
-  key: 'move the cursor backward to the next wordl in normal mode',
+  key: 'move the cursor backward to the next word in normal mode',
   command: 'b',
   handler: _jumpWordBackwardCommandHandler,
 );
