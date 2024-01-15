@@ -17,8 +17,9 @@ class KeyboardHeightObserver {
           );
     }
     _keyboardHeightPlugin.onKeyboardHeightChanged((height) {
-      currentKeyboardHeight = height;
       notify(height);
+
+      currentKeyboardHeight = height;
     });
   }
 
