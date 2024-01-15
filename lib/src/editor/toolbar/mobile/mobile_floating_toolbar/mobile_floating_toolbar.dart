@@ -122,8 +122,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       _clear();
       final dragMode = editorState.selectionExtraInfo?[selectionDragModeKey];
       if ([
-        MobileSelectionDragMode.leftSelectionHandler,
-        MobileSelectionDragMode.rightSelectionHandler,
+        MobileSelectionDragMode.leftSelectionHandle,
+        MobileSelectionDragMode.rightSelectionHandle,
       ].contains(dragMode)) {
         return;
       }

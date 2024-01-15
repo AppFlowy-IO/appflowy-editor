@@ -23,9 +23,9 @@ enum HandleType {
       case HandleType.none:
         throw UnsupportedError('Unsupported handle type');
       case HandleType.left:
-        return MobileSelectionDragMode.leftSelectionHandler;
+        return MobileSelectionDragMode.leftSelectionHandle;
       case HandleType.right:
-        return MobileSelectionDragMode.rightSelectionHandler;
+        return MobileSelectionDragMode.rightSelectionHandle;
       case HandleType.collapsed:
         return MobileSelectionDragMode.cursor;
     }
@@ -207,19 +207,25 @@ class _IOSDragHandle extends _IDragHandle {
 
     final editorState = context.read<EditorState>();
     final ballWidth = handleBallWidth;
+    double offset = 0.0;
+    if (handleType == HandleType.left) {
+      offset = ballWidth;
+    } else if (handleType == HandleType.right) {
+      offset = -ballWidth;
+    }
 
     child = GestureDetector(
       behavior: HitTestBehavior.opaque,
       dragStartBehavior: DragStartBehavior.down,
       onPanStart: (details) {
         editorState.service.selectionService.onPanStart(
-          details.translate(0, -ballWidth),
+          details.translate(0, offset),
           handleType.dragMode,
         );
       },
       onPanUpdate: (details) {
         editorState.service.selectionService.onPanUpdate(
-          details.translate(0, -ballWidth),
+          details.translate(0, offset),
           handleType.dragMode,
         );
       },

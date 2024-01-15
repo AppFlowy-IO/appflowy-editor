@@ -19,15 +19,15 @@ StreamController<int> appFlowyEditorOnTapSelectionArea =
 
 enum MobileSelectionDragMode {
   none,
-  leftSelectionHandler,
-  rightSelectionHandler,
+  leftSelectionHandle,
+  rightSelectionHandle,
   cursor;
 }
 
 enum MobileSelectionHandlerType {
-  leftHandler,
-  rightHandler,
-  cursorHandler,
+  leftHandle,
+  rightHandle,
+  cursorHandle,
 }
 
 // the value type is MobileSelectionDragMode
@@ -165,6 +165,14 @@ class _MobileSelectionServiceWidgetState
           return const SizedBox.shrink();
         }
 
+        if (selection.isCollapsed &&
+            [
+              MobileSelectionDragMode.leftSelectionHandle,
+              MobileSelectionDragMode.rightSelectionHandle,
+            ].contains(dragMode)) {
+          return const SizedBox.shrink();
+        }
+
         selection = selection.normalized;
 
         final node = editorState.getNodeAtPath(selection.start.path);
@@ -208,9 +216,23 @@ class _MobileSelectionServiceWidgetState
     return ValueListenableBuilder(
       valueListenable: selectionNotifierAfterLayout,
       builder: (context, selection, _) {
-        if (selection == null || selection.isCollapsed) {
+        if (selection == null) {
           return const SizedBox.shrink();
         }
+
+        if (selection.isCollapsed &&
+            [
+              MobileSelectionDragMode.none,
+              MobileSelectionDragMode.cursor,
+            ].contains(dragMode)) {
+          return const SizedBox.shrink();
+        }
+
+        final isCollapsedWhenDraggingHandle = selection.isCollapsed &&
+            [
+              MobileSelectionDragMode.leftSelectionHandle,
+              MobileSelectionDragMode.rightSelectionHandle,
+            ].contains(dragMode);
 
         selection = selection.normalized;
 
@@ -220,10 +242,20 @@ class _MobileSelectionServiceWidgetState
               : selection.end.path,
         );
         final selectable = node?.selectable;
-        final rects = selectable?.getRectsInSelection(
-          selection,
-          shiftWithBaseOffset: true,
-        );
+
+        // get the cursor rect when the selection is collapsed.
+        final rects = isCollapsedWhenDraggingHandle
+            ? [
+                selectable?.getCursorRectInPosition(
+                      selection.start,
+                      shiftWithBaseOffset: true,
+                    ) ??
+                    Rect.zero,
+              ]
+            : selectable?.getRectsInSelection(
+                selection,
+                shiftWithBaseOffset: true,
+              );
 
         if (node == null || rects == null || rects.isEmpty) {
           return const SizedBox.shrink();
@@ -234,7 +266,9 @@ class _MobileSelectionServiceWidgetState
           layerLink: node.layerLink,
           rect: handleType == HandleType.left ? rects.first : rects.last,
           handleType: handleType,
-          handleColor: editorStyle.dragHandleColor,
+          handleColor: isCollapsedWhenDraggingHandle
+              ? Colors.transparent
+              : editorStyle.dragHandleColor,
           handleWidth: editorStyle.mobileDragHandleWidth,
           handleBallWidth: editorStyle.mobileDragHandleBallSize.width,
           enableHapticFeedbackOnAndroid:
@@ -276,6 +310,7 @@ class _MobileSelectionServiceWidgetState
   void clearSelection() {
     currentSelectedNodes = [];
     currentSelection.value = null;
+    _lastPanOffset.value = null;
 
     _clearSelection();
   }
@@ -470,12 +505,12 @@ class _MobileSelectionServiceWidgetState
     Selection? newSelection;
 
     if (end != null) {
-      if (dragMode == MobileSelectionDragMode.leftSelectionHandler) {
+      if (dragMode == MobileSelectionDragMode.leftSelectionHandle) {
         newSelection = Selection(
           start: _panStartSelection!.normalized.end,
           end: end,
         ).normalized;
-      } else if (dragMode == MobileSelectionDragMode.rightSelectionHandler) {
+      } else if (dragMode == MobileSelectionDragMode.rightSelectionHandle) {
         newSelection = Selection(
           start: _panStartSelection!.normalized.start,
           end: end,
