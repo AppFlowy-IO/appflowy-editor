@@ -735,7 +735,21 @@ void main() async {
         "data": {
           "delta": []
         }
-      }
+      },
+      {
+        "type": "numbered_list",
+        "children": [
+          {"type": "numbered_list", "data": {"delta": [{"insert": " Which"}]}},
+          {"type": "numbered_list", "data": {"delta": [{"insert": " Is"}]}},
+          {"type": "numbered_list", "data": {"delta": [{"insert": " Nested"}]}}
+        ],
+        "data": {"delta": [{"insert": " Numbered List"}]}
+      },
+      {
+        "type": "numbered_list",
+        "data": {"delta": [{"insert": " Back to top level"}]}
+      },
+      {"type": "paragraph", "data": {"delta": []}}
     ]
   }
 }
@@ -824,6 +838,12 @@ void main(){
   - Task Three
 - Task Four
 - Task Five
+
+1. Numbered List
+  1. Which
+  2. Is
+  3. Nested
+2. Back to top level
 ''';
       final result = DocumentMarkdownDecoder().convert(markdown);
       final data = jsonDecode(example4);
