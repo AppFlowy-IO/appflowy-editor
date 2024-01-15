@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../infra/testable_editor.dart';
 
 void main() async {
@@ -253,19 +254,19 @@ Future<void> _testListOutdent(WidgetTester tester, String style) async {
   // clear the style
   expect(
     editor.selection,
-    Selection.single(path: [1, 0], startOffset: 0),
+    Selection.single(path: [2], startOffset: 0),
   );
-  expect(editor.nodeAtPath([1, 0])?.type, 'paragraph');
+  expect(editor.nodeAtPath([2])?.type, style);
 
   await editor.pressKey(
     character: '\n',
   );
   expect(
     editor.selection,
-    Selection.single(path: [1, 1], startOffset: 0),
+    Selection.single(path: [2], startOffset: 0),
   );
 
-  expect(editor.nodeAtPath([1, 1])?.type, 'paragraph');
+  expect(editor.nodeAtPath([2])?.type, 'paragraph');
 
   await editor.dispose();
 }
