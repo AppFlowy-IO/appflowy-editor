@@ -5,32 +5,22 @@ final List<ToolbarItem> markdownFormatItems = [
   _FormatToolbarItem(
     id: 'underline',
     name: 'underline',
-    tooltip:
-        '${AppFlowyEditorL10n.current.underline}${shortcutTooltips('⌘ + U', 'CTRL + U', 'CTRL + U')}',
   ),
   _FormatToolbarItem(
     id: 'bold',
     name: 'bold',
-    tooltip:
-        '${AppFlowyEditorL10n.current.bold}${shortcutTooltips('⌘ + B', 'CTRL + B', 'CTRL + B')}',
   ),
   _FormatToolbarItem(
     id: 'italic',
     name: 'italic',
-    tooltip:
-        '${AppFlowyEditorL10n.current.italic}${shortcutTooltips('⌘ + I', 'CTRL + I', 'CTRL + I')}',
   ),
   _FormatToolbarItem(
     id: 'strikethrough',
     name: 'strikethrough',
-    tooltip:
-        '${AppFlowyEditorL10n.current.strikethrough}${shortcutTooltips('⌘ + SHIFT + S', 'CTRL + SHIFT + S', 'CTRL + SHIFT + S')}',
   ),
   _FormatToolbarItem(
     id: 'code',
     name: 'code',
-    tooltip:
-        '${AppFlowyEditorL10n.current.embedCode}${shortcutTooltips('⌘ + E', 'CTRL + E', 'CTRL + E')}',
   ),
 ];
 
@@ -38,7 +28,6 @@ class _FormatToolbarItem extends ToolbarItem {
   _FormatToolbarItem({
     required String id,
     required String name,
-    required String tooltip,
   }) : super(
           id: 'editor.$id',
           group: 2,
@@ -56,7 +45,7 @@ class _FormatToolbarItem extends ToolbarItem {
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: tooltip,
+              tooltip: getTooltipText(id),
               onPressed: () => editorState.toggleAttribute(name),
             );
           },

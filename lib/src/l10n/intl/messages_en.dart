@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hexValue": MessageLookupByLibrary.simpleMessage("Hex value"),
         "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
         "highlightColor":
-            MessageLookupByLibrary.simpleMessage("Highlight color"),
+            MessageLookupByLibrary.simpleMessage("Highlight Color"),
         "image": MessageLookupByLibrary.simpleMessage("Image"),
         "imageLoadFailed":
             MessageLookupByLibrary.simpleMessage("Could not load the image"),
@@ -140,6 +140,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
+        "textAlignCenter": MessageLookupByLibrary.simpleMessage("Align Center"),
+        "textAlignLeft": MessageLookupByLibrary.simpleMessage("Align Left"),
+        "textAlignRight": MessageLookupByLibrary.simpleMessage("Align Right"),
         "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
         "tint2": MessageLookupByLibrary.simpleMessage("Tint 2"),

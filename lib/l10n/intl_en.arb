@@ -108,7 +108,7 @@
   "linkText": "Text",
   "linkTextHint": "Please enter text",
   "linkAddressHint": "Please enter URL",
-  "highlightColor": "Highlight color",
+  "highlightColor": "Highlight Color",
   "clearHighlightColor": "Clear highlight color",
   "customColor": "Custom color",
   "hexValue": "Hex value",
@@ -150,5 +150,8 @@
   "rowDuplicate": "Duplicate",
   "colClear": "Clear Content",
   "rowClear": "Clear Content",
-  "slashPlaceHolder": "Enter a / to insert a block, or start typing"
+  "slashPlaceHolder": "Enter a / to insert a block, or start typing",
+  "textAlignLeft": "Align Left",
+  "textAlignCenter": "Align Center",
+  "textAlignRight": "Align Right"
 }

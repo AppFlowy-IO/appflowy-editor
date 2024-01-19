@@ -761,10 +761,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Highlight color`
+  /// `Highlight Color`
   String get highlightColor {
     return Intl.message(
-      'Highlight color',
+      'Highlight Color',
       name: 'highlightColor',
       desc: '',
       args: [],
@@ -1186,6 +1186,36 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Enter a / to insert a block, or start typing',
       name: 'slashPlaceHolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Left`
+  String get textAlignLeft {
+    return Intl.message(
+      'Align Left',
+      name: 'textAlignLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Center`
+  String get textAlignCenter {
+    return Intl.message(
+      'Align Center',
+      name: 'textAlignCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Right`
+  String get textAlignRight {
+    return Intl.message(
+      'Align Right',
+      name: 'textAlignRight',
       desc: '',
       args: [],
     );
