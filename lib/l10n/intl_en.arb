@@ -153,5 +153,13 @@
   "slashPlaceHolder": "Enter a / to insert a block, or start typing",
   "textAlignLeft": "Align Left",
   "textAlignCenter": "Align Center",
-  "textAlignRight": "Align Right"
+  "textAlignRight": "Align Right",
+  "cmdDontAddNewLineInTableCell": "Don't add new line in table cell",
+  "cmdMoveToLeftCellIfItsAtStartOfCurrentCell": "Move to left cell if its at start of current cell",
+  "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell": "Move to right cell if its at the end of current cell",
+  "cmdMoveToUpCellAtSameOffset": "Move to up cell at same offset",
+  "cmdMoveToDownCellAtSameOffset": "Move to down cell at same offset",
+  "cmdNavigateAroundTheCellsAtSameOffset": "Navigate around the cells at same offset",
+  "cmdNavigateAroundTheCellsAtSameOffsetInReverse": "Navigate around the cells at same offset in reverse",
+  "cmdStopAtTheBeginningOfTheCell": "Stop at the beginning of the cell"
 }

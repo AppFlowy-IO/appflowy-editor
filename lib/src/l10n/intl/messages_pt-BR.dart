@@ -27,6 +27,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "bulletedList":
             MessageLookupByLibrary.simpleMessage("Lista de marcadores"),
         "checkbox": MessageLookupByLibrary.simpleMessage("Caixa de seleção"),
+        "cmdDontAddNewLineInTableCell": MessageLookupByLibrary.simpleMessage(
+            "Não adicionar nova linha na célula"),
+        "cmdMoveToDownCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Mover para a célula abaixo na mesma posição"),
+        "cmdMoveToLeftCellIfItsAtStartOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Mover para a célula à esquerda se estiver no início da célula atual"),
+        "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Mover para a célula à direita se estiver no final da célula atual"),
+        "cmdMoveToUpCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Mover para a célula acima na mesma posição"),
+        "cmdNavigateAroundTheCellsAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Navegar pelas células na mesma posição"),
+        "cmdNavigateAroundTheCellsAtSameOffsetInReverse":
+            MessageLookupByLibrary.simpleMessage(
+                "Navegar pelas células na mesma posição (reverso)"),
+        "cmdStopAtTheBeginningOfTheCell":
+            MessageLookupByLibrary.simpleMessage("Parar no início da célula"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Código incorporado"),
         "heading1": MessageLookupByLibrary.simpleMessage("Título 1"),
         "heading2": MessageLookupByLibrary.simpleMessage("Título 2"),

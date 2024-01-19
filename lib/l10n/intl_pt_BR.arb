@@ -23,5 +23,13 @@
   "textColor": "Cor do texto",
   "textAlignLeft": "Alinhar à esquerda",
   "textAlignCenter": "Alinhar ao centro",
-  "textAlignRight": "Alinhar à direita"
+  "textAlignRight": "Alinhar à direita",
+  "cmdDontAddNewLineInTableCell": "Não adicionar nova linha na célula",
+  "cmdMoveToLeftCellIfItsAtStartOfCurrentCell": "Mover para a célula à esquerda se estiver no início da célula atual",
+  "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell": "Mover para a célula à direita se estiver no final da célula atual",
+  "cmdMoveToUpCellAtSameOffset": "Mover para a célula acima na mesma posição",
+  "cmdMoveToDownCellAtSameOffset": "Mover para a célula abaixo na mesma posição",
+  "cmdNavigateAroundTheCellsAtSameOffset": "Navegar pelas células na mesma posição",
+  "cmdNavigateAroundTheCellsAtSameOffsetInReverse": "Navegar pelas células na mesma posição (reverso)",
+  "cmdStopAtTheBeginningOfTheCell": "Parar no início da célula"
 }

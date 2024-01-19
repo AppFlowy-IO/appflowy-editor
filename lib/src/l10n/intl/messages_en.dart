@@ -55,6 +55,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
         "closeFind": MessageLookupByLibrary.simpleMessage("Close"),
+        "cmdDontAddNewLineInTableCell": MessageLookupByLibrary.simpleMessage(
+            "Don\'t add new line in table cell"),
+        "cmdMoveToDownCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Move to down cell at same offset"),
+        "cmdMoveToLeftCellIfItsAtStartOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to left cell if its at start of current cell"),
+        "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to right cell if its at the end of current cell"),
+        "cmdMoveToUpCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Move to up cell at same offset"),
+        "cmdNavigateAroundTheCellsAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Navigate around the cells at same offset"),
+        "cmdNavigateAroundTheCellsAtSameOffsetInReverse":
+            MessageLookupByLibrary.simpleMessage(
+                "Navigate around the cells at same offset in reverse"),
+        "cmdStopAtTheBeginningOfTheCell": MessageLookupByLibrary.simpleMessage(
+            "Stop at the beginning of the cell"),
         "colAddAfter": MessageLookupByLibrary.simpleMessage("Add after"),
         "colAddBefore": MessageLookupByLibrary.simpleMessage("Add before"),
         "colClear": MessageLookupByLibrary.simpleMessage("Clear Content"),
