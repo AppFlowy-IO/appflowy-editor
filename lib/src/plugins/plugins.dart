@@ -9,3 +9,4 @@ export 'markdown/encoder/delta_markdown_encoder.dart';
 export 'markdown/encoder/document_markdown_encoder.dart';
 export 'markdown/encoder/parser/parser.dart';
 export 'quill_delta/quill_delta_encoder.dart';
+export 'pdf/markdown_pdf.dart';

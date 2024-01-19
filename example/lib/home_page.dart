@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 
@@ -14,10 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:pdf/widgets.dart' as pw;
 
 enum ExportFileType {
   documentJson,
   markdown,
+  pdf,
   html,
   delta,
 }
@@ -30,6 +33,8 @@ extension on ExportFileType {
         return 'json';
       case ExportFileType.markdown:
         return 'md';
+      case ExportFileType.pdf:
+        return 'pdf';
       case ExportFileType.html:
         return 'html';
     }
@@ -204,6 +209,10 @@ class _HomePageState extends State<HomePage> {
             _exportFile(_editorState, ExportFileType.markdown);
           }),
 
+          _buildListTile(context, 'Export to PDF', () {
+            _exportFile(_editorState, ExportFileType.pdf);
+          }),
+
           // Decoder Demo
           _buildSeparator(context, 'Import From X Demo'),
           _buildListTile(context, 'Import From Document JSON', () {
@@ -289,6 +298,8 @@ class _HomePageState extends State<HomePage> {
     ExportFileType fileType,
   ) async {
     var result = '';
+    var pdf;
+    pw.Document docx = pw.Document();
 
     switch (fileType) {
       case ExportFileType.documentJson:
@@ -296,6 +307,10 @@ class _HomePageState extends State<HomePage> {
         break;
       case ExportFileType.markdown:
         result = documentToMarkdown(editorState.document);
+        break;
+      case ExportFileType.pdf:
+        docx = generatePdfFromMarkdown(
+            documentToMarkdown(editorState.document), editorState);
         break;
       case ExportFileType.html:
       case ExportFileType.delta:
@@ -332,6 +347,9 @@ class _HomePageState extends State<HomePage> {
       );
       if (path != null) {
         await File(path).writeAsString(result);
+        if (fileType == ExportFileType.pdf) {
+          await File(path).writeAsBytes(await docx.save());
+        }
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -377,6 +395,8 @@ class _HomePageState extends State<HomePage> {
         final document = quillDeltaEncoder.convert(delta);
         jsonString = jsonEncode(document.toJson());
         break;
+      case ExportFileType.pdf:
+        throw UnimplementedError();
       case ExportFileType.html:
         throw UnimplementedError();
     }

@@ -49,6 +49,7 @@ dependencies:
   keyboard_height_plugin: ^0.0.4
   numerus: ^2.1.2
   device_info_plus: ^9.1.1
+  pdf: ^3.10.7
 
 dev_dependencies:
   flutter_test:
