@@ -129,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkText": MessageLookupByLibrary.simpleMessage("Text"),
         "linkTextHint":
             MessageLookupByLibrary.simpleMessage("Please enter text"),
+        "listItemPlaceholder":
+            MessageLookupByLibrary.simpleMessage("List item"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
         "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
@@ -173,10 +175,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint7": MessageLookupByLibrary.simpleMessage("Tint 7"),
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
+        "toDoPlaceholder": MessageLookupByLibrary.simpleMessage("To-do"),
         "underline": MessageLookupByLibrary.simpleMessage("Underline"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
-        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload Image"),
+        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload"),
         "urlHint": MessageLookupByLibrary.simpleMessage("URL"),
-        "urlImage": MessageLookupByLibrary.simpleMessage("URL Image")
+        "urlImage": MessageLookupByLibrary.simpleMessage("URL")
       };
 }

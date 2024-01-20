@@ -621,6 +621,26 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `List item`
+  String get listItemPlaceholder {
+    return Intl.message(
+      'List item',
+      name: 'listItemPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-do`
+  String get toDoPlaceholder {
+    return Intl.message(
+      'To-do',
+      name: 'toDoPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `URL`
   String get urlHint {
     return Intl.message(
@@ -991,20 +1011,20 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Upload Image`
+  /// `Upload`
   String get uploadImage {
     return Intl.message(
-      'Upload Image',
+      'Upload',
       name: 'uploadImage',
       desc: '',
       args: [],
     );
   }
 
-  /// `URL Image`
+  /// `URL`
   String get urlImage {
     return Intl.message(
-      'URL Image',
+      'URL',
       name: 'urlImage',
       desc: '',
       args: [],
