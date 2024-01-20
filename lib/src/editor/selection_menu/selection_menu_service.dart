@@ -238,7 +238,7 @@ class SelectionMenu extends SelectionMenuService {
 
 final List<SelectionMenuItem> standardSelectionMenuItems = [
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.text,
+    getName: () => AppFlowyEditorL10n.current.text,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'text',
       isSelected: isSelected,
@@ -250,7 +250,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.heading1,
+    getName: () => AppFlowyEditorL10n.current.heading1,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'h1',
       isSelected: isSelected,
@@ -262,7 +262,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.heading2,
+    getName: () => AppFlowyEditorL10n.current.heading2,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'h2',
       isSelected: isSelected,
@@ -274,7 +274,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.heading3,
+    getName: () => AppFlowyEditorL10n.current.heading3,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'h3',
       isSelected: isSelected,
@@ -286,7 +286,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.image,
+    getName: () => AppFlowyEditorL10n.current.image,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'image',
       isSelected: isSelected,
@@ -299,7 +299,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.bulletedList,
+    getName: () => AppFlowyEditorL10n.current.bulletedList,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'bulleted_list',
       isSelected: isSelected,
@@ -311,7 +311,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.numberedList,
+    getName: () => AppFlowyEditorL10n.current.numberedList,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'number',
       isSelected: isSelected,
@@ -323,7 +323,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.checkbox,
+    getName: () => AppFlowyEditorL10n.current.checkbox,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'checkbox',
       isSelected: isSelected,
@@ -335,7 +335,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
-    name: AppFlowyEditorL10n.current.quote,
+    getName: () => AppFlowyEditorL10n.current.quote,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'quote',
       isSelected: isSelected,
