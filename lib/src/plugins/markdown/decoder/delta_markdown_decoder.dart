@@ -7,7 +7,7 @@ import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/und
 import 'package:markdown/markdown.dart' as md;
 
 class DeltaMarkdownDecoder extends Converter<String, Delta>
-    with md.NodeVisitor {
+    implements md.NodeVisitor {
   final _delta = Delta();
   final Attributes _attributes = {};
   final List<md.InlineSyntax> customInlineSyntaxes;
