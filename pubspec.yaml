@@ -33,7 +33,7 @@ dependencies:
   logging: ^1.2.0
   intl_utils: ^2.8.2
   intl: ^0.18.0
-  markdown: ^7.1.0
+  markdown: ^7.2.1
   flutter_localizations:
     sdk: flutter
   tuple: ^2.0.1
