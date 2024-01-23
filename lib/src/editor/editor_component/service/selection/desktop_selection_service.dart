@@ -145,6 +145,7 @@ class _DesktopSelectionServiceWidgetState
       onPanStart: _onPanStart,
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
+      onTapUp: _onTapUp,
       onTapDown: _onTapDown,
       onSecondaryTapDown: _onSecondaryTapDown,
       onDoubleTapDown: _onDoubleTapDown,
@@ -353,6 +354,12 @@ class _DesktopSelectionServiceWidgetState
     bottom = rightBottomOffset.dy - negativeVerticalOffset;
 
     return Rect.fromLTRB(left, top, right, bottom);
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    if (_isCursorPointValid) {
+      reset();
+    }
   }
 
   void _onTapDown(TapDownDetails details) {
