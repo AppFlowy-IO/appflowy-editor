@@ -314,8 +314,9 @@ class _DesktopSelectionServiceWidgetState
   /// eliminates boundaries around the cursor selection, facilitating
   /// drag and drop of text content without obstruction.
   Rect calculateRect(SelectableMixin<StatefulWidget> selectable) {
-    final rects =
-        selectable.getRectsInSelection(currentDragAndDropSelection.value!);
+    final rects = selectable.getRectsInSelection(
+      currentDragAndDropSelection.value!,
+    );
 
     double left = 0.0, top = 0.0, right = 0.0, bottom = 0.0;
     for (final rect in rects) {
@@ -725,9 +726,8 @@ class _DesktopSelectionServiceWidgetState
       );
     }
 
-    // update the cursor position to the
-    // last node or the cursor point of the
-    // edited [toNode] path after
+    // update the cursor position to the last node or
+    // the cursor point of the edited [toNode] path after
     // the drag and drop operation
     updateSelection(newCursorPosition);
   }
