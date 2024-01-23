@@ -65,6 +65,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
     debugLabel: 'cursor_${widget.node.path}',
   );
 
+  // keep the previous drag and drop selection rects
+  // to avoid unnecessary rebuild
   List<Rect>? prevDragAndDropSelectionRects;
   // keep the previous cursor rect to avoid unnecessary rebuild
   Rect? prevCursorRect;
@@ -92,7 +94,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
 
   @override
   Widget build(BuildContext context) {
-    final listenableChild = ValueListenableBuilder(
+    return ValueListenableBuilder(
       key: ValueKey(widget.node.id + widget.supportTypes.toString()),
       valueListenable: widget.listenable,
       builder: ((context, value, child) {
@@ -180,29 +182,19 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
       }),
       child: const SizedBox.shrink(),
     );
-
-    return widget.dragAndDropListenable != null
-        ? ValueListenableBuilder(
-            valueListenable: widget.dragAndDropListenable!,
-            builder: (context, value, child) {
-              return listenableChild;
-            },
-          )
-        : listenableChild;
   }
 
   void _updateSelectionIfNeeded() {
     if (!mounted) {
       return;
     }
+    final selection = widget.listenable.value?.normalized;
+    final path = widget.node.path;
 
     Selection? dragAndDropSelection;
     if (widget.dragAndDropListenable != null) {
       dragAndDropSelection = widget.dragAndDropListenable!.value?.normalized;
     }
-
-    final selection = widget.listenable.value?.normalized;
-    final path = widget.node.path;
 
     if (dragAndDropSelection != null) {
       if (widget.supportTypes.contains(BlockSelectionType.dragAndDrop)) {

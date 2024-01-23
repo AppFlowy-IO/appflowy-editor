@@ -95,7 +95,7 @@ class CursorState extends State<Cursor> {
           width: size.width,
           height: size.height,
           color: color.withOpacity(0.2),
-        ); 
+        );
     }
   }
 }

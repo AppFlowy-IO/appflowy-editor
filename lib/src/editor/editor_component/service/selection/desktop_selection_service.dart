@@ -8,6 +8,8 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+const negativeOffset = 4;
+
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
     super.key,
@@ -52,13 +54,52 @@ class _DesktopSelectionServiceWidgetState
 
   Position? _panStartPosition;
 
+  // stores multiple selectable objects
+  // for supporting multi-line selection.
   final Set<SelectableMixin<StatefulWidget>> _dragAndDropSelectables = {};
+
+  /// stores the calculated rect for each selectable
+  /// object in dragAndDropSelectables.
   final Set<Rect> _dragAndDropSelectionRects = {};
+
+  /// true, if the cursor is inside the selected
+  /// rect on drag and drop operation.
   bool _isCursorPointValid = false;
 
   // cursor position calculated during drag and drop op.
   double cursorX = 0;
   double cursorY = 0;
+
+  List<Rect>? _cachedDragAndDropSelectionRects;
+
+  List<Rect> get dragAndDropSelectionRects {
+    _cachedDragAndDropSelectionRects ??=
+        _dragAndDropSelectionRects.toList(growable: false);
+    return _cachedDragAndDropSelectionRects!;
+  }
+
+  set dragAndDropSelectionRect(Rect rect) {
+    if (_dragAndDropSelectionRects.contains(rect)) return;
+
+    _dragAndDropSelectionRects.add(rect);
+    _cachedDragAndDropSelectionRects = null;
+  }
+
+  List<SelectableMixin<StatefulWidget>>? _cachedDragAndDropSelectables;
+
+  List<SelectableMixin<StatefulWidget>> get dragAndDropSelectables {
+    _cachedDragAndDropSelectables ??=
+        _dragAndDropSelectables.toList(growable: false);
+    return _cachedDragAndDropSelectables!;
+  }
+
+  set dragAndDropSelectable(SelectableMixin<StatefulWidget> selectable) {
+    if (_dragAndDropSelectables.contains(selectable)) return;
+
+    _dragAndDropSelectables.add(selectable);
+    _cachedDragAndDropSelectables = null;
+    _cachedDragAndDropSelectionRects = null;
+  }
 
   late EditorState editorState = Provider.of<EditorState>(
     context,
@@ -241,7 +282,7 @@ class _DesktopSelectionServiceWidgetState
     throw UnimplementedError();
   }
 
-  // resets the presets after drag and drop op.
+  // Resets the presets for drag and drop selection after the operation
   void reset() {
     cursorX = cursorY = 0;
 
@@ -257,6 +298,7 @@ class _DesktopSelectionServiceWidgetState
     updateDragAndDropSelection(null);
   }
 
+  /// returns true, if the cursor is inside the selection rect
   bool isCursorInSelection(double dx, double dy, Rect rect) {
     if (dx > rect.right ||
         dx < rect.left ||
@@ -267,6 +309,10 @@ class _DesktopSelectionServiceWidgetState
     return true;
   }
 
+  /// Calculate the bounding box around a set of rectangles and adjust
+  /// the coordinates by subtracting a negative offset. This adjustment
+  /// eliminates boundaries around the cursor selection, facilitating
+  /// drag and drop of text content without obstruction.
   Rect calculateRect(SelectableMixin<StatefulWidget> selectable) {
     final rects =
         selectable.getRectsInSelection(currentDragAndDropSelection.value!);
@@ -280,46 +326,15 @@ class _DesktopSelectionServiceWidgetState
     }
 
     final leftTopOffset = selectable.localToGlobal(Offset(left, top));
-    final topRightOffset = selectable.localToGlobal(Offset(right, top));
     final rightBottomOffset = selectable.localToGlobal(Offset(right, bottom));
 
-    left = leftTopOffset.dx;
-    top = leftTopOffset.dy;
-    right = topRightOffset.dx;
-    bottom = rightBottomOffset.dy;
+    // Added negative offset to eliminate rect boundaries
+    left = leftTopOffset.dx - negativeOffset;
+    top = leftTopOffset.dy - negativeOffset;
+    right = rightBottomOffset.dx - negativeOffset;
+    bottom = rightBottomOffset.dy - negativeOffset;
 
     return Rect.fromLTRB(left, top, right, bottom);
-  }
-
-  List<Rect>? _cachedDragAndDropSelectionRects;
-
-  List<Rect> get dragAndDropSelectionRects {
-    _cachedDragAndDropSelectionRects ??=
-        _dragAndDropSelectionRects.toList(growable: false);
-    return _cachedDragAndDropSelectionRects!;
-  }
-
-  set dragAndDropSelectionRect(Rect rect) {
-    if (_dragAndDropSelectionRects.contains(rect)) return;
-
-    _dragAndDropSelectionRects.add(rect);
-    _cachedDragAndDropSelectionRects = null;
-  }
-
-  List<SelectableMixin<StatefulWidget>>? _cachedDragAndDropSelectables;
-
-  List<SelectableMixin<StatefulWidget>> get dragAndDropSelectables {
-    _cachedDragAndDropSelectables ??=
-        _dragAndDropSelectables.toList(growable: false);
-    return _cachedDragAndDropSelectables!;
-  }
-
-  set dragAndDropSelectable(SelectableMixin<StatefulWidget> selectable) {
-    if (_dragAndDropSelectables.contains(selectable)) return;
-
-    _dragAndDropSelectables.add(selectable);
-    _cachedDragAndDropSelectables = null;
-    _cachedDragAndDropSelectionRects = null;
   }
 
   void _onTapDown(TapDownDetails details) {
@@ -480,8 +495,8 @@ class _DesktopSelectionServiceWidgetState
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
       final selection = Selection(start: start, end: end);
       dragAndDropSelectable = last;
-      updateSelection(selection);
       updateDragAndDropSelection(selection);
+      updateSelection(selection);
     }
 
     editorState.service.scrollService?.startAutoScroll(
@@ -705,13 +720,15 @@ class _DesktopSelectionServiceWidgetState
       newCursorPosition = Selection.collapsed(
         Position(
           path: toNode.path,
-          offset: len,
+          offset: cursorPosition.startIndex + len,
         ),
       );
     }
 
     // update the cursor position to the
-    // last of the edited [toNode] path after the op.
+    // last node or the cursor point of the
+    // edited [toNode] path after
+    // the drag and drop operation
     updateSelection(newCursorPosition);
   }
 
