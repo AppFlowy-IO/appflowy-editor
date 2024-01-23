@@ -85,6 +85,10 @@ class CursorWidgetState extends State<CursorWidget> {
         return Container(
           color: color,
         );
+      case CursorStyle.dottedVerticalLine:
+        return Container(
+          color: color,
+        );
       case CursorStyle.borderLine:
         return Container(
           decoration: BoxDecoration(

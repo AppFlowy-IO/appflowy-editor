@@ -111,16 +111,36 @@ class _ParagraphBlockComponentWidgetState
 
   bool _showPlaceholder = false;
 
+  CursorStyle _cursorStyle = CursorStyle.verticalLine;
+
+  @override
+  CursorStyle get cursorStyle => _cursorStyle;
+
+  set cursorStyle(CursorStyle cursorStyle) {
+    _cursorStyle = cursorStyle;
+  }
+
+  bool _shouldCursorBlink = true;
+
+  @override
+  bool get shouldCursorBlink => _shouldCursorBlink;
+
+  set shouldCurSorBlink(bool value) {
+    _shouldCursorBlink = value;
+  }
+
   @override
   void initState() {
     super.initState();
     editorState.selectionNotifier.addListener(_onSelectionChange);
+    editorState.cursorStyleNotifier.addListener(_onCursorStlyeChange);
     _onSelectionChange();
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChange);
+    editorState.cursorStyleNotifier.removeListener(_onCursorStlyeChange);
     super.dispose();
   }
 
@@ -138,6 +158,12 @@ class _ParagraphBlockComponentWidgetState
         setState(() => _showPlaceholder = showPlaceholder);
       }
     }
+  }
+
+  void _onCursorStlyeChange() {
+    cursorStyle = editorState.cursorStyle;
+
+    shouldCurSorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
   }
 
   @override
@@ -191,6 +217,7 @@ class _ParagraphBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      dragAndDropListenable: editorState.dragAndDropSelectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,

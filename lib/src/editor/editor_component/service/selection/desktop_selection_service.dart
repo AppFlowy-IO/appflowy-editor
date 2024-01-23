@@ -39,6 +39,7 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
+  ValueNotifier<Selection?> currentDragAndDropSelection = ValueNotifier(null);
 
   @override
   List<Node> get currentSelectedNodes => editorState.getSelectedNodes();
@@ -50,6 +51,14 @@ class _DesktopSelectionServiceWidgetState
   double? _panStartScrollDy;
 
   Position? _panStartPosition;
+
+  final Set<SelectableMixin<StatefulWidget>> _dragAndDropSelectables = {};
+  final Set<Rect> _dragAndDropSelectionRects = {};
+  bool _isCursorPointValid = false;
+
+  // cursor position calculated during drag and drop op.
+  double cursorX = 0;
+  double cursorY = 0;
 
   late EditorState editorState = Provider.of<EditorState>(
     context,
@@ -109,6 +118,22 @@ class _DesktopSelectionServiceWidgetState
       selection,
       reason: SelectionUpdateReason.uiEvent,
     );
+  }
+
+  void updateDragAndDropSelection(Selection? selection) {
+    currentDragAndDropSelection.value = selection;
+    editorState.updateDragAndDropSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
+  }
+
+  void updateMouseCursorStyle(SystemMouseCursor cursorStyle) {
+    editorState.updateMouseCursorStyle(cursorStyle);
+  }
+
+  void updateCursorStyle(CursorStyle cursorStyle) {
+    editorState.updateCursorStyle(cursorStyle);
   }
 
   @override
@@ -216,6 +241,87 @@ class _DesktopSelectionServiceWidgetState
     throw UnimplementedError();
   }
 
+  // resets the presets after drag and drop op.
+  void reset() {
+    cursorX = cursorY = 0;
+
+    _cachedDragAndDropSelectionRects = null;
+    _dragAndDropSelectionRects.clear();
+
+    _cachedDragAndDropSelectables = null;
+    _dragAndDropSelectables.clear();
+
+    clearSelection();
+    updateCursorStyle(CursorStyle.verticalLine);
+    updateMouseCursorStyle(SystemMouseCursors.text);
+    updateDragAndDropSelection(null);
+  }
+
+  bool isCursorInSelection(double dx, double dy, Rect rect) {
+    if (dx > rect.right ||
+        dx < rect.left ||
+        dy < rect.top ||
+        dy > rect.bottom) {
+      return false;
+    }
+    return true;
+  }
+
+  Rect calculateRect(SelectableMixin<StatefulWidget> selectable) {
+    final rects =
+        selectable.getRectsInSelection(currentDragAndDropSelection.value!);
+
+    double left = 0.0, top = 0.0, right = 0.0, bottom = 0.0;
+    for (final rect in rects) {
+      left = math.min(left, rect.left);
+      right = math.max(right, rect.right);
+      top = math.min(top, rect.top);
+      bottom = math.max(bottom, rect.bottom);
+    }
+
+    final leftTopOffset = selectable.localToGlobal(Offset(left, top));
+    final topRightOffset = selectable.localToGlobal(Offset(right, top));
+    final rightBottomOffset = selectable.localToGlobal(Offset(right, bottom));
+
+    left = leftTopOffset.dx;
+    top = leftTopOffset.dy;
+    right = topRightOffset.dx;
+    bottom = rightBottomOffset.dy;
+
+    return Rect.fromLTRB(left, top, right, bottom);
+  }
+
+  List<Rect>? _cachedDragAndDropSelectionRects;
+
+  List<Rect> get dragAndDropSelectionRects {
+    _cachedDragAndDropSelectionRects ??=
+        _dragAndDropSelectionRects.toList(growable: false);
+    return _cachedDragAndDropSelectionRects!;
+  }
+
+  set dragAndDropSelectionRect(Rect rect) {
+    if (_dragAndDropSelectionRects.contains(rect)) return;
+
+    _dragAndDropSelectionRects.add(rect);
+    _cachedDragAndDropSelectionRects = null;
+  }
+
+  List<SelectableMixin<StatefulWidget>>? _cachedDragAndDropSelectables;
+
+  List<SelectableMixin<StatefulWidget>> get dragAndDropSelectables {
+    _cachedDragAndDropSelectables ??=
+        _dragAndDropSelectables.toList(growable: false);
+    return _cachedDragAndDropSelectables!;
+  }
+
+  set dragAndDropSelectable(SelectableMixin<StatefulWidget> selectable) {
+    if (_dragAndDropSelectables.contains(selectable)) return;
+
+    _dragAndDropSelectables.add(selectable);
+    _cachedDragAndDropSelectables = null;
+    _cachedDragAndDropSelectionRects = null;
+  }
+
   void _onTapDown(TapDownDetails details) {
     _clearContextMenu();
 
@@ -223,12 +329,32 @@ class _DesktopSelectionServiceWidgetState
       (element) => element.canTap?.call(details) ?? true,
     );
     if (!canTap) {
+      reset();
       return updateSelection(null);
     }
 
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
+
+    if (currentDragAndDropSelection.value != null) {
+      if (_cachedDragAndDropSelectionRects == null) {
+        for (final selectable in dragAndDropSelectables) {
+          dragAndDropSelectionRect = calculateRect(selectable);
+        }
+      }
+
+      cursorX = offset.dx;
+      cursorY = offset.dy;
+
+      for (final rect in dragAndDropSelectionRects) {
+        if (isCursorInSelection(cursorX, cursorY, rect)) {
+          _isCursorPointValid = true;
+          return;
+        }
+      }
+    }
+
     if (selectable == null) {
       // Clear old start offset
       _panStartOffset = null;
@@ -256,16 +382,23 @@ class _DesktopSelectionServiceWidgetState
     }
 
     updateSelection(selection);
+
+    // need to cancel drag and drop op. selection
+    // on single tap down event.
+    reset();
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
-    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
+    final selectable = node?.selectable;
+    final selection = selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
       return;
     }
+    dragAndDropSelectable = selectable!;
+    updateDragAndDropSelection(selection);
     updateSelection(selection);
   }
 
@@ -281,6 +414,8 @@ class _DesktopSelectionServiceWidgetState
       start: selectable.start(),
       end: selectable.end(),
     );
+    dragAndDropSelectable = selectable;
+    updateDragAndDropSelection(selection);
     updateSelection(selection);
   }
 
@@ -316,8 +451,22 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    final panEndOffset = details.globalPosition;
     final dy = editorState.service.scrollService?.dy;
+
+    if (_isCursorPointValid) {
+      final selection = currentDragAndDropSelection.value;
+      if (selection == null) {
+        return;
+      }
+
+      cursorX = details.globalPosition.dx;
+      cursorY = details.globalPosition.dy;
+
+      panCursor(details.globalPosition, selection);
+      return;
+    }
+
+    final panEndOffset = details.globalPosition;
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
@@ -330,7 +479,9 @@ class _DesktopSelectionServiceWidgetState
       final start = _panStartPosition!;
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
       final selection = Selection(start: start, end: end);
+      dragAndDropSelectable = last;
       updateSelection(selection);
+      updateDragAndDropSelection(selection);
     }
 
     editorState.service.scrollService?.startAutoScroll(
@@ -343,6 +494,19 @@ class _DesktopSelectionServiceWidgetState
     _panStartPosition = null;
 
     editorState.service.scrollService?.stopAutoScroll();
+
+    if (_isCursorPointValid) {
+      for (final rect in dragAndDropSelectionRects) {
+        if (!isCursorInSelection(cursorX, cursorY, rect)) {
+          moveSelection(
+            currentDragAndDropSelection.value,
+            currentSelection.value,
+          );
+        }
+      }
+      reset();
+      _isCursorPointValid = false;
+    }
   }
 
   void _updateSelection() {
@@ -463,6 +627,92 @@ class _DesktopSelectionServiceWidgetState
       }
     }
     return min.clamp(start, end);
+  }
+
+  void panCursor(Offset offset, Selection selection) {
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      reset();
+      return;
+    }
+
+    updateCursorStyle(CursorStyle.dottedVerticalLine);
+    updateMouseCursorStyle(SystemMouseCursors.basic);
+    updateSelection(
+      Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      ),
+    );
+  }
+
+  void moveSelection(Selection? selection, Selection? cursorPosition) {
+    if (selection == null || cursorPosition == null) return;
+
+    final fromNode = editorState.getNodeAtPath(selection.start.path);
+    final toNode = editorState.getNodeAtPath(cursorPosition.start.path);
+    if (fromNode == null || toNode == null) return;
+
+    List<String> textInSelection = editorState.getTextInSelection(selection);
+    int len = 0;
+
+    if (selection.isBackward) {
+      textInSelection = textInSelection.reversed.toList();
+    }
+
+    for (final text in textInSelection) {
+      len += text.length;
+      editorState.insertText(cursorPosition.start.offset, text, node: toNode);
+    }
+
+    Selection newCursorPosition = cursorPosition;
+
+    // Update the offset of the selection if:
+    //
+    // The selection is at the same node, and
+    // The drop cursor position is before the selection.
+    //
+    int end = selection.endIndex;
+    if (selection.isForward) {
+      end = selection.startIndex;
+    }
+    if (fromNode == toNode && cursorPosition.startIndex < end) {
+      final newStartPosition = Position(
+        path: fromNode.path,
+        offset: selection.start.offset + len,
+      );
+      final newEndPosition = Position(
+        path: fromNode.path,
+        offset: selection.end.offset + len,
+      );
+
+      selection = Selection(
+        start: newStartPosition,
+        end: newEndPosition,
+      );
+
+      newCursorPosition = Selection.collapsed(
+        Position(
+          path: toNode.path,
+          offset: len,
+        ),
+      );
+    }
+
+    editorState.deleteSelection(selection);
+
+    if (fromNode != toNode) {
+      newCursorPosition = Selection.collapsed(
+        Position(
+          path: toNode.path,
+          offset: len,
+        ),
+      );
+    }
+
+    // update the cursor position to the
+    // last of the edited [toNode] path after the op.
+    updateSelection(newCursorPosition);
   }
 
   @override

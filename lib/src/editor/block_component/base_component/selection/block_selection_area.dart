@@ -13,6 +13,7 @@ enum BlockSelectionType {
   cursor,
   selection,
   block,
+  dragAndDrop,
 }
 
 /// [BlockSelectionArea] is a widget that renders the selection area or the cursor of a block.
@@ -22,12 +23,14 @@ class BlockSelectionArea extends StatefulWidget {
     required this.node,
     required this.delegate,
     required this.listenable,
+    this.dragAndDropListenable,
     required this.cursorColor,
     required this.selectionColor,
     required this.blockColor,
     this.supportTypes = const [
       BlockSelectionType.cursor,
       BlockSelectionType.selection,
+      BlockSelectionType.dragAndDrop,
     ],
   });
 
@@ -36,6 +39,8 @@ class BlockSelectionArea extends StatefulWidget {
 
   // get the selection from the listenable
   final ValueListenable<Selection?> listenable;
+
+  final ValueListenable<Selection?>? dragAndDropListenable;
 
   // the color of the cursor
   final Color cursorColor;
@@ -60,6 +65,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
     debugLabel: 'cursor_${widget.node.path}',
   );
 
+  List<Rect>? prevDragAndDropSelectionRects;
   // keep the previous cursor rect to avoid unnecessary rebuild
   Rect? prevCursorRect;
   // keep the previous selection rects to avoid unnecessary rebuild
@@ -86,11 +92,29 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    final listenableChild = ValueListenableBuilder(
       key: ValueKey(widget.node.id + widget.supportTypes.toString()),
       valueListenable: widget.listenable,
       builder: ((context, value, child) {
         final sizedBox = child ?? const SizedBox.shrink();
+
+        final dragAndDropSelection =
+            context.read<EditorState>().dragAndDropSelection;
+        if (dragAndDropSelection != null &&
+            widget.dragAndDropListenable != null) {
+          if (!widget.supportTypes.contains(BlockSelectionType.dragAndDrop) ||
+              prevDragAndDropSelectionRects == null ||
+              prevDragAndDropSelectionRects!.isEmpty ||
+              (prevDragAndDropSelectionRects!.length == 1 &&
+                  prevDragAndDropSelectionRects!.first.width == 0)) {
+            return sizedBox;
+          }
+          return SelectionAreaPaint(
+            rects: prevDragAndDropSelectionRects!,
+            selectionColor: widget.selectionColor,
+          );
+        }
+
         final selection = value?.normalized;
 
         if (selection == null) {
@@ -156,6 +180,15 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
       }),
       child: const SizedBox.shrink(),
     );
+
+    return widget.dragAndDropListenable != null
+        ? ValueListenableBuilder(
+            valueListenable: widget.dragAndDropListenable!,
+            builder: (context, value, child) {
+              return listenableChild;
+            },
+          )
+        : listenableChild;
   }
 
   void _updateSelectionIfNeeded() {
@@ -163,11 +196,29 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
       return;
     }
 
+    Selection? dragAndDropSelection;
+    if (widget.dragAndDropListenable != null) {
+      dragAndDropSelection = widget.dragAndDropListenable!.value?.normalized;
+    }
+
     final selection = widget.listenable.value?.normalized;
     final path = widget.node.path;
 
+    if (dragAndDropSelection != null) {
+      if (widget.supportTypes.contains(BlockSelectionType.dragAndDrop)) {
+        final rects = widget.delegate.getRectsInSelection(dragAndDropSelection);
+        if (!_deepEqual(rects, prevSelectionRects)) {
+          setState(() {
+            prevDragAndDropSelectionRects = rects;
+            prevSelectionRects = null;
+            prevCursorRect = null;
+            prevBlockRect = null;
+          });
+        }
+      }
+    }
     // the current path is in the selection
-    if (selection != null && path.inSelection(selection)) {
+    else if (selection != null && path.inSelection(selection)) {
       if (widget.supportTypes.contains(BlockSelectionType.block) &&
           context.read<EditorState>().selectionType == SelectionType.block) {
         if (!path.equals(selection.start.path)) {

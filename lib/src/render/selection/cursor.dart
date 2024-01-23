@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appflowy_editor/src/render/selection/dashed_cursor_painter.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,12 @@ class CursorState extends State<Cursor> {
         return Container(
           color: color,
         );
+      case CursorStyle.dottedVerticalLine:
+        return DashedCursor(
+          color: color,
+          strokeWidth: 2.0,
+          strokeCap: StrokeCap.round,
+        );
       case CursorStyle.borderLine:
         return Container(
           decoration: BoxDecoration(
@@ -88,7 +95,7 @@ class CursorState extends State<Cursor> {
           width: size.width,
           height: size.height,
           color: color.withOpacity(0.2),
-        );
+        ); 
     }
   }
 }

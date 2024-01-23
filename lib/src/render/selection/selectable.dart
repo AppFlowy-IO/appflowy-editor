@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 enum CursorStyle {
   verticalLine,
+  dottedVerticalLine,
   borderLine,
   cover,
 }

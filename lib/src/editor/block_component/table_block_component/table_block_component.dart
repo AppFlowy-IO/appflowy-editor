@@ -165,6 +165,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      dragAndDropListenable: editorState.dragAndDropSelectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,

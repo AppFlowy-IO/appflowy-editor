@@ -112,6 +112,42 @@ class _NumberedListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
+  CursorStyle _cursorStyle = CursorStyle.verticalLine;
+
+  @override
+  CursorStyle get cursorStyle => _cursorStyle;
+
+  set cursorStyle(CursorStyle cursorStyle) {
+    _cursorStyle = cursorStyle;
+  }
+
+  bool _shouldCursorBlink = true;
+
+  @override
+  bool get shouldCursorBlink => _shouldCursorBlink;
+
+  set shouldCurSorBlink(bool value) {
+    _shouldCursorBlink = value;
+  }
+
+  void _onCursorStlyeChange() {
+    cursorStyle = editorState.cursorStyle;
+
+    shouldCurSorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    editorState.cursorStyleNotifier.addListener(_onCursorStlyeChange);
+  }
+
+  @override
+  void dispose() {
+    editorState.cursorStyleNotifier.removeListener(_onCursorStlyeChange);
+    super.dispose();
+  }
+
   @override
   Widget buildComponent(
     BuildContext context, {
@@ -175,6 +211,7 @@ class _NumberedListBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      dragAndDropListenable: editorState.dragAndDropSelectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
