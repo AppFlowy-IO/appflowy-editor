@@ -344,6 +344,11 @@ extension TextTransforms on EditorState {
     if (selection == null || selection.isCollapsed) {
       return res;
     }
+
+    if (selection.isForward) {
+      selection = selection.reversed;
+    }
+
     final nodes = getNodesInSelection(selection);
     for (final node in nodes) {
       final delta = node.delta;

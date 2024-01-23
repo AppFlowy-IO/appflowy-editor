@@ -8,7 +8,8 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-const negativeOffset = 4;
+const int negativeVerticalOffset = 12;
+const int negativeHorizontalOffset = 10;
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -59,10 +60,10 @@ class _DesktopSelectionServiceWidgetState
   final Set<SelectableMixin<StatefulWidget>> _dragAndDropSelectables = {};
 
   /// stores the calculated rect for each selectable
-  /// object in dragAndDropSelectables.
+  /// object in `dragAndDropSelectables`.
   final Set<Rect> _dragAndDropSelectionRects = {};
 
-  /// true, if the cursor is inside the selected
+  /// `true`, if the cursor is inside the selected
   /// rect on drag and drop operation.
   bool _isCursorPointValid = false;
 
@@ -298,19 +299,35 @@ class _DesktopSelectionServiceWidgetState
     updateDragAndDropSelection(null);
   }
 
-  /// returns true, if the cursor is inside the selection rect
-  bool isCursorInSelection(double dx, double dy, Rect rect) {
-    if (dx > rect.right ||
-        dx < rect.left ||
-        dy < rect.top ||
-        dy > rect.bottom) {
+  /// Checks if the cursor position, specified by `dx` and `dy`, is within the
+  /// bounds of the given `rect`.
+  ///
+  /// Optionally, removes applied negative offsets to the boundaries based on the
+  /// `removeNegativeOffset` parameter.
+  ///
+  /// Returns `true` if the cursor is within the selection, and `false` otherwise.
+  bool isCursorInSelection(
+    double dx,
+    double dy,
+    Rect rect, {
+    bool removeNegativeOffset = false,
+  }) {
+    final int horizontalOffset =
+        removeNegativeOffset ? negativeHorizontalOffset : 0;
+    final int verticalOffset =
+        removeNegativeOffset ? negativeVerticalOffset : 0;
+
+    if (dx < (rect.left - horizontalOffset) ||
+        dy < (rect.top - verticalOffset) ||
+        dx > (rect.right + horizontalOffset) ||
+        dy > (rect.bottom + verticalOffset)) {
       return false;
     }
     return true;
   }
 
   /// Calculate the bounding box around a set of rectangles and adjust
-  /// the coordinates by subtracting a negative offset. This adjustment
+  /// the coordinates by subtracting a `negative offset`. This adjustment
   /// eliminates boundaries around the cursor selection, facilitating
   /// drag and drop of text content without obstruction.
   Rect calculateRect(SelectableMixin<StatefulWidget> selectable) {
@@ -330,10 +347,10 @@ class _DesktopSelectionServiceWidgetState
     final rightBottomOffset = selectable.localToGlobal(Offset(right, bottom));
 
     // Added negative offset to eliminate rect boundaries
-    left = leftTopOffset.dx - negativeOffset;
-    top = leftTopOffset.dy - negativeOffset;
-    right = rightBottomOffset.dx - negativeOffset;
-    bottom = rightBottomOffset.dy - negativeOffset;
+    left = leftTopOffset.dx + negativeHorizontalOffset;
+    top = leftTopOffset.dy + negativeVerticalOffset;
+    right = rightBottomOffset.dx - negativeHorizontalOffset;
+    bottom = rightBottomOffset.dy - negativeVerticalOffset;
 
     return Rect.fromLTRB(left, top, right, bottom);
   }
@@ -364,7 +381,12 @@ class _DesktopSelectionServiceWidgetState
       cursorY = offset.dy;
 
       for (final rect in dragAndDropSelectionRects) {
-        if (isCursorInSelection(cursorX, cursorY, rect)) {
+        if (isCursorInSelection(
+          cursorX,
+          cursorY,
+          rect,
+          removeNegativeOffset: true,
+        )) {
           _isCursorPointValid = true;
           return;
         }
@@ -518,6 +540,7 @@ class _DesktopSelectionServiceWidgetState
             currentDragAndDropSelection.value,
             currentSelection.value,
           );
+          break;
         }
       }
       reset();
@@ -669,14 +692,14 @@ class _DesktopSelectionServiceWidgetState
     final toNode = editorState.getNodeAtPath(cursorPosition.start.path);
     if (fromNode == null || toNode == null) return;
 
-    List<String> textInSelection = editorState.getTextInSelection(selection);
+    final textInSelection = editorState.getTextInSelection(selection);
     int len = 0;
 
-    if (selection.isBackward) {
-      textInSelection = textInSelection.reversed.toList();
-    }
-
-    for (final text in textInSelection) {
+    for (int i = textInSelection.length - 1; i >= 0; i--) {
+      String text = textInSelection[i];
+      text += (textInSelection.length > 1 && i < textInSelection.length - 1)
+          ? ' '
+          : '';
       len += text.length;
       editorState.insertText(cursorPosition.start.offset, text, node: toNode);
     }
@@ -706,18 +729,12 @@ class _DesktopSelectionServiceWidgetState
         start: newStartPosition,
         end: newEndPosition,
       );
-
-      newCursorPosition = Selection.collapsed(
-        Position(
-          path: toNode.path,
-          offset: len,
-        ),
-      );
     }
 
     editorState.deleteSelection(selection);
 
-    if (fromNode != toNode) {
+    if (fromNode != toNode ||
+        (fromNode == toNode && cursorPosition.startIndex < end)) {
       newCursorPosition = Selection.collapsed(
         Position(
           path: toNode.path,
