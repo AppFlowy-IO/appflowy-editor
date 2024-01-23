@@ -41,7 +41,6 @@ enum SelectionUpdateReason {
 enum SelectionType {
   inline,
   block,
-  dragAndDrop,
 }
 
 enum TransactionTime {
@@ -271,7 +270,7 @@ class EditorState {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
-      dragAndDropSelectionType = SelectionType.dragAndDrop;
+      dragAndDropSelectionType = SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
