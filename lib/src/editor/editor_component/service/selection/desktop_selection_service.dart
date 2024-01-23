@@ -492,15 +492,10 @@ class _DesktopSelectionServiceWidgetState
     final dy = editorState.service.scrollService?.dy;
 
     if (_isCursorPointValid) {
-      final selection = currentDragAndDropSelection.value;
-      if (selection == null) {
-        return;
-      }
-
       cursorX = details.globalPosition.dx;
       cursorY = details.globalPosition.dy;
 
-      panCursor(details.globalPosition, selection);
+      updateCursorPosition(details.globalPosition);
       return;
     }
 
@@ -668,7 +663,10 @@ class _DesktopSelectionServiceWidgetState
     return min.clamp(start, end);
   }
 
-  void panCursor(Offset offset, Selection selection) {
+  void updateCursorPosition(Offset offset) {
+    final selection = currentDragAndDropSelection.value;
+    if (selection == null) return;
+
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
     if (selectable == null) {

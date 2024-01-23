@@ -126,25 +126,25 @@ class _NumberedListBlockComponentWidgetState
   @override
   bool get shouldCursorBlink => _shouldCursorBlink;
 
-  set shouldCurSorBlink(bool value) {
+  set shouldCursorBlink(bool value) {
     _shouldCursorBlink = value;
   }
 
-  void _onCursorStlyeChange() {
+  void _onCursorStyleChange() {
     cursorStyle = editorState.cursorStyle;
 
-    shouldCurSorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
+    shouldCursorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
   }
 
   @override
   void initState() {
     super.initState();
-    editorState.cursorStyleNotifier.addListener(_onCursorStlyeChange);
+    editorState.cursorStyleNotifier.addListener(_onCursorStyleChange);
   }
 
   @override
   void dispose() {
-    editorState.cursorStyleNotifier.removeListener(_onCursorStlyeChange);
+    editorState.cursorStyleNotifier.removeListener(_onCursorStyleChange);
     super.dispose();
   }
 

@@ -132,14 +132,14 @@ class EditorState {
     mouseCursorStyleNotifier.value = cursorStyle;
   }
 
-  /// The selection notifier of the editor.
+  /// The drag and drop selection notifier of the editor.
   final PropertyValueNotifier<Selection?> dragAndDropSelectionNotifier =
       PropertyValueNotifier<Selection?>(null);
 
-  /// The selection of the editor.
+  /// The drag and drop selection of the editor.
   Selection? get dragAndDropSelection => dragAndDropSelectionNotifier.value;
 
-  /// Sets the selection of the editor.
+  /// Sets the drag and drop selection of the editor.
   set dragAndDropSelection(Selection? value) {
     // clear the toggled style when the selection is changed.
     toggledStyle.clear();

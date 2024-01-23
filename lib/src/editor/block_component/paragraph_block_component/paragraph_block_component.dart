@@ -125,7 +125,7 @@ class _ParagraphBlockComponentWidgetState
   @override
   bool get shouldCursorBlink => _shouldCursorBlink;
 
-  set shouldCurSorBlink(bool value) {
+  set shouldCursorBlink(bool value) {
     _shouldCursorBlink = value;
   }
 
@@ -133,14 +133,14 @@ class _ParagraphBlockComponentWidgetState
   void initState() {
     super.initState();
     editorState.selectionNotifier.addListener(_onSelectionChange);
-    editorState.cursorStyleNotifier.addListener(_onCursorStlyeChange);
+    editorState.cursorStyleNotifier.addListener(_onCursorStyleChange);
     _onSelectionChange();
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChange);
-    editorState.cursorStyleNotifier.removeListener(_onCursorStlyeChange);
+    editorState.cursorStyleNotifier.removeListener(_onCursorStyleChange);
     super.dispose();
   }
 
@@ -160,10 +160,10 @@ class _ParagraphBlockComponentWidgetState
     }
   }
 
-  void _onCursorStlyeChange() {
+  void _onCursorStyleChange() {
     cursorStyle = editorState.cursorStyle;
 
-    shouldCurSorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
+    shouldCursorBlink = cursorStyle != CursorStyle.dottedVerticalLine;
   }
 
   @override

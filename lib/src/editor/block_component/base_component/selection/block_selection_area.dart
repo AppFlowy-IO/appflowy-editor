@@ -40,6 +40,8 @@ class BlockSelectionArea extends StatefulWidget {
   // get the selection from the listenable
   final ValueListenable<Selection?> listenable;
 
+  // obtain the selection from dragAndDropListenable
+  // if it's `null`, construct the cursor for the drag-and-drop pointer
   final ValueListenable<Selection?>? dragAndDropListenable;
 
   // the color of the cursor
