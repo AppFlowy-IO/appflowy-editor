@@ -15,6 +15,7 @@ final List<CommandShortcutEvent> pasteCommands = [
 ///
 final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
   key: 'paste the content',
+  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContent,
   command: 'ctrl+v',
   macOSCommand: 'cmd+v',
   handler: _pasteCommandHandler,
@@ -23,6 +24,7 @@ final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
 final CommandShortcutEvent pasteTextWithoutFormattingCommand =
     CommandShortcutEvent(
   key: 'paste the content as plain text',
+  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
   command: 'ctrl+shift+v',
   macOSCommand: 'cmd+shift+v',
   handler: _pasteTextWithoutFormattingCommandHandler,
