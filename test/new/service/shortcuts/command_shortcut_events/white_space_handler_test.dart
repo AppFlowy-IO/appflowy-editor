@@ -270,6 +270,7 @@ void main() async {
         expect(node.delta!.toPlainText(), 'AppFlowy');
 
         await editor.dispose();
+        await tester.pumpAndSettle();
       });
 
       testWidgets('AppFlowy > nothing changes', (tester) async {

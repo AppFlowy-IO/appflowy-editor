@@ -159,6 +159,7 @@ void main() async {
       );
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('Block selection and then single tap', (tester) async {

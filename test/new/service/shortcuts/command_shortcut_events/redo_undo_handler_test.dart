@@ -60,6 +60,7 @@ Future<void> _testRedoWithoutUndo(WidgetTester tester) async {
   expect(editor.documentRootLen, 3);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
@@ -113,6 +114,7 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   expect(result, true);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
@@ -165,6 +167,7 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   expect(allItalics, true);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
@@ -217,6 +220,7 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   expect(allUnderline, true);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testBackspaceUndoRedo(
@@ -248,6 +252,7 @@ Future<void> _testBackspaceUndoRedo(
   expect(editor.documentRootLen, 2);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _pressUndoCommand(TestableEditor editor) async {

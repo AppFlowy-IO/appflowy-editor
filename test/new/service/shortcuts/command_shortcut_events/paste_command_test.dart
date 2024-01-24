@@ -57,6 +57,7 @@ void main() async {
 
         AppFlowyClipboard.mockSetData(null);
         await editor.dispose();
+        await tester.pumpAndSettle();
       },
     );
 
@@ -118,6 +119,7 @@ Future<void> _testHandleCopyMultiplePaste(
     thirdParagraph,
   );
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testHandleCopyPaste(
@@ -146,6 +148,7 @@ Future<void> _testHandleCopyPaste(
   expect(editor.document.toJson(), plainTextJson);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 const paragraphData = {

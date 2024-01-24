@@ -49,6 +49,7 @@ void main() async {
 
     testWidgets('update selection and execute cut command', (tester) async {
       await _testCutHandle(tester, Document.fromJson(cutData));
+      await tester.pumpAndSettle();
     });
   });
 }
@@ -72,6 +73,7 @@ Future<void> _testCutHandle(
   );
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
@@ -92,6 +94,7 @@ Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
   expect(clipBoardData.text, text);
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 Future<void> _testSameNodeCopyPaste(
@@ -121,6 +124,7 @@ Future<void> _testSameNodeCopyPaste(
   );
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }
 
 // Future<void> _testNestedNodeCopyPaste(

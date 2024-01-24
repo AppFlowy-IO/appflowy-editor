@@ -28,6 +28,7 @@ void main() async {
         ParagraphBlockKeys.type,
       );
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     /*testWidgets('table delete action', (tester) async {
