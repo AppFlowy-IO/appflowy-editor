@@ -54,16 +54,14 @@ final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
 
 final CommandShortcutEvent _tabInTableCell = CommandShortcutEvent(
   key: 'Navigate around the cells at same offset',
-  getDescription: () =>
-      AppFlowyEditorL10n.current.cmdTableNavigateAroundTheCellsAtSameOffset,
+  getDescription: () => AppFlowyEditorL10n.current.cmdTableNavigateCells,
   command: 'tab',
   handler: _tabInTableCellHandler,
 );
 
 final CommandShortcutEvent _shiftTabInTableCell = CommandShortcutEvent(
   key: 'Navigate around the cells at same offset in reverse',
-  getDescription: () => AppFlowyEditorL10n
-      .current.cmdTableNavigateAroundTheCellsAtSameOffsetInReverse,
+  getDescription: () => AppFlowyEditorL10n.current.cmdTableNavigateCellsReverse,
   command: 'shift+tab',
   handler: _shiftTabInTableCellHandler,
 );

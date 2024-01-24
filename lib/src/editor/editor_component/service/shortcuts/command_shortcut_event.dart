@@ -11,7 +11,7 @@ class CommandShortcutEvent {
     required this.key,
     required this.command,
     required this.handler,
-    String Function()? getDescription,
+    required String Function()? getDescription,
     String? windowsCommand,
     String? macOSCommand,
     String? linuxCommand,

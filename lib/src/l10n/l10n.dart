@@ -1732,20 +1732,20 @@ class AppFlowyEditorLocalizations {
   }
 
   /// `Navigate around the cells at same offset`
-  String get cmdTableNavigateAroundTheCellsAtSameOffset {
+  String get cmdTableNavigateCells {
     return Intl.message(
       'Navigate around the cells at same offset',
-      name: 'cmdTableNavigateAroundTheCellsAtSameOffset',
+      name: 'cmdTableNavigateCells',
       desc: '',
       args: [],
     );
   }
 
   /// `Navigate around the cells at same offset in reverse`
-  String get cmdTableNavigateAroundTheCellsAtSameOffsetInReverse {
+  String get cmdTableNavigateCellsReverse {
     return Intl.message(
       'Navigate around the cells at same offset in reverse',
-      name: 'cmdTableNavigateAroundTheCellsAtSameOffsetInReverse',
+      name: 'cmdTableNavigateCellsReverse',
       desc: '',
       args: [],
     );

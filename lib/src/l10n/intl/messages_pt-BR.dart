@@ -153,12 +153,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmdTableMoveToUpCellAtSameOffset":
             MessageLookupByLibrary.simpleMessage(
                 "Mover para a célula acima na mesma posição"),
-        "cmdTableNavigateAroundTheCellsAtSameOffset":
-            MessageLookupByLibrary.simpleMessage(
-                "Navegar pelas células na mesma posição"),
-        "cmdTableNavigateAroundTheCellsAtSameOffsetInReverse":
-            MessageLookupByLibrary.simpleMessage(
-                "Navegar pelas células na mesma posição (reverso)"),
+        "cmdTableNavigateCells": MessageLookupByLibrary.simpleMessage(
+            "Navegar pelas células na mesma posição"),
+        "cmdTableNavigateCellsReverse": MessageLookupByLibrary.simpleMessage(
+            "Navegar pelas células na mesma posição (reverso)"),
         "cmdTableStopAtTheBeginningOfTheCell":
             MessageLookupByLibrary.simpleMessage("Parar no início da célula"),
         "cmdToggleBold":
