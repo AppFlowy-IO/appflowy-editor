@@ -43,6 +43,7 @@ dependencies:
   highlight: ^0.7.0
   http: ^1.1.0
   show_fps: ^1.0.6
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
