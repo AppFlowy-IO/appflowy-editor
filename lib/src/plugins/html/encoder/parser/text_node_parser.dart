@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 

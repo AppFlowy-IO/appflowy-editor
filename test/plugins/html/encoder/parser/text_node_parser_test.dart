@@ -12,7 +12,7 @@ void main() async {
     const HTMLImageNodeParser(),
     const HtmlTableNodeParser(),
   ];
-  group('html_text_node_parser.dart', () {
+  group('text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
 
     test('heading style', () {
@@ -41,6 +41,19 @@ void main() async {
         const HTMLBulletedListNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ul><li>Welcome to AppFlowy</li></ul>',
+      );
+    });
+
+    test('empty line', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': [],
+        },
+      );
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '<br>',
       );
     });
 
