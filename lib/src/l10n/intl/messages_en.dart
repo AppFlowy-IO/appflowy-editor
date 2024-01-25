@@ -55,6 +55,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
         "closeFind": MessageLookupByLibrary.simpleMessage("Close"),
+        "cmdDontAddNewLineInTableCell": MessageLookupByLibrary.simpleMessage(
+            "Don\'t add new line in table cell"),
+        "cmdMoveToDownCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Move to down cell at same offset"),
+        "cmdMoveToLeftCellIfItsAtStartOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to left cell if its at start of current cell"),
+        "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to right cell if its at the end of current cell"),
+        "cmdMoveToUpCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
+            "Move to up cell at same offset"),
+        "cmdNavigateAroundTheCellsAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Navigate around the cells at same offset"),
+        "cmdNavigateAroundTheCellsAtSameOffsetInReverse":
+            MessageLookupByLibrary.simpleMessage(
+                "Navigate around the cells at same offset in reverse"),
+        "cmdStopAtTheBeginningOfTheCell": MessageLookupByLibrary.simpleMessage(
+            "Stop at the beginning of the cell"),
         "colAddAfter": MessageLookupByLibrary.simpleMessage("Add after"),
         "colAddBefore": MessageLookupByLibrary.simpleMessage("Add before"),
         "colClear": MessageLookupByLibrary.simpleMessage("Clear Content"),
@@ -88,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hexValue": MessageLookupByLibrary.simpleMessage("Hex value"),
         "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
         "highlightColor":
-            MessageLookupByLibrary.simpleMessage("Highlight color"),
+            MessageLookupByLibrary.simpleMessage("Highlight Color"),
         "image": MessageLookupByLibrary.simpleMessage("Image"),
         "imageLoadFailed":
             MessageLookupByLibrary.simpleMessage("Could not load the image"),
@@ -109,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkText": MessageLookupByLibrary.simpleMessage("Text"),
         "linkTextHint":
             MessageLookupByLibrary.simpleMessage("Please enter text"),
+        "listItemPlaceholder":
+            MessageLookupByLibrary.simpleMessage("List item"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
         "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
@@ -140,6 +162,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
+        "textAlignCenter": MessageLookupByLibrary.simpleMessage("Align Center"),
+        "textAlignLeft": MessageLookupByLibrary.simpleMessage("Align Left"),
+        "textAlignRight": MessageLookupByLibrary.simpleMessage("Align Right"),
         "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
         "tint2": MessageLookupByLibrary.simpleMessage("Tint 2"),
@@ -150,10 +175,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint7": MessageLookupByLibrary.simpleMessage("Tint 7"),
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
+        "toDoPlaceholder": MessageLookupByLibrary.simpleMessage("To-do"),
         "underline": MessageLookupByLibrary.simpleMessage("Underline"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
-        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload Image"),
+        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload"),
         "urlHint": MessageLookupByLibrary.simpleMessage("URL"),
-        "urlImage": MessageLookupByLibrary.simpleMessage("URL Image")
+        "urlImage": MessageLookupByLibrary.simpleMessage("URL")
       };
 }

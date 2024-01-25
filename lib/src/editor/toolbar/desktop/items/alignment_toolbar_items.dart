@@ -1,22 +1,20 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/tooltip_util.dart';
 
 final List<ToolbarItem> alignmentItems = [
   _AlignmentToolbarItem(
     id: 'align_left',
     name: 'left',
-    tooltip: 'left',
     align: 'left',
   ),
   _AlignmentToolbarItem(
     id: 'align_center',
     name: 'center',
-    tooltip: 'center',
     align: 'center',
   ),
   _AlignmentToolbarItem(
     id: 'align_right',
     name: 'right',
-    tooltip: 'right',
     align: 'right',
   ),
 ];
@@ -25,7 +23,6 @@ class _AlignmentToolbarItem extends ToolbarItem {
   _AlignmentToolbarItem({
     required String id,
     required String name,
-    required String tooltip,
     required String align,
   }) : super(
           id: 'editor.$id',
@@ -43,7 +40,7 @@ class _AlignmentToolbarItem extends ToolbarItem {
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: tooltip,
+              tooltip: getTooltipText(id),
               onPressed: () => editorState.updateNode(
                 selection,
                 (node) => node.copyWith(

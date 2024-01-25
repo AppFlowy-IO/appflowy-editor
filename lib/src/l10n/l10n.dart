@@ -621,6 +621,26 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `List item`
+  String get listItemPlaceholder {
+    return Intl.message(
+      'List item',
+      name: 'listItemPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-do`
+  String get toDoPlaceholder {
+    return Intl.message(
+      'To-do',
+      name: 'toDoPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `URL`
   String get urlHint {
     return Intl.message(
@@ -761,10 +781,10 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Highlight color`
+  /// `Highlight Color`
   String get highlightColor {
     return Intl.message(
-      'Highlight color',
+      'Highlight Color',
       name: 'highlightColor',
       desc: '',
       args: [],
@@ -991,20 +1011,20 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Upload Image`
+  /// `Upload`
   String get uploadImage {
     return Intl.message(
-      'Upload Image',
+      'Upload',
       name: 'uploadImage',
       desc: '',
       args: [],
     );
   }
 
-  /// `URL Image`
+  /// `URL`
   String get urlImage {
     return Intl.message(
-      'URL Image',
+      'URL',
       name: 'urlImage',
       desc: '',
       args: [],
@@ -1186,6 +1206,116 @@ class AppFlowyEditorLocalizations {
     return Intl.message(
       'Enter a / to insert a block, or start typing',
       name: 'slashPlaceHolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Left`
+  String get textAlignLeft {
+    return Intl.message(
+      'Align Left',
+      name: 'textAlignLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Center`
+  String get textAlignCenter {
+    return Intl.message(
+      'Align Center',
+      name: 'textAlignCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Align Right`
+  String get textAlignRight {
+    return Intl.message(
+      'Align Right',
+      name: 'textAlignRight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't add new line in table cell`
+  String get cmdDontAddNewLineInTableCell {
+    return Intl.message(
+      'Don\'t add new line in table cell',
+      name: 'cmdDontAddNewLineInTableCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to left cell if its at start of current cell`
+  String get cmdMoveToLeftCellIfItsAtStartOfCurrentCell {
+    return Intl.message(
+      'Move to left cell if its at start of current cell',
+      name: 'cmdMoveToLeftCellIfItsAtStartOfCurrentCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to right cell if its at the end of current cell`
+  String get cmdMoveToRightCellIfItsAtTheEndOfCurrentCell {
+    return Intl.message(
+      'Move to right cell if its at the end of current cell',
+      name: 'cmdMoveToRightCellIfItsAtTheEndOfCurrentCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to up cell at same offset`
+  String get cmdMoveToUpCellAtSameOffset {
+    return Intl.message(
+      'Move to up cell at same offset',
+      name: 'cmdMoveToUpCellAtSameOffset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to down cell at same offset`
+  String get cmdMoveToDownCellAtSameOffset {
+    return Intl.message(
+      'Move to down cell at same offset',
+      name: 'cmdMoveToDownCellAtSameOffset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate around the cells at same offset`
+  String get cmdNavigateAroundTheCellsAtSameOffset {
+    return Intl.message(
+      'Navigate around the cells at same offset',
+      name: 'cmdNavigateAroundTheCellsAtSameOffset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate around the cells at same offset in reverse`
+  String get cmdNavigateAroundTheCellsAtSameOffsetInReverse {
+    return Intl.message(
+      'Navigate around the cells at same offset in reverse',
+      name: 'cmdNavigateAroundTheCellsAtSameOffsetInReverse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop at the beginning of the cell`
+  String get cmdStopAtTheBeginningOfTheCell {
+    return Intl.message(
+      'Stop at the beginning of the cell',
+      name: 'cmdStopAtTheBeginningOfTheCell',
       desc: '',
       args: [],
     );

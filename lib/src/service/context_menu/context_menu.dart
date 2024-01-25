@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 
 class ContextMenuItem {
   ContextMenuItem({
-    required this.name,
+    required String Function() getName,
     required this.onPressed,
     this.isApplicable,
-  });
+  }) : _getName = getName;
 
-  final String name;
+  final String Function() _getName;
   final void Function(EditorState editorState) onPressed;
   final bool Function(EditorState editorState)? isApplicable;
+
+  String get name => _getName();
 }
 
 class ContextMenu extends StatelessWidget {

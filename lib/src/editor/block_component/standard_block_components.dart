@@ -15,7 +15,7 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   ),
   TodoListBlockKeys.type: TodoListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'To-do',
+      placeholderText: (_) => AppFlowyEditorL10n.current.toDoPlaceholder,
     ),
     toggleChildrenTriggers: [
       LogicalKeyboardKey.shift,
@@ -25,17 +25,17 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   ),
   BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'List',
+      placeholderText: (_) => AppFlowyEditorL10n.current.listItemPlaceholder,
     ),
   ),
   NumberedListBlockKeys.type: NumberedListBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'List',
+      placeholderText: (_) => AppFlowyEditorL10n.current.listItemPlaceholder,
     ),
   ),
   QuoteBlockKeys.type: QuoteBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'Quote',
+      placeholderText: (_) => AppFlowyEditorL10n.current.quote,
     ),
   ),
   HeadingBlockKeys.type: HeadingBlockComponentBuilder(
