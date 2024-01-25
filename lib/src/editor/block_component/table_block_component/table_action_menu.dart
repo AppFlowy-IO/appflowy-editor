@@ -41,23 +41,23 @@ void showActionMenu(
           _menuItem(
               context,
               dir == TableDirection.col
-                  ? AppFlowyEditorL10n.current.colAddAfter
-                  : AppFlowyEditorL10n.current.rowAddAfter,
-              dir == TableDirection.col
-                  ? Icons.last_page
-                  : Icons.vertical_align_bottom, () {
-            TableActions.add(node, position + 1, editorState, dir);
-            dismissOverlay();
-          }),
-          _menuItem(
-              context,
-              dir == TableDirection.col
                   ? AppFlowyEditorL10n.current.colAddBefore
                   : AppFlowyEditorL10n.current.rowAddBefore,
               dir == TableDirection.col
                   ? Icons.first_page
                   : Icons.vertical_align_top, () {
             TableActions.add(node, position, editorState, dir);
+            dismissOverlay();
+          }),
+          _menuItem(
+              context,
+              dir == TableDirection.col
+                  ? AppFlowyEditorL10n.current.colAddAfter
+                  : AppFlowyEditorL10n.current.rowAddAfter,
+              dir == TableDirection.col
+                  ? Icons.last_page
+                  : Icons.vertical_align_bottom, () {
+            TableActions.add(node, position + 1, editorState, dir);
             dismissOverlay();
           }),
           _menuItem(
