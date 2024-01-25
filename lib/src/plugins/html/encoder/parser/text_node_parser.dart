@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -30,7 +32,9 @@ class HTMLTextNodeParser extends HTMLNodeParser {
         encodeParsers: encodeParsers,
       ),
     );
-
+    if (domNodes.isEmpty) {
+      return [dom.Element.tag(HTMLTags.br)];
+    }
     final element =
         wrapChildrenNodesWithTagName(HTMLTags.paragraph, childNodes: domNodes);
     return [element];
