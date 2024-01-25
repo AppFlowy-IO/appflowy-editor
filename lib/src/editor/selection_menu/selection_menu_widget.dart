@@ -13,11 +13,11 @@ typedef SelectionMenuItemHandler = void Function(
 /// Selection Menu Item
 class SelectionMenuItem {
   SelectionMenuItem({
-    required this.name,
+    required String Function() getName,
     required this.icon,
     required this.keywords,
     required SelectionMenuItemHandler handler,
-  }) {
+  }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
       if (deleteSlash) {
         _deleteSlash(editorState);
@@ -29,12 +29,14 @@ class SelectionMenuItem {
     };
   }
 
-  final String name;
+  final String Function() _getName;
   final Widget Function(
     EditorState editorState,
     bool onSelected,
     SelectionMenuStyle style,
   ) icon;
+
+  String get name => _getName();
 
   /// Customizes keywords for item.
   ///
@@ -97,7 +99,7 @@ class SelectionMenuItem {
     )? updateSelection,
   }) {
     return SelectionMenuItem(
-      name: name,
+      getName: () => name,
       icon: (editorState, onSelected, style) => Icon(
         iconData,
         color: onSelected

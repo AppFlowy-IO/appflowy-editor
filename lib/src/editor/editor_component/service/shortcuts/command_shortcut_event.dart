@@ -11,10 +11,11 @@ class CommandShortcutEvent {
     required this.key,
     required this.command,
     required this.handler,
+    getDescription,
     String? windowsCommand,
     String? macOSCommand,
     String? linuxCommand,
-  }) {
+  }) : _getDescription = getDescription {
     updateCommand(
       command: command,
       windowsCommand: windowsCommand,
@@ -46,10 +47,15 @@ class CommandShortcutEvent {
   ///
   String command;
 
+  /// Callback to return the localized description of the command.
+  final String Function()? _getDescription;
+
   final CommandShortcutEventHandler handler;
 
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
+
+  String get description => _getDescription != null ? _getDescription!() : key;
 
   void updateCommand({
     String? command,

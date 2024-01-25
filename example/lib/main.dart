@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         AppFlowyEditorLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en', 'US')],
+      supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       theme: ThemeData.light(useMaterial3: true),
