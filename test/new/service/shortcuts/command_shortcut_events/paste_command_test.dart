@@ -75,6 +75,59 @@ void main() async {
       );
     });
   });
+
+  group('copy_paste_extension.dart', () {
+    testWidgets('Keep current node if current node is empty but not paragraph',
+        (tester) async {
+      final initialNode = quoteNode();
+      final pasteNode = paragraphNode(text: 'hello');
+
+      final nodeType = await _testPasteNode(tester, initialNode, pasteNode);
+      expect(nodeType, initialNode.type);
+    });
+
+    testWidgets('Replace node with pasted node if current is empty paragraph',
+        (tester) async {
+      final initialNode = paragraphNode();
+      final pasteNode = headingNode(level: 2, delta: Delta()..insert('hello'));
+
+      final nodeType = await _testPasteNode(tester, initialNode, pasteNode);
+      expect(nodeType, pasteNode.type);
+    });
+  });
+}
+
+Future<String> _testPasteNode(
+  WidgetTester tester,
+  Node initialNode,
+  Node pasteNode,
+) async {
+  final editor = tester.editor..addNode(initialNode);
+
+  await editor.startTesting();
+  await editor.updateSelection(
+    Selection.collapsed(Position(path: [0])),
+  );
+
+  AppFlowyClipboard.mockSetData(
+    AppFlowyClipboardData(
+      text: pasteNode.delta!.toPlainText(),
+      html: documentToHTML(Document.blank()..insert([0], [pasteNode])),
+    ),
+  );
+
+  pasteCommand.execute(editor.editorState);
+  await tester.pumpAndSettle();
+
+  final node = editor.nodeAtPath([0])!;
+
+  final delta = node.delta!;
+  expect(delta.toPlainText(), pasteNode.delta!.toPlainText());
+
+  AppFlowyClipboard.mockSetData(null);
+  await editor.dispose();
+
+  return node.type;
 }
 
 Future<void> _testHandleCopyMultiplePaste(
