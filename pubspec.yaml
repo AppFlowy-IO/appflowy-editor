@@ -50,6 +50,9 @@ dependencies:
   numerus: ^2.1.2
   device_info_plus: ^9.1.1
   pdf: ^3.10.7
+  http: ^1.2.0
+  printing: ^5.11.1
+  htmltopdfwidgets: ^1.0.2
 
 dev_dependencies:
   flutter_test:

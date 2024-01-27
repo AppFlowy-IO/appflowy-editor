@@ -309,6 +309,7 @@ class _HomePageState extends State<HomePage> {
         result = documentToMarkdown(editorState.document);
         break;
       case ExportFileType.pdf:
+        result = documentToMarkdown(editorState.document);
         docx = generatePdfFromMarkdown(
             documentToMarkdown(editorState.document), editorState);
         break;
@@ -348,7 +349,8 @@ class _HomePageState extends State<HomePage> {
       if (path != null) {
         await File(path).writeAsString(result);
         if (fileType == ExportFileType.pdf) {
-          await File(path).writeAsBytes(await docx.save());
+          final pdf = await mdtopdf(result);
+          await File(path).writeAsBytes(await pdf!.save());
         }
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
