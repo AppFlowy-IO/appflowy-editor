@@ -357,7 +357,7 @@ extension TextTransforms on EditorState {
     return res;
   }
 
-  /// Get the attributes in the given selection.
+  /// Get the attribute value of [key] in the given selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
@@ -394,6 +394,41 @@ extension TextTransforms on EditorState {
       }
       start += length;
     }
+    return null;
+  }
+
+  /// Get the attributes of the first matching delta in the given selection.
+  ///
+  /// If the [Selection] is not passed in, use the current selection.
+  ///
+  Attributes? getDeltaAttributesInSelectionStart([
+    Selection? selection,
+  ]) {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+    if (selection == null) {
+      return null;
+    }
+    final node = getNodeAtPath(selection.start.path);
+    final delta = node?.delta;
+    if (delta == null) {
+      return null;
+    }
+    final ops = delta.whereType<TextInsert>();
+    final startOffset = selection.start.offset;
+    var start = 0;
+
+    for (final op in ops) {
+      if (start >= startOffset) {
+        break;
+      }
+      final length = op.length;
+      if (start + length > startOffset) {
+        return op.attributes;
+      }
+      start += length;
+    }
+
     return null;
   }
 }
