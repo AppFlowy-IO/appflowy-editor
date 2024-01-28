@@ -173,9 +173,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void insertContent(KeyboardInsertedContent content) {
-    assert(contentInsertionConfiguration?.allowedMimeTypes
-            .contains(content.mimeType) ??
-        false);
+    assert(
+      contentInsertionConfiguration?.allowedMimeTypes
+              .contains(content.mimeType) ??
+          false,
+    );
     contentInsertionConfiguration?.onContentInserted.call(content);
   }
 

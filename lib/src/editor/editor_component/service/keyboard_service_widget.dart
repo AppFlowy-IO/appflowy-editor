@@ -239,9 +239,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
           keyboardAppearance: Theme.of(context).brightness,
-          allowedMimeTypes: widget.contentInsertionConfiguration == null
-              ? const <String>[]
-              : widget.contentInsertionConfiguration!.allowedMimeTypes,
+          allowedMimeTypes:
+              widget.contentInsertionConfiguration?.allowedMimeTypes ?? [],
         ),
       );
       // disable shortcuts when the IME active
