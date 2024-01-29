@@ -106,7 +106,7 @@ extension on EditorState {
       return;
     }
 
-    if (await pasteHtmlIfAvailable(plainText)) {
+    if (await maybeConvertToUrl(plainText)) {
       return;
     }
 
@@ -149,7 +149,7 @@ extension on EditorState {
     }
   }
 
-  Future<bool> pasteHtmlIfAvailable(String plainText) async {
+  Future<bool> maybeConvertToUrl(String plainText) async {
     final selection = this.selection;
     if (selection == null ||
         !selection.isSingle ||

@@ -357,7 +357,7 @@ extension TextTransforms on EditorState {
     return res;
   }
 
-  /// Get the attribute value of [key] in the given selection.
+  /// Get the value of attribute [key] in the given selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
@@ -397,7 +397,7 @@ extension TextTransforms on EditorState {
     return null;
   }
 
-  /// Get the attributes of the first matching delta in the given selection.
+  /// Get the attributes of the first delta's operation matching the selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
