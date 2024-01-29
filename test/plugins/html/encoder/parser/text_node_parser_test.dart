@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/html/encoder/parser/divider_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -11,6 +12,7 @@ void main() async {
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
     const HtmlTableNodeParser(),
+    const HTMLDividerNodeParser(),
   ];
   group('text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
@@ -105,6 +107,15 @@ void main() async {
         const HTMLQuoteNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<blockquote>Welcome to AppFlowy</blockquote>',
+      );
+    });
+
+    test('divider', () {
+      final node = dividerNode();
+      expect(
+        const HTMLDividerNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '<hr>',
       );
     });
 

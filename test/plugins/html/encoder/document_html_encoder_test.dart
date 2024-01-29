@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/html/encoder/parser/divider_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -11,6 +12,7 @@ void main() async {
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
     const HtmlTableNodeParser(),
+    const HTMLDividerNodeParser(),
   ];
   group('document_html_encoder_test.dart', () {
     setUpAll(() {
@@ -34,7 +36,7 @@ void main() async {
 }
 
 const example =
-    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li></ul><ul><li>[x] Test-covered</li></ul><ul><li>[ ] more to come!</li></ul><ul><li>First item</li></ul><ul><li>Second item</li></ul><ul><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><br><br>''';
+    '''<h1>AppFlowyEditor</h1><h2>👋 <strong>Welcome to</strong>   <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span></h2><p>AppFlowy Editor is a <strong>highly customizable</strong>   <i>rich-text editor</i></p><p>   <u>Here</u> is an example <del>your</del> you can give a try</p><p>   <span style="font-weight: bold; font-style: italic">Span element</span></p><p>   <u>Span element two</u></p><p>   <span style="font-weight: bold; text-decoration: line-through">Span element three</span></p><p>   <a href="https://appflowy.io">This is an anchor tag!</a></p><h3>Features!</h3><ul><li>[x] Customizable</li></ul><ul><li>[x] Test-covered</li></ul><ul><li>[ ] more to come!</li></ul><ul><li>First item</li></ul><ul><li>Second item</li></ul><ul><li>List element</li></ul><blockquote>This is a quote!</blockquote><p><code> Code block</code></p><p>   <i>Italic one</i></p><p>   <i>Italic two</i></p><p>   <strong>Bold tag</strong></p><p>You can also use <span style="font-weight: bold; font-style: italic">AppFlowy Editor</span> as a component to build your own app. </p><hr><h3>Awesome features</h3><p>If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!</p><br><br>''';
 
 const delta = {
   'document': {
@@ -275,6 +277,7 @@ const delta = {
           ],
         },
       },
+      {'type': 'divider'},
       {
         'type': 'heading',
         'data': {
