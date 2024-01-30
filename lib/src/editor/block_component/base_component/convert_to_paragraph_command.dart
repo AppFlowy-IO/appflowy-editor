@@ -19,6 +19,7 @@ final convertibleBlockTypes = [
 /// convert the current block to paragraph.
 final CommandShortcutEvent convertToParagraphCommand = CommandShortcutEvent(
   key: 'convert to paragraph',
+  getDescription: () => AppFlowyEditorL10n.current.cmdConvertToParagraph,
   command: 'backspace',
   handler: _convertToParagraphCommandHandler,
 );

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent selectAllCommand = CommandShortcutEvent(
   key: 'select all the selectable content',
+  getDescription: () => AppFlowyEditorL10n.current.cmdSelectAll,
   command: 'ctrl+a',
   macOSCommand: 'cmd+a',
   handler: _selectAllCommandHandler,

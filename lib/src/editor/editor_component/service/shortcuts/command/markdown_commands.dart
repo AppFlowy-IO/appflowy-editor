@@ -22,6 +22,7 @@ final List<CommandShortcutEvent> toggleMarkdownCommands = [
 ///
 final CommandShortcutEvent toggleBoldCommand = CommandShortcutEvent(
   key: 'toggle bold',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleBold,
   command: 'ctrl+b',
   macOSCommand: 'cmd+b',
   handler: (editorState) => _toggleAttribute(
@@ -32,6 +33,7 @@ final CommandShortcutEvent toggleBoldCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent toggleItalicCommand = CommandShortcutEvent(
   key: 'toggle italic',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleItalic,
   command: 'ctrl+i',
   macOSCommand: 'cmd+i',
   handler: (editorState) => _toggleAttribute(
@@ -42,6 +44,7 @@ final CommandShortcutEvent toggleItalicCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent toggleUnderlineCommand = CommandShortcutEvent(
   key: 'toggle underline',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleUnderline,
   command: 'ctrl+u',
   macOSCommand: 'cmd+u',
   handler: (editorState) => _toggleAttribute(
@@ -52,6 +55,7 @@ final CommandShortcutEvent toggleUnderlineCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent toggleStrikethroughCommand = CommandShortcutEvent(
   key: 'toggle strikethrough',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleStrikethrough,
   command: 'ctrl+shift+s',
   macOSCommand: 'cmd+shift+s',
   handler: (editorState) => _toggleAttribute(
@@ -62,6 +66,7 @@ final CommandShortcutEvent toggleStrikethroughCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent toggleCodeCommand = CommandShortcutEvent(
   key: 'toggle code',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleCode,
   command: 'ctrl+e',
   macOSCommand: 'cmd+e',
   handler: (editorState) => _toggleAttribute(

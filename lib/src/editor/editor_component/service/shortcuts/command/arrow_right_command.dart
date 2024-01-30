@@ -20,7 +20,8 @@ final List<CommandShortcutEvent> arrowRightKeys = [
 // arrow right key
 // move the cursor backward one character
 final CommandShortcutEvent moveCursorRightCommand = CommandShortcutEvent(
-  key: 'move the cursor backward one character',
+  key: 'move the cursor forward one character',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorRight,
   command: 'arrow right',
   handler: _arrowRightCommandHandler,
 );
@@ -42,6 +43,7 @@ CommandShortcutEventHandler _arrowRightCommandHandler = (editorState) {
 // move the cursor to the end of the block
 final CommandShortcutEvent moveCursorToEndCommand = CommandShortcutEvent(
   key: 'move the cursor to the end of line',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorLineEnd,
   command: 'end',
   macOSCommand: 'cmd+arrow right',
   handler: _moveCursorToEndCommandHandler,
@@ -64,6 +66,7 @@ CommandShortcutEventHandler _moveCursorToEndCommandHandler = (editorState) {
 // move the cursor to the right word
 final CommandShortcutEvent moveCursorToRightWordCommand = CommandShortcutEvent(
   key: 'move the cursor to the right word',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorWordRight,
   command: 'ctrl+arrow right',
   macOSCommand: 'alt+arrow right',
   handler: _moveCursorToRightWordCommandHandler,
@@ -127,6 +130,7 @@ CommandShortcutEventHandler _moveCursorToRightWordCommandHandler =
 final CommandShortcutEvent moveCursorRightWordSelectCommand =
     CommandShortcutEvent(
   key: 'move the cursor to select the right word',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorWordRightSelect,
   command: 'ctrl+shift+arrow right',
   macOSCommand: 'alt+shift+arrow right',
   handler: _moveCursorRightWordSelectCommandHandler,
@@ -161,6 +165,7 @@ CommandShortcutEventHandler _moveCursorRightWordSelectCommandHandler =
 // selects only one character
 final CommandShortcutEvent moveCursorRightSelectCommand = CommandShortcutEvent(
   key: 'move the cursor right select',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorRightSelect,
   command: 'shift+arrow right',
   handler: _moveCursorRightSelectCommandHandler,
 );
@@ -189,6 +194,7 @@ CommandShortcutEventHandler _moveCursorRightSelectCommandHandler =
 // arrow right key + shift + ctrl or cmd
 final CommandShortcutEvent moveCursorEndSelectCommand = CommandShortcutEvent(
   key: 'move cursor to select till end of line',
+  getDescription: () => AppFlowyEditorL10n.current.cmdMoveCursorLineEndSelect,
   command: 'shift+end',
   macOSCommand: 'cmd+shift+arrow right',
   handler: _moveCursorEndSelectCommandHandler,
