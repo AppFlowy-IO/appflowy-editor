@@ -16,6 +16,7 @@ void main() async {
     test('redefine shortcut event command', () {
       final shortcutEvent = CommandShortcutEvent(
         key: 'Sample',
+        getDescription: () => 'Sample',
         command: 'cmd+shift+alt+ctrl+a',
         handler: (editorState) {
           return KeyEventResult.handled;

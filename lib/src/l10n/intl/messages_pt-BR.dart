@@ -58,26 +58,122 @@ class MessageLookup extends MessageLookupByLibrary {
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Limpar cor de destaque"),
         "closeFind": MessageLookupByLibrary.simpleMessage("Fechar"),
-        "cmdDontAddNewLineInTableCell": MessageLookupByLibrary.simpleMessage(
+        "cmdConvertToLink":
+            MessageLookupByLibrary.simpleMessage("Converter para link"),
+        "cmdConvertToParagraph":
+            MessageLookupByLibrary.simpleMessage("converter para parágrafo"),
+        "cmdCopySelection":
+            MessageLookupByLibrary.simpleMessage("Copiar seleção"),
+        "cmdCutSelection":
+            MessageLookupByLibrary.simpleMessage("Cortar seleção"),
+        "cmdDeleteLeft": MessageLookupByLibrary.simpleMessage(
+            "Deletar caractere à esquerda"),
+        "cmdDeleteLineLeft": MessageLookupByLibrary.simpleMessage(
+            "Deletar até o início da linha"),
+        "cmdDeleteRight":
+            MessageLookupByLibrary.simpleMessage("Deletar caractere à direita"),
+        "cmdDeleteWordLeft":
+            MessageLookupByLibrary.simpleMessage("Deletar palavra à esquerda"),
+        "cmdDeleteWordRight":
+            MessageLookupByLibrary.simpleMessage("Deletar palavra à direita"),
+        "cmdExitEditing":
+            MessageLookupByLibrary.simpleMessage("sair do modo de edição"),
+        "cmdIndent": MessageLookupByLibrary.simpleMessage("indentar"),
+        "cmdMoveCursorBottom": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para o final do arquivo"),
+        "cmdMoveCursorBottomSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar tudo até o final do arquivo"),
+        "cmdMoveCursorDown":
+            MessageLookupByLibrary.simpleMessage("mover cursor para baixo"),
+        "cmdMoveCursorDownSelect":
+            MessageLookupByLibrary.simpleMessage("Selecionar para baixo"),
+        "cmdMoveCursorLeft": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para a esquerda"),
+        "cmdMoveCursorLeftSelect":
+            MessageLookupByLibrary.simpleMessage("Selecionar à esquerda"),
+        "cmdMoveCursorLineEnd": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para o final da linha"),
+        "cmdMoveCursorLineEndSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar até o final da linha"),
+        "cmdMoveCursorLineStart": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para o início da linha"),
+        "cmdMoveCursorLineStartSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar até o início da linha"),
+        "cmdMoveCursorRight":
+            MessageLookupByLibrary.simpleMessage("mover cursor para a direita"),
+        "cmdMoveCursorRightSelect":
+            MessageLookupByLibrary.simpleMessage("Selecionar à direita"),
+        "cmdMoveCursorTop":
+            MessageLookupByLibrary.simpleMessage("mover cursor para o topo"),
+        "cmdMoveCursorTopSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar tudo até o início do arquivo"),
+        "cmdMoveCursorUp":
+            MessageLookupByLibrary.simpleMessage("mover cursor para cima"),
+        "cmdMoveCursorUpSelect":
+            MessageLookupByLibrary.simpleMessage("Selecionar para cima"),
+        "cmdMoveCursorWordLeft": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para a palavra à esquerda"),
+        "cmdMoveCursorWordLeftSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar palavra à esquerda"),
+        "cmdMoveCursorWordRight": MessageLookupByLibrary.simpleMessage(
+            "mover cursor para a palavra à direita"),
+        "cmdMoveCursorWordRightSelect": MessageLookupByLibrary.simpleMessage(
+            "Selecionar palavra à direita"),
+        "cmdOpenFind": MessageLookupByLibrary.simpleMessage("Abrir Localizar"),
+        "cmdOpenFindAndReplace": MessageLookupByLibrary.simpleMessage(
+            "Abrir Localizar e Substituir"),
+        "cmdOpenLink": MessageLookupByLibrary.simpleMessage("abrir link"),
+        "cmdOpenLinks": MessageLookupByLibrary.simpleMessage("abrir links"),
+        "cmdOutdent": MessageLookupByLibrary.simpleMessage("desindentar"),
+        "cmdPasteContent":
+            MessageLookupByLibrary.simpleMessage("colar conteúdo"),
+        "cmdPasteContentAsPlainText": MessageLookupByLibrary.simpleMessage(
+            "colar conteúdo como texto simples"),
+        "cmdRedo": MessageLookupByLibrary.simpleMessage("refazer"),
+        "cmdScrollPageDown":
+            MessageLookupByLibrary.simpleMessage("rolar página para baixo"),
+        "cmdScrollPageUp":
+            MessageLookupByLibrary.simpleMessage("rolar página para cima"),
+        "cmdScrollToBottom":
+            MessageLookupByLibrary.simpleMessage("rolar para o fim"),
+        "cmdScrollToTop":
+            MessageLookupByLibrary.simpleMessage("rolar para o topo"),
+        "cmdSelectAll": MessageLookupByLibrary.simpleMessage("selecionar tudo"),
+        "cmdTableLineBreak": MessageLookupByLibrary.simpleMessage(
             "Não adicionar nova linha na célula"),
-        "cmdMoveToDownCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
-            "Mover para a célula abaixo na mesma posição"),
-        "cmdMoveToLeftCellIfItsAtStartOfCurrentCell":
+        "cmdTableMoveToDownCellAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Mover para a célula abaixo na mesma posição"),
+        "cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell":
             MessageLookupByLibrary.simpleMessage(
                 "Mover para a célula à esquerda se estiver no início da célula atual"),
-        "cmdMoveToRightCellIfItsAtTheEndOfCurrentCell":
+        "cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell":
             MessageLookupByLibrary.simpleMessage(
                 "Mover para a célula à direita se estiver no final da célula atual"),
-        "cmdMoveToUpCellAtSameOffset": MessageLookupByLibrary.simpleMessage(
-            "Mover para a célula acima na mesma posição"),
-        "cmdNavigateAroundTheCellsAtSameOffset":
+        "cmdTableMoveToUpCellAtSameOffset":
             MessageLookupByLibrary.simpleMessage(
-                "Navegar pelas células na mesma posição"),
-        "cmdNavigateAroundTheCellsAtSameOffsetInReverse":
-            MessageLookupByLibrary.simpleMessage(
-                "Navegar pelas células na mesma posição (reverso)"),
-        "cmdStopAtTheBeginningOfTheCell":
+                "Mover para a célula acima na mesma posição"),
+        "cmdTableNavigateCells": MessageLookupByLibrary.simpleMessage(
+            "Navegar pelas células na mesma posição"),
+        "cmdTableNavigateCellsReverse": MessageLookupByLibrary.simpleMessage(
+            "Navegar pelas células na mesma posição (reverso)"),
+        "cmdTableStopAtTheBeginningOfTheCell":
             MessageLookupByLibrary.simpleMessage("Parar no início da célula"),
+        "cmdToggleBold":
+            MessageLookupByLibrary.simpleMessage("alternar negrito"),
+        "cmdToggleCode":
+            MessageLookupByLibrary.simpleMessage("alternar código"),
+        "cmdToggleHighlight":
+            MessageLookupByLibrary.simpleMessage("alternar destaque"),
+        "cmdToggleItalic":
+            MessageLookupByLibrary.simpleMessage("alternar itálico"),
+        "cmdToggleStrikethrough":
+            MessageLookupByLibrary.simpleMessage("alternar tachado"),
+        "cmdToggleTodoList":
+            MessageLookupByLibrary.simpleMessage("alternar lista de tarefas"),
+        "cmdToggleUnderline":
+            MessageLookupByLibrary.simpleMessage("alternar sublinhado"),
+        "cmdUndo": MessageLookupByLibrary.simpleMessage("desfazer"),
         "colAddAfter":
             MessageLookupByLibrary.simpleMessage("Inserir à direita"),
         "colAddBefore":

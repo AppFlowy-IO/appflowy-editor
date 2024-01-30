@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent outdentCommand = CommandShortcutEvent(
   key: 'outdent',
+  getDescription: () => AppFlowyEditorL10n.current.cmdOutdent,
   command: 'shift+tab',
   handler: _outdentCommandHandler,
 );

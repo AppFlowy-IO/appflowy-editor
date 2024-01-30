@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 // toggle the todo list
 final CommandShortcutEvent toggleTodoListCommand = CommandShortcutEvent(
   key: 'toggle the todo list',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleTodoList,
   command: 'ctrl+enter',
   macOSCommand: 'cmd+enter',
   handler: _toggleTodoListCommandHandler,

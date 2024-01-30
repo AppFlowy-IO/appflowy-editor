@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 final CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
   key: 'delete the left word',
+  getDescription: () => AppFlowyEditorL10n.current.cmdDeleteWordLeft,
   command: 'ctrl+backspace',
   macOSCommand: 'alt+backspace',
   handler: _deleteLeftWordCommandHandler,
@@ -16,6 +17,7 @@ final CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent deleteRightWordCommand = CommandShortcutEvent(
   key: 'delete the right word',
+  getDescription: () => AppFlowyEditorL10n.current.cmdDeleteWordRight,
   command: 'ctrl+delete',
   macOSCommand: 'alt+delete',
   handler: _deleteRightWordCommandHandler,

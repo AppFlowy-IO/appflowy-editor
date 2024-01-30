@@ -1241,81 +1241,601 @@ class AppFlowyEditorLocalizations {
     );
   }
 
-  /// `Don't add new line in table cell`
-  String get cmdDontAddNewLineInTableCell {
+  /// `Convert to link`
+  String get cmdConvertToLink {
     return Intl.message(
-      'Don\'t add new line in table cell',
-      name: 'cmdDontAddNewLineInTableCell',
+      'Convert to link',
+      name: 'cmdConvertToLink',
       desc: '',
       args: [],
     );
   }
 
-  /// `Move to left cell if its at start of current cell`
-  String get cmdMoveToLeftCellIfItsAtStartOfCurrentCell {
+  /// `convert to paragraph`
+  String get cmdConvertToParagraph {
     return Intl.message(
-      'Move to left cell if its at start of current cell',
-      name: 'cmdMoveToLeftCellIfItsAtStartOfCurrentCell',
+      'convert to paragraph',
+      name: 'cmdConvertToParagraph',
       desc: '',
       args: [],
     );
   }
 
-  /// `Move to right cell if its at the end of current cell`
-  String get cmdMoveToRightCellIfItsAtTheEndOfCurrentCell {
+  /// `Copy selection`
+  String get cmdCopySelection {
     return Intl.message(
-      'Move to right cell if its at the end of current cell',
-      name: 'cmdMoveToRightCellIfItsAtTheEndOfCurrentCell',
+      'Copy selection',
+      name: 'cmdCopySelection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Move to up cell at same offset`
-  String get cmdMoveToUpCellAtSameOffset {
+  /// `Cut selection`
+  String get cmdCutSelection {
     return Intl.message(
-      'Move to up cell at same offset',
-      name: 'cmdMoveToUpCellAtSameOffset',
+      'Cut selection',
+      name: 'cmdCutSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete character to the left`
+  String get cmdDeleteLeft {
+    return Intl.message(
+      'Delete character to the left',
+      name: 'cmdDeleteLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete to beginning of line`
+  String get cmdDeleteLineLeft {
+    return Intl.message(
+      'Delete to beginning of line',
+      name: 'cmdDeleteLineLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete character to the right`
+  String get cmdDeleteRight {
+    return Intl.message(
+      'Delete character to the right',
+      name: 'cmdDeleteRight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `delete word at left`
+  String get cmdDeleteWordLeft {
+    return Intl.message(
+      'delete word at left',
+      name: 'cmdDeleteWordLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `delete word at right`
+  String get cmdDeleteWordRight {
+    return Intl.message(
+      'delete word at right',
+      name: 'cmdDeleteWordRight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `exit editing mode`
+  String get cmdExitEditing {
+    return Intl.message(
+      'exit editing mode',
+      name: 'cmdExitEditing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `indent`
+  String get cmdIndent {
+    return Intl.message(
+      'indent',
+      name: 'cmdIndent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to the bottom`
+  String get cmdMoveCursorBottom {
+    return Intl.message(
+      'move cursor to the bottom',
+      name: 'cmdMoveCursorBottom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select all until end of file`
+  String get cmdMoveCursorBottomSelect {
+    return Intl.message(
+      'Select all until end of file',
+      name: 'cmdMoveCursorBottomSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor down`
+  String get cmdMoveCursorDown {
+    return Intl.message(
+      'move cursor down',
+      name: 'cmdMoveCursorDown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select downward`
+  String get cmdMoveCursorDownSelect {
+    return Intl.message(
+      'Select downward',
+      name: 'cmdMoveCursorDownSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor left`
+  String get cmdMoveCursorLeft {
+    return Intl.message(
+      'move cursor left',
+      name: 'cmdMoveCursorLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select left`
+  String get cmdMoveCursorLeftSelect {
+    return Intl.message(
+      'Select left',
+      name: 'cmdMoveCursorLeftSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to the end of line`
+  String get cmdMoveCursorLineEnd {
+    return Intl.message(
+      'move cursor to the end of line',
+      name: 'cmdMoveCursorLineEnd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select to end of line`
+  String get cmdMoveCursorLineEndSelect {
+    return Intl.message(
+      'Select to end of line',
+      name: 'cmdMoveCursorLineEndSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to start of line`
+  String get cmdMoveCursorLineStart {
+    return Intl.message(
+      'move cursor to start of line',
+      name: 'cmdMoveCursorLineStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select to start of line`
+  String get cmdMoveCursorLineStartSelect {
+    return Intl.message(
+      'Select to start of line',
+      name: 'cmdMoveCursorLineStartSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor right`
+  String get cmdMoveCursorRight {
+    return Intl.message(
+      'move cursor right',
+      name: 'cmdMoveCursorRight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select right`
+  String get cmdMoveCursorRightSelect {
+    return Intl.message(
+      'Select right',
+      name: 'cmdMoveCursorRightSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to the top`
+  String get cmdMoveCursorTop {
+    return Intl.message(
+      'move cursor to the top',
+      name: 'cmdMoveCursorTop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select all until start of file`
+  String get cmdMoveCursorTopSelect {
+    return Intl.message(
+      'Select all until start of file',
+      name: 'cmdMoveCursorTopSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor up`
+  String get cmdMoveCursorUp {
+    return Intl.message(
+      'move cursor up',
+      name: 'cmdMoveCursorUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select upward`
+  String get cmdMoveCursorUpSelect {
+    return Intl.message(
+      'Select upward',
+      name: 'cmdMoveCursorUpSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to word on the left`
+  String get cmdMoveCursorWordLeft {
+    return Intl.message(
+      'move cursor to word on the left',
+      name: 'cmdMoveCursorWordLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select word to the left`
+  String get cmdMoveCursorWordLeftSelect {
+    return Intl.message(
+      'Select word to the left',
+      name: 'cmdMoveCursorWordLeftSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `move cursor to word on the right`
+  String get cmdMoveCursorWordRight {
+    return Intl.message(
+      'move cursor to word on the right',
+      name: 'cmdMoveCursorWordRight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select word to the right`
+  String get cmdMoveCursorWordRightSelect {
+    return Intl.message(
+      'Select word to the right',
+      name: 'cmdMoveCursorWordRightSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Find`
+  String get cmdOpenFind {
+    return Intl.message(
+      'Open Find',
+      name: 'cmdOpenFind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Find and Replace`
+  String get cmdOpenFindAndReplace {
+    return Intl.message(
+      'Open Find and Replace',
+      name: 'cmdOpenFindAndReplace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `open link`
+  String get cmdOpenLink {
+    return Intl.message(
+      'open link',
+      name: 'cmdOpenLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `open links`
+  String get cmdOpenLinks {
+    return Intl.message(
+      'open links',
+      name: 'cmdOpenLinks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `outdent`
+  String get cmdOutdent {
+    return Intl.message(
+      'outdent',
+      name: 'cmdOutdent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `paste content`
+  String get cmdPasteContent {
+    return Intl.message(
+      'paste content',
+      name: 'cmdPasteContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `paste content as plain text`
+  String get cmdPasteContentAsPlainText {
+    return Intl.message(
+      'paste content as plain text',
+      name: 'cmdPasteContentAsPlainText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `redo`
+  String get cmdRedo {
+    return Intl.message(
+      'redo',
+      name: 'cmdRedo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `scroll page down`
+  String get cmdScrollPageDown {
+    return Intl.message(
+      'scroll page down',
+      name: 'cmdScrollPageDown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `scroll page up`
+  String get cmdScrollPageUp {
+    return Intl.message(
+      'scroll page up',
+      name: 'cmdScrollPageUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `scroll to bottom`
+  String get cmdScrollToBottom {
+    return Intl.message(
+      'scroll to bottom',
+      name: 'cmdScrollToBottom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `scroll to top`
+  String get cmdScrollToTop {
+    return Intl.message(
+      'scroll to top',
+      name: 'cmdScrollToTop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `select all`
+  String get cmdSelectAll {
+    return Intl.message(
+      'select all',
+      name: 'cmdSelectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table: add line break`
+  String get cmdTableLineBreak {
+    return Intl.message(
+      'Table: add line break',
+      name: 'cmdTableLineBreak',
       desc: '',
       args: [],
     );
   }
 
   /// `Move to down cell at same offset`
-  String get cmdMoveToDownCellAtSameOffset {
+  String get cmdTableMoveToDownCellAtSameOffset {
     return Intl.message(
       'Move to down cell at same offset',
-      name: 'cmdMoveToDownCellAtSameOffset',
+      name: 'cmdTableMoveToDownCellAtSameOffset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to left cell if its at start of current cell`
+  String get cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell {
+    return Intl.message(
+      'Move to left cell if its at start of current cell',
+      name: 'cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to right cell if its at the end of current cell`
+  String get cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell {
+    return Intl.message(
+      'Move to right cell if its at the end of current cell',
+      name: 'cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to up cell at same offset`
+  String get cmdTableMoveToUpCellAtSameOffset {
+    return Intl.message(
+      'Move to up cell at same offset',
+      name: 'cmdTableMoveToUpCellAtSameOffset',
       desc: '',
       args: [],
     );
   }
 
   /// `Navigate around the cells at same offset`
-  String get cmdNavigateAroundTheCellsAtSameOffset {
+  String get cmdTableNavigateCells {
     return Intl.message(
       'Navigate around the cells at same offset',
-      name: 'cmdNavigateAroundTheCellsAtSameOffset',
+      name: 'cmdTableNavigateCells',
       desc: '',
       args: [],
     );
   }
 
   /// `Navigate around the cells at same offset in reverse`
-  String get cmdNavigateAroundTheCellsAtSameOffsetInReverse {
+  String get cmdTableNavigateCellsReverse {
     return Intl.message(
       'Navigate around the cells at same offset in reverse',
-      name: 'cmdNavigateAroundTheCellsAtSameOffsetInReverse',
+      name: 'cmdTableNavigateCellsReverse',
       desc: '',
       args: [],
     );
   }
 
   /// `Stop at the beginning of the cell`
-  String get cmdStopAtTheBeginningOfTheCell {
+  String get cmdTableStopAtTheBeginningOfTheCell {
     return Intl.message(
       'Stop at the beginning of the cell',
-      name: 'cmdStopAtTheBeginningOfTheCell',
+      name: 'cmdTableStopAtTheBeginningOfTheCell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle bold`
+  String get cmdToggleBold {
+    return Intl.message(
+      'toggle bold',
+      name: 'cmdToggleBold',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle code`
+  String get cmdToggleCode {
+    return Intl.message(
+      'toggle code',
+      name: 'cmdToggleCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle highlight`
+  String get cmdToggleHighlight {
+    return Intl.message(
+      'toggle highlight',
+      name: 'cmdToggleHighlight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle italic`
+  String get cmdToggleItalic {
+    return Intl.message(
+      'toggle italic',
+      name: 'cmdToggleItalic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle strikethrough`
+  String get cmdToggleStrikethrough {
+    return Intl.message(
+      'toggle strikethrough',
+      name: 'cmdToggleStrikethrough',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle the todo list`
+  String get cmdToggleTodoList {
+    return Intl.message(
+      'toggle the todo list',
+      name: 'cmdToggleTodoList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle underline`
+  String get cmdToggleUnderline {
+    return Intl.message(
+      'toggle underline',
+      name: 'cmdToggleUnderline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `undo`
+  String get cmdUndo {
+    return Intl.message(
+      'undo',
+      name: 'cmdUndo',
       desc: '',
       args: [],
     );

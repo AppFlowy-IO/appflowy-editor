@@ -73,7 +73,7 @@ class SelectionMenuItem {
   }
 
   /// Creates a selection menu entry for inserting a [Node].
-  /// [name] and [iconData] define the appearance within the selection menu.
+  /// [getName] and [iconData] define the appearance within the selection menu.
   ///
   /// The insert position is determined by the result of [replace] and
   /// [insertBefore]
@@ -84,7 +84,7 @@ class SelectionMenuItem {
   /// [updateSelection] can be used to update the selection after the node
   /// has been inserted.
   factory SelectionMenuItem.node({
-    required String name,
+    required String Function() getName,
     required IconData iconData,
     required List<String> keywords,
     required Node Function(EditorState editorState, BuildContext context)
@@ -99,7 +99,7 @@ class SelectionMenuItem {
     )? updateSelection,
   }) {
     return SelectionMenuItem(
-      getName: () => name,
+      getName: getName,
       icon: (editorState, onSelected, style) => Icon(
         iconData,
         color: onSelected
