@@ -11,7 +11,7 @@ class CommandShortcutEvent {
     required this.key,
     required this.command,
     required this.handler,
-    getDescription,
+    required String Function()? getDescription,
     String? windowsCommand,
     String? macOSCommand,
     String? linuxCommand,
@@ -55,7 +55,8 @@ class CommandShortcutEvent {
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
 
-  String get description => _getDescription != null ? _getDescription!() : key;
+  String? get description =>
+      _getDescription != null ? _getDescription!() : null;
 
   void updateCommand({
     String? command,
@@ -109,11 +110,13 @@ class CommandShortcutEvent {
 
   CommandShortcutEvent copyWith({
     String? key,
+    String Function()? getDescription,
     String? command,
     CommandShortcutEventHandler? handler,
   }) {
     return CommandShortcutEvent(
       key: key ?? this.key,
+      getDescription: getDescription ?? _getDescription,
       command: command ?? this.command,
       handler: handler ?? this.handler,
     );

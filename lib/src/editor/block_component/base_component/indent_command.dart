@@ -16,6 +16,7 @@ final indentableBlockTypes = {
 ///
 final CommandShortcutEvent indentCommand = CommandShortcutEvent(
   key: 'indent',
+  getDescription: () => AppFlowyEditorL10n.current.cmdIndent,
   command: 'tab',
   handler: _indentCommandHandler,
 );

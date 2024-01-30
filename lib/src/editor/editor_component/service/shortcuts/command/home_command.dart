@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent homeCommand = CommandShortcutEvent(
   key: 'scroll to the top of the document',
+  getDescription: () => AppFlowyEditorL10n.current.cmdScrollToTop,
   command: 'ctrl+home',
   macOSCommand: 'home',
   handler: _homeCommandHandler,
