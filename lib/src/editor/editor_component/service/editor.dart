@@ -23,6 +23,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CharacterShortcutEvent>? characterShortcutEvents,
     List<CommandShortcutEvent>? commandShortcutEvents,
     List<List<ContextMenuItem>>? contextMenuItems,
+    this.contentInsertionConfiguration,
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
@@ -157,6 +158,9 @@ class AppFlowyEditor extends StatefulWidget {
   /// only works on iOS or Android.
   final bool showMagnifier;
 
+  /// {@macro flutter.widgets.editableText.contentInsertionConfiguration}
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -260,6 +264,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         characterShortcutEvents: widget.characterShortcutEvents,
         commandShortcutEvents: widget.commandShortcutEvents,
         focusNode: widget.focusNode,
+        contentInsertionConfiguration: widget.contentInsertionConfiguration,
         child: child,
       ),
     );

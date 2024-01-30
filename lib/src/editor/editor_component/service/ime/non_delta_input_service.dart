@@ -13,6 +13,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     required super.onReplace,
     required super.onNonTextUpdate,
     required super.onPerformAction,
+    super.contentInsertionConfiguration,
     super.onFloatingCursor,
   });
 
@@ -171,7 +172,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void insertContent(KeyboardInsertedContent content) {}
+  void insertContent(KeyboardInsertedContent content) {
+    assert(
+      contentInsertionConfiguration?.allowedMimeTypes
+              .contains(content.mimeType) ??
+          false,
+    );
+    contentInsertionConfiguration?.onContentInserted.call(content);
+  }
 
   void _updateComposing(TextEditingDelta delta) {
     if (delta is! TextEditingDeltaNonTextUpdate) {
