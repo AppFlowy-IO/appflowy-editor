@@ -1,3 +1,21 @@
+## 2.3.1
+* feat: backslash to ignore shortcut event by @hyj1204 in [#635](https://github.com/AppFlowy-IO/appflowy-editor/pull/635)
+* feat: support formatting greater hyphen to single arrow by @Jayaprakash-dev in [#665](https://github.com/AppFlowy-IO/appflowy-editor/pull/665)
+* feat: parse nested numbered list by @pithuene in [#674](https://github.com/AppFlowy-IO/appflowy-editor/pull/674)
+* feat: optimize Enter operation by @q200892907 in [#673](https://github.com/AppFlowy-IO/appflowy-editor/pull/673)
+* feat: add contentInsertionConfiguration to editor and text input service by @stevenosse in [#691](https://github.com/AppFlowy-IO/appflowy-editor/pull/691)
+* fix: the menu dismissed after selecting block style by @LucasXu0 in [#670](https://github.com/AppFlowy-IO/appflowy-editor/pull/670)
+* fix: solve the problem that Chinese IME cannot continue deleting after deleting input content by @q200892907 in [#672](https://github.com/AppFlowy-IO/appflowy-editor/pull/672)
+* fix: the magnifier doesn't disappear when the selection is collapsed by @LucasXu0 in [#675](https://github.com/AppFlowy-IO/appflowy-editor/pull/675)
+* fix: headingBlockComponentBuilder doesn't use placeholderTextStyle by @LucasXu0 in [#677](https://github.com/AppFlowy-IO/appflowy-editor/pull/677)
+* fix: unable to use slide gesture to close keyboard by @LucasXu0 in [#676](https://github.com/AppFlowy-IO/appflowy-editor/pull/676)
+* fix: upgrade markdown to 7.2.1 by @Xazin in [#686](https://github.com/AppFlowy-IO/appflowy-editor/pull/686)
+* fix: windows chinese ime issue by @q200892907 in [#682](https://github.com/AppFlowy-IO/appflowy-editor/pull/682)
+* fix: add support for breakline and divider by @penkzhou in [#690](https://github.com/AppFlowy-IO/appflowy-editor/pull/690)
+* chore: localize more items by @jpenna in [#680](https://github.com/AppFlowy-IO/appflowy-editor/pull/680)
+* chore: fix pasting keeps current node by @jpenna in [#689](https://github.com/AppFlowy-IO/appflowy-editor/pull/689)
+* chore: translate commands by @jpenna in [#687](https://github.com/AppFlowy-IO/appflowy-editor/pull/687)
+
 ## 2.3.0
 * feat: support customizing cursor width by @LucasXu0 in [#654](https://github.com/AppFlowy-IO/appflowy-editor/pull/654)
 * feat: support updating cursor position via spacebar by @LucasXu0 in [#655](https://github.com/AppFlowy-IO/appflowy-editor/pull/655)
