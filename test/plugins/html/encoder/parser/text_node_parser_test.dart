@@ -88,12 +88,12 @@ void main() async {
       expect(
         const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(checkedNode, encodeParsers: parser),
-        '<div>Welcome to AppFlowy<input type="checkbox" checked="true"></div>',
+        '<div><input type="checkbox" checked="">Welcome to AppFlowy</div>',
       );
       expect(
         const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(uncheckedNode, encodeParsers: parser),
-        '<div>Welcome to AppFlowy<input type="checkbox" checked="false"></div>',
+        '<div><input type="checkbox">Welcome to AppFlowy</div>',
       );
     });
 

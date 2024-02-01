@@ -26,10 +26,12 @@ class HTMLTodoListNodeParser extends HTMLNodeParser {
   }) {
     final delta = node.delta ?? Delta();
     final domNodes = deltaHTMLEncoder.convert(delta);
+
     final elementNode = dom.Element.html('<input type="checkbox" />');
-    elementNode.attributes['checked'] =
-        node.attributes[TodoListBlockKeys.checked].toString();
-    domNodes.add(elementNode);
+    if (node.attributes[TodoListBlockKeys.checked] as bool? ?? false) {
+      elementNode.attributes['checked'] = '';
+    }
+    domNodes.insert(0, elementNode);
     domNodes.addAll(
       processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
