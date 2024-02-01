@@ -10,7 +10,12 @@ import 'package:pdf/pdf.dart' as pdf;
 import 'package:markdown/markdown.dart' as md;
 
 class PdfHTMLEncoder extends Converter<String, pw.Document> {
-  PdfHTMLEncoder();
+  final pw.Font? font;
+  final List<pw.Font> fontFallback;
+  PdfHTMLEncoder({
+    this.font,
+    required this.fontFallback,
+  });
 
   @override
   pw.Document convert(String input) {
@@ -55,7 +60,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
           final attributes = _parserFormattingElementAttributes(domNode);
           //delta.insert(domNode.text, attributes: attributes);
 //TODO: add attribues
-          nodes.add(pw.Paragraph(text: domNode.text, style: attributes.first));
+          nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (delta.isNotEmpty) {
             //TODO: add styles later attributes
@@ -103,11 +108,17 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
     final localName = element.localName;
     switch (localName) {
       case HTMLTags.h1:
-        return _parseHeadingElement(element, level: 1);
+        return [_parseHeadingElement(element, level: 1)];
       case HTMLTags.h2:
-        return _parseHeadingElement(element, level: 2);
+        return [_parseHeadingElement(element, level: 2)];
       case HTMLTags.h3:
-        return _parseHeadingElement(element, level: 3);
+        return [_parseHeadingElement(element, level: 3)];
+      case HTMLTags.h4:
+        return [_parseHeadingElement(element, level: 4)];
+      case HTMLTags.h5:
+        return [_parseHeadingElement(element, level: 5)];
+      case HTMLTags.h6:
+        return [_parseHeadingElement(element, level: 6)];
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
@@ -124,7 +135,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
           ),
         ];
       case HTMLTags.paragraph:
-        return _parseParagraphElement(element);
+        return [_parseParagraphElement(element)];
 
       /*
       case HTMLTags.blockQuote:
@@ -133,7 +144,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
         return [_parseImageElement(element)];
             */
       default:
-        return _parseParagraphElement(element);
+        return [_parseParagraphElement(element)];
     }
   }
 
@@ -268,82 +279,105 @@ TODO: Uncomment this
     return nodes;
   }
 
-//TODO: Change it to TextStyle
-  List<pw.TextStyle> _parserFormattingElementAttributes(
+  (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
     dom.Element element,
   ) {
     final localName = element.localName;
+    pw.TextAlign? textAlign;
+    pw.TextStyle attributes =
+        pw.TextStyle(fontFallback: fontFallback, font: font);
+    final List<pw.TextDecoration> decoration = [];
 
-    List<pw.TextStyle> attributes = [];
     switch (localName) {
       case HTMLTags.bold || HTMLTags.strong:
-        attributes = [pw.TextStyle(fontWeight: pw.FontWeight.bold)];
+        attributes = attributes.copyWith(fontWeight: pw.FontWeight.bold);
         break;
       case HTMLTags.italic || HTMLTags.em:
-        attributes = [pw.TextStyle(fontStyle: pw.FontStyle.italic)];
+        attributes = attributes.copyWith(fontStyle: pw.FontStyle.italic);
         break;
-        /*
       case HTMLTags.underline:
-        attributes = [pw.TextStyle(fontStyle: pw.FontStyle.underline)];
-                */
+        decoration.add(pw.TextDecoration.underline);
         break;
-        /*
+      /*
       case HTMLTags.del:
         attributes = {AppFlowyRichTextKeys.strikethrough: true};
-                */
         break;
-        /*
-      case HTMLTags.code:
-        attributes = {AppFlowyRichTextKeys.code: true};
+
                 */
-        /*
+      /*
       case HTMLTags.span || HTMLTags.mark:
         final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
               element.attributes,
             ) ??
             {};
         attributes.addAll(deltaAttributes);
-                */
         break;
+
+                */
       case HTMLTags.anchor:
         final href = element.attributes['href'];
         if (href != null) {
-          attributes = [];
+          decoration.add(pw.TextDecoration.underline);
+          attributes = attributes.copyWith(color: pdf.PdfColors.blue);
         }
         break;
 
-      case HTMLTags.strikethrough:
-        attributes = [];
+      case HTMLTags.code:
+        attributes = attributes.copyWith(
+          background: const pw.BoxDecoration(color: pdf.PdfColors.grey),
+        );
         break;
       default:
         break;
     }
     for (final child in element.children) {
-      attributes.addAll(_parserFormattingElementAttributes(child));
+      final formattedAttrs = _parserFormattingElementAttributes(child);
+      attributes = attributes.merge(formattedAttrs.$2);
+      if (formattedAttrs.$2.decoration != null) {
+        decoration.add(formattedAttrs.$2.decoration!);
+        textAlign = formattedAttrs.$1;
+      }
     }
-    return attributes;
+    return (
+      textAlign,
+      attributes.copyWith(decoration: pw.TextDecoration.combine(decoration))
+    );
   }
 
-  Iterable<pw.Widget> _parseHeadingElement(
+  pw.Widget _parseHeadingElement(
     dom.Element element, {
     required int level,
   }) {
-    //final (delta, specialNodes) = _parseDeltaElement(element);
-    final d = _parseDeltaElement(element);
-    return d;
-/*
-    return [
-      pw.Header(text: element.text, level: level)
-        */
-/*
-      headingNode(
-        level: level,
-        delta: delta,
+    pw.TextAlign? textAlign;
+    final textSpan = <pw.TextSpan>[];
+    final children = element.nodes.toList();
+    for (final child in children) {
+      if (child is dom.Element) {
+        final attributes = _parserFormattingElementAttributes(child);
+        textAlign = attributes.$1;
+        textSpan.add(pw.TextSpan(text: child.text, style: attributes.$2));
+      } else {
+        textSpan.add(
+          pw.TextSpan(
+            text: child.text,
+            style: pw.TextStyle(font: font, fontFallback: fontFallback),
+          ),
+        );
+      }
+    }
+    return pw.Header(
+      level: level,
+      child: pw.RichText(
+        textAlign: textAlign,
+        text: pw.TextSpan(
+          children: textSpan,
+          style: pw.TextStyle(
+            fontSize: level.getHeadingSize,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),
       ),
-      ...specialNodes,
-
-    ];
-            */
+    );
   }
 /*
   Node _parseBlockQuoteElement(dom.Element element) {
@@ -399,11 +433,15 @@ TODO: Uncomment this
       return pw.Row(
         children: [
           pw.Checkbox(
-              width: 10,
-              height: 10,
-              name: element.text.substring(3, 6),
-              value: condition),
-          pw.Text(strippedString_2),
+            width: 10,
+            height: 10,
+            name: element.text.substring(3, 6),
+            value: condition,
+          ),
+          pw.Text(
+            strippedString_2,
+            style: pw.TextStyle(font: font, fontFallback: fontFallback),
+          ),
         ],
       );
     } else {
@@ -437,14 +475,13 @@ TODO: Uncomment this
     );
   }
 
-  Iterable<pw.Widget> _parseDeltaElement(
+  pw.Widget _parseDeltaElement(
     dom.Element element, {
     String? type,
   }) {
-    final delta = Delta();
+    final delta = <pw.TextSpan>[];
     final nodes = <pw.Widget>[];
     final children = element.nodes.toList();
-    int idx = 0;
 
     for (final child in children) {
       if (child is dom.Element) {
@@ -463,16 +500,17 @@ TODO: Uncomment this
             );
           } else {
             final attributes = _parserFormattingElementAttributes(child);
+            //TODO: Handle line breaks
             /*
             delta.insert(
               child.text.replaceAll(RegExp(r'\n+$'), ''),
               attributes: attributes,
             );
             */
-            nodes.add(
-              pw.Text(
-                child.text.replaceAll(RegExp(r'\n+$'), ''),
-                style: attributes.first,
+            delta.add(
+              pw.TextSpan(
+                text: child.text.replaceAll(RegExp(r'\n+$'), ''),
+                style: attributes.$2,
               ),
             );
           }
@@ -480,9 +518,18 @@ TODO: Uncomment this
       } else {
         nodes.add(pw.Text(child.text?.replaceAll(RegExp(r'\n+$'), '') ?? ''));
       }
-      idx++;
     }
-    return nodes;
+    return pw.Wrap(
+      children: [
+        pw.SizedBox(
+          width: double.infinity,
+          child: pw.RichText(
+            text: pw.TextSpan(children: delta),
+          ),
+        ),
+        ...nodes,
+      ],
+    );
   }
 
   Attributes? _getDeltaAttributesFromHTMLAttributes(
@@ -573,5 +620,26 @@ TODO: Uncomment this
       result[tuples[0].trim()] = tuples[1].trim();
     }
     return result;
+  }
+}
+
+extension HeaderSize on int {
+  double get getHeadingSize {
+    switch (this) {
+      case 1:
+        return 32;
+      case 2:
+        return 28;
+      case 3:
+        return 20;
+      case 4:
+        return 17;
+      case 5:
+        return 14;
+      case 6:
+        return 10;
+      default:
+        return 32;
+    }
   }
 }
