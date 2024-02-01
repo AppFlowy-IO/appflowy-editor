@@ -12,13 +12,13 @@ Future<void> onNonTextUpdate(
   final selection = editorState.selection;
 
   if (PlatformExtension.isWindows) {
-    if (selection != null) {
-      editorState.updateSelectionWithReason(
-        Selection.collapsed(
-          Position(
-            path: selection.start.path,
-            offset: nonTextUpdate.selection.start,
-          ),
+    if (selection != null &&
+        nonTextUpdate.composing == TextRange.empty &&
+        nonTextUpdate.selection.isCollapsed) {
+      editorState.selection = Selection.collapsed(
+        Position(
+          path: selection.start.path,
+          offset: nonTextUpdate.selection.start,
         ),
       );
     }
@@ -31,6 +31,9 @@ Future<void> onNonTextUpdate(
             offset: nonTextUpdate.selection.start,
           ),
         ),
+        extraInfo: {
+          selectionExtraInfoDoNotAttachTextService: true,
+        },
       );
     }
   } else if (PlatformExtension.isMacOS) {
