@@ -52,10 +52,6 @@ dependencies:
   pdf: ^3.10.7
   http: ^1.2.0
   printing: ^5.11.1
-  htmltopdfwidgets:
-   git:
-     url: https://github.com/rileyhawk1417/htmltopdfwidgets.git
-     ref: 2e79366
 
 dev_dependencies:
   flutter_test:
