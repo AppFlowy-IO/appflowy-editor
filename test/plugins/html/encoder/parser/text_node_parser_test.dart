@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/html/encoder/parser/divider_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -11,8 +12,9 @@ void main() async {
     const HTMLHeadingNodeParser(),
     const HTMLImageNodeParser(),
     const HtmlTableNodeParser(),
+    const HTMLDividerNodeParser(),
   ];
-  group('html_text_node_parser.dart', () {
+  group('text_node_parser.dart', () {
     const text = 'Welcome to AppFlowy';
 
     test('heading style', () {
@@ -41,6 +43,19 @@ void main() async {
         const HTMLBulletedListNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<ul><li>Welcome to AppFlowy</li></ul>',
+      );
+    });
+
+    test('empty line', () {
+      final node = paragraphNode(
+        attributes: {
+          'delta': [],
+        },
+      );
+      expect(
+        const HTMLTextNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '<br>',
       );
     });
 
@@ -73,12 +88,12 @@ void main() async {
       expect(
         const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(checkedNode, encodeParsers: parser),
-        '<div>Welcome to AppFlowy<input type="checkbox" checked="true"></div>',
+        '<div><input type="checkbox" checked="">Welcome to AppFlowy</div>',
       );
       expect(
         const HTMLTodoListNodeParser()
             .transformNodeToHTMLString(uncheckedNode, encodeParsers: parser),
-        '<div>Welcome to AppFlowy<input type="checkbox" checked="false"></div>',
+        '<div><input type="checkbox">Welcome to AppFlowy</div>',
       );
     });
 
@@ -92,6 +107,15 @@ void main() async {
         const HTMLQuoteNodeParser()
             .transformNodeToHTMLString(node, encodeParsers: parser),
         '<blockquote>Welcome to AppFlowy</blockquote>',
+      );
+    });
+
+    test('divider', () {
+      final node = dividerNode();
+      expect(
+        const HTMLDividerNodeParser()
+            .transformNodeToHTMLString(node, encodeParsers: parser),
+        '<hr>',
       );
     });
 
