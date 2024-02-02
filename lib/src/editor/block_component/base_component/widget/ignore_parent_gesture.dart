@@ -55,7 +55,9 @@ class _IgnoreEditorSelectionGestureState
         // touch to clear
         if (renderObject != null && renderObject is RenderBox) {
           if (renderObject.paintBounds.contains(event.localPosition)) {
-            editorState.selection = null;
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              editorState.updateSelectionWithReason(null);
+            });
           }
         }
       },
