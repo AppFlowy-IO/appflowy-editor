@@ -14,8 +14,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:pdf/widgets.dart' as pw;
+import 'package:markdown/markdown.dart' as md;
 
 enum ExportFileType {
   documentJson,
@@ -35,8 +37,6 @@ extension on ExportFileType {
         return 'md';
       case ExportFileType.pdf:
         return 'pdf';
-      case ExportFileType.html:
-        return 'html';
     }
   }
 }
@@ -298,8 +298,6 @@ class _HomePageState extends State<HomePage> {
     ExportFileType fileType,
   ) async {
     var result = '';
-    var pdf;
-    pw.Document docx = pw.Document();
 
     switch (fileType) {
       case ExportFileType.documentJson:
@@ -309,11 +307,9 @@ class _HomePageState extends State<HomePage> {
         result = documentToMarkdown(editorState.document);
         break;
       case ExportFileType.pdf:
-        result = documentToMarkdown(editorState.document);
-        docx = generatePdfFromMarkdown(
-            documentToMarkdown(editorState.document), editorState);
+        final doc = documentToMarkdown(editorState.document);
+        result = md.markdownToHtml(doc);
         break;
-      case ExportFileType.html:
       case ExportFileType.delta:
         throw UnimplementedError();
     }
@@ -349,9 +345,16 @@ class _HomePageState extends State<HomePage> {
       if (path != null) {
         await File(path).writeAsString(result);
         if (fileType == ExportFileType.pdf) {
-          final pdf = await mdtopdf(result);
-          await File(path).writeAsBytes(await pdf!.save());
+          final pdf = await PdfHTMLEncoder(
+            fontFallback: [
+              await PdfGoogleFonts.notoColorEmoji(),
+              await PdfGoogleFonts.notoColorEmojiRegular(),
+            ],
+          ).convert(result);
+
+          await File(path).writeAsBytes(await pdf.save());
         }
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
