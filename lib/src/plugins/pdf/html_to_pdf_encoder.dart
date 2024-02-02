@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
@@ -7,9 +6,9 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdf;
-import 'package:markdown/markdown.dart' as md;
 
-class PdfHTMLEncoder extends Converter<String, pw.Document> {
+/// This class handles conversion from html to pdf
+class PdfHTMLEncoder {
   final pw.Font? font;
   final List<pw.Font> fontFallback;
   PdfHTMLEncoder({
@@ -17,8 +16,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
     required this.fontFallback,
   });
 
-  @override
-  pw.Document convert(String input) {
+  Future<pw.Document> convert(String input) async {
     final document = parse(input);
     final body = document.body;
     if (body == null) {
@@ -32,14 +30,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
       );
       return blank;
     }
-    final nodes = _parseElement(body.nodes);
-    /*
-    return Document.blank(withInitialText: false)
-      ..insert(
-        [0],
-        nodes,
-      );
-        */
+    final nodes = await _parseElement(body.nodes);
     final newPdf = pw.Document();
     newPdf.addPage(
       pw.MultiPage(build: (pw.Context context) => nodes.toList()),
@@ -47,64 +38,90 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
     return newPdf;
   }
 
-  Iterable<pw.Widget> _parseElement(
+  Future<List<pw.Widget>> _parseElement(
     Iterable<dom.Node> domNodes, {
     String? type,
-  }) {
-    final delta = Delta();
-    final List<pw.Widget> nodes = [];
+    pw.TextAlign? textAlign,
+  }) async {
+    final textSpan = <pw.TextSpan>[];
+    final nodes = <pw.Widget>[];
     for (final domNode in domNodes) {
       if (domNode is dom.Element) {
         final localName = domNode.localName;
-        if (HTMLTags.formattingElements.contains(localName)) {
+        if (localName == HTMLTags.br) {
+          textSpan.add(const pw.TextSpan(text: '\n'));
+        } else if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
           //delta.insert(domNode.text, attributes: attributes);
 //TODO: add attribues
           nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
         } else if (HTMLTags.specialElements.contains(localName)) {
-          if (delta.isNotEmpty) {
+          if (textSpan.isNotEmpty) {
             //TODO: add styles later attributes
-            nodes.add(pw.Paragraph(text: domNode.text));
+            final newTextSpanList = List<pw.TextSpan>.from(textSpan);
+            nodes.add(
+              (pw.SizedBox(
+                width: double.infinity,
+                child: pw.RichText(
+                  textAlign: textAlign,
+                  text: pw.TextSpan(children: newTextSpanList),
+                ),
+              )),
+            );
+            textAlign = null;
+            textSpan.clear();
           }
           nodes.addAll(
-            _parseSpecialElements(
+            await _parseSpecialElements(
               domNode,
               type: type ?? ParagraphBlockKeys.type,
             ),
           );
-          /*
-          nodes.addAll(
-            _parseSpecialElements(
-              domNode,
-              type: type ?? ParagraphBlockKeys.type,
-            ),
-          );
-          */
         }
       } else if (domNode is dom.Text) {
-        // skip the empty text node
-        if (domNode.text.trim().isEmpty) {
-          continue;
+        if (domNode.text.trim().isNotEmpty && textSpan.isNotEmpty) {
+          final newTextSpanList = List<pw.TextSpan>.from(textSpan);
+          nodes.add(
+            (pw.SizedBox(
+              width: double.infinity,
+              child: pw.RichText(
+                textAlign: textAlign,
+                text: pw.TextSpan(children: newTextSpanList),
+              ),
+            )),
+          );
+          textAlign = null;
+          textSpan.clear();
         }
-        //delta.insert(domNode.text);
-
-        nodes.add(pw.Paragraph(text: domNode.text));
+        nodes.add(
+          pw.Text(
+            domNode.text,
+            style: pw.TextStyle(font: font, fontFallback: fontFallback),
+          ),
+        );
       } else {
         assert(false, 'Unknown node type: $domNode');
       }
     }
-    /*
-    if (delta.isNotEmpty) {
-      nodes.add(pw.Paragraph(text: domNode.text));
+    if (textSpan.isNotEmpty) {
+      final newTextSpanList = List<pw.TextSpan>.from(textSpan);
+      nodes.add(
+        (pw.SizedBox(
+          width: double.infinity,
+          child: pw.RichText(
+            textAlign: textAlign,
+            text: pw.TextSpan(children: newTextSpanList),
+          ),
+        )),
+      );
     }
-        */
     return nodes;
   }
 
-  Iterable<pw.Widget> _parseSpecialElements(
+  Future<Iterable<pw.Widget>> _parseSpecialElements(
     dom.Element element, {
     required String type,
-  }) {
+  }) async {
     final localName = element.localName;
     switch (localName) {
       case HTMLTags.h1:
@@ -135,7 +152,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
           ),
         ];
       case HTMLTags.paragraph:
-        return [_parseParagraphElement(element)];
+        return [await _parseParagraphElement(element)];
 
       /*
       case HTMLTags.blockQuote:
@@ -144,7 +161,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
         return [_parseImageElement(element)];
             */
       default:
-        return [_parseParagraphElement(element)];
+        return [await _parseParagraphElement(element)];
     }
   }
 
@@ -258,18 +275,7 @@ class PdfHTMLEncoder extends Converter<String, pw.Document> {
       if (delta.isNotEmpty) {
         nodes.add(paragraphNode(delta: delta));
       }
-      /*
-TODO: Uncomment this
-      nodes.addAll(
-        _parseSpecialElements(
-          element,
-          type: ParagraphBlockKeys.type,
-        ),
-      );
-*/
     } else if (element is dom.Text) {
-      // skip the empty text node
-
       delta.insert(element.text);
     }
 
@@ -380,6 +386,7 @@ TODO: Uncomment this
     );
   }
 /*
+//TODO: Support callout & Qoute block
   Node _parseBlockQuoteElement(dom.Element element) {
     final (delta, nodes) = _parseDeltaElement(element);
     return quoteNode(
@@ -416,16 +423,16 @@ TODO: Uncomment this
         .toList();
   }
 
+//TODO: Handle nested lists
   pw.Widget _parseListElement(
     dom.Element element, {
     required String type,
   }) {
-    print(type);
+    //TODO: Handle Numbered Lists
     if (type == TodoListBlockKeys.type) {
-      //Handle Numbered Lists
-      final strippedString = element.text.indexOf(']') + 1;
-      final strippedString_2 =
-          element.text.substring(strippedString, element.text.length);
+      final bracketRightIndex = element.text.indexOf(']') + 1;
+      final strippedString =
+          element.text.substring(bracketRightIndex, element.text.length);
       bool condition = false;
       if (element.text.contains('[x]')) {
         condition = true;
@@ -439,7 +446,7 @@ TODO: Uncomment this
             value: condition,
           ),
           pw.Text(
-            strippedString_2,
+            strippedString,
             style: pw.TextStyle(font: font, fontFallback: fontFallback),
           ),
         ],
@@ -447,20 +454,11 @@ TODO: Uncomment this
     } else {
       return pw.Bullet(text: element.text);
     }
-    //final (delta, node) = _parseDeltaElement(element, type: type);
-    /*
-    return Node(
-      type: type,
-      children: node,
-      attributes: {ParagraphBlockKeys.delta: delta.toJson()},
-    );
-        */
   }
 
-  Iterable<pw.Paragraph> _parseParagraphElement(dom.Element element) {
-    //final (delta, specialNodes) = _parseDeltaElement(element);
-    return [pw.Paragraph(text: element.text)];
-    //return [paragraphNode(delta: delta), ...specialNodes];
+  Future<pw.Widget> _parseParagraphElement(dom.Element element) {
+    final textSpan = _parseDeltaElement(element);
+    return textSpan;
   }
 
   //TODO: Support image...
@@ -475,48 +473,56 @@ TODO: Uncomment this
     );
   }
 
-  pw.Widget _parseDeltaElement(
+  Future<pw.Widget> _parseDeltaElement(
     dom.Element element, {
     String? type,
-  }) {
-    final delta = <pw.TextSpan>[];
-    final nodes = <pw.Widget>[];
+  }) async {
+    final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
+    final subNodes = <pw.Widget>[];
+    pw.TextAlign? textAlign;
 
     for (final child in children) {
       if (child is dom.Element) {
         if (child.children.isNotEmpty &&
             HTMLTags.formattingElements.contains(child.localName) == false) {
+          //NOTES:
           //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
-
           //nodes.addAll(_parseElement(child.children, type: type));
+          subNodes.addAll(await _parseElement(child.children));
         } else {
           if (HTMLTags.specialElements.contains(child.localName)) {
-            nodes.addAll(
-              _parseSpecialElements(
+            subNodes.addAll(
+              await _parseSpecialElements(
                 child,
                 type: ParagraphBlockKeys.type,
               ),
             );
           } else {
-            final attributes = _parserFormattingElementAttributes(child);
-            //TODO: Handle line breaks
-            /*
-            delta.insert(
-              child.text.replaceAll(RegExp(r'\n+$'), ''),
-              attributes: attributes,
-            );
-            */
-            delta.add(
-              pw.TextSpan(
-                text: child.text.replaceAll(RegExp(r'\n+$'), ''),
-                style: attributes.$2,
-              ),
-            );
+            if (child.localName == HTMLTags.br) {
+              textSpan.add(
+                const pw.TextSpan(text: '\n'),
+              );
+            } else {
+              final attributes = _parserFormattingElementAttributes(child);
+              textAlign = attributes.$1;
+              textSpan.add(
+                pw.TextSpan(
+                  text: child.text.replaceAll(RegExp(r'\n+$'), ''),
+                  style: attributes.$2,
+                ),
+              );
+            }
           }
         }
       } else {
-        nodes.add(pw.Text(child.text?.replaceAll(RegExp(r'\n+$'), '') ?? ''));
+        //TODO: Add HTML attributes
+        textSpan.add(
+          pw.TextSpan(
+            text: child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '',
+            style: pw.TextStyle(font: font, fontFallback: fontFallback),
+          ),
+        );
       }
     }
     return pw.Wrap(
@@ -524,10 +530,10 @@ TODO: Uncomment this
         pw.SizedBox(
           width: double.infinity,
           child: pw.RichText(
-            text: pw.TextSpan(children: delta),
+            text: pw.TextSpan(children: textSpan),
           ),
         ),
-        ...nodes,
+        ...subNodes,
       ],
     );
   }
