@@ -23,7 +23,6 @@ enum ExportFileType {
   documentJson,
   markdown,
   pdf,
-  html,
   delta,
 }
 
@@ -401,8 +400,6 @@ class _HomePageState extends State<HomePage> {
         jsonString = jsonEncode(document.toJson());
         break;
       case ExportFileType.pdf:
-        throw UnimplementedError();
-      case ExportFileType.html:
         throw UnimplementedError();
     }
 
