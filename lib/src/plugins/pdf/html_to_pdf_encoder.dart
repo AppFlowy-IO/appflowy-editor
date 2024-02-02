@@ -6,6 +6,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdf;
+import 'extension/color_ext.dart';
 
 /// This class handles conversion from html to pdf
 class PdfHTMLEncoder {
@@ -164,7 +165,7 @@ class PdfHTMLEncoder {
         return [await _parseParagraphElement(element)];
     }
   }
-
+/*
   Iterable<Node> _parseTable(dom.Element element) {
     final List<Node> tablenodes = [];
     int columnLenth = 0;
@@ -193,7 +194,8 @@ class PdfHTMLEncoder {
       ).node,
     ];
   }
-
+    */
+/*
   (int, int, List<Node>) _parsetableRows(dom.Element element) {
     final List<Node> nodes = [];
     int colLength = 0;
@@ -209,7 +211,8 @@ class PdfHTMLEncoder {
     }
     return (colLength, rowLength, nodes);
   }
-
+    */
+/*
   Iterable<Node> _parsetableData(
     dom.Element element, {
     required int rowPosition,
@@ -249,7 +252,8 @@ class PdfHTMLEncoder {
 
     return nodes;
   }
-
+*/
+/*
   Iterable<Node> _parseTableSpecialNodes(dom.Element element) {
     final List<Node> nodes = [];
 
@@ -262,7 +266,8 @@ class PdfHTMLEncoder {
     }
     return nodes;
   }
-
+    */
+/*
   List<Node> _parseTableDataElementsData(dom.Element element) {
     final List<Node> nodes = [];
     final delta = Delta();
@@ -284,6 +289,7 @@ class PdfHTMLEncoder {
     }
     return nodes;
   }
+*/
 
   (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
     dom.Element element,
@@ -530,6 +536,7 @@ class PdfHTMLEncoder {
         pw.SizedBox(
           width: double.infinity,
           child: pw.RichText(
+            textAlign: textAlign,
             text: pw.TextSpan(children: textSpan),
           ),
         ),
@@ -538,81 +545,97 @@ class PdfHTMLEncoder {
     );
   }
 
-  Attributes? _getDeltaAttributesFromHTMLAttributes(
+  static pw.TextStyle _assignTextDecorations(
+      pw.TextStyle style, String decorationStr) {
+    final decorations = decorationStr.split(" ");
+    final textDecorations = <pw.TextDecoration>[];
+    for (final type in decorations) {
+      if (type == 'line-through') {
+        textDecorations.add(pw.TextDecoration.lineThrough);
+      } else if (type == 'underline') {
+        textDecorations.add(pw.TextDecoration.underline);
+      }
+    }
+    return style.copyWith(
+        decoration: pw.TextDecoration.combine(textDecorations));
+  }
+
+  (pw.TextAlign?, pw.TextStyle) _getDeltaAttributesFromHTMLAttributes(
     LinkedHashMap<Object, String> htmlAttributes,
   ) {
-    final Attributes attributes = {};
-    final style = htmlAttributes['style'];
-    final css = _getCssFromString(style);
+    pw.TextStyle style = const pw.TextStyle();
+    pw.TextAlign? textAlign;
+    final cssInlineStyle = htmlAttributes['style'];
+    final cssMap = _getCssFromString(cssInlineStyle);
 
     // font weight
-    final fontWeight = css['font-weight'];
+    final fontWeight = cssMap['font-weight'];
     if (fontWeight != null) {
       if (fontWeight == 'bold') {
-        attributes[AppFlowyRichTextKeys.bold] = true;
+        style = style.copyWith(fontWeight: pw.FontWeight.bold);
       } else {
         final weight = int.tryParse(fontWeight);
         if (weight != null && weight >= 500) {
-          attributes[AppFlowyRichTextKeys.bold] = true;
+          style = style.copyWith(fontWeight: pw.FontWeight.bold);
         }
       }
     }
 
     // decoration
-    final textDecoration = css['text-decoration'];
+    final textDecoration = cssMap['text-decoration'];
     if (textDecoration != null) {
-      final decorations = textDecoration.split(' ');
-      for (final decoration in decorations) {
-        switch (decoration) {
-          case 'underline':
-            attributes[AppFlowyRichTextKeys.underline] = true;
-            break;
-          case 'line-through':
-            attributes[AppFlowyRichTextKeys.strikethrough] = true;
-            break;
-          default:
-            break;
-        }
-      }
+      style = style.copyWith(
+        decoration: _assignTextDecorations(style, textDecoration).decoration,
+      );
     }
 
     // background color
-    final backgroundColor = css['background-color'];
+    final backgroundColor = cssMap['background-color'];
     if (backgroundColor != null) {
-      final highlightColor = backgroundColor.tryToColor()?.toHex();
+      final highlightColor = ColorExt.fromRgbaString(backgroundColor);
       if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
-      }
-    }
-
-    // background
-    final background = css['background'];
-    if (background != null) {
-      final highlightColor = background.tryToColor()?.toHex();
-      if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        style = style.copyWith(color: highlightColor);
       }
     }
 
     // color
-    final color = css['color'];
+    final color = cssMap['color'];
     if (color != null) {
-      final textColor = color.tryToColor()?.toHex();
+      final textColor = ColorExt.fromRgbaString(color);
       if (textColor != null) {
-        attributes[AppFlowyRichTextKeys.textColor] = textColor;
+        style = style.copyWith(color: textColor);
       }
     }
 
     // italic
-    final fontStyle = css['font-style'];
+    final fontStyle = cssMap['font-style'];
     if (fontStyle == 'italic') {
-      attributes[AppFlowyRichTextKeys.italic] = true;
+      style = style.copyWith(fontStyle: pw.FontStyle.italic);
+    }
+    final alignment = cssMap['text-align'];
+    if (alignment != null) {
+      textAlign = _alignText(alignment);
     }
 
-    return attributes.isEmpty ? null : attributes;
+    return (textAlign, style);
   }
 
-  Map<String, String> _getCssFromString(String? cssString) {
+  static pw.TextAlign _alignText(String alignment) {
+    switch (alignment) {
+      case 'right':
+        return pw.TextAlign.right;
+      case 'center':
+        return pw.TextAlign.center;
+      case 'left':
+        return pw.TextAlign.left;
+      case 'justify':
+        return pw.TextAlign.justify;
+      default:
+        return pw.TextAlign.left;
+    }
+  }
+
+  static Map<String, String> _getCssFromString(String? cssString) {
     final Map<String, String> result = {};
     if (cssString == null) {
       return result;
