@@ -52,10 +52,7 @@ class _EditorState extends State<Editor> {
     wordCountService!.addListener(onWordCountUpdate);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        wordCount = wordCountService!.wordCount;
-        charCount = wordCountService!.charCount;
-      });
+      onWordCountUpdate();
     });
   }
 
