@@ -53,6 +53,13 @@ void main() async {
         expect(wordCount, 3 * 4);
         expect(charCount, text.length * 4);
 
+        service.stop();
+
+        expect(service.wordCount, 0);
+        expect(service.charCount, 0);
+        expect(wordCount, 0);
+        expect(charCount, 0);
+
         service.removeListener(setCounters);
       },
     );
