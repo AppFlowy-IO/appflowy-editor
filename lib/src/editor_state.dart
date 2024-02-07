@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 /// the type of this value is bool.
 ///
@@ -150,9 +151,7 @@ class EditorState {
   Stream<(TransactionTime, Transaction)> get transactionStream =>
       _observer.stream;
   final StreamController<(TransactionTime, Transaction)> _observer =
-      StreamController.broadcast(
-    sync: true,
-  );
+      StreamController.broadcast(sync: true);
 
   /// Store the toggled format style, like bold, italic, etc.
   /// All the values must be the key from [AppFlowyRichTextKeys.supportToggled].
