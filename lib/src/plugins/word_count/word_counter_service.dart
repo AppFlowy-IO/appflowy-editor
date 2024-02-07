@@ -6,6 +6,24 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 final _wordRegex = RegExp(r"\w+(\'\w+)?");
 
+/// Used by the [WordCountService] to contain
+/// count statistics in eg. a [Document] or in
+/// the current [Selection].
+///
+class Counters {
+  const Counters({
+    int wordCount = 0,
+    int charCount = 0,
+  })  : _wordCount = wordCount,
+        _charCount = charCount;
+
+  final int _wordCount;
+  int get wordCount => _wordCount;
+
+  final int _charCount;
+  int get charCount => _charCount;
+}
+
 /// A Word Counter service that runs based on the
 /// changes and updates to an [EditorState].
 ///
@@ -24,17 +42,15 @@ class WordCountService with ChangeNotifier {
 
   final EditorState editorState;
 
-  int _wordCount = 0;
-
-  /// Number of words in the [Document].
+  /// Number of words and characters in the [Document].
   ///
-  int get wordCount => _wordCount;
+  Counters get documentCounters => _documentCounters;
+  Counters _documentCounters = const Counters();
 
-  int _charCount = 0;
-
-  /// Number of characters with spaces in the [Document].
+  /// Number of words and characters in the [Selection].
   ///
-  int get charCount => _charCount;
+  Counters get selectionCounters => _selectionCounters;
+  Counters _selectionCounters = const Counters();
 
   /// Signifies whether the service is currently running
   /// or not. The service can be stopped/started as needed
@@ -55,13 +71,20 @@ class WordCountService with ChangeNotifier {
     isRunning = true;
 
     final counters = _countersFromNode(editorState.document.root);
-    _wordCount = counters.$1;
-    _charCount = counters.$2;
+    _documentCounters = Counters(
+      wordCount: counters.$1,
+      charCount: counters.$2,
+    );
+
+    if (editorState.selection?.isCollapsed ?? false) {
+      _recountOnSelectionUpdate();
+    }
 
     notifyListeners();
 
     _streamSubscription =
         editorState.transactionStream.listen(_recountOnTransactionUpdate);
+    editorState.selectionNotifier.addListener(_recountOnSelectionUpdate);
   }
 
   /// Stops the Word Counter and resets the counts.
@@ -72,8 +95,8 @@ class WordCountService with ChangeNotifier {
     }
 
     _streamSubscription?.cancel();
-    _wordCount = 0;
-    _charCount = 0;
+    _documentCounters = const Counters();
+    _selectionCounters = const Counters();
     isRunning = false;
 
     notifyListeners();
@@ -81,8 +104,32 @@ class WordCountService with ChangeNotifier {
 
   @override
   void dispose() {
+    editorState.selectionNotifier.removeListener(_recountOnSelectionUpdate);
     _streamSubscription?.cancel();
     super.dispose();
+  }
+
+  void _recountOnSelectionUpdate() {
+    // If collapsed or null, reset count
+    if (editorState.selection?.isCollapsed ?? true) {
+      _selectionCounters = const Counters();
+
+      return notifyListeners();
+    }
+
+    int wordCount = 0;
+    int charCount = 0;
+
+    final nodes = editorState.getSelectedNodes();
+    for (final node in nodes) {
+      final counters = _countersFromNode(node);
+      wordCount += counters.$1;
+      charCount += counters.$2;
+    }
+
+    _selectionCounters = Counters(wordCount: wordCount, charCount: charCount);
+
+    notifyListeners();
   }
 
   void _recountOnTransactionUpdate(
@@ -95,9 +142,12 @@ class WordCountService with ChangeNotifier {
     final counters = _countersFromNode(editorState.document.root);
 
     // If there is no update, no need to notify listeners
-    if (counters.$1 != wordCount || counters.$2 != charCount) {
-      _wordCount = counters.$1;
-      _charCount = counters.$2;
+    if (counters.$1 != documentCounters.wordCount ||
+        counters.$2 != documentCounters.charCount) {
+      _documentCounters = Counters(
+        wordCount: counters.$1,
+        charCount: counters.$2,
+      );
 
       notifyListeners();
     }

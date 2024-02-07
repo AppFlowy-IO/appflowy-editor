@@ -44,6 +44,9 @@ class _EditorState extends State<Editor> {
   int wordCount = 0;
   int charCount = 0;
 
+  int selectedWordCount = 0;
+  int selectedCharCount = 0;
+
   void registerWordCounter() {
     wordCountService?.removeListener(onWordCountUpdate);
     wordCountService?.dispose();
@@ -58,8 +61,10 @@ class _EditorState extends State<Editor> {
 
   void onWordCountUpdate() {
     setState(() {
-      wordCount = wordCountService!.wordCount;
-      charCount = wordCountService!.charCount;
+      wordCount = wordCountService!.documentCounters.wordCount;
+      charCount = wordCountService!.documentCounters.charCount;
+      selectedWordCount = wordCountService!.selectionCounters.wordCount;
+      selectedCharCount = wordCountService!.selectionCounters.charCount;
     });
   }
 
@@ -132,9 +137,18 @@ class _EditorState extends State<Editor> {
                     : Radius.zero,
               ),
             ),
-            child: Text(
-              'Word Count: $wordCount  |  Character Count: $charCount',
-              style: const TextStyle(fontSize: 11),
+            child: Column(
+              children: [
+                Text(
+                  'Word Count: $wordCount  |  Character Count: $charCount',
+                  style: const TextStyle(fontSize: 11),
+                ),
+                if (!(editorState?.selection?.isCollapsed ?? true))
+                  Text(
+                    '(In-selection) Word Count: $selectedWordCount  |  Character Count: $selectedCharCount',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+              ],
             ),
           ),
         ),
