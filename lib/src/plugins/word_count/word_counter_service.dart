@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _emptyCounters = Counters();
 final _wordRegex = RegExp(r"\w+(\'\w+)?");
 
 /// Used by the [WordCountService] to contain
@@ -22,6 +23,15 @@ class Counters {
 
   final int _charCount;
   int get charCount => _charCount;
+
+  @override
+  bool operator ==(other) =>
+      other is Counters &&
+      other.wordCount == wordCount &&
+      other.charCount == charCount;
+
+  @override
+  int get hashCode => Object.hash(wordCount, charCount);
 }
 
 /// A Word Counter service that runs based on the
@@ -69,18 +79,15 @@ class WordCountService with ChangeNotifier {
     }
 
     isRunning = true;
-
-    final counters = _countersFromNode(editorState.document.root);
-    _documentCounters = Counters(
-      wordCount: counters.$1,
-      charCount: counters.$2,
-    );
-
+    _documentCounters = _countersFromNode(editorState.document.root);
     if (editorState.selection?.isCollapsed ?? false) {
       _recountOnSelectionUpdate();
     }
 
-    notifyListeners();
+    if (documentCounters != _emptyCounters ||
+        selectionCounters != _emptyCounters) {
+      notifyListeners();
+    }
 
     _streamSubscription =
         editorState.transactionStream.listen(_recountOnTransactionUpdate);
@@ -112,6 +119,10 @@ class WordCountService with ChangeNotifier {
   void _recountOnSelectionUpdate() {
     // If collapsed or null, reset count
     if (editorState.selection?.isCollapsed ?? true) {
+      if (_selectionCounters == _emptyCounters) {
+        return;
+      }
+
       _selectionCounters = const Counters();
 
       return notifyListeners();
@@ -123,13 +134,19 @@ class WordCountService with ChangeNotifier {
     final nodes = editorState.getSelectedNodes();
     for (final node in nodes) {
       final counters = _countersFromNode(node);
-      wordCount += counters.$1;
-      charCount += counters.$2;
+      wordCount += counters.wordCount;
+      charCount += counters.charCount;
     }
 
-    _selectionCounters = Counters(wordCount: wordCount, charCount: charCount);
+    final newCounters = Counters(
+      wordCount: wordCount,
+      charCount: charCount,
+    );
 
-    notifyListeners();
+    if (newCounters != selectionCounters) {
+      _selectionCounters = newCounters;
+      notifyListeners();
+    }
   }
 
   void _recountOnTransactionUpdate(
@@ -142,18 +159,16 @@ class WordCountService with ChangeNotifier {
     final counters = _countersFromNode(editorState.document.root);
 
     // If there is no update, no need to notify listeners
-    if (counters.$1 != documentCounters.wordCount ||
-        counters.$2 != documentCounters.charCount) {
-      _documentCounters = Counters(
-        wordCount: counters.$1,
-        charCount: counters.$2,
-      );
-
-      notifyListeners();
+    if (counters.wordCount != documentCounters.wordCount ||
+        counters.charCount != documentCounters.charCount) {
+      if (counters != documentCounters) {
+        _documentCounters = counters;
+        notifyListeners();
+      }
     }
   }
 
-  (int, int) _countersFromNode(Node node) {
+  Counters _countersFromNode(Node node) {
     int wCount = 0;
     int cCount = 0;
 
@@ -162,12 +177,12 @@ class WordCountService with ChangeNotifier {
     cCount += plain.runes.length;
 
     for (final child in node.children) {
-      final values = _countersFromNode(child);
-      wCount += values.$1;
-      cCount += values.$2;
+      final counters = _countersFromNode(child);
+      wCount += counters.wordCount;
+      cCount += counters.charCount;
     }
 
-    return (wCount, cCount);
+    return Counters(wordCount: wCount, charCount: cCount);
   }
 
   int _wordsInString(String delta) => _wordRegex.allMatches(delta).length;
