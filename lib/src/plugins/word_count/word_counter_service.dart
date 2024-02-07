@@ -20,11 +20,9 @@ final _wordRegex = RegExp(r"\w+(\'\w+)?");
 /// the counter stats.
 ///
 class WordCountService with ChangeNotifier {
-  WordCountService({
-    required EditorState editorState,
-  }) : _editorState = editorState;
+  WordCountService({required this.editorState});
 
-  final EditorState _editorState;
+  final EditorState editorState;
 
   int _wordCount = 0;
 
@@ -56,14 +54,14 @@ class WordCountService with ChangeNotifier {
 
     isRunning = true;
 
-    final counters = _countersFromNode(_editorState.document.root);
+    final counters = _countersFromNode(editorState.document.root);
     _wordCount = counters.$1;
     _charCount = counters.$2;
 
     notifyListeners();
 
     _streamSubscription =
-        _editorState.transactionStream.listen(_recountOnTransactionUpdate);
+        editorState.transactionStream.listen(_recountOnTransactionUpdate);
   }
 
   /// Stops the Word Counter and resets the counts.
@@ -94,7 +92,7 @@ class WordCountService with ChangeNotifier {
       return;
     }
 
-    final counters = _countersFromNode(_editorState.document.root);
+    final counters = _countersFromNode(editorState.document.root);
 
     // If there is no update, no need to notify listeners
     if (counters.$1 != wordCount || counters.$2 != charCount) {
@@ -111,8 +109,7 @@ class WordCountService with ChangeNotifier {
 
     final plain = _toPlainText(node);
     wCount += _wordsInString(plain);
-    // TODO: Account for eomjis having length > 1
-    cCount += plain.length;
+    cCount += plain.runes.length;
 
     for (final child in node.children) {
       final values = _countersFromNode(child);
