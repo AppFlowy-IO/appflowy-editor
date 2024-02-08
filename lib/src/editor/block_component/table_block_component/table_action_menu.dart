@@ -122,7 +122,7 @@ void showActionMenu(
       );
     },
   ).build();
-  Overlay.of(context).insert(overlay!);
+  Overlay.of(context, rootOverlay: true).insert(overlay!);
 }
 
 Widget _menuItem(
@@ -192,5 +192,5 @@ void _showColorMenu(
       );
     },
   ).build();
-  Overlay.of(context).insert(overlay!);
+  Overlay.of(context, rootOverlay: true).insert(overlay!);
 }
