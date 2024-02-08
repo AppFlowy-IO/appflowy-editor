@@ -70,6 +70,28 @@ class WordCountService with ChangeNotifier {
 
   StreamSubscription<(TransactionTime, Transaction)>? _streamSubscription;
 
+  /// This method can be used to get the word and character
+  /// count of the [Document] of the [EditorState].
+  ///
+  /// This does not modify the state of the counters
+  /// of the service. If the service is running ([isRunning])
+  /// it will return the [documentCounters]. Otherwise it
+  /// will compute it on demand.
+  ///
+  Counters getDocumentCounters() =>
+      isRunning ? documentCounters : _countersFromNode();
+
+  /// This method can be used to get the word and character
+  /// count of the current [Selection] of the [EditorState].
+  ///
+  /// This does not modify the state of the counters
+  /// of the service. If the service is running ([isRunning])
+  /// it will return the [selectionCounters]. Otherwise it
+  /// will compute it on demand.
+  ///
+  Counters getSelectionCounters() =>
+      isRunning ? selectionCounters : _countersFromSelection();
+
   /// Registers the Word Counter and starts notifying
   /// about updates to word and character count.
   ///
@@ -128,6 +150,15 @@ class WordCountService with ChangeNotifier {
       return notifyListeners();
     }
 
+    final counters = _countersFromSelection();
+
+    if (counters != selectionCounters) {
+      _selectionCounters = counters;
+      notifyListeners();
+    }
+  }
+
+  Counters _countersFromSelection() {
     int wordCount = 0;
     int charCount = 0;
 
@@ -138,15 +169,10 @@ class WordCountService with ChangeNotifier {
       charCount += counters.charCount;
     }
 
-    final newCounters = Counters(
+    return Counters(
       wordCount: wordCount,
       charCount: charCount,
     );
-
-    if (newCounters != selectionCounters) {
-      _selectionCounters = newCounters;
-      notifyListeners();
-    }
   }
 
   void _recountOnTransactionUpdate(
@@ -156,7 +182,7 @@ class WordCountService with ChangeNotifier {
       return;
     }
 
-    final counters = _countersFromNode(editorState.document.root);
+    final counters = _countersFromNode();
 
     // If there is no update, no need to notify listeners
     if (counters.wordCount != documentCounters.wordCount ||
@@ -168,15 +194,22 @@ class WordCountService with ChangeNotifier {
     }
   }
 
-  Counters _countersFromNode(Node node) {
+  /// Returns [Counters] for a specific [Node].
+  ///
+  /// If [Node] is null, takes the root [Node] of
+  /// the [Document].
+  ///
+  Counters _countersFromNode([Node? node]) {
+    final n = node ?? editorState.document.root;
+
     int wCount = 0;
     int cCount = 0;
 
-    final plain = _toPlainText(node);
+    final plain = _toPlainText(n);
     wCount += _wordsInString(plain);
     cCount += plain.runes.length;
 
-    for (final child in node.children) {
+    for (final child in n.children) {
       final counters = _countersFromNode(child);
       wCount += counters.wordCount;
       cCount += counters.charCount;
