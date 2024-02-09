@@ -12,6 +12,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     required super.onReplace,
     required super.onNonTextUpdate,
     required super.onPerformAction,
+    super.contentInsertionConfiguration,
+    super.onFloatingCursor,
   });
 
   @override
@@ -134,11 +136,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   Future<void> performAction(TextInputAction action) async {
+    Log.editor.debug('performAction: $action');
     return onPerformAction(action);
   }
 
   @override
-  void performPrivateCommand(String action, Map<String, dynamic> data) {}
+  void performPrivateCommand(String action, Map<String, dynamic> data) {
+    Log.editor.debug('performPrivateCommand: $action, $data');
+  }
 
   @override
   void removeTextPlaceholder() {}
@@ -150,7 +155,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   void showToolbar() {}
 
   @override
-  void updateFloatingCursor(RawFloatingCursorPoint point) {}
+  void updateFloatingCursor(RawFloatingCursorPoint point) {
+    onFloatingCursor?.call(point);
+  }
 
   @override
   void didChangeInputControl(
@@ -159,10 +166,19 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   ) {}
 
   @override
-  void performSelector(String selectorName) {}
+  void performSelector(String selectorName) {
+    Log.editor.debug('performSelector: $selectorName');
+  }
 
   @override
-  void insertContent(KeyboardInsertedContent content) {}
+  void insertContent(KeyboardInsertedContent content) {
+    assert(
+      contentInsertionConfiguration?.allowedMimeTypes
+              .contains(content.mimeType) ??
+          false,
+    );
+    contentInsertionConfiguration?.onContentInserted.call(content);
+  }
 
   void _updateComposing(TextEditingDelta delta) {
     if (delta is! TextEditingDeltaNonTextUpdate) {
@@ -183,6 +199,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
             PlatformExtension.isMacOS) &&
         delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
+    }
+
+    // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
+    if (composingTextRange?.isCollapsed ?? false) {
+      composingTextRange = TextRange.empty;
     }
   }
 }

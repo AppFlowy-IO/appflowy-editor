@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent backspaceCommand = CommandShortcutEvent(
   key: 'backspace',
-  command: 'backspace',
+  getDescription: () => AppFlowyEditorL10n.current.cmdDeleteLeft,
+  command: 'backspace, shift+backspace',
   handler: _backspaceCommandHandler,
 );
 

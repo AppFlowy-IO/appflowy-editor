@@ -154,15 +154,16 @@ class _HeadingBlockComponentWidgetState
               placeholderText: placeholderText,
               placeholderTextSpanDecorator: (textSpan) => textSpan
                   .updateTextStyle(
-                    placeholderTextStyle,
-                  )
-                  .updateTextStyle(
                     widget.textStyleBuilder?.call(level) ??
                         defaultTextStyle(level),
+                  )
+                  .updateTextStyle(
+                    placeholderTextStyle,
                   ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
+              cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
         ],

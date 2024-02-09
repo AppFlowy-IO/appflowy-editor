@@ -19,6 +19,9 @@ Future<bool> insertNewLineInType(
 
   if (selection.startIndex == 0 && delta.isEmpty) {
     // clear the style
+    if (node != null && node.path.length > 1) {
+      return KeyEventResult.ignored != outdentCommand.execute(editorState);
+    }
     return KeyEventResult.ignored !=
         convertToParagraphCommand.execute(editorState);
   }

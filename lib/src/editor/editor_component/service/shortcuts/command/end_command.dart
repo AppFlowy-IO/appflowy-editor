@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent endCommand = CommandShortcutEvent(
   key: 'scroll to the bottom of the document',
+  getDescription: () => AppFlowyEditorL10n.current.cmdScrollToBottom,
   command: 'ctrl+end',
   macOSCommand: 'end',
   handler: _endCommandHandler,

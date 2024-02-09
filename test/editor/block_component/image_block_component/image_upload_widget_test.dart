@@ -33,14 +33,14 @@ void main() {
         ),
       );
 
-      final urlButtonFinder = find.widgetWithText(Tab, 'URL Image');
+      final urlButtonFinder = find.widgetWithText(Tab, 'URL');
       expect(urlButtonFinder, findsOneWidget);
       await tester.tap(urlButtonFinder);
       await tester.pumpAndSettle();
       final urlFieldFinder = find.widgetWithText(TextField, 'URL');
       expect(urlFieldFinder, findsOneWidget);
       await tester.enterText(urlFieldFinder, 'Hello World!');
-      final uploadButtonFinder = find.text('Upload');
+      final uploadButtonFinder = find.widgetWithText(TextButton, 'Upload');
       expect(uploadButtonFinder, findsOneWidget);
       await tester.tap(uploadButtonFinder);
       await tester.pumpAndSettle();

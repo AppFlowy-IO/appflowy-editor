@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:string_validator/string_validator.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
@@ -90,11 +91,12 @@ class _LinkMenuState extends State<LinkMenu> {
           widget.onDismiss();
         }
       },
-      child: TextField(
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         focusNode: _focusNode,
         textAlign: TextAlign.left,
         controller: _textEditingController,
-        onSubmitted: widget.onSubmitted,
+        onFieldSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
           hintText: AppFlowyEditorL10n.current.urlHint,
           contentPadding: const EdgeInsets.all(16.0),
@@ -113,6 +115,12 @@ class _LinkMenuState extends State<LinkMenu> {
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty || !isURL(value)) {
+            return AppFlowyEditorL10n.current.incorrectLink;
+          }
+          return null;
+        },
       ),
     );
   }

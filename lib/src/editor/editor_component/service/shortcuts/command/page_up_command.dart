@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent pageUpCommand = CommandShortcutEvent(
   key: 'scroll one page up',
+  getDescription: () => AppFlowyEditorL10n.current.cmdScrollPageUp,
   command: 'page up',
   handler: _pageUpCommandHandler,
 );

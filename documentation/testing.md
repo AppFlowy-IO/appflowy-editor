@@ -3,7 +3,7 @@
 The directory structure of test files mirrors that of the code files, making it easy for us to map a file with the corresponding test and check if the test is updated.
 
 For an overview of testing best practices in Flutter applications, please refer to Flutter's [introduction to widget testing](https://docs.flutter.dev/cookbook/testing/widget/introduction) as well as their [introduction to unit testing](https://docs.flutter.dev/cookbook/testing/unit/introduction).
-There you will learn how to do such things as such as simulate a click as well as leverage the `test` and `expect` functions.
+There you will learn how to do such things as simulate a click as well as leverage the `test` and `expect` functions.
 
 ## Testing Basic Editor Functions
 

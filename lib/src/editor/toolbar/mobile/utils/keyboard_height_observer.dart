@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:keyboard_height_plugin/keyboard_height_plugin.dart';
 
 typedef KeyboardHeightCallback = void Function(double height);
@@ -5,10 +8,18 @@ typedef KeyboardHeightCallback = void Function(double height);
 // the KeyboardHeightPlugin only accepts one listener, so we need to create a
 //  singleton class to manage the multiple listeners.
 class KeyboardHeightObserver {
+  static int androidSDKVersion = -1;
+
   KeyboardHeightObserver._() {
+    if (Platform.isAndroid && androidSDKVersion == -1) {
+      DeviceInfoPlugin().androidInfo.then(
+            (value) => androidSDKVersion = value.version.sdkInt,
+          );
+    }
     _keyboardHeightPlugin.onKeyboardHeightChanged((height) {
-      currentKeyboardHeight = height;
       notify(height);
+
+      currentKeyboardHeight = height;
     });
   }
 
@@ -32,6 +43,13 @@ class KeyboardHeightObserver {
   }
 
   void notify(double height) {
+    // the keyboard height will notify twice with the same value on Android 14
+    if (androidSDKVersion == 34) {
+      if (height == 0 && currentKeyboardHeight == 0) {
+        return;
+      }
+    }
+
     for (final listener in _listeners) {
       listener(height);
     }

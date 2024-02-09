@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_on_floating_cursor_update.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,9 +14,11 @@ class KeyboardServiceWidget extends StatefulWidget {
     this.commandShortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.focusNode,
+    this.contentInsertionConfiguration,
     required this.child,
   });
 
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
   final FocusNode? focusNode;
   final List<CommandShortcutEvent> commandShortcutEvents;
   final List<CharacterShortcutEvent> characterShortcutEvents;
@@ -81,6 +84,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         action,
         editorState,
       ),
+      onFloatingCursor: (point) => onFloatingCursorUpdate(
+        point,
+        editorState,
+      ),
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
     );
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
@@ -231,6 +239,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
           keyboardAppearance: Theme.of(context).brightness,
+          allowedMimeTypes:
+              widget.contentInsertionConfiguration?.allowedMimeTypes ?? [],
         ),
       );
       // disable shortcuts when the IME active

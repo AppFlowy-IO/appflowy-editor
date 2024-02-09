@@ -22,22 +22,34 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "auto": MessageLookupByLibrary.simpleMessage("Automático"),
         "bold": MessageLookupByLibrary.simpleMessage("negrito"),
         "bulletedList":
             MessageLookupByLibrary.simpleMessage("lista com marcadores"),
         "checkbox": MessageLookupByLibrary.simpleMessage("caixa de seleção"),
         "embedCode": MessageLookupByLibrary.simpleMessage("Código embutido"),
-        "heading1": MessageLookupByLibrary.simpleMessage("Cabeçallho 1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("Cabeçallho 2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("Cabeçallho 3"),
+        "heading1": MessageLookupByLibrary.simpleMessage("Cabeçalho 1"),
+        "heading2": MessageLookupByLibrary.simpleMessage("Cabeçalho 2"),
+        "heading3": MessageLookupByLibrary.simpleMessage("Cabeçalho 3"),
         "highlight": MessageLookupByLibrary.simpleMessage("realçar"),
+        "highlightColor":
+            MessageLookupByLibrary.simpleMessage("Cor de destaque"),
         "image": MessageLookupByLibrary.simpleMessage("imagem"),
         "italic": MessageLookupByLibrary.simpleMessage("itálico"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
+        "ltr": MessageLookupByLibrary.simpleMessage("Esquerda para Direita"),
         "numberedList": MessageLookupByLibrary.simpleMessage("lista numerada"),
         "quote": MessageLookupByLibrary.simpleMessage("citar"),
+        "rtl": MessageLookupByLibrary.simpleMessage("Direita para Esquerda"),
         "strikethrough": MessageLookupByLibrary.simpleMessage("tachado"),
         "text": MessageLookupByLibrary.simpleMessage("texto"),
+        "textAlignCenter":
+            MessageLookupByLibrary.simpleMessage("Alinhar ao centro"),
+        "textAlignLeft":
+            MessageLookupByLibrary.simpleMessage("Alinhar à esquerda"),
+        "textAlignRight":
+            MessageLookupByLibrary.simpleMessage("Alinhar à direita"),
+        "textColor": MessageLookupByLibrary.simpleMessage("Cor do texto"),
         "underline": MessageLookupByLibrary.simpleMessage("sublinhado")
       };
 }

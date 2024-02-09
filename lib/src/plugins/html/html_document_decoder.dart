@@ -473,6 +473,7 @@ class HTMLTags {
   static const h1 = 'h1';
   static const h2 = 'h2';
   static const h3 = 'h3';
+  static const br = 'br';
   static const orderedList = 'ol';
   static const unorderedList = 'ul';
   static const list = 'li';
