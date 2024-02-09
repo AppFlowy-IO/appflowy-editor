@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
@@ -7,6 +8,7 @@ import 'package:html/parser.dart' show parse;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdf;
 import 'extension/color_ext.dart';
+import 'package:http/http.dart';
 
 /// This class handles conversion from html to pdf
 class PdfHTMLEncoder {
@@ -158,9 +160,10 @@ class PdfHTMLEncoder {
       /*
       case HTMLTags.blockQuote:
         return [_parseBlockQuoteElement(element)];
-      case HTMLTags.image:
-        return [_parseImageElement(element)];
+
             */
+      case HTMLTags.image:
+        return [await _parseImageElement(element)];
       default:
         return [await _parseParagraphElement(element)];
     }
@@ -468,15 +471,32 @@ class PdfHTMLEncoder {
   }
 
   //TODO: Support image...
-  Node _parseImageElement(dom.Element element) {
+  Future<pw.Widget> _parseImageElement(dom.Element element) async {
     final src = element.attributes['src'];
+    /*
     if (src == null || src.isEmpty || !src.startsWith('http')) {
-      return paragraphNode(); // return empty paragraph
+      return pw.Text(''); // return empty paragraph
     }
-    // only support network image
-    return imageNode(
-      url: src,
-    );
+        */
+    try {
+      if (src != null) {
+        final networkImage = await _fetchImage(src);
+        return pw.Image(pw.MemoryImage(networkImage));
+      } else {
+        return pw.Text('');
+      }
+    } catch (e) {
+      return pw.Text(e.toString());
+    }
+  }
+
+  Future<Uint8List> _fetchImage(String url) async {
+    try {
+      final Response response = await get(Uri.parse(url));
+      return response.bodyBytes;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future<pw.Widget> _parseDeltaElement(
