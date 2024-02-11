@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../../new/infra/testable_editor.dart';
 
@@ -44,7 +45,7 @@ void main() async {
 
       await editor.editorState.apply(transaction);
 
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       expect(service.documentCounters.wordCount, 3 * 4);
       expect(service.documentCounters.charCount, text.length * 4);
@@ -52,6 +53,8 @@ void main() async {
       expect(charCount, text.length * 4);
 
       service.stop();
+
+      await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
       expect(service.documentCounters.wordCount, 0);
       expect(service.documentCounters.charCount, 0);
