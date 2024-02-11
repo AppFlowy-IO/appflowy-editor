@@ -48,9 +48,25 @@ class Counters {
 /// the counter stats.
 ///
 class WordCountService with ChangeNotifier {
-  WordCountService({required this.editorState});
+  WordCountService({
+    required this.editorState,
+    this.debounceDuration = const Duration(milliseconds: 300),
+  });
 
   final EditorState editorState;
+
+  /// The time to wait before input stops, to recalculate
+  /// word and character count.
+  ///
+  /// This duration is used for debouncing both document
+  /// and selection changes.
+  ///
+  /// If 0 no debouncing will occur
+  ///
+  final Duration debounceDuration;
+
+  Timer? _selectionTimer;
+  Timer? _documentTimer;
 
   /// Number of words and characters in the [Document].
   ///
@@ -111,9 +127,8 @@ class WordCountService with ChangeNotifier {
       notifyListeners();
     }
 
-    _streamSubscription =
-        editorState.transactionStream.listen(_recountOnTransactionUpdate);
-    editorState.selectionNotifier.addListener(_recountOnSelectionUpdate);
+    _streamSubscription = editorState.transactionStream.listen(_onDocUpdate);
+    editorState.selectionNotifier.addListener(_onSelUpdate);
   }
 
   /// Stops the Word Counter and resets the counts.
@@ -123,6 +138,10 @@ class WordCountService with ChangeNotifier {
       return;
     }
 
+    _documentTimer?.cancel();
+    _documentTimer = null;
+    _selectionTimer?.cancel();
+    _selectionTimer = null;
     _streamSubscription?.cancel();
     _documentCounters = const Counters();
     _selectionCounters = const Counters();
@@ -133,9 +152,25 @@ class WordCountService with ChangeNotifier {
 
   @override
   void dispose() {
-    editorState.selectionNotifier.removeListener(_recountOnSelectionUpdate);
+    editorState.selectionNotifier.removeListener(_onSelUpdate);
     _streamSubscription?.cancel();
+    _documentTimer?.cancel();
+    _selectionTimer?.cancel();
+    _documentTimer = null;
+    _selectionTimer = null;
     super.dispose();
+  }
+
+  void _onSelUpdate() {
+    if (debounceDuration.inMilliseconds == 0) {
+      return _recountOnSelectionUpdate();
+    }
+
+    if (_selectionTimer?.isActive ?? false) {
+      _selectionTimer!.cancel();
+    }
+
+    _selectionTimer = Timer(debounceDuration, _recountOnSelectionUpdate);
   }
 
   void _recountOnSelectionUpdate() {
@@ -146,7 +181,6 @@ class WordCountService with ChangeNotifier {
       }
 
       _selectionCounters = const Counters();
-
       return notifyListeners();
     }
 
@@ -169,16 +203,26 @@ class WordCountService with ChangeNotifier {
       charCount += counters.charCount;
     }
 
-    return Counters(
-      wordCount: wordCount,
-      charCount: charCount,
+    return Counters(wordCount: wordCount, charCount: charCount);
+  }
+
+  void _onDocUpdate((TransactionTime time, Transaction t) event) {
+    if (debounceDuration.inMilliseconds == 0) {
+      return _recountOnTransactionUpdate(event.$1);
+    }
+
+    if (_documentTimer?.isActive ?? false) {
+      _documentTimer!.cancel();
+    }
+
+    _documentTimer = Timer(
+      debounceDuration,
+      () => _recountOnTransactionUpdate(event.$1),
     );
   }
 
-  void _recountOnTransactionUpdate(
-    (TransactionTime time, Transaction t) event,
-  ) {
-    if (event.$1 != TransactionTime.after) {
+  void _recountOnTransactionUpdate(TransactionTime time) {
+    if (time != TransactionTime.after) {
       return;
     }
 
