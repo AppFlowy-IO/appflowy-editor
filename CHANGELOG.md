@@ -1,3 +1,6 @@
+## 2.3.2
+* fix: platform api cause error on web platform.
+
 ## 2.3.1
 * feat: backslash to ignore shortcut event by @hyj1204 in [#635](https://github.com/AppFlowy-IO/appflowy-editor/pull/635)
 * feat: support formatting greater hyphen to single arrow by @Jayaprakash-dev in [#665](https://github.com/AppFlowy-IO/appflowy-editor/pull/665)
