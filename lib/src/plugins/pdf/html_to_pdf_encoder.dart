@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -9,6 +10,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart' as pdf;
 import 'extension/color_ext.dart';
 import 'package:http/http.dart';
+import 'package:markdown/markdown.dart' as md;
 
 /// This class handles conversion from html to pdf
 class PdfHTMLEncoder {
@@ -20,7 +22,9 @@ class PdfHTMLEncoder {
   });
 
   Future<pw.Document> convert(String input) async {
-    final document = parse(input);
+    final htmlx = md.markdownToHtml(input,
+        inlineSyntaxes: [md.InlineHtmlSyntax(), md.ImageSyntax()]);
+    final document = parse(htmlx);
     final body = document.body;
     if (body == null) {
       final blank = pw.Document();
@@ -56,11 +60,9 @@ class PdfHTMLEncoder {
         } else if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
           //delta.insert(domNode.text, attributes: attributes);
-//TODO: add attribues
           nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (textSpan.isNotEmpty) {
-            //TODO: add styles later attributes
             final newTextSpanList = List<pw.TextSpan>.from(textSpan);
             nodes.add(
               (pw.SizedBox(
@@ -470,18 +472,17 @@ class PdfHTMLEncoder {
     return textSpan;
   }
 
-  //TODO: Support image...
   Future<pw.Widget> _parseImageElement(dom.Element element) async {
     final src = element.attributes['src'];
-    /*
-    if (src == null || src.isEmpty || !src.startsWith('http')) {
-      return pw.Text(''); // return empty paragraph
-    }
-        */
     try {
       if (src != null) {
-        final networkImage = await _fetchImage(src);
-        return pw.Image(pw.MemoryImage(networkImage));
+        if (src.startsWith('https')) {
+          final networkImage = await _fetchImage(src);
+          return pw.Image(pw.MemoryImage(networkImage));
+        } else {
+          File localImage = File(src);
+          return pw.Image(pw.MemoryImage(await localImage.readAsBytes()));
+        }
       } else {
         return pw.Text('');
       }
@@ -542,11 +543,14 @@ class PdfHTMLEncoder {
           }
         }
       } else {
-        //TODO: Add HTML attributes
+        final attributes =
+            _getDeltaAttributesFromHTMLAttributes(element.attributes);
+        textAlign = attributes.$1;
         textSpan.add(
           pw.TextSpan(
             text: child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '',
-            style: pw.TextStyle(font: font, fontFallback: fontFallback),
+            style:
+                attributes.$2.copyWith(font: font, fontFallback: fontFallback),
           ),
         );
       }

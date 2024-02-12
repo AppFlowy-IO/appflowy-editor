@@ -302,8 +302,9 @@ class _HomePageState extends State<HomePage> {
         result = documentToMarkdown(editorState.document);
         break;
       case ExportFileType.pdf:
-        final doc = documentToMarkdown(editorState.document);
-        result = md.markdownToHtml(doc);
+        //final doc = documentToMarkdown(editorState.document);
+        result = documentToMarkdown(editorState.document);
+        //result = md.markdownToHtml(doc);
         break;
       case ExportFileType.delta:
         throw UnimplementedError();
