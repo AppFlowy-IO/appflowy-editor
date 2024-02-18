@@ -179,7 +179,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
         );
       },
     );
-    Overlay.of(context).insert(_toolbarContainer!);
+    Overlay.of(context, rootOverlay: true).insert(_toolbarContainer!);
   }
 
   Widget _buildToolbar(BuildContext context) {

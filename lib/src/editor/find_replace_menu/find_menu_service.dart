@@ -109,7 +109,7 @@ class FindReplaceMenu implements FindReplaceService {
       },
     );
 
-    Overlay.of(context).insert(_findReplaceMenuEntry!);
+    Overlay.of(context, rootOverlay: true).insert(_findReplaceMenuEntry!);
   }
 
   void _onSelectionChange() {

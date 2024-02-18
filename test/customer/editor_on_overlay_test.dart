@@ -68,6 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
 
-    Overlay.of(context).insert(overlayEntry);
+    Overlay.of(context, rootOverlay: true).insert(overlayEntry);
   }
 }
