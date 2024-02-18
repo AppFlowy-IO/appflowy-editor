@@ -392,7 +392,7 @@ class _DesktopSelectionServiceWidgetState
     );
 
     _contextMenuAreas.add(contextMenu);
-    Overlay.of(context)?.insert(contextMenu);
+    Overlay.of(context, rootOverlay: true)?.insert(contextMenu);
   }
 
   Node? _getNodeInOffset(
