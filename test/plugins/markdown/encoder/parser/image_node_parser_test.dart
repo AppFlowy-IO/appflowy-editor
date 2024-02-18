@@ -7,7 +7,7 @@ void main() async {
       final node = Node(
         type: 'image',
         attributes: {
-          'image_src': 'https://appflowy.io',
+          'url': 'https://appflowy.io',
         },
       );
 
