@@ -129,7 +129,7 @@ class SelectionMenu extends SelectionMenuService {
       },
     );
 
-    Overlay.of(context).insert(_selectionMenuEntry!);
+    Overlay.of(context, rootOverlay: true).insert(_selectionMenuEntry!);
 
     editorState.service.keyboardService?.disable(showCursor: true);
     editorState.service.scrollService?.disable();
@@ -294,7 +294,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['image'],
     handler: (editorState, menuService, context) {
-      final container = Overlay.of(context);
+      final container = Overlay.of(context, rootOverlay: true);
       showImageMenu(container, editorState, menuService);
     },
   ),
