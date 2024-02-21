@@ -26,7 +26,8 @@ class EditorSvg extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scaleFactor = context.read<EditorState>().editorStyle.textScaleFactor;
+    final scaleFactor =
+        context.read<EditorState?>()?.editorStyle.textScaleFactor ?? 1.0;
     final height = (this.height ?? _defaultHeight) * scaleFactor;
     final width = (this.width ?? _defaultWidth) * scaleFactor;
     return Padding(
