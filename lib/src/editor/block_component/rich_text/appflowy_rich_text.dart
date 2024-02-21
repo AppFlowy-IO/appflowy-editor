@@ -285,6 +285,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -301,6 +303,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 

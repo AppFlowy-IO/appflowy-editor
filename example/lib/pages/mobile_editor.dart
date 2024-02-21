@@ -111,6 +111,7 @@ class _MobileEditorState extends State<MobileEditor> {
   // showcase 1: customize the editor style.
   EditorStyle _buildMobileEditorStyle() {
     return EditorStyle.mobile(
+      textScaleFactor: 1.0,
       cursorColor: const Color.fromARGB(255, 134, 46, 247),
       dragHandleColor: const Color.fromARGB(255, 134, 46, 247),
       selectionColor: const Color.fromARGB(50, 134, 46, 247),

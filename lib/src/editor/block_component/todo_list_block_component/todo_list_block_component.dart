@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
   const TodoListBlockKeys._();
@@ -269,13 +270,16 @@ class _TodoListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+          constraints: const BoxConstraints(minWidth: 26, minHeight: 22) *
+              textScaleFactor,
           padding: const EdgeInsets.only(right: 4.0),
           child: EditorSvg(
             width: 22,
