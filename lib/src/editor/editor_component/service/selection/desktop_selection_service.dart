@@ -1,7 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -146,39 +145,16 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   Node? getNodeInOffset(Offset offset) {
-    final List<Node> sortedNodes = getVisibleNodes();
+    final List<Node> sortedNodes = editorState.getVisibleNodes(
+      context.read<EditorScrollController>(),
+    );
 
-    return _getNodeInOffset(
+    return editorState.getNodeInOffset(
       sortedNodes,
       offset,
       0,
       sortedNodes.length - 1,
     );
-  }
-
-  List<Node> getVisibleNodes() {
-    final List<Node> sortedNodes = [];
-    final positions =
-        context.read<EditorScrollController>().visibleRangeNotifier.value;
-    // https://github.com/AppFlowy-IO/AppFlowy/issues/3651
-    final min = math.max(positions.$1 - 1, 0);
-    final max = positions.$2;
-    if (min < 0 || max < 0) {
-      return sortedNodes;
-    }
-
-    int i = -1;
-    for (final child in editorState.document.root.children) {
-      i++;
-      if (min > i) {
-        continue;
-      }
-      if (i > max) {
-        break;
-      }
-      sortedNodes.add(child);
-    }
-    return sortedNodes;
   }
 
   @override
@@ -393,76 +369,6 @@ class _DesktopSelectionServiceWidgetState
 
     _contextMenuAreas.add(contextMenu);
     Overlay.of(context, rootOverlay: true)?.insert(contextMenu);
-  }
-
-  Node? _getNodeInOffset(
-    List<Node> sortedNodes,
-    Offset offset,
-    int start,
-    int end,
-  ) {
-    if (start < 0 && end >= sortedNodes.length) {
-      return null;
-    }
-
-    var min = _findCloseNode(
-      sortedNodes,
-      start,
-      end,
-      (rect) => rect.bottom <= offset.dy,
-    );
-
-    final filteredNodes = List.of(sortedNodes)
-      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
-    min = 0;
-    if (filteredNodes.length > 1) {
-      min = _findCloseNode(
-        sortedNodes,
-        0,
-        filteredNodes.length - 1,
-        (rect) => rect.right <= offset.dx,
-      );
-    }
-
-    final node = filteredNodes[min];
-    if (node.children.isNotEmpty &&
-        node.children.first.renderBox != null &&
-        node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false)
-        ..sort(
-          (a, b) => a.rect.bottom != b.rect.bottom
-              ? a.rect.bottom.compareTo(b.rect.bottom)
-              : a.rect.left.compareTo(b.rect.left),
-        );
-
-      return _getNodeInOffset(
-        children,
-        offset,
-        0,
-        children.length - 1,
-      );
-    }
-    return node;
-  }
-
-  int _findCloseNode(
-    List<Node> sortedNodes,
-    int start,
-    int end,
-    bool Function(Rect rect) compare,
-  ) {
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (compare(rect)) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
-    }
-    return min.clamp(start, end);
   }
 
   @override
