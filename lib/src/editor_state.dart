@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// the type of this value is bool.
 ///
@@ -177,7 +176,10 @@ class EditorState {
     return transaction;
   }
 
-  // TODO: only for testing.
+  bool showHeader = false;
+  bool showFooter = false;
+
+  // only used for testing
   bool disableSealTimer = false;
   bool disableRules = false;
 

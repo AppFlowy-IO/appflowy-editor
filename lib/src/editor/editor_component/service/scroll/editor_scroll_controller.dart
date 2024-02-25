@@ -228,7 +228,7 @@ class EditorScrollController {
     // Determine the first visible item by finding the item with the
     // smallest trailing edge that is greater than 0.  i.e. the first
     // item whose trailing edge in visible in the viewport.
-    final min = positions
+    int min = positions
         .where((ItemPosition position) => position.itemTrailingEdge > 0)
         .reduce(
           (ItemPosition min, ItemPosition position) =>
@@ -238,7 +238,7 @@ class EditorScrollController {
     // Determine the last visible item by finding the item with the
     // greatest leading edge that is less than 1.  i.e. the last
     // item whose leading edge in visible in the viewport.
-    final max = positions
+    int max = positions
         .where((ItemPosition position) => position.itemLeadingEdge < 1)
         .reduce(
           (ItemPosition max, ItemPosition position) =>
@@ -246,7 +246,18 @@ class EditorScrollController {
         )
         .index;
 
+    // filter the header and footer
+    if (editorState.showHeader) {
+      max--;
+    }
+
+    if (editorState.showFooter &&
+        max >= editorState.document.root.children.length) {
+      max--;
+    }
+
     // notify the listeners
+
     visibleRangeNotifier.value = (min, max);
   }
 }
