@@ -56,13 +56,16 @@ Future<bool> _formatSymbolToBulletedList(
 
   return formatMarkdownSymbol(
     editorState,
-    (node) => node.type != 'bulleted_list',
+    (node) => node.type != BulletedListBlockKeys.type,
     (_, text, __) => text == symbol,
-    (_, node, delta) => Node(
-      type: 'bulleted_list',
-      attributes: {
-        'delta': delta.compose(Delta()..delete(symbol.length)).toJson(),
-      },
-    ),
+    (_, node, delta) => [
+      node.copyWith(
+        type: NumberedListBlockKeys.type,
+        attributes: {
+          BulletedListBlockKeys.delta:
+              delta.compose(Delta()..delete(symbol.length)).toJson(),
+        },
+      ),
+    ],
   );
 }

@@ -172,5 +172,31 @@ void main() async {
       expect(after.type, ParagraphBlockKeys.type);
       expect(after.delta!.toPlainText(), '3.');
     });
+
+    test('convert todo_list to bulleted_list ', () async {
+      const syntax = '1.';
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      testFormatCharacterShortcut(
+        formatNumberToNumberedList,
+        syntax,
+        syntax.length,
+        (result, before, after, editorState) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, NumberedListBlockKeys.type);
+          expect(after.children[0].delta!.toPlainText(), '1 $text');
+          expect(after.children[1].delta!.toPlainText(), '2 $text');
+        },
+        text: text,
+        node: todoListNode(
+          text: '$syntax$text',
+          checked: false,
+          children: [
+            todoListNode(text: '1 $text', checked: false),
+            todoListNode(text: '2 $text', checked: false),
+          ],
+        ),
+      );
+    });
   });
 }

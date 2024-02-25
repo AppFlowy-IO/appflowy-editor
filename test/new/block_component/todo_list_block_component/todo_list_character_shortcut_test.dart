@@ -86,6 +86,32 @@ void main() async {
           text: text,
         );
       });
+
+      test('convert numbered_list to todo_list ', () async {
+        const syntax = '-[x]';
+        const text = 'Welcome to AppFlowy Editor 🔥!';
+        testFormatCharacterShortcut(
+          formatHyphenFilledBracketsToCheckedBox,
+          syntax,
+          syntax.length,
+          (result, before, after, editorState) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, TodoListBlockKeys.type);
+            expect(after.attributes[TodoListBlockKeys.type], true);
+            expect(after.children[0].delta!.toPlainText(), '1 $text');
+            expect(after.children[1].delta!.toPlainText(), '2 $text');
+          },
+          text: text,
+          node: bulletedListNode(
+            text: '$syntax$text',
+            children: [
+              bulletedListNode(text: '1 $text'),
+              bulletedListNode(text: '2 $text'),
+            ],
+          ),
+        );
+      });
     },
   );
 }
