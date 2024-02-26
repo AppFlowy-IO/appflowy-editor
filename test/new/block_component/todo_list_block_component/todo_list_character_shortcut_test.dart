@@ -98,7 +98,7 @@ void main() async {
             expect(result, true);
             expect(after.delta!.toPlainText(), text);
             expect(after.type, TodoListBlockKeys.type);
-            expect(after.attributes[TodoListBlockKeys.type], true);
+            expect(after.attributes[TodoListBlockKeys.checked], true);
             expect(after.children[0].delta!.toPlainText(), '1 $text');
             expect(after.children[1].delta!.toPlainText(), '2 $text');
           },

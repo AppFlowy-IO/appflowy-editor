@@ -60,7 +60,7 @@ Future<bool> _formatSymbolToBulletedList(
     (_, text, __) => text == symbol,
     (_, node, delta) => [
       node.copyWith(
-        type: NumberedListBlockKeys.type,
+        type: BulletedListBlockKeys.type,
         attributes: {
           BulletedListBlockKeys.delta:
               delta.compose(Delta()..delete(symbol.length)).toJson(),
