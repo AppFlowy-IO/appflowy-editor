@@ -105,13 +105,16 @@ Future<bool> _formatSymbolToUncheckedBox({
     editorState,
     (node) => node.type != 'todo_list',
     (_, text, __) => text == symbol,
-    (_, node, delta) => Node(
-      type: 'todo_list',
-      attributes: {
-        'checked': false,
-        'delta': delta.compose(Delta()..delete(symbol.length)).toJson(),
-      },
-    ),
+    (_, node, delta) => [
+      node.copyWith(
+        type: TodoListBlockKeys.type,
+        attributes: {
+          TodoListBlockKeys.checked: false,
+          TodoListBlockKeys.delta:
+              delta.compose(Delta()..delete(symbol.length)).toJson(),
+        },
+      ),
+    ],
   );
 }
 
@@ -125,12 +128,15 @@ Future<bool> _formatSymbolToCheckedBox({
     editorState,
     (node) => node.type != 'todo_list',
     (_, text, __) => text == symbol,
-    (_, node, delta) => Node(
-      type: 'todo_list',
-      attributes: {
-        'checked': true,
-        'delta': delta.compose(Delta()..delete(symbol.length)).toJson(),
-      },
-    ),
+    (_, node, delta) => [
+      node.copyWith(
+        type: TodoListBlockKeys.type,
+        attributes: {
+          TodoListBlockKeys.checked: true,
+          TodoListBlockKeys.delta:
+              delta.compose(Delta()..delete(symbol.length)).toJson(),
+        },
+      ),
+    ],
   );
 }

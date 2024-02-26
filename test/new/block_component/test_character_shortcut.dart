@@ -10,10 +10,16 @@ Future<void> testFormatCharacterShortcut(
   void Function(bool result, Node before, Node after, EditorState editorState)
       test, {
   String text = 'Welcome to AppFlowy Editor 🔥!',
+  Node? node,
 }) async {
-  final document = Document.blank().addParagraph(
-    builder: (index) => Delta()..insert('$prefix$text'),
-  );
+  final document = Document.blank();
+  if (node != null) {
+    document.insert([0], [node]);
+  } else {
+    document.addParagraph(
+      builder: (index) => Delta()..insert('$prefix$text'),
+    );
+  }
   final editorState = EditorState(document: document);
 
   final selection = Selection.collapsed(

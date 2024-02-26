@@ -23,17 +23,19 @@ class TodoListBlockKeys {
 
 Node todoListNode({
   required bool checked,
+  String? text,
   Delta? delta,
   String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
-      ...attributes,
       TodoListBlockKeys.checked: checked,
+      TodoListBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      if (attributes != null) ...attributes,
       if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],

@@ -23,10 +23,13 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     },
     (text, node, delta) {
       final numberOfSign = text.split('').length;
-      return headingNode(
-        level: numberOfSign,
-        delta: delta.compose(Delta()..delete(numberOfSign)),
-      );
+      return [
+        headingNode(
+          level: numberOfSign,
+          delta: delta.compose(Delta()..delete(numberOfSign)),
+        ),
+        if (node.children.isNotEmpty) ...node.children,
+      ];
     },
   ),
 );
