@@ -87,7 +87,7 @@ void main() async {
         );
       });
 
-      test('convert numbered_list to todo_list ', () async {
+      test('convert numbered_list to todo_list', () async {
         const syntax = '-[x]';
         const text = 'Welcome to AppFlowy Editor 🔥!';
         testFormatCharacterShortcut(

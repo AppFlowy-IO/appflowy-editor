@@ -173,7 +173,7 @@ void main() async {
       expect(after.delta!.toPlainText(), '3.');
     });
 
-    test('convert todo_list to bulleted_list ', () async {
+    test('convert todo_list to bulleted_list', () async {
       const syntax = '1.';
       const text = 'Welcome to AppFlowy Editor 🔥!';
       testFormatCharacterShortcut(
