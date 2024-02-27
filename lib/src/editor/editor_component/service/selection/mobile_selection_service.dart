@@ -524,7 +524,7 @@ class _MobileSelectionServiceWidgetState
   }
 
   void _onLongPressStart(LongPressStartDetails details) {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       return;
     }
 
