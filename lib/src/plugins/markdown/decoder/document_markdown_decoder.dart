@@ -222,10 +222,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     } else if (numberedListRegex.hasMatch(line)) {
       return numberedListNode(
         attributes: {
-          'delta': decoder
-              .convert(line.substring(
-                  line.indexOf('.') + 2 /* skip the space after . */))
-              .toJson(),
+          'delta': decoder.convert(line.substring(line.indexOf('.') + 2)).toJson(),
         },
       );
     }
