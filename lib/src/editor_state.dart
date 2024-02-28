@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
@@ -107,7 +108,9 @@ class EditorState {
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     // clear the toggled style when the selection is changed.
-    toggledStyle.clear();
+    if (selectionNotifier.value != value) {
+      _toggledStyle.clear();
+    }
 
     selectionNotifier.value = value;
   }
@@ -159,13 +162,14 @@ class EditorState {
   ///
   /// NOTES: It only works once;
   ///   after the selection is changed, the toggled style will be cleared.
-  final toggledStyle = <String, bool>{};
-  late final toggledStyleNotifier =
-      ValueNotifier<Map<String, bool>>(toggledStyle);
+  UnmodifiableMapView<String, dynamic> get toggledStyle =>
+      UnmodifiableMapView<String, dynamic>(_toggledStyle);
+  final _toggledStyle = Attributes();
+  late final toggledStyleNotifier = ValueNotifier<Attributes>(toggledStyle);
 
-  void updateToggledStyle(String key, bool value) {
-    toggledStyle[key] = value;
-    toggledStyleNotifier.value = {...toggledStyle};
+  void updateToggledStyle(String key, dynamic value) {
+    _toggledStyle[key] = value;
+    toggledStyleNotifier.value = {..._toggledStyle};
   }
 
   final UndoManager undoManager = UndoManager();
