@@ -368,7 +368,6 @@ extension TextTransaction on Transaction {
     );
   }
 
-  // TODO: refactor this code
   void replaceTexts(
     List<Node> nodes,
     Selection selection,
