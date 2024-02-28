@@ -288,7 +288,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
-      onKey: _onKey,
+      onKeyEvent: _onKeyEvent,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: widget.selectionMenuStyle.selectionMenuBackgroundColor,
@@ -382,9 +382,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles arrow keys to switch selected items
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
-  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     Log.keyboard.debug('slash command, on key $event');
-    if (event is! RawKeyDownEvent) {
+
+    if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
     }
 

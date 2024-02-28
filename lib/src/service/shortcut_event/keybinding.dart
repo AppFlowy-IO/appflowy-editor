@@ -1,15 +1,17 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/src/service/shortcut_event/key_mapping.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 extension KeybindingsExtension on List<Keybinding> {
-  bool containsKeyEvent(RawKeyEvent keyEvent) {
+  bool containsKeyEvent(KeyEvent keyEvent) {
     for (final keybinding in this) {
-      if (keybinding.isMetaPressed == keyEvent.isMetaPressed &&
-          keybinding.isControlPressed == keyEvent.isControlPressed &&
-          keybinding.isAltPressed == keyEvent.isAltPressed &&
-          keybinding.isShiftPressed == keyEvent.isShiftPressed &&
+      if (keybinding.isMetaPressed == HardwareKeyboard.instance.isMetaPressed &&
+          keybinding.isControlPressed ==
+              HardwareKeyboard.instance.isControlPressed &&
+          keybinding.isAltPressed == HardwareKeyboard.instance.isAltPressed &&
+          keybinding.isShiftPressed ==
+              HardwareKeyboard.instance.isShiftPressed &&
           keybinding.keyCode == keyEvent.logicalKey.keyId) {
         return true;
       }

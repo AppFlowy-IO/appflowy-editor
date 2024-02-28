@@ -186,7 +186,6 @@ extension SelectionTransform on EditorState {
 
   /// move the cursor forward.
   ///
-  /// TODO: I think we should add move forward function to the SelectableMixin.
   /// Don't hardcode the logic here.
   /// For example,
   ///   final position = node.selectable?.moveForward(selection.startIndex);

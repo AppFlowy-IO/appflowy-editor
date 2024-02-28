@@ -118,8 +118,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     _textInputConnection = null;
   }
 
-  // TODO: support IME in linux / ios / android
-  // Only verify in macOS and Windows now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
     _textInputConnection

@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                 html.toJson(),
               ).toString(),
             );
-            if (mounted) {
+            if (context.mounted) {
               _loadEditor(context, jsonString);
             }
           }),

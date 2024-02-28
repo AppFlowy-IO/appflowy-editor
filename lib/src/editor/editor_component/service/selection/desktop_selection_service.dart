@@ -212,7 +212,7 @@ class _DesktopSelectionServiceWidgetState
     }
 
     Selection? selection;
-    if (RawKeyboard.instance.isShiftPressed && _panStartOffset != null) {
+    if (HardwareKeyboard.instance.isShiftPressed && _panStartOffset != null) {
       final first = getNodeInOffset(_panStartOffset!)?.selectable;
 
       if (first != null) {
