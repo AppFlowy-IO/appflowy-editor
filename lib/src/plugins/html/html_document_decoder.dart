@@ -421,7 +421,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     if (backgroundColor != null) {
       final highlightColor = backgroundColor.tryToColor()?.toHex();
       if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[AppFlowyRichTextKeys.backgroundColor] = highlightColor;
       }
     }
 
@@ -430,7 +430,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     if (background != null) {
       final highlightColor = background.tryToColor()?.toHex();
       if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[AppFlowyRichTextKeys.backgroundColor] = highlightColor;
       }
     }
 

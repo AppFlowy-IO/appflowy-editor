@@ -469,7 +469,8 @@ extension AppFlowyRichTextAttributes on Attributes {
   }
 
   Color? get backgroundColor {
-    final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
+    final highlightColor =
+        this[AppFlowyRichTextKeys.backgroundColor] as String?;
     return highlightColor?.tryToColor();
   }
 

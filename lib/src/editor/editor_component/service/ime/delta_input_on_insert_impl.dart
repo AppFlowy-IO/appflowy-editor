@@ -82,7 +82,7 @@ Future<void> onInsert(
     );
   }
 
-// delete the '\' character if the shortcut event is ignored.
+  // delete the '\' character if the shortcut event is ignored.
   if (backSlashLocation > 0) {
     final transaction = editorState.transaction
       ..deleteText(

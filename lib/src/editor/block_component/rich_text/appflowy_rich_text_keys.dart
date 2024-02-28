@@ -4,7 +4,7 @@ class AppFlowyRichTextKeys {
   static String underline = 'underline';
   static String strikethrough = 'strikethrough';
   static String textColor = 'font_color';
-  static String highlightColor = 'bg_color';
+  static String backgroundColor = 'bg_color';
   static String findBackgroundColor = 'find_bg_color';
   static String code = 'code';
   static String href = 'href';
@@ -17,7 +17,7 @@ class AppFlowyRichTextKeys {
     underline,
     strikethrough,
     textColor,
-    highlightColor,
+    backgroundColor,
   ];
 
   // The values supported toggled even if the selection is collapsed.
@@ -27,5 +27,8 @@ class AppFlowyRichTextKeys {
     underline,
     strikethrough,
     code,
+    fontFamily,
+    textColor,
+    backgroundColor,
   ];
 }
