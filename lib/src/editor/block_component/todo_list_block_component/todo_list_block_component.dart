@@ -221,7 +221,7 @@ class _TodoListBlockComponentWidgetState
       });
 
     if (widget.toggleChildrenTriggers != null &&
-        RawKeyboard.instance.keysPressed.any(
+        HardwareKeyboard.instance.logicalKeysPressed.any(
           (element) => widget.toggleChildrenTriggers!.contains(element),
         )) {
       checkOrUncheckChildren(!checked, widget.node);

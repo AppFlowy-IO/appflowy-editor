@@ -76,8 +76,6 @@ class _BackgroundColorOptionsWidgetsState
                       e.colorHex,
                     );
                   });
-                } else {
-                  // TODO(yijing): handle when no text is selected
                 }
               },
               isSelected: isSelected,
