@@ -41,7 +41,6 @@ CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
     if (text != null && text.isNotEmpty) {
-      await editorState.deleteSelectionIfNeeded();
       await editorState.pastePlainText(text);
     }
   }();
@@ -60,7 +59,6 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     final text = data.text;
     final html = data.html;
     if (html != null && html.isNotEmpty) {
-      await editorState.deleteSelectionIfNeeded();
       // if the html is pasted successfully, then return
       // otherwise, paste the plain text
       if (await editorState.pasteHtml(html)) {
@@ -69,7 +67,6 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     }
 
     if (text != null && text.isNotEmpty) {
-      await editorState.deleteSelectionIfNeeded();
       editorState.pastePlainText(text);
     }
   }();
@@ -103,29 +100,47 @@ extension on EditorState {
   }
 
   Future<void> pastePlainText(String plainText) async {
-    if (await pasteHtmlIfAvailable(plainText)) {
+    final selectionAttributes = getDeltaAttributesInSelectionStart();
+    // TODO remove this deletion after refactoring pasteHtmlIfAvailable below
+    final selection = await deleteSelectionIfNeeded();
+
+    if (selection == null) {
       return;
     }
 
-    await deleteSelectionIfNeeded();
+    if (await maybeConvertToUrl(plainText)) {
+      return;
+    }
 
     final nodes = plainText
         .split('\n')
         .map(
-          (e) => e
+          (paragraph) => paragraph
             ..replaceAll(r'\r', '')
             ..trimRight(),
         )
-        .map((e) {
+        .map((paragraph) {
           // parse the url content
-          final Attributes attributes = {};
-          if (_hrefRegex.hasMatch(e)) {
-            attributes[AppFlowyRichTextKeys.href] = e;
+          var attributes = Attributes();
+
+          // FIXME this is converting the whole line into a link
+          // https://github.com/AppFlowy-IO/appflowy-editor/issues/693
+          if (_hrefRegex.hasMatch(paragraph)) {
+            attributes[AppFlowyRichTextKeys.href] = paragraph;
           }
-          return Delta()..insert(e, attributes: attributes);
+
+          // merge attributes of wrapping node
+          if (selectionAttributes != null) {
+            attributes = attributes..addAll(selectionAttributes);
+          }
+
+          return Delta()..insert(paragraph, attributes: attributes);
         })
-        .map((e) => paragraphNode(delta: e))
+        .map(
+          (delta) => paragraphNode(delta: delta),
+        )
         .toList();
+
     if (nodes.isEmpty) {
       return;
     }
@@ -136,7 +151,7 @@ extension on EditorState {
     }
   }
 
-  Future<bool> pasteHtmlIfAvailable(String plainText) async {
+  Future<bool> maybeConvertToUrl(String plainText) async {
     final selection = this.selection;
     if (selection == null ||
         !selection.isSingle ||
