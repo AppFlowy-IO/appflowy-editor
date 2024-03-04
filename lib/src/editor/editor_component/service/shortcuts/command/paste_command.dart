@@ -119,9 +119,6 @@ extension on EditorState {
         .map((e) {
           // parse the url content
           final Attributes attributes = {};
-          if (_hrefRegex.hasMatch(e)) {
-            attributes[AppFlowyRichTextKeys.href] = e;
-          }
           return Delta()..insert(e, attributes: attributes);
         })
         .map((e) => paragraphNode(delta: e))
