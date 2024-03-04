@@ -40,6 +40,7 @@ CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
   () async {
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
+    debugPrint('pasteTextWithoutFormatting text: $text');
     if (text != null && text.isNotEmpty) {
       await editorState.deleteSelectionIfNeeded();
       await editorState.pastePlainText(text);
@@ -58,6 +59,7 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   () async {
     final data = await AppFlowyClipboard.getData();
     final text = data.text;
+    debugPrint('pasteCommandHandler text: $text');
     final html = data.html;
     if (html != null && html.isNotEmpty) {
       await editorState.deleteSelectionIfNeeded();
@@ -119,6 +121,16 @@ extension on EditorState {
         .map((e) {
           // parse the url content
           final Attributes attributes = {};
+          final Match? firstMatch = _hrefRegex.firstMatch(e);
+          if (firstMatch != null) {
+            final url = firstMatch.group(0);
+            debugPrint('url: $url');
+            if (url != null) {
+              // final int start = firstMatch.start;
+              // final int end = firstMatch.end;
+              attributes[AppFlowyRichTextKeys.href] = url;
+            }
+          }
           return Delta()..insert(e, attributes: attributes);
         })
         .map((e) => paragraphNode(delta: e))
