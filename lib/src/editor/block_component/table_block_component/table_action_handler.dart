@@ -43,7 +43,8 @@ class _TableActionHandlerState extends State<TableActionHandler> {
       transform: widget.transform,
       height: widget.height,
       child: Visibility(
-        visible: (widget.visible || _visible || _menuShown) && widget.editorState.editable,
+        visible: (widget.visible || _visible || _menuShown) &&
+            widget.editorState.editable,
         child: MouseRegion(
           onEnter: (_) => setState(() => _visible = true),
           onExit: (_) => setState(() => _visible = false),
