@@ -182,9 +182,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           shrinkWrap: widget.shrinkWrap,
         );
 
-    editorState.editorStyle = widget.editorStyle;
+    _updateValues();
     editorState.renderer = _renderer;
-    editorState.editable = widget.editable;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -206,8 +205,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    editorState.editorStyle = widget.editorStyle;
-    editorState.editable = widget.editable;
+    _updateValues();
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.renderer = _renderer;
@@ -287,6 +285,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         reason: SelectionUpdateReason.uiEvent,
       );
     }
+  }
+
+  void _updateValues() {
+    editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
+    editorState.showHeader = widget.header != null;
+    editorState.showFooter = widget.footer != null;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

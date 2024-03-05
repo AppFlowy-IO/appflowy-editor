@@ -1,11 +1,11 @@
 import 'dart:async';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// the type of this value is bool.
 ///
@@ -108,7 +108,9 @@ class EditorState {
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     // clear the toggled style when the selection is changed.
-    toggledStyle.clear();
+    if (selectionNotifier.value != value) {
+      _toggledStyle.clear();
+    }
 
     selectionNotifier.value = value;
   }
@@ -160,13 +162,14 @@ class EditorState {
   ///
   /// NOTES: It only works once;
   ///   after the selection is changed, the toggled style will be cleared.
-  final toggledStyle = <String, bool>{};
-  late final toggledStyleNotifier =
-      ValueNotifier<Map<String, bool>>(toggledStyle);
+  UnmodifiableMapView<String, dynamic> get toggledStyle =>
+      UnmodifiableMapView<String, dynamic>(_toggledStyle);
+  final _toggledStyle = Attributes();
+  late final toggledStyleNotifier = ValueNotifier<Attributes>(toggledStyle);
 
-  void updateToggledStyle(String key, bool value) {
-    toggledStyle[key] = value;
-    toggledStyleNotifier.value = {...toggledStyle};
+  void updateToggledStyle(String key, dynamic value) {
+    _toggledStyle[key] = value;
+    toggledStyleNotifier.value = {..._toggledStyle};
   }
 
   final UndoManager undoManager = UndoManager();
@@ -177,7 +180,10 @@ class EditorState {
     return transaction;
   }
 
-  // TODO: only for testing.
+  bool showHeader = false;
+  bool showFooter = false;
+
+  // only used for testing
   bool disableSealTimer = false;
   bool disableRules = false;
 

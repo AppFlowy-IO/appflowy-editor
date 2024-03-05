@@ -3,19 +3,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
 import 'package:example/pages/focus_example_for_editor.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
-
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 enum ExportFileType {
   documentJson,
@@ -145,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                 html.toJson(),
               ).toString(),
             );
-            if (mounted) {
+            if (context.mounted) {
               _loadEditor(context, jsonString);
             }
           }),

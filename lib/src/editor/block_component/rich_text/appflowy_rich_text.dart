@@ -285,6 +285,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -301,6 +303,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -465,7 +469,8 @@ extension AppFlowyRichTextAttributes on Attributes {
   }
 
   Color? get backgroundColor {
-    final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
+    final highlightColor =
+        this[AppFlowyRichTextKeys.backgroundColor] as String?;
     return highlightColor?.tryToColor();
   }
 

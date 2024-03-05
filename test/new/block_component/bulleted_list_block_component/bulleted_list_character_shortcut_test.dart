@@ -21,7 +21,7 @@ void main() async {
         (result, before, after, editorState) {
           expect(result, true);
           expect(after.delta!.toPlainText(), text);
-          expect(after.type, 'bulleted_list');
+          expect(after.type, BulletedListBlockKeys.type);
         },
         text: text,
       );
