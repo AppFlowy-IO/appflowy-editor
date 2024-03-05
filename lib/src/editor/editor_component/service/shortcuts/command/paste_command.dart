@@ -112,16 +112,42 @@ extension on EditorState {
     final nodes = plainText
         .split('\n')
         .map(
-          (e) => e
+          (paragraph) => paragraph
             ..replaceAll(r'\r', '')
             ..trimRight(),
         )
-        .map((e) {
-          // parse the url content
-          final Attributes attributes = {};
-          return Delta()..insert(e, attributes: attributes);
+        .map((paragraph) {
+          Delta delta = Delta();
+          if (_hrefRegex.hasMatch(paragraph)) {
+            final firstMatch = _hrefRegex.firstMatch(paragraph);
+            if (firstMatch != null) {
+              int startPos = firstMatch.start;
+              int endPos = firstMatch.end;
+              final String? url = firstMatch.group(0);
+              if (url != null) {
+                /// insert the text before the link
+                if (startPos > 0) {
+                  delta.insert(paragraph.substring(0, startPos));
+                }
+
+                /// insert the link
+                delta.insert(
+                  paragraph.substring(startPos, endPos),
+                  attributes: {AppFlowyRichTextKeys.href: url},
+                );
+
+                /// insert the text after the link
+                if (endPos < paragraph.length) {
+                  delta.insert(paragraph.substring(endPos));
+                }
+              }
+            }
+          } else {
+            delta.insert(paragraph);
+          }
+          return delta;
         })
-        .map((e) => paragraphNode(delta: e))
+        .map((paragraph) => paragraphNode(delta: paragraph))
         .toList();
     if (nodes.isEmpty) {
       return;
@@ -141,7 +167,6 @@ extension on EditorState {
         !_hrefRegex.hasMatch(plainText)) {
       return false;
     }
-
     final node = getNodeAtPath(selection.start.path);
     if (node == null) {
       return false;
