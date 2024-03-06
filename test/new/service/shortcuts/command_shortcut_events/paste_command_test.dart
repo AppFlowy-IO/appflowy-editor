@@ -61,6 +61,38 @@ void main() async {
     );
 
     testWidgets(
+      'Copy text contains link',
+      (tester) async {
+        final editor = tester.editor..addParagraph(initialText: '');
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.collapsed(Position(path: [0], offset: 0)),
+        );
+
+        const textWithLink = 'click https://appflowy.io/ jump to appflowy';
+        AppFlowyClipboard.mockSetData(
+          const AppFlowyClipboardData(text: textWithLink),
+        );
+
+        pasteCommand.execute(editor.editorState);
+        await tester.pumpAndSettle();
+
+        final delta = editor.nodeAtPath([0])!.delta!;
+        expect(delta.toPlainText(), textWithLink);
+        expect(
+          delta.everyAttributes(
+            (element) =>
+                element[AppFlowyRichTextKeys.href] == 'https://appflowy.io/',
+          ),
+          false,
+        );
+
+        AppFlowyClipboard.mockSetData(null);
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
         'Presses Command + A in small document and copy text and paste text',
         (tester) async {
       await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
