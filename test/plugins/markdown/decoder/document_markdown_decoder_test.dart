@@ -297,7 +297,7 @@ void main() async {
         "data": {
           "delta": [
             {
-              "insert": " list item 1"
+              "insert": "list item 1"
             }
           ]
         }
@@ -307,7 +307,7 @@ void main() async {
         "data": {
           "delta": [
             {
-              "insert": " list item 2"
+              "insert": "list item 2"
             }
           ]
         }
@@ -739,15 +739,15 @@ void main() async {
       {
         "type": "numbered_list",
         "children": [
-          {"type": "numbered_list", "data": {"delta": [{"insert": " Which"}]}},
-          {"type": "numbered_list", "data": {"delta": [{"insert": " Is"}]}},
-          {"type": "numbered_list", "data": {"delta": [{"insert": " Nested"}]}}
+          {"type": "numbered_list", "data": {"delta": [{"insert": "Which"}]}},
+          {"type": "numbered_list", "data": {"delta": [{"insert": "Is"}]}},
+          {"type": "numbered_list", "data": {"delta": [{"insert": "Nested"}]}}
         ],
-        "data": {"delta": [{"insert": " Numbered List"}]}
+        "data": {"delta": [{"insert": "Numbered List"}]}
       },
       {
         "type": "numbered_list",
-        "data": {"delta": [{"insert": " Back to top level"}]}
+        "data": {"delta": [{"insert": "Back to top level"}]}
       },
       {"type": "paragraph", "data": {"delta": []}}
     ]

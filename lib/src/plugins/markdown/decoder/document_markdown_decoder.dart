@@ -223,7 +223,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return numberedListNode(
         attributes: {
           'delta':
-              decoder.convert(line.substring(line.indexOf('.') + 1)).toJson(),
+              decoder.convert(line.substring(line.indexOf('.') + 2)).toJson(),
         },
       );
     }
