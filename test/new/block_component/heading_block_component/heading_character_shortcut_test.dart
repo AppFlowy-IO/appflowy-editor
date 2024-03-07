@@ -116,5 +116,32 @@ void main() async {
       expect(after.type, 'heading');
       expect(after.delta!.toPlainText(), text);
     });
+
+    test('convert bulleted_list to heading', () async {
+      const syntax = '#';
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      testFormatCharacterShortcut(
+        formatSignToHeading,
+        syntax,
+        syntax.length,
+        (result, before, after, editorState) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, HeadingBlockKeys.type);
+          expect(after.attributes[HeadingBlockKeys.level], 1);
+          expect(after.children.isEmpty, true);
+          expect(after.next!.delta!.toPlainText(), '1 $text');
+          expect(after.next!.next!.delta!.toPlainText(), '2 $text');
+        },
+        text: text,
+        node: bulletedListNode(
+          text: '$syntax$text',
+          children: [
+            bulletedListNode(text: '1 $text'),
+            bulletedListNode(text: '2 $text'),
+          ],
+        ),
+      );
+    });
   });
 }

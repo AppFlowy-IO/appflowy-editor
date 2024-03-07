@@ -229,7 +229,6 @@ class UpdateTextOperation extends Operation {
   int get hashCode => delta.hashCode ^ inverted.hashCode;
 }
 
-// TODO(Lucas.Xu): refactor this part
 Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
   if (preInsertPath.length > b.length || preInsertPath.isEmpty || b.isEmpty) {
     return b;
@@ -269,6 +268,5 @@ Operation? transformOperation(Operation a, Operation b) {
     return b.copyWith(path: newPath);
   }
 
-  // TODO: transform update and textedit
   return b;
 }
