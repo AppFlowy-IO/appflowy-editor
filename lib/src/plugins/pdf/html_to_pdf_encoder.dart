@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:pdf/widgets.dart' as pw;
@@ -22,8 +21,16 @@ class PdfHTMLEncoder {
   });
 
   Future<pw.Document> convert(String input) async {
-    final htmlx = md.markdownToHtml(input,
-        inlineSyntaxes: [md.InlineHtmlSyntax(), md.ImageSyntax()]);
+    final htmlx = md.markdownToHtml(
+      input,
+      blockSyntaxes: [
+        const md.TableSyntax(),
+      ],
+      inlineSyntaxes: [
+        md.InlineHtmlSyntax(),
+        md.ImageSyntax(),
+      ],
+    );
     final document = parse(htmlx);
     final body = document.body;
     if (body == null) {
@@ -145,10 +152,8 @@ class PdfHTMLEncoder {
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
-      /*
       case HTMLTags.table:
-        return _parseTable(element);
-            */
+        return await _parseTable(element);
       case HTMLTags.list:
         return [
           _parseListElement(
@@ -170,131 +175,105 @@ class PdfHTMLEncoder {
         return [await _parseParagraphElement(element)];
     }
   }
-/*
-  Iterable<Node> _parseTable(dom.Element element) {
-    final List<Node> tablenodes = [];
-    int columnLenth = 0;
-    int rowLength = 0;
-    for (final data in element.children) {
-      final (col, row, rwdata) = _parsetableRows(data);
-      columnLenth = columnLenth + col;
-      rowLength = rowLength + row;
 
-      tablenodes.addAll(rwdata);
+  //BUG: Table nodes arent aligning correctly.
+  //BUG: Table cuts off information
+  Future<Iterable<pw.Widget>> _parseTable(dom.Element element) async {
+    final List<pw.TableRow> tablenodes = [];
+    for (final data in element.children) {
+      final rowdata = await _parsetableRows(data);
+
+      tablenodes.addAll(rowdata);
     }
 
     return [
-      TableNode(
-        node: Node(
-          type: TableBlockKeys.type,
-          attributes: {
-            TableBlockKeys.rowsLen: rowLength,
-            TableBlockKeys.colsLen: columnLenth,
-            TableBlockKeys.colDefaultWidth: TableDefaults.colWidth,
-            TableBlockKeys.rowDefaultHeight: TableDefaults.rowHeight,
-            TableBlockKeys.colMinimumWidth: TableDefaults.colMinimumWidth,
-          },
-          children: tablenodes,
-        ),
-      ).node,
+      pw.Table(
+        border: pw.TableBorder.all(color: pdf.PdfColors.black),
+        children: tablenodes,
+      ),
     ];
   }
-    */
-/*
-  (int, int, List<Node>) _parsetableRows(dom.Element element) {
-    final List<Node> nodes = [];
-    int colLength = 0;
-    int rowLength = 0;
+
+  Future<List<pw.TableRow>> _parsetableRows(dom.Element element) async {
+    final List<pw.TableRow> nodes = [];
 
     for (final data in element.children) {
-      final tabledata = _parsetableData(data, rowPosition: rowLength);
-      if (colLength == 0) {
-        colLength = tabledata.length;
-      }
-      nodes.addAll(tabledata);
-      rowLength++;
+      final tabledata = await _parsetableData(data);
+      nodes.add(tabledata);
     }
-    return (colLength, rowLength, nodes);
-  }
-    */
-/*
-  Iterable<Node> _parsetableData(
-    dom.Element element, {
-    required int rowPosition,
-  }) {
-    final List<Node> nodes = [];
-    int columnPosition = 0;
-
-    for (final data in element.children) {
-      Attributes attributes = {
-        TableCellBlockKeys.colPosition: columnPosition,
-        TableCellBlockKeys.rowPosition: rowPosition,
-      };
-      if (data.attributes.isNotEmpty) {
-        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
-              element.attributes,
-            ) ??
-            {};
-        attributes.addAll(deltaAttributes);
-      }
-
-      List<Node> children;
-      if (data.children.isEmpty) {
-        children = [paragraphNode(text: data.text)];
-      } else {
-        children = _parseTableSpecialNodes(data).toList();
-      }
-
-      final node = Node(
-        type: TableCellBlockKeys.type,
-        attributes: attributes,
-        children: children,
-      );
-
-      nodes.add(node);
-      columnPosition++;
-    }
-
     return nodes;
   }
-*/
-/*
-  Iterable<Node> _parseTableSpecialNodes(dom.Element element) {
-    final List<Node> nodes = [];
+
+  Future<pw.TableRow> _parsetableData(
+    dom.Element element,
+  ) async {
+    final List<pw.Widget> nodes = [];
+    for (final data in element.children) {
+      if (data.children.isEmpty) {
+        final node = pw.Paragraph(text: data.text);
+        nodes.add(node);
+      } else {
+        final specialNodes = await _parseTableSpecialNodes(data);
+        nodes.addAll(specialNodes);
+      }
+    }
+
+    return pw.TableRow(
+      decoration:
+          pw.BoxDecoration(border: pw.Border.all(color: pdf.PdfColors.black)),
+      children: nodes,
+    );
+  }
+
+  Future<Iterable<pw.Widget>> _parseTableSpecialNodes(
+    dom.Element element,
+  ) async {
+    final List<pw.Widget> nodes = [];
 
     if (element.children.isNotEmpty) {
       for (final childrens in element.children) {
-        nodes.addAll(_parseTableDataElementsData(childrens));
+        nodes.addAll(await _parseTableDataElementsData(childrens));
       }
     } else {
-      nodes.addAll(_parseTableDataElementsData(element));
+      nodes.addAll(await _parseTableDataElementsData(element));
     }
     return nodes;
   }
-    */
-/*
-  List<Node> _parseTableDataElementsData(dom.Element element) {
-    final List<Node> nodes = [];
-    final delta = Delta();
+
+  Future<List<pw.Widget>> _parseTableDataElementsData(
+    dom.Element element,
+  ) async {
+    final List<pw.Widget> nodes = [];
+    final result = <pw.Widget>[];
     final localName = element.localName;
-
-    if (HTMLTags.formattingElements.contains(localName)) {
+    if (localName == HTMLTags.br) {
+    } else if (HTMLTags.formattingElements.contains(localName)) {
       final attributes = _parserFormattingElementAttributes(element);
-      //delta.insert(element.text, attributes: attributes);
+      result.add(pw.Text(element.text, style: attributes.$2));
     } else if (HTMLTags.specialElements.contains(localName)) {
-      if (delta.isNotEmpty) {
-        nodes.add(paragraphNode(delta: delta));
-      }
+      //NOTE: Possibly come back and change this?
+      result.addAll(
+        await _parseSpecialElements(
+          element,
+          type: BuiltInAttributeKey.bulletedList,
+        ),
+      );
     } else if (element is dom.Text) {
-      delta.insert(element.text);
+      nodes.add(
+        pw.Text(
+          element.text,
+          style: pw.TextStyle(font: font, fontFallback: fontFallback),
+        ),
+      );
+    } else {
+      assert(false, 'Unknown, node type: $element');
     }
 
-    if (delta.isNotEmpty) {
-      nodes.add(paragraphNode(delta: delta));
+    if (nodes.isNotEmpty) {
+      result.add(pw.Wrap(children: nodes));
     }
-    return nodes;
+    return result;
   }
-*/
 
   (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
     dom.Element element,
@@ -501,9 +480,8 @@ class PdfHTMLEncoder {
   }
 
   Future<pw.Widget> _parseDeltaElement(
-    dom.Element element, {
-    String? type,
-  }) async {
+    dom.Element element,
+  ) async {
     final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
     final subNodes = <pw.Widget>[];
@@ -570,7 +548,9 @@ class PdfHTMLEncoder {
   }
 
   static pw.TextStyle _assignTextDecorations(
-      pw.TextStyle style, String decorationStr) {
+    pw.TextStyle style,
+    String decorationStr,
+  ) {
     final decorations = decorationStr.split(" ");
     final textDecorations = <pw.TextDecoration>[];
     for (final type in decorations) {
@@ -581,7 +561,10 @@ class PdfHTMLEncoder {
       }
     }
     return style.copyWith(
-        decoration: pw.TextDecoration.combine(textDecorations));
+      decoration: pw.TextDecoration.combine(
+        textDecorations,
+      ),
+    );
   }
 
   (pw.TextAlign?, pw.TextStyle) _getDeltaAttributesFromHTMLAttributes(
