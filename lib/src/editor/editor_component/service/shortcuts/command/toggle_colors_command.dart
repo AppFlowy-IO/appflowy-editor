@@ -66,14 +66,14 @@ KeyEventResult _toggleHighlight(
   final nodes = editorState.getNodesInSelection(selection);
   final isHighlighted = nodes.allSatisfyInSelection(selection, (delta) {
     return delta.everyAttributes(
-      (attributes) => attributes[AppFlowyRichTextKeys.highlightColor] != null,
+      (attributes) => attributes[AppFlowyRichTextKeys.backgroundColor] != null,
     );
   });
 
   editorState.formatDelta(
     selection,
     {
-      AppFlowyRichTextKeys.highlightColor:
+      AppFlowyRichTextKeys.backgroundColor:
           isHighlighted ? null : style.highlightColor.toHex(),
     },
   );

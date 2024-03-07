@@ -16,7 +16,6 @@ final CommandShortcutEvent openInlineLinkCommand = CommandShortcutEvent(
 KeyEventResult _openInlineLink(
   EditorState editorState,
 ) {
-  //TODO:If selection is collapsed, isHref is false.
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;

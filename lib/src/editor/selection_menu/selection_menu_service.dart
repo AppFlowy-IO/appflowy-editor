@@ -2,7 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'package:flutter/material.dart';
 
-// TODO: this file is too long, need to refactor.
 abstract class SelectionMenuService {
   Offset get offset;
   Alignment get alignment;
@@ -129,7 +128,7 @@ class SelectionMenu extends SelectionMenuService {
       },
     );
 
-    Overlay.of(context).insert(_selectionMenuEntry!);
+    Overlay.of(context, rootOverlay: true).insert(_selectionMenuEntry!);
 
     editorState.service.keyboardService?.disable(showCursor: true);
     editorState.service.scrollService?.disable();
@@ -294,7 +293,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['image'],
     handler: (editorState, menuService, context) {
-      final container = Overlay.of(context);
+      final container = Overlay.of(context, rootOverlay: true);
       showImageMenu(container, editorState, menuService);
     },
   ),

@@ -100,7 +100,7 @@ class CommandShortcutEvent {
     }
   }
 
-  bool canRespondToRawKeyEvent(RawKeyEvent event) {
+  bool canRespondToRawKeyEvent(KeyEvent event) {
     return keybindings.containsKeyEvent(event);
   }
 

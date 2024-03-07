@@ -1,6 +1,6 @@
 name: appflowy_editor
 description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
-version: 2.3.2
+version: 2.3.3
 homepage: https://github.com/AppFlowy-IO/appflowy-editor
 
 topics:
@@ -56,7 +56,7 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
-  leak_tracker: 9.0.16
+  leak_tracker: ^10.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

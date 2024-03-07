@@ -8,7 +8,7 @@ void formatHighlightColor(
 }) {
   editorState.formatDelta(
     selection,
-    {AppFlowyRichTextKeys.highlightColor: color},
+    {AppFlowyRichTextKeys.backgroundColor: color},
     withUpdateSelection: withUpdateSelection,
   );
 }
