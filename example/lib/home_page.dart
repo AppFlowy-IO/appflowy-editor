@@ -7,6 +7,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
+import 'package:example/pages/fixed_toolbar_editor.dart';
 import 'package:example/pages/focus_example_for_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -189,6 +190,14 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const EditorList(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Fixed Toolbar', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FixedToolbarExample(),
               ),
             );
           }),
