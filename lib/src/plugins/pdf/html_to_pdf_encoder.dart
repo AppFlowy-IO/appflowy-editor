@@ -23,12 +23,13 @@ class PdfHTMLEncoder {
   Future<pw.Document> convert(String input) async {
     final htmlx = md.markdownToHtml(
       input,
-      blockSyntaxes: [
-        const md.TableSyntax(),
+      blockSyntaxes: const [
+        md.TableSyntax(),
       ],
       inlineSyntaxes: [
         md.InlineHtmlSyntax(),
         md.ImageSyntax(),
+        md.StrikethroughSyntax(),
       ],
     );
     final document = parse(htmlx);
@@ -66,7 +67,6 @@ class PdfHTMLEncoder {
           textSpan.add(const pw.TextSpan(text: '\n'));
         } else if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          //delta.insert(domNode.text, attributes: attributes);
           nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (textSpan.isNotEmpty) {
@@ -153,7 +153,7 @@ class PdfHTMLEncoder {
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
       case HTMLTags.table:
-        return await _parseTable(element);
+        return _parseRawTableData(element);
       case HTMLTags.list:
         return [
           _parseListElement(
@@ -176,103 +176,50 @@ class PdfHTMLEncoder {
     }
   }
 
-  //BUG: Table nodes arent aligning correctly.
-  //BUG: Table cuts off information
-  Future<Iterable<pw.Widget>> _parseTable(dom.Element element) async {
-    final List<pw.TableRow> tablenodes = [];
-    for (final data in element.children) {
-      final rowdata = await _parsetableRows(data);
+  Future<Iterable<pw.Widget>> _parseRawTableData(dom.Element element) async {
+    List<pw.TableRow> tableRows = [];
 
-      tablenodes.addAll(rowdata);
+    for (dom.Element row in element.querySelectorAll('tr')) {
+      List<pw.Widget> rowData = [];
+      for (final dom.Element cell in row.children) {
+        List<pw.Widget> cellContent = [];
+        //NOTE: Handle nested HTML tags within table cells
+        for (final dom.Node node in cell.nodes) {
+          if (node.nodeType == dom.Node.ELEMENT_NODE) {
+            dom.Element element = node as dom.Element;
+            if (HTMLTags.formattingElements.contains(element.localName)) {
+              final attributes = _parserFormattingElementAttributes(element);
+              cellContent.add(pw.Text(element.text, style: attributes.$2));
+            }
+            if (HTMLTags.specialElements.contains(element.localName)) {
+              cellContent.addAll(
+                await _parseSpecialElements(
+                  element,
+                  type: BuiltInAttributeKey.bulletedList,
+                ),
+              );
+            }
+          } else if (node.nodeType == dom.Node.TEXT_NODE) {
+            //TODO: Handle nested lists
+            cellContent.add(
+              pw.Text(
+                (node as dom.Text).data,
+                style: pw.TextStyle(font: font, fontFallback: fontFallback),
+              ),
+            );
+          }
+        }
+
+        rowData.add(pw.Wrap(children: cellContent));
+      }
+      tableRows.add(pw.TableRow(children: rowData));
     }
-
     return [
       pw.Table(
+        children: tableRows,
         border: pw.TableBorder.all(color: pdf.PdfColors.black),
-        children: tablenodes,
       ),
     ];
-  }
-
-  Future<List<pw.TableRow>> _parsetableRows(dom.Element element) async {
-    final List<pw.TableRow> nodes = [];
-
-    for (final data in element.children) {
-      final tabledata = await _parsetableData(data);
-      nodes.add(tabledata);
-    }
-    return nodes;
-  }
-
-  Future<pw.TableRow> _parsetableData(
-    dom.Element element,
-  ) async {
-    final List<pw.Widget> nodes = [];
-    for (final data in element.children) {
-      if (data.children.isEmpty) {
-        final node = pw.Paragraph(text: data.text);
-        nodes.add(node);
-      } else {
-        final specialNodes = await _parseTableSpecialNodes(data);
-        nodes.addAll(specialNodes);
-      }
-    }
-
-    return pw.TableRow(
-      decoration:
-          pw.BoxDecoration(border: pw.Border.all(color: pdf.PdfColors.black)),
-      children: nodes,
-    );
-  }
-
-  Future<Iterable<pw.Widget>> _parseTableSpecialNodes(
-    dom.Element element,
-  ) async {
-    final List<pw.Widget> nodes = [];
-
-    if (element.children.isNotEmpty) {
-      for (final childrens in element.children) {
-        nodes.addAll(await _parseTableDataElementsData(childrens));
-      }
-    } else {
-      nodes.addAll(await _parseTableDataElementsData(element));
-    }
-    return nodes;
-  }
-
-  Future<List<pw.Widget>> _parseTableDataElementsData(
-    dom.Element element,
-  ) async {
-    final List<pw.Widget> nodes = [];
-    final result = <pw.Widget>[];
-    final localName = element.localName;
-    if (localName == HTMLTags.br) {
-    } else if (HTMLTags.formattingElements.contains(localName)) {
-      final attributes = _parserFormattingElementAttributes(element);
-      result.add(pw.Text(element.text, style: attributes.$2));
-    } else if (HTMLTags.specialElements.contains(localName)) {
-      //NOTE: Possibly come back and change this?
-      result.addAll(
-        await _parseSpecialElements(
-          element,
-          type: BuiltInAttributeKey.bulletedList,
-        ),
-      );
-    } else if (element is dom.Text) {
-      nodes.add(
-        pw.Text(
-          element.text,
-          style: pw.TextStyle(font: font, fontFallback: fontFallback),
-        ),
-      );
-    } else {
-      assert(false, 'Unknown, node type: $element');
-    }
-
-    if (nodes.isNotEmpty) {
-      result.add(pw.Wrap(children: nodes));
-    }
-    return result;
   }
 
   (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
@@ -294,12 +241,10 @@ class PdfHTMLEncoder {
       case HTMLTags.underline:
         decoration.add(pw.TextDecoration.underline);
         break;
-      /*
       case HTMLTags.del:
-        attributes = {AppFlowyRichTextKeys.strikethrough: true};
+        attributes =
+            attributes.copyWith(decoration: pw.TextDecoration.lineThrough);
         break;
-
-                */
       /*
       case HTMLTags.span || HTMLTags.mark:
         final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
@@ -308,7 +253,6 @@ class PdfHTMLEncoder {
             {};
         attributes.addAll(deltaAttributes);
         break;
-
                 */
       case HTMLTags.anchor:
         final href = element.attributes['href'];
