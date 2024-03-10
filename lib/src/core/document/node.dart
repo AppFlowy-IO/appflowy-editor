@@ -174,6 +174,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void insertAfter(Node entry) {
+    entry._resetRelationshipIfNeeded();
     entry.parent = parent;
     super.insertAfter(entry);
 
@@ -185,6 +186,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void insertBefore(Node entry) {
+    entry._resetRelationshipIfNeeded();
     entry.parent = parent;
     super.insertBefore(entry);
 
@@ -196,7 +198,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   bool unlink() {
-    if (parent == null) {
+    // Add a null check to avoid unlink failure
+    if (parent == null || list == null) {
       return false;
     }
     Log.editor.debug('delete Node $this from path $path');

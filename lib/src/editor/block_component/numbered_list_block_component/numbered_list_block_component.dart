@@ -209,11 +209,14 @@ class _NumberedListIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
+    final textScaleFactor = editorState.editorStyle.textScaleFactor;
     return Container(
-      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      constraints:
+          const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
       padding: const EdgeInsets.only(right: 4.0),
       child: Center(
         child: Text.rich(
+          textScaler: TextScaler.linear(textScaleFactor),
           textHeightBehavior: const TextHeightBehavior(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,

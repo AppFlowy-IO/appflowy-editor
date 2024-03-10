@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_collapsed_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
@@ -326,38 +327,16 @@ class _MobileSelectionServiceWidgetState
 
   @override
   Node? getNodeInOffset(Offset offset) {
-    final List<Node> sortedNodes = getVisibleNodes();
+    final List<Node> sortedNodes = editorState.getVisibleNodes(
+      context.read<EditorScrollController>(),
+    );
 
-    return _getNodeInOffset(
+    return editorState.getNodeInOffset(
       sortedNodes,
       offset,
       0,
       sortedNodes.length - 1,
     );
-  }
-
-  List<Node> getVisibleNodes() {
-    final List<Node> sortedNodes = [];
-    final positions =
-        context.read<EditorScrollController>().visibleRangeNotifier.value;
-    final min = positions.$1;
-    final max = positions.$2;
-    if (min < 0 || max < 0) {
-      return sortedNodes;
-    }
-
-    int i = -1;
-    for (final child in editorState.document.root.children) {
-      i++;
-      if (min > i) {
-        continue;
-      }
-      if (i > max) {
-        break;
-      }
-      sortedNodes.add(child);
-    }
-    return sortedNodes;
   }
 
   @override
@@ -545,7 +524,7 @@ class _MobileSelectionServiceWidgetState
   }
 
   void _onLongPressStart(LongPressStartDetails details) {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       return;
     }
 
@@ -625,40 +604,6 @@ class _MobileSelectionServiceWidgetState
         selectionRects.add(selectionRect);
       }
     }
-  }
-
-  Node? _getNodeInOffset(
-    List<Node> sortedNodes,
-    Offset offset,
-    int start,
-    int end,
-  ) {
-    if (start < 0 && end >= sortedNodes.length) {
-      return null;
-    }
-    var min = start;
-    var max = end;
-    while (min <= max) {
-      final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
-      if (rect.bottom <= offset.dy) {
-        min = mid + 1;
-      } else {
-        max = mid - 1;
-      }
-    }
-    min = min.clamp(start, end);
-    final node = sortedNodes[min];
-    if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false);
-      return _getNodeInOffset(
-        children,
-        offset,
-        0,
-        children.length - 1,
-      );
-    }
-    return node;
   }
 
   bool _isClickOnSelectionArea(Offset point) {
