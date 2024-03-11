@@ -16,6 +16,10 @@ CharacterShortcutEvent formatNumberToNumberedList = CharacterShortcutEvent(
     editorState,
     (node) => node.type != NumberedListBlockKeys.type,
     (node, text, selection) {
+      // if the current node is a heading block, we should not convert it to a numbered list
+      if (node.type == HeadingBlockKeys.type) {
+        return false;
+      }
       final match = _numberRegex.firstMatch(text);
       if (match == null) return false;
 
