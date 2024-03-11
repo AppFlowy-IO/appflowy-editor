@@ -198,5 +198,26 @@ void main() async {
         ),
       );
     });
+
+    test('nothing will happen when converting heading to numbered list',
+        () async {
+      const syntax = '1.';
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      testFormatCharacterShortcut(
+        formatNumberToNumberedList,
+        syntax,
+        syntax.length,
+        (result, before, after, editorState) {
+          expect(result, false);
+          expect(after.delta!.toPlainText(), '$syntax$text');
+          expect(after.type, HeadingBlockKeys.type);
+        },
+        text: text,
+        node: headingNode(
+          text: '$syntax$text',
+          level: 1,
+        ),
+      );
+    });
   });
 }
