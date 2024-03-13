@@ -149,6 +149,7 @@ extension on EditorState {
         })
         .map((paragraph) => paragraphNode(delta: paragraph))
         .toList();
+
     if (nodes.isEmpty) {
       return;
     }
