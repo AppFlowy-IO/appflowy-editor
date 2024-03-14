@@ -15,6 +15,10 @@ import 'package:provider/provider.dart';
 // the operation must be paired
 KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
+/// The default value of the auto scroll edge offset on mobile
+/// The editor will scroll when the cursor is close to the edge of the screen
+double appFlowyEditorAutoScrollEdgeOffset = 220.0;
+
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
     super.key,
