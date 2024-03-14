@@ -151,6 +151,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Position position, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (_renderParagraph?.debugNeedsLayout == true) {
+      return null;
+    }
     final textPosition = TextPosition(offset: position.offset);
     var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
     var cursorOffset =
@@ -224,6 +227,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Selection selection, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (_renderParagraph?.debugNeedsLayout == true) {
+      return [];
+    }
     final textSelection = textSelectionFromEditorSelection(selection);
     if (textSelection == null) {
       return [];
