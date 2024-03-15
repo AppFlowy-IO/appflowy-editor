@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
   const TodoListBlockKeys._();
@@ -22,17 +23,19 @@ class TodoListBlockKeys {
 
 Node todoListNode({
   required bool checked,
+  String? text,
   Delta? delta,
   String? textDirection,
   Attributes? attributes,
   Iterable<Node>? children,
 }) {
-  attributes ??= {'delta': (delta ?? Delta()).toJson()};
   return Node(
     type: TodoListBlockKeys.type,
     attributes: {
-      ...attributes,
       TodoListBlockKeys.checked: checked,
+      TodoListBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      if (attributes != null) ...attributes,
       if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
     children: children ?? [],
@@ -218,7 +221,7 @@ class _TodoListBlockComponentWidgetState
       });
 
     if (widget.toggleChildrenTriggers != null &&
-        RawKeyboard.instance.keysPressed.any(
+        HardwareKeyboard.instance.logicalKeysPressed.any(
           (element) => widget.toggleChildrenTriggers!.contains(element),
         )) {
       checkOrUncheckChildren(!checked, widget.node);
@@ -269,13 +272,16 @@ class _TodoListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+          constraints: const BoxConstraints(minWidth: 26, minHeight: 22) *
+              textScaleFactor,
           padding: const EdgeInsets.only(right: 4.0),
           child: EditorSvg(
             width: 22,

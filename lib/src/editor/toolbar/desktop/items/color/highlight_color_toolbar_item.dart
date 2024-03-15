@@ -12,7 +12,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
         return delta.everyAttributes((attributes) {
-          highlightColorHex = attributes[AppFlowyRichTextKeys.highlightColor];
+          highlightColorHex = attributes[AppFlowyRichTextKeys.backgroundColor];
           return highlightColorHex != null;
         });
       });
@@ -29,7 +29,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
               showClearButton = delta.whereType<TextInsert>().any(
                 (element) {
                   return element
-                          .attributes?[AppFlowyRichTextKeys.highlightColor] !=
+                          .attributes?[AppFlowyRichTextKeys.backgroundColor] !=
                       null;
                 },
               );

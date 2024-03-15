@@ -7,6 +7,12 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 ///   numbered list: '1. '
 ///   quote: '" '
 ///   ...
+///
+/// The [nodeBuilder] can return a list of nodes, which will be inserted
+///   into the document.
+/// For example, when converting a bulleted list to a heading and the heading is
+///  not allowed to contain children, then the [nodeBuilder] should return a list
+///  of nodes, which contains the heading node and the children nodes.
 Future<bool> formatMarkdownSymbol(
   EditorState editorState,
   bool Function(Node node) shouldFormat,
@@ -15,11 +21,11 @@ Future<bool> formatMarkdownSymbol(
     String text,
     Selection selection,
   ) predicate,
-  Node Function(
+  List<Node> Function(
     String text,
     Node node,
     Delta delta,
-  ) nodeBuilder,
+  ) nodesBuilder,
 ) async {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -53,14 +59,14 @@ Future<bool> formatMarkdownSymbol(
     ),
   );
 
-  final formattedNode = nodeBuilder(text, node, delta);
+  final formattedNodes = nodesBuilder(text, node, delta);
 
   // Create a transaction that replaces the current node with the
   // formatted node.
   final transaction = editorState.transaction
-    ..insertNode(
+    ..insertNodes(
       node.path,
-      formattedNode,
+      formattedNodes,
     )
     ..deleteNode(node)
     ..afterSelection = afterSelection;

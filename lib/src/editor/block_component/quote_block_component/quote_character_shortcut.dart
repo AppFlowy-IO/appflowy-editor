@@ -16,11 +16,13 @@ CharacterShortcutEvent formatDoubleQuoteToQuote = CharacterShortcutEvent(
     editorState,
     (node) => node.type != QuoteBlockKeys.type,
     (_, text, __) => _doubleQuotes.any((element) => element == text),
-    (_, node, delta) => Node(
-      type: 'quote',
-      attributes: {
-        'delta': delta.compose(Delta()..delete(1)).toJson(),
-      },
-    ),
+    (_, node, delta) => [
+      quoteNode(
+        attributes: {
+          QuoteBlockKeys.delta: delta.compose(Delta()..delete(1)).toJson(),
+        },
+      ),
+      if (node.children.isNotEmpty) ...node.children,
+    ],
   ),
 );

@@ -187,12 +187,15 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
     return Container(
       alignment: Alignment.center,
-      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      constraints:
+          const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
       padding: const EdgeInsets.only(right: 4.0),
       child: Container(
-        width: 4,
+        width: 4 * textScaleFactor,
         color: '#00BCF0'.tryToColor(),
       ),
     );

@@ -15,6 +15,10 @@ import 'package:provider/provider.dart';
 // the operation must be paired
 KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
+/// The default value of the auto scroll edge offset on mobile
+/// The editor will scroll when the cursor is close to the edge of the screen
+double appFlowyEditorAutoScrollEdgeOffset = 220.0;
+
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
     super.key,
@@ -182,9 +186,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           shrinkWrap: widget.shrinkWrap,
         );
 
-    editorState.editorStyle = widget.editorStyle;
+    _updateValues();
     editorState.renderer = _renderer;
-    editorState.editable = widget.editable;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -206,8 +209,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    editorState.editorStyle = widget.editorStyle;
-    editorState.editable = widget.editable;
+    _updateValues();
 
     if (editorState.service != oldWidget.editorState.service) {
       editorState.renderer = _renderer;
@@ -295,6 +297,13 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         reason: SelectionUpdateReason.uiEvent,
       );
     }
+  }
+
+  void _updateValues() {
+    editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
+    editorState.showHeader = widget.header != null;
+    editorState.showFooter = widget.footer != null;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

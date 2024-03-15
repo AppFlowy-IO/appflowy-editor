@@ -77,5 +77,5 @@ void showColorMenu(
       );
     },
   ).build();
-  Overlay.of(context).insert(overlay!);
+  Overlay.of(context, rootOverlay: true).insert(overlay!);
 }

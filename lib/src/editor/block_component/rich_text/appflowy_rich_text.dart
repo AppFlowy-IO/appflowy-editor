@@ -151,6 +151,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Position position, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (_renderParagraph?.debugNeedsLayout == true) {
+      return null;
+    }
     final textPosition = TextPosition(offset: position.offset);
     var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
     var cursorOffset =
@@ -224,6 +227,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Selection selection, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (_renderParagraph?.debugNeedsLayout == true) {
+      return [];
+    }
     final textSelection = textSelectionFromEditorSelection(selection);
     if (textSelection == null) {
       return [];
@@ -285,6 +291,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.placeholderTextSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -301,6 +309,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ? widget.textSpanDecorator!(textSpan)
           : textSpan,
       textDirection: textDirection(),
+      textScaler:
+          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -465,7 +475,8 @@ extension AppFlowyRichTextAttributes on Attributes {
   }
 
   Color? get backgroundColor {
-    final highlightColor = this[AppFlowyRichTextKeys.highlightColor] as String?;
+    final highlightColor =
+        this[AppFlowyRichTextKeys.backgroundColor] as String?;
     return highlightColor?.tryToColor();
   }
 

@@ -93,7 +93,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
+                  element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
                   Colors.red.withOpacity(0.3).toHex(),
             );
       }),
@@ -106,7 +106,7 @@ void main() {
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
               (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.highlightColor] ==
+                  element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
                   null,
             );
       }),
