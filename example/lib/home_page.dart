@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 
@@ -17,8 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:pdf/widgets.dart' as pw;
-import 'package:markdown/markdown.dart' as md;
 
 enum ExportFileType {
   documentJson,
@@ -142,7 +139,6 @@ class _HomePageState extends State<HomePage> {
             final htmlString =
                 await rootBundle.loadString('assets/example.html');
             final html = htmlToDocument(htmlString);
-            // final html = HTMLToNodesConverter(htmlString).toDocument();
             final jsonString = Future<String>.value(
               jsonEncode(
                 html.toJson(),

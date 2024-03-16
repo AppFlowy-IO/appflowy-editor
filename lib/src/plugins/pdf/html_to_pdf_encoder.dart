@@ -15,6 +15,7 @@ import 'package:markdown/markdown.dart' as md;
 class PdfHTMLEncoder {
   final pw.Font? font;
   final List<pw.Font> fontFallback;
+
   PdfHTMLEncoder({
     this.font,
     required this.fontFallback,
@@ -163,12 +164,6 @@ class PdfHTMLEncoder {
         ];
       case HTMLTags.paragraph:
         return [await _parseParagraphElement(element)];
-
-      /*
-      case HTMLTags.blockQuote:
-        return [_parseBlockQuoteElement(element)];
-
-            */
       case HTMLTags.image:
         return [await _parseImageElement(element)];
       default:
@@ -200,7 +195,6 @@ class PdfHTMLEncoder {
               );
             }
           } else if (node.nodeType == dom.Node.TEXT_NODE) {
-            //TODO: Handle nested lists
             cellContent.add(
               pw.Text(
                 (node as dom.Text).data,
@@ -319,16 +313,6 @@ class PdfHTMLEncoder {
       ),
     );
   }
-/*
-//TODO: Support callout & Qoute block
-  Node _parseBlockQuoteElement(dom.Element element) {
-    final (delta, nodes) = _parseDeltaElement(element);
-    return quoteNode(
-      delta: delta,
-      children: nodes,
-    );
-  }
-*/
 
   Iterable<pw.Widget> _parseUnOrderListElement(dom.Element element) {
     final findTodos =
@@ -357,12 +341,11 @@ class PdfHTMLEncoder {
         .toList();
   }
 
-//TODO: Handle nested lists
   pw.Widget _parseListElement(
     dom.Element element, {
     required String type,
   }) {
-    //TODO: Handle Numbered Lists
+    //TODO: Handle Numbered Lists & Handle nested lists
     if (type == TodoListBlockKeys.type) {
       final bracketRightIndex = element.text.indexOf(']') + 1;
       final strippedString =
