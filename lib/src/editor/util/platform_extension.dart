@@ -83,4 +83,18 @@ extension PlatformExtension on Platform {
     }
     return !isMobile;
   }
+
+  static bool get isAndroid {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isAndroid;
+  }
+
+  static bool get isIOS {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isIOS;
+  }
 }

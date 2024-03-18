@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 
 const String selectionExtraInfoDisableMobileToolbarKey = 'disableMobileToolbar';
@@ -66,6 +67,20 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
     super.initState();
 
     _insertKeyboardToolbar();
+
+    if (PlatformExtension.isAndroid) {
+      DeviceInfoPlugin().androidInfo.then(
+        (value) {
+          if (value.version.sdkInt == 34) {
+            // the keyboard height will notify twice with the same value on Android 14
+            KeyboardHeightObserver.shouldNotify = (newHeight, oldHeight) {
+              return newHeight != oldHeight;
+            };
+          }
+        },
+      );
+    }
+
     KeyboardHeightObserver.instance.addListener(_onKeyboardHeightChanged);
   }
 
