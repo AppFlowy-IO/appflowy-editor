@@ -71,6 +71,17 @@ extension PathExtensions on Path {
       ..add(last + 1);
   }
 
+  Path nextNPath(int n) {
+    Path nextPath = Path.from(this, growable: true);
+    if (isEmpty) {
+      return nextPath;
+    }
+    final last = nextPath.last;
+    return nextPath
+      ..removeLast()
+      ..add(last + n);
+  }
+
   Path get previous {
     Path previousPath = Path.from(this, growable: true);
     if (isEmpty) {
@@ -80,6 +91,17 @@ extension PathExtensions on Path {
     return previousPath
       ..removeLast()
       ..add(max(0, last - 1));
+  }
+
+  Path previousNPath(int n) {
+    Path previousPath = Path.from(this, growable: true);
+    if (isEmpty) {
+      return previousPath;
+    }
+    final last = previousPath.last;
+    return previousPath
+      ..removeLast()
+      ..add(max(0, last - n));
   }
 
   Path get parent {
