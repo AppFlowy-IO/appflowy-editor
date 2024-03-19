@@ -286,25 +286,26 @@ class EditorState {
 
     final completer = Completer<void>();
 
-    // broadcast to other users here, before applying the transaction
-    _observer.add((TransactionTime.before, transaction));
+    if (isRemote) {
+      selection = _applyTransactionFromRemote(transaction);
+    } else {
+      // broadcast to other users here, before applying the transaction
+      _observer.add((TransactionTime.before, transaction));
 
-    for (final operation in transaction.operations) {
-      Log.editor.debug('apply op: ${operation.toJson()}');
-      _applyOperation(operation);
-    }
+      _applyTransactionInLocal(transaction);
 
-    // broadcast to other users here, after applying the transaction
-    _observer.add((TransactionTime.after, transaction));
+      // broadcast to other users here, after applying the transaction
+      _observer.add((TransactionTime.after, transaction));
 
-    _recordRedoOrUndo(options, transaction);
+      _recordRedoOrUndo(options, transaction);
 
-    if (withUpdateSelection) {
-      _selectionUpdateReason = SelectionUpdateReason.transaction;
-      if (transaction.selectionExtraInfo != null) {
-        selectionExtraInfo = transaction.selectionExtraInfo;
+      if (withUpdateSelection) {
+        _selectionUpdateReason = SelectionUpdateReason.transaction;
+        if (transaction.selectionExtraInfo != null) {
+          selectionExtraInfo = transaction.selectionExtraInfo;
+        }
+        selection = transaction.afterSelection;
       }
-      selection = transaction.afterSelection;
     }
 
     completer.complete();
@@ -530,18 +531,66 @@ class EditorState {
     });
   }
 
-  void _applyOperation(Operation op) {
-    if (op is InsertOperation) {
-      document.insert(op.path, op.nodes);
-    } else if (op is UpdateOperation) {
-      // ignore the update operation if the attributes are the same.
-      if (!mapEquals(op.attributes, op.oldAttributes)) {
-        document.update(op.path, op.attributes);
+  void _applyTransactionInLocal(Transaction transaction) {
+    for (final op in transaction.operations) {
+      Log.editor.debug('apply op (local): ${op.toJson()}');
+
+      if (op is InsertOperation) {
+        document.insert(op.path, op.nodes);
+      } else if (op is UpdateOperation) {
+        // ignore the update operation if the attributes are the same.
+        if (!mapEquals(op.attributes, op.oldAttributes)) {
+          document.update(op.path, op.attributes);
+        }
+      } else if (op is DeleteOperation) {
+        document.delete(op.path, op.nodes.length);
+      } else if (op is UpdateTextOperation) {
+        document.updateText(op.path, op.delta);
       }
-    } else if (op is DeleteOperation) {
-      document.delete(op.path, op.nodes.length);
-    } else if (op is UpdateTextOperation) {
-      document.updateText(op.path, op.delta);
     }
+  }
+
+  Selection? _applyTransactionFromRemote(Transaction transaction) {
+    var selection = this.selection;
+
+    for (final op in transaction.operations) {
+      Log.editor.debug('apply op (remote): ${op.toJson()}');
+
+      if (op is InsertOperation) {
+        document.insert(op.path, op.nodes);
+        if (selection != null) {
+          if (op.path <= selection.start.path) {
+            selection = Selection(
+              start: selection.start.copyWith(
+                path: selection.start.path.nextNPath(op.nodes.length),
+              ),
+              end: selection.end.copyWith(
+                path: selection.end.path.nextNPath(op.nodes.length),
+              ),
+            );
+          }
+        }
+      } else if (op is UpdateOperation) {
+        document.update(op.path, op.attributes);
+      } else if (op is DeleteOperation) {
+        document.delete(op.path, op.nodes.length);
+        if (selection != null) {
+          if (op.path <= selection.start.path) {
+            selection = Selection(
+              start: selection.start.copyWith(
+                path: selection.start.path.previous,
+              ),
+              end: selection.end.copyWith(
+                path: selection.end.path.previous,
+              ),
+            );
+          }
+        }
+      } else if (op is UpdateTextOperation) {
+        document.updateText(op.path, op.delta);
+      }
+    }
+
+    return selection;
   }
 }
