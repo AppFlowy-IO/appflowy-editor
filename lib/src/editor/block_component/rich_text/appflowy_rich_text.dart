@@ -13,6 +13,7 @@ import 'package:appflowy_editor/src/editor/util/color_util.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -151,7 +152,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Position position, {
     bool shiftWithBaseOffset = false,
   }) {
-    if (_renderParagraph?.debugNeedsLayout == true) {
+    if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
       return null;
     }
     final textPosition = TextPosition(offset: position.offset);
@@ -227,7 +228,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Selection selection, {
     bool shiftWithBaseOffset = false,
   }) {
-    if (_renderParagraph?.debugNeedsLayout == true) {
+    if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
       return [];
     }
     final textSelection = textSelectionFromEditorSelection(selection);
