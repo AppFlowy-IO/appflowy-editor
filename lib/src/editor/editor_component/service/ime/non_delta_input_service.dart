@@ -101,7 +101,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       debounceKey,
       PlatformExtension.isMobile
           ? const Duration(milliseconds: 10)
-          : Duration.zero,
+          : const Duration(microseconds: 1),
       () {
         currentTextEditingValue = value;
         apply(deltas);
