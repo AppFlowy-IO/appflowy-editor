@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -67,66 +69,136 @@ extension PositionExtension on Position {
     EditorState editorState, {
     bool upwards = true,
   }) {
+    //* GET THE CURRENT OFFSET
     final selection = editorState.selection;
     final rects = editorState.selectionRects();
     if (rects.isEmpty || selection == null) {
       return null;
     }
 
-    Offset offset;
+    Offset currentOffset;
+    final Rect caretRect;
     if (selection.isBackward) {
-      final rect = rects.reduce(
-        (current, next) => current.bottom >= next.bottom ? current : next,
+      caretRect = rects.reduce(
+        (current, next) => current.bottom > next.bottom ? current : next,
       );
-      offset = upwards
-          ? rect.topRight.translate(0, -rect.height)
-          : rect.centerRight.translate(0, rect.height);
+      currentOffset =
+          upwards ? throw Exception('Ivalid state') : caretRect.bottomRight;
     } else {
-      final rect = rects.reduce(
+      caretRect = rects.reduce(
         (current, next) => current.top <= next.top ? current : next,
       );
-      offset = upwards
-          ? rect.topLeft.translate(0, -rect.height)
-          : rect.centerLeft.translate(0, rect.height);
+      currentOffset = upwards ? caretRect.topLeft : caretRect.bottomLeft;
     }
 
-    final position =
-        editorState.service.selectionService.getPositionInOffset(offset);
-
-    if (position != null && !position.path.equals(path)) {
-      return position;
+    //* GET THE CURRENT NODE'S TEXT HEIGHT
+    final node = editorState.document.nodeAtPath(path);
+    if (node == null) {
+      return this;
     }
 
+    final nodeRenderBox = node.renderBox;
+    if (nodeRenderBox == null) {
+      return this;
+    }
+
+    final selectable = node.selectable;
+    if (selectable == null) {
+      return this;
+    }
+
+    final paddingCalculator = editorState.service.rendererService
+        .blockComponentBuilder(node.type)
+        ?.configuration
+        .padding;
+
+    if (paddingCalculator == null) {
+      // This should not happen.
+      return this;
+    }
+
+    final padding = paddingCalculator(node);
+    final verticalPadding = padding.vertical;
+
+    final rect = selectable.getBlockRect();
+    final nodeHeight = rect.height;
+    final textHeight = nodeHeight - verticalPadding;
+    final caretHeight = caretRect.height;
+    final maxYToSkip = upwards ? padding.top : padding.bottom;
+
+    // If the current node is not multiline, this will be ~= 0
+    // so the step 1 will be skipped.
+    final remainingMultilineHeight = (textHeight - caretHeight);
+
+    //* GET THE CLOSEST POSITION TO THE CURRENT OFFSET
+    //* Step 1: Loop through the current node's text height until the text
+    //* height is reached or a new position is found.
+    Offset newOffset = currentOffset;
+    Position? newPosition;
+    double minFontSize =
+        1; // Consider augmenting this value to increase performance.
+    double y = minFontSize;
+    for (; y < remainingMultilineHeight + minFontSize; y += minFontSize) {
+      newOffset = currentOffset.translate(0, upwards ? -y : y);
+
+      newPosition =
+          editorState.service.selectionService.getPositionInOffset(newOffset);
+
+      if (newPosition != null && newPosition != this) {
+        return newPosition;
+      }
+    }
+
+    //* Step 2: If arrived here it surely hasn't found a different vertical position in the same node (not multiline or last line of a multiline).
+    //* So we can skip to `maxYToSkip` steps to surely move to a new node.
+    // We have to decrease 'y' by 'minFontSize' because the last iteration has increased it by 'minFontSize'.
+    y -= minFontSize;
+
+    // Increase y by the padding slice to skip.
+    y += maxYToSkip;
+    newOffset = currentOffset.translate(0, upwards ? -y : y);
+
+    // Determine node's global position.
+    final nodeYOffsetTop = nodeRenderBox.localToGlobal(Offset.zero).dy;
+    final nodeYOffsetBottom = nodeYOffsetTop + nodeHeight;
+
+    newOffset = Offset(newOffset.dx, math.min(newOffset.dy, nodeYOffsetBottom));
+
+    newPosition =
+        editorState.service.selectionService.getPositionInOffset(newOffset);
+
+    if (newPosition != null && newPosition != this) {
+      return newPosition;
+    }
+
+    //* Step 3: If arrived here the previous/next node is not visibile on the screen
+    //* so we have to manually move to the previous/next node's position.
+    final List<int> neighbourPath;
+    final List<int> nodePath;
+    int offset;
     if (upwards) {
-      final previous = selection.start.path.previous;
-      if (previous.isNotEmpty && !previous.equals(selection.start.path)) {
-        final node = editorState.document.nodeAtPath(previous);
-        final selectable = node?.selectable;
-        var offset = selection.startIndex;
-        if (selectable != null) {
-          offset = offset.clamp(
-            selectable.start().offset,
-            selectable.end().offset,
-          );
-          return Position(path: previous, offset: offset);
-        }
-      }
+      neighbourPath = selection.start.path.previous;
+      nodePath = selection.start.path;
+      offset = selection.startIndex;
     } else {
-      final next = selection.end.path.next;
-      if (next.isNotEmpty && !next.equals(selection.end.path)) {
-        final node = editorState.document.nodeAtPath(next);
-        final selectable = node?.selectable;
-        var offset = selection.endIndex;
-        if (selectable != null) {
-          offset = offset.clamp(
-            selectable.start().offset,
-            selectable.end().offset,
-          );
-          return Position(path: next, offset: offset);
-        }
+      neighbourPath = selection.end.path.next;
+      nodePath = selection.end.path;
+      offset = selection.endIndex;
+    }
+
+    if (neighbourPath.isNotEmpty && !neighbourPath.equals(nodePath)) {
+      final neighbour = editorState.document.nodeAtPath(neighbourPath);
+      final selectable = neighbour?.selectable;
+      if (selectable != null) {
+        offset = offset.clamp(
+          selectable.start().offset,
+          selectable.end().offset,
+        );
+        return Position(path: neighbourPath, offset: offset);
       }
     }
 
+    // The cursor is already at the top or bottom of the document.
     return this;
   }
 }
