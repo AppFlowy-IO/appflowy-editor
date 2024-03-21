@@ -69,29 +69,6 @@ extension PositionExtension on Position {
     EditorState editorState, {
     bool upwards = true,
   }) {
-    //* GET THE CURRENT OFFSET
-    final selection = editorState.selection;
-    final rects = editorState.selectionRects();
-    if (rects.isEmpty || selection == null) {
-      return null;
-    }
-
-    Offset currentOffset;
-    final Rect caretRect;
-    if (selection.isBackward) {
-      caretRect = rects.reduce(
-        (current, next) => current.bottom > next.bottom ? current : next,
-      );
-      currentOffset =
-          upwards ? throw Exception('Ivalid state') : caretRect.bottomRight;
-    } else {
-      caretRect = rects.reduce(
-        (current, next) => current.top <= next.top ? current : next,
-      );
-      currentOffset = upwards ? caretRect.topLeft : caretRect.bottomLeft;
-    }
-
-    //* GET THE CURRENT NODE'S TEXT HEIGHT
     final node = editorState.document.nodeAtPath(path);
     if (node == null) {
       return this;
@@ -102,67 +79,102 @@ extension PositionExtension on Position {
       return this;
     }
 
-    final selectable = node.selectable;
-    if (selectable == null) {
+    final nodeSelectable = node.selectable;
+    if (nodeSelectable == null) {
       return this;
     }
 
-    final paddingCalculator = editorState.service.rendererService
-        .blockComponentBuilder(node.type)
-        ?.configuration
-        .padding;
+    final editorSelection = editorState.selection;
+    final rects = editorState.selectionRects();
+    if (rects.isEmpty || editorSelection == null) {
+      return null;
+    }
 
-    if (paddingCalculator == null) {
+    // The offset of outermost part of the caret.
+    // Either the top if moving upwards, or the bottom if moving downwards.
+    final Offset caretOffset;
+
+    final Rect caretRect;
+    if (editorSelection.isBackward) {
+      caretRect = rects.reduce(
+        (current, next) => current.bottom > next.bottom ? current : next,
+      );
+      // No need to check `upwards` because `editorSelection.isBackward`
+      // implies `upwards` is `false`.
+      caretOffset = caretRect.bottomRight;
+    } else {
+      caretRect = rects.reduce(
+        (current, next) => current.top <= next.top ? current : next,
+      );
+      caretOffset = upwards ? caretRect.topLeft : caretRect.bottomLeft;
+    }
+
+    final nodeConfig = editorState.service.rendererService
+        .blockComponentBuilder(node.type)
+        ?.configuration;
+    if (nodeConfig == null) {
       // This should not happen.
       return this;
     }
 
-    final padding = paddingCalculator(node);
-    final verticalPadding = padding.vertical;
-
-    final rect = selectable.getBlockRect();
-    final nodeHeight = rect.height;
-    final textHeight = nodeHeight - verticalPadding;
+    final padding = nodeConfig.padding(node);
+    final nodeRect = nodeSelectable.getBlockRect();
+    final nodeHeight = nodeRect.height;
+    final textHeight = nodeHeight - padding.vertical;
     final caretHeight = caretRect.height;
-    final maxYToSkip = upwards ? padding.top : padding.bottom;
+
+    // Minimum (acceptable) font size
+    // Consider augmenting this value to increase performance.
+    const minFontSize = 1.0;
 
     // If the current node is not multiline, this will be ~= 0
-    // so the step 1 will be skipped.
+    // so the loop will be skipped.
     final remainingMultilineHeight = (textHeight - caretHeight);
 
-    //* GET THE CLOSEST POSITION TO THE CURRENT OFFSET
-    //* Step 1: Loop through the current node's text height until the text
-    //* height is reached or a new position is found.
-    Offset newOffset = currentOffset;
+    // Linearly search for a new position.
+    // It's acceptable to use a linear search because the starting point is
+    // the most outer part of the caret, so:
+    // - If the current node is multine:
+    //   - If the caret is NOT in the first/last line: at the first iteration
+    //      the cycle a new position (of the previous/next multiline's line)
+    //      will be found, practically ignoring the complexity of the cycle.
+    //   - If the caret is in the first/last line: this is the worst case
+    //      scenario, but only if the padding choosen by the user is very
+    //      large. (padding >= (multiline's textHeight - caretHeight) / 3
+    //      can start to be considered large. Note that in an average bad case
+    //      scenario the position will be found in 10/12 ms instead of 1/2 ms)
+    // - If the current node is not multiline: the cycle will be completely
+    //   skipped because `remainingMultilineHeight` would be 0.
+    Offset newOffset = caretOffset;
     Position? newPosition;
-    double minFontSize =
-        1; // Consider augmenting this value to increase performance.
-    double y = minFontSize;
-    for (; y < remainingMultilineHeight + minFontSize; y += minFontSize) {
-      newOffset = currentOffset.translate(0, upwards ? -y : y);
+    for (var y = minFontSize; y < remainingMultilineHeight + minFontSize; y += minFontSize) {
+      newOffset = caretOffset.translate(0, upwards ? -y : y);
 
       newPosition =
           editorState.service.selectionService.getPositionInOffset(newOffset);
 
+      // If a position different from the current one is found, return it.
       if (newPosition != null && newPosition != this) {
         return newPosition;
       }
     }
 
-    //* Step 2: If arrived here it surely hasn't found a different vertical position in the same node (not multiline or last line of a multiline).
-    //* So we can skip to `maxYToSkip` steps to surely move to a new node.
-    // We have to decrease 'y' by 'minFontSize' because the last iteration has increased it by 'minFontSize'.
-    y -= minFontSize;
+    // If a new position has not been found, it means that the current node
+    // is not multiline (or the caret is in the last line of a multiline and
+    // the bottom padding is very large).
+    // In this case, we can manually skip to the previous/next node position
+    // by translating the new offset by the padding slice to skip.
+    // Note that the padding slice to skip can exceed the node's bounds.
+    final maxSkip = upwards ? padding.top : padding.bottom;
 
-    // Increase y by the padding slice to skip.
-    y += maxYToSkip;
-    newOffset = currentOffset.translate(0, upwards ? -y : y);
+    // Translate the new offset by the padding slice to skip.
+    newOffset = newOffset.translate(0, upwards ? -maxSkip : maxSkip);
 
     // Determine node's global position.
-    final nodeYOffsetTop = nodeRenderBox.localToGlobal(Offset.zero).dy;
-    final nodeYOffsetBottom = nodeYOffsetTop + nodeHeight;
+    final nodeHeightOffset = nodeRenderBox.localToGlobal(Offset(0, nodeHeight));
 
-    newOffset = Offset(newOffset.dx, math.min(newOffset.dy, nodeYOffsetBottom));
+    // Clamp the new offset to the node's bounds.
+    newOffset = Offset(newOffset.dx, math.min(newOffset.dy, nodeHeightOffset.dy));
 
     newPosition =
         editorState.service.selectionService.getPositionInOffset(newOffset);
@@ -171,19 +183,20 @@ extension PositionExtension on Position {
       return newPosition;
     }
 
-    //* Step 3: If arrived here the previous/next node is not visibile on the screen
-    //* so we have to manually move to the previous/next node's position.
+    // If a new position has not been found, it means that the current node
+    // is not visible on the screen. It seems happens only if upwards is true (?)
+    // In this case, we can manually get the previous/next node position.
     final List<int> neighbourPath;
     final List<int> nodePath;
     int offset;
     if (upwards) {
-      neighbourPath = selection.start.path.previous;
-      nodePath = selection.start.path;
-      offset = selection.startIndex;
+      neighbourPath = editorSelection.start.path.previous;
+      nodePath = editorSelection.start.path;
+      offset = editorSelection.startIndex;
     } else {
-      neighbourPath = selection.end.path.next;
-      nodePath = selection.end.path;
-      offset = selection.endIndex;
+      neighbourPath = editorSelection.end.path.next;
+      nodePath = editorSelection.end.path;
+      offset = editorSelection.endIndex;
     }
 
     if (neighbourPath.isNotEmpty && !neighbourPath.equals(nodePath)) {
