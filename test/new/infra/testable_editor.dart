@@ -177,7 +177,7 @@ class TestableEditor {
     _ime = null;
     // Workaround: to wait all the debounce calls expire.
     //  https://github.com/flutter/flutter/issues/11181#issuecomment-568737491
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+    //await tester.pumpAndSettle(const Duration(seconds: 1));
   }
 
   void addNode(Node node) {

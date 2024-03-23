@@ -226,7 +226,7 @@ extension SelectionTransform on EditorState {
     }
 
     // Originally, I want to make this function as pure as possible,
-    //  but I have to import the selectable here to compute the selection.
+    // but I have to import the selectable here to compute the selection.
     final start = node.selectable?.start();
     final end = node.selectable?.end();
     final offset = direction == SelectionMoveDirection.forward

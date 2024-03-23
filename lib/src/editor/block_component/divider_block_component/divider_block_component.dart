@@ -111,6 +111,7 @@ class _DividerBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      dragAndDropListenable: editorState.dragAndDropSelectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       cursorColor: editorState.editorStyle.cursorColor,
       selectionColor: editorState.editorStyle.selectionColor,

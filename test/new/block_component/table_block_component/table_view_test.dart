@@ -46,6 +46,7 @@ void main() async {
       expect(tableNode.getRowHeight(1), row1beforeHeight);
       expect(tableNode.getRowHeight(1) < tableNode.getRowHeight(0), true);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('row height changing base on column width', (tester) async {
@@ -86,6 +87,7 @@ void main() async {
 
       expect(tableNode.getRowHeight(0), row0beforeHeight);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
   });
 }

@@ -27,6 +27,7 @@ void main() async {
       );
       expect(itemFinder, findsOneWidget);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
   });
 }

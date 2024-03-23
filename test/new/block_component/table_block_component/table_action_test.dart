@@ -44,6 +44,7 @@ void main() async {
         },
       );
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('remove row', (tester) async {
@@ -79,6 +80,7 @@ void main() async {
       );
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('remove the last column', (tester) async {
@@ -100,6 +102,7 @@ void main() async {
 
       expect(tester.editor.document.isEmpty, isTrue);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('remove the last row', (tester) async {
@@ -122,6 +125,7 @@ void main() async {
 
       expect(tester.editor.document.isEmpty, isTrue);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('duplicate column', (tester) async {
@@ -151,6 +155,7 @@ void main() async {
         );
       }
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('duplicate row', (tester) async {
@@ -180,6 +185,7 @@ void main() async {
         );
       }
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('add column', (tester) async {
@@ -211,6 +217,7 @@ void main() async {
       );
       expect(tableNode.getColWidth(2), tableNode.config.colDefaultWidth);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('add row', (tester) async {
@@ -244,6 +251,7 @@ void main() async {
       var cell12 = getCellNode(tableNode.node, 1, 2)!;
       expect(tableNode.getRowHeight(2), cell12.children.first.rect.height + 8);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('set row bg color', (tester) async {
@@ -275,6 +283,7 @@ void main() async {
         );
       }
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('add column respect row bg color', (tester) async {
@@ -314,6 +323,7 @@ void main() async {
         color,
       );
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('add row respect column bg color', (tester) async {

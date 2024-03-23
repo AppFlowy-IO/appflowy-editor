@@ -57,6 +57,7 @@ void main() async {
       expect(n3.attributes[TodoListBlockKeys.checked], true);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
   });
 }

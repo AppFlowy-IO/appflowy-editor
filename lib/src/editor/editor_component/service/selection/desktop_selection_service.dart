@@ -7,6 +7,9 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+const int negativeVerticalOffset = 12;
+const int negativeHorizontalOffset = 10;
+
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
     super.key,
@@ -38,6 +41,7 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   ValueNotifier<Selection?> currentSelection = ValueNotifier(null);
+  ValueNotifier<Selection?> currentDragAndDropSelection = ValueNotifier(null);
 
   @override
   List<Node> get currentSelectedNodes => editorState.getSelectedNodes();
@@ -49,6 +53,53 @@ class _DesktopSelectionServiceWidgetState
   double? _panStartScrollDy;
 
   Position? _panStartPosition;
+
+  // stores multiple selectable objects
+  // for supporting multi-line selection.
+  final Set<SelectableMixin<StatefulWidget>> _dragAndDropSelectables = {};
+
+  /// stores the calculated rect for each selectable
+  /// object in `dragAndDropSelectables`.
+  final Set<Rect> _dragAndDropSelectionRects = {};
+
+  /// `true`, if the cursor is inside the selected
+  /// rect on drag and drop operation.
+  bool _isCursorPointValid = false;
+
+  // cursor position calculated during drag and drop op.
+  double cursorX = 0;
+  double cursorY = 0;
+
+  List<Rect>? _cachedDragAndDropSelectionRects;
+
+  List<Rect> get dragAndDropSelectionRects {
+    _cachedDragAndDropSelectionRects ??=
+        _dragAndDropSelectionRects.toList(growable: false);
+    return _cachedDragAndDropSelectionRects!;
+  }
+
+  set dragAndDropSelectionRect(Rect rect) {
+    if (_dragAndDropSelectionRects.contains(rect)) return;
+
+    _dragAndDropSelectionRects.add(rect);
+    _cachedDragAndDropSelectionRects = null;
+  }
+
+  List<SelectableMixin<StatefulWidget>>? _cachedDragAndDropSelectables;
+
+  List<SelectableMixin<StatefulWidget>> get dragAndDropSelectables {
+    _cachedDragAndDropSelectables ??=
+        _dragAndDropSelectables.toList(growable: false);
+    return _cachedDragAndDropSelectables!;
+  }
+
+  set dragAndDropSelectable(SelectableMixin<StatefulWidget> selectable) {
+    if (_dragAndDropSelectables.contains(selectable)) return;
+
+    _dragAndDropSelectables.add(selectable);
+    _cachedDragAndDropSelectables = null;
+    _cachedDragAndDropSelectionRects = null;
+  }
 
   late EditorState editorState = Provider.of<EditorState>(
     context,
@@ -93,6 +144,7 @@ class _DesktopSelectionServiceWidgetState
       onPanStart: _onPanStart,
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
+      onTapUp: _onTapUp,
       onTapDown: _onTapDown,
       onSecondaryTapDown: _onSecondaryTapDown,
       onDoubleTapDown: _onDoubleTapDown,
@@ -108,6 +160,22 @@ class _DesktopSelectionServiceWidgetState
       selection,
       reason: SelectionUpdateReason.uiEvent,
     );
+  }
+
+  void updateDragAndDropSelection(Selection? selection) {
+    currentDragAndDropSelection.value = selection;
+    editorState.updateDragAndDropSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+    );
+  }
+
+  void updateMouseCursorStyle(SystemMouseCursor cursorStyle) {
+    editorState.updateMouseCursorStyle(cursorStyle);
+  }
+
+  void updateCursorStyle(CursorStyle cursorStyle) {
+    editorState.updateCursorStyle(cursorStyle);
   }
 
   @override
@@ -192,6 +260,84 @@ class _DesktopSelectionServiceWidgetState
     throw UnimplementedError();
   }
 
+  // Resets the presets for drag and drop selection after the operation
+  void reset() {
+    cursorX = cursorY = 0;
+
+    _cachedDragAndDropSelectionRects = null;
+    _dragAndDropSelectionRects.clear();
+
+    _cachedDragAndDropSelectables = null;
+    _dragAndDropSelectables.clear();
+
+    clearSelection();
+    updateCursorStyle(CursorStyle.verticalLine);
+    updateMouseCursorStyle(SystemMouseCursors.text);
+    updateDragAndDropSelection(null);
+  }
+
+  /// Checks if the cursor position, specified by `dx` and `dy`, is within the
+  /// bounds of the given `rect`.
+  ///
+  /// Optionally, removes applied negative offsets to the boundaries based on the
+  /// `removeNegativeOffset` parameter.
+  ///
+  /// Returns `true` if the cursor is within the selection, and `false` otherwise.
+  bool isCursorInSelection(
+    double dx,
+    double dy,
+    Rect rect, {
+    bool removeNegativeOffset = false,
+  }) {
+    final int horizontalOffset =
+        removeNegativeOffset ? negativeHorizontalOffset : 0;
+    final int verticalOffset =
+        removeNegativeOffset ? negativeVerticalOffset : 0;
+
+    if (dx < (rect.left - horizontalOffset) ||
+        dy < (rect.top - verticalOffset) ||
+        dx > (rect.right + horizontalOffset) ||
+        dy > (rect.bottom + verticalOffset)) {
+      return false;
+    }
+    return true;
+  }
+
+  /// Calculate the bounding box around a set of rectangles and adjust
+  /// the coordinates by subtracting a `negative offset`. This adjustment
+  /// eliminates boundaries around the cursor selection, facilitating
+  /// drag and drop of text content without obstruction.
+  Rect calculateRect(SelectableMixin<StatefulWidget> selectable) {
+    final rects = selectable.getRectsInSelection(
+      currentDragAndDropSelection.value!,
+    );
+
+    double left = 0.0, top = 0.0, right = 0.0, bottom = 0.0;
+    for (final rect in rects) {
+      left = math.min(left, rect.left);
+      right = math.max(right, rect.right);
+      top = math.min(top, rect.top);
+      bottom = math.max(bottom, rect.bottom);
+    }
+
+    final leftTopOffset = selectable.localToGlobal(Offset(left, top));
+    final rightBottomOffset = selectable.localToGlobal(Offset(right, bottom));
+
+    // Added negative offset to eliminate rect boundaries
+    left = leftTopOffset.dx + negativeHorizontalOffset;
+    top = leftTopOffset.dy + negativeVerticalOffset;
+    right = rightBottomOffset.dx - negativeHorizontalOffset;
+    bottom = rightBottomOffset.dy - negativeVerticalOffset;
+
+    return Rect.fromLTRB(left, top, right, bottom);
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    if (_isCursorPointValid) {
+      reset();
+    }
+  }
+
   void _onTapDown(TapDownDetails details) {
     _clearContextMenu();
 
@@ -199,12 +345,37 @@ class _DesktopSelectionServiceWidgetState
       (element) => element.canTap?.call(details) ?? true,
     );
     if (!canTap) {
+      reset();
       return updateSelection(null);
     }
 
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
+
+    if (currentDragAndDropSelection.value != null) {
+      if (_cachedDragAndDropSelectionRects == null) {
+        for (final selectable in dragAndDropSelectables) {
+          dragAndDropSelectionRect = calculateRect(selectable);
+        }
+      }
+
+      cursorX = offset.dx;
+      cursorY = offset.dy;
+
+      for (final rect in dragAndDropSelectionRects) {
+        if (isCursorInSelection(
+          cursorX,
+          cursorY,
+          rect,
+          removeNegativeOffset: true,
+        )) {
+          _isCursorPointValid = true;
+          return;
+        }
+      }
+    }
+
     if (selectable == null) {
       // Clear old start offset
       _panStartOffset = null;
@@ -232,16 +403,23 @@ class _DesktopSelectionServiceWidgetState
     }
 
     updateSelection(selection);
+
+    // need to cancel drag and drop op. selection
+    // on single tap down event.
+    reset();
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
-    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
+    final selectable = node?.selectable;
+    final selection = selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
       return;
     }
+    dragAndDropSelectable = selectable!;
+    updateDragAndDropSelection(selection);
     updateSelection(selection);
   }
 
@@ -257,6 +435,8 @@ class _DesktopSelectionServiceWidgetState
       start: selectable.start(),
       end: selectable.end(),
     );
+    dragAndDropSelectable = selectable;
+    updateDragAndDropSelection(selection);
     updateSelection(selection);
   }
 
@@ -292,8 +472,17 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    final panEndOffset = details.globalPosition;
     final dy = editorState.service.scrollService?.dy;
+
+    if (_isCursorPointValid) {
+      cursorX = details.globalPosition.dx;
+      cursorY = details.globalPosition.dy;
+
+      updateCursorPosition(details.globalPosition);
+      return;
+    }
+
+    final panEndOffset = details.globalPosition;
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
@@ -306,6 +495,8 @@ class _DesktopSelectionServiceWidgetState
       final start = _panStartPosition!;
       final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
       final selection = Selection(start: start, end: end);
+      dragAndDropSelectable = last;
+      updateDragAndDropSelection(selection);
       updateSelection(selection);
     }
 
@@ -319,6 +510,20 @@ class _DesktopSelectionServiceWidgetState
     _panStartPosition = null;
 
     editorState.service.scrollService?.stopAutoScroll();
+
+    if (_isCursorPointValid) {
+      for (final rect in dragAndDropSelectionRects) {
+        if (!isCursorInSelection(cursorX, cursorY, rect)) {
+          moveSelection(
+            currentDragAndDropSelection.value,
+            currentSelection.value,
+          );
+          break;
+        }
+      }
+      reset();
+      _isCursorPointValid = false;
+    }
   }
 
   void _updateSelection() {
@@ -369,6 +574,90 @@ class _DesktopSelectionServiceWidgetState
 
     _contextMenuAreas.add(contextMenu);
     Overlay.of(context, rootOverlay: true)?.insert(contextMenu);
+  }
+
+  void updateCursorPosition(Offset offset) {
+    final selection = currentDragAndDropSelection.value;
+    if (selection == null) return;
+
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      reset();
+      return;
+    }
+
+    updateCursorStyle(CursorStyle.dottedVerticalLine);
+    updateMouseCursorStyle(SystemMouseCursors.basic);
+    updateSelection(
+      Selection.collapsed(
+        selectable.getPositionInOffset(offset),
+      ),
+    );
+  }
+
+  void moveSelection(Selection? selection, Selection? cursorPosition) {
+    if (selection == null || cursorPosition == null) return;
+
+    final fromNode = editorState.getNodeAtPath(selection.start.path);
+    final toNode = editorState.getNodeAtPath(cursorPosition.start.path);
+    if (fromNode == null || toNode == null) return;
+
+    final textInSelection = editorState.getTextInSelection(selection);
+    int len = 0;
+
+    for (int i = textInSelection.length - 1; i >= 0; i--) {
+      String text = textInSelection[i];
+      text += (textInSelection.length > 1 && i < textInSelection.length - 1)
+          ? ' '
+          : '';
+      len += text.length;
+      editorState.insertText(cursorPosition.start.offset, text, node: toNode);
+    }
+
+    Selection newCursorPosition = cursorPosition;
+
+    // Update the offset of the selection if:
+    //
+    // The selection is at the same node, and
+    // The drop cursor position is before the selection.
+    //
+    int end = selection.endIndex;
+    if (selection.isForward) {
+      end = selection.startIndex;
+    }
+    if (fromNode == toNode && cursorPosition.startIndex < end) {
+      final newStartPosition = Position(
+        path: fromNode.path,
+        offset: selection.start.offset + len,
+      );
+      final newEndPosition = Position(
+        path: fromNode.path,
+        offset: selection.end.offset + len,
+      );
+
+      selection = Selection(
+        start: newStartPosition,
+        end: newEndPosition,
+      );
+    }
+
+    editorState.deleteSelection(selection);
+
+    if (fromNode != toNode ||
+        (fromNode == toNode && cursorPosition.startIndex < end)) {
+      newCursorPosition = Selection.collapsed(
+        Position(
+          path: toNode.path,
+          offset: cursorPosition.startIndex + len,
+        ),
+      );
+    }
+
+    // update the cursor position to the last node or
+    // the cursor point of the edited [toNode] path after
+    // the drag and drop operation
+    updateSelection(newCursorPosition);
   }
 
   @override

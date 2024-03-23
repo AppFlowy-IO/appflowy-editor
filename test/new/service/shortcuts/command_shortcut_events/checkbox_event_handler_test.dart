@@ -53,6 +53,7 @@ void main() async {
       expect(node.attributes[TodoListBlockKeys.checked], false);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets(
@@ -103,6 +104,7 @@ void main() async {
       }
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets(
@@ -152,6 +154,7 @@ void main() async {
       }
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
   });
 }

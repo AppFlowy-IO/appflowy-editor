@@ -39,6 +39,7 @@ void main() async {
       expect(selection.start.path, cell01.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 0);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('enter key on last cell', (tester) async {
@@ -68,6 +69,7 @@ void main() async {
       expect(selection.start.offset, 0);
       expect(editor.documentRootLen, 2);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('backspace on beginning of cell', (tester) async {
@@ -96,6 +98,7 @@ void main() async {
       expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 0);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('backspace on multiple cell selection', (tester) async {
@@ -178,6 +181,7 @@ void main() async {
       expect(editor.document.last!.delta?.toPlainText(), 'ting');
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('backspace on whole table in selection', (tester) async {
@@ -215,6 +219,7 @@ void main() async {
       expect(editor.document.last!.delta?.toPlainText(), 'Sting');
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('up arrow key move to above row with same column',
@@ -259,6 +264,7 @@ void main() async {
       expect(selection.start.path, cell00.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 2);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('down arrow key move to down row with same column',
@@ -303,6 +309,7 @@ void main() async {
       expect(selection.start.path, cell01.childAtIndexOrNull(0)!.path);
       expect(selection.start.offset, 2);
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('arrowLeft key on beginning of a cell', (tester) async {
@@ -349,6 +356,7 @@ void main() async {
       expect(selection.start.offset, 0);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('arrowLeft key on middle of a cell', (tester) async {
@@ -379,6 +387,7 @@ void main() async {
       expect(selection.start.offset, 0);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('arrowRight key on beginning of a cell', (tester) async {
@@ -409,6 +418,7 @@ void main() async {
       expect(selection.start.offset, 1);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('arrowRight key on end of a cell', (tester) async {
@@ -457,6 +467,7 @@ void main() async {
       expect(selection.start.offset, 2);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('tab key navigates to next cell', (tester) async {
@@ -520,6 +531,7 @@ void main() async {
       expect(selection.start.offset, 0);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('shift+tab key navigates to the previous cell', (tester) async {
@@ -586,6 +598,7 @@ void main() async {
       expect(selection.start.offset, 0);
 
       await editor.dispose();
+      await tester.pumpAndSettle();
     });
   });
 }

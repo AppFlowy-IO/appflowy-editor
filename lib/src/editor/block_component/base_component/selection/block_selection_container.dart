@@ -8,12 +8,14 @@ class BlockSelectionContainer extends StatelessWidget {
     required this.node,
     required this.delegate,
     required this.listenable,
+    required this.dragAndDropListenable,
     this.cursorColor = Colors.black,
     this.selectionColor = Colors.blue,
     this.blockColor = Colors.blue,
     this.supportTypes = const [
       BlockSelectionType.cursor,
       BlockSelectionType.selection,
+      BlockSelectionType.dragAndDrop,
     ],
     required this.child,
   });
@@ -23,6 +25,8 @@ class BlockSelectionContainer extends StatelessWidget {
 
   // get the selection from the listenable
   final ValueListenable<Selection?> listenable;
+
+  final ValueListenable<Selection?> dragAndDropListenable;
 
   // the color of the cursor
   final Color cursorColor;
@@ -55,6 +59,7 @@ class BlockSelectionContainer extends StatelessWidget {
           node: node,
           delegate: delegate,
           listenable: listenable,
+          dragAndDropListenable: dragAndDropListenable,
           cursorColor: cursorColor,
           selectionColor: selectionColor,
           blockColor: blockColor,

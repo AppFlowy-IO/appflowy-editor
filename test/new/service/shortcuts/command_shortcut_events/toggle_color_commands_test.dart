@@ -138,4 +138,5 @@ Future<void> _testUpdateTextColorByCommandX(
   }
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }

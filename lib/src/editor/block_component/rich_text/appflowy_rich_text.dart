@@ -109,21 +109,27 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Widget build(BuildContext context) {
-    final child = MouseRegion(
-      cursor: SystemMouseCursors.text,
-      child: widget.node.delta?.toPlainText().isEmpty ?? true
-          ? Stack(
-              children: [
-                _buildPlaceholderText(context),
-                _buildRichText(context),
-              ],
-            )
-          : _buildRichText(context),
+    final child = ValueListenableBuilder(
+      valueListenable: widget.editorState.mouseCursorStyleNotifier,
+      builder: (context, value, child) {
+        return MouseRegion(
+          cursor: value,
+          child: widget.node.delta?.toPlainText().isEmpty ?? true
+              ? Stack(
+                  children: [
+                    _buildPlaceholderText(context),
+                    _buildRichText(context),
+                  ],
+                )
+              : _buildRichText(context),
+        );
+      },
     );
 
     return BlockSelectionContainer(
       delegate: widget.delegate,
       listenable: widget.editorState.selectionNotifier,
+      dragAndDropListenable: widget.editorState.dragAndDropSelectionNotifier,
       node: widget.node,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,

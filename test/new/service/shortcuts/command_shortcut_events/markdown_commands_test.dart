@@ -179,4 +179,5 @@ Future<void> _testUpdateTextStyleByCommandX(
   }
 
   await editor.dispose();
+  await tester.pumpAndSettle();
 }

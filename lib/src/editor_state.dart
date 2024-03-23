@@ -6,6 +6,7 @@ import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_
 import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' hide UndoManager;
 
 /// the type of this value is bool.
 ///
@@ -115,12 +116,52 @@ class EditorState {
     selectionNotifier.value = value;
   }
 
+  ValueNotifier<CursorStyle> cursorStyleNotifier =
+      ValueNotifier(CursorStyle.verticalLine);
+
+  CursorStyle get cursorStyle => cursorStyleNotifier.value;
+
+  set cursorStyle(CursorStyle cursorStyle) {
+    cursorStyleNotifier.value = cursorStyle;
+  }
+
+  ValueNotifier<SystemMouseCursor> mouseCursorStyleNotifier =
+      ValueNotifier(SystemMouseCursors.text);
+
+  SystemMouseCursor get mouseCursorStyle => mouseCursorStyleNotifier.value;
+
+  set mouseCursorStyle(SystemMouseCursor cursorStyle) {
+    mouseCursorStyleNotifier.value = cursorStyle;
+  }
+
+  /// The drag and drop selection notifier of the editor.
+  final PropertyValueNotifier<Selection?> dragAndDropSelectionNotifier =
+      PropertyValueNotifier<Selection?>(null);
+
+  /// The drag and drop selection of the editor.
+  Selection? get dragAndDropSelection => dragAndDropSelectionNotifier.value;
+
+  /// Sets the drag and drop selection of the editor.
+  set dragAndDropSelection(Selection? value) {
+    // clear the toggled style when the selection is changed.
+    toggledStyle.clear();
+
+    dragAndDropSelectionNotifier.value = value;
+  }
+
   SelectionType? selectionType;
+  SelectionType? dragAndDropSelectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
+  SelectionUpdateReason _dragAndDropSelectionUpdateReason =
+      SelectionUpdateReason.uiEvent;
+  SelectionUpdateReason get dragAndDropSelectionUpdateReason =>
+      _dragAndDropSelectionUpdateReason;
+
   Map? selectionExtraInfo;
+  Map? dragAndDropSelectionExtraInfo;
 
   // Service reference.
   final service = EditorService();
@@ -222,6 +263,63 @@ class EditorState {
     _selectionUpdateReason = reason;
 
     this.selection = selection;
+
+    return completer.future;
+  }
+
+  Future<void> updateDragAndDropSelectionWithReason(
+    Selection? selection, {
+    SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+    Map? extraInfo,
+  }) async {
+    final completer = Completer<void>();
+
+    if (reason == SelectionUpdateReason.uiEvent) {
+      dragAndDropSelectionType = SelectionType.inline;
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => completer.complete(),
+      );
+    }
+
+    // broadcast to other users here
+    dragAndDropSelectionExtraInfo = extraInfo;
+    _dragAndDropSelectionUpdateReason = reason;
+
+    dragAndDropSelection = selection;
+
+    return completer.future;
+  }
+
+  Future<void> updateMouseCursorStyle(
+    SystemMouseCursor cursorStyle, {
+    SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+  }) async {
+    final completer = Completer<void>();
+
+    if (reason == SelectionUpdateReason.uiEvent) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => completer.complete(),
+      );
+    }
+
+    mouseCursorStyle = cursorStyle;
+
+    return completer.future;
+  }
+
+  Future<void> updateCursorStyle(
+    CursorStyle cursorStyle, {
+    SelectionUpdateReason reason = SelectionUpdateReason.transaction,
+  }) async {
+    final completer = Completer<void>();
+
+    if (reason == SelectionUpdateReason.uiEvent) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => completer.complete(),
+      );
+    }
+
+    this.cursorStyle = cursorStyle;
 
     return completer.future;
   }

@@ -162,6 +162,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      dragAndDropListenable: editorState.dragAndDropSelectionNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
@@ -196,6 +197,8 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
                   node: node,
                   delegate: this,
                   listenable: editorState.selectionNotifier,
+                  dragAndDropListenable:
+                      editorState.dragAndDropSelectionNotifier,
                   cursorColor: editorState.editorStyle.cursorColor,
                   selectionColor: editorState.editorStyle.selectionColor,
                   child: child!,
