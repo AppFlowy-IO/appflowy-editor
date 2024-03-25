@@ -117,11 +117,22 @@ class _RemoteBlockSelectionAreaState extends State<RemoteBlockSelectionArea> {
         return child;
       }
       const shouldBlink = false;
-      final cursor = Cursor(
-        rect: prevCursorRect!,
-        shouldBlink: shouldBlink,
-        cursorStyle: widget.delegate.cursorStyle,
-        color: widget.remoteSelection.cursorColor,
+      final cursor = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Cursor(
+            rect: prevCursorRect!,
+            shouldBlink: shouldBlink,
+            cursorStyle: widget.delegate.cursorStyle,
+            color: widget.remoteSelection.cursorColor,
+          ),
+          widget.remoteSelection.builder?.call(
+                context,
+                widget.remoteSelection,
+                prevCursorRect!,
+              ) ??
+              child,
+        ],
       );
       return cursor;
     } else {
@@ -133,9 +144,21 @@ class _RemoteBlockSelectionAreaState extends State<RemoteBlockSelectionArea> {
               prevSelectionRects!.first.width == 0)) {
         return child;
       }
-      return SelectionAreaPaint(
-        rects: prevSelectionRects!,
-        selectionColor: widget.remoteSelection.selectionColor,
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          SelectionAreaPaint(
+            rects: prevSelectionRects!,
+            selectionColor: widget.remoteSelection.selectionColor,
+          ),
+          if (selection.start.path.equals(widget.node.path))
+            widget.remoteSelection.builder?.call(
+                  context,
+                  widget.remoteSelection,
+                  prevSelectionRects!.first,
+                ) ??
+                child,
+        ],
       );
     }
   }

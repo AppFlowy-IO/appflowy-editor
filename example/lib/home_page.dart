@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/collab_editor.dart';
+import 'package:example/pages/collab_selection_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
@@ -165,6 +166,14 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const CollabEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Collab Selection', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CollabSelectionEditor(),
               ),
             );
           }),
