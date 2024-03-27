@@ -124,6 +124,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return BlockSelectionContainer(
       delegate: widget.delegate,
       listenable: widget.editorState.selectionNotifier,
+      remoteSelection: widget.editorState.remoteSelections,
       node: widget.node,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
