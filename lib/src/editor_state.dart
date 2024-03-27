@@ -105,6 +105,10 @@ class EditorState {
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
 
+  /// Remote selection is the selection from other users.
+  final PropertyValueNotifier<List<RemoteSelection>> remoteSelections =
+      PropertyValueNotifier<List<RemoteSelection>>([]);
+
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     // clear the toggled style when the selection is changed.

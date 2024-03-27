@@ -8,6 +8,7 @@ class BlockSelectionContainer extends StatelessWidget {
     required this.node,
     required this.delegate,
     required this.listenable,
+    this.remoteSelection,
     this.cursorColor = Colors.black,
     this.selectionColor = Colors.blue,
     this.blockColor = Colors.blue,
@@ -23,6 +24,9 @@ class BlockSelectionContainer extends StatelessWidget {
 
   // get the selection from the listenable
   final ValueListenable<Selection?> listenable;
+
+  // remote selection
+  final ValueListenable<List<RemoteSelection>>? remoteSelection;
 
   // the color of the cursor
   final Color cursorColor;
@@ -50,6 +54,17 @@ class BlockSelectionContainer extends StatelessWidget {
           ? AlignmentDirectional.topStart
           : AlignmentDirectional.topEnd,
       children: [
+        if (remoteSelection != null)
+          RemoteBlockSelectionsArea(
+            node: node,
+            delegate: delegate,
+            remoteSelections: remoteSelection!,
+            supportTypes: supportTypes
+                .where(
+                  (element) => element != BlockSelectionType.cursor,
+                )
+                .toList(),
+          ),
         // block selection or selection area
         BlockSelectionArea(
           node: node,
@@ -66,6 +81,16 @@ class BlockSelectionContainer extends StatelessWidget {
         ),
         child,
         // cursor
+        // remote cursor
+        if (supportTypes.contains(BlockSelectionType.cursor) &&
+            remoteSelection != null)
+          RemoteBlockSelectionsArea(
+            node: node,
+            delegate: delegate,
+            remoteSelections: remoteSelection!,
+            supportTypes: const [BlockSelectionType.cursor],
+          ),
+        // local cursor
         if (supportTypes.contains(BlockSelectionType.cursor))
           BlockSelectionArea(
             node: node,
