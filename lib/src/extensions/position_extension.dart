@@ -147,7 +147,9 @@ extension PositionExtension on Position {
     //   skipped because `remainingMultilineHeight` would be 0.
     Offset newOffset = caretOffset;
     Position? newPosition;
-    for (var y = minFontSize; y < remainingMultilineHeight + minFontSize; y += minFontSize) {
+    for (var y = minFontSize;
+        y < remainingMultilineHeight + minFontSize;
+        y += minFontSize) {
       newOffset = caretOffset.translate(0, upwards ? -y : y);
 
       newPosition =
@@ -174,7 +176,10 @@ extension PositionExtension on Position {
     final nodeHeightOffset = nodeRenderBox.localToGlobal(Offset(0, nodeHeight));
 
     // Clamp the new offset to the node's bounds.
-    newOffset = Offset(newOffset.dx, math.min(newOffset.dy, nodeHeightOffset.dy));
+    newOffset = Offset(
+      newOffset.dx,
+      math.min(newOffset.dy, nodeHeightOffset.dy),
+    );
 
     newPosition =
         editorState.service.selectionService.getPositionInOffset(newOffset);
