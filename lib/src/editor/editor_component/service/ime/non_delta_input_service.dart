@@ -179,7 +179,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   void _updateComposing(TextEditingDelta delta) {
-
     composingTextRange = delta.composing;
 
     // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
@@ -198,7 +197,13 @@ extension on TextEditingValue {
   TextEditingValue format() {
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
-    final composing = this.composing >> _len;
+    final textLength = text.length;
+    TextRange composing = this.composing >> _len;
+
+    // check invalid composing
+    if (composing.start > textLength || composing.end > textLength) {
+      composing = TextRange.empty;
+    }
 
     return TextEditingValue(
       text: text,
