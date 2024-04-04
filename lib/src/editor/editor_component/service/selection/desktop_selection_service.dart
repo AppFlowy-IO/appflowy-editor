@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -235,6 +237,14 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onDoubleTapDown(TapDownDetails details) {
+    final canDoubleTap = _interceptors.every(
+      (interceptor) => interceptor.canDoubleTap?.call(details) ?? true,
+    );
+
+    if (!canDoubleTap) {
+      return updateSelection(null);
+    }
+
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
@@ -277,6 +287,13 @@ class _DesktopSelectionServiceWidgetState
   void _onPanStart(DragStartDetails details) {
     clearSelection();
 
+    final canPanStart = _interceptors
+        .every((interceptor) => interceptor.canPanStart?.call(details) ?? true);
+
+    if (!canPanStart) {
+      return;
+    }
+
     _panStartOffset = details.globalPosition.translate(-3.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
@@ -286,6 +303,14 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
+    final canPanUpdate = _interceptors.every(
+      (interceptor) => interceptor.canPanUpdate?.call(details) ?? true,
+    );
+
+    if (!canPanUpdate) {
+      return;
+    }
+
     if (_panStartOffset == null ||
         _panStartScrollDy == null ||
         _panStartPosition == null) {
@@ -316,6 +341,13 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onPanEnd(DragEndDetails details) {
+    final canPanEnd = _interceptors
+        .every((interceptor) => interceptor.canPanEnd?.call(details) ?? true);
+
+    if (!canPanEnd) {
+      return;
+    }
+
     _panStartPosition = null;
 
     editorState.service.scrollService?.stopAutoScroll();

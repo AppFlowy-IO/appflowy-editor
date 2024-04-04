@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
@@ -87,9 +88,17 @@ class SelectionGestureInterceptor {
   SelectionGestureInterceptor({
     required this.key,
     this.canTap,
+    this.canDoubleTap,
+    this.canPanStart,
+    this.canPanUpdate,
+    this.canPanEnd,
   });
 
   final String key;
 
   bool Function(TapDownDetails details)? canTap;
+  bool Function(TapDownDetails details)? canDoubleTap;
+  bool Function(DragStartDetails details)? canPanStart;
+  bool Function(DragUpdateDetails details)? canPanUpdate;
+  bool Function(DragEndDetails details)? canPanEnd;
 }

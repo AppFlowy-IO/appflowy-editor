@@ -1,8 +1,10 @@
 import 'dart:io';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../../../../infra/clipboard_test.dart';
 import '../../../infra/testable_editor.dart';
@@ -40,12 +42,12 @@ void main() async {
         (tester) async {
       await _testHandleCopy(tester, Document.fromJson(data));
     });
-    testWidgets(
-        'Presses Command + A in nested document and copy text nestednode',
-        (tester) async {
-      // TODO: fix this test
-      // await _testNestedNodeCopyPaste(tester, Document.fromJson(exampledoc));
-    });
+    // TODO: fix this test
+    // testWidgets(
+    //     'Presses Command + A in nested document and copy text nestednode',
+    //     (tester) async {
+    // await _testNestedNodeCopyPaste(tester, Document.fromJson(exampledoc));
+    // });
 
     testWidgets('update selection and execute cut command', (tester) async {
       await _testCutHandle(tester, Document.fromJson(cutData));
