@@ -63,7 +63,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     TextInputConfiguration configuration,
   ) {
     final formattedValue = textEditingValue.format();
-    if (currentTextEditingValue == formattedValue) {
+    if (!formattedValue.isValid() ||
+        currentTextEditingValue == formattedValue) {
       return;
     }
 
@@ -210,6 +211,16 @@ const String _whitespace = ' ';
 const int _len = _whitespace.length;
 
 extension on TextEditingValue {
+  bool isValid() {
+    if (selection.baseOffset < 0 ||
+        selection.extentOffset < 0 ||
+        selection.baseOffset > text.length ||
+        selection.extentOffset > text.length) {
+      return false;
+    }
+    return true;
+  }
+
   // The IME will not report the backspace button if the cursor is at the beginning of the text.
   // Therefore, we need to add a transparent symbol at the start to ensure that we can capture the backspace event.
   TextEditingValue format() {
