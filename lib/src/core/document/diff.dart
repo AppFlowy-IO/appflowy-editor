@@ -43,5 +43,64 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
     operations.add(DeleteOperation(oldChild.path, [oldChild]));
   });
 
+  // Combine the operation in operations
+
+  // 1. Insert operations can be combined if they are continuous
+  final combinedOperations = <Operation>[];
+  if (operations.isNotEmpty &&
+      operations.every((element) => element is InsertOperation)) {
+    operations.sorted((a, b) => a.path <= b.path ? -1 : 1);
+    for (var i = 0; i < operations.length; i++) {
+      final op = operations[i];
+      if (combinedOperations.isEmpty) {
+        combinedOperations.add(op);
+      } else {
+        if (op.path.equals(operations[i - 1].path.next)) {
+          final lastOp = combinedOperations.removeLast();
+          combinedOperations.add(
+            InsertOperation(
+              lastOp.path,
+              [
+                ...(lastOp as InsertOperation).nodes,
+                ...(op as InsertOperation).nodes,
+              ],
+            ),
+          );
+        } else {
+          combinedOperations.add(op);
+        }
+      }
+    }
+    return combinedOperations;
+  }
+
+  // 2. Delete operations can be combined if they are continuous
+  if (operations.isNotEmpty &&
+      operations.every((element) => element is DeleteOperation)) {
+    operations.sorted((a, b) => a.path <= b.path ? -1 : 1);
+    for (var i = 0; i < operations.length; i++) {
+      final op = operations[i];
+      if (combinedOperations.isEmpty) {
+        combinedOperations.add(op);
+      } else {
+        if (op.path.equals(operations[i - 1].path.next)) {
+          final lastOp = combinedOperations.removeLast();
+          combinedOperations.add(
+            DeleteOperation(
+              lastOp.path,
+              [
+                ...(lastOp as DeleteOperation).nodes,
+                ...(op as DeleteOperation).nodes,
+              ],
+            ),
+          );
+        } else {
+          combinedOperations.add(op);
+        }
+      }
+    }
+    return combinedOperations;
+  }
+
   return operations;
 }
