@@ -205,10 +205,10 @@ extension TextTransaction on Transaction {
       return;
     }
 
-    assert(
-      index <= delta.length && index >= 0,
-      'The index($index) is out of range or negative.',
-    );
+    if (index < 0 || index > delta.length) {
+      Log.editor.info('The index($index) is out of range or negative.');
+      return;
+    }
 
     final newAttributes = attributes ?? delta.sliceAttributes(index) ?? {};
 

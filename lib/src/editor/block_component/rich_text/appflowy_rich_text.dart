@@ -156,6 +156,13 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
       return null;
     }
+
+    final delta = widget.node.delta;
+    if (position.offset < 0 ||
+        (delta != null && position.offset > delta.length)) {
+      return null;
+    }
+
     final textPosition = TextPosition(offset: position.offset);
     var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
     var cursorOffset =
@@ -255,6 +262,14 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) {
+    final delta = widget.node.delta;
+    if (delta != null) {
+      return Selection.single(
+        path: widget.node.path,
+        startOffset: 0,
+        endOffset: 0,
+      );
+    }
     final localStart = _renderParagraph?.globalToLocal(start) ?? Offset.zero;
     final localEnd = _renderParagraph?.globalToLocal(end) ?? Offset.zero;
     final baseOffset =
