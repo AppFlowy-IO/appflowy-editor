@@ -263,7 +263,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Selection getSelectionInRange(Offset start, Offset end) {
     final delta = widget.node.delta;
-    if (delta != null) {
+    if (delta == null) {
       return Selection.single(
         path: widget.node.path,
         startOffset: 0,
