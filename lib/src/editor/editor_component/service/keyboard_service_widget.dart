@@ -228,7 +228,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
-    if (textEditingValue != null) {
+    if (textEditingValue != null && textEditingValue.composing.isCollapsed) {
       textInputService.attach(
         textEditingValue,
         TextInputConfiguration(

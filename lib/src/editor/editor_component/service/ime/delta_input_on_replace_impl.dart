@@ -5,6 +5,8 @@ import 'package:appflowy_editor/src/editor/editor_component/service/ime/characte
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
 import 'package:flutter/services.dart';
 
+var oldValueStartElementIsSpace = false;
+
 Future<void> onReplace(
   TextEditingDeltaReplacement replacement,
   EditorState editorState,
@@ -46,8 +48,8 @@ Future<void> onReplace(
     final node = editorState.getNodesInSelection(selection).first;
     final transaction = editorState.transaction;
     final start = replacement.replacedRange.start;
-    final length = replacement.replacedRange.end - start;
-
+    final length = replacement.replacedRange.end - start + (oldValueStartElementIsSpace ? 1 : 0);
+    oldValueStartElementIsSpace = replacement.replacementText.startsWith(" ");
     transaction.replaceText(node, start, length, replacement.replacementText);
     await editorState.apply(transaction);
   } else {
