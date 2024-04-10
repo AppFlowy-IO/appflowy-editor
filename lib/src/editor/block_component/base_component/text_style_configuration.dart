@@ -20,6 +20,9 @@ class TextStyleConfiguration {
       color: Colors.red,
       backgroundColor: Color.fromARGB(98, 0, 195, 255),
     ),
+    this.autoComplete = const TextStyle(
+      color: Colors.red,
+    ),
   });
 
   /// default text style
@@ -43,6 +46,9 @@ class TextStyleConfiguration {
   /// code text style
   final TextStyle code;
 
+  /// auto complete text style
+  final TextStyle autoComplete;
+
   TextStyleConfiguration copyWith({
     TextStyle? text,
     TextStyle? bold,
@@ -51,6 +57,7 @@ class TextStyleConfiguration {
     TextStyle? strikethrough,
     TextStyle? href,
     TextStyle? code,
+    TextStyle? autoComplete,
   }) {
     return TextStyleConfiguration(
       text: text ?? this.text,
@@ -60,6 +67,7 @@ class TextStyleConfiguration {
       strikethrough: strikethrough ?? this.strikethrough,
       href: href ?? this.href,
       code: code ?? this.code,
+      autoComplete: autoComplete ?? this.autoComplete,
     );
   }
 }

@@ -38,6 +38,8 @@ class AppFlowyEditor extends StatefulWidget {
     this.header,
     this.footer,
     this.focusNode,
+    this.enableAutoComplete = false,
+    this.autoCompleteTextSpanDecorator,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -161,6 +163,12 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   /// only works on iOS or Android.
   final bool showMagnifier;
+
+  /// If you want to enable the auto complete feature, you must set this value to true
+  ///   and provide the [autoCompleteTextSpanDecorator].
+  final bool enableAutoComplete;
+
+  final AppFlowyAutoCompleteTextProvider? autoCompleteTextSpanDecorator;
 
   /// {@macro flutter.widgets.editableText.contentInsertionConfiguration}
   final ContentInsertionConfiguration? contentInsertionConfiguration;
@@ -296,6 +304,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.editable = widget.editable;
     editorState.showHeader = widget.header != null;
     editorState.showFooter = widget.footer != null;
+    editorState.enableAutoComplete = widget.enableAutoComplete;
+    editorState.autoCompleteTextSpanDecorator =
+        widget.autoCompleteTextSpanDecorator;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class DesktopEditor extends StatefulWidget {
   const DesktopEditor({
@@ -84,6 +85,8 @@ class _DesktopEditorState extends State<DesktopEditor> {
           blockComponentBuilders: blockComponentBuilders,
           commandShortcutEvents: commandShortcuts,
           editorStyle: editorStyle,
+          enableAutoComplete: true,
+          autoCompleteTextSpanDecorator: _buildAutoCompleteTextSpanDecorator,
           header: Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Image.asset(
@@ -187,5 +190,20 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ),
       ),
     ];
+  }
+
+  String? _buildAutoCompleteTextSpanDecorator(
+    BuildContext context,
+    Node node,
+    TextSpan textSpan,
+  ) {
+    final editorState = context.read<EditorState>();
+    final selection = editorState.selection;
+    if (selection == null ||
+        !selection.isCollapsed ||
+        !node.path.equals(selection.start.path)) {
+      return null;
+    }
+    return 'Hello World';
   }
 }
