@@ -21,7 +21,7 @@ class TextStyleConfiguration {
       backgroundColor: Color.fromARGB(98, 0, 195, 255),
     ),
     this.autoComplete = const TextStyle(
-      color: Colors.red,
+      color: Colors.grey,
     ),
   });
 

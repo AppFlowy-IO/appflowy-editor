@@ -199,11 +199,19 @@ class _DesktopEditorState extends State<DesktopEditor> {
   ) {
     final editorState = context.read<EditorState>();
     final selection = editorState.selection;
+    final delta = node.delta;
     if (selection == null ||
+        delta == null ||
         !selection.isCollapsed ||
+        selection.endIndex != delta.length ||
         !node.path.equals(selection.start.path)) {
       return null;
     }
-    return 'Hello World';
+    final text = delta.toPlainText();
+    // An example, if the text ends with 'hello', then show the autocomplete.
+    if (text.endsWith('hello')) {
+      return ' world';
+    }
+    return null;
   }
 }
