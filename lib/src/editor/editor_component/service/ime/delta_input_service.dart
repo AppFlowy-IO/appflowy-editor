@@ -56,13 +56,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         configuration,
-        // TextInputConfiguration(
-        //   enableDeltaModel: true,
-        //   inputType: TextInputType.multiline,
-        //   textCapitalization: TextCapitalization.sentences,
-        //   inputAction: TextInputAction.newline,
-        //   keyboardAppearance: Theme.of(context).brightness,
-        // ),
       );
     }
 

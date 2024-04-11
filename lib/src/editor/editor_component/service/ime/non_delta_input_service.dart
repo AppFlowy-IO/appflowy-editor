@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
@@ -96,6 +97,13 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     }
 
     final deltas = getTextEditingDeltas(currentTextEditingValue, value);
+
+    if (kDebugMode) {
+      Log.input.debug(
+        deltas.map((delta) => delta.toString()).toString(),
+      );
+    }
+
     // On mobile, the IME will send a lot of updateEditingValue events, so we
     // need to debounce it to combine them together.
     Debounce.debounce(
