@@ -187,6 +187,9 @@ class EditorState {
   bool showHeader = false;
   bool showFooter = false;
 
+  bool enableAutoComplete = false;
+  AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
+
   // only used for testing
   bool disableSealTimer = false;
   bool disableRules = false;
@@ -294,12 +297,16 @@ class EditorState {
       selection = _applyTransactionFromRemote(transaction);
     } else {
       // broadcast to other users here, before applying the transaction
-      _observer.add((TransactionTime.before, transaction));
+      if (!_observer.isClosed) {
+        _observer.add((TransactionTime.before, transaction));
+      }
 
       _applyTransactionInLocal(transaction);
 
       // broadcast to other users here, after applying the transaction
-      _observer.add((TransactionTime.after, transaction));
+      if (!_observer.isClosed) {
+        _observer.add((TransactionTime.after, transaction));
+      }
 
       _recordRedoOrUndo(options, transaction);
 

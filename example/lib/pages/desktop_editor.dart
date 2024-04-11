@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class DesktopEditor extends StatefulWidget {
   const DesktopEditor({
@@ -84,6 +85,8 @@ class _DesktopEditorState extends State<DesktopEditor> {
           blockComponentBuilders: blockComponentBuilders,
           commandShortcutEvents: commandShortcuts,
           editorStyle: editorStyle,
+          enableAutoComplete: true,
+          autoCompleteTextProvider: _buildAutoCompleteTextProvider,
           header: Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Image.asset(
@@ -187,5 +190,28 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ),
       ),
     ];
+  }
+
+  String? _buildAutoCompleteTextProvider(
+    BuildContext context,
+    Node node,
+    TextSpan? textSpan,
+  ) {
+    final editorState = context.read<EditorState>();
+    final selection = editorState.selection;
+    final delta = node.delta;
+    if (selection == null ||
+        delta == null ||
+        !selection.isCollapsed ||
+        selection.endIndex != delta.length ||
+        !node.path.equals(selection.start.path)) {
+      return null;
+    }
+    final text = delta.toPlainText();
+    // An example, if the text ends with 'hello', then show the autocomplete.
+    if (text.endsWith('hello')) {
+      return ' world';
+    }
+    return null;
   }
 }
