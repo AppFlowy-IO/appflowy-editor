@@ -1,5 +1,6 @@
 // paragraph
 export 'base_component/align_mixin.dart';
+export 'base_component/auto_complete_command.dart';
 export 'base_component/background_color_mixin.dart';
 export 'base_component/block_component_action_wrapper.dart';
 export 'base_component/block_component_configuration.dart';

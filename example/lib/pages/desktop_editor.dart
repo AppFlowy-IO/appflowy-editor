@@ -195,7 +195,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
   String? _buildAutoCompleteTextProvider(
     BuildContext context,
     Node node,
-    TextSpan textSpan,
+    TextSpan? textSpan,
   ) {
     final editorState = context.read<EditorState>();
     final selection = editorState.selection;

@@ -30,7 +30,7 @@ typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 typedef AppFlowyAutoCompleteTextProvider = String? Function(
   BuildContext context,
   Node node,
-  TextSpan textSpan,
+  TextSpan? textSpan,
 );
 
 class AppFlowyRichText extends StatefulWidget {
