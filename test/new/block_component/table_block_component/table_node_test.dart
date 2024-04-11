@@ -224,7 +224,7 @@ void main() {
         ['1', '2'],
         ['3', '4'],
       ]);
-      var config = TableConfig();
+      final config = TableConfig();
 
       expect(tableNode.config.colMinimumWidth, config.colMinimumWidth);
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
@@ -279,7 +279,7 @@ void main() {
     });
 
     test('default constructor (from list of list of strings)', () {
-      var config = TableConfig(
+      final config = TableConfig(
         colMinimumWidth: 10,
         colDefaultWidth: 20,
         rowDefaultHeight: 30,
