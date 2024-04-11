@@ -188,7 +188,7 @@ class EditorState {
   bool showFooter = false;
 
   bool enableAutoComplete = false;
-  AppFlowyAutoCompleteTextProvider? autoCompleteTextSpanDecorator;
+  AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
   // only used for testing
   bool disableSealTimer = false;

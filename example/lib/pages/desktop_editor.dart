@@ -86,7 +86,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           commandShortcutEvents: commandShortcuts,
           editorStyle: editorStyle,
           enableAutoComplete: true,
-          autoCompleteTextSpanDecorator: _buildAutoCompleteTextSpanDecorator,
+          autoCompleteTextProvider: _buildAutoCompleteTextProvider,
           header: Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Image.asset(
@@ -192,7 +192,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
     ];
   }
 
-  String? _buildAutoCompleteTextSpanDecorator(
+  String? _buildAutoCompleteTextProvider(
     BuildContext context,
     Node node,
     TextSpan textSpan,

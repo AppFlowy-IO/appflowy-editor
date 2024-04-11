@@ -47,7 +47,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
-    this.autoCompleteTextSpanDecorator,
+    this.autoCompleteTextProvider,
     required this.delegate,
     required this.node,
     required this.editorState,
@@ -85,7 +85,7 @@ class AppFlowyRichText extends StatefulWidget {
   final SelectableMixin delegate;
 
   // this span will be appended to the current text span, mostly, it is used for auto complete
-  final AppFlowyAutoCompleteTextProvider? autoCompleteTextSpanDecorator;
+  final AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
   /// customize the text span for custom attributes
   ///
@@ -116,12 +116,11 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       widget.textSpanDecoratorForCustomAttributes ??
       widget.editorState.editorStyle.textSpanDecorator;
 
-  AppFlowyAutoCompleteTextProvider? get autoCompleteTextSpanDecorator =>
-      widget.autoCompleteTextSpanDecorator ??
-      widget.editorState.autoCompleteTextSpanDecorator;
+  AppFlowyAutoCompleteTextProvider? get autoCompleteTextProvider =>
+      widget.autoCompleteTextProvider ??
+      widget.editorState.autoCompleteTextProvider;
   bool get enableAutoComplete =>
-      widget.editorState.enableAutoComplete &&
-      autoCompleteTextSpanDecorator != null;
+      widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
   @override
   Widget build(BuildContext context) {
@@ -367,7 +366,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return ValueListenableBuilder(
       valueListenable: widget.editorState.selectionNotifier,
       builder: (_, __, ___) {
-        final autoCompleteText = autoCompleteTextSpanDecorator?.call(
+        final autoCompleteText = autoCompleteTextProvider?.call(
           context,
           widget.node,
           textSpan,
