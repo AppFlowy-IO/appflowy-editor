@@ -305,8 +305,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.showHeader = widget.header != null;
     editorState.showFooter = widget.footer != null;
     editorState.enableAutoComplete = widget.enableAutoComplete;
-    editorState.autoCompleteTextProvider =
-        widget.autoCompleteTextProvider;
+    editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(
