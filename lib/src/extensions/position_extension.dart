@@ -99,9 +99,7 @@ extension PositionExtension on Position {
       caretRect = rects.reduce(
         (current, next) => current.bottom > next.bottom ? current : next,
       );
-      // No need to check `upwards` because `editorSelection.isBackward`
-      // implies `upwards` is `false`.
-      caretOffset = caretRect.bottomRight;
+      caretOffset = upwards ? caretRect.topRight : caretRect.bottomRight;
     } else {
       caretRect = rects.reduce(
         (current, next) => current.top <= next.top ? current : next,
@@ -191,19 +189,9 @@ extension PositionExtension on Position {
     // If a new position has not been found, it means that the current node
     // is not visible on the screen. It seems happens only if upwards is true (?)
     // In this case, we can manually get the previous/next node position.
-    final List<int> neighbourPath;
-    final List<int> nodePath;
-    int offset;
-    if (upwards) {
-      neighbourPath = editorSelection.start.path.previous;
-      nodePath = editorSelection.start.path;
-      offset = editorSelection.startIndex;
-    } else {
-      neighbourPath = editorSelection.end.path.next;
-      nodePath = editorSelection.end.path;
-      offset = editorSelection.endIndex;
-    }
-
+    int offset = editorSelection.end.offset;
+    final List<int> nodePath = editorSelection.end.path;
+    final List<int> neighbourPath = upwards ? nodePath.previous : nodePath.next;
     if (neighbourPath.isNotEmpty && !neighbourPath.equals(nodePath)) {
       final neighbour = editorState.document.nodeAtPath(neighbourPath);
       final selectable = neighbour?.selectable;
