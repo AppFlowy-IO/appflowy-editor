@@ -115,7 +115,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
           editorState.selectionExtraInfo?[
                   selectionExtraInfoDisableFloatingToolbar] !=
               true) {
-        _showAfterDelay(const Duration(milliseconds: 400));
+        _showAfterDelay();
       }
       prevSelection = selection;
     } else {
@@ -131,8 +131,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       if (editorState
               .selectionExtraInfo?[selectionExtraInfoDisableFloatingToolbar] !=
           true) {
-        // uses debounce to avoid the computing the rects too frequently.
-        _showAfterDelay(const Duration(milliseconds: 400));
+        _showAfterDelay();
       }
     }
   }
