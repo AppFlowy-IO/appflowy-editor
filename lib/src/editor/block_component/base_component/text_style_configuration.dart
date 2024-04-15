@@ -23,6 +23,8 @@ class TextStyleConfiguration {
     this.autoComplete = const TextStyle(
       color: Colors.grey,
     ),
+    this.applyHeightToFirstAscent = false,
+    this.applyHeightToLastDescent = false,
   });
 
   /// default text style
@@ -49,6 +51,10 @@ class TextStyleConfiguration {
   /// auto complete text style
   final TextStyle autoComplete;
 
+  /// apply line height to the first or the last ascent
+  final bool applyHeightToFirstAscent;
+  final bool applyHeightToLastDescent;
+
   TextStyleConfiguration copyWith({
     TextStyle? text,
     TextStyle? bold,
@@ -58,6 +64,8 @@ class TextStyleConfiguration {
     TextStyle? href,
     TextStyle? code,
     TextStyle? autoComplete,
+    bool? applyHeightToFirstAscent,
+    bool? applyHeightToLastDescent,
   }) {
     return TextStyleConfiguration(
       text: text ?? this.text,
@@ -68,6 +76,10 @@ class TextStyleConfiguration {
       href: href ?? this.href,
       code: code ?? this.code,
       autoComplete: autoComplete ?? this.autoComplete,
+      applyHeightToFirstAscent:
+          applyHeightToFirstAscent ?? this.applyHeightToFirstAscent,
+      applyHeightToLastDescent:
+          applyHeightToLastDescent ?? this.applyHeightToLastDescent,
     );
   }
 }
