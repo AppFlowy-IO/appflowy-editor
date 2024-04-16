@@ -12,8 +12,7 @@ class TableCol extends StatefulWidget {
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
-    required this.borderColor,
-    required this.borderHoverColor,
+    required this.tableStyle,
     this.menuBuilder,
   });
 
@@ -23,8 +22,7 @@ class TableCol extends StatefulWidget {
 
   final TableBlockComponentMenuBuilder? menuBuilder;
 
-  final Color borderColor;
-  final Color borderHoverColor;
+  final TableStyle tableStyle;
 
   @override
   State<TableCol> createState() => _TableColState();
@@ -45,8 +43,8 @@ class _TableColState extends State<TableCol> {
           tableNode: widget.tableNode,
           editorState: widget.editorState,
           colIdx: widget.colIdx,
-          borderColor: widget.borderColor,
-          borderHoverColor: widget.borderHoverColor,
+          borderColor: widget.tableStyle.borderColor,
+          borderHoverColor: widget.tableStyle.borderHoverColor,
         ),
       );
     }
@@ -82,8 +80,8 @@ class _TableColState extends State<TableCol> {
         tableNode: widget.tableNode,
         editorState: widget.editorState,
         colIdx: widget.colIdx,
-        borderColor: widget.borderColor,
-        borderHoverColor: widget.borderHoverColor,
+        borderColor: widget.tableStyle.borderColor,
+        borderHoverColor: widget.tableStyle.borderHoverColor,
       ),
     ]);
 
@@ -95,7 +93,7 @@ class _TableColState extends State<TableCol> {
     final List<Widget> cells = [];
     final Widget cellBorder = Container(
       height: widget.tableNode.config.borderWidth,
-      color: widget.borderColor,
+      color: widget.tableStyle.borderColor,
     );
 
     for (var i = 0; i < rowsLen; i++) {
