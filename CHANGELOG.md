@@ -1,3 +1,21 @@
+## 2.3.4
+* feat: support customizing mobile page style by @LucasXu0 in [769](https://github.com/AppFlowy-IO/appflowy-editor/pull/769)
+* feat: add table style by @q200892907 in [766](https://github.com/AppFlowy-IO/appflowy-editor/pull/766)
+* feat: support auto complete for text block by @LucasXu0 in [764](https://github.com/AppFlowy-IO/appflowy-editor/pull/764)
+* fix: unable to select multiple words by @LucasXu0 in [761](https://github.com/AppFlowy-IO/appflowy-editor/pull/761)
+* fix: filter invalid text editing value by @LucasXu0 in [760](https://github.com/AppFlowy-IO/appflowy-editor/pull/760)
+* feat: combine diff operations by @LucasXu0 in [759](https://github.com/AppFlowy-IO/appflowy-editor/pull/759)
+* fix: delta insert error by @LucasXu0 in [758](https://github.com/AppFlowy-IO/appflowy-editor/pull/758)
+* feat: add more gesture interceptors by @Xazin in [757](https://github.com/AppFlowy-IO/appflowy-editor/pull/757)
+* feat: support remote selections by @LucasXu0 in [753](https://github.com/AppFlowy-IO/appflowy-editor/pull/753)
+* fix: late initialization error by @LucasXu0 in [750](https://github.com/AppFlowy-IO/appflowy-editor/pull/750)
+* feat: add diff document/nodes function by @LucasXu0 in [748](https://github.com/AppFlowy-IO/appflowy-editor/pull/748)
+* fix: render paragraph hot reload error by @LucasXu0 in [742](https://github.com/AppFlowy-IO/appflowy-editor/pull/742)
+* feat: disable converting heading block to numbered list block by @LucasXu0 in [740](https://github.com/AppFlowy-IO/appflowy-editor/pull/740)
+* fix: xtra space from numbered list item by @lming in [724](https://github.com/AppFlowy-IO/appflowy-editor/pull/724)
+* fix: disable tableActionHandler when the editorState is not editable by @Taverz in [733](https://github.com/AppFlowy-IO/appflowy-editor/pull/733)
+* feat: add fixed toolbar example by @LucasXu0 in [739](https://github.com/AppFlowy-IO/appflowy-editor/pull/739)
+
 ## 2.3.3
 * feat: word counter service by @Xazin in [706](https://github.com/AppFlowy-IO/appflowy-editor/pull/706)
 * feat: support scaling the svg by @LucasXu0 in [722](https://github.com/AppFlowy-IO/appflowy-editor/pull/722)
