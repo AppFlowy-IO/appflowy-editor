@@ -102,7 +102,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       // todo-list block
       TodoListBlockKeys.type: TodoListBlockComponentBuilder(
         configuration: configuration,
-        iconBuilder: (context, node) {
+        iconBuilder: (context, node, ___) {
           final checked = node.attributes[TodoListBlockKeys.checked] as bool;
           return GestureDetector(
             onTap: () => editorState.apply(

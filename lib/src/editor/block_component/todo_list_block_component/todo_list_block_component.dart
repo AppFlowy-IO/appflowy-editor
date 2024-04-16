@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +41,12 @@ Node todoListNode({
   );
 }
 
+typedef TodoListIconBuilder = Widget Function(
+  BuildContext context,
+  Node node,
+  VoidCallback onCheck,
+);
+
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
     super.configuration,
@@ -53,7 +58,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   /// The text style of the todo list block.
   final TextStyle Function(bool checked)? textStyleBuilder;
 
-  final BlockIconBuilder? iconBuilder;
+  final TodoListIconBuilder? iconBuilder;
 
   final List<LogicalKeyboardKey>? toggleChildrenTriggers;
 
@@ -95,7 +100,7 @@ class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
   });
 
   final TextStyle Function(bool checked)? textStyleBuilder;
-  final BlockIconBuilder? iconBuilder;
+  final TodoListIconBuilder? iconBuilder;
   final List<LogicalKeyboardKey>? toggleChildrenTriggers;
 
   @override
@@ -151,7 +156,11 @@ class _TodoListBlockComponentWidgetState
         textDirection: textDirection,
         children: [
           widget.iconBuilder != null
-              ? widget.iconBuilder!(context, node)
+              ? widget.iconBuilder!(
+                  context,
+                  node,
+                  checkOrUncheck,
+                )
               : _TodoListIcon(
                   checked: checked,
                   onTap: checkOrUncheck,
