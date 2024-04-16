@@ -5,7 +5,22 @@ import 'package:flutter/widgets.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 const _emptyCounters = Counters();
-final _wordRegex = RegExp(r"\w+(\'\w+)?");
+
+/// There are some nuances to the word regex.
+///
+/// Previousle we used \w which captures words, but it only captures
+/// [a-zA-Z0-9_]. This is not enough for many languages.
+///
+/// Take for example our previous regex: `\w+(\'\w+)?`
+///
+/// A more generic approach is simply just matching all non-whitespace
+/// characters, and then count the number of matches. That can be done simply
+/// with `\S+`.
+///
+/// This will also account for eg. accents. It is a trivial approach, but it beats
+/// writing up a super complex regex to cover all edge cases.
+///
+final _wordRegex = RegExp(r"\S+");
 
 /// Used by the [WordCountService] to contain
 /// count statistics in eg. a [Document] or in
