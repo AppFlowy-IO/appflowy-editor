@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_block_component.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_cell_block_component.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_cell_block_component.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_block_component.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('table_node.dart', () {
@@ -224,7 +224,7 @@ void main() {
         ['1', '2'],
         ['3', '4'],
       ]);
-      const config = TableConfig();
+      final config = TableConfig();
 
       expect(tableNode.config.colMinimumWidth, config.colMinimumWidth);
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);
@@ -279,7 +279,7 @@ void main() {
     });
 
     test('default constructor (from list of list of strings)', () {
-      const config = TableConfig(
+      final config = TableConfig(
         colMinimumWidth: 10,
         colDefaultWidth: 20,
         rowDefaultHeight: 30,
