@@ -6,6 +6,5 @@ Future<void> onPerformAction(
   TextInputAction action,
   EditorState editorState,
 ) async {
-  print('call back check perform action');
   Log.input.debug('onPerformAction: $action');
 }
