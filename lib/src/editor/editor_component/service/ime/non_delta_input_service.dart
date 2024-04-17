@@ -221,6 +221,7 @@ extension on TextEditingValue {
   // The IME will not report the backspace button if the cursor is at the beginning of the text.
   // Therefore, we need to add a transparent symbol at the start to ensure that we can capture the backspace event.
   TextEditingValue format() {
+    print('textEditing coming from the framework: ${this.composing}');
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
     final textLength = text.length;

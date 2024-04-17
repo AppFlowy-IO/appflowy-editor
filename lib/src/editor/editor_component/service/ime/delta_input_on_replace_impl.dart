@@ -10,6 +10,8 @@ Future<void> onReplace(
   EditorState editorState,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
+  print('call back check replace');
+
   Log.input.debug('onReplace: $replacement');
 
   // delete the selection

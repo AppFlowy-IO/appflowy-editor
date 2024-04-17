@@ -5,6 +5,8 @@ Future<void> onNonTextUpdate(
   TextEditingDeltaNonTextUpdate nonTextUpdate,
   EditorState editorState,
 ) async {
+  print('call back check non text update');
+
   // update the selection on Windows
   //
   // when typing characters with CJK IME on Windows, a non-text update is sent
@@ -38,6 +40,20 @@ Future<void> onNonTextUpdate(
     }
   } else if (PlatformExtension.isMacOS) {
     if (selection != null) {
+      editorState.updateSelectionWithReason(
+        Selection.collapsed(
+          Position(
+            path: selection.start.path,
+            offset: nonTextUpdate.selection.start,
+          ),
+        ),
+      );
+    }
+  } else {
+
+    print('call back check non text update selection update $selection');
+
+    if(selection != null) {
       editorState.updateSelectionWithReason(
         Selection.collapsed(
           Position(
