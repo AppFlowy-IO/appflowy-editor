@@ -8,8 +8,6 @@ Future<void> onInsert(
   EditorState editorState,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
-  print('call back check insert');
-
   Log.input.debug('onInsert: $insertion');
 
   final oldText = insertion.oldText;
