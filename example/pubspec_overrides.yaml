@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: appflowy_editor
+dependency_overrides:
+  appflowy_editor:
+    path: ..

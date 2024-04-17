@@ -81,15 +81,21 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       ..setEditingState(formattedValue)
       ..show();
 
+
     currentTextEditingValue = formattedValue;
+
 
     Log.input.debug(
       'attach text editing value: $textEditingValue',
     );
+    print('attached? 3');
+
+    print('attached? composing: ${textEditingValue.composing}');
   }
 
   @override
   void updateEditingValue(TextEditingValue value) {
+    print('updateEditingValue by the framework: $value');
     if (currentTextEditingValue == value) {
       return;
     }
@@ -111,6 +117,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void close() {
+    print('close by the framework');
     keepEditorFocusNotifier.reset();
     currentTextEditingValue = null;
     composingTextRange = null;
@@ -120,6 +127,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
+    print('?????????????????');
+    print('is connected? ${_textInputConnection?.attached}');
+    Future.delayed(Duration(milliseconds: 300), () {
+      print('is connected? ${_textInputConnection?.attached}');
+    });
     _textInputConnection
       ?..setEditableSizeAndTransform(size, transform)
       ..setCaretRect(rect)
@@ -127,10 +139,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void connectionClosed() {}
+  void connectionClosed() {
+    print('connectionClosed by the framework');
+  }
 
   @override
-  void insertTextPlaceholder(Size size) {}
+  void insertTextPlaceholder(Size size) {
+    print('insert text placeholder by the framework');
+  }
 
   @override
   Future<void> performAction(TextInputAction action) async {
@@ -144,16 +160,21 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void removeTextPlaceholder() {}
+  void removeTextPlaceholder() {
+    print('remove text placeholder by the framework');
+  }
 
   @override
   void showAutocorrectionPromptRect(int start, int end) {}
 
   @override
-  void showToolbar() {}
+  void showToolbar() {
+    print('show toolbar by the framework');
+  }
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
+    print('update floating cursor by the framework');
     onFloatingCursor?.call(point);
   }
 
@@ -161,15 +182,19 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   void didChangeInputControl(
     TextInputControl? oldControl,
     TextInputControl? newControl,
-  ) {}
+  ) {
+    print('didChangeInputControl by the framework');
+  }
 
   @override
   void performSelector(String selectorName) {
+    print('performSelector by the framework');
     Log.editor.debug('performSelector: $selectorName');
   }
 
   @override
   void insertContent(KeyboardInsertedContent content) {
+    print('insertContent by the framework');
     assert(
       contentInsertionConfiguration?.allowedMimeTypes
               .contains(content.mimeType) ??
@@ -179,6 +204,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   void _updateComposing(TextEditingDelta delta) {
+    print('delta by the framework: $delta');
     composingTextRange = delta.composing;
 
     // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
@@ -199,11 +225,19 @@ extension on TextEditingValue {
     final selection = this.selection >> _len;
     final textLength = text.length;
     TextRange composing = this.composing >> _len;
+    // final isComposingRangeValid = TextEditingValue.;
+
+    print('composing: $composing');
+    print('textLength: $textLength');
+    print('text: $text');
 
     // check invalid composing
     if (composing.start > textLength || composing.end > textLength) {
       composing = TextRange.empty;
     }
+
+    print('by the framework composing: $composing');
+    print('by the framework selection: $selection');
 
     return TextEditingValue(
       text: text,

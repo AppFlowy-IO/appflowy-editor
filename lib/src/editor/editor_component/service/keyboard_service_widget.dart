@@ -60,7 +60,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     );
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
-
+    
     textInputService = NonDeltaTextInputService(
       onInsert: (insertion) async => await onInsert(
         insertion,
@@ -227,8 +227,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _attachTextInputService(Selection selection) {
+
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
+      print('textEditingValue: ${textEditingValue.composing}');
       textInputService.attach(
         textEditingValue,
         TextInputConfiguration(
@@ -257,8 +259,14 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         .where((element) => element.delta != null);
 
     // Get the composing text range.
-    final composingTextRange =
+    TextRange composingTextRange =
         textInputService.composingTextRange ?? TextRange.empty;
+    
+    print('reason: ${editorState.selectionUpdateReason}');
+
+    if(editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent){
+      composingTextRange = TextRange.empty;
+    }
     if (editableNodes.isNotEmpty) {
       // Get the text by concatenating all the editable nodes in the selection.
       var text = editableNodes.fold<String>(
