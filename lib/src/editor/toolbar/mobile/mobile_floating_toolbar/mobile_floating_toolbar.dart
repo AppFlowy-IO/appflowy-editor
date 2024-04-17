@@ -47,6 +47,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   EditorState get editorState => widget.editorState;
 
   bool _isToolbarVisible = false;
+
   // use for skipping the first build for the toolbar when the selection is collapsed.
   Selection? prevSelection;
 
