@@ -5,8 +5,6 @@ Future<void> onNonTextUpdate(
   TextEditingDeltaNonTextUpdate nonTextUpdate,
   EditorState editorState,
 ) async {
-  print('call back check non text update');
-
   // update the selection on Windows
   //
   // when typing characters with CJK IME on Windows, a non-text update is sent
@@ -50,8 +48,6 @@ Future<void> onNonTextUpdate(
       );
     }
   } else {
-
-    print('call back check non text update selection update $selection');
 
     if(selection != null) {
       editorState.updateSelectionWithReason(

@@ -165,7 +165,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
         !enableShortcuts) {
+      
       if (textInputService.composingTextRange != TextRange.empty) {
+     
         return KeyEventResult.skipRemainingHandlers;
       }
       return KeyEventResult.ignored;
@@ -230,7 +232,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
     final textEditingValue = _getCurrentTextEditingValue(selection);
     if (textEditingValue != null) {
-      print('textEditingValue: ${textEditingValue.composing}');
       textInputService.attach(
         textEditingValue,
         TextInputConfiguration(
@@ -262,10 +263,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     TextRange composingTextRange =
         textInputService.composingTextRange ?? TextRange.empty;
     
-    print('reason: ${editorState.selectionUpdateReason}');
 
     if(editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent){
       composingTextRange = TextRange.empty;
+      textInputService.updateComposingTextRange(composingTextRange);
     }
     if (editableNodes.isNotEmpty) {
       // Get the text by concatenating all the editable nodes in the selection.

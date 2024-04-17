@@ -6,7 +6,6 @@ Future<void> onDelete(
   TextEditingDeltaDeletion deletion,
   EditorState editorState,
 ) async {
-  print('call back check delete');
   Log.input.debug('onDelete: $deletion');
 
   final selection = editorState.selection;

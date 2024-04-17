@@ -46,4 +46,7 @@ abstract class TextInputService {
 
   /// Closes the editing state of the text currently being edited.
   void close();
+
+  /// update composing text range
+  void updateComposingTextRange(TextRange composingTextRange);
 }

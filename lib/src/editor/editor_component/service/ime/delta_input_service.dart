@@ -28,6 +28,11 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   TextInputConnection? _textInputConnection;
 
   @override
+  void updateComposingTextRange(TextRange composingTextRange) {
+    this.composingTextRange = composingTextRange;
+  }
+
+  @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
     for (final delta in formattedDeltas) {
