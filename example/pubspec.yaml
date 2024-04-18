@@ -43,6 +43,7 @@ dependencies:
   highlight: ^0.7.0
   http: ^1.1.0
   show_fps: ^1.0.6
+  printing: ^5.11.1
 
 dev_dependencies:
   flutter_test:
