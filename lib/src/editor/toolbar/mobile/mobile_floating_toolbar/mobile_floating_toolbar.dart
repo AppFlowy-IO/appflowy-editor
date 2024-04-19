@@ -51,6 +51,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   // use for skipping the first build for the toolbar when the selection is collapsed.
   Selection? prevSelection;
 
+  VoidCallback? _onScrollEnd;
+
   late final StreamSubscription _onTapSelectionAreaSubscription;
 
   @override
@@ -100,7 +102,16 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollEndNotification && _onScrollEnd != null) {
+          _onScrollEnd!.call();
+          _onScrollEnd = null;
+        }
+        return false;
+      },
+      child: widget.child,
+    );
   }
 
   void _onSelectionChanged() {
@@ -138,7 +149,13 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   }
 
   void _onScrollPositionChanged() {
-    _clear();
+    _toolbarContainer?.remove();
+    _toolbarContainer = null;
+    prevSelection = null;
+
+    if (_isToolbarVisible && _onScrollEnd == null) {
+      _onScrollEnd = () => _showAfterDelay(const Duration(milliseconds: 50));
+    }
   }
 
   final String _debounceKey = 'show the toolbar';
@@ -170,6 +187,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     }
 
     final rect = _findSuitableRect(rects);
+    if (rect.isEmpty) {
+      return;
+    }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return _buildToolbar(
