@@ -33,7 +33,7 @@ class MobileFloatingToolbar extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     Offset anchor,
-    Function closeToolbar,
+    VoidCallback closeToolbar,
   ) toolbarBuilder;
 
   @override
