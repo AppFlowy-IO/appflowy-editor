@@ -13,6 +13,7 @@ import 'package:appflowy_editor/src/editor/util/color_util.dart';
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/extensions/text_style_extension.dart';
 import 'package:appflowy_editor/src/render/selection/selectable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -26,6 +27,11 @@ typedef TextSpanDecoratorForAttribute = InlineSpan Function(
 );
 
 typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
+typedef AppFlowyAutoCompleteTextProvider = String? Function(
+  BuildContext context,
+  Node node,
+  TextSpan? textSpan,
+);
 
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
@@ -41,6 +47,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    this.autoCompleteTextProvider,
     required this.delegate,
     required this.node,
     required this.editorState,
@@ -77,6 +84,9 @@ class AppFlowyRichText extends StatefulWidget {
   // get the cursor rect, selection rects or block rect from the delegate
   final SelectableMixin delegate;
 
+  // this span will be appended to the current text span, mostly, it is used for auto complete
+  final AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
+
   /// customize the text span for custom attributes
   ///
   /// You can use this to customize the text span for custom attributes
@@ -106,27 +116,47 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       widget.textSpanDecoratorForCustomAttributes ??
       widget.editorState.editorStyle.textSpanDecorator;
 
+  AppFlowyAutoCompleteTextProvider? get autoCompleteTextProvider =>
+      widget.autoCompleteTextProvider ??
+      widget.editorState.autoCompleteTextProvider;
+  bool get enableAutoComplete =>
+      widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
+
   @override
   Widget build(BuildContext context) {
-    final child = MouseRegion(
-      cursor: SystemMouseCursors.text,
-      child: widget.node.delta?.toPlainText().isEmpty ?? true
-          ? Stack(
-              children: [
-                _buildPlaceholderText(context),
-                _buildRichText(context),
-              ],
-            )
-          : _buildRichText(context),
-    );
+    Widget child = _buildRichText(context);
+
+    final delta = widget.node.delta;
+    if (delta == null || delta.isEmpty) {
+      child = Stack(
+        children: [
+          _buildPlaceholderText(context),
+          _buildRichText(context),
+        ],
+      );
+    }
+
+    if (enableAutoComplete) {
+      final autoCompleteText = _buildAutoCompleteRichText();
+      child = Stack(
+        children: [
+          autoCompleteText,
+          child,
+        ],
+      );
+    }
 
     return BlockSelectionContainer(
       delegate: widget.delegate,
       listenable: widget.editorState.selectionNotifier,
+      remoteSelection: widget.editorState.remoteSelections,
       node: widget.node,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
-      child: child,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.text,
+        child: child,
+      ),
     );
   }
 
@@ -151,6 +181,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Position position, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
+      return null;
+    }
+
+    final delta = widget.node.delta;
+    if (position.offset < 0 ||
+        (delta != null && position.offset > delta.length)) {
+      return null;
+    }
+
     final textPosition = TextPosition(offset: position.offset);
     var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
     var cursorOffset =
@@ -224,6 +264,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     Selection selection, {
     bool shiftWithBaseOffset = false,
   }) {
+    if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
+      return [];
+    }
     final textSelection = textSelectionFromEditorSelection(selection);
     if (textSelection == null) {
       return [];
@@ -247,6 +290,14 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Selection getSelectionInRange(Offset start, Offset end) {
+    final delta = widget.node.delta;
+    if (delta == null) {
+      return Selection.single(
+        path: widget.node.path,
+        startOffset: 0,
+        endOffset: 0,
+      );
+    }
     final localStart = _renderParagraph?.globalToLocal(start) ?? Offset.zero;
     final localEnd = _renderParagraph?.globalToLocal(end) ?? Offset.zero;
     final baseOffset =
@@ -291,7 +342,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   Widget _buildRichText(BuildContext context) {
-    final textSpan = getTextSpan();
+    final textInserts = widget.node.delta!.whereType<TextInsert>();
+    TextSpan textSpan = getTextSpan(textInserts: textInserts);
     return RichText(
       key: textKey,
       textAlign: widget.textAlign ?? TextAlign.start,
@@ -308,6 +360,55 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     );
   }
 
+  Widget _buildAutoCompleteRichText() {
+    final textInserts = widget.node.delta!.whereType<TextInsert>();
+    TextSpan textSpan = getTextSpan(textInserts: textInserts);
+    return ValueListenableBuilder(
+      valueListenable: widget.editorState.selectionNotifier,
+      builder: (_, __, ___) {
+        final autoCompleteText = autoCompleteTextProvider?.call(
+          context,
+          widget.node,
+          textSpan,
+        );
+        if (autoCompleteText == null || autoCompleteText.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        textSpan = getTextSpan(
+          textInserts: [
+            ...textInserts.map(
+              (e) => TextInsert(
+                e.text,
+                attributes: {
+                  AppFlowyRichTextKeys.transparent: true,
+                },
+              ),
+            ),
+            TextInsert(
+              autoCompleteText,
+              attributes: {
+                AppFlowyRichTextKeys.autoComplete: true,
+              },
+            ),
+          ],
+        );
+        return RichText(
+          textAlign: widget.textAlign ?? TextAlign.start,
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
+          text: widget.textSpanDecorator != null
+              ? widget.textSpanDecorator!(textSpan)
+              : textSpan,
+          textDirection: textDirection(),
+          textScaler:
+              TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+        );
+      },
+    );
+  }
+
   TextSpan getPlaceholderTextSpan() {
     final style = widget.editorState.editorStyle.textStyleConfiguration;
     return TextSpan(
@@ -320,11 +421,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     );
   }
 
-  TextSpan getTextSpan() {
+  TextSpan getTextSpan({
+    required Iterable<TextInsert> textInserts,
+  }) {
     int offset = 0;
     List<InlineSpan> textSpans = [];
     final style = widget.editorState.editorStyle.textStyleConfiguration;
-    final textInserts = widget.node.delta!.whereType<TextInsert>();
     for (final textInsert in textInserts) {
       TextStyle textStyle = style.text.copyWith(height: widget.lineHeight);
       final attributes = textInsert.attributes;
@@ -370,6 +472,14 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         if (attributes.fontSize != null) {
           textStyle = textStyle.combine(
             TextStyle(fontSize: attributes.fontSize),
+          );
+        }
+        if (attributes.autoComplete == true) {
+          textStyle = textStyle.combine(style.autoComplete);
+        }
+        if (attributes.transparent == true) {
+          textStyle = textStyle.combine(
+            const TextStyle(color: Colors.transparent),
           );
         }
       }
@@ -500,4 +610,8 @@ extension AppFlowyRichTextAttributes on Attributes {
     }
     return null;
   }
+
+  bool get autoComplete => this[AppFlowyRichTextKeys.autoComplete] == true;
+
+  bool get transparent => this[AppFlowyRichTextKeys.transparent] == true;
 }

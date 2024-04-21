@@ -1,6 +1,8 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../../../infra/testable_editor.dart';
 
@@ -103,8 +105,8 @@ void main() async {
     });
 
     // TODO(.): The purpose of this test is to catch addPostFrameCallback from
-    // calculateTextDirection but it doesn't catch it. Commenting the callback
-    // out doesn't make this test fail.
+    //  calculateTextDirection but it doesn't catch it. Commenting the callback
+    //  out doesn't make this test fail.
     testWidgets(
         "indent AUTO line under AUTO line changing the second line calculated direction",
         (tester) async {

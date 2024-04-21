@@ -1,5 +1,6 @@
 // paragraph
 export 'base_component/align_mixin.dart';
+export 'base_component/auto_complete_command.dart';
 export 'base_component/background_color_mixin.dart';
 export 'base_component/block_component_action_wrapper.dart';
 export 'base_component/block_component_configuration.dart';
@@ -12,6 +13,8 @@ export 'base_component/outdent_command.dart';
 // selection
 export 'base_component/selection/block_selection_area.dart';
 export 'base_component/selection/block_selection_container.dart';
+export 'base_component/selection/remote_block_selection_area.dart';
+export 'base_component/selection/remote_selection.dart';
 export 'base_component/text_direction_mixin.dart';
 export 'base_component/text_style_configuration.dart';
 export 'base_component/widget/full_screen_overlay_entry.dart';
