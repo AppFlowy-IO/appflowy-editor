@@ -33,6 +33,7 @@ enum MobileSelectionHandlerType {
 
 // the value type is MobileSelectionDragMode
 const String selectionDragModeKey = 'selection_drag_mode';
+bool disableIOSSelectWordEdgeOnTap = false;
 bool disableMagnifier = false;
 
 class MobileSelectionServiceWidget extends StatefulWidget {
@@ -500,9 +501,18 @@ class _MobileSelectionServiceWidgetState
 
     clearSelection();
 
-    // get the word edge closest to offset
-    final node = getNodeInOffset(offset);
-    final selection = node?.selectable?.getWordEdgeInOffset(offset);
+    Selection? selection;
+    if (disableIOSSelectWordEdgeOnTap) {
+      final position = getPositionInOffset(offset);
+      if (position != null) {
+        selection = Selection.collapsed(position);
+      }
+    } else {
+      // get the word edge closest to offset
+      final node = getNodeInOffset(offset);
+      selection = node?.selectable?.getWordEdgeInOffset(offset);
+    }
+
     if (selection == null) {
       return;
     }
