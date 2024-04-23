@@ -25,7 +25,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  rich_clipboard: ^1.0.0
+  super_clipboard: ^0.8.12
   html: ^0.15.0
   flutter_svg: ^2.0.6
   provider: ^6.0.5
@@ -40,7 +40,7 @@ dependencies:
   collection: ^1.17.0
   nanoid: ^1.0.0
   visibility_detector: ^0.4.0+2
-  file_picker: ^6.1.1
+  file_picker: ^8.0.2
   path: ^1.8.0
   path_provider: ^2.0.5
   diff_match_patch: ^0.4.1
@@ -48,7 +48,7 @@ dependencies:
   universal_html: ^2.2.4
   keyboard_height_plugin: ^0.0.4
   numerus: ^2.1.2
-  device_info_plus: ^9.1.1
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:
