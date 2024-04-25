@@ -223,9 +223,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Position getPositionInOffset(Offset start) {
+    /// Как  он определяет что это параграф, как в него попадает
     final offset = _renderParagraph?.globalToLocal(start) ?? Offset.zero;
     final baseOffset =
         _renderParagraph?.getPositionForOffset(offset).offset ?? -1;
+    /// параграф поделить на высоту строки, прибавить к старту одну высоту строки
+
     return Position(path: widget.node.path, offset: baseOffset);
   }
 

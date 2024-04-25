@@ -163,10 +163,12 @@ class _DesktopSelectionServiceWidgetState
   Position? getPositionInOffset(Offset offset) {
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
+    /// Опредлеяем что мы попали на текст и нужно расчитать текст
     if (selectable == null) {
       clearSelection();
       return null;
     }
+    /// Расчитываем текст, а точнее параграф
     return selectable.getPositionInOffset(offset);
   }
 

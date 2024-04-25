@@ -36,9 +36,7 @@ extension PositionExtension on Position {
         if (delta != null) {
           return Position(
             path: path,
-            offset: forward
-                ? delta.prevRunePosition(offset)
-                : delta.nextRunePosition(offset),
+            offset: forward ? delta.prevRunePosition(offset) : delta.nextRunePosition(offset),
           );
         }
 
@@ -63,52 +61,62 @@ extension PositionExtension on Position {
     }
   }
 
-  Position? moveVertical(
-    EditorState editorState, {
+  Offset? offsetGet(
+    bool selectionIsBackward,
+    List<Rect> rects, {
     bool upwards = true,
   }) {
-    final selection = editorState.selection;
-    final rects = editorState.selectionRects();
-    if (rects.isEmpty || selection == null) {
-      return null;
-    }
-
-    Offset offset;
-    if (selection.isBackward) {
+    Offset? offset2;
+    if (selectionIsBackward) {
       final rect = rects.reduce(
         (current, next) => current.bottom >= next.bottom ? current : next,
       );
-      offset = upwards
+      offset2 = upwards
           ? rect.topRight.translate(0, -rect.height)
           : rect.centerRight.translate(0, rect.height);
     } else {
       final rect = rects.reduce(
-        (current, next) => current.top <= next.top ? current : next,
+        (current, next) => current.top <= next.bottom ? current : next,
       );
-      offset = upwards
+      offset2 = upwards
           ? rect.topLeft.translate(0, -rect.height)
           : rect.centerLeft.translate(0, rect.height);
     }
+    return offset2;
+  }
 
-    final position =
-        editorState.service.selectionService.getPositionInOffset(offset);
-
-    if (position != null && !position.path.equals(path)) {
-      return position;
+  Position? getPosition(
+    Offset offset,
+    AppFlowySelectionService editorStateSelectionService, {
+    bool checkedParagraphStep = false,
+  }) {
+    final position = editorStateSelectionService.getPositionInOffset(offset);
+    if (position != null) {
+      final nextParagrapStep = checkedParagraphStep ? position.path.equals(path) : false;
+      if (!nextParagrapStep) {
+        return position;
+      }
     }
+    return null;
+  }
 
+  Position? upWordsPosition({
+    required Selection selection,
+    required EditorState editorState,
+    bool upwards = true,
+  }) {
     if (upwards) {
       final previous = selection.start.path.previous;
       if (previous.isNotEmpty && !previous.equals(selection.start.path)) {
         final node = editorState.document.nodeAtPath(previous);
         final selectable = node?.selectable;
-        var offset = selection.startIndex;
+        var offsetL = selection.startIndex;
         if (selectable != null) {
-          offset = offset.clamp(
+          offsetL = offset.clamp(
             selectable.start().offset,
             selectable.end().offset,
           );
-          return Position(path: previous, offset: offset);
+          return Position(path: previous, offset: offsetL);
         }
       }
     } else {
@@ -116,15 +124,45 @@ extension PositionExtension on Position {
       if (next.isNotEmpty && !next.equals(selection.end.path)) {
         final node = editorState.document.nodeAtPath(next);
         final selectable = node?.selectable;
-        var offset = selection.endIndex;
+        var offsetL = selection.endIndex;
         if (selectable != null) {
-          offset = offset.clamp(
+          offsetL = offsetL.clamp(
             selectable.start().offset,
             selectable.end().offset,
           );
-          return Position(path: next, offset: offset);
+          return Position(path: next, offset: offsetL);
         }
       }
+    }
+    return null;
+  }
+
+  Position? moveVertical(
+    EditorState editorState, {
+    bool upwards = true,
+    bool checkedParagraphStep = false,
+  }) {
+    final selection = editorState.selection;
+    final rects = editorState.selectionRects();
+    if (rects.isEmpty || selection == null) {
+      return null;
+    }
+
+    Offset? offsetSelectable = offsetGet(selection.isBackward, rects, upwards: upwards);
+    if (offsetSelectable != null) {
+      final positionSelectable = getPosition(
+        offsetSelectable,
+        editorState.service.selectionService,
+        checkedParagraphStep: checkedParagraphStep,
+      );
+      if (positionSelectable != null) {
+        return positionSelectable;
+      }
+    }
+
+    final positionUpWords = upWordsPosition(selection: selection, editorState: editorState);
+    if (positionUpWords != null) {
+      return positionUpWords;
     }
 
     return this;
