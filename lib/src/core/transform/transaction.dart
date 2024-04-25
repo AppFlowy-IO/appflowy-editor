@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// A [Transaction] has a list of [Operation] objects that will be applied
@@ -17,6 +15,7 @@ class Transaction {
 
   /// The operations to be applied.
   final List<Operation> _operations = [];
+
   List<Operation> get operations {
     if (markNeedsComposing) {
       // compose the delta operations
@@ -344,13 +343,10 @@ extension TextTransaction on Transaction {
       return;
     }
     var newAttributes = attributes;
-    if (index != 0 && attributes == null) {
-      newAttributes = delta.slice(max(index - 1, 0), index).first.attributes;
-      if (newAttributes == null) {
-        final slicedDelta = delta.slice(index, index + length);
-        if (slicedDelta.isNotEmpty) {
-          newAttributes = slicedDelta.first.attributes;
-        }
+    if (newAttributes == null) {
+      final slicedDelta = delta.slice(index, index + length);
+      if (slicedDelta.isNotEmpty) {
+        newAttributes = slicedDelta.first.attributes;
       }
     }
 
