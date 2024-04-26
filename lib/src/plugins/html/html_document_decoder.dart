@@ -10,7 +10,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   DocumentHTMLDecoder();
 
   // Set to true to enable parsing color from HTML
-  static bool enableColorParse = false;
+  static bool enableColorParse = true;
 
   @override
   Document convert(String input) {
