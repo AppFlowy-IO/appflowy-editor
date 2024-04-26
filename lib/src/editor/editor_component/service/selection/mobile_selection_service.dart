@@ -33,6 +33,7 @@ enum MobileSelectionHandlerType {
 
 // the value type is MobileSelectionDragMode
 const String selectionDragModeKey = 'selection_drag_mode';
+bool disableIOSSelectWordEdgeOnTap = false;
 bool disableMagnifier = false;
 
 class MobileSelectionServiceWidget extends StatefulWidget {
@@ -87,6 +88,7 @@ class _MobileSelectionServiceWidgetState
   Offset? _panStartOffset;
   double? _panStartScrollDy;
   Selection? _panStartSelection;
+  bool? _isPanStartHorizontal;
 
   MobileSelectionDragMode dragMode = MobileSelectionDragMode.none;
 
@@ -117,25 +119,40 @@ class _MobileSelectionServiceWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return MobileSelectionGestureDetector(
-      onTapUp: _onTapUp,
-      onDoubleTapUp: _onDoubleTapUp,
-      onTripleTapUp: _onTripleTapUp,
-      onLongPressStart: _onLongPressStart,
-      child: Stack(
-        children: [
-          widget.child,
+    final stack = Stack(
+      children: [
+        widget.child,
 
-          // magnifier for zoom in the text.
-          if (widget.showMagnifier) _buildMagnifier(),
+        // magnifier for zoom in the text.
+        if (widget.showMagnifier) _buildMagnifier(),
 
-          // the handles for expanding the selection area.
-          _buildLeftHandle(),
-          _buildRightHandle(),
-          _buildCollapsedHandle(),
-        ],
-      ),
+        // the handles for expanding the selection area.
+        _buildLeftHandle(),
+        _buildRightHandle(),
+        _buildCollapsedHandle(),
+      ],
     );
+    return Platform.isIOS
+        ? MobileSelectionGestureDetector(
+            onTapUp: _onTapUpIOS,
+            onDoubleTapUp: _onDoubleTapUp,
+            onTripleTapUp: _onTripleTapUp,
+            onLongPressStart: _onLongPressStartIOS,
+            onLongPressMoveUpdate: _onLongPressUpdateIOS,
+            onLongPressEnd: _onLongPressEndIOS,
+            child: stack,
+          )
+        : MobileSelectionGestureDetector(
+            onTapUp: _onTapUpAndroid,
+            onDoubleTapUp: _onDoubleTapUp,
+            onTripleTapUp: _onTripleTapUp,
+            onLongPressStart: _onLongPressStartAndroid,
+            onLongPressMoveUpdate: _onLongPressUpdateAndroid,
+            onLongPressEnd: _onLongPressEndAndroid,
+            onPanUpdate: _onPanUpdateAndroid,
+            onPanEnd: _onPanEndAndroid,
+            child: stack,
+          );
   }
 
   Widget _buildMagnifier() {
@@ -311,9 +328,15 @@ class _MobileSelectionServiceWidgetState
   void clearSelection() {
     currentSelectedNodes = [];
     currentSelection.value = null;
-    _lastPanOffset.value = null;
 
     _clearSelection();
+  }
+
+  void _clearPanVariables() {
+    _panStartOffset = null;
+    _panStartSelection = null;
+    _panStartScrollDy = null;
+    _lastPanOffset.value = null;
   }
 
   @override
@@ -385,60 +408,6 @@ class _MobileSelectionServiceWidgetState
     }
   }
 
-  void _onTapUp(TapUpDetails details) {
-    final offset = details.globalPosition;
-    if (_isClickOnSelectionArea(offset)) {
-      appFlowyEditorOnTapSelectionArea.add(0);
-      return;
-    }
-
-    clearSelection();
-
-    // clear old state.
-    _panStartOffset = null;
-
-    final position = getPositionInOffset(offset);
-    if (position == null) {
-      return;
-    }
-
-    editorState.updateSelectionWithReason(
-      Selection.collapsed(position),
-      reason: SelectionUpdateReason.uiEvent,
-      extraInfo: null,
-    );
-  }
-
-  void _onDoubleTapUp(TapUpDetails details) {
-    final offset = details.globalPosition;
-    if (_isClickOnSelectionArea(offset)) {
-      appFlowyEditorOnTapSelectionArea.add(0);
-      return;
-    }
-    final node = getNodeInOffset(offset);
-    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
-    if (selection == null) {
-      clearSelection();
-      return;
-    }
-    updateSelection(selection);
-  }
-
-  void _onTripleTapUp(TapUpDetails details) {
-    final offset = details.globalPosition;
-    final node = getNodeInOffset(offset);
-    final selectable = node?.selectable;
-    if (selectable == null) {
-      clearSelection();
-      return;
-    }
-    Selection selection = Selection(
-      start: selectable.start(),
-      end: selectable.end(),
-    );
-    updateSelection(selection);
-  }
-
   @override
   Selection? onPanStart(
     DragStartDetails details,
@@ -465,8 +434,8 @@ class _MobileSelectionServiceWidgetState
     }
 
     // only support selection mode now.
-    final selection = editorState.selection;
-    if (selection == null || dragMode == MobileSelectionDragMode.none) {
+    if (editorState.selection == null ||
+        dragMode == MobileSelectionDragMode.none) {
       return null;
     }
 
@@ -509,11 +478,9 @@ class _MobileSelectionServiceWidgetState
 
   @override
   void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode) {
-    // do nothing
-    _lastPanOffset.value = null;
-
-    // clear the status
+    _clearPanVariables();
     dragMode = MobileSelectionDragMode.none;
+
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
@@ -523,18 +490,139 @@ class _MobileSelectionServiceWidgetState
     );
   }
 
-  void _onLongPressStart(LongPressStartDetails details) {
-    if (!Platform.isAndroid && !Platform.isIOS) {
-      return;
-    }
-
-    // on Android, long press to select a word.
+  void _onTapUpIOS(TapUpDetails details) {
     final offset = details.globalPosition;
+
+    // if the tap happens on a selection area, don't change the selection
     if (_isClickOnSelectionArea(offset)) {
       appFlowyEditorOnTapSelectionArea.add(0);
       return;
     }
+
+    clearSelection();
+
+    Selection? selection;
+    if (disableIOSSelectWordEdgeOnTap) {
+      final position = getPositionInOffset(offset);
+      if (position != null) {
+        selection = Selection.collapsed(position);
+      }
+    } else {
+      // get the word edge closest to offset
+      final node = getNodeInOffset(offset);
+      selection = node?.selectable?.getWordEdgeInOffset(offset);
+    }
+
+    if (selection == null) {
+      return;
+    }
+
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: null,
+    );
+  }
+
+  void _onDoubleTapUp(TapUpDetails details) {
+    final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
+    // select word boundary closest to offset
+    final selection = node?.selectable?.getWordBoundaryInOffset(offset);
+    if (selection == null) {
+      clearSelection();
+      return;
+    }
+    updateSelection(selection);
+  }
+
+  void _onTripleTapUp(TapUpDetails details) {
+    final offset = details.globalPosition;
+    final node = getNodeInOffset(offset);
+    // select node closest to offset
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      clearSelection();
+      return;
+    }
+    Selection selection = Selection(
+      start: selectable.start(),
+      end: selectable.end(),
+    );
+    updateSelection(selection);
+  }
+
+  void _onLongPressStartIOS(LongPressStartDetails details) {
+    final offset = details.globalPosition;
+    _panStartOffset = offset;
+    _panStartScrollDy = editorState.service.scrollService?.dy;
+    dragMode = MobileSelectionDragMode.cursor;
+
+    // make a collapsed selection at offset with magnifier
+    final position = getPositionInOffset(offset);
+    if (position == null) {
+      return;
+    }
+
+    final selection = Selection.collapsed(position);
+    _lastPanOffset.value = offset;
+    updateSelection(selection);
+  }
+
+  void _onLongPressUpdateIOS(LongPressMoveUpdateDetails details) {
+    if (_panStartOffset == null || _panStartScrollDy == null) {
+      return;
+    }
+
+    // make a collapsed selection at offset with magnifier
+    final offset = details.globalPosition;
+    final position = getPositionInOffset(offset);
+    if (position == null) {
+      return;
+    }
+
+    final selection = Selection.collapsed(position);
+    _lastPanOffset.value = offset;
+    updateSelection(selection);
+  }
+
+  void _onLongPressEndIOS(LongPressEndDetails details) {
+    _clearPanVariables();
+    dragMode = MobileSelectionDragMode.none;
+
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
+    );
+  }
+
+  void _onTapUpAndroid(TapUpDetails details) {
+    final offset = details.globalPosition;
+
+    clearSelection();
+
+    // make a collapsed selection at offset
+    final position = getPositionInOffset(offset);
+    if (position == null) {
+      return;
+    }
+
+    editorState.updateSelectionWithReason(
+      Selection.collapsed(position),
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: null,
+    );
+  }
+
+  void _onLongPressStartAndroid(LongPressStartDetails details) {
+    final offset = details.globalPosition;
+    _panStartOffset = offset;
+    _panStartScrollDy = editorState.service.scrollService?.dy;
+    final node = getNodeInOffset(offset);
+    // select word boundary closest to offset
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
@@ -545,7 +633,129 @@ class _MobileSelectionServiceWidgetState
       HapticFeedback.mediumImpact();
     }
 
+    dragMode = MobileSelectionDragMode.cursor;
+    _panStartSelection = selection;
+    _lastPanOffset.value = offset;
+
+    editorState.updateSelectionWithReason(
+      selection,
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: {
+        selectionExtraInfoDisableFloatingToolbar: true,
+      },
+    );
+  }
+
+  void _onLongPressUpdateAndroid(LongPressMoveUpdateDetails details) {
+    if (_panStartOffset == null || _panStartScrollDy == null) {
+      return;
+    }
+    if (editorState.selection == null ||
+        dragMode == MobileSelectionDragMode.none) {
+      return;
+    }
+
+    final offset = details.globalPosition;
+    _lastPanOffset.value = offset;
+
+    final wordBoundary =
+        getNodeInOffset(offset)?.selectable?.getWordBoundaryInOffset(offset);
+
+    Selection? newSelection;
+
+    // extend selection from _panStartSelection to word boundary closest to offset
+    if (wordBoundary != null) {
+      if (wordBoundary.end.path > _panStartSelection!.end.path ||
+          wordBoundary.end.path.equals(_panStartSelection!.end.path) &&
+              wordBoundary.end.offset > _panStartSelection!.end.offset) {
+        newSelection = Selection(
+          start: _panStartSelection!.start,
+          end: wordBoundary.end,
+        ).normalized;
+      } else if (wordBoundary.start.path < _panStartSelection!.start.path ||
+          wordBoundary.start.path.equals(_panStartSelection!.start.path) &&
+              wordBoundary.start.offset < _panStartSelection!.start.offset) {
+        newSelection = Selection(
+          start: _panStartSelection!.end,
+          end: wordBoundary.start,
+        ).normalized;
+      } else {
+        newSelection = _panStartSelection;
+      }
+    }
+
+    if (newSelection != null) {
+      editorState.updateSelectionWithReason(
+        newSelection,
+        reason: SelectionUpdateReason.uiEvent,
+        extraInfo: {
+          selectionExtraInfoDisableFloatingToolbar: true,
+        },
+      );
+    }
+  }
+
+  void _onLongPressEndAndroid(LongPressEndDetails details) {
+    _clearPanVariables();
+    dragMode = MobileSelectionDragMode.none;
+
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
+    );
+  }
+
+  void _onPanUpdateAndroid(DragUpdateDetails details) {
+    // if current pan gesture is not initially horizontal, return
+    if (_isPanStartHorizontal == false) {
+      return;
+    }
+    // first call to onPanUpdate to determine if current pan gesture is horizontal
+    // if not, disable future calls in the guard clause above
+    if (details.delta.dx.abs() < details.delta.dy.abs() &&
+        (_panStartOffset == null || _panStartScrollDy == null)) {
+      _isPanStartHorizontal = false;
+      return;
+    }
+    // first successful call to onPanUpdate, initialize pan variables
+    final offset = details.globalPosition;
+    if (_panStartOffset == null || _panStartScrollDy == null) {
+      _panStartOffset = offset;
+      _panStartScrollDy = editorState.service.scrollService?.dy;
+      dragMode = MobileSelectionDragMode.cursor;
+    }
+
+    final position = getPositionInOffset(offset);
+
+    _lastPanOffset.value = offset;
+    if (position == null) {
+      return;
+    }
+
+    final selection = Selection.collapsed(position);
+
+    if (editorState.editorStyle.enableHapticFeedbackOnAndroid) {
+      HapticFeedback.lightImpact();
+    }
     updateSelection(selection);
+  }
+
+  void _onPanEndAndroid(DragEndDetails details) {
+    _clearPanVariables();
+    dragMode = MobileSelectionDragMode.none;
+    _isPanStartHorizontal = null;
+
+    editorState.updateSelectionWithReason(
+      editorState.selection,
+      reason: SelectionUpdateReason.uiEvent,
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+        selectionExtraInfoDisableFloatingToolbar: true,
+      },
+    );
   }
 
   // delete this function in the future.

@@ -33,7 +33,7 @@ class MobileFloatingToolbar extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     Offset anchor,
-    Function closeToolbar,
+    VoidCallback closeToolbar,
   ) toolbarBuilder;
 
   @override
@@ -47,8 +47,11 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   EditorState get editorState => widget.editorState;
 
   bool _isToolbarVisible = false;
+
   // use for skipping the first build for the toolbar when the selection is collapsed.
   Selection? prevSelection;
+
+  VoidCallback? _onScrollEnd;
 
   late final StreamSubscription _onTapSelectionAreaSubscription;
 
@@ -99,7 +102,16 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollEndNotification && _onScrollEnd != null) {
+          _onScrollEnd!.call();
+          _onScrollEnd = null;
+        }
+        return false;
+      },
+      child: widget.child,
+    );
   }
 
   void _onSelectionChanged() {
@@ -115,7 +127,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
           editorState.selectionExtraInfo?[
                   selectionExtraInfoDisableFloatingToolbar] !=
               true) {
-        _showAfterDelay(const Duration(milliseconds: 400));
+        _showAfterDelay();
       }
       prevSelection = selection;
     } else {
@@ -131,14 +143,19 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
       if (editorState
               .selectionExtraInfo?[selectionExtraInfoDisableFloatingToolbar] !=
           true) {
-        // uses debounce to avoid the computing the rects too frequently.
-        _showAfterDelay(const Duration(milliseconds: 400));
+        _showAfterDelay();
       }
     }
   }
 
   void _onScrollPositionChanged() {
-    _clear();
+    _toolbarContainer?.remove();
+    _toolbarContainer = null;
+    prevSelection = null;
+
+    if (_isToolbarVisible && _onScrollEnd == null) {
+      _onScrollEnd = () => _showAfterDelay(const Duration(milliseconds: 50));
+    }
   }
 
   final String _debounceKey = 'show the toolbar';
@@ -170,6 +187,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     }
 
     final rect = _findSuitableRect(rects);
+    if (rect.isEmpty) {
+      return;
+    }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return _buildToolbar(

@@ -78,6 +78,9 @@ mixin DefaultSelectableMixin {
         shiftWithBaseOffset: shiftWithBaseOffset,
       );
 
+  Selection? getWordEdgeInOffset(Offset offset) =>
+      forward.getWordEdgeInOffset(offset);
+
   Selection? getWordBoundaryInOffset(Offset offset) =>
       forward.getWordBoundaryInOffset(offset);
 
