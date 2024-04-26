@@ -230,6 +230,22 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
+  Selection? getWordEdgeInOffset(Offset offset) {
+    final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
+    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
+        const TextPosition(offset: 0);
+    final textRange =
+        _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
+    final wordEdgeOffset = textPosition.offset <= textRange.start
+        ? textRange.start
+        : textRange.end;
+
+    return Selection.collapsed(
+      Position(path: widget.node.path, offset: wordEdgeOffset),
+    );
+  }
+
+  @override
   Selection? getWordBoundaryInOffset(Offset offset) {
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
     final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
