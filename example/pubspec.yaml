@@ -38,7 +38,7 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_localizations:
     sdk: flutter
-  file_picker: ^6.1.1
+  file_picker: ^8.0.2
   universal_html: ^2.0.8
   highlight: ^0.7.0
   http: ^1.1.0

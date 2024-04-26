@@ -1,7 +1,5 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
-import 'package:rich_clipboard/rich_clipboard.dart';
+import 'package:flutter/services.dart';
 
 class AppFlowyClipboardData {
   const AppFlowyClipboardData({
@@ -19,19 +17,13 @@ class AppFlowyClipboard {
     String? text,
     String? html,
   }) async {
-    // https://github.com/BringingFire/rich_clipboard/issues/13
-    // Wrapping a `<html><body>` tag for html in Windows,
-    //  otherwise it will raise an exception
-    if (!kIsWeb && Platform.isWindows && html != null) {
-      if (!html.startsWith('<html><body>')) {
-        html = '<html><body>$html</body></html>';
-      }
+    if (text == null) {
+      return;
     }
 
-    return RichClipboard.setData(
-      RichClipboardData(
+    return Clipboard.setData(
+      ClipboardData(
         text: text,
-        html: html,
       ),
     );
   }
@@ -41,21 +33,10 @@ class AppFlowyClipboard {
       return _mockData!;
     }
 
-    final data = await RichClipboard.getData();
-    final text = data.text;
-    var html = data.html;
-
-    // https://github.com/BringingFire/rich_clipboard/issues/13
-    // Remove all the fragment symbol in Windows.
-    if (!kIsWeb && Platform.isWindows && html != null) {
-      html = html
-          .replaceAll('<!--StartFragment-->', '')
-          .replaceAll('<!--EndFragment-->', '');
-    }
-
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
     return AppFlowyClipboardData(
-      text: text,
-      html: html,
+      text: data?.text,
+      html: null,
     );
   }
 
