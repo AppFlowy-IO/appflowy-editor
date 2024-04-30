@@ -71,17 +71,9 @@ extension PositionExtension on Position {
     bool upwards = true,
   }) {
     final node = editorState.document.nodeAtPath(path);
-    if (node == null) {
-      return this;
-    }
-
-    final nodeRenderBox = node.renderBox;
-    if (nodeRenderBox == null) {
-      return this;
-    }
-
-    final nodeSelectable = node.selectable;
-    if (nodeSelectable == null) {
+    final nodeRenderBox = node?.renderBox;
+    final nodeSelectable = node?.selectable;
+    if (node == null || nodeRenderBox == null || nodeSelectable == null) {
       return this;
     }
 
