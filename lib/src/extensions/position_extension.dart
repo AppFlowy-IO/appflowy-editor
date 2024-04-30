@@ -1,7 +1,8 @@
 import 'dart:math' as math;
 
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 enum SelectionRange {
   character,
@@ -90,28 +91,28 @@ extension PositionExtension on Position {
       return null;
     }
 
+    final Rect caretRect = rects.reduce((current, next) {
+      if (editorSelection.isBackward) {
+        return current.bottom > next.bottom ? current : next;
+      }
+      return current.top <= next.top ? current : next;
+    });
+
     // The offset of outermost part of the caret.
     // Either the top if moving upwards, or the bottom if moving downwards.
-    final Offset caretOffset;
-
-    final Rect caretRect;
-    if (editorSelection.isBackward) {
-      caretRect = rects.reduce(
-        (current, next) => current.bottom > next.bottom ? current : next,
-      );
-      caretOffset = upwards ? caretRect.topRight : caretRect.bottomRight;
-    } else {
-      caretRect = rects.reduce(
-        (current, next) => current.top <= next.top ? current : next,
-      );
-      caretOffset = upwards ? caretRect.topLeft : caretRect.bottomLeft;
-    }
+    final Offset caretOffset = editorSelection.isBackward
+        ? upwards
+            ? caretRect.topRight
+            : caretRect.bottomRight
+        : upwards
+            ? caretRect.topLeft
+            : caretRect.bottomLeft;
 
     final nodeConfig = editorState.service.rendererService
         .blockComponentBuilder(node.type)
         ?.configuration;
     if (nodeConfig == null) {
-      // This should not happen.
+      assert(nodeConfig != null, 'Block Configuration should not be null');
       return this;
     }
 
@@ -123,7 +124,7 @@ extension PositionExtension on Position {
 
     // Minimum (acceptable) font size
     // Consider augmenting this value to increase performance.
-    const minFontSize = 1.0;
+    const double minFontSize = 1.0;
 
     // If the current node is not multiline, this will be ~= 0
     // so the loop will be skipped.
@@ -145,7 +146,7 @@ extension PositionExtension on Position {
     //   skipped because `remainingMultilineHeight` would be 0.
     Offset newOffset = caretOffset;
     Position? newPosition;
-    for (var y = minFontSize;
+    for (double y = minFontSize;
         y < remainingMultilineHeight + minFontSize;
         y += minFontSize) {
       newOffset = caretOffset.translate(0, upwards ? -y : y);
