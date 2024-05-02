@@ -1,8 +1,4 @@
-import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-
-final List<String> inlineAttributesBlacklist = [];
 
 /// A [Transaction] has a list of [Operation] objects that will be applied
 /// to the editor.
@@ -348,13 +344,8 @@ extension TextTransaction on Transaction {
     }
     var newAttributes = attributes;
     if (index != 0 && attributes == null) {
-      newAttributes = delta.slice(max(index - 1, 0), index).first.attributes;
-      if (newAttributes != null) {
-        if (inlineAttributesBlacklist
-            .any((element) => newAttributes?[element] != null)) {
-          newAttributes = null;
-        }
-      }
+      newAttributes = attributes ?? delta.sliceAttributes(index);
+
       if (newAttributes == null) {
         final slicedDelta = delta.slice(index, index + length);
         if (slicedDelta.isNotEmpty) {
