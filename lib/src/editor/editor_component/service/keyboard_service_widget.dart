@@ -166,8 +166,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
         !enableShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
+        Log.keyboard.debug('Skip shortcuts for composing');
         return KeyEventResult.skipRemainingHandlers;
       }
+      Log.keyboard.debug('Ignore shortcuts');
       return KeyEventResult.ignored;
     }
 

@@ -22,21 +22,7 @@ Future<void> onNonTextUpdate(
         ),
       );
     }
-  } else if (PlatformExtension.isLinux) {
-    if (selection != null) {
-      editorState.updateSelectionWithReason(
-        Selection.collapsed(
-          Position(
-            path: selection.start.path,
-            offset: nonTextUpdate.selection.start,
-          ),
-        ),
-        extraInfo: {
-          selectionExtraInfoDoNotAttachTextService: true,
-        },
-      );
-    }
-  } else if (PlatformExtension.isMacOS) {
+  } else if (PlatformExtension.isMacOS || PlatformExtension.isLinux) {
     if (selection != null) {
       editorState.updateSelectionWithReason(
         Selection.collapsed(
