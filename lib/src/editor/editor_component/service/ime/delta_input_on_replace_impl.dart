@@ -47,8 +47,19 @@ Future<void> onReplace(
     final transaction = editorState.transaction;
     final start = replacement.replacedRange.start;
     final length = replacement.replacedRange.end - start;
-
-    transaction.replaceText(node, start, length, replacement.replacementText);
+    final afterSelection = Selection(
+      start: Position(
+        path: node.path,
+        offset: replacement.selection.baseOffset,
+      ),
+      end: Position(
+        path: node.path,
+        offset: replacement.selection.extentOffset,
+      ),
+    );
+    transaction
+      ..replaceText(node, start, length, replacement.replacementText)
+      ..afterSelection = afterSelection;
     await editorState.apply(transaction);
   } else {
     await editorState.deleteSelection(selection);
