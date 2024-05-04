@@ -22,7 +22,19 @@ Future<void> onDelete(
       final start = deletion.deletedRange.start;
       final length = deletion.deletedRange.end - start;
       final transaction = editorState.transaction;
-      transaction.deleteText(node, start, length);
+      final afterSelection = Selection(
+        start: Position(
+          path: node.path,
+          offset: deletion.selection.baseOffset,
+        ),
+        end: Position(
+          path: node.path,
+          offset: deletion.selection.extentOffset,
+        ),
+      );
+      transaction
+        ..deleteText(node, start, length)
+        ..afterSelection = afterSelection;
       await editorState.apply(transaction);
       return;
     }
