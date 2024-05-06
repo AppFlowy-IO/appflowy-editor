@@ -31,9 +31,6 @@ Future<void> onNonTextUpdate(
             offset: nonTextUpdate.selection.start,
           ),
         ),
-        extraInfo: {
-          selectionExtraInfoDoNotAttachTextService: true,
-        },
       );
     }
   } else if (PlatformExtension.isMacOS) {
