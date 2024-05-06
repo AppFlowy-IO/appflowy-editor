@@ -1,3 +1,13 @@
+## 2.4.0
+* feat: provide an option to disable color parser by @LucasXu0 in [784](https://github.com/AppFlowy-IO/appflowy-editor/pull/784)
+* feat: improve mobile selection by @richardshiue in [776](https://github.com/AppFlowy-IO/appflowy-editor/pull/776)
+* feat: support option/cmd + click to open link by @LucasXu0 in [787](https://github.com/AppFlowy-IO/appflowy-editor/pull/787)
+* fix: improve link menu position by @LucasXu0 in [786](https://github.com/AppFlowy-IO/appflowy-editor/pull/786)
+* fix: incorrect cursor movement behaviour by @Jei-sKappa in [751](https://github.com/AppFlowy-IO/appflowy-editor/pull/751)
+* fix: update selection from the delta by @LucasXu0 in [788](https://github.com/AppFlowy-IO/appflowy-editor/pull/788)
+* fix: inline math equation issue by @q200892907 in [781](https://github.com/AppFlowy-IO/appflowy-editor/pull/781)
+* fix: cjk IME issues on Linux by @LucasXu0 in [791](https://github.com/AppFlowy-IO/appflowy-editor/pull/791)
+
 ## 2.3.4
 * feat: support customizing mobile page style by @LucasXu0 in [769](https://github.com/AppFlowy-IO/appflowy-editor/pull/769)
 * feat: add table style by @q200892907 in [766](https://github.com/AppFlowy-IO/appflowy-editor/pull/766)
