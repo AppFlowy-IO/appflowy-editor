@@ -14,14 +14,14 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color(0xFF00BCF0),
-    required this.contextMenuItems,
+    this.contextMenuItems,
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
-  final List<List<ContextMenuItem>> contextMenuItems;
+  final List<List<ContextMenuItem>>? contextMenuItems;
 
   @override
   State<DesktopSelectionServiceWidget> createState() =>
@@ -363,6 +363,11 @@ class _DesktopSelectionServiceWidgetState
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
 
+    // Don't trigger the context menu if there are no items
+    if (widget.contextMenuItems == null || widget.contextMenuItems!.isEmpty) {
+      return;
+    }
+
     // only shows around the selection area.
     if (selectionRects.isEmpty) {
       return;
@@ -394,7 +399,7 @@ class _DesktopSelectionServiceWidgetState
       builder: (context) => ContextMenu(
         position: offset,
         editorState: editorState,
-        items: widget.contextMenuItems,
+        items: widget.contextMenuItems!,
         onPressed: () => _clearContextMenu(),
       ),
     );
