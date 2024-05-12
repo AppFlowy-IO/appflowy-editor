@@ -24,6 +24,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flowy_infra_ui:
+    path: packages/flowy_infra_ui
+  flowy_infra:
+    path: packages/flowy_infra
+  flowy_svg:
+    path: packages/flowy_svg
+  appflowy_board:
+    # path: ../../../appflowy-board
+    git:
+      url: https://github.com/AppFlowy-IO/appflowy-board.git
+      ref: 8a6434ae3d02624b614a010af80f775db11bf22e
+  appflowy_result:
+    path: packages/appflowy_result
+  appflowy_editor_plugins: ^0.0.2
+
+  appflowy_popover:
+    path: packages/appflowy_popover
 
   collection: ^1.18.0
   device_info_plus: ^10.1.0
@@ -48,6 +65,7 @@ dependencies:
   universal_html: ^2.2.4
   url_launcher: ^6.1.11
   visibility_detector: ^0.4.0+2
+  flutter_math_fork: ^0.7.2
 
 dev_dependencies:
   flutter_test:

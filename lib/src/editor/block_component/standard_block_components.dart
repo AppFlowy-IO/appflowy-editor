@@ -38,6 +38,11 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
       placeholderText: (_) => AppFlowyEditorL10n.current.quote,
     ),
   ),
+  MathEquationBlockKeys.type: MathEquationBlockComponentBuilder(
+    configuration: standardBlockComponentConfiguration.copyWith(
+      placeholderText: (_) => AppFlowyEditorL10n.current.math,
+    ),
+  ),
   HeadingBlockKeys.type: HeadingBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
       placeholderText: (node) =>

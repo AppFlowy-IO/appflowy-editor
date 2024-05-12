@@ -228,6 +228,47 @@ extension TextTransforms on EditorState {
     }
   }
 
+  Future<void> formatInlineMath({
+    required String rawMath,
+    Selection? selection,
+    Map? selectionExtraInfo,
+  }) async {
+    selection ??= this.selection;
+    selection = selection?.normalized;
+
+    if (selection == null) {
+      return;
+    }
+
+    final transaction = this.transaction;
+
+    // Get the text to be replaced by the inline math
+    final nodes = getNodesInSelection(selection);
+    final textToReplace = nodes.map((node) {
+      final delta = node.delta;
+      if (delta != null) {
+        final startIndex = node == nodes.first ? selection!.startIndex : 0;
+        final endIndex =
+            node == nodes.last ? selection!.endIndex : delta.length;
+        return delta.slice(startIndex, endIndex).toPlainText();
+      }
+      return '';
+    }).join('');
+
+    // Replace the selected text with the inline math format
+    final formattedText = r'$' + rawMath + r'$';
+    final startIndex = selection.startIndex;
+    final endIndex = startIndex + textToReplace.length;
+
+    transaction
+      ..deleteText(nodes.first, startIndex, endIndex - startIndex)
+      ..insertText(nodes.first, startIndex, formattedText)
+      ..afterSelection = transaction.beforeSelection
+      ..selectionExtraInfo = selectionExtraInfo;
+
+    return apply(transaction);
+  }
+
   /// format the node at the given selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.

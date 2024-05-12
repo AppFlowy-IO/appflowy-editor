@@ -35,6 +35,13 @@ void insertNumberedListAfterSelection(EditorState editorState) {
   );
 }
 
+void insertMathAfterSelection(EditorState editorState) {
+  insertNodeAfterSelection(
+    editorState,
+    mathEquationNode(),
+  );
+}
+
 bool insertNodeAfterSelection(
   EditorState editorState,
   Node node,

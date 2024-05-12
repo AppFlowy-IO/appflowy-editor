@@ -211,6 +211,15 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  String get math {
+    return Intl.message(
+      'Math',
+      name: 'math',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Underline`
   String get underline {
     return Intl.message(

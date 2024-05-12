@@ -249,6 +249,18 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     },
   ),
   SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.math,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'math',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['math'],
+    handler: (editorState, _, __) {
+      insertMathAfterSelection(editorState);
+    },
+  ),
+  SelectionMenuItem(
     getName: () => AppFlowyEditorL10n.current.heading1,
     icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
       name: 'h1',
