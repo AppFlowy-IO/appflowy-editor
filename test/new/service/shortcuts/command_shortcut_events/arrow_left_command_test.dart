@@ -71,13 +71,13 @@ void main() async {
 
       // move the cursor to the beginning of node 1
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
       expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
       // move the cursor to the ending of node 0
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
       expect(
         editor.selection,
         Selection.collapsed(Position(path: [0], offset: text.length)),
@@ -85,7 +85,7 @@ void main() async {
 
       // move the cursor to the beginning of node 0
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
       expect(editor.selection, Selection.collapsed(Position(path: [0])));
@@ -192,7 +192,7 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // After on Windows & Linux
     // Welcome to AppFlowy |Editor 🔥!
-    testWidgets('''press the ctrl+arrow left key, 
+    testWidgets('''press the ctrl+arrow left key,
          on windows & linux it should move to the start of a word,
          on mac it should move the cursor to the start of the line
          ''', (tester) async {
@@ -228,7 +228,7 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('''press the ctrl+shift+arrow left key, 
+    testWidgets('''press the ctrl+shift+arrow left key,
          on windows & linux it should move to the start of a word and select it,
          on mac it should move the cursor to the start of the line and select it
          ''', (tester) async {

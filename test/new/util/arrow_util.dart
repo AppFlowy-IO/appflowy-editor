@@ -1,6 +1,6 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appflowy_editor/appflowy_editor.dart';
 
 import '../infra/testable_editor.dart';
 import './typedef_util.dart';
@@ -47,7 +47,7 @@ Future<void> runArrowTest(
 
   await editor.updateSelection(alt.initialSel);
 
-  await simulateKeyDownEvent(arrowKey);
+  await editor.pressKey(key: arrowKey);
   expect(editor.selection, alt.expSel, reason: reason);
 
   await editor.dispose();

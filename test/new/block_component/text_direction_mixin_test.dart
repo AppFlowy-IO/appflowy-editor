@@ -466,7 +466,7 @@ void main() {
             .indentPadding(node, TextDirection.ltr),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       nestedBlock =

@@ -319,7 +319,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       // the first node should be deleted.
@@ -366,7 +366,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       expect(
@@ -416,7 +416,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       expect(
@@ -453,7 +453,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       expect(
@@ -495,7 +495,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       node = editor.nodeAtPath([1])!;

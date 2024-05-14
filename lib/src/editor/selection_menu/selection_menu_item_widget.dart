@@ -44,14 +44,14 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
           ),
           style: ButtonStyle(
             alignment: Alignment.centerLeft,
-            overlayColor: MaterialStateProperty.all(
+            overlayColor: WidgetStateProperty.all(
               style.selectionMenuItemSelectedColor,
             ),
             backgroundColor: widget.isSelected
-                ? MaterialStateProperty.all(
+                ? WidgetStateProperty.all(
                     style.selectionMenuItemSelectedColor,
                   )
-                : MaterialStateProperty.all(Colors.transparent),
+                : WidgetStateProperty.all(Colors.transparent),
           ),
           label: Text(
             widget.item.name,

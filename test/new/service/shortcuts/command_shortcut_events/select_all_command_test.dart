@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'dart:io';
 
 import '../../../infra/testable_editor.dart';
 
@@ -98,13 +99,13 @@ void main() async {
 
       // move the cursor to the beginning of node 1
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
       expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
       // move the cursor to the ending of node 0
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
       expect(
         editor.selection,
         Selection.collapsed(Position(path: [0], offset: text.length)),
@@ -112,7 +113,7 @@ void main() async {
 
       // move the cursor to the beginning of node 0
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
         await tester.pumpAndSettle();
       }
       expect(editor.selection, Selection.collapsed(Position(path: [0])));
