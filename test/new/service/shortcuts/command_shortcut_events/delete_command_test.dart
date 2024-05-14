@@ -289,7 +289,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.delete);
+      await editor.pressKey(key: LogicalKeyboardKey.delete);
       await tester.pumpAndSettle();
 
       // the first node should be deleted.
@@ -336,7 +336,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.delete);
+      await editor.pressKey(key: LogicalKeyboardKey.delete);
       await tester.pumpAndSettle();
 
       expect(
@@ -386,7 +386,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.delete);
+      await editor.pressKey(key: LogicalKeyboardKey.delete);
       await tester.pumpAndSettle();
 
       expect(
@@ -424,7 +424,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.delete);
+      await editor.pressKey(key: LogicalKeyboardKey.delete);
       await tester.pumpAndSettle();
 
       expect(

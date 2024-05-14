@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,7 +28,7 @@ void main() async {
           Selection.collapsed(Position(path: [0], offset: text.length));
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.home);
+      await editor.pressKey(key: LogicalKeyboardKey.home);
 
       if (Platform.isWindows || Platform.isLinux) {
         expect(
@@ -53,7 +54,7 @@ void main() async {
           Selection.collapsed(Position(path: [5], offset: text.length));
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.home);
+      await editor.pressKey(key: LogicalKeyboardKey.home);
 
       if (Platform.isWindows || Platform.isLinux) {
         expect(
