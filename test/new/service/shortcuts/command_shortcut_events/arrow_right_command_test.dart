@@ -73,7 +73,7 @@ void main() async {
 
       // move the cursor to the ending of node 0
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
       }
       expect(
@@ -82,12 +82,12 @@ void main() async {
       );
 
       // move the cursor to the beginning of node 1
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
       expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
       // move the cursor to the ending of node 1
       for (var i = 1; i < text.length; i++) {
-        await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+        await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
       }
       expect(
@@ -171,7 +171,7 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!|
     // After on Windows & Linux
     // Welcome| to AppFlowy Editor 🔥!
-    testWidgets('''press the ctrl+arrow right key, 
+    testWidgets('''press the ctrl+arrow right key,
          on windows & linux it should move to the end of a word,
          on mac it should move the cursor to the end of the line
          ''', (tester) async {
@@ -211,7 +211,7 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!|
     // After on Windows & Linux
     // |Welcome| to AppFlowy Editor 🔥!
-    testWidgets('''press the ctrl+shift+arrow right key, 
+    testWidgets('''press the ctrl+shift+arrow right key,
          on windows & linux it should move to the end of a word and select it,
          on mac it should move the cursor to the end of the line and select it
          ''', (tester) async {
