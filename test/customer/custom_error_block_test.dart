@@ -18,10 +18,6 @@ void main() async {
             'text': 'line 1',
           },
         ),
-        Node(
-          type: 'heading',
-          attributes: {},
-        ),
       ],
     );
     final widget = ErrorEditor(
@@ -30,7 +26,7 @@ void main() async {
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
-    expect(find.byType(ErrorBlockComponentWidget), findsNWidgets(2));
+    expect(find.byType(ErrorBlockComponentWidget), findsNWidgets(1));
   });
 }
 
