@@ -1,3 +1,6 @@
+## 2.5.1
+* chore: upgrade Flutter to 3.22.0 by @LucasXu0 in [797](https://github.com/AppFlowy-IO/appflowy-editor/pull/797)
+
 ## 2.5.0
 * feat: improve mobile selection by @richardshiue in [776](https://github.com/AppFlowy-IO/appflowy-editor/pull/776)
 * feat: support option/cmd + click to open link by @LucasXu0 in [787](https://github.com/AppFlowy-IO/appflowy-editor/pull/787)
@@ -8,7 +11,6 @@
 * fix: cjk IME issues on Linux by @LucasXu0 in [791](https://github.com/AppFlowy-IO/appflowy-editor/pull/791)
 * fix: empty items disable context menu by @Xazin in [793](https://github.com/AppFlowy-IO/appflowy-editor/pull/793)
 * fix: remove heading node validation by @LucasXu0 in [803](https://github.com/AppFlowy-IO/appflowy-editor/pull/803)
-* chore: upgrade Flutter to 3.22.0 by @LucasXu0 in [797](https://github.com/AppFlowy-IO/appflowy-editor/pull/797)
 * chore: upgrade flutter dependencies by @LucasXu0 in [778](https://github.com/AppFlowy-IO/appflowy-editor/pull/778)
 * chore: provide an option to disable color parser by @LucasXu0 in [784](https://github.com/AppFlowy-IO/appflowy-editor/pull/784)
 
