@@ -25,6 +25,7 @@ class TextStyleConfiguration {
     ),
     this.applyHeightToFirstAscent = false,
     this.applyHeightToLastDescent = false,
+    this.lineHeight = 1.5,
   });
 
   /// default text style
@@ -55,6 +56,8 @@ class TextStyleConfiguration {
   final bool applyHeightToFirstAscent;
   final bool applyHeightToLastDescent;
 
+  final double lineHeight;
+
   TextStyleConfiguration copyWith({
     TextStyle? text,
     TextStyle? bold,
@@ -66,6 +69,7 @@ class TextStyleConfiguration {
     TextStyle? autoComplete,
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
+    double? lineHeight,
   }) {
     return TextStyleConfiguration(
       text: text ?? this.text,
@@ -80,6 +84,7 @@ class TextStyleConfiguration {
           applyHeightToFirstAscent ?? this.applyHeightToFirstAscent,
       applyHeightToLastDescent:
           applyHeightToLastDescent ?? this.applyHeightToLastDescent,
+      lineHeight: lineHeight ?? this.lineHeight,
     );
   }
 }
