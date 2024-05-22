@@ -348,6 +348,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      strutStyle: StrutStyle(
+        height: widget.lineHeight,
+        forceStrutHeight: true,
+      ),
     );
   }
 
@@ -369,6 +373,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      strutStyle: StrutStyle(
+        height: widget.lineHeight,
+        forceStrutHeight: true,
+      ),
     );
   }
 
@@ -418,6 +426,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           textDirection: textDirection(),
           textScaler:
               TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+          strutStyle: StrutStyle(
+            height: widget.lineHeight,
+            forceStrutHeight: true,
+          ),
         );
       },
     );
