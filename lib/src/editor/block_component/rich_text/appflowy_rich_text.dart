@@ -349,7 +349,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
       strutStyle: StrutStyle(
-        height: widget.lineHeight,
+        height: textStyleConfiguration.lineHeight,
         forceStrutHeight: true,
       ),
     );
@@ -374,7 +374,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
       strutStyle: StrutStyle(
-        height: widget.lineHeight,
+        height: textStyleConfiguration.lineHeight,
         forceStrutHeight: true,
       ),
     );
@@ -427,7 +427,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           textScaler:
               TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
           strutStyle: StrutStyle(
-            height: widget.lineHeight,
+            height: textStyleConfiguration.lineHeight,
             forceStrutHeight: true,
           ),
         );
