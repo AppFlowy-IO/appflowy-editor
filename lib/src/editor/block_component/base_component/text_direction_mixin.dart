@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/util/text_direction.dart';
 import 'package:flutter/material.dart';
 
 mixin BlockComponentTextDirectionMixin {
