@@ -183,42 +183,61 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       return null;
     }
 
-    final textPosition = TextPosition(offset: position.offset);
-    var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
-    var cursorOffset =
-        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
-            Offset.zero;
-    if (cursorHeight == null) {
-      cursorHeight =
-          _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
-      cursorOffset = _placeholderRenderParagraph?.getOffsetForCaret(
-            textPosition,
-            Rect.zero,
-          ) ??
-          Offset.zero;
-      if (textDirection() == TextDirection.rtl) {
-        if (widget.placeholderText.trim().isNotEmpty) {
-          cursorOffset = cursorOffset.translate(
-            _placeholderRenderParagraph?.size.width ?? 0,
-            0,
-          );
-        }
-      }
+    final selection = Selection(
+      start: position.copyWith(
+        offset: position.offset == 0 ? 0 : position.offset - 1,
+      ),
+      end: position.copyWith(
+        offset: position.offset == 0 ? 1 : position.offset,
+      ),
+    );
+
+    final rects = getRectsInSelection(selection);
+    var selectionRect = rects.firstOrNull;
+    var cursorHeight = selectionRect?.height;
+    var cursorOffset = _getCursorOffset(position, selectionRect);
+    if (cursorOffset == null ||
+        cursorHeight == null ||
+        selectionRect?.width == 0) {
+      selectionRect =
+          getRectsInSelection(selection, paragraph: _placeholderRenderParagraph)
+              .firstOrNull;
+      cursorHeight = selectionRect?.height;
+      cursorOffset = _getCursorOffset(position, selectionRect);
     }
-    if (widget.cursorHeight != null && cursorHeight != null) {
-      cursorOffset = Offset(
-        cursorOffset.dx,
-        cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
-      );
+    if (cursorOffset != null &&
+        cursorHeight != null &&
+        widget.cursorHeight != null) {
+      cursorOffset = _adjustCursorOffset(cursorOffset, cursorHeight);
       cursorHeight = widget.cursorHeight;
     }
-    final rect = Rect.fromLTWH(
+
+    return _getCursorRect(cursorOffset, cursorHeight);
+  }
+
+  Offset? _getCursorOffset(Position position, Rect? selectionRect) {
+    return position.offset == 0
+        ? selectionRect?.topLeft
+        : selectionRect?.topRight;
+  }
+
+  Offset _adjustCursorOffset(Offset cursorOffset, double cursorHeight) {
+    return Offset(
+      cursorOffset.dx,
+      cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
+    );
+  }
+
+  Rect _getCursorRect(Offset? cursorOffset, double? cursorHeight) {
+    if (cursorOffset == null || cursorHeight == null) {
+      return Rect.zero;
+    }
+    return Rect.fromLTWH(
       max(0, cursorOffset.dx - (widget.cursorWidth / 2.0)),
       cursorOffset.dy,
       widget.cursorWidth,
-      cursorHeight ?? 16.0,
+      cursorHeight,
     );
-    return rect;
   }
 
   @override
@@ -271,15 +290,17 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   List<Rect> getRectsInSelection(
     Selection selection, {
     bool shiftWithBaseOffset = false,
+    RenderParagraph? paragraph,
   }) {
-    if (kDebugMode && _renderParagraph?.debugNeedsLayout == true) {
+    paragraph ??= _renderParagraph;
+    if (kDebugMode && paragraph?.debugNeedsLayout == true) {
       return [];
     }
     final textSelection = textSelectionFromEditorSelection(selection);
     if (textSelection == null) {
       return [];
     }
-    final rects = _renderParagraph
+    final rects = paragraph
         ?.getBoxesForSelection(
           textSelection,
           boxHeightStyle: BoxHeightStyle.max,
@@ -291,7 +312,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       // If the rich text widget does not contain any text,
       // there will be no selection boxes,
       // so we need to return to the default selection.
-      return [Rect.fromLTWH(0, 0, 0, _renderParagraph?.size.height ?? 0)];
+      return [Rect.fromLTWH(0, 0, 0, paragraph?.size.height ?? 0)];
     }
     return rects;
   }
@@ -341,6 +362,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             textStyleConfiguration.applyHeightToFirstAscent,
         applyHeightToLastDescent:
             textStyleConfiguration.applyHeightToLastDescent,
+        leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
       text: widget.placeholderTextSpanDecorator != null
           ? widget.placeholderTextSpanDecorator!(textSpan)
@@ -348,10 +370,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-      strutStyle: StrutStyle(
-        height: textStyleConfiguration.lineHeight,
-        forceStrutHeight: true,
-      ),
     );
   }
 
@@ -366,6 +384,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             textStyleConfiguration.applyHeightToFirstAscent,
         applyHeightToLastDescent:
             textStyleConfiguration.applyHeightToLastDescent,
+        leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
       text: widget.textSpanDecorator != null
           ? widget.textSpanDecorator!(textSpan)
@@ -373,10 +392,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-      strutStyle: StrutStyle(
-        height: textStyleConfiguration.lineHeight,
-        forceStrutHeight: true,
-      ),
     );
   }
 
@@ -419,6 +434,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
                 textStyleConfiguration.applyHeightToFirstAscent,
             applyHeightToLastDescent:
                 textStyleConfiguration.applyHeightToLastDescent,
+            leadingDistribution: textStyleConfiguration.leadingDistribution,
           ),
           text: widget.textSpanDecorator != null
               ? widget.textSpanDecorator!(textSpan)
@@ -426,10 +442,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           textDirection: textDirection(),
           textScaler:
               TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-          strutStyle: StrutStyle(
-            height: textStyleConfiguration.lineHeight,
-            forceStrutHeight: true,
-          ),
         );
       },
     );
@@ -454,8 +466,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     int offset = 0;
     List<InlineSpan> textSpans = [];
     for (final textInsert in textInserts) {
-      TextStyle textStyle =
-          textStyleConfiguration.text.copyWith(height: widget.lineHeight);
+      TextStyle textStyle = textStyleConfiguration.text.copyWith(
+        height: textStyleConfiguration.lineHeight,
+      );
       final attributes = textInsert.attributes;
       if (attributes != null) {
         if (attributes.bold == true) {
