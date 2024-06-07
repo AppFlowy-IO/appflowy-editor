@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2.16.0
+      - uses: penkzhou/flutter-action@v2.16.1
         with:
           channel: "stable"
           flutter-version-file: pubspec.yaml
