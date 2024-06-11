@@ -97,7 +97,10 @@ class _HomePageState extends State<HomePage> {
         surfaceTintColor: Colors.transparent,
         title: const Text('AppFlowy Editor'),
       ),
-      body: SafeArea(child: _widgetBuilder(context)),
+      body: SafeArea(
+        maintainBottomViewPadding: true,
+        child: _widgetBuilder(context),
+      ),
     );
   }
 

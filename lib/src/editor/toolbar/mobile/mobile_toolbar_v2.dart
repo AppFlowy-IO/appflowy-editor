@@ -385,7 +385,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
             return SizedBox(
-              height: height,
+              height: height + MediaQuery.of(context).viewPadding.bottom,
               child: (showingMenu && selectedMenuIndex != null)
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
