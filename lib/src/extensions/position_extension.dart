@@ -36,7 +36,9 @@ extension PositionExtension on Position {
         if (delta != null) {
           return Position(
             path: path,
-            offset: forward ? delta.prevRunePosition(offset) : delta.nextRunePosition(offset),
+            offset: forward
+                ? delta.prevRunePosition(offset)
+                : delta.nextRunePosition(offset),
           );
         }
 
@@ -92,7 +94,8 @@ extension PositionExtension on Position {
   }) {
     final position = editorStateSelectionService.getPositionInOffset(offset);
     if (position != null) {
-      final nextParagrapStep = checkedParagraphStep ? position.path.equals(path) : false;
+      final nextParagrapStep =
+          checkedParagraphStep ? position.path.equals(path) : false;
       if (!nextParagrapStep) {
         return position;
       }
@@ -148,7 +151,8 @@ extension PositionExtension on Position {
       return null;
     }
 
-    Offset? offsetSelectable = offsetGet(selection.isBackward, rects, upwards: upwards);
+    Offset? offsetSelectable =
+        offsetGet(selection.isBackward, rects, upwards: upwards);
     if (offsetSelectable != null) {
       final positionSelectable = getPosition(
         offsetSelectable,
@@ -160,7 +164,8 @@ extension PositionExtension on Position {
       }
     }
 
-    final positionUpWords = upWordsPosition(selection: selection, editorState: editorState);
+    final positionUpWords =
+        upWordsPosition(selection: selection, editorState: editorState);
     if (positionUpWords != null) {
       return positionUpWords;
     }

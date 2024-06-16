@@ -1,15 +1,12 @@
 //----
-/// From test
 import 'dart:collection';
 import 'dart:ui';
 
-import 'package:appflowy_editor/src/core/location/position.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 
 /// From test
-import 'package:appflowy_editor/src/extensions/position_extension.dart';
 //----
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/src/foundation/change_notifier.dart';
 import 'package:flutter/src/gestures/drag_details.dart';
 
@@ -22,7 +19,7 @@ void main() {
     // late final List<List<int>> pathListListFromTest;
     late Position p1;
     late Position p2;
-    Offset  offs1 = const Offset(3, 0);
+    Offset offs1 = const Offset(3, 0);
     Offset offs2 = const Offset(0, 0);
     Position invalidPosition = Position.invalid();
     late List<Rect> rectsW;
@@ -59,7 +56,11 @@ void main() {
         'Position.invalid 1 extension -> .moveVertical = { upwards: false, checkedParagraphStep: true } ',
         () {
       final invalidPosition = Position.invalid();
-      invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: true);
+      invalidPosition.moveVertical(
+        editorState,
+        upwards: false,
+        checkedParagraphStep: true,
+      );
       // invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: false);
       // invalidPosition.moveVertical(editorState, upwards: true, checkedParagraphStep: true);
       expect(invalidPosition.path, [-1]);
@@ -72,7 +73,11 @@ void main() {
       // final invalidPosition = Position.invalid();
       // invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: true);
       // invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: false);
-      invalidPosition.moveVertical(editorState, upwards: true, checkedParagraphStep: true);
+      invalidPosition.moveVertical(
+        editorState,
+        upwards: true,
+        checkedParagraphStep: true,
+      );
       expect(invalidPosition.path, [-1]);
       expect(invalidPosition.offset, -1);
     });
@@ -82,7 +87,11 @@ void main() {
         () {
       // final invalidPosition = Position.invalid();
       // invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: true);
-      invalidPosition.moveVertical(editorState, upwards: false, checkedParagraphStep: false);
+      invalidPosition.moveVertical(
+        editorState,
+        upwards: false,
+        checkedParagraphStep: false,
+      );
       // invalidPosition.moveVertical(editorState, upwards: true, checkedParagraphStep: true);
       expect(invalidPosition.path, [-1]);
       expect(invalidPosition.offset, -1);
@@ -102,7 +111,11 @@ void main() {
       expect(p1.hashCode == p2.hashCode, true);
     });
     test('Position extension -> getPosition 3', () {
-      p1.getPosition(offs1, appFlowySelectionService, checkedParagraphStep: true);
+      p1.getPosition(
+        offs1,
+        appFlowySelectionService,
+        checkedParagraphStep: true,
+      );
 
       expect(p1 == p2, true);
       expect(p1.hashCode == p2.hashCode, true);
@@ -136,25 +149,38 @@ void main() {
     ///////////////
     ///
     ///
-    
+
     test('Position extension -> getPosition 1', () {
       p2.getPosition(offs1, appFlowySelectionService);
 
       expect(p1 == p2, true);
-      expect(p1.hashCode == p2.hashCode, true);
+      expect(
+        p1.hashCode == p2.hashCode,
+        true,
+      );
     });
 
     test('Position extension -> getPosition 2', () {
       p2.getPosition(offs2, appFlowySelectionService);
 
       expect(p1 == p2, true);
-      expect(p1.hashCode == p2.hashCode, true);
+      expect(
+        p1.hashCode == p2.hashCode,
+        true,
+      );
     });
     test('Position extension -> getPosition 3', () {
-      p2.getPosition(offs1, appFlowySelectionService, checkedParagraphStep: true);
+      p2.getPosition(
+        offs1,
+        appFlowySelectionService,
+        checkedParagraphStep: true,
+      );
 
       expect(p1 == p2, true);
-      expect(p1.hashCode == p2.hashCode, true);
+      expect(
+        p1.hashCode == p2.hashCode,
+        true,
+      );
     });
 
     test('Position extension -> offsetGet 1', () {
@@ -181,8 +207,6 @@ void main() {
       expect(p1 == p2, true);
       expect(p1.hashCode == p2.hashCode, true);
     });
-
-
   });
 }
 
@@ -223,13 +247,19 @@ class MockAppFlowySelectionService implements AppFlowySelectionService {
   }
 
   @override
-  Selection? onPanStart(DragStartDetails details, MobileSelectionDragMode mode) {
+  Selection? onPanStart(
+    DragStartDetails details,
+    MobileSelectionDragMode mode,
+  ) {
     // implement onPanStart
     throw UnimplementedError();
   }
 
   @override
-  Selection? onPanUpdate(DragUpdateDetails details, MobileSelectionDragMode mode) {
+  Selection? onPanUpdate(
+    DragUpdateDetails details,
+    MobileSelectionDragMode mode,
+  ) {
     // implement onPanUpdate
     throw UnimplementedError();
   }
