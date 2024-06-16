@@ -1,3 +1,29 @@
+## 2.5.1
+* chore: upgrade Flutter to 3.22.0 by @LucasXu0 in [797](https://github.com/AppFlowy-IO/appflowy-editor/pull/797)
+
+## 2.5.0
+* feat: improve mobile selection by @richardshiue in [776](https://github.com/AppFlowy-IO/appflowy-editor/pull/776)
+* feat: support option/cmd + click to open link by @LucasXu0 in [787](https://github.com/AppFlowy-IO/appflowy-editor/pull/787)
+* fix: improve link menu position by @LucasXu0 in [786](https://github.com/AppFlowy-IO/appflowy-editor/pull/786)
+* fix: incorrect cursor movement behaviour by @Jei-sKappa in [751](https://github.com/AppFlowy-IO/appflowy-editor/pull/751)
+* fix: update selection from the delta by @LucasXu0 in [788](https://github.com/AppFlowy-IO/appflowy-editor/pull/788)
+* fix: replace_text by @q200892907 in [781](https://github.com/AppFlowy-IO/appflowy-editor/pull/781)
+* fix: cjk IME issues on Linux by @LucasXu0 in [791](https://github.com/AppFlowy-IO/appflowy-editor/pull/791)
+* fix: empty items disable context menu by @Xazin in [793](https://github.com/AppFlowy-IO/appflowy-editor/pull/793)
+* fix: remove heading node validation by @LucasXu0 in [803](https://github.com/AppFlowy-IO/appflowy-editor/pull/803)
+* chore: upgrade flutter dependencies by @LucasXu0 in [778](https://github.com/AppFlowy-IO/appflowy-editor/pull/778)
+* chore: provide an option to disable color parser by @LucasXu0 in [784](https://github.com/AppFlowy-IO/appflowy-editor/pull/784)
+
+## 2.4.0
+* feat: provide an option to disable color parser by @LucasXu0 in [784](https://github.com/AppFlowy-IO/appflowy-editor/pull/784)
+* feat: improve mobile selection by @richardshiue in [776](https://github.com/AppFlowy-IO/appflowy-editor/pull/776)
+* feat: support option/cmd + click to open link by @LucasXu0 in [787](https://github.com/AppFlowy-IO/appflowy-editor/pull/787)
+* fix: improve link menu position by @LucasXu0 in [786](https://github.com/AppFlowy-IO/appflowy-editor/pull/786)
+* fix: incorrect cursor movement behaviour by @Jei-sKappa in [751](https://github.com/AppFlowy-IO/appflowy-editor/pull/751)
+* fix: update selection from the delta by @LucasXu0 in [788](https://github.com/AppFlowy-IO/appflowy-editor/pull/788)
+* fix: inline math equation issue by @q200892907 in [781](https://github.com/AppFlowy-IO/appflowy-editor/pull/781)
+* fix: cjk IME issues on Linux by @LucasXu0 in [791](https://github.com/AppFlowy-IO/appflowy-editor/pull/791)
+
 ## 2.3.4
 * feat: support customizing mobile page style by @LucasXu0 in [769](https://github.com/AppFlowy-IO/appflowy-editor/pull/769)
 * feat: add table style by @q200892907 in [766](https://github.com/AppFlowy-IO/appflowy-editor/pull/766)

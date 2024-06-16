@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const String selectionExtraInfoDisableMobileToolbarKey = 'disableMobileToolbar';
@@ -384,8 +385,12 @@ class _MobileToolbarState extends State<_MobileToolbar>
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
+            var toolbarHeight = height;
+            if (defaultTargetPlatform == TargetPlatform.android) {
+              toolbarHeight += MediaQuery.of(context).viewPadding.bottom;
+            }
             return SizedBox(
-              height: height,
+              height: toolbarHeight,
               child: (showingMenu && selectedMenuIndex != null)
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
