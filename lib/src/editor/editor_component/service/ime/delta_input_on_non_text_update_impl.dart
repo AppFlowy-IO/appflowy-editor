@@ -44,5 +44,17 @@ Future<void> onNonTextUpdate(
         ),
       );
     }
+  } else {
+
+    if(selection != null) {
+      editorState.updateSelectionWithReason(
+        Selection.collapsed(
+          Position(
+            path: selection.start.path,
+            offset: nonTextUpdate.selection.start,
+          ),
+        ),
+      );
+    }
   }
 }

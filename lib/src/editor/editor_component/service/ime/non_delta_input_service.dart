@@ -40,6 +40,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   final String debounceKey = 'updateEditingValue';
 
   @override
+  void updateComposingTextRange(TextRange composingTextRange) {
+    this.composingTextRange = composingTextRange;
+    _currentTextEditingValue = _currentTextEditingValue?.copyWith(
+      composing: composingTextRange,
+    );
+  }
+
+  @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
     for (final delta in formattedDeltas) {
@@ -82,7 +90,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       ..setEditingState(formattedValue)
       ..show();
 
+
     currentTextEditingValue = formattedValue;
+
 
     Log.input.debug(
       'attach text editing value: $textEditingValue',
@@ -128,10 +138,12 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void connectionClosed() {}
+  void connectionClosed() {
+  }
 
   @override
-  void insertTextPlaceholder(Size size) {}
+  void insertTextPlaceholder(Size size) {
+  }
 
   @override
   Future<void> performAction(TextInputAction action) async {
@@ -145,13 +157,15 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void removeTextPlaceholder() {}
+  void removeTextPlaceholder() {
+  }
 
   @override
   void showAutocorrectionPromptRect(int start, int end) {}
 
   @override
-  void showToolbar() {}
+  void showToolbar() {
+  }
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
@@ -162,7 +176,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   void didChangeInputControl(
     TextInputControl? oldControl,
     TextInputControl? newControl,
-  ) {}
+  ) {
+  }
 
   @override
   void performSelector(String selectorName) {
@@ -180,25 +195,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   void _updateComposing(TextEditingDelta delta) {
-    if (delta is! TextEditingDeltaNonTextUpdate) {
-      if (composingTextRange != null &&
-          composingTextRange!.start != -1 &&
-          delta.composing.end != -1) {
-        composingTextRange = TextRange(
-          start: composingTextRange!.start,
-          end: delta.composing.end,
-        );
-      } else {
-        composingTextRange = delta.composing;
-      }
-    }
-
-    if ((PlatformExtension.isWindows ||
-            PlatformExtension.isLinux ||
-            PlatformExtension.isMacOS) &&
-        delta is TextEditingDeltaNonTextUpdate) {
-      composingTextRange = delta.composing;
-    }
+    composingTextRange = delta.composing;
 
     // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
     if (composingTextRange?.isCollapsed ?? false) {
@@ -226,7 +223,14 @@ extension on TextEditingValue {
   TextEditingValue format() {
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
-    final composing = this.composing >> _len;
+    final textLength = text.length;
+    TextRange composing = this.composing >> _len;
+    // final isComposingRangeValid = TextEditingValue.;
+
+    // check invalid composing
+    if (composing.start > textLength || composing.end > textLength) {
+      composing = TextRange.empty;
+    }
 
     return TextEditingValue(
       text: text,
