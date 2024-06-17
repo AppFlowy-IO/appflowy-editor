@@ -183,42 +183,61 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       return null;
     }
 
-    final textPosition = TextPosition(offset: position.offset);
-    var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
-    var cursorOffset =
-        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
-            Offset.zero;
-    if (cursorHeight == null || cursorHeight == 0) {
-      cursorHeight =
-          _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
-      cursorOffset = _placeholderRenderParagraph?.getOffsetForCaret(
-            textPosition,
-            Rect.zero,
-          ) ??
-          Offset.zero;
-      if (textDirection() == TextDirection.rtl) {
-        if (widget.placeholderText.trim().isNotEmpty) {
-          cursorOffset = cursorOffset.translate(
-            _placeholderRenderParagraph?.size.width ?? 0,
-            0,
-          );
-        }
-      }
+    final selection = Selection(
+      start: position.copyWith(
+        offset: position.offset == 0 ? 0 : position.offset - 1,
+      ),
+      end: position.copyWith(
+        offset: position.offset == 0 ? 1 : position.offset,
+      ),
+    );
+
+    final rects = getRectsInSelection(selection);
+    var selectionRect = rects.firstOrNull;
+    var cursorHeight = selectionRect?.height;
+    var cursorOffset = _getCursorOffset(position, selectionRect);
+    if (cursorOffset == null ||
+        cursorHeight == null ||
+        selectionRect?.width == 0) {
+      selectionRect =
+          getRectsInSelection(selection, paragraph: _placeholderRenderParagraph)
+              .firstOrNull;
+      cursorHeight = selectionRect?.height;
+      cursorOffset = _getCursorOffset(position, selectionRect);
     }
-    if (widget.cursorHeight != null && cursorHeight != null) {
-      cursorOffset = Offset(
-        cursorOffset.dx,
-        cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
-      );
+    if (cursorOffset != null &&
+        cursorHeight != null &&
+        widget.cursorHeight != null) {
+      cursorOffset = _adjustCursorOffset(cursorOffset, cursorHeight);
       cursorHeight = widget.cursorHeight;
     }
-    final rect = Rect.fromLTWH(
+
+    return _getCursorRect(cursorOffset, cursorHeight);
+  }
+
+  Offset? _getCursorOffset(Position position, Rect? selectionRect) {
+    return position.offset == 0
+        ? selectionRect?.topLeft
+        : selectionRect?.topRight;
+  }
+
+  Offset _adjustCursorOffset(Offset cursorOffset, double cursorHeight) {
+    return Offset(
+      cursorOffset.dx,
+      cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
+    );
+  }
+
+  Rect _getCursorRect(Offset? cursorOffset, double? cursorHeight) {
+    if (cursorOffset == null || cursorHeight == null) {
+      return Rect.zero;
+    }
+    return Rect.fromLTWH(
       max(0, cursorOffset.dx - (widget.cursorWidth / 2.0)),
       cursorOffset.dy,
       widget.cursorWidth,
-      cursorHeight ?? 16.0,
+      cursorHeight,
     );
-    return rect;
   }
 
   @override
@@ -351,15 +370,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-      strutStyle: StrutStyle(
-        height: textStyleConfiguration.lineHeight,
-      ),
     );
   }
 
   Widget _buildRichText(BuildContext context) {
     final textInserts = widget.node.delta!.whereType<TextInsert>();
-    var textSpan = getTextSpan(textInserts: textInserts);
+    TextSpan textSpan = getTextSpan(textInserts: textInserts);
     return RichText(
       key: textKey,
       textAlign: widget.textAlign ?? TextAlign.start,
@@ -376,15 +392,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-      strutStyle: StrutStyle(
-        height: textStyleConfiguration.lineHeight,
-      ),
     );
   }
 
   Widget _buildAutoCompleteRichText() {
     final textInserts = widget.node.delta!.whereType<TextInsert>();
-    var textSpan = getTextSpan(textInserts: textInserts);
+    TextSpan textSpan = getTextSpan(textInserts: textInserts);
     return ValueListenableBuilder(
       valueListenable: widget.editorState.selectionNotifier,
       builder: (_, __, ___) {
@@ -429,9 +442,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           textDirection: textDirection(),
           textScaler:
               TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
-          strutStyle: StrutStyle(
-            height: textStyleConfiguration.lineHeight,
-          ),
         );
       },
     );
@@ -443,7 +453,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         TextSpan(
           text: widget.placeholderText,
           style: textStyleConfiguration.text.copyWith(
-            height: textStyleConfiguration.lineHeight,
+            height: widget.lineHeight,
           ),
         ),
       ],
@@ -531,8 +541,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       );
       offset += textInsert.length;
     }
-
-    return TextSpan(children: textSpans);
+    return TextSpan(
+      children: textSpans,
+    );
   }
 
   TextSelection? textSelectionFromEditorSelection(Selection? selection) {
