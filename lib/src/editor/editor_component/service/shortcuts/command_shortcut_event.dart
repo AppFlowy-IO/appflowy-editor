@@ -103,11 +103,8 @@ class CommandShortcutEvent {
     }
 
     if (matched) {
-      _keybindings = this
-          .command
-          .split(',')
-          .map((e) => Keybinding.parse(e))
-          .toList(growable: false);
+      _keybindings =
+          this.command.split(',').map((e) => Keybinding.parse(e)).toList();
     }
   }
 
