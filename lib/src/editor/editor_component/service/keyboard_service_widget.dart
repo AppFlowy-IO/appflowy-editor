@@ -164,7 +164,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   /// handle hardware keyboard
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
-        !enableShortcuts) {
+        (!enableShortcuts && !backspaceCommand.canRespondToRawKeyEvent(event))) {
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
