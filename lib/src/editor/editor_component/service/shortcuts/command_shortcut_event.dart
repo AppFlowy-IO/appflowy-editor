@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 typedef CommandShortcutEventHandler = KeyEventResult Function(
   EditorState editorState,
@@ -58,6 +59,16 @@ class CommandShortcutEvent {
   String? get description =>
       _getDescription != null ? _getDescription!() : null;
 
+  /// This _completely_ clears the command, ensuring that
+  /// it cannot be triggered until it is updated again.
+  ///
+  /// Update it using [updateCommand].
+  ///
+  void clearCommand() {
+    _keybindings.clear();
+    command = '';
+  }
+
   void updateCommand({
     String? command,
     String? windowsCommand,
@@ -92,11 +103,8 @@ class CommandShortcutEvent {
     }
 
     if (matched) {
-      _keybindings = this
-          .command
-          .split(',')
-          .map((e) => Keybinding.parse(e))
-          .toList(growable: false);
+      _keybindings =
+          this.command.split(',').map((e) => Keybinding.parse(e)).toList();
     }
   }
 
