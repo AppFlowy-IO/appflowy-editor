@@ -51,6 +51,11 @@ bool handleFormatByWrappingWithSingleCharacter({
     return false;
   }
 
+  // 4. If the last character index is greater that current cursor position, we should skip the single character formatting.
+  if (lastCharIndex >= selection.end.offset) {
+    return false;
+  }
+
   // If none of the above exclusive conditions are satisfied, we should format the text to [formatStyle].
   // 1. Delete the previous 'Character'.
   // 2. Update the style of the text surrounded by the two 'Character's to [formatStyle].
