@@ -1,3 +1,12 @@
+## 3.0.0
+* refactor: separated determineTextDirection function by @zoli in [#809](https://github.com/AppFlowy-IO/appflowy-editor/pull/809)
+* fix: markdown to document with image url having properties after extension by @stevenosse in [#795](https://github.com/AppFlowy-IO/appflowy-editor/pull/795)
+* fix: incorrect cursor position after new line by @LucasXu0 in [#817](https://github.com/AppFlowy-IO/appflowy-editor/pull/817)
+* feat: command improvement by @Xazin in [#825](https://github.com/AppFlowy-IO/appflowy-editor/pull/825)
+* fix: content jumping down and scrolling getting locked by @MayurSMahajan in [#821](https://github.com/AppFlowy-IO/appflowy-editor/pull/821)
+* fix: underscore markdown syntax assertion by @LucasXu0 in [#826](https://github.com/AppFlowy-IO/appflowy-editor/pull/826)
+* fix: cursor height is inconsistent after upgrading to Flutter 3.22 by @LucasXu0 in [#827](https://github.com/AppFlowy-IO/appflowy-editor/pull/827)
+
 ## 2.5.1
 * chore: upgrade Flutter to 3.22.0 by @LucasXu0 in [797](https://github.com/AppFlowy-IO/appflowy-editor/pull/797)
 

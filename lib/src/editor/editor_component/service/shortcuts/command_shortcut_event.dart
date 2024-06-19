@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 typedef CommandShortcutEventHandler = KeyEventResult Function(
   EditorState editorState,
@@ -56,8 +55,7 @@ class CommandShortcutEvent {
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
 
-  String? get description =>
-      _getDescription != null ? _getDescription!() : null;
+  String? get description => _getDescription != null ? _getDescription() : null;
 
   /// This _completely_ clears the command, ensuring that
   /// it cannot be triggered until it is updated again.
