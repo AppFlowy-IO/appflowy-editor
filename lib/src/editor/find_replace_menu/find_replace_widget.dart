@@ -47,10 +47,6 @@ class FindAndReplaceMenuWidget extends StatefulWidget {
 }
 
 class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
-  final focusNode = FocusNode();
-  final replaceFocusNode = FocusNode();
-  final findController = TextEditingController();
-  final replaceController = TextEditingController();
   String queriedPattern = '';
   bool showRegexButton = true;
   bool showCaseSensitiveButton = true;
