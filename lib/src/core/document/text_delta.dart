@@ -33,14 +33,14 @@ class TextInsert extends TextOperation {
   int get length => text.length;
 
   @override
-  Attributes? get attributes => _attributes != null ? {..._attributes!} : null;
+  Attributes? get attributes => _attributes != null ? {..._attributes} : null;
 
   @override
   Map<String, dynamic> toJson() {
     final result = <String, dynamic>{
       'insert': text,
     };
-    if (_attributes != null && _attributes!.isNotEmpty) {
+    if (_attributes != null && _attributes.isNotEmpty) {
       result['attributes'] = attributes;
     }
     return result;
@@ -70,14 +70,14 @@ class TextRetain extends TextOperation {
   final Attributes? _attributes;
 
   @override
-  Attributes? get attributes => _attributes != null ? {..._attributes!} : null;
+  Attributes? get attributes => _attributes != null ? {..._attributes} : null;
 
   @override
   Map<String, dynamic> toJson() {
     final result = <String, dynamic>{
       'retain': length,
     };
-    if (_attributes != null && _attributes!.isNotEmpty) {
+    if (_attributes != null && _attributes.isNotEmpty) {
       result['attributes'] = attributes;
     }
     return result;
