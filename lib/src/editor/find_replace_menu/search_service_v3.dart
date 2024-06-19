@@ -11,9 +11,9 @@ class SearchServiceV3 {
 
   final EditorState editorState;
 
-  //matchWrappers.value will contain a list of matchWrappers of the matched patterns
-  //the position here consists of the match and the node path of
-  //matched pattern. We will use this to traverse between the matched patterns.
+  // matchWrappers.value will contain a list of matchWrappers of the matched patterns
+  // the position here consists of the match and the node path of
+  // matched pattern. We will use this to traverse between the matched patterns.
   ValueNotifier<List<MatchWrapper>> matchWrappers = ValueNotifier([]);
   SearchAlgorithm searchAlgorithm = DartBuiltIn();
   String targetString = '';
@@ -36,15 +36,11 @@ class SearchServiceV3 {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
-    _prevSelectedIndex = _selectedIndex;
     _selectedIndex = matchWrappers.value.isEmpty
         ? -1
         : index.clamp(0, matchWrappers.value.length - 1);
     currentSelectedIndex.value = _selectedIndex;
   }
-
-  // only used for scrolling to the first or the last match.
-  int _prevSelectedIndex = 0;
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
 
@@ -151,17 +147,6 @@ class SearchServiceV3 {
     Pattern pattern,
   ) {
     final selection = matchWrappers.value[selectedIndex].selection;
-
-    // https://github.com/google/flutter.widgets/issues/151
-    // there's a bug in the scrollable_positioned_list package
-    // we can't scroll to the index without animation.
-    // so we just scroll the position if the index is the first or the last.
-    final length = matchWrappers.value.length - 1;
-    if (_prevSelectedIndex != selectedIndex &&
-        ((_prevSelectedIndex == length && selectedIndex == 0) ||
-            (_prevSelectedIndex == 0 && selectedIndex == length))) {
-      editorState.scrollService?.jumpTo(selection.start.path.first);
-    }
 
     editorState.updateSelectionWithReason(
       selection,
