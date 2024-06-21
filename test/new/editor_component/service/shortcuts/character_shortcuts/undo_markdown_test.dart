@@ -22,9 +22,12 @@ void main() async {
       expect(delta.length, 'Hello world'.length);
       expect(delta.first.attributes![AppFlowyRichTextKeys.italic], true);
 
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
+      final key = PlatformExtension.isMacOS
+          ? LogicalKeyboardKey.meta
+          : LogicalKeyboardKey.control;
+      await tester.sendKeyDownEvent(key);
       await tester.sendKeyDownEvent(LogicalKeyboardKey.keyZ);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
+      await tester.sendKeyUpEvent(key);
       await tester.sendKeyUpEvent(LogicalKeyboardKey.keyZ);
 
       delta = editor.nodeAtPath([0])!.delta!;
@@ -49,9 +52,12 @@ void main() async {
       expect(delta.length, 'Hello world'.length);
       expect(delta.first.attributes![AppFlowyRichTextKeys.bold], true);
 
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
+      final key = PlatformExtension.isMacOS
+          ? LogicalKeyboardKey.meta
+          : LogicalKeyboardKey.control;
+      await tester.sendKeyDownEvent(key);
       await tester.sendKeyDownEvent(LogicalKeyboardKey.keyZ);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
+      await tester.sendKeyUpEvent(key);
       await tester.sendKeyUpEvent(LogicalKeyboardKey.keyZ);
 
       delta = editor.nodeAtPath([0])!.delta!;
