@@ -56,17 +56,22 @@ bool handleFormatByWrappingWithSingleCharacter({
     return false;
   }
 
+  // Before deletion we need to insert the character in question so that undo manager
+  // will undo only the style applied and keep the character.
+  final insertion = editorState.transaction
+    ..insertText(node, selection.end.offset, character)
+    ..afterSelection = Selection.collapsed(
+      selection.end.copyWith(offset: selection.end.offset + 1),
+    );
+  editorState.apply(insertion, skipHistoryDebounce: true);
+
   // If none of the above exclusive conditions are satisfied, we should format the text to [formatStyle].
   // 1. Delete the previous 'Character'.
   // 2. Update the style of the text surrounded by the two 'Character's to [formatStyle].
   // 3. Update the cursor position.
-
   final deletion = editorState.transaction
-    ..deleteText(
-      node,
-      lastCharIndex,
-      1,
-    );
+    ..deleteText(node, lastCharIndex, 1)
+    ..deleteText(node, selection.end.offset - 1, 1);
   editorState.apply(deletion);
 
   // To minimize errors, retrieve the format style from an enum that is specific to single characters.
