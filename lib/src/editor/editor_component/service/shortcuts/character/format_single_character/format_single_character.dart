@@ -93,10 +93,7 @@ bool handleFormatByWrappingWithSingleCharacter({
   }
 
   // if the text is already formatted, we should remove the format.
-  final sliced = delta.slice(
-    lastCharIndex + 1,
-    selection.end.offset,
-  );
+  final sliced = delta.slice(lastCharIndex + 1, selection.end.offset);
   final result = sliced.everyAttributes((element) => element[style] == true);
 
   final format = editorState.transaction
