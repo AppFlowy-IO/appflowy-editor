@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/widgets.dart';
 
 const _emptyCounters = Counters();
 
@@ -20,7 +19,8 @@ const _emptyCounters = Counters();
 /// This will also account for eg. accents. It is a trivial approach, but it beats
 /// writing up a super complex regex to cover all edge cases.
 ///
-final _wordRegex = RegExp(r"\S+");
+@visibleForTesting
+final appFlowyEditorWordRegex = RegExp(r"\S+");
 
 /// Used by the [WordCountService] to contain
 /// count statistics in eg. a [Document] or in
@@ -277,7 +277,8 @@ class WordCountService with ChangeNotifier {
     return Counters(wordCount: wCount, charCount: cCount);
   }
 
-  int _wordsInString(String delta) => _wordRegex.allMatches(delta).length;
+  int _wordsInString(String delta) =>
+      appFlowyEditorWordRegex.allMatches(delta).length;
 
   String _toPlainText(Node node) => node.delta?.toPlainText() ?? '';
 }
