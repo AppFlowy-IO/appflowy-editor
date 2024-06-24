@@ -180,29 +180,17 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   void _updateComposing(TextEditingDelta delta) {
-    if (delta is! TextEditingDeltaNonTextUpdate) {
-      if (composingTextRange != null &&
-          composingTextRange!.start != -1 &&
-          delta.composing.end != -1) {
-        composingTextRange = TextRange(
-          start: composingTextRange!.start,
-          end: delta.composing.end,
-        );
-      } else {
-        composingTextRange = delta.composing;
-      }
-    }
-
-    if ((PlatformExtension.isWindows ||
-            PlatformExtension.isLinux ||
-            PlatformExtension.isMacOS) &&
-        delta is TextEditingDeltaNonTextUpdate) {
+    if (delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
-    }
-
-    // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
-    if (composingTextRange?.isCollapsed ?? false) {
-      composingTextRange = TextRange.empty;
+    } else {
+      composingTextRange = composingTextRange != null &&
+              composingTextRange!.start != -1 &&
+              delta.composing.end != -1
+          ? TextRange(
+              start: composingTextRange!.start,
+              end: delta.composing.end,
+            )
+          : delta.composing;
     }
   }
 }
