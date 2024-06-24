@@ -46,6 +46,11 @@ void main() async {
 
       await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
+
+      expect(service.documentCounters.wordCount, 11);
+      expect(service.documentCounters.charCount, text.length * 4);
+      expect(wordCount, 11);
+      expect(charCount, text.length * 4);
       // TODO(Xazin): Fix this test later
       // expect(service.documentCounters.wordCount, 3 * 4);
       // expect(service.documentCounters.charCount, text.length * 4);

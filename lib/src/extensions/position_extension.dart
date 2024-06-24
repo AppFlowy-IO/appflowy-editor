@@ -66,10 +66,44 @@ extension PositionExtension on Position {
     }
   }
 
-  Position? moveVertical(
-    EditorState editorState, {
+  Offset? offsetGet(
+    bool selectionIsBackward,
+    List<Rect> rects, {
     bool upwards = true,
   }) {
+// <<<<<<< fix/Bug_arrow_problem_#4764
+    Offset? offset2;
+    if (selectionIsBackward) {
+      final rect = rects.reduce(
+        (current, next) => current.bottom >= next.bottom ? current : next,
+      );
+      offset2 = upwards
+          ? rect.topRight.translate(0, -rect.height)
+          : rect.centerRight.translate(0, rect.height);
+    } else {
+      final rect = rects.reduce(
+        (current, next) => current.top <= next.bottom ? current : next,
+      );
+      offset2 = upwards
+          ? rect.topLeft.translate(0, -rect.height)
+          : rect.centerLeft.translate(0, rect.height);
+    }
+    return offset2;
+  }
+
+  Position? getPosition(
+    Offset offset,
+    AppFlowySelectionService editorStateSelectionService, {
+    bool checkedParagraphStep = false,
+  }) {
+    final position = editorStateSelectionService.getPositionInOffset(offset);
+    if (position != null) {
+      final nextParagrapStep =
+          checkedParagraphStep ? position.path.equals(path) : false;
+      if (!nextParagrapStep) {
+        return position;
+      }
+// =======
     final node = editorState.document.nodeAtPath(path);
     final nodeRenderBox = node?.renderBox;
     final nodeSelectable = node?.selectable;
@@ -106,8 +140,45 @@ extension PositionExtension on Position {
     if (nodeConfig == null) {
       assert(nodeConfig != null, 'Block Configuration should not be null');
       return this;
+// >>>>>>> main
     }
+    return null;
+  }
 
+// <<<<<<< fix/Bug_arrow_problem_#4764
+  Position? upWordsPosition({
+    required Selection selection,
+    required EditorState editorState,
+    bool upwards = true,
+  }) {
+//     if (upwards) {
+//       final previous = selection.start.path.previous;
+//       if (previous.isNotEmpty && !previous.equals(selection.start.path)) {
+//         final node = editorState.document.nodeAtPath(previous);
+//         final selectable = node?.selectable;
+//         var offsetL = selection.startIndex;
+//         if (selectable != null) {
+//           offsetL = offset.clamp(
+//             selectable.start().offset,
+//             selectable.end().offset,
+//           );
+//           return Position(path: previous, offset: offsetL);
+//         }
+//       }
+//     } else {
+//       final next = selection.end.path.next;
+//       if (next.isNotEmpty && !next.equals(selection.end.path)) {
+//         final node = editorState.document.nodeAtPath(next);
+//         final selectable = node?.selectable;
+//         var offsetL = selection.endIndex;
+//         if (selectable != null) {
+//           offsetL = offsetL.clamp(
+//             selectable.start().offset,
+//             selectable.end().offset,
+//           );
+//           return Position(path: next, offset: offsetL);
+//         }
+// =======
     final padding = nodeConfig.padding(node);
     final nodeRect = nodeSelectable.getBlockRect();
     final nodeHeight = nodeRect.height;
@@ -194,7 +265,40 @@ extension PositionExtension on Position {
           selectable.end().offset,
         );
         return Position(path: neighbourPath, offset: offset);
+// >>>>>>> main
       }
+    }
+    return null;
+  }
+
+  Position? moveVertical(
+    EditorState editorState, {
+    bool upwards = true,
+    bool checkedParagraphStep = false,
+  }) {
+    final selection = editorState.selection;
+    final rects = editorState.selectionRects();
+    if (rects.isEmpty || selection == null) {
+      return null;
+    }
+
+    Offset? offsetSelectable =
+        offsetGet(selection.isBackward, rects, upwards: upwards);
+    if (offsetSelectable != null) {
+      final positionSelectable = getPosition(
+        offsetSelectable,
+        editorState.service.selectionService,
+        checkedParagraphStep: checkedParagraphStep,
+      );
+      if (positionSelectable != null) {
+        return positionSelectable;
+      }
+    }
+
+    final positionUpWords =
+        upWordsPosition(selection: selection, editorState: editorState);
+    if (positionUpWords != null) {
+      return positionUpWords;
     }
 
     // The cursor is already at the top or bottom of the document.
