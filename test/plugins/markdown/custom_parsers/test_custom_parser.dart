@@ -1,10 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_markdown_node_parser.dart';
 
-class TestCustomNodeParser extends CustomNodeParser {
+class TestCustomNodeParser extends CustomMarkdownNodeParser {
   final nodeRegex = RegExp(r'\[Custom Node\]\(.+?\)');
   @override
-  Node? transform(String input) {
+  Node? transform(DeltaMarkdownDecoder decoder, String input) {
     if (nodeRegex.hasMatch(input)) {
       return Node(type: 'custom node');
     }
