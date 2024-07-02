@@ -1,9 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/markdown_heading_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'test_helper.dart';
 
 void main() async {
   group('markdown_heading_parser.dart', () {
+    const parser = MarkdownHeadingParser();
     test('convert # to heading', () {
       final headingMarkdown = [
         '# Heading 1',
@@ -14,11 +16,8 @@ void main() async {
         '###### Heading 6',
       ];
 
-      const parser = MarkdownHeadingParser();
-
       for (var i = 0; i < 6; i++) {
-        final decoder = DeltaMarkdownDecoder();
-        final result = parser.transform(decoder, headingMarkdown[i]);
+        final result = parser.parseMarkdown(headingMarkdown[i]);
         expect(result!.delta!.toPlainText(), 'Heading ${i + 1}');
         expect(result.attributes[HeadingBlockKeys.level], i + 1);
         expect(result.type, HeadingBlockKeys.type);
@@ -26,31 +25,27 @@ void main() async {
     });
 
     test('if number of # > 7', () {
-      const parser = MarkdownHeadingParser();
-      final decoder = DeltaMarkdownDecoder();
-      final result = parser.transform(decoder, '####### Heading 7');
+      final result = parser.parseMarkdown('####### Heading 7');
       expect(result, null);
     });
 
     test('if no #', () {
-      const parser = MarkdownHeadingParser();
-      final decoder = DeltaMarkdownDecoder();
-      final result = parser.transform(decoder, 'Heading');
+      final result = parser.parseMarkdown('Heading');
       expect(result, null);
     });
 
     test('if no space after #', () {
-      const parser = MarkdownHeadingParser();
-      final decoder = DeltaMarkdownDecoder();
-      final result = parser.transform(decoder, '#Heading');
+      final result = parser.parseMarkdown('#Heading');
+      expect(result, null);
+    });
+
+    test('contains # but not at the beginning', () {
+      final result = parser.parseMarkdown('Heading #');
       expect(result, null);
     });
 
     test('with another markdown syntaxes', () {
-      const parser = MarkdownHeadingParser();
-      final decoder = DeltaMarkdownDecoder();
-      final result = parser.transform(
-        decoder,
+      final result = parser.parseMarkdown(
         '## 👋 **Welcome to** ***[AppFlowy Editor](appflowy.io)***',
       );
       expect(result!.toJson(), {
