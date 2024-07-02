@@ -21,6 +21,7 @@ void main() async {
         final result = parser.transform(decoder, headingMarkdown[i]);
         expect(result!.delta!.toPlainText(), 'Heading ${i + 1}');
         expect(result.attributes[HeadingBlockKeys.level], i + 1);
+        expect(result.type, HeadingBlockKeys.type);
       }
     });
 
@@ -43,6 +44,37 @@ void main() async {
       final decoder = DeltaMarkdownDecoder();
       final result = parser.transform(decoder, '#Heading');
       expect(result, null);
+    });
+
+    test('with another markdown syntaxes', () {
+      const parser = MarkdownHeadingParser();
+      final decoder = DeltaMarkdownDecoder();
+      final result = parser.transform(
+        decoder,
+        '## 👋 **Welcome to** ***[AppFlowy Editor](appflowy.io)***',
+      );
+      expect(result!.toJson(), {
+        'type': 'heading',
+        'data': {
+          'level': 2,
+          'delta': [
+            {'insert': '👋 '},
+            {
+              'insert': 'Welcome to',
+              'attributes': {'bold': true},
+            },
+            {'insert': ' '},
+            {
+              'insert': 'AppFlowy Editor',
+              'attributes': {
+                'italic': true,
+                'bold': true,
+                'href': 'appflowy.io',
+              },
+            }
+          ],
+        },
+      });
     });
   });
 }

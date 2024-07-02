@@ -822,7 +822,7 @@ void main(){
 
 ```hello world```
 ''';
-      final result = DocumentMarkdownDecoder().convert(markdown);
+      final result = markdownToDocument(markdown);
       final data = jsonDecode(example2);
       expect(result.toJson(), data);
     });

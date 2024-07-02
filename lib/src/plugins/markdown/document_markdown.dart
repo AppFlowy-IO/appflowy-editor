@@ -63,7 +63,7 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
   final List<NodeParser> encodeParsers;
   final List<CustomMarkdownNodeParser> customParsers;
   final List<md.InlineSyntax> customInlineSyntaxes;
-  // TODO: Add support for custom parsers
+
   @override
   Converter<String, Document> get decoder => DocumentMarkdownDecoder(
         customNodeParsers: customParsers,
