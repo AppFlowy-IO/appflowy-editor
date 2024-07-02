@@ -1,54 +1,63 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder_v2.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_heading_parser_v2.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'test_helper.dart';
 
 void main() async {
   group('markdown_heading_parser.dart', () {
-    const parser = MarkdownHeadingParser();
-    test('convert # to heading', () {
-      final headingMarkdown = [
-        '# Heading 1',
-        '## Heading 2',
-        '### Heading 3',
-        '#### Heading 4',
-        '##### Heading 5',
-        '###### Heading 6',
-      ];
+    final parser = DocumentMarkdownDecoderV2(
+      markdownElementParsers: [
+        const MarkdownHeadingParserV2(),
+      ],
+    );
 
+    test('convert # to heading', () {
+      const headingMarkdown = '''# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+      ''';
+
+      final result = parser.convert(headingMarkdown);
       for (var i = 0; i < 6; i++) {
-        final result = parser.parseMarkdown(headingMarkdown[i]);
-        expect(result!.delta!.toPlainText(), 'Heading ${i + 1}');
-        expect(result.attributes[HeadingBlockKeys.level], i + 1);
-        expect(result.type, HeadingBlockKeys.type);
+        expect(result.nodeAtPath([i])!.toJson(), {
+          'type': 'heading',
+          'data': {
+            'level': i + 1,
+            'delta': [
+              {'insert': 'Heading ${i + 1}'},
+            ],
+          },
+        });
       }
     });
 
     test('if number of # > 7', () {
-      final result = parser.parseMarkdown('####### Heading 7');
-      expect(result, null);
+      final result = parser.convert('####### Heading 7');
+      expect(result.root.children.isEmpty, true);
     });
 
     test('if no #', () {
-      final result = parser.parseMarkdown('Heading');
-      expect(result, null);
+      final result = parser.convert('Heading');
+      expect(result.root.children.isEmpty, true);
     });
 
     test('if no space after #', () {
-      final result = parser.parseMarkdown('#Heading');
-      expect(result, null);
+      final result = parser.convert('#Heading');
+      expect(result.root.children.isEmpty, true);
     });
 
     test('contains # but not at the beginning', () {
-      final result = parser.parseMarkdown('Heading #');
-      expect(result, null);
+      final result = parser.convert('Heading #');
+      expect(result.root.children.isEmpty, true);
     });
 
     test('with another markdown syntaxes', () {
-      final result = parser.parseMarkdown(
+      final result = parser.convert(
         '## 👋 **Welcome to** ***[AppFlowy Editor](appflowy.io)***',
       );
-      expect(result!.toJson(), {
+      expect(result.root.children[0].toJson(), {
         'type': 'heading',
         'data': {
           'level': 2,

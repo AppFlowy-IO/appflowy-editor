@@ -3,7 +3,7 @@ library delta_markdown;
 import 'dart:convert';
 
 import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder_v2.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
@@ -19,12 +19,14 @@ Document markdownToDocument(
 }) {
   return AppFlowyEditorMarkdownCodec(
     customInlineSyntaxes: customInlineSyntaxes,
+    customMarkdownElementParsers: [],
     customParsers: [
       ...customParsers,
 
       // built-in parsers
       const MarkdownHeadingParser(),
       const MarkdownTodoListParser(),
+      const MarkdownQuoteListParser(),
     ],
   ).decode(markdown);
 }
@@ -57,17 +59,25 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
   const AppFlowyEditorMarkdownCodec({
     this.customParsers = const [],
     this.customInlineSyntaxes = const [],
+    this.customMarkdownElementParsers = const [],
     this.encodeParsers = const [],
   });
 
   final List<NodeParser> encodeParsers;
   final List<CustomMarkdownNodeParser> customParsers;
+  final List<CustomMarkdownElementParser> customMarkdownElementParsers;
   final List<md.InlineSyntax> customInlineSyntaxes;
 
+  // @override
+  // Converter<String, Document> get decoder => DocumentMarkdownDecoder(
+  //       customNodeParsers: customParsers,
+  //       customInlineSyntaxes: customInlineSyntaxes,
+  //     );
+
   @override
-  Converter<String, Document> get decoder => DocumentMarkdownDecoder(
-        customNodeParsers: customParsers,
-        customInlineSyntaxes: customInlineSyntaxes,
+  Converter<String, Document> get decoder => DocumentMarkdownDecoderV2(
+        markdownElementParsers: customMarkdownElementParsers,
+        inlineSyntaxes: customInlineSyntaxes,
       );
 
   @override

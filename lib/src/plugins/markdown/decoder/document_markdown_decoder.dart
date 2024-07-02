@@ -166,11 +166,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       }
     }
 
-    if (line.startsWith('> ')) {
-      return quoteNode(
-        attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
-      );
-    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+    if (line.startsWith('- ') || line.startsWith('* ')) {
       return bulletedListNode(
         attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
       );
