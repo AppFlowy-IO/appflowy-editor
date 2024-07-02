@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -822,7 +821,7 @@ void main(){
 
 ```hello world```
 ''';
-      final result = DocumentMarkdownDecoder().convert(markdown);
+      final result = markdownToDocument(markdown);
       final data = jsonDecode(example2);
       expect(result.toJson(), data);
     });
@@ -940,7 +939,7 @@ Hello [AppFlowy Subpage](123456789abcd) **Hello** [AppFlowy Subpage](987654321ab
 
 # This is a test for custom **node** parser and custom **inline** syntaxes
 ''';
-      List<CustomNodeParser> customNodeParsers = [
+      List<CustomMarkdownNodeParser> customNodeParsers = [
         TestCustomNodeParser(),
       ];
       List<md.InlineSyntax> customInlineSyntaxes = [

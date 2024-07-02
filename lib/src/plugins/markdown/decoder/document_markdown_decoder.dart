@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -11,7 +10,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     this.customInlineSyntaxes = const [],
   });
 
-  final List<CustomNodeParser> customNodeParsers;
+  final List<CustomMarkdownNodeParser> customNodeParsers;
   final List<md.InlineSyntax> customInlineSyntaxes;
   final imageRegex = RegExp(r'^!\[[^\]]*\]\((.*?)\)');
   final assetRegex = RegExp(r'^\[[^\]]*\]\((.*?)\)');
@@ -159,40 +158,15 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     final decoder = DeltaMarkdownDecoder(
       customInlineSyntaxes: customInlineSyntaxes,
     );
+
     for (final parser in customNodeParsers) {
-      final node = parser.transform(line);
+      final node = parser.transform(decoder, line);
       if (node != null) {
         return node;
       }
     }
 
-    // Heading Style
-    if (line.startsWith('### ')) {
-      return headingNode(
-        level: 3,
-        attributes: {'delta': decoder.convert(line.substring(4)).toJson()},
-      );
-    } else if (line.startsWith('## ')) {
-      return headingNode(
-        level: 2,
-        attributes: {'delta': decoder.convert(line.substring(3)).toJson()},
-      );
-    } else if (line.startsWith('# ')) {
-      return headingNode(
-        level: 1,
-        attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
-      );
-    } else if (line.startsWith('- [ ] ')) {
-      return todoListNode(
-        checked: false,
-        attributes: {'delta': decoder.convert(line.substring(6)).toJson()},
-      );
-    } else if (line.startsWith('- [x] ')) {
-      return todoListNode(
-        checked: true,
-        attributes: {'delta': decoder.convert(line.substring(6)).toJson()},
-      );
-    } else if (line.startsWith('> ')) {
+    if (line.startsWith('> ')) {
       return quoteNode(
         attributes: {'delta': decoder.convert(line.substring(2)).toJson()},
       );
