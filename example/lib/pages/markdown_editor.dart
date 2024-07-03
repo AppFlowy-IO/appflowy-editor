@@ -40,6 +40,24 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(
+            child: AppFlowyEditor(
+              editorState: editorState,
+              editorStyle: const EditorStyle.desktop(
+                padding: EdgeInsets.zero,
+                textStyleConfiguration: TextStyleConfiguration(
+                  applyHeightToFirstAscent: true,
+                  applyHeightToLastDescent: true,
+                  text: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              editable: false,
+            ),
+          ),
+          const Divider(),
+          Expanded(
             child: TextFormField(
               controller: controller,
               maxLines: null,
@@ -47,13 +65,6 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 hintText: 'Type markdown here ...',
                 border: InputBorder.none,
               ),
-            ),
-          ),
-          const Divider(),
-          Expanded(
-            child: AppFlowyEditor(
-              editorState: editorState,
-              editorStyle: const EditorStyle.desktop(padding: EdgeInsets.zero),
             ),
           ),
         ],

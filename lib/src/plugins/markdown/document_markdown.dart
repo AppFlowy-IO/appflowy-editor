@@ -21,8 +21,10 @@ Document markdownToDocument(
   return AppFlowyEditorMarkdownCodec(
     customInlineSyntaxes: customInlineSyntaxes,
     customMarkdownElementParsers: [
+      const MarkdownParagraphParserV2(),
       const MarkdownHeadingParserV2(),
       const MarkdownUnorderedListParserV2(),
+      const MarkdownListItemParserV2(),
       const MarkdownBlockQuoteParserV2(),
       const MarkdownTodoListParserV2(),
     ],
