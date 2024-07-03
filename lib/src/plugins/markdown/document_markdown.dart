@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:appflowy_editor/src/core/document/document.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder_v2.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/parser.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
 import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -19,7 +20,12 @@ Document markdownToDocument(
 }) {
   return AppFlowyEditorMarkdownCodec(
     customInlineSyntaxes: customInlineSyntaxes,
-    customMarkdownElementParsers: [],
+    customMarkdownElementParsers: [
+      const MarkdownHeadingParserV2(),
+      const MarkdownUnorderedListParserV2(),
+      const MarkdownBlockQuoteParserV2(),
+      const MarkdownTodoListParserV2(),
+    ],
     customParsers: [
       ...customParsers,
 
