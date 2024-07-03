@@ -3,19 +3,22 @@ import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_
 import 'package:collection/collection.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownListItemParserV2 extends CustomMarkdownElementParser {
-  const MarkdownListItemParserV2();
+class MarkdownOrderedListItemParserV2 extends CustomMarkdownElementParser {
+  const MarkdownOrderedListItemParserV2();
 
   @override
   List<Node> transform(
     md.Node element,
     List<CustomMarkdownElementParser> parsers,
+    MarkdownListType listType,
   ) {
     if (element is! md.Element) {
       return [];
     }
 
-    if (element.tag != 'li' || element.attributes.isNotEmpty) {
+    if (element.tag != 'li' ||
+        element.attributes.isNotEmpty ||
+        listType != MarkdownListType.ordered) {
       return [];
     }
 
@@ -39,13 +42,14 @@ class MarkdownListItemParserV2 extends CustomMarkdownElementParser {
         : element.children!.slice(0, sliceIndex);
 
     return [
-      bulletedListNode(
+      numberedListNode(
         delta: deltaDecoder.convertNodes(
           deltaNodes,
         ),
         children: parseElementChildren(
           ec.reversed.toList(),
           parsers,
+          listType: MarkdownListType.ordered,
         ),
       ),
     ];

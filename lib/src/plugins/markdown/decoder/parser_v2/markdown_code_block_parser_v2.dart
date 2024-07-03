@@ -2,8 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_parser_extension.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownParagraphParserV2 extends CustomMarkdownElementParser {
-  const MarkdownParagraphParserV2();
+class MarkdownCodeBlockParserV2 extends CustomMarkdownElementParser {
+  const MarkdownCodeBlockParserV2();
 
   @override
   List<Node> transform(
@@ -15,23 +15,25 @@ class MarkdownParagraphParserV2 extends CustomMarkdownElementParser {
       return [];
     }
 
-    if (element.tag != 'p') {
+    if (element.tag != 'pre') {
       return [];
     }
 
-    // exclude the img tag
     final ec = element.children;
-    if (ec != null && ec.length == 1 && ec.first is md.Element) {
-      final e = ec.first as md.Element;
-      if (e.tag == 'img') {
-        return [];
-      }
+    if (ec == null || ec.isEmpty) {
+      return [];
+    }
+
+    final code = ec.first;
+    if (code is! md.Element || code.tag != 'code') {
+      return [];
     }
 
     final deltaDecoder = DeltaMarkdownDecoder();
+
     return [
       paragraphNode(
-        delta: deltaDecoder.convertNodes(element.children),
+        delta: deltaDecoder.convertNodes(code.children),
       ),
     ];
   }

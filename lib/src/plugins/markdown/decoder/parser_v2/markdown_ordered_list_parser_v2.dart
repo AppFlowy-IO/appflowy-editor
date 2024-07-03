@@ -2,8 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_parser_extension.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownBlockQuoteParserV2 extends CustomMarkdownElementParser {
-  const MarkdownBlockQuoteParserV2();
+class MarkdownOrderedListParserV2 extends CustomMarkdownElementParser {
+  const MarkdownOrderedListParserV2();
 
   @override
   List<Node> transform(
@@ -15,15 +15,15 @@ class MarkdownBlockQuoteParserV2 extends CustomMarkdownElementParser {
       return [];
     }
 
-    if (element.tag != 'blockquote') {
+    if (element.tag != 'ol') {
       return [];
     }
 
-    final deltaDecoder = DeltaMarkdownDecoder();
-    return [
-      quoteNode(
-        delta: deltaDecoder.convertNodes(element.children),
-      ),
-    ];
+    // flatten the list
+    return parseElementChildren(
+      element.children,
+      parsers,
+      listType: MarkdownListType.ordered,
+    );
   }
 }

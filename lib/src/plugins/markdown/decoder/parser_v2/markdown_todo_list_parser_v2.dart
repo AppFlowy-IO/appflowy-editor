@@ -9,6 +9,7 @@ class MarkdownTodoListParserV2 extends CustomMarkdownElementParser {
   List<Node> transform(
     md.Node element,
     List<CustomMarkdownElementParser> parsers,
+    MarkdownListType listType,
   ) {
     if (element is! md.Element) {
       return [];
@@ -46,7 +47,13 @@ class MarkdownTodoListParserV2 extends CustomMarkdownElementParser {
             ec.length - (last != null ? 1 : 0),
           ),
         ),
-        children: last != null ? parseElementChildren([last], parsers) : null,
+        children: last == null
+            ? null
+            : parseElementChildren(
+                [last],
+                parsers,
+                listType: MarkdownListType.unknown,
+              ),
       ),
     ];
   }

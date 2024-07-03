@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MarkdownEditor extends StatefulWidget {
   const MarkdownEditor({super.key});
@@ -10,7 +11,23 @@ class MarkdownEditor extends StatefulWidget {
 
 class _MarkdownEditorState extends State<MarkdownEditor> {
   EditorState editorState = EditorState.blank();
-  final TextEditingController controller = TextEditingController();
+  final controller = TextEditingController();
+  final editorStyle = EditorStyle.desktop(
+    padding: EdgeInsets.zero,
+    textStyleConfiguration: TextStyleConfiguration(
+      lineHeight: 1.2,
+      applyHeightToFirstAscent: true,
+      applyHeightToLastDescent: true,
+      text: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
+      code: GoogleFonts.architectsDaughter(),
+      bold: GoogleFonts.poppins(
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 
   @override
   void initState() {
@@ -35,28 +52,19 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
           color: Colors.white,
         ),
       ),
-      body: Column(
+      body: Row(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(
             child: AppFlowyEditor(
               editorState: editorState,
-              editorStyle: const EditorStyle.desktop(
-                padding: EdgeInsets.zero,
-                textStyleConfiguration: TextStyleConfiguration(
-                  applyHeightToFirstAscent: true,
-                  applyHeightToLastDescent: true,
-                  text: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+              editorStyle: editorStyle,
               editable: false,
             ),
           ),
-          const Divider(),
+          const VerticalDivider(),
           Expanded(
             child: TextFormField(
               controller: controller,

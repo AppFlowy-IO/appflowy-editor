@@ -75,7 +75,11 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.underline] = true;
     } else {
       element.attributes.forEach((key, value) {
-        _attributes[key] = jsonDecode(value);
+        try {
+          _attributes[key] = jsonDecode(value);
+        } catch (_) {
+          return;
+        }
       });
     }
   }
