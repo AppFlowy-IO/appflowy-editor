@@ -2,13 +2,13 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownTableListParserV2 extends CustomMarkdownElementParser {
+class MarkdownTableListParserV2 extends CustomMarkdownParser {
   const MarkdownTableListParserV2();
 
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownElementParser> parsers,
+    List<CustomMarkdownParser> parsers,
     MarkdownListType listType,
   ) {
     if (element is! md.Element) {

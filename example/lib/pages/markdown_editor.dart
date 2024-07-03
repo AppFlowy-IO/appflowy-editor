@@ -89,7 +89,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   void _onTextChanged() {
     final document = markdownToDocument(
       controller.text,
-      markdownElementParsers: [
+      markdownParsers: [
         const MarkdownCodeBlockParserV2(),
       ],
     );

@@ -1,21 +1,33 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:markdown/markdown.dart' as md;
 
-class MarkdownHeadingParser extends CustomMarkdownNodeParser {
-  const MarkdownHeadingParser();
+final _headingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
+class MarkdownHeadingParserV2 extends CustomMarkdownParser {
+  const MarkdownHeadingParserV2();
 
   @override
-  Node? transform(DeltaMarkdownDecoder decoder, String input) {
-    final match = RegExp(r'^(#{1,6})\s(.*)').firstMatch(input);
-    if (match == null) {
-      return null;
+  List<Node> transform(
+    md.Node element,
+    List<CustomMarkdownParser> parsers,
+    MarkdownListType listType,
+  ) {
+    if (element is! md.Element) {
+      return [];
     }
 
-    final level = match.group(1)!.length;
-    final text = match.group(2)!;
+    if (!_headingTags.contains(element.tag)) {
+      return [];
+    }
 
-    return headingNode(
-      level: level,
-      delta: decoder.convert(text),
-    );
+    final level = _headingTags.indexOf(element.tag) + 1;
+
+    final deltaDecoder = DeltaMarkdownDecoder();
+    return [
+      headingNode(
+        level: level,
+        delta: deltaDecoder.convertNodes(element.children),
+      ),
+    ];
   }
 }

@@ -1,31 +1,26 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:markdown/markdown.dart' as md;
 
-final _headingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
-class MarkdownHeadingParserV2 extends CustomMarkdownElementParser {
-  const MarkdownHeadingParserV2();
+class MarkdownBlockQuoteParserV2 extends CustomMarkdownParser {
+  const MarkdownBlockQuoteParserV2();
 
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownElementParser> parsers,
+    List<CustomMarkdownParser> parsers,
     MarkdownListType listType,
   ) {
     if (element is! md.Element) {
       return [];
     }
 
-    if (!_headingTags.contains(element.tag)) {
+    if (element.tag != 'blockquote') {
       return [];
     }
 
-    final level = _headingTags.indexOf(element.tag) + 1;
-
     final deltaDecoder = DeltaMarkdownDecoder();
     return [
-      headingNode(
-        level: level,
+      quoteNode(
         delta: deltaDecoder.convertNodes(element.children),
       ),
     ];

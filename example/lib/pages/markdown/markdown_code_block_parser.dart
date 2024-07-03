@@ -2,13 +2,13 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownCodeBlockParserV2 extends CustomMarkdownElementParser {
+class MarkdownCodeBlockParserV2 extends CustomMarkdownParser {
   const MarkdownCodeBlockParserV2();
 
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownElementParser> parsers,
+    List<CustomMarkdownParser> parsers,
     MarkdownListType listType,
   ) {
     if (element is! md.Element) {

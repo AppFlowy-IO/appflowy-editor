@@ -1,10 +1,10 @@
-import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder_v2.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_block_quote_parser_v2.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/markdown_block_quote_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   group('markdown_quote_list_parser.dart', () {
-    final parser = DocumentMarkdownDecoderV2(
+    final parser = DocumentMarkdownDecoder(
       markdownElementParsers: [
         const MarkdownBlockQuoteParserV2(),
       ],

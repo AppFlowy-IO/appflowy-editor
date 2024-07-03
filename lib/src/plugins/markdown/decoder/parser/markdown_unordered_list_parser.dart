@@ -1,13 +1,13 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:markdown/markdown.dart' as md;
 
-class MarkdownUnorderedListParserV2 extends CustomMarkdownElementParser {
+class MarkdownUnorderedListParserV2 extends CustomMarkdownParser {
   const MarkdownUnorderedListParserV2();
 
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownElementParser> parsers,
+    List<CustomMarkdownParser> parsers,
     MarkdownListType listType,
   ) {
     if (element is! md.Element) {
