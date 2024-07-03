@@ -10,5 +10,8 @@ abstract class CustomMarkdownNodeParser {
 abstract class CustomMarkdownElementParser {
   const CustomMarkdownElementParser();
 
-  Node? transform(md.Node element);
+  List<Node> transform(
+    md.Node element,
+    List<CustomMarkdownElementParser> parsers,
+  );
 }

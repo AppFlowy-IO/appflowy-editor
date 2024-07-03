@@ -33,6 +33,17 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     return _delta;
   }
 
+  Delta convertNodes(List<md.Node>? nodes) {
+    if (nodes == null) {
+      return Delta();
+    }
+
+    for (final node in nodes) {
+      node.accept(this);
+    }
+    return _delta;
+  }
+
   @override
   void visitElementAfter(md.Element element) {
     _removeAttributeKey(element);

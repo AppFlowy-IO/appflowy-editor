@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/underline_syntax.dart';
 import 'package:collection/collection.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -15,11 +16,22 @@ class DocumentMarkdownDecoderV2 extends Converter<String, Document> {
 
   @override
   Document convert(String input) {
-    final List<md.Node> mdNodes = md.Document().parse(input);
+    final List<md.Node> mdNodes = md.Document(
+      extensionSet: md.ExtensionSet.gitHubWeb,
+      inlineSyntaxes: [
+        ...inlineSyntaxes,
+        UnderlineInlineSyntax(),
+      ],
+    ).parse(input);
     final document = Document.blank();
 
-    final nodes =
-        mdNodes.map((mdNode) => _parseNode(mdNode)).whereNotNull().toList();
+    final nodes = mdNodes
+        .map((mdNode) => _parseNode(mdNode))
+        .toList()
+        .whereNotNull()
+        .toList()
+        .flattened;
+
     if (nodes.isNotEmpty) {
       document.insert([0], nodes);
     }
@@ -28,33 +40,20 @@ class DocumentMarkdownDecoderV2 extends Converter<String, Document> {
   }
 
   // handle node itself and its children
-  Node? _parseNode(md.Node mdNode) {
-    Node? node;
+  List<Node> _parseNode(md.Node mdNode) {
+    List<Node> nodes = [];
+
     for (final parser in markdownElementParsers) {
-      node = parser.transform(mdNode);
-      if (node != null) {
+      nodes = parser.transform(
+        mdNode,
+        markdownElementParsers,
+      );
+
+      if (nodes.isNotEmpty) {
         break;
       }
     }
 
-    if (node == null) {
-      return null;
-    }
-
-    // handle its children
-    if (mdNode is md.Element) {
-      final element = mdNode;
-      final children = element.children;
-      if (children != null && children.isNotEmpty) {
-        for (final child in children) {
-          final childNode = _parseNode(child);
-          if (childNode != null) {
-            node.insert(childNode);
-          }
-        }
-      }
-    }
-
-    return node;
+    return nodes;
   }
 }

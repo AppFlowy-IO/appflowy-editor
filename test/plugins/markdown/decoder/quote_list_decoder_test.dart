@@ -1,30 +1,35 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder_v2.dart';
+import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_block_quote_parser_v2.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'test_helper.dart';
 
 void main() async {
   group('markdown_quote_list_parser.dart', () {
+    final parser = DocumentMarkdownDecoderV2(
+      markdownElementParsers: [
+        const MarkdownBlockQuoteParserV2(),
+      ],
+    );
+
     test('convert > to quote ', () {
-      const markdown = '> Quote 1';
-      const parser = MarkdownQuoteListParser();
-      final result = parser.parseMarkdown(markdown);
-      expect(result!.type, QuoteBlockKeys.type);
-      expect(result.delta!.toPlainText(), 'Quote 1');
+      final result = parser.convert('> Quote 1');
+      expect(result.root.children[0].toJson(), {
+        'type': 'quote',
+        'data': {
+          'delta': [
+            {'insert': 'Quote 1'},
+          ],
+        },
+      });
     });
 
     test('if no >', () {
-      const markdown = 'Quote 1';
-      const parser = MarkdownQuoteListParser();
-      final result = parser.parseMarkdown(markdown);
-      expect(result, null);
+      final result = parser.convert('Quote 1');
+      expect(result.root.children.isEmpty, true);
     });
 
     test('if no space after >', () {
-      const markdown = '>Quote 1';
-      const parser = MarkdownQuoteListParser();
-      final result = parser.parseMarkdown(markdown);
-      expect(result, null);
+      final result = parser.convert('Quote 1');
+      expect(result.root.children.isEmpty, true);
     });
   });
 }
