@@ -25,6 +25,7 @@ Document markdownToDocument(
       ...markdownElementParsers,
       const MarkdownParagraphParserV2(),
       const MarkdownHeadingParserV2(),
+      const MarkdownTodoListParserV2(),
       const MarkdownUnorderedListParserV2(),
       const MarkdownOrderedListParserV2(),
       const MarkdownUnorderedListItemParserV2(),
