@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser_v2/markdown_parser_extension.dart';
+import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class MarkdownCodeBlockParserV2 extends CustomMarkdownElementParser {
@@ -29,10 +29,21 @@ class MarkdownCodeBlockParserV2 extends CustomMarkdownElementParser {
       return [];
     }
 
+    String? language;
+    if (code.attributes.containsKey('class')) {
+      final classes = code.attributes['class']!.split(' ');
+      final languageClass = classes.firstWhere(
+        (c) => c.startsWith('language-'),
+        orElse: () => '',
+      );
+      language = languageClass.substring('language-'.length);
+    }
+
     final deltaDecoder = DeltaMarkdownDecoder();
 
     return [
-      paragraphNode(
+      codeBlockNode(
+        language: language,
         delta: deltaDecoder.convertNodes(code.children),
       ),
     ];

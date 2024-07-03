@@ -1,5 +1,4 @@
 export 'markdown_block_quote_parser_v2.dart';
-export 'markdown_code_block_parser_v2.dart';
 export 'markdown_divider_parser_v2.dart';
 export 'markdown_heading_parser_v2.dart';
 export 'markdown_image_parser_v2.dart';

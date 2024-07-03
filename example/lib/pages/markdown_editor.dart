@@ -1,4 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
+import 'package:example/pages/markdown/markdown_code_block_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -61,7 +63,11 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: editorStyle,
-              editable: false,
+              editable: true,
+              blockComponentBuilders: {
+                ...standardBlockComponentBuilderMap,
+                CodeBlockKeys.type: CodeBlockComponentBuilder(),
+              },
             ),
           ),
           const VerticalDivider(),
@@ -81,7 +87,12 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   }
 
   void _onTextChanged() {
-    final document = markdownToDocument(controller.text);
+    final document = markdownToDocument(
+      controller.text,
+      markdownElementParsers: [
+        const MarkdownCodeBlockParserV2(),
+      ],
+    );
     setState(() {
       editorState = EditorState(document: document);
     });

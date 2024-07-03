@@ -15,12 +15,14 @@ import 'package:markdown/markdown.dart' as md;
 /// [customParsers] is a list of custom parsers that will be used to parse the markdown.
 Document markdownToDocument(
   String markdown, {
+  List<CustomMarkdownElementParser> markdownElementParsers = const [],
   List<CustomMarkdownNodeParser> customParsers = const [],
   List<md.InlineSyntax> customInlineSyntaxes = const [],
 }) {
   return AppFlowyEditorMarkdownCodec(
     customInlineSyntaxes: customInlineSyntaxes,
     customMarkdownElementParsers: [
+      ...markdownElementParsers,
       const MarkdownParagraphParserV2(),
       const MarkdownHeadingParserV2(),
       const MarkdownUnorderedListParserV2(),
@@ -29,7 +31,6 @@ Document markdownToDocument(
       const MarkdownOrderedListItemParserV2(),
       const MarkdownBlockQuoteParserV2(),
       const MarkdownTodoListParserV2(),
-      const MarkdownCodeBlockParserV2(),
       const MarkdownDividerParserV2(),
       const MarkdownImageParserV2(),
     ],
