@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/underline_syntax.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
@@ -57,7 +56,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     }
 
     if (nodes.isEmpty) {
-      debugPrint('empty result from node: $mdNode');
+      Log.editor.debug(
+        'empty result from node: $mdNode, text: ${mdNode.textContent}',
+      );
     }
 
     return nodes;

@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:markdown/markdown.dart' as md;
 
 enum MarkdownListType {
@@ -33,8 +32,6 @@ List<Node> parseElementChildren(
       }
     }
   }
-
-  debugPrint('children: $children');
 
   return children;
 }
