@@ -30,7 +30,7 @@ Document markdownToDocument(
       const MarkdownUnorderedListItemParserV2(),
       const MarkdownOrderedListItemParserV2(),
       const MarkdownBlockQuoteParserV2(),
-      const MarkdownTodoListParserV2(),
+      const MarkdownTableListParserV2(),
       const MarkdownDividerParserV2(),
       const MarkdownImageParserV2(),
     ],

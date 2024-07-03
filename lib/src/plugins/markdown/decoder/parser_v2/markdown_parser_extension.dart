@@ -11,7 +11,7 @@ enum MarkdownListType {
 List<Node> parseElementChildren(
   List<md.Node>? elementChildren,
   List<CustomMarkdownElementParser> parsers, {
-  required MarkdownListType listType,
+  MarkdownListType listType = MarkdownListType.unknown,
 }) {
   final List<Node> children = [];
 
