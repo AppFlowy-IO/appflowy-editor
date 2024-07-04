@@ -476,7 +476,9 @@ class HTMLTags {
   static const h1 = 'h1';
   static const h2 = 'h2';
   static const h3 = 'h3';
-  static const br = 'br';
+  static const h4 = 'h4';
+  static const h5 = 'h5';
+  static const h6 = 'h6';
   static const orderedList = 'ol';
   static const unorderedList = 'ul';
   static const list = 'li';
@@ -491,6 +493,7 @@ class HTMLTags {
   static const del = 'del';
   static const strong = 'strong';
   static const checkbox = 'input';
+  static const br = 'br';
   static const span = 'span';
   static const code = 'code';
   static const blockQuote = 'blockquote';
@@ -523,6 +526,9 @@ class HTMLTags {
     HTMLTags.h1,
     HTMLTags.h2,
     HTMLTags.h3,
+    HTMLTags.h4,
+    HTMLTags.h5,
+    HTMLTags.h6,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
     HTMLTags.div,

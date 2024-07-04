@@ -12,3 +12,4 @@ export 'markdown/encoder/document_markdown_encoder.dart';
 export 'markdown/encoder/parser/parser.dart';
 export 'quill_delta/quill_delta_encoder.dart';
 export 'word_count/word_counter_service.dart';
+export 'pdf/html_to_pdf_encoder.dart';
