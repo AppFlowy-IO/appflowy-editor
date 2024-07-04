@@ -15,7 +15,10 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   EditorState editorState = EditorState.blank();
   final controller = TextEditingController();
   final editorStyle = EditorStyle.desktop(
-    padding: EdgeInsets.zero,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    cursorColor: Colors.transparent,
+    cursorWidth: 0,
+    selectionColor: Colors.grey.withOpacity(0.3),
     textStyleConfiguration: TextStyleConfiguration(
       lineHeight: 1.2,
       applyHeightToFirstAscent: true,
@@ -63,7 +66,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: editorStyle,
-              editable: true,
+              editable: false,
               blockComponentBuilders: {
                 ...standardBlockComponentBuilderMap,
                 CodeBlockKeys.type: CodeBlockComponentBuilder(),
