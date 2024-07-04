@@ -11,6 +11,8 @@ List<Node> parseElementChildren(
   List<md.Node>? elementChildren,
   List<CustomMarkdownParser> parsers, {
   MarkdownListType listType = MarkdownListType.unknown,
+  // in case of ordered list, the start number of the list items may not start from 1
+  int? startNumber,
 }) {
   final List<Node> children = [];
 
@@ -23,7 +25,8 @@ List<Node> parseElementChildren(
       final nodes = parser.transform(
         child,
         parsers,
-        listType,
+        listType: listType,
+        startNumber: startNumber,
       );
 
       if (nodes.isNotEmpty) {
