@@ -111,7 +111,7 @@ void showLinkMenu(
     },
   ).build();
 
-  Overlay.of(context).insert(overlay!);
+  Overlay.of(context, rootOverlay: true).insert(overlay!);
 }
 
 // get a proper position for link menu
@@ -132,6 +132,7 @@ void showLinkMenu(
     _menuWidth,
     rect.left,
     rect.right,
+    true,
   );
 
   final editorHeight = editorState.renderBox!.size.height;
@@ -142,6 +143,7 @@ void showLinkMenu(
     linkText != null ? _hasTextHeight : _noTextHeight,
     rect.top,
     rect.bottom,
+    false,
   );
 
   return (left, top, right, bottom);
@@ -156,11 +158,14 @@ void showLinkMenu(
   int menuLength,
   double rectStart,
   double rectEnd,
+  bool isHorizontal,
 ) {
   final threshold = editorOffsetD + editorLength - _menuWidth;
   double? start, end;
   if (offsetD > threshold) {
     end = editorOffsetD + editorLength - rectStart - 5;
+  } else if (isHorizontal) {
+    start = rectStart;
   } else {
     start = rectEnd + 5;
   }

@@ -1,6 +1,6 @@
 name: appflowy_editor
 description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
-version: 2.3.0
+version: 3.0.0
 homepage: https://github.com/AppFlowy-IO/appflowy-editor
 
 topics:
@@ -18,45 +18,44 @@ platforms:
   web:
 
 environment:
-  sdk: ">=3.1.5 <4.0.0"
-  flutter: ">=3.13.0"
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  rich_clipboard: ^1.0.0
-  html: ^0.15.0
-  flutter_svg: ^2.0.6
-  provider: ^6.0.5
-  url_launcher: ^6.1.11
-  logging: ^1.2.0
-  intl_utils: ^2.8.2
-  intl: ^0.18.0
-  markdown: ^7.2.1
+  collection: ^1.18.0
+  device_info_plus: ^10.1.0
+  diff_match_patch: ^0.4.1
+  file_picker: ^8.0.2
   flutter_localizations:
     sdk: flutter
-  tuple: ^2.0.1
-  collection: ^1.17.0
-  nanoid: ^1.0.0
-  visibility_detector: ^0.4.0+2
-  file_picker: ^6.1.1
-  path: ^1.8.3
-  path_provider: ^2.0.5
-  diff_match_patch: ^0.4.1
-  string_validator: ^1.0.0
-  universal_html: ^2.2.4
+  flutter_svg: ^2.0.6
+  html: ^0.15.0
+  intl: ^0.19.0
+  intl_utils: ^2.8.2
   keyboard_height_plugin: ^0.0.4
+  logging: ^1.2.0
+  markdown: ^7.2.1
+  nanoid: ^1.0.0
   numerus: ^2.1.2
-  device_info_plus: ^9.1.1
+  path: ^1.8.0
+  path_provider: ^2.0.5
+  provider: ^6.0.5
+  string_validator: ^1.0.0
+  tuple: ^2.0.1
+  universal_html: ^2.2.4
+  url_launcher: ^6.1.11
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
-  leak_tracker: 9.0.16
+  leak_tracker: ^10.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

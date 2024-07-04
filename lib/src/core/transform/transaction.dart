@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// A [Transaction] has a list of [Operation] objects that will be applied
@@ -17,6 +15,7 @@ class Transaction {
 
   /// The operations to be applied.
   final List<Operation> _operations = [];
+
   List<Operation> get operations {
     if (markNeedsComposing) {
       // compose the delta operations
@@ -205,10 +204,10 @@ extension TextTransaction on Transaction {
       return;
     }
 
-    assert(
-      index <= delta.length && index >= 0,
-      'The index($index) is out of range or negative.',
-    );
+    if (index < 0 || index > delta.length) {
+      Log.editor.info('The index($index) is out of range or negative.');
+      return;
+    }
 
     final newAttributes = attributes ?? delta.sliceAttributes(index) ?? {};
 
@@ -345,7 +344,8 @@ extension TextTransaction on Transaction {
     }
     var newAttributes = attributes;
     if (index != 0 && attributes == null) {
-      newAttributes = delta.slice(max(index - 1, 0), index).first.attributes;
+      newAttributes = attributes ?? delta.sliceAttributes(index);
+
       if (newAttributes == null) {
         final slicedDelta = delta.slice(index, index + length);
         if (slicedDelta.isNotEmpty) {
@@ -368,7 +368,6 @@ extension TextTransaction on Transaction {
     );
   }
 
-  // TODO: refactor this code
   void replaceTexts(
     List<Node> nodes,
     Selection selection,

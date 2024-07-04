@@ -48,7 +48,7 @@ void main() async {
       );
       await editor.updateSelection(selection);
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
       // the first node should be deleted.
@@ -220,5 +220,5 @@ Future<void> _selectNodeAtPathAndDelete(TestableEditor editor) async {
   );
   await editor.updateSelection(selection);
 
-  await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+  await editor.pressKey(key: LogicalKeyboardKey.backspace);
 }

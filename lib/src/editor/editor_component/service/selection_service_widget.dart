@@ -10,14 +10,14 @@ class SelectionServiceWidget extends StatefulWidget {
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     this.showMagnifier = true,
-    required this.contextMenuItems,
+    this.contextMenuItems,
     required this.child,
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
-  final List<List<ContextMenuItem>> contextMenuItems;
+  final List<List<ContextMenuItem>>? contextMenuItems;
 
   /// Show the magnifier or not.
   ///

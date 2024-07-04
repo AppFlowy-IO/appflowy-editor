@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent deleteCommand = CommandShortcutEvent(
   key: 'Delete Key',
+  getDescription: () => AppFlowyEditorL10n.current.cmdDeleteRight,
   command: 'delete',
   handler: _deleteCommandHandler,
 );

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent openLinksCommand = CommandShortcutEvent(
   key: 'open links',
+  getDescription: () => AppFlowyEditorL10n.current.cmdOpenLinks,
   command: 'alt+shift+enter',
   handler: _openLinksHandler,
 );

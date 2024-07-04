@@ -14,9 +14,11 @@ class KeyboardServiceWidget extends StatefulWidget {
     this.commandShortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.focusNode,
+    this.contentInsertionConfiguration,
     required this.child,
   });
 
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
   final FocusNode? focusNode;
   final List<CommandShortcutEvent> commandShortcutEvents;
   final List<CharacterShortcutEvent> characterShortcutEvents;
@@ -86,6 +88,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         point,
         editorState,
       ),
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
     );
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
@@ -131,9 +134,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   @override
-  KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
-
-  @override
   Widget build(BuildContext context) {
     Widget child = widget.child;
     // if there is no command shortcut event, we don't need to handle hardware keyboard.
@@ -142,7 +142,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       // the Focus widget is used to handle hardware keyboard.
       child = Focus(
         focusNode: focusNode,
-        onKey: _onKey,
+        onKeyEvent: _onKeyEvent,
         child: child,
       );
     }
@@ -162,8 +162,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   /// handle hardware keyboard
-  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
-    if (event is! RawKeyDownEvent || !enableShortcuts) {
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
+        !enableShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
@@ -236,6 +237,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
           keyboardAppearance: Theme.of(context).brightness,
+          allowedMimeTypes:
+              widget.contentInsertionConfiguration?.allowedMimeTypes ?? [],
         ),
       );
       // disable shortcuts when the IME active

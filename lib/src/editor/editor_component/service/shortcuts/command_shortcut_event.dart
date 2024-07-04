@@ -11,7 +11,7 @@ class CommandShortcutEvent {
     required this.key,
     required this.command,
     required this.handler,
-    getDescription,
+    required String Function()? getDescription,
     String? windowsCommand,
     String? macOSCommand,
     String? linuxCommand,
@@ -55,7 +55,17 @@ class CommandShortcutEvent {
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
 
-  String get description => _getDescription != null ? _getDescription!() : key;
+  String? get description => _getDescription != null ? _getDescription() : null;
+
+  /// This _completely_ clears the command, ensuring that
+  /// it cannot be triggered until it is updated again.
+  ///
+  /// Update it using [updateCommand].
+  ///
+  void clearCommand() {
+    _keybindings.clear();
+    command = '';
+  }
 
   void updateCommand({
     String? command,
@@ -91,15 +101,12 @@ class CommandShortcutEvent {
     }
 
     if (matched) {
-      _keybindings = this
-          .command
-          .split(',')
-          .map((e) => Keybinding.parse(e))
-          .toList(growable: false);
+      _keybindings =
+          this.command.split(',').map((e) => Keybinding.parse(e)).toList();
     }
   }
 
-  bool canRespondToRawKeyEvent(RawKeyEvent event) {
+  bool canRespondToRawKeyEvent(KeyEvent event) {
     return keybindings.containsKeyEvent(event);
   }
 
@@ -109,11 +116,13 @@ class CommandShortcutEvent {
 
   CommandShortcutEvent copyWith({
     String? key,
+    String Function()? getDescription,
     String? command,
     CommandShortcutEventHandler? handler,
   }) {
     return CommandShortcutEvent(
       key: key ?? this.key,
+      getDescription: getDescription ?? _getDescription,
       command: command ?? this.command,
       handler: handler ?? this.handler,
     );

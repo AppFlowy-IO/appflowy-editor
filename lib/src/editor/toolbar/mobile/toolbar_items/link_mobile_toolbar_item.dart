@@ -123,20 +123,20 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                       widget.onCancel.call();
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(
                         style.backgroundColor,
                       ),
-                      foregroundColor: MaterialStateProperty.all(
+                      foregroundColor: WidgetStateProperty.all(
                         style.primaryColor,
                       ),
-                      elevation: MaterialStateProperty.all(0),
-                      shape: MaterialStateProperty.all(
+                      elevation: WidgetStateProperty.all(0),
+                      shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(style.borderRadius),
                         ),
                       ),
-                      side: MaterialStateBorderSide.resolveWith(
+                      side: WidgetStateBorderSide.resolveWith(
                         (states) => BorderSide(color: style.outlineColor),
                       ),
                     ),
@@ -154,14 +154,14 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                           ?.closeKeyboard();
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(
                         style.primaryColor,
                       ),
-                      foregroundColor: MaterialStateProperty.all(
+                      foregroundColor: WidgetStateProperty.all(
                         style.onPrimaryColor,
                       ),
-                      elevation: MaterialStateProperty.all(0),
-                      shape: MaterialStateProperty.all(
+                      elevation: WidgetStateProperty.all(0),
+                      shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(style.borderRadius),

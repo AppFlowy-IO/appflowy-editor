@@ -10,45 +10,17 @@ Future<void> onInsert(
 ) async {
   Log.input.debug('onInsert: $insertion');
 
-  final oldText = insertion.oldText;
   final textInserted = insertion.textInserted;
 
-  // record the location of the '\' character
-  // 1 means [textInserted] is '\'
-  // 2 means the last character of [oldText] is '\'
-  // 0 means no '\' character, execute the shortcut event
-  var backSlashLocation = 0;
-// exclude the wrapped style shortcut events
-// like _abc_, **abc**,__abc__ ~~abc~~, `abc`
-  if (oldText.isNotEmpty &&
-      oldText[oldText.length - 1] == '\\' &&
-      (textInserted == '_' ||
-          textInserted == '*' ||
-          textInserted == '~' ||
-          textInserted == '`')) {
-    backSlashLocation = 1;
-// exclude space enabled shortcut events
-// like - abc, " abc, > abc, # abc, -[] abc
-  } else if (oldText.length >= 2 &&
-      oldText[oldText.length - 2] == '\\' &&
-      (oldText[oldText.length - 1] == '-' ||
-          oldText[oldText.length - 1] == '"' ||
-          oldText[oldText.length - 1] == '>' ||
-          oldText[oldText.length - 1] == '#' ||
-          oldText[oldText.length - 1] == ']') &&
-      textInserted == ' ') {
-    backSlashLocation = 2;
-  } else {
-    // character shortcut events
-    final execution = await executeCharacterShortcutEvent(
-      editorState,
-      textInserted,
-      characterShortcutEvents,
-    );
+  // character shortcut events
+  final execution = await executeCharacterShortcutEvent(
+    editorState,
+    textInserted,
+    characterShortcutEvents,
+  );
 
-    if (execution) {
-      return;
-    }
+  if (execution) {
+    return;
   }
 
   var selection = editorState.selection;
@@ -82,23 +54,16 @@ Future<void> onInsert(
     );
   }
 
-// delete the '\' character if the shortcut event is ignored.
-  if (backSlashLocation > 0) {
-    final transaction = editorState.transaction
-      ..deleteText(
-        node,
-        selection.startIndex - backSlashLocation,
-        1,
-      )
-      ..insertText(
-        node,
-        selection.startIndex - 1,
-        textInserted,
-        toggledAttributes: editorState.toggledStyle,
-      );
-
-    return editorState.apply(transaction);
-  }
+  final afterSelection = Selection(
+    start: Position(
+      path: node.path,
+      offset: insertion.selection.baseOffset,
+    ),
+    end: Position(
+      path: node.path,
+      offset: insertion.selection.extentOffset,
+    ),
+  );
 
   final transaction = editorState.transaction
     ..insertText(
@@ -106,6 +71,7 @@ Future<void> onInsert(
       selection.startIndex,
       textInserted,
       toggledAttributes: editorState.toggledStyle,
-    );
+    )
+    ..afterSelection = afterSelection;
   return editorState.apply(transaction);
 }

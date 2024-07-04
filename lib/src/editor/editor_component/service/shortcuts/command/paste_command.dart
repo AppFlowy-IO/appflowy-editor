@@ -15,6 +15,7 @@ final List<CommandShortcutEvent> pasteCommands = [
 ///
 final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
   key: 'paste the content',
+  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContent,
   command: 'ctrl+v',
   macOSCommand: 'cmd+v',
   handler: _pasteCommandHandler,
@@ -23,6 +24,7 @@ final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
 final CommandShortcutEvent pasteTextWithoutFormattingCommand =
     CommandShortcutEvent(
   key: 'paste the content as plain text',
+  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
   command: 'ctrl+shift+v',
   macOSCommand: 'cmd+shift+v',
   handler: _pasteTextWithoutFormattingCommandHandler,
@@ -118,25 +120,37 @@ extension on EditorState {
             ..trimRight(),
         )
         .map((paragraph) {
-          // parse the url content
-          var attributes = Attributes();
-
-          // FIXME this is converting the whole line into a link
-          // https://github.com/AppFlowy-IO/appflowy-editor/issues/693
+          Delta delta = Delta();
           if (_hrefRegex.hasMatch(paragraph)) {
-            attributes[AppFlowyRichTextKeys.href] = paragraph;
-          }
+            final firstMatch = _hrefRegex.firstMatch(paragraph);
+            if (firstMatch != null) {
+              int startPos = firstMatch.start;
+              int endPos = firstMatch.end;
+              final String? url = firstMatch.group(0);
+              if (url != null) {
+                /// insert the text before the link
+                if (startPos > 0) {
+                  delta.insert(paragraph.substring(0, startPos));
+                }
 
-          // merge attributes of wrapping node
-          if (selectionAttributes != null) {
-            attributes = attributes..addAll(selectionAttributes);
-          }
+                /// insert the link
+                delta.insert(
+                  paragraph.substring(startPos, endPos),
+                  attributes: {AppFlowyRichTextKeys.href: url},
+                );
 
-          return Delta()..insert(paragraph, attributes: attributes);
+                /// insert the text after the link
+                if (endPos < paragraph.length) {
+                  delta.insert(paragraph.substring(endPos));
+                }
+              }
+            }
+          } else {
+            delta.insert(paragraph, attributes: selectionAttributes);
+          }
+          return delta;
         })
-        .map(
-          (delta) => paragraphNode(delta: delta),
-        )
+        .map((paragraph) => paragraphNode(delta: paragraph))
         .toList();
 
     if (nodes.isEmpty) {

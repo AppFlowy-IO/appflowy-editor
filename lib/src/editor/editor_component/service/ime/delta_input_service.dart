@@ -56,13 +56,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         configuration,
-        // TextInputConfiguration(
-        //   enableDeltaModel: true,
-        //   inputType: TextInputType.multiline,
-        //   textCapitalization: TextCapitalization.sentences,
-        //   inputAction: TextInputAction.newline,
-        //   keyboardAppearance: Theme.of(context).brightness,
-        // ),
       );
     }
 
@@ -92,8 +85,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     apply(textEditingDeltas);
   }
 
-  // TODO: support IME in linux / windows / ios / android
-  // Only support macOS now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
     _textInputConnection

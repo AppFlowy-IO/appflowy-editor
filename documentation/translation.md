@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
   void toggleLocale() {
     final locale = Intl.getCurrentLocale();
-    if (locale == 'en_US') {
+        if (locale.startsWith('en')) {
       // Change to the locale you want to test
       AppFlowyEditorLocalizations.load(const Locale('pt', 'BR')); 
     } else {

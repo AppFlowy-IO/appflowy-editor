@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -13,6 +12,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     required super.onReplace,
     required super.onNonTextUpdate,
     required super.onPerformAction,
+    super.contentInsertionConfiguration,
     super.onFloatingCursor,
   });
 
@@ -63,7 +63,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     TextInputConfiguration configuration,
   ) {
     final formattedValue = textEditingValue.format();
-    if (currentTextEditingValue == formattedValue) {
+    if (!formattedValue.isValid() ||
+        currentTextEditingValue == formattedValue) {
       return;
     }
 
@@ -118,8 +119,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     _textInputConnection = null;
   }
 
-  // TODO: support IME in linux / ios / android
-  // Only verify in macOS and Windows now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
     _textInputConnection
@@ -171,32 +170,27 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
-  void insertContent(KeyboardInsertedContent content) {}
+  void insertContent(KeyboardInsertedContent content) {
+    assert(
+      contentInsertionConfiguration?.allowedMimeTypes
+              .contains(content.mimeType) ??
+          false,
+    );
+    contentInsertionConfiguration?.onContentInserted.call(content);
+  }
 
   void _updateComposing(TextEditingDelta delta) {
-    if (delta is! TextEditingDeltaNonTextUpdate) {
-      if (composingTextRange != null &&
-          composingTextRange!.start != -1 &&
-          delta.composing.end != -1) {
-        composingTextRange = TextRange(
-          start: composingTextRange!.start,
-          end: delta.composing.end,
-        );
-      } else {
-        composingTextRange = delta.composing;
-      }
-    }
-
-    if ((PlatformExtension.isWindows ||
-            PlatformExtension.isLinux ||
-            PlatformExtension.isMacOS) &&
-        delta is TextEditingDeltaNonTextUpdate) {
+    if (delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
-    }
-
-    // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
-    if (Platform.isMacOS && (composingTextRange?.isCollapsed ?? false)) {
-      composingTextRange = TextRange.empty;
+    } else {
+      composingTextRange = composingTextRange != null &&
+              composingTextRange!.start != -1 &&
+              delta.composing.end != -1
+          ? TextRange(
+              start: composingTextRange!.start,
+              end: delta.composing.end,
+            )
+          : delta.composing;
     }
   }
 }
@@ -205,6 +199,16 @@ const String _whitespace = ' ';
 const int _len = _whitespace.length;
 
 extension on TextEditingValue {
+  bool isValid() {
+    if (selection.baseOffset < 0 ||
+        selection.extentOffset < 0 ||
+        selection.baseOffset > text.length ||
+        selection.extentOffset > text.length) {
+      return false;
+    }
+    return true;
+  }
+
   // The IME will not report the backspace button if the cursor is at the beginning of the text.
   // Therefore, we need to add a transparent symbol at the start to ensure that we can capture the backspace event.
   TextEditingValue format() {

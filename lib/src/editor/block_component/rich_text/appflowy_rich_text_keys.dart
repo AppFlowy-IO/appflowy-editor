@@ -4,12 +4,14 @@ class AppFlowyRichTextKeys {
   static String underline = 'underline';
   static String strikethrough = 'strikethrough';
   static String textColor = 'font_color';
-  static String highlightColor = 'bg_color';
+  static String backgroundColor = 'bg_color';
   static String findBackgroundColor = 'find_bg_color';
   static String code = 'code';
   static String href = 'href';
   static String fontFamily = 'font_family';
   static String fontSize = 'font_size';
+  static String autoComplete = 'auto_complete';
+  static String transparent = 'transparent';
 
   static List<String> supportSliced = [
     bold,
@@ -17,7 +19,8 @@ class AppFlowyRichTextKeys {
     underline,
     strikethrough,
     textColor,
-    highlightColor,
+    backgroundColor,
+    code,
   ];
 
   // The values supported toggled even if the selection is collapsed.
@@ -27,5 +30,8 @@ class AppFlowyRichTextKeys {
     underline,
     strikethrough,
     code,
+    fontFamily,
+    textColor,
+    backgroundColor,
   ];
 }

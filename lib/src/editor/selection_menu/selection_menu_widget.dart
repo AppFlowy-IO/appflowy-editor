@@ -73,7 +73,7 @@ class SelectionMenuItem {
   }
 
   /// Creates a selection menu entry for inserting a [Node].
-  /// [name] and [iconData] define the appearance within the selection menu.
+  /// [getName] and [iconData] define the appearance within the selection menu.
   ///
   /// The insert position is determined by the result of [replace] and
   /// [insertBefore]
@@ -84,7 +84,7 @@ class SelectionMenuItem {
   /// [updateSelection] can be used to update the selection after the node
   /// has been inserted.
   factory SelectionMenuItem.node({
-    required String name,
+    required String Function() getName,
     required IconData iconData,
     required List<String> keywords,
     required Node Function(EditorState editorState, BuildContext context)
@@ -99,7 +99,7 @@ class SelectionMenuItem {
     )? updateSelection,
   }) {
     return SelectionMenuItem(
-      getName: () => name,
+      getName: getName,
       icon: (editorState, onSelected, style) => Icon(
         iconData,
         color: onSelected
@@ -288,7 +288,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
-      onKey: _onKey,
+      onKeyEvent: _onKeyEvent,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: widget.selectionMenuStyle.selectionMenuBackgroundColor,
@@ -382,9 +382,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles arrow keys to switch selected items
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
-  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     Log.keyboard.debug('slash command, on key $event');
-    if (event is! RawKeyDownEvent) {
+
+    if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
     }
 
