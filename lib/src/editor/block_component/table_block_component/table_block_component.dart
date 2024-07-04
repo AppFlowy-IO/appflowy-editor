@@ -36,7 +36,7 @@ class TableStyle {
   final Color borderHoverColor;
 
   const TableStyle({
-    this.colWidth = 80,
+    this.colWidth = 160,
     this.rowHeight = 40,
     this.colMinimumWidth = 40,
     this.borderWidth = 2,
@@ -50,7 +50,7 @@ class TableStyle {
 class TableDefaults {
   const TableDefaults._();
 
-  static double colWidth = 80.0;
+  static double colWidth = 160.0;
 
   static double rowHeight = 40.0;
 
