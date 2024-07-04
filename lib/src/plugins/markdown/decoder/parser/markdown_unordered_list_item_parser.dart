@@ -8,9 +8,10 @@ class MarkdownUnorderedListItemParserV2 extends CustomMarkdownParser {
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownParser> parsers,
-    MarkdownListType listType,
-  ) {
+    List<CustomMarkdownParser> parsers, {
+    MarkdownListType listType = MarkdownListType.unknown,
+    int? startNumber,
+  }) {
     if (element is! md.Element) {
       return [];
     }
@@ -25,7 +26,7 @@ class MarkdownUnorderedListItemParserV2 extends CustomMarkdownParser {
     int sliceIndex = -1;
     if (element.children != null) {
       for (final child in element.children!.reversed) {
-        if (child is md.Element) {
+        if (child is md.Element && (child.tag == 'ol' || child.tag == 'ul')) {
           ec.add(child);
         } else {
           break;

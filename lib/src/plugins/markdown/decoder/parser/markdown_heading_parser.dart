@@ -9,9 +9,10 @@ class MarkdownHeadingParserV2 extends CustomMarkdownParser {
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownParser> parsers,
-    MarkdownListType listType,
-  ) {
+    List<CustomMarkdownParser> parsers, {
+    MarkdownListType listType = MarkdownListType.unknown,
+    int? startNumber,
+  }) {
     if (element is! md.Element) {
       return [];
     }
