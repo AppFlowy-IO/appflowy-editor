@@ -4,6 +4,8 @@ export 'html/html_document.dart';
 export 'html/html_document_decoder.dart';
 export 'html/html_document_encoder.dart';
 export 'markdown/decoder/delta_markdown_decoder.dart';
+export 'markdown/decoder/document_markdown_decoder.dart';
+export 'markdown/decoder/parser/parser.dart';
 export 'markdown/document_markdown.dart';
 export 'markdown/encoder/delta_markdown_encoder.dart';
 export 'markdown/encoder/document_markdown_encoder.dart';

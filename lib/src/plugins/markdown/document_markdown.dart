@@ -2,11 +2,7 @@ library delta_markdown;
 
 import 'dart:convert';
 
-import 'package:appflowy_editor/src/core/document/document.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/document_markdown_decoder.dart';
-import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/document_markdown_encoder.dart';
-import 'package:appflowy_editor/src/plugins/markdown/encoder/parser/parser.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:markdown/markdown.dart' as md;
 
 /// Converts a markdown to [Document].
@@ -14,12 +10,25 @@ import 'package:markdown/markdown.dart' as md;
 /// [customParsers] is a list of custom parsers that will be used to parse the markdown.
 Document markdownToDocument(
   String markdown, {
-  List<CustomNodeParser> customParsers = const [],
-  List<md.InlineSyntax> customInlineSyntaxes = const [],
+  List<CustomMarkdownParser> markdownParsers = const [],
+  List<md.InlineSyntax> inlineSyntaxes = const [],
 }) {
   return AppFlowyEditorMarkdownCodec(
-    customInlineSyntaxes: customInlineSyntaxes,
-    customParsers: customParsers,
+    markdownInlineSyntaxes: inlineSyntaxes,
+    markdownParsers: [
+      ...markdownParsers,
+      const MarkdownParagraphParserV2(),
+      const MarkdownHeadingParserV2(),
+      const MarkdownTodoListParserV2(),
+      const MarkdownUnorderedListParserV2(),
+      const MarkdownOrderedListParserV2(),
+      const MarkdownUnorderedListItemParserV2(),
+      const MarkdownOrderedListItemParserV2(),
+      const MarkdownBlockQuoteParserV2(),
+      const MarkdownTableListParserV2(),
+      const MarkdownDividerParserV2(),
+      const MarkdownImageParserV2(),
+    ],
   ).decode(markdown);
 }
 
@@ -49,19 +58,19 @@ String documentToMarkdown(
 
 class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
   const AppFlowyEditorMarkdownCodec({
-    this.customParsers = const [],
-    this.customInlineSyntaxes = const [],
+    this.markdownInlineSyntaxes = const [],
+    this.markdownParsers = const [],
     this.encodeParsers = const [],
   });
 
   final List<NodeParser> encodeParsers;
-  final List<CustomNodeParser> customParsers;
-  final List<md.InlineSyntax> customInlineSyntaxes;
-  // TODO: Add support for custom parsers
+  final List<CustomMarkdownParser> markdownParsers;
+  final List<md.InlineSyntax> markdownInlineSyntaxes;
+
   @override
   Converter<String, Document> get decoder => DocumentMarkdownDecoder(
-        customNodeParsers: customParsers,
-        customInlineSyntaxes: customInlineSyntaxes,
+        markdownElementParsers: markdownParsers,
+        inlineSyntaxes: markdownInlineSyntaxes,
       );
 
   @override
