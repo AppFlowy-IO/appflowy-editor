@@ -64,14 +64,17 @@ class _TableColBorderState extends State<TableColBorder> {
         },
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           final colWidth = widget.tableNode.getColWidth(widget.colIdx);
-          widget.tableNode
-              .setColWidth(widget.colIdx, colWidth + details.delta.dx);
+          widget.tableNode.setColWidth(
+            widget.colIdx,
+            colWidth + details.delta.dx,
+          );
         },
         child: Container(
           key: _borderKey,
           width: widget.tableNode.config.borderWidth,
-          height: context
-              .select((Node n) => n.attributes[TableBlockKeys.colsHeight]),
+          height: context.select(
+            (Node n) => n.attributes[TableBlockKeys.colsHeight],
+          ),
           color: _borderHovering || _borderDragging
               ? widget.borderHoverColor
               : widget.borderColor,
@@ -83,8 +86,9 @@ class _TableColBorderState extends State<TableColBorder> {
   Container buildFixedBorder(BuildContext context) {
     return Container(
       width: widget.tableNode.config.borderWidth,
-      height:
-          context.select((Node n) => n.attributes[TableBlockKeys.colsHeight]),
+      height: context.select(
+        (Node n) => n.attributes[TableBlockKeys.colsHeight],
+      ),
       color: Colors.grey,
     );
   }

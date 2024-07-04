@@ -47,7 +47,6 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       nodes = parser.transform(
         mdNode,
         markdownElementParsers,
-        MarkdownListType.unknown,
       );
 
       if (nodes.isNotEmpty) {

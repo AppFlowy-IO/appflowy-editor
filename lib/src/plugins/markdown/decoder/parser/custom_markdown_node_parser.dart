@@ -6,7 +6,8 @@ abstract class CustomMarkdownParser {
 
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownParser> parsers,
-    MarkdownListType listType,
-  );
+    List<CustomMarkdownParser> parsers, {
+    MarkdownListType listType = MarkdownListType.unknown,
+    int? startNumber,
+  });
 }

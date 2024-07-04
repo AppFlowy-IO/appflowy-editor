@@ -7,9 +7,10 @@ class MarkdownOrderedListParserV2 extends CustomMarkdownParser {
   @override
   List<Node> transform(
     md.Node element,
-    List<CustomMarkdownParser> parsers,
-    MarkdownListType listType,
-  ) {
+    List<CustomMarkdownParser> parsers, {
+    MarkdownListType listType = MarkdownListType.unknown,
+    int? startNumber,
+  }) {
     if (element is! md.Element) {
       return [];
     }
@@ -18,11 +19,14 @@ class MarkdownOrderedListParserV2 extends CustomMarkdownParser {
       return [];
     }
 
+    final startNumber = element.attributes['start'];
+
     // flatten the list
     return parseElementChildren(
       element.children,
       parsers,
       listType: MarkdownListType.ordered,
+      startNumber: startNumber != null ? int.tryParse(startNumber) : null,
     );
   }
 }

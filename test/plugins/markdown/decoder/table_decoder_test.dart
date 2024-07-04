@@ -36,7 +36,7 @@ void main() async {
               'colPosition': 0,
               'rowPosition': 0,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -55,7 +55,7 @@ void main() async {
               'colPosition': 0,
               'rowPosition': 1,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -74,7 +74,7 @@ void main() async {
               'colPosition': 0,
               'rowPosition': 2,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -93,7 +93,7 @@ void main() async {
               'colPosition': 0,
               'rowPosition': 3,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -112,7 +112,7 @@ void main() async {
               'colPosition': 1,
               'rowPosition': 0,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -131,7 +131,7 @@ void main() async {
               'colPosition': 1,
               'rowPosition': 1,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -150,7 +150,7 @@ void main() async {
               'colPosition': 1,
               'rowPosition': 2,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           },
           {
@@ -169,14 +169,14 @@ void main() async {
               'colPosition': 1,
               'rowPosition': 3,
               'height': 40.0,
-              'width': 80.0,
+              'width': 160.0,
             },
           }
         ],
         'data': {
           'colsLen': 2,
           'rowsLen': 4,
-          'colDefaultWidth': 80.0,
+          'colDefaultWidth': 160.0,
           'rowDefaultHeight': 40.0,
           'colMinimumWidth': 40.0,
         },
