@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../infra/clipboard_test.dart';
@@ -28,9 +29,9 @@ void main() async {
     });
   });
 
-  group('paste_command_test.dart', () {
+  group('Copy + paste', () {
     testWidgets(
-      'Copy link',
+      'Paste link',
       (tester) async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
@@ -106,6 +107,226 @@ void main() async {
         Document.fromJson(paragraphData),
       );
     });
+  });
+
+  group('paste text without formatting', () {
+    testWidgets('Returns event ignored if missing selection', (tester) async {
+      final editor = tester.editor;
+      await editor.startTesting();
+      await editor.updateSelection(null);
+
+      final result = pasteTextWithoutFormattingCommand.execute(
+        editor.editorState,
+      );
+
+      expect(result, KeyEventResult.ignored);
+
+      await editor.dispose();
+    });
+
+    testWidgets('Returns event handled if there is a selection',
+        (tester) async {
+      final editor = tester.editor;
+
+      await editor.startTesting();
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: 'text'),
+      );
+      final result = pasteTextWithoutFormattingCommand.execute(
+        editor.editorState,
+      );
+
+      expect(result, KeyEventResult.handled);
+
+      await editor.dispose();
+    });
+
+    testWidgets('paste single line of text', (tester) async {
+      final editor = tester.editor..addEmptyParagraph();
+      await editor.startTesting();
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+
+      const text = 'Hello World!';
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: text),
+      );
+      pasteTextWithoutFormattingCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text);
+      expect(editor.nodeAtPath([1]), isNull);
+
+      await editor.dispose();
+    });
+
+    testWidgets('paste multiple lines of text', (tester) async {
+      final editor = tester.editor..addEmptyParagraph();
+      await editor.startTesting();
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+
+      const firstLine = 'Hello World!';
+      const secondLine = 'How are you?';
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: '$firstLine\n$secondLine'),
+      );
+      pasteTextWithoutFormattingCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), firstLine);
+      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), secondLine);
+      expect(editor.nodeAtPath([2]), isNull);
+
+      await editor.dispose();
+    });
+
+    testWidgets('paste single line of text ignoring formatting',
+        (tester) async {
+      final editor = tester.editor..addEmptyParagraph();
+      await editor.startTesting();
+      await editor.updateSelection(Selection.collapsed(Position(path: [0])));
+
+      const text = 'Hello World!';
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: text, html: '<b>$text</b>'),
+      );
+      pasteTextWithoutFormattingCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      final delta = editor.nodeAtPath([0])!.delta!;
+      expect(delta.toPlainText(), text);
+      expect(delta.first.attributes, isNull);
+
+      expect(
+        editor.nodeAtPath([1]),
+        isNull,
+        reason: 'should have only one node',
+      );
+      expect(
+        delta.first,
+        equals(delta.last),
+        reason: 'should have only one delta operation',
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('paste replacing content with destination format',
+        (tester) async {
+      final document = Document.fromJson(paragraphData);
+      final editor = tester.editor..initializeWithDocument(document);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection(
+          start: Position(path: [0], offset: 28),
+          end: Position(path: [0], offset: 52),
+        ),
+      );
+
+      const expectBefore = 'AppFlowy Editor is a highly ';
+      const pasteText = 'Hello World!';
+      const expectAfter = ' editor';
+
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: pasteText, html: '<b>$pasteText</b>'),
+      );
+      pasteTextWithoutFormattingCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      final afterPasteDelta = editor.nodeAtPath([0])!.delta!;
+      expect(
+        afterPasteDelta.toPlainText(),
+        "$expectBefore$pasteText$expectAfter",
+      );
+
+      expect(afterPasteDelta.elementAt(0).attributes, isNull);
+      expect(
+        (afterPasteDelta.elementAt(1) as TextInsert).text,
+        "highly Hello World!",
+        reason: 'should merge with destination format',
+      );
+      expect(
+        afterPasteDelta.elementAt(1).attributes,
+        {BuiltInAttributeKey.bold: true},
+        reason: 'should merge with destination format',
+      );
+      expect(
+        afterPasteDelta.elementAt(2).attributes,
+        {BuiltInAttributeKey.italic: true},
+      );
+
+      await editor.dispose();
+    });
+
+    for (var position in ['start', 'end']) {
+      testWidgets('paste without format if at $position of formatted text',
+          (tester) async {
+        const pasteText = 'text';
+        const formattedText = 'Formatted text';
+        final node = paragraphNode(
+          delta: Delta()
+            ..add(
+              TextInsert(
+                formattedText,
+                attributes: {BuiltInAttributeKey.bold: true},
+              ),
+            ),
+        );
+        final editor = tester.editor..addNode(node);
+
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.collapsed(
+            Position(
+              path: [0],
+              offset: position == 'start' ? 0 : formattedText.length,
+            ),
+          ),
+        );
+
+        AppFlowyClipboard.mockSetData(
+          const AppFlowyClipboardData(
+            text: pasteText,
+            html: '<b>$pasteText</b>',
+          ),
+        );
+        pasteTextWithoutFormattingCommand.execute(editor.editorState);
+        await tester.pumpAndSettle();
+
+        final afterPasteDelta = editor.nodeAtPath([0])!.delta!;
+        expect(
+          afterPasteDelta.toPlainText(),
+          position == 'start'
+              ? "$pasteText$formattedText"
+              : "$formattedText$pasteText",
+        );
+
+        expect(
+          (afterPasteDelta.elementAt(position == 'start' ? 0 : 1) as TextInsert)
+              .text,
+          pasteText,
+          reason: 'should not merge pasted content',
+        );
+        expect(
+          afterPasteDelta.elementAt(position == 'start' ? 0 : 1).attributes,
+          isNull,
+          reason: 'should not merge pasted content',
+        );
+        expect(
+          (afterPasteDelta.elementAt(position == 'start' ? 1 : 0) as TextInsert)
+              .text,
+          formattedText,
+        );
+        expect(
+          afterPasteDelta.elementAt(position == 'start' ? 1 : 0).attributes,
+          {BuiltInAttributeKey.bold: true},
+        );
+
+        await editor.dispose();
+      });
+    }
   });
 
   group('copy_paste_extension.dart', () {
