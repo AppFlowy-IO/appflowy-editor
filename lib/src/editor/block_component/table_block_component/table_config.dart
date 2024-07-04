@@ -1,12 +1,17 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 class TableConfig {
-  const TableConfig({
-    this.colDefaultWidth = TableDefaults.colWidth,
-    this.rowDefaultHeight = TableDefaults.rowHeight,
-    this.colMinimumWidth = TableDefaults.colMinimumWidth,
-    this.borderWidth = TableDefaults.borderWidth,
-  });
+  TableConfig({
+    double? colDefaultWidth,
+    double? rowDefaultHeight,
+    double? colMinimumWidth,
+    double? borderWidth,
+  }) {
+    this.colDefaultWidth = colDefaultWidth ?? TableDefaults.colWidth;
+    this.rowDefaultHeight = rowDefaultHeight ?? TableDefaults.rowHeight;
+    this.colMinimumWidth = colMinimumWidth ?? TableDefaults.colMinimumWidth;
+    this.borderWidth = borderWidth ?? TableDefaults.borderWidth;
+  }
 
   static TableConfig fromJson(Map<String, dynamic> json) {
     double func(String key, double defaultVal) => json.containsKey(key)
@@ -32,5 +37,8 @@ class TableConfig {
     };
   }
 
-  final double colDefaultWidth, rowDefaultHeight, colMinimumWidth, borderWidth;
+  late final double colDefaultWidth,
+      rowDefaultHeight,
+      colMinimumWidth,
+      borderWidth;
 }

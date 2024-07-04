@@ -55,8 +55,17 @@ class CommandShortcutEvent {
   List<Keybinding> get keybindings => _keybindings;
   List<Keybinding> _keybindings = [];
 
-  String? get description =>
-      _getDescription != null ? _getDescription!() : null;
+  String? get description => _getDescription != null ? _getDescription() : null;
+
+  /// This _completely_ clears the command, ensuring that
+  /// it cannot be triggered until it is updated again.
+  ///
+  /// Update it using [updateCommand].
+  ///
+  void clearCommand() {
+    _keybindings.clear();
+    command = '';
+  }
 
   void updateCommand({
     String? command,
@@ -92,11 +101,8 @@ class CommandShortcutEvent {
     }
 
     if (matched) {
-      _keybindings = this
-          .command
-          .split(',')
-          .map((e) => Keybinding.parse(e))
-          .toList(growable: false);
+      _keybindings =
+          this.command.split(',').map((e) => Keybinding.parse(e)).toList();
     }
   }
 

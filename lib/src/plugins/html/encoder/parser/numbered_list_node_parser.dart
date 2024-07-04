@@ -14,9 +14,23 @@ class HTMLNumberedListNodeParser extends HTMLNodeParser {
   }) {
     assert(node.type == NumberedListBlockKeys.type);
 
-    return toHTMLString(
+    final html = toHTMLString(
       transformNodeToDomNodes(node, encodeParsers: encodeParsers),
     );
+
+    final number = node.attributes[NumberedListBlockKeys.number];
+    final start = number != null ? '<ol start="$number">' : '<ol>';
+    const end = '</ol>';
+    if (node.previous?.type != NumberedListBlockKeys.type &&
+        node.next?.type != NumberedListBlockKeys.type) {
+      return '$start$html$end';
+    } else if (node.previous?.type != NumberedListBlockKeys.type) {
+      return '$start$html';
+    } else if (node.next?.type != NumberedListBlockKeys.type) {
+      return '$html$end';
+    } else {
+      return html;
+    }
   }
 
   @override
@@ -29,11 +43,10 @@ class HTMLNumberedListNodeParser extends HTMLNodeParser {
     domNodes.addAll(
       processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
-
-    final element =
-        wrapChildrenNodesWithTagName(HTMLTags.list, childNodes: domNodes);
-    return [
-      dom.Element.tag(HTMLTags.orderedList)..append(element),
-    ];
+    final element = wrapChildrenNodesWithTagName(
+      HTMLTags.list,
+      childNodes: domNodes,
+    );
+    return [element];
   }
 }

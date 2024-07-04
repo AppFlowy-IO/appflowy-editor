@@ -38,6 +38,8 @@ class AppFlowyEditor extends StatefulWidget {
     this.header,
     this.footer,
     this.focusNode,
+    this.enableAutoComplete = false,
+    this.autoCompleteTextProvider,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -115,9 +117,13 @@ class AppFlowyEditor extends StatefulWidget {
   /// The context menu items.
   ///
   /// They will be shown when the user right click on the editor.
+  /// Each item will be separated by a divider.
   ///
-  /// A divider will be added between each list.
-  final List<List<ContextMenuItem>> contextMenuItems;
+  /// Defaults to [standardContextMenuItems].
+  ///
+  /// If empty the context menu won't appear.
+  ///
+  final List<List<ContextMenuItem>>? contextMenuItems;
 
   /// Provide a editorScrollController to control the scroll behavior
   ///
@@ -161,6 +167,12 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   /// only works on iOS or Android.
   final bool showMagnifier;
+
+  /// If you want to enable the auto complete feature, you must set this value to true
+  ///   and provide the [autoCompleteTextProvider].
+  final bool enableAutoComplete;
+
+  final AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
   /// {@macro flutter.widgets.editableText.contentInsertionConfiguration}
   final ContentInsertionConfiguration? contentInsertionConfiguration;
@@ -296,6 +308,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.editable = widget.editable;
     editorState.showHeader = widget.header != null;
     editorState.showFooter = widget.footer != null;
+    editorState.enableAutoComplete = widget.enableAutoComplete;
+    editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

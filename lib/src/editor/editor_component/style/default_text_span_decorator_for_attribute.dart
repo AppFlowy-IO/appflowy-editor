@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 /// Support Desktop and Web platform
@@ -30,7 +31,11 @@ TextSpan defaultTextSpanDecoratorForAttribute(
         // implement a simple double tap logic
         tapCount += 1;
         timer?.cancel();
-        if (tapCount == 2 || !editorState.editable) {
+        // meta / ctrl + click to open the link
+        if (tapCount == 2 ||
+            !editorState.editable ||
+            HardwareKeyboard.instance.isControlPressed ||
+            HardwareKeyboard.instance.isMetaPressed) {
           tapCount = 0;
           safeLaunchUrl(href);
           return;

@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/desktop_editor.dart';
 import 'package:example/pages/mobile_editor.dart';
-
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 class Editor extends StatefulWidget {
   const Editor({
@@ -104,6 +102,8 @@ class _EditorState extends State<Editor> {
                       widget.onEditorStateChange(editorState);
                     }
                   });
+
+                  widget.onEditorStateChange(editorState);
 
                   this.editorState = editorState;
                   registerWordCounter();

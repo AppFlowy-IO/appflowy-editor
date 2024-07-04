@@ -65,10 +65,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
-      node.delta != null &&
-      node.children.isEmpty &&
-      node.attributes[HeadingBlockKeys.level] is int;
+  bool validate(Node node) => true;
 }
 
 class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -184,6 +181,7 @@ class _HeadingBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,

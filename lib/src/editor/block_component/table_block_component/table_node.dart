@@ -70,7 +70,7 @@ class TableNode {
     assert(cols[0].isNotEmpty);
     assert(cols.every((col) => col.length == cols[0].length));
 
-    config = config ?? const TableConfig();
+    config = config ?? TableConfig();
 
     Node node = Node(
       type: TableBlockKeys.type,

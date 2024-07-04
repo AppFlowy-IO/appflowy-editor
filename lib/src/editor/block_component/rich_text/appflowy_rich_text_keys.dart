@@ -10,6 +10,8 @@ class AppFlowyRichTextKeys {
   static String href = 'href';
   static String fontFamily = 'font_family';
   static String fontSize = 'font_size';
+  static String autoComplete = 'auto_complete';
+  static String transparent = 'transparent';
 
   static List<String> supportSliced = [
     bold,
@@ -18,6 +20,7 @@ class AppFlowyRichTextKeys {
     strikethrough,
     textColor,
     backgroundColor,
+    code,
   ];
 
   // The values supported toggled even if the selection is collapsed.

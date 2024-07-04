@@ -49,7 +49,7 @@ void main() async {
         ('خط دوم', blockComponentTextDirectionRTL),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0])!;
@@ -69,7 +69,7 @@ void main() async {
         ('خط دوم', blockComponentTextDirectionRTL),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0])!;
@@ -89,7 +89,7 @@ void main() async {
         ('خط دوم', blockComponentTextDirectionAuto),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0])!;
@@ -103,8 +103,8 @@ void main() async {
     });
 
     // TODO(.): The purpose of this test is to catch addPostFrameCallback from
-    // calculateTextDirection but it doesn't catch it. Commenting the callback
-    // out doesn't make this test fail.
+    //  calculateTextDirection but it doesn't catch it. Commenting the callback
+    //  out doesn't make this test fail.
     testWidgets(
         "indent AUTO line under AUTO line changing the second line calculated direction",
         (tester) async {
@@ -114,7 +114,7 @@ void main() async {
         ('س', blockComponentTextDirectionAuto),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
 
       Node node = editor.nodeAtPath([0])!;
@@ -161,7 +161,7 @@ Future<TestableEditor> indentTestHelper(
   );
   await editor.updateSelection(selection);
 
-  await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+  await editor.pressKey(key: LogicalKeyboardKey.tab);
   await tester.pumpAndSettle();
 
   final node = editor.nodeAtPath([0])!;

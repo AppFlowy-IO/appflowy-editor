@@ -33,6 +33,17 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     return _delta;
   }
 
+  Delta convertNodes(List<md.Node>? nodes) {
+    if (nodes == null) {
+      return Delta();
+    }
+
+    for (final node in nodes) {
+      node.accept(this);
+    }
+    return _delta;
+  }
+
   @override
   void visitElementAfter(md.Element element) {
     _removeAttributeKey(element);
@@ -64,7 +75,11 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.underline] = true;
     } else {
       element.attributes.forEach((key, value) {
-        _attributes[key] = jsonDecode(value);
+        try {
+          _attributes[key] = jsonDecode(value);
+        } catch (_) {
+          return;
+        }
       });
     }
   }

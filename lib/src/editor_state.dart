@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 /// the type of this value is bool.
 ///
@@ -105,6 +106,10 @@ class EditorState {
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
 
+  /// Remote selection is the selection from other users.
+  final PropertyValueNotifier<List<RemoteSelection>> remoteSelections =
+      PropertyValueNotifier<List<RemoteSelection>>([]);
+
   /// Sets the selection of the editor.
   set selection(Selection? value) {
     // clear the toggled style when the selection is changed.
@@ -183,6 +188,9 @@ class EditorState {
   bool showHeader = false;
   bool showFooter = false;
 
+  bool enableAutoComplete = false;
+  AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
+
   // only used for testing
   bool disableSealTimer = false;
   bool disableRules = false;
@@ -251,7 +259,10 @@ class EditorState {
   // the value of the notifier is meaningless, just for triggering the callbacks.
   final ValueNotifier<int> onDispose = ValueNotifier(0);
 
+  bool isDisposed = false;
+
   void dispose() {
+    isDisposed = true;
     _observer.close();
     _debouncedSealHistoryItemTimer?.cancel();
     onDispose.value += 1;
@@ -274,8 +285,9 @@ class EditorState {
     bool isRemote = false,
     ApplyOptions options = const ApplyOptions(recordUndo: true),
     bool withUpdateSelection = true,
+    bool skipHistoryDebounce = false,
   }) async {
-    if (!editable) {
+    if (!editable || isDisposed) {
       return;
     }
 
@@ -286,25 +298,30 @@ class EditorState {
 
     final completer = Completer<void>();
 
-    // broadcast to other users here, before applying the transaction
-    _observer.add((TransactionTime.before, transaction));
-
-    for (final operation in transaction.operations) {
-      Log.editor.debug('apply op: ${operation.toJson()}');
-      _applyOperation(operation);
-    }
-
-    // broadcast to other users here, after applying the transaction
-    _observer.add((TransactionTime.after, transaction));
-
-    _recordRedoOrUndo(options, transaction);
-
-    if (withUpdateSelection) {
-      _selectionUpdateReason = SelectionUpdateReason.transaction;
-      if (transaction.selectionExtraInfo != null) {
-        selectionExtraInfo = transaction.selectionExtraInfo;
+    if (isRemote) {
+      selection = _applyTransactionFromRemote(transaction);
+    } else {
+      // broadcast to other users here, before applying the transaction
+      if (!_observer.isClosed) {
+        _observer.add((TransactionTime.before, transaction));
       }
-      selection = transaction.afterSelection;
+
+      _applyTransactionInLocal(transaction);
+
+      // broadcast to other users here, after applying the transaction
+      if (!_observer.isClosed) {
+        _observer.add((TransactionTime.after, transaction));
+      }
+
+      _recordRedoOrUndo(options, transaction, skipHistoryDebounce);
+
+      if (withUpdateSelection) {
+        _selectionUpdateReason = SelectionUpdateReason.transaction;
+        if (transaction.selectionExtraInfo != null) {
+          selectionExtraInfo = transaction.selectionExtraInfo;
+        }
+        selection = transaction.afterSelection;
+      }
     }
 
     completer.complete();
@@ -497,7 +514,11 @@ class EditorState {
     }
   }
 
-  void _recordRedoOrUndo(ApplyOptions options, Transaction transaction) {
+  void _recordRedoOrUndo(
+    ApplyOptions options,
+    Transaction transaction,
+    bool skipDebounce,
+  ) {
     if (options.recordUndo) {
       final undoItem = undoManager.getUndoHistoryItem();
       undoItem.addAll(transaction.operations);
@@ -506,7 +527,13 @@ class EditorState {
         undoItem.beforeSelection = transaction.beforeSelection;
       }
       undoItem.afterSelection = transaction.afterSelection;
-      _debouncedSealHistoryItem();
+      if (skipDebounce && undoManager.undoStack.isNonEmpty) {
+        Log.editor.debug('Seal history item');
+        final last = undoManager.undoStack.last;
+        last.seal();
+      } else {
+        _debouncedSealHistoryItem();
+      }
     } else if (options.recordRedo) {
       final redoItem = HistoryItem();
       redoItem.addAll(transaction.operations);
@@ -530,18 +557,66 @@ class EditorState {
     });
   }
 
-  void _applyOperation(Operation op) {
-    if (op is InsertOperation) {
-      document.insert(op.path, op.nodes);
-    } else if (op is UpdateOperation) {
-      // ignore the update operation if the attributes are the same.
-      if (!mapEquals(op.attributes, op.oldAttributes)) {
-        document.update(op.path, op.attributes);
+  void _applyTransactionInLocal(Transaction transaction) {
+    for (final op in transaction.operations) {
+      Log.editor.debug('apply op (local): ${op.toJson()}');
+
+      if (op is InsertOperation) {
+        document.insert(op.path, op.nodes);
+      } else if (op is UpdateOperation) {
+        // ignore the update operation if the attributes are the same.
+        if (!mapEquals(op.attributes, op.oldAttributes)) {
+          document.update(op.path, op.attributes);
+        }
+      } else if (op is DeleteOperation) {
+        document.delete(op.path, op.nodes.length);
+      } else if (op is UpdateTextOperation) {
+        document.updateText(op.path, op.delta);
       }
-    } else if (op is DeleteOperation) {
-      document.delete(op.path, op.nodes.length);
-    } else if (op is UpdateTextOperation) {
-      document.updateText(op.path, op.delta);
     }
+  }
+
+  Selection? _applyTransactionFromRemote(Transaction transaction) {
+    var selection = this.selection;
+
+    for (final op in transaction.operations) {
+      Log.editor.debug('apply op (remote): ${op.toJson()}');
+
+      if (op is InsertOperation) {
+        document.insert(op.path, op.nodes);
+        if (selection != null) {
+          if (op.path <= selection.start.path) {
+            selection = Selection(
+              start: selection.start.copyWith(
+                path: selection.start.path.nextNPath(op.nodes.length),
+              ),
+              end: selection.end.copyWith(
+                path: selection.end.path.nextNPath(op.nodes.length),
+              ),
+            );
+          }
+        }
+      } else if (op is UpdateOperation) {
+        document.update(op.path, op.attributes);
+      } else if (op is DeleteOperation) {
+        document.delete(op.path, op.nodes.length);
+        if (selection != null) {
+          if (op.path <= selection.start.path) {
+            selection = Selection(
+              start: selection.start.copyWith(
+                path: selection.start.path.previous,
+              ),
+              end: selection.end.copyWith(
+                path: selection.end.path.previous,
+              ),
+            );
+          }
+        }
+      } else if (op is UpdateTextOperation) {
+        document.updateText(op.path, op.delta);
+      }
+    }
+
+    return selection;
   }
 }
