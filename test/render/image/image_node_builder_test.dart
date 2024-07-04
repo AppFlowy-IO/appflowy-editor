@@ -44,9 +44,6 @@ void main() async {
 
         await editor.startTesting(
           editable: false,
-          wrapper: (child) => SingleChildScrollView(
-            child: child,
-          ),
         );
         await tester.pumpAndSettle();
 
