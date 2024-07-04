@@ -234,13 +234,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
-    if (!widget.editable) {
-      return Provider.value(
-        value: editorState,
-        child: services!,
-      );
-    }
-
     return Provider.value(
       value: editorState,
       child: FocusScope(
@@ -263,9 +256,19 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       footer: widget.footer,
     );
 
-    if (!widget.editable) {
-      return child;
-    }
+    child = KeyboardServiceWidget(
+      key: editorState.service.keyboardServiceKey,
+      // disable all the shortcuts when the editor is not editable
+      characterShortcutEvents:
+          widget.editable ? widget.characterShortcutEvents : [],
+      // only allow copy and select all when the editor is not editable
+      commandShortcutEvents: widget.editable
+          ? widget.commandShortcutEvents
+          : [selectAllCommand, copyCommand],
+      focusNode: widget.focusNode,
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+      child: child,
+    );
 
     child = SelectionServiceWidget(
       key: editorState.service.selectionServiceKey,
@@ -273,14 +276,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       selectionColor: widget.editorStyle.selectionColor,
       showMagnifier: widget.showMagnifier,
       contextMenuItems: widget.contextMenuItems,
-      child: KeyboardServiceWidget(
-        key: editorState.service.keyboardServiceKey,
-        characterShortcutEvents: widget.characterShortcutEvents,
-        commandShortcutEvents: widget.commandShortcutEvents,
-        focusNode: widget.focusNode,
-        contentInsertionConfiguration: widget.contentInsertionConfiguration,
-        child: child,
-      ),
+      child: child,
     );
 
     return ScrollServiceWidget(

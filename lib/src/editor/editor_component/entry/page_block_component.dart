@@ -51,9 +51,7 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     final scrollController = context.read<EditorScrollController?>();
     final items = node.children;
 
-    if (scrollController == null ||
-        scrollController.shrinkWrap ||
-        !editorState.editable) {
+    if (scrollController == null || scrollController.shrinkWrap) {
       return SingleChildScrollView(
         child: Builder(
           builder: (context) {

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry, OverlayState;
 
 class EditorService {
   // selection service
-  final selectionServiceKey = GlobalKey(debugLabel: 'flowy_selection_service');
+  final selectionServiceKey = GlobalKey(
+    debugLabel: 'appflowy_editor_selection_service',
+  );
   AppFlowySelectionService get selectionService {
     assert(
       selectionServiceKey.currentState != null &&
@@ -13,7 +15,9 @@ class EditorService {
   }
 
   // keyboard service
-  final keyboardServiceKey = GlobalKey(debugLabel: 'flowy_keyboard_service');
+  final keyboardServiceKey = GlobalKey(
+    debugLabel: 'appflowy_editor_keyboard_service',
+  );
   AppFlowyKeyboardService? get keyboardService {
     if (keyboardServiceKey.currentState != null &&
         keyboardServiceKey.currentState is AppFlowyKeyboardService) {
@@ -27,7 +31,9 @@ class EditorService {
   late BlockComponentRendererService rendererService;
 
   // scroll service
-  final scrollServiceKey = GlobalKey(debugLabel: 'flowy_scroll_service');
+  final scrollServiceKey = GlobalKey(
+    debugLabel: 'appflowy_editor_scroll_service',
+  );
   AppFlowyScrollService? get scrollService {
     if (scrollServiceKey.currentState != null &&
         scrollServiceKey.currentState is AppFlowyScrollService) {
