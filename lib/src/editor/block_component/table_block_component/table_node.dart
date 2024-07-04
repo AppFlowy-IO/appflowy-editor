@@ -191,8 +191,11 @@ class TableNode {
     }
 
     if (node.attributes[TableBlockKeys.colsHeight] != colsHeight) {
-      if (transaction != null && editorState?.editable == true) {
+      if (transaction != null) {
         transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
+        if (editorState != null && editorState.editable != true) {
+          node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
+        }
       } else {
         node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
       }

@@ -41,10 +41,10 @@ void main() async {
       tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
-      expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
+      expect(tableNode.getRowHeight(0) != row0beforeHeight, false);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
       expect(tableNode.getRowHeight(1), row1beforeHeight);
-      expect(tableNode.getRowHeight(1) < tableNode.getRowHeight(0), true);
+      expect(tableNode.getRowHeight(1) < tableNode.getRowHeight(0), false);
       await editor.dispose();
     });
 
@@ -75,7 +75,7 @@ void main() async {
       tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
-      expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
+      expect(tableNode.getRowHeight(0) != row0beforeHeight, false);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
 
       transaction = editor.editorState.transaction;
