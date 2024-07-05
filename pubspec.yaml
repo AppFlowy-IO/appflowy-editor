@@ -51,6 +51,7 @@ dependencies:
   printing: ^5.11.1
   url_launcher: ^6.1.11
   visibility_detector: ^0.4.0+2
+  pointer_interceptor: ^0.10.1+1
 
 dev_dependencies:
   flutter_test:

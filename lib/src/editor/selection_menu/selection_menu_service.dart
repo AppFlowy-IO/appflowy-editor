@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 abstract class SelectionMenuService {
   Offset get offset;
@@ -81,47 +82,49 @@ class SelectionMenu extends SelectionMenuService {
 
     _selectionMenuEntry = OverlayEntry(
       builder: (context) {
-        return SizedBox(
-          width: editorWidth,
-          height: editorHeight,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              dismiss();
-            },
-            child: Stack(
-              children: [
-                Positioned(
-                  top: top,
-                  bottom: bottom,
-                  left: left,
-                  right: right,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SelectionMenuWidget(
-                      selectionMenuStyle: style,
-                      items: selectionMenuItems
-                        ..forEach((element) {
-                          element.deleteSlash = deleteSlashByDefault;
-                          element.onSelected = () {
-                            dismiss();
-                          };
-                        }),
-                      maxItemInRow: 5,
-                      editorState: editorState,
-                      itemCountFilter: itemCountFilter,
-                      menuService: this,
-                      onExit: () {
-                        dismiss();
-                      },
-                      onSelectionUpdate: () {
-                        _selectionUpdateByInner = true;
-                      },
-                      deleteSlashByDefault: deleteSlashByDefault,
+        return PointerInterceptor(
+          child: SizedBox(
+            width: editorWidth,
+            height: editorHeight,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                dismiss();
+              },
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: top,
+                    bottom: bottom,
+                    left: left,
+                    right: right,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SelectionMenuWidget(
+                        selectionMenuStyle: style,
+                        items: selectionMenuItems
+                          ..forEach((element) {
+                            element.deleteSlash = deleteSlashByDefault;
+                            element.onSelected = () {
+                              dismiss();
+                            };
+                          }),
+                        maxItemInRow: 5,
+                        editorState: editorState,
+                        itemCountFilter: itemCountFilter,
+                        menuService: this,
+                        onExit: () {
+                          dismiss();
+                        },
+                        onSelectionUpdate: () {
+                          _selectionUpdateByInner = true;
+                        },
+                        deleteSlashByDefault: deleteSlashByDefault,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
