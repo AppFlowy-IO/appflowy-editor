@@ -82,10 +82,10 @@ class SelectionMenu extends SelectionMenuService {
 
     _selectionMenuEntry = OverlayEntry(
       builder: (context) {
-        return PointerInterceptor(
-          child: SizedBox(
-            width: editorWidth,
-            height: editorHeight,
+        return SizedBox(
+          width: editorWidth,
+          height: editorHeight,
+          child: PointerInterceptor(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
