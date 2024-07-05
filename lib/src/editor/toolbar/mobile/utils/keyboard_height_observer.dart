@@ -43,11 +43,9 @@ class KeyboardHeightObserver {
   }
 
   void notify(double height) {
-    // the keyboard height will notify twice with the same value on Android 14
-    if (androidSDKVersion == 34) {
-      if (height == 0 && currentKeyboardHeight == 0) {
-        return;
-      }
+    // the keyboard height will notify twice with the same value on Android
+    if (Platform.isAndroid && height == currentKeyboardHeight) {
+      return;
     }
 
     for (final listener in _listeners) {

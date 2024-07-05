@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
 import 'package:flutter/foundation.dart';
@@ -274,6 +276,12 @@ class _MobileToolbarState extends State<_MobileToolbar>
 
     if (canUpdateCachedKeyboardHeight) {
       cachedKeyboardHeight.value = height;
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        if (cachedKeyboardHeight.value != 0) {
+          cachedKeyboardHeight.value +=
+              MediaQuery.of(context).viewPadding.bottom;
+        }
+      }
     }
 
     if (height == 0) {
@@ -385,24 +393,30 @@ class _MobileToolbarState extends State<_MobileToolbar>
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
-            var toolbarHeight = height;
+            var keyboardHeight = height;
             if (defaultTargetPlatform == TargetPlatform.android) {
-              toolbarHeight += MediaQuery.of(context).viewPadding.bottom;
+              if (!showingMenu) {
+                keyboardHeight = max(
+                  keyboardHeight,
+                  MediaQuery.of(context).viewInsets.bottom,
+                );
+              }
             }
             return SizedBox(
-              height: toolbarHeight,
+              height: keyboardHeight,
               child: (showingMenu && selectedMenuIndex != null)
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
-                      itemMenuBuilder: () =>
-                          widget
-                              .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
-                              .call(
-                            context,
-                            widget.editorState,
-                            this,
-                          ) ??
-                          const SizedBox.shrink(),
+                      itemMenuBuilder: () {
+                        final menu = widget
+                            .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
+                            .call(
+                          context,
+                          widget.editorState,
+                          this,
+                        );
+                        return menu ?? const SizedBox.shrink();
+                      },
                     )
                   : const SizedBox.shrink(),
             );
