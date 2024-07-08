@@ -1,3 +1,15 @@
+## 3.1.0
+* fix: handwriting ime doesn't work by @LucasXu0 in [#832](https://github.com/AppFlowy-IO/appflowy-editor/pull/832)
+* feat: support custom markdown parsers by @LucasXu0 in [#835](https://github.com/AppFlowy-IO/appflowy-editor/pull/835)
+* feat: undo markdown style by @Xazin in [#830](https://github.com/AppFlowy-IO/appflowy-editor/pull/830)
+* feat: enable selection in readonly mode by @LucasXu0 in [#837](https://github.com/AppFlowy-IO/appflowy-editor/pull/837)
+* feat: use format of wrapping node when pasting plain text by @jpenna in [#692](https://github.com/AppFlowy-IO/appflowy-editor/pull/692)
+* feat: document to PDF feature for AppFlowy Editor by @rileyhawk1417 in [#695](https://github.com/AppFlowy-IO/appflowy-editor/pull/695)
+* fix: incorrect calculation of skip value in moveVertical by @Jei-sKappa in [#790](https://github.com/AppFlowy-IO/appflowy-editor/pull/790)
+* fix: add code to support sliced by @Xazin in [#829](https://github.com/AppFlowy-IO/appflowy-editor/pull/829)
+* fix: render issue of nested list by @LucasXu0 in [#838](https://github.com/AppFlowy-IO/appflowy-editor/pull/838)
+* fix: the toolbar will be blocked if the scroll bar is hidden by @LucasXu0 in [#839](https://github.com/AppFlowy-IO/appflowy-editor/pull/839)
+
 ## 3.0.0
 * refactor: separated determineTextDirection function by @zoli in [#809](https://github.com/AppFlowy-IO/appflowy-editor/pull/809)
 * fix: markdown to document with image url having properties after extension by @stevenosse in [#795](https://github.com/AppFlowy-IO/appflowy-editor/pull/795)
