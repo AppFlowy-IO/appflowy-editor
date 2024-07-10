@@ -186,7 +186,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
   EditorState get editorState => widget.editorState;
 
-  late final EditorScrollController editorScrollController;
+  late EditorScrollController editorScrollController;
 
   @override
   void initState() {
@@ -227,6 +227,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       editorState.renderer = _renderer;
     }
 
+    if (widget.editorScrollController != oldWidget.editorScrollController) {
+      editorScrollController = widget.editorScrollController ??
+          EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: widget.shrinkWrap,
+          );
+    }
+
     services = null;
   }
 
@@ -262,9 +270,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       characterShortcutEvents:
           widget.editable ? widget.characterShortcutEvents : [],
       // only allow copy and select all when the editor is not editable
-      commandShortcutEvents: widget.editable
-          ? widget.commandShortcutEvents
-          : [selectAllCommand, copyCommand],
+      commandShortcutEvents: widget.commandShortcutEvents,
       focusNode: widget.focusNode,
       contentInsertionConfiguration: widget.contentInsertionConfiguration,
       child: child,

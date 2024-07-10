@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -294,7 +292,7 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    _panStartOffset = details.globalPosition.translate(-3.0, 0);
+    _panStartOffset = details.globalPosition.translate(-5.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
     _panStartPosition = getNodeInOffset(_panStartOffset!)
