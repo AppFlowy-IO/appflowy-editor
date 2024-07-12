@@ -21,6 +21,7 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.textDirection,
+    this.maxWidth,
   });
 
   final List<ToolbarItem> items;
@@ -31,6 +32,7 @@ class FloatingToolbarWidget extends StatefulWidget {
   final Color? toolbarShadowColor;
   final EditorState editorState;
   final TextDirection textDirection;
+  final double? maxWidth;
 
   @override
   State<FloatingToolbarWidget> createState() => _FloatingToolbarWidgetState();
@@ -50,28 +52,36 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       elevation: widget.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: SizedBox(
-          height: floatingToolbarHeight,
-          child: Row(
-            key: floatingToolbarContainerKey,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            textDirection: widget.textDirection,
-            children: activeItems
-                .mapIndexed(
-                  (index, item) => Center(
-                    key: Key(
-                      '${floatingToolbarItemPrefixKey}_${item.id}_$index',
-                    ),
-                    child: item.builder!(
-                      context,
-                      widget.editorState,
-                      widget.toolbarActiveColor,
-                      widget.toolbarIconColor,
-                    ),
-                  ),
-                )
-                .toList(growable: false),
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: widget.maxWidth ?? double.infinity),
+          child: SizedBox(
+            height: floatingToolbarHeight,
+            // width: widget.width,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                key: floatingToolbarContainerKey,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                textDirection: widget.textDirection,
+                children: activeItems
+                    .mapIndexed(
+                      (index, item) => Center(
+                        key: Key(
+                          '${floatingToolbarItemPrefixKey}_${item.id}_$index',
+                        ),
+                        child: item.builder!(
+                          context,
+                          widget.editorState,
+                          widget.toolbarActiveColor,
+                          widget.toolbarIconColor,
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+            ),
           ),
         ),
       ),
