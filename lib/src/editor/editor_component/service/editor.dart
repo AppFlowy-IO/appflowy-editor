@@ -238,6 +238,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       value: editorState,
       child: FocusScope(
         child: Overlay(
+          clipBehavior: Clip.none,
           initialEntries: [
             OverlayEntry(
               builder: (context) => services!,
