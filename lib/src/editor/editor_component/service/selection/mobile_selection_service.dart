@@ -120,6 +120,7 @@ class _MobileSelectionServiceWidgetState
   @override
   Widget build(BuildContext context) {
     final stack = Stack(
+      clipBehavior: Clip.none,
       children: [
         widget.child,
 
