@@ -296,7 +296,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
               dialogTitle: '',
               allowMultiple: false,
               type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
-              allowedExtensions: allowedExtensions,
+              allowedExtensions: kIsWeb ? allowedExtensions : null,
               withData: kIsWeb,
             );
             if (result != null && result.files.isNotEmpty) {
