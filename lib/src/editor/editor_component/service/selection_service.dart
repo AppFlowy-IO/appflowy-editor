@@ -82,6 +82,19 @@ abstract class AppFlowySelectionService {
     DragEndDetails details,
     MobileSelectionDragMode mode,
   );
+
+  /// Draws a horizontal line between the nearest nodes to the [offset].
+  ///
+  /// The [offset] must be under the global coordinate system.
+  /// Additionally if any is found, it returns the [Node] that is closest to the [offset].
+  ///
+  /// Should call [removeDropTarget] to remove the line once drop is done.
+  ///
+  Node? renderDropTargetForOffset(Offset offset);
+
+  /// Removes the horizontal line drawn by [renderDropTargetForOffset].
+  ///
+  void removeDropTarget();
 }
 
 class SelectionGestureInterceptor {

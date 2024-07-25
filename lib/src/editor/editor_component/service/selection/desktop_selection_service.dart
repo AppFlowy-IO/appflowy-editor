@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -50,6 +51,8 @@ class _DesktopSelectionServiceWidgetState
 
   Position? _panStartPosition;
 
+  OverlayEntry? _dropTargetEntry;
+
   late EditorState editorState = Provider.of<EditorState>(
     context,
     listen: false,
@@ -83,7 +86,7 @@ class _DesktopSelectionServiceWidgetState
     WidgetsBinding.instance.removeObserver(this);
     editorState.selectionNotifier.removeListener(_updateSelection);
     currentSelection.dispose();
-
+    removeDropTarget();
     super.dispose();
   }
 
@@ -403,7 +406,7 @@ class _DesktopSelectionServiceWidgetState
     );
 
     _contextMenuAreas.add(contextMenu);
-    Overlay.of(context, rootOverlay: true)?.insert(contextMenu);
+    Overlay.of(context, rootOverlay: true).insert(contextMenu);
   }
 
   @override
@@ -414,5 +417,63 @@ class _DesktopSelectionServiceWidgetState
   @override
   void unregisterGestureInterceptor(String key) {
     _interceptors.removeWhere((element) => element.key == key);
+  }
+
+  @override
+  void removeDropTarget() {
+    _dropTargetEntry?.remove();
+    _dropTargetEntry = null;
+  }
+
+  @override
+  Node? renderDropTargetForOffset(Offset offset) {
+    removeDropTarget();
+
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      return null;
+    }
+
+    final blockRect = selectable.getBlockRect();
+    final startRect = blockRect.topLeft;
+    final endRect = blockRect.bottomLeft;
+
+    final startDistance = (startRect - offset).distance;
+    final endDistance = (endRect - offset).distance;
+
+    final isCloserToStart = startDistance < endDistance;
+
+    _dropTargetEntry = OverlayEntry(
+      builder: (context) {
+        final overlayRenderBox =
+            Overlay.of(context).context.findRenderObject() as RenderBox;
+        final editorRenderBox =
+            selectable.context.findRenderObject() as RenderBox;
+
+        final editorOffset = editorRenderBox.localToGlobal(
+          Offset.zero,
+          ancestor: overlayRenderBox,
+        );
+
+        final indicatorTop =
+            (isCloserToStart ? startRect.dy : endRect.dy) + editorOffset.dy;
+
+        final width = blockRect.topRight.dx - startRect.dx;
+        return Positioned(
+          top: indicatorTop,
+          left: startRect.dx + editorOffset.dx,
+          child: Container(
+            height: 3,
+            width: width,
+            color: Colors.blue,
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context).insert(_dropTargetEntry!);
+
+    return isCloserToStart ? node : node!.next ?? node;
   }
 }
