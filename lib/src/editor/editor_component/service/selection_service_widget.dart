@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/editor_component/style/drop_target_style.dart';
 
 class SelectionServiceWidget extends StatefulWidget {
   const SelectionServiceWidget({
@@ -13,6 +14,7 @@ class SelectionServiceWidget extends StatefulWidget {
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     this.showMagnifier = true,
     this.contextMenuItems,
+    this.dropTargetStyle,
     required this.child,
   });
 
@@ -20,6 +22,7 @@ class SelectionServiceWidget extends StatefulWidget {
   final Color cursorColor;
   final Color selectionColor;
   final List<List<ContextMenuItem>>? contextMenuItems;
+  final AppFlowyDropTargetStyle? dropTargetStyle;
 
   /// Show the magnifier or not.
   ///
@@ -47,6 +50,8 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
         cursorColor: widget.cursorColor,
         selectionColor: widget.selectionColor,
         contextMenuItems: widget.contextMenuItems,
+        dropTargetStyle:
+            widget.dropTargetStyle ?? const AppFlowyDropTargetStyle(),
         child: widget.child,
       );
     }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
+import 'package:appflowy_editor/src/editor/editor_component/style/drop_target_style.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -15,12 +16,14 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
     this.selectionColor = const Color(0xFF00BCF0),
     this.contextMenuItems,
     required this.child,
+    this.dropTargetStyle = const AppFlowyDropTargetStyle(),
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
   final List<List<ContextMenuItem>>? contextMenuItems;
+  final AppFlowyDropTargetStyle dropTargetStyle;
 
   @override
   State<DesktopSelectionServiceWidget> createState() =>
@@ -464,9 +467,15 @@ class _DesktopSelectionServiceWidgetState
           top: indicatorTop,
           left: startRect.dx + editorOffset.dx,
           child: Container(
-            height: 3,
+            height: widget.dropTargetStyle.height,
             width: width,
-            color: Colors.blue,
+            margin: widget.dropTargetStyle.margin,
+            constraints: widget.dropTargetStyle.constraints,
+            decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(widget.dropTargetStyle.borderRadius),
+              color: widget.dropTargetStyle.color,
+            ),
           ),
         );
       },

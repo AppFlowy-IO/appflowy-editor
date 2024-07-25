@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
+import 'package:provider/provider.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/style/drop_target_style.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:provider/provider.dart';
 
 // workaround for the issue:
 // the popover will grab the focus even if it's inside the editor
@@ -40,6 +43,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.focusNode,
     this.enableAutoComplete = false,
     this.autoCompleteTextProvider,
+    this.dropTargetStyle,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -177,6 +181,21 @@ class AppFlowyEditor extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.contentInsertionConfiguration}
   final ContentInsertionConfiguration? contentInsertionConfiguration;
 
+  /// The style of the drop target.
+  ///
+  /// Defaults to [AppFlowyDropTargetStyle].
+  ///
+  /// The drop target is rendered in the [AppFlowyEditor] using the [DesktopSelectionService]
+  /// specifically the [renderDropTargetForOffset] method.
+  ///
+  /// The drop target is a horizontal line that is drawn between the nearest nodes to the [offset].
+  ///
+  /// Should call [removeDropTarget] to remove the line once the drop action is done.
+  ///
+  /// only works on desktop.
+  ///
+  final AppFlowyDropTargetStyle? dropTargetStyle;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -283,6 +302,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       selectionColor: widget.editorStyle.selectionColor,
       showMagnifier: widget.showMagnifier,
       contextMenuItems: widget.contextMenuItems,
+      dropTargetStyle: widget.dropTargetStyle,
       child: child,
     );
 
