@@ -1,9 +1,11 @@
 import 'dart:convert';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
+
 import 'package:example/pages/desktop_editor.dart';
 import 'package:example/pages/mobile_editor.dart';
-import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 class Editor extends StatefulWidget {
   const Editor({

@@ -27,3 +27,4 @@ export 'style/default_text_span_decorator_for_attribute.dart';
 // style
 export 'style/editor_style.dart';
 export 'style/mobile_text_span_decorator_for_attribute.dart';
+export 'style/drop_target_style.dart';
