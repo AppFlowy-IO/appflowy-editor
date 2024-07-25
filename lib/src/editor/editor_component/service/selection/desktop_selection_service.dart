@@ -428,13 +428,13 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  DropTargetRenderData renderDropTargetForOffset(Offset offset) {
+  void renderDropTargetForOffset(Offset offset) {
     removeDropTarget();
 
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
     if (selectable == null) {
-      return const DropTargetRenderData();
+      return;
     }
 
     final blockRect = selectable.getBlockRect();
@@ -481,6 +481,29 @@ class _DesktopSelectionServiceWidgetState
     );
 
     Overlay.of(context).insert(_dropTargetEntry!);
+
+    // return DropTargetRenderData(
+    //   dropTarget: isCloserToStart ? node : node?.next ?? node,
+    //   cursorNode: node,
+    // );
+  }
+
+  @override
+  DropTargetRenderData? getDropTargetRenderData(Offset offset) {
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      return null;
+    }
+
+    final blockRect = selectable.getBlockRect();
+    final startRect = blockRect.topLeft;
+    final endRect = blockRect.bottomLeft;
+
+    final startDistance = (startRect - offset).distance;
+    final endDistance = (endRect - offset).distance;
+
+    final isCloserToStart = startDistance < endDistance;
 
     return DropTargetRenderData(
       dropTarget: isCloserToStart ? node : node?.next ?? node,
