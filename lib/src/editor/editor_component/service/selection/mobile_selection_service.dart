@@ -834,5 +834,6 @@ class _MobileSelectionServiceWidgetState
   }
 
   @override
-  Node? renderDropTargetForOffset(Offset offset) => null;
+  DropTargetRenderData renderDropTargetForOffset(Offset offset) =>
+      const DropTargetRenderData();
 }

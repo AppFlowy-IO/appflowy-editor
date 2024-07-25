@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
-import 'package:appflowy_editor/src/editor/editor_component/style/drop_target_style.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -429,13 +428,13 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  Node? renderDropTargetForOffset(Offset offset) {
+  DropTargetRenderData renderDropTargetForOffset(Offset offset) {
     removeDropTarget();
 
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
     if (selectable == null) {
-      return null;
+      return const DropTargetRenderData();
     }
 
     final blockRect = selectable.getBlockRect();
@@ -483,6 +482,9 @@ class _DesktopSelectionServiceWidgetState
 
     Overlay.of(context).insert(_dropTargetEntry!);
 
-    return isCloserToStart ? node : node!.next ?? node;
+    return DropTargetRenderData(
+      dropTarget: isCloserToStart ? node : node?.next ?? node,
+      cursorNode: node,
+    );
   }
 }
