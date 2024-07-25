@@ -112,20 +112,9 @@ class _EditorState extends State<Editor> {
                 }
 
                 if (PlatformExtension.isDesktopOrWeb) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onPanStart: (details) {
-                      editorState?.selectionService
-                          .renderDropTargetForOffset(details.localPosition);
-                    },
-                    onPanUpdate: (details) {
-                      editorState?.selectionService
-                          .renderDropTargetForOffset(details.localPosition);
-                    },
-                    child: DesktopEditor(
-                      editorState: editorState!,
-                      textDirection: widget.textDirection,
-                    ),
+                  return DesktopEditor(
+                    editorState: editorState!,
+                    textDirection: widget.textDirection,
                   );
                 } else if (PlatformExtension.isMobile) {
                   return MobileEditor(editorState: editorState!);
