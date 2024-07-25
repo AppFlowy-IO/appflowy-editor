@@ -481,11 +481,6 @@ class _DesktopSelectionServiceWidgetState
     );
 
     Overlay.of(context).insert(_dropTargetEntry!);
-
-    // return DropTargetRenderData(
-    //   dropTarget: isCloserToStart ? node : node?.next ?? node,
-    //   cursorNode: node,
-    // );
   }
 
   @override
