@@ -21,12 +21,14 @@ class SelectionMenu extends SelectionMenuService {
     this.deleteSlashByDefault = true,
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
+    this.singleColumn = false,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final bool singleColumn;
   @override
   final SelectionMenuStyle style;
 
@@ -100,6 +102,7 @@ class SelectionMenu extends SelectionMenuService {
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
                       selectionMenuStyle: style,
+                      singleColumn: singleColumn,
                       items: selectionMenuItems
                         ..forEach((element) {
                           element.deleteSlash = deleteSlashByDefault;
@@ -347,4 +350,43 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   dividerMenuItem,
   tableMenuItem,
+];
+
+final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.text,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'text',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['text'],
+    handler: (editorState, _, __) {
+      insertNodeAfterSelection(editorState, paragraphNode());
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading1,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h1',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 1, h1'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 1);
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading2,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h2',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 2, h2'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 2);
+    },
+  ),
 ];
