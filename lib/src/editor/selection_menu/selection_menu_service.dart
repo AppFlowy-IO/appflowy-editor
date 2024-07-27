@@ -21,12 +21,14 @@ class SelectionMenu extends SelectionMenuService {
     this.deleteSlashByDefault = true,
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
+    this.singleColumn = false,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final bool singleColumn;
   @override
   final SelectionMenuStyle style;
 
@@ -100,6 +102,7 @@ class SelectionMenu extends SelectionMenuService {
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
                       selectionMenuStyle: style,
+                      singleColumn: singleColumn,
                       items: selectionMenuItems
                         ..forEach((element) {
                           element.deleteSlash = deleteSlashByDefault;
