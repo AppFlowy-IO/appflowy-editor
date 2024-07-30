@@ -1,12 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
-import 'package:provider/provider.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:provider/provider.dart';
 
 // workaround for the issue:
 // the popover will grab the focus even if it's inside the editor
@@ -43,6 +41,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.enableAutoComplete = false,
     this.autoCompleteTextProvider,
     this.dropTargetStyle,
+    this.disableSelection = false,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -195,6 +194,9 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   final AppFlowyDropTargetStyle? dropTargetStyle;
 
+  /// Disable the selection gesture
+  final bool disableSelection;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -295,15 +297,17 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       child: child,
     );
 
-    child = SelectionServiceWidget(
-      key: editorState.service.selectionServiceKey,
-      cursorColor: widget.editorStyle.cursorColor,
-      selectionColor: widget.editorStyle.selectionColor,
-      showMagnifier: widget.showMagnifier,
-      contextMenuItems: widget.contextMenuItems,
-      dropTargetStyle: widget.dropTargetStyle,
-      child: child,
-    );
+    if (widget.disableSelection) {
+      child = SelectionServiceWidget(
+        key: editorState.service.selectionServiceKey,
+        cursorColor: widget.editorStyle.cursorColor,
+        selectionColor: widget.editorStyle.selectionColor,
+        showMagnifier: widget.showMagnifier,
+        contextMenuItems: widget.contextMenuItems,
+        dropTargetStyle: widget.dropTargetStyle,
+        child: child,
+      );
+    }
 
     return ScrollServiceWidget(
       key: editorState.service.scrollServiceKey,
