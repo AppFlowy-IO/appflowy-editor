@@ -1,6 +1,6 @@
 name: appflowy_editor
 description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
-version: 3.0.0
+version: 3.1.0
 homepage: https://github.com/AppFlowy-IO/appflowy-editor
 
 topics:
@@ -51,7 +51,7 @@ dependencies:
   printing: ^5.11.1
   url_launcher: ^6.1.11
   visibility_detector: ^0.4.0+2
-  pointer_interceptor: ^0.10.1+1
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:

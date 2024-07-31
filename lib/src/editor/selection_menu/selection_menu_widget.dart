@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 typedef SelectionMenuItemHandler = void Function(
   EditorState editorState,
@@ -199,6 +200,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.selectionMenuStyle,
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
+    this.singleColumn = false,
   });
 
   final List<SelectionMenuItem> items;
@@ -214,6 +216,7 @@ class SelectionMenuWidget extends StatefulWidget {
   final SelectionMenuStyle selectionMenuStyle;
 
   final bool deleteSlashByDefault;
+  final bool singleColumn;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
@@ -224,6 +227,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
   int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
+  AutoScrollController? _scrollController;
 
   int _searchCounter = 0;
 
@@ -269,6 +273,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     super.initState();
 
     _showingItems = widget.items;
+    if (widget.singleColumn) {
+      _scrollController = AutoScrollController();
+    }
 
     keepEditorFocusNotifier.increase();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -280,6 +287,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   void dispose() {
     _focusNode.dispose();
     keepEditorFocusNotifier.decrease();
+    _scrollController?.dispose();
 
     super.dispose();
   }
@@ -313,23 +321,83 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     );
   }
 
+  void _scrollToSelectedIndex() {
+    if (_scrollController == null) {
+      return;
+    }
+
+    _scrollController?.scrollToIndex(
+      _selectedIndex,
+      duration: const Duration(milliseconds: 200),
+      preferPosition: AutoScrollPosition.begin,
+    );
+  }
+
   Widget _buildResultsWidget(
     BuildContext buildContext,
     List<SelectionMenuItem> items,
     int itemCountFilter,
     int selectedIndex,
   ) {
-    List<Widget> columns = [];
-    List<Widget> itemWidgets = [];
+    if (widget.singleColumn) {
+      List<Widget> itemWidgets = [];
+      for (var i = 0; i < items.length; i++) {
+        itemWidgets.add(
+          AutoScrollTag(
+            key: ValueKey(i),
+            index: i,
+            controller: _scrollController!,
+            child: SelectionMenuItemWidget(
+              item: items[i],
+              isSelected: selectedIndex == i,
+              editorState: widget.editorState,
+              menuService: widget.menuService,
+              selectionMenuStyle: widget.selectionMenuStyle,
+            ),
+          ),
+        );
+      }
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 300,
+          minWidth: 300,
+          maxWidth: 300,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          controller: _scrollController,
+          children: itemWidgets,
+        ),
+      );
+    } else {
+      List<Widget> columns = [];
+      List<Widget> itemWidgets = [];
+      // apply item count filter
+      if (itemCountFilter > 0) {
+        items = items.take(itemCountFilter).toList();
+      }
 
-    // apply item count filter
-
-    if (itemCountFilter > 0) {
-      items = items.take(itemCountFilter).toList();
-    }
-
-    for (var i = 0; i < items.length; i++) {
-      if (i != 0 && i % (widget.maxItemInRow) == 0) {
+      for (var i = 0; i < items.length; i++) {
+        if (i != 0 && i % (widget.maxItemInRow) == 0) {
+          columns.add(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: itemWidgets,
+            ),
+          );
+          itemWidgets = [];
+        }
+        itemWidgets.add(
+          SelectionMenuItemWidget(
+            item: items[i],
+            isSelected: selectedIndex == i,
+            editorState: widget.editorState,
+            menuService: widget.menuService,
+            selectionMenuStyle: widget.selectionMenuStyle,
+          ),
+        );
+      }
+      if (itemWidgets.isNotEmpty) {
         columns.add(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,29 +406,11 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         );
         itemWidgets = [];
       }
-      itemWidgets.add(
-        SelectionMenuItemWidget(
-          item: items[i],
-          isSelected: selectedIndex == i,
-          editorState: widget.editorState,
-          menuService: widget.menuService,
-          selectionMenuStyle: widget.selectionMenuStyle,
-        ),
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: columns,
       );
     }
-    if (itemWidgets.isNotEmpty) {
-      columns.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: itemWidgets,
-        ),
-      );
-      itemWidgets = [];
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: columns,
-    );
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
@@ -444,6 +494,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     if (newSelectedIndex != _selectedIndex) {
       setState(() {
         _selectedIndex = newSelectedIndex.clamp(0, _showingItems.length - 1);
+        _scrollToSelectedIndex();
       });
       return KeyEventResult.handled;
     }

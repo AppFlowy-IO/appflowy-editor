@@ -22,6 +22,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         ...inlineSyntaxes,
         UnderlineInlineSyntax(),
       ],
+      encodeHtml: false,
     ).parse(input);
     final document = Document.blank();
 

@@ -20,6 +20,7 @@ final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
 CharacterShortcutEvent customSlashCommand(
   List<SelectionMenuItem> items, {
   bool shouldInsertSlash = true,
+  bool singleColumn = true,
   SelectionMenuStyle style = SelectionMenuStyle.light,
 }) {
   return CharacterShortcutEvent(
@@ -29,6 +30,7 @@ CharacterShortcutEvent customSlashCommand(
       editorState,
       items,
       shouldInsertSlash: shouldInsertSlash,
+      singleColumn: singleColumn,
       style: style,
     ),
   );
@@ -48,6 +50,7 @@ Future<bool> _showSlashMenu(
   EditorState editorState,
   List<SelectionMenuItem> items, {
   bool shouldInsertSlash = true,
+  bool singleColumn = true,
   SelectionMenuStyle style = SelectionMenuStyle.light,
 }) async {
   if (PlatformExtension.isMobile) {
@@ -101,6 +104,7 @@ Future<bool> _showSlashMenu(
         editorState: editorState,
         selectionMenuItems: items,
         deleteSlashByDefault: shouldInsertSlash,
+        singleColumn: singleColumn,
         style: style,
       );
       _selectionMenuService?.show();

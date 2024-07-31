@@ -22,12 +22,14 @@ class SelectionMenu extends SelectionMenuService {
     this.deleteSlashByDefault = true,
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
+    this.singleColumn = false,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final bool singleColumn;
   @override
   final SelectionMenuStyle style;
 
@@ -85,42 +87,41 @@ class SelectionMenu extends SelectionMenuService {
         return SizedBox(
           width: editorWidth,
           height: editorHeight,
-          child: PointerInterceptor(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                dismiss();
-              },
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: top,
-                    bottom: bottom,
-                    left: left,
-                    right: right,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SelectionMenuWidget(
-                        selectionMenuStyle: style,
-                        items: selectionMenuItems
-                          ..forEach((element) {
-                            element.deleteSlash = deleteSlashByDefault;
-                            element.onSelected = () {
-                              dismiss();
-                            };
-                          }),
-                        maxItemInRow: 5,
-                        editorState: editorState,
-                        itemCountFilter: itemCountFilter,
-                        menuService: this,
-                        onExit: () {
-                          dismiss();
-                        },
-                        onSelectionUpdate: () {
-                          _selectionUpdateByInner = true;
-                        },
-                        deleteSlashByDefault: deleteSlashByDefault,
-                      ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              dismiss();
+            },
+            child: Stack(
+              children: [
+                Positioned(
+                  top: top,
+                  bottom: bottom,
+                  left: left,
+                  right: right,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SelectionMenuWidget(
+                      selectionMenuStyle: style,
+                      singleColumn: singleColumn,
+                      items: selectionMenuItems
+                        ..forEach((element) {
+                          element.deleteSlash = deleteSlashByDefault;
+                          element.onSelected = () {
+                            dismiss();
+                          };
+                        }),
+                      maxItemInRow: 5,
+                      editorState: editorState,
+                      itemCountFilter: itemCountFilter,
+                      menuService: this,
+                      onExit: () {
+                        dismiss();
+                      },
+                      onSelectionUpdate: () {
+                        _selectionUpdateByInner = true;
+                      },
+                      deleteSlashByDefault: deleteSlashByDefault,
                     ),
                   ),
                 ],
@@ -350,4 +351,43 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   dividerMenuItem,
   tableMenuItem,
+];
+
+final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.text,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'text',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['text'],
+    handler: (editorState, _, __) {
+      insertNodeAfterSelection(editorState, paragraphNode());
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading1,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h1',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 1, h1'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 1);
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading2,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h2',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 2, h2'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 2);
+    },
+  ),
 ];

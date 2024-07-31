@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
@@ -8,9 +13,6 @@ import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_collapsed_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 /// only used in mobile
 ///
@@ -120,6 +122,7 @@ class _MobileSelectionServiceWidgetState
   @override
   Widget build(BuildContext context) {
     final stack = Stack(
+      clipBehavior: Clip.none,
       children: [
         widget.child,
 
@@ -824,4 +827,17 @@ class _MobileSelectionServiceWidgetState
     }
     return false;
   }
+
+  @override
+  void removeDropTarget() {
+    // Do nothing on mobile
+  }
+
+  @override
+  void renderDropTargetForOffset(Offset offset) {
+    // Do nothing on mobile
+  }
+
+  @override
+  DropTargetRenderData? getDropTargetRenderData(Offset offset) => null;
 }

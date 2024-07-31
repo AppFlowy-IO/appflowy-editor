@@ -84,17 +84,21 @@ mixin NestedBlockComponentStatefulWidgetMixin<
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
       final firstChild = node.children.first;
-      final currentState =
-          firstChild.key.currentState as BlockComponentTextDirectionMixin?;
-      if (currentState != null) {
-        final lastDirection = currentState.lastDirection;
-        direction = calculateNodeDirection(
-          node: firstChild,
-          layoutDirection: direction,
-          defaultTextDirection: editorState.editorStyle.defaultTextDirection,
-          lastDirection: lastDirection,
-        );
+
+      if (firstChild.key.currentState is! BlockComponentTextDirectionMixin) {
+        return EdgeInsets.zero;
       }
+
+      final currentState =
+          firstChild.key.currentState as BlockComponentTextDirectionMixin;
+
+      final lastDirection = currentState.lastDirection;
+      direction = calculateNodeDirection(
+        node: firstChild,
+        layoutDirection: direction,
+        defaultTextDirection: editorState.editorStyle.defaultTextDirection,
+        lastDirection: lastDirection,
+      );
     }
     return configuration.indentPadding(node, direction);
   }
