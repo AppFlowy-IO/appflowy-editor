@@ -122,7 +122,7 @@ class SelectionMenu extends SelectionMenuService {
                       },
                       deleteSlashByDefault: deleteSlashByDefault,
                     ),
-                  ),  
+                  ),
                 ),
               ],
             ),
