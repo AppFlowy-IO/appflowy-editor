@@ -41,7 +41,9 @@ class AppFlowyEditor extends StatefulWidget {
     this.enableAutoComplete = false,
     this.autoCompleteTextProvider,
     this.dropTargetStyle,
-    this.disableSelection = false,
+    this.disableSelectionService = false,
+    this.disableKeyboardService = false,
+    this.disableScrollService = false,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -195,7 +197,19 @@ class AppFlowyEditor extends StatefulWidget {
   final AppFlowyDropTargetStyle? dropTargetStyle;
 
   /// Disable the selection gesture
-  final bool disableSelection;
+  ///
+  /// It will disable the selection service and the context menu.
+  final bool disableSelectionService;
+
+  /// Disable the keyboard service
+  ///
+  /// It will disable all the keyboard shortcuts and the text input.
+  final bool disableKeyboardService;
+
+  /// Disable the scroll service
+  ///
+  /// It will disable the auto scroll feature.
+  final bool disableScrollService;
 
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
@@ -285,19 +299,21 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       footer: widget.footer,
     );
 
-    child = KeyboardServiceWidget(
-      key: editorState.service.keyboardServiceKey,
-      // disable all the shortcuts when the editor is not editable
-      characterShortcutEvents:
-          widget.editable ? widget.characterShortcutEvents : [],
-      // only allow copy and select all when the editor is not editable
-      commandShortcutEvents: widget.commandShortcutEvents,
-      focusNode: widget.focusNode,
-      contentInsertionConfiguration: widget.contentInsertionConfiguration,
-      child: child,
-    );
+    if (!widget.disableKeyboardService) {
+      child = KeyboardServiceWidget(
+        key: editorState.service.keyboardServiceKey,
+        // disable all the shortcuts when the editor is not editable
+        characterShortcutEvents:
+            widget.editable ? widget.characterShortcutEvents : [],
+        // only allow copy and select all when the editor is not editable
+        commandShortcutEvents: widget.commandShortcutEvents,
+        focusNode: widget.focusNode,
+        contentInsertionConfiguration: widget.contentInsertionConfiguration,
+        child: child,
+      );
+    }
 
-    if (widget.disableSelection) {
+    if (!widget.disableSelectionService) {
       child = SelectionServiceWidget(
         key: editorState.service.selectionServiceKey,
         cursorColor: widget.editorStyle.cursorColor,
@@ -309,11 +325,15 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       );
     }
 
-    return ScrollServiceWidget(
-      key: editorState.service.scrollServiceKey,
-      editorScrollController: editorScrollController,
-      child: child,
-    );
+    if (!widget.disableScrollService) {
+      child = ScrollServiceWidget(
+        key: editorState.service.scrollServiceKey,
+        editorScrollController: editorScrollController,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   void _autoFocusIfNeeded() {
