@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
@@ -15,7 +13,7 @@ Future<void> onFloatingCursorUpdate(
   Log.input.debug('onFloatingCursorUpdate: ${point.state}, ${point.offset}');
 
   // support updating the cursor position via the space bar on iOS.
-  if (!Platform.isIOS) {
+  if (!PlatformExtension.isIOS) {
     return;
   }
 

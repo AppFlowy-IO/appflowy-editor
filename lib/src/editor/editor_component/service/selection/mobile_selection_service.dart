@@ -132,7 +132,7 @@ class _MobileSelectionServiceWidgetState
         _buildCollapsedHandle(),
       ],
     );
-    return Platform.isIOS
+    return PlatformExtension.isIOS
         ? MobileSelectionGestureDetector(
             onTapUp: _onTapUpIOS,
             onDoubleTapUp: _onDoubleTapUp,

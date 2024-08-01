@@ -16,6 +16,22 @@ extension PlatformExtension on Platform {
     return Platform.isMacOS;
   }
 
+  /// Returns true if the operating system is Android and not running on Web platform.
+  static bool get isAndroid {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isAndroid;
+  }
+
+  /// Returns true if the operating system is IOS and not running on Web platform.
+  static bool get isIOS {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isIOS;
+  }
+
   /// Returns true if the operating system is Windows and not running on Web platform.
   static bool get isWindows {
     if (kIsWeb) {
