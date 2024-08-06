@@ -4,16 +4,15 @@ final ToolbarItem bulletedListItem = ToolbarItem(
   id: 'editor.bulleted_list',
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor, iconColor) {
+  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'bulleted_list';
-    return SVGIconItemWidget(
+    final child = SVGIconItemWidget(
       iconName: 'toolbar/bulleted_list',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      tooltip: AppFlowyEditorL10n.current.bulletedList,
       onPressed: () => editorState.formatNode(
         selection,
         (node) => node.copyWith(
@@ -21,5 +20,15 @@ final ToolbarItem bulletedListItem = ToolbarItem(
         ),
       ),
     );
+
+    if (tooltipBuilder != null) {
+      return tooltipBuilder(
+        context,
+        AppFlowyEditorL10n.current.bulletedList,
+        child,
+      );
+    }
+
+    return child;
   },
 );
