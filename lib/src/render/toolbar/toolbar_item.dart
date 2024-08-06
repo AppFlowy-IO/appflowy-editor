@@ -31,6 +31,7 @@ class ToolbarItem {
     EditorState editorState,
     Color highlightColor,
     Color? iconColor,
+    ToolbarTooltipBuilder? tooltipBuilder,
   )? builder;
 
   // deprecated

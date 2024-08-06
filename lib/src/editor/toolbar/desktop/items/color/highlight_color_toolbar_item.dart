@@ -5,7 +5,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
     id: 'editor.highlightColor',
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState, highlightColor, iconColor) {
+    builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
       String? highlightColorHex;
 
       final selection = editorState.selection!;
@@ -16,12 +16,12 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
           return highlightColorHex != null;
         });
       });
-      return SVGIconItemWidget(
+
+      final child = SVGIconItemWidget(
         iconName: 'toolbar/highlight_color',
         isHighlight: isHighlight,
         highlightColor: highlightColor,
         iconColor: iconColor,
-        tooltip: AppFlowyEditorL10n.current.highlightColor,
         onPressed: () {
           bool showClearButton = false;
           nodes.allSatisfyInSelection(selection, (delta) {
@@ -47,6 +47,16 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
           );
         },
       );
+
+      if (tooltipBuilder != null) {
+        return tooltipBuilder(
+          context,
+          AppFlowyEditorL10n.current.highlightColor,
+          child,
+        );
+      }
+
+      return child;
     },
   );
 }

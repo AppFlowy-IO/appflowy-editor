@@ -32,7 +32,13 @@ class _FormatToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 2,
           isActive: onlyShowInTextType,
-          builder: (context, editorState, highlightColor, iconColor) {
+          builder: (
+            context,
+            editorState,
+            highlightColor,
+            iconColor,
+            tooltipBuilder,
+          ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
@@ -40,14 +46,24 @@ class _FormatToolbarItem extends ToolbarItem {
                 (attributes) => attributes[name] == true,
               );
             });
-            return SVGIconItemWidget(
+
+            final child = SVGIconItemWidget(
               iconName: 'toolbar/$name',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: getTooltipText(id),
               onPressed: () => editorState.toggleAttribute(name),
             );
+
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(
+                context,
+                getTooltipText(id),
+                child,
+              );
+            }
+
+            return child;
           },
         );
 }

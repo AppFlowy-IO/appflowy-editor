@@ -7,7 +7,7 @@ ToolbarItem buildTextColorItem({
     id: 'editor.textColor',
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState, highlightColor, iconColor) {
+    builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
       String? textColorHex;
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
@@ -17,12 +17,12 @@ ToolbarItem buildTextColorItem({
           return (textColorHex != null);
         });
       });
-      return SVGIconItemWidget(
+
+      final child = SVGIconItemWidget(
         iconName: 'toolbar/text_color',
         isHighlight: isHighlight,
         highlightColor: highlightColor,
         iconColor: iconColor,
-        tooltip: AppFlowyEditorL10n.current.textColor,
         onPressed: () {
           bool showClearButton = false;
           nodes.allSatisfyInSelection(
@@ -51,6 +51,16 @@ ToolbarItem buildTextColorItem({
           );
         },
       );
+
+      if (tooltipBuilder != null) {
+        return tooltipBuilder(
+          context,
+          AppFlowyEditorL10n.current.textColor,
+          child,
+        );
+      }
+
+      return child;
     },
   );
 }
