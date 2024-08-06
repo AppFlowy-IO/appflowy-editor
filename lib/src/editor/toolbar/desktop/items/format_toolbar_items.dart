@@ -58,6 +58,7 @@ class _FormatToolbarItem extends ToolbarItem {
             if (tooltipBuilder != null) {
               return tooltipBuilder(
                 context,
+                id,
                 getTooltipText(id),
                 child,
               );

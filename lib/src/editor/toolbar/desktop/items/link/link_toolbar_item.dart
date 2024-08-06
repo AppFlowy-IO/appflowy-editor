@@ -6,9 +6,10 @@ import 'package:string_validator/string_validator.dart';
 const _menuWidth = 300;
 const _hasTextHeight = 244;
 const _noTextHeight = 150;
+const _kLinkItemId = 'editor.link';
 
 final linkItem = ToolbarItem(
-  id: 'editor.link',
+  id: _kLinkItemId,
   group: 4,
   isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -33,6 +34,7 @@ final linkItem = ToolbarItem(
     if (tooltipBuilder != null) {
       return tooltipBuilder(
         context,
+        _kLinkItemId,
         AppFlowyEditorL10n.current.link,
         child,
       );

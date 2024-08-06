@@ -1,7 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kQuoteItemId = 'editor.quote';
+
 final ToolbarItem quoteItem = ToolbarItem(
-  id: 'editor.quote',
+  id: _kQuoteItemId,
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -24,6 +26,7 @@ final ToolbarItem quoteItem = ToolbarItem(
     if (tooltipBuilder != null) {
       return tooltipBuilder(
         context,
+        _kQuoteItemId,
         AppFlowyEditorL10n.current.quote,
         child,
       );

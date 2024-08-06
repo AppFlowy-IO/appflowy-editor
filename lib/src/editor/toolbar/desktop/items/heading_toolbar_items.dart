@@ -50,6 +50,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             if (tooltipBuilder != null) {
               return tooltipBuilder(
                 context,
+                'editor.h$level',
                 levelToTooltips(level),
                 child,
               );

@@ -1,8 +1,10 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kHighlightColorItemId = 'editor.highlightColor';
+
 ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
   return ToolbarItem(
-    id: 'editor.highlightColor',
+    id: _kHighlightColorItemId,
     group: 4,
     isActive: onlyShowInTextType,
     builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -51,6 +53,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       if (tooltipBuilder != null) {
         return tooltipBuilder(
           context,
+          _kHighlightColorItemId,
           AppFlowyEditorL10n.current.highlightColor,
           child,
         );
