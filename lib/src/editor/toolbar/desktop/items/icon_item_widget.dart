@@ -11,7 +11,6 @@ class SVGIconItemWidget extends StatelessWidget {
     required this.isHighlight,
     required this.highlightColor,
     this.iconColor,
-    this.tooltip,
     this.onPressed,
   });
 
@@ -22,7 +21,6 @@ class SVGIconItemWidget extends StatelessWidget {
   final bool isHighlight;
   final Color highlightColor;
   final Color? iconColor;
-  final String? tooltip;
   final VoidCallback? onPressed;
 
   @override
@@ -49,15 +47,7 @@ class SVGIconItemWidget extends StatelessWidget {
         ),
       );
     }
-    if (tooltip != null) {
-      child = Tooltip(
-        textAlign: TextAlign.center,
-        preferBelow: false,
-        message: tooltip,
-        waitDuration: const Duration(milliseconds: 500),
-        child: child,
-      );
-    }
+
     return SizedBox(
       width: size.width,
       height: size.height,
