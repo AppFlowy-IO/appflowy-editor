@@ -1,7 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kNumberedListItemId = 'editor.numbered_list';
+
 final ToolbarItem numberedListItem = ToolbarItem(
-  id: 'editor.numbered_list',
+  id: _kNumberedListItemId,
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -24,6 +26,7 @@ final ToolbarItem numberedListItem = ToolbarItem(
     if (tooltipBuilder != null) {
       return tooltipBuilder(
         context,
+        _kNumberedListItemId,
         AppFlowyEditorL10n.current.numberedList,
         child,
       );

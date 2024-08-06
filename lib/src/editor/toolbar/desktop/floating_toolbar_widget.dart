@@ -12,6 +12,7 @@ const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
 
 typedef ToolbarTooltipBuilder = Widget Function(
   BuildContext context,
+  String id,
   String message,
   Widget child,
 );

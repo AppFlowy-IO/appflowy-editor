@@ -60,6 +60,7 @@ class _AlignmentToolbarItem extends ToolbarItem {
             if (tooltipBuilder != null) {
               return tooltipBuilder(
                 context,
+                id,
                 getTooltipText(id),
                 child,
               );

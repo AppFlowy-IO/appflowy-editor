@@ -59,6 +59,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
             if (tooltipBuilder != null) {
               return tooltipBuilder(
                 context,
+                id,
                 getTooltipText(id),
                 child,
               );

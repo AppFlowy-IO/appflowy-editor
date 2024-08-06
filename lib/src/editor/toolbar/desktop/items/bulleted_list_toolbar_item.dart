@@ -1,7 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kBulletedListItemId = 'editor.bulleted_list';
+
 final ToolbarItem bulletedListItem = ToolbarItem(
-  id: 'editor.bulleted_list',
+  id: _kBulletedListItemId,
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -24,6 +26,7 @@ final ToolbarItem bulletedListItem = ToolbarItem(
     if (tooltipBuilder != null) {
       return tooltipBuilder(
         context,
+        _kBulletedListItemId,
         AppFlowyEditorL10n.current.bulletedList,
         child,
       );

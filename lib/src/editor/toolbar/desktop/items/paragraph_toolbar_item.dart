@@ -1,7 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kParagraphItemId = 'editor.paragraph';
+
 final ToolbarItem paragraphItem = ToolbarItem(
-  id: 'editor.paragraph',
+  id: _kParagraphItemId,
   group: 1,
   isActive: onlyShowInSingleSelectionAndTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
@@ -32,6 +34,7 @@ final ToolbarItem paragraphItem = ToolbarItem(
     if (tooltipBuilder != null) {
       return tooltipBuilder(
         context,
+        _kParagraphItemId,
         AppFlowyEditorL10n.current.text,
         child,
       );
