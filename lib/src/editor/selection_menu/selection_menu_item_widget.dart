@@ -1,6 +1,6 @@
-import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/editor/selection_menu/selection_menu_service.dart';
 import 'package:appflowy_editor/src/editor/selection_menu/selection_menu_widget.dart';
+import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:flutter/material.dart';
 
 class SelectionMenuItemWidget extends StatefulWidget {
@@ -32,6 +32,7 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
   @override
   Widget build(BuildContext context) {
     final style = widget.selectionMenuStyle;
+    final isSelected = widget.isSelected || _onHover;
     return Container(
       padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 5.0),
       child: SizedBox(
@@ -53,16 +54,18 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
                   )
                 : WidgetStateProperty.all(Colors.transparent),
           ),
-          label: Text(
-            widget.item.name,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: (widget.isSelected || _onHover)
-                  ? style.selectionMenuItemSelectedTextColor
-                  : style.selectionMenuItemTextColor,
-              fontSize: 12.0,
-            ),
-          ),
+          label: widget.item.nameBuilder
+                  ?.call(widget.item.name, style, isSelected) ??
+              Text(
+                widget.item.name,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: (widget.isSelected || _onHover)
+                      ? style.selectionMenuItemSelectedTextColor
+                      : style.selectionMenuItemTextColor,
+                  fontSize: 12.0,
+                ),
+              ),
           onPressed: () {
             widget.item.handler(
               widget.editorState,

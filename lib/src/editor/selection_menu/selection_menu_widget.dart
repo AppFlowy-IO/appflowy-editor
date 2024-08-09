@@ -11,6 +11,12 @@ typedef SelectionMenuItemHandler = void Function(
   BuildContext context,
 );
 
+typedef SelectionMenuItemNameBuilder = Widget Function(
+  String name,
+  SelectionMenuStyle style,
+  bool isSelected,
+);
+
 /// Selection Menu Item
 class SelectionMenuItem {
   SelectionMenuItem({
@@ -18,6 +24,7 @@ class SelectionMenuItem {
     required this.icon,
     required this.keywords,
     required SelectionMenuItemHandler handler,
+    this.nameBuilder,
   }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
       if (deleteSlash) {
@@ -35,6 +42,7 @@ class SelectionMenuItem {
     bool onSelected,
     SelectionMenuStyle style,
   ) icon;
+  final SelectionMenuItemNameBuilder? nameBuilder;
 
   String get name => _getName();
 
@@ -94,6 +102,7 @@ class SelectionMenuItem {
       bool onSelected,
       SelectionMenuStyle style,
     )? iconBuilder,
+    SelectionMenuItemNameBuilder? nameBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
@@ -109,6 +118,7 @@ class SelectionMenuItem {
 
     return SelectionMenuItem(
       getName: getName,
+      nameBuilder: nameBuilder,
       icon: (editorState, onSelected, style) {
         if (iconData != null) {
           return Icon(
@@ -217,6 +227,7 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
     this.singleColumn = false,
+    this.nameBuilder,
   });
 
   final List<SelectionMenuItem> items;
@@ -233,6 +244,8 @@ class SelectionMenuWidget extends StatefulWidget {
 
   final bool deleteSlashByDefault;
   final bool singleColumn;
+
+  final SelectionMenuItemNameBuilder? nameBuilder;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
