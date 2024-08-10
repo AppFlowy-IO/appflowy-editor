@@ -77,5 +77,30 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets('select multiple line should show bullet and number list item',
+        (tester) async {
+      final editor = tester.editor..addParagraphs(3, initialText: text);
+      await editor.startTesting(withFloatingToolbar: true);
+
+      final selection = Selection(
+        start: Position(path: [0], offset: 7),
+        end: Position(path: [2], offset: 3),
+      );
+      await editor.updateSelection(selection);
+
+      final floatingToolbar = find.byType(FloatingToolbarWidget);
+      final bulletListItem = find.byWidgetPredicate(
+        (w) => w is SVGIconItemWidget && w.iconName == 'toolbar/bulleted_list',
+      );
+      final numberListItem = find.byWidgetPredicate(
+        (w) => w is SVGIconItemWidget && w.iconName == 'toolbar/numbered_list',
+      );
+      expect(floatingToolbar, findsOneWidget);
+      expect(bulletListItem, findsOneWidget);
+      expect(numberListItem, findsOneWidget);
+
+      await editor.dispose();
+    });
   });
 }
