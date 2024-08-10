@@ -5,7 +5,7 @@ const _kBulletedListItemId = 'editor.bulleted_list';
 final ToolbarItem bulletedListItem = ToolbarItem(
   id: _kBulletedListItemId,
   group: 3,
-  isActive: onlyShowInSingleSelectionAndTextType,
+  isActive: onlyShowInTextType,
   builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
