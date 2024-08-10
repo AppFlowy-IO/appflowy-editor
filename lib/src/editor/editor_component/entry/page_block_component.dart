@@ -80,7 +80,7 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
       if (footer != null) extentCount++;
 
       return ScrollablePositionedList.builder(
-        shrinkWrap: scrollController.shrinkWrap,
+        shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: items.length + extentCount,
         itemBuilder: (context, index) {
