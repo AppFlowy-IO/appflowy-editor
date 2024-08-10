@@ -44,6 +44,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.disableSelectionService = false,
     this.disableKeyboardService = false,
     this.disableScrollService = false,
+    this.disableAutoScroll = false,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -211,6 +212,10 @@ class AppFlowyEditor extends StatefulWidget {
   /// It will disable the auto scroll feature.
   final bool disableScrollService;
 
+  /// Disable auto scroll
+  ///
+  final bool disableAutoScroll;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -356,6 +361,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.showFooter = widget.footer != null;
     editorState.enableAutoComplete = widget.enableAutoComplete;
     editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
+    editorState.disableAutoScroll = widget.disableAutoScroll;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(
