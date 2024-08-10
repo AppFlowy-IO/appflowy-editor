@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command/copy_paste_extension.dart';
 import 'package:flutter/material.dart';
 
 final List<CommandShortcutEvent> pasteCommands = [
