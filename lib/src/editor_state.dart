@@ -96,6 +96,9 @@ class EditorState {
   /// Whether the editor is editable.
   bool editable = true;
 
+  /// Whether the editor should disable auto scroll.
+  bool disableAutoScroll = false;
+
   /// The style of the editor.
   late EditorStyle editorStyle;
 

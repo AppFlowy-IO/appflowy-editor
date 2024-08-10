@@ -100,6 +100,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     AxisDirection? direction,
     Duration? duration,
   }) {
+    if (editorState.disableAutoScroll) {
+      return;
+    }
+
     autoScroller?.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
@@ -110,6 +114,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void stopAutoScroll() {
+    if (editorState.disableAutoScroll) {
+      return;
+    }
+
     autoScroller?.stopAutoScroll();
   }
 
