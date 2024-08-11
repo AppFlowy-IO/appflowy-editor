@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +8,7 @@ abstract class SelectionMenuService {
   Alignment get alignment;
   SelectionMenuStyle get style;
 
-  void show();
+  Future<void> show();
   void dismiss();
 
   (double? left, double? top, double? right, double? bottom) getPosition();
@@ -59,10 +61,13 @@ class SelectionMenu extends SelectionMenuService {
   }
 
   @override
-  void show() {
+  Future<void> show() async {
+    final completer = Completer<void>();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _show();
+      completer.complete();
     });
+    return completer.future;
   }
 
   void _show() {
