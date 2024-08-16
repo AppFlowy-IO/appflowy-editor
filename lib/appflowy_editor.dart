@@ -5,8 +5,8 @@ library appflowy_editor;
 export 'src/core/core.dart';
 export 'src/editor/block_component/rich_text/appflowy_rich_text.dart';
 export 'src/editor/block_component/rich_text/appflowy_rich_text_keys.dart';
-// legacy
 export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
+export 'src/editor/block_component/table_block_component/table.dart';
 // editor part, including editor component, block component, etc.
 export 'src/editor/editor.dart';
 export 'src/editor/find_replace_menu/find_and_replace.dart';

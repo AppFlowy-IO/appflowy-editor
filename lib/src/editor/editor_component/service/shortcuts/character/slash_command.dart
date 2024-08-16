@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -97,7 +99,11 @@ Future<bool> _showSlashMenu(
       singleColumn: singleColumn,
       style: style,
     );
-    await _selectionMenuService?.show();
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      _selectionMenuService?.show();
+    } else {
+      await _selectionMenuService?.show();
+    }
   }
 
   if (shouldInsertSlash) {
