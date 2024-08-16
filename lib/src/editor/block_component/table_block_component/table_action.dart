@@ -128,50 +128,48 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
 void _addRow(Node tableNode, int position, EditorState editorState) async {
   assert(position >= 0);
 
-  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
-      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen];
+  final int colsLen = tableNode.attributes[TableBlockKeys.colsLen];
+
+  final transaction = editorState.transaction;
 
   for (var i = 0; i < colsLen; i++) {
+    final firstCellInCol = getCellNode(tableNode, i, 0);
+    final colBgColor =
+        firstCellInCol?.attributes[TableCellBlockKeys.colBackgroundColor];
+    final containsColBgColor = colBgColor != null;
+
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
         TableCellBlockKeys.colPosition: i,
         TableCellBlockKeys.rowPosition: position,
+        if (containsColBgColor)
+          TableCellBlockKeys.colBackgroundColor: colBgColor,
       },
+      children: [paragraphNode()],
     );
-    node.insert(paragraphNode());
-    final firstCellInCol = getCellNode(tableNode, i, 0);
-    if (firstCellInCol?.attributes
-            .containsKey(TableCellBlockKeys.colBackgroundColor) ??
-        false) {
-      node.updateAttributes({
-        TableCellBlockKeys.colBackgroundColor:
-            firstCellInCol!.attributes[TableCellBlockKeys.colBackgroundColor],
-      });
-    }
 
-    late Path insertPath;
+    final Path insertPath;
     if (position == 0) {
       insertPath = getCellNode(tableNode, i, 0)!.path;
     } else {
       insertPath = getCellNode(tableNode, i, position - 1)!.path.next;
     }
 
-    final transaction = editorState.transaction;
     if (position != rowsLen) {
       for (var j = position; j < rowsLen; j++) {
         final node = getCellNode(tableNode, i, j)!;
         transaction.updateNode(node, {TableCellBlockKeys.rowPosition: j + 1});
       }
     }
+
     transaction.insertNode(
       insertPath,
       newCellNode(tableNode, node),
     );
-    await editorState.apply(transaction, withUpdateSelection: false);
   }
 
-  final transaction = editorState.transaction;
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
   await editorState.apply(transaction, withUpdateSelection: false);
 }
