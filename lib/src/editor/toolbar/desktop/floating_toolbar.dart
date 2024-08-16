@@ -31,6 +31,7 @@ class FloatingToolbar extends StatefulWidget {
     required this.textDirection,
     required this.child,
     this.style = const FloatingToolbarStyle(),
+    this.tooltipBuilder,
   });
 
   final List<ToolbarItem> items;
@@ -39,6 +40,7 @@ class FloatingToolbar extends StatefulWidget {
   final TextDirection? textDirection;
   final Widget child;
   final FloatingToolbarStyle style;
+  final ToolbarTooltipBuilder? tooltipBuilder;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -200,6 +202,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       toolbarShadowColor: widget.style.toolbarShadowColor,
       textDirection: widget.textDirection ?? Directionality.of(context),
       maxWidth: maxWidth,
+      tooltipBuilder: widget.tooltipBuilder,
     );
     return _toolbarWidget!;
   }

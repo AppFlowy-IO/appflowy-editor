@@ -82,6 +82,22 @@ abstract class AppFlowySelectionService {
     DragEndDetails details,
     MobileSelectionDragMode mode,
   );
+
+  /// Draws a horizontal line between the nearest nodes to the [offset].
+  ///
+  /// The [offset] must be under the global coordinate system.
+  ///
+  /// Should call [removeDropTarget] to remove the line once drop is done.
+  ///
+  void renderDropTargetForOffset(Offset offset);
+
+  /// Removes the horizontal line drawn by [renderDropTargetForOffset].
+  ///
+  void removeDropTarget();
+
+  /// Returns the [DropTargetRenderData] for the [offset].
+  ///
+  DropTargetRenderData? getDropTargetRenderData(Offset offset);
 }
 
 class SelectionGestureInterceptor {
@@ -101,4 +117,29 @@ class SelectionGestureInterceptor {
   bool Function(DragStartDetails details)? canPanStart;
   bool Function(DragUpdateDetails details)? canPanUpdate;
   bool Function(DragEndDetails details)? canPanEnd;
+}
+
+/// Data returned when calling [renderDropTargetForOffset]
+///
+/// Includes the [Node] which the drop target is rendered for
+/// and the [Node] which the cursor is directly hovering over.
+///
+class DropTargetRenderData {
+  const DropTargetRenderData({this.dropTarget, this.cursorNode});
+
+  /// The [Node] which the drop is rendered for,
+  /// this is also the [Node] in which any content should be
+  /// inserted into.
+  ///
+  final Node? dropTarget;
+
+  /// The [Node] which the cursor is directly hovering over,
+  /// this might be the same as [dropTarget] but might also
+  /// be another [Node] if the cursor is between two [Node]s.
+  ///
+  /// This is useful in case you want to cancel or pause the drop
+  /// for specific [Node]s, in case they as example implement their
+  /// own drop logic.
+  ///
+  final Node? cursorNode;
 }

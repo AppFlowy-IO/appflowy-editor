@@ -35,7 +35,7 @@ dependencies:
   html: ^0.15.0
   intl: ^0.19.0
   intl_utils: ^2.8.2
-  keyboard_height_plugin: ^0.0.4
+  keyboard_height_plugin: ^0.1.5
   logging: ^1.2.0
   markdown: ^7.2.1
   nanoid: ^1.0.0
@@ -51,6 +51,7 @@ dependencies:
   printing: ^5.11.1
   url_launcher: ^6.1.11
   visibility_detector: ^0.4.0+2
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:
