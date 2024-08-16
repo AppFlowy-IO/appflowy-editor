@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
