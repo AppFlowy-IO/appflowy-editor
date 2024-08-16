@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import '../new/infra/testable_editor.dart';
 
 void main() async {
