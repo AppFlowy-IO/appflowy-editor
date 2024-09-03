@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -397,7 +396,7 @@ class _DesktopSelectionServiceWidgetState
 
     final baseOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final offset = details.globalPosition + const Offset(10, 10) - baseOffset;
+    final offset = details.localPosition + const Offset(10, 10) + baseOffset;
     final contextMenu = OverlayEntry(
       builder: (context) => ContextMenu(
         position: offset,
