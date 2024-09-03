@@ -242,7 +242,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         ),
       );
       // disable shortcuts when the IME active
-      enableShortcuts = textEditingValue.composing == TextRange.empty;
+      //  or the composing text range is collapsed.
+      enableShortcuts = textEditingValue.composing == TextRange.empty ||
+          textEditingValue.composing.isCollapsed;
     } else {
       enableShortcuts = true;
     }
