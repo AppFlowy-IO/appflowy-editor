@@ -12,44 +12,59 @@ class TableNode {
   TableNode({
     required this.node,
   }) : _config = TableConfig.fromJson(node.attributes) {
-    assert(node.type == TableBlockKeys.type);
-    assert(node.attributes.containsKey(TableBlockKeys.colsLen));
-    assert(node.attributes[TableBlockKeys.colsLen] is int);
-    assert(node.attributes.containsKey(TableBlockKeys.rowsLen));
-    assert(node.attributes[TableBlockKeys.rowsLen] is int);
+    if (node.type != TableBlockKeys.type) {
+      Log.editor.debug('TableNode: node is not a table');
+      return;
+    }
 
-    assert(node.attributes[TableBlockKeys.rowDefaultHeight] != null);
-    assert(node.attributes[TableBlockKeys.colMinimumWidth] != null);
-    assert(node.attributes[TableBlockKeys.colDefaultWidth] != null);
+    final attributes = node.attributes;
+    final colsLen = attributes[TableBlockKeys.colsLen];
+    final rowsLen = attributes[TableBlockKeys.rowsLen];
 
-    final int colsCount = node.attributes[TableBlockKeys.colsLen];
-    final int rowsCount = node.attributes[TableBlockKeys.rowsLen];
-    assert(node.children.length == colsCount * rowsCount);
-    assert(
-      node.children.every(
-        (n) =>
-            n.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
-            n.attributes.containsKey(TableCellBlockKeys.colPosition),
-      ),
-    );
-    assert(
-      node.children.every(
-        (n) =>
-            n.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
-            n.attributes.containsKey(TableCellBlockKeys.colPosition),
-      ),
-    );
+    if (colsLen == null ||
+        rowsLen == null ||
+        colsLen is! int ||
+        rowsLen is! int) {
+      Log.editor.debug(
+        'TableNode: colsLen or rowsLen is not an integer or null',
+      );
+      return;
+    }
 
-    for (var i = 0; i < colsCount; i++) {
+    if (node.children.length != colsLen * rowsLen) {
+      Log.editor.debug(
+        'TableNode: the number of children is not equal to the number of cells',
+      );
+      return;
+    }
+
+    // every cell should has rowPosition and colPosition to indicate its position in the table
+    for (final child in node.children) {
+      if (!child.attributes.containsKey(TableCellBlockKeys.rowPosition) ||
+          !child.attributes.containsKey(TableCellBlockKeys.colPosition)) {
+        Log.editor.debug('TableNode: cell has no rowPosition or colPosition');
+        return;
+      }
+    }
+
+    for (var i = 0; i < colsLen; i++) {
       _cells.add([]);
-      for (var j = 0; j < rowsCount; j++) {
-        final cell = node.children.where(
-          (n) =>
-              n.attributes[TableCellBlockKeys.colPosition] == i &&
-              n.attributes[TableCellBlockKeys.rowPosition] == j,
-        );
-        assert(cell.length == 1);
-        _cells[i].add(newCellNode(node, cell.first));
+      for (var j = 0; j < rowsLen; j++) {
+        final cell = node.children
+            .where(
+              (n) =>
+                  n.attributes[TableCellBlockKeys.colPosition] == i &&
+                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+            )
+            .firstOrNull;
+
+        if (cell == null) {
+          Log.editor.debug('TableNode: cell is empty');
+          _cells.clear();
+          return;
+        }
+
+        _cells[i].add(newCellNode(node, cell));
       }
     }
   }
