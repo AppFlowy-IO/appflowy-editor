@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
-import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
   const DesktopSelectionServiceWidget({
@@ -16,12 +14,14 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
     this.selectionColor = const Color(0xFF00BCF0),
     this.contextMenuItems,
     required this.child,
+    this.dropTargetStyle = const AppFlowyDropTargetStyle(),
   });
 
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
   final List<List<ContextMenuItem>>? contextMenuItems;
+  final AppFlowyDropTargetStyle dropTargetStyle;
 
   @override
   State<DesktopSelectionServiceWidget> createState() =>
@@ -51,6 +51,8 @@ class _DesktopSelectionServiceWidgetState
   double? _panStartScrollDy;
 
   Position? _panStartPosition;
+
+  OverlayEntry? _dropTargetEntry;
 
   late EditorState editorState = Provider.of<EditorState>(
     context,
@@ -85,7 +87,7 @@ class _DesktopSelectionServiceWidgetState
     WidgetsBinding.instance.removeObserver(this);
     editorState.selectionNotifier.removeListener(_updateSelection);
     currentSelection.dispose();
-
+    removeDropTarget();
     super.dispose();
   }
 
@@ -294,7 +296,7 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    _panStartOffset = details.globalPosition.translate(-3.0, 0);
+    _panStartOffset = details.globalPosition.translate(-5.0, 0);
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
     _panStartPosition = getNodeInOffset(_panStartOffset!)
@@ -394,7 +396,7 @@ class _DesktopSelectionServiceWidgetState
 
     final baseOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final offset = details.globalPosition + const Offset(10, 10) - baseOffset;
+    final offset = details.localPosition + const Offset(10, 10) + baseOffset;
     final contextMenu = OverlayEntry(
       builder: (context) => ContextMenu(
         position: offset,
@@ -405,7 +407,7 @@ class _DesktopSelectionServiceWidgetState
     );
 
     _contextMenuAreas.add(contextMenu);
-    Overlay.of(context, rootOverlay: true)?.insert(contextMenu);
+    Overlay.of(context, rootOverlay: true).insert(contextMenu);
   }
 
   @override
@@ -416,5 +418,94 @@ class _DesktopSelectionServiceWidgetState
   @override
   void unregisterGestureInterceptor(String key) {
     _interceptors.removeWhere((element) => element.key == key);
+  }
+
+  @override
+  void removeDropTarget() {
+    _dropTargetEntry?.remove();
+    _dropTargetEntry = null;
+  }
+
+  @override
+  void renderDropTargetForOffset(Offset offset) {
+    removeDropTarget();
+
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      return;
+    }
+
+    final blockRect = selectable.getBlockRect();
+    final startRect = blockRect.topLeft;
+    final endRect = blockRect.bottomLeft;
+
+    final renderBox = selectable.context.findRenderObject() as RenderBox;
+    final globalStartRect = renderBox.localToGlobal(startRect);
+    final globalEndRect = renderBox.localToGlobal(endRect);
+
+    final topDistance = (globalStartRect - offset).distanceSquared;
+    final bottomDistance = (globalEndRect - offset).distanceSquared;
+
+    final isCloserToStart = topDistance < bottomDistance;
+
+    _dropTargetEntry = OverlayEntry(
+      builder: (context) {
+        final overlayRenderBox =
+            Overlay.of(context).context.findRenderObject() as RenderBox;
+        final editorRenderBox =
+            selectable.context.findRenderObject() as RenderBox;
+
+        final editorOffset = editorRenderBox.localToGlobal(
+          Offset.zero,
+          ancestor: overlayRenderBox,
+        );
+
+        final indicatorTop =
+            (isCloserToStart ? startRect.dy : endRect.dy) + editorOffset.dy;
+
+        final width = blockRect.topRight.dx - startRect.dx;
+        return Positioned(
+          top: indicatorTop,
+          left: startRect.dx + editorOffset.dx,
+          child: Container(
+            height: widget.dropTargetStyle.height,
+            width: width,
+            margin: widget.dropTargetStyle.margin,
+            constraints: widget.dropTargetStyle.constraints,
+            decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(widget.dropTargetStyle.borderRadius),
+              color: widget.dropTargetStyle.color,
+            ),
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context).insert(_dropTargetEntry!);
+  }
+
+  @override
+  DropTargetRenderData? getDropTargetRenderData(Offset offset) {
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+    if (selectable == null) {
+      return null;
+    }
+
+    final blockRect = selectable.getBlockRect();
+    final startRect = blockRect.topLeft;
+    final endRect = blockRect.bottomLeft;
+
+    final startDistance = (startRect - offset).distance;
+    final endDistance = (endRect - offset).distance;
+
+    final isCloserToStart = startDistance < endDistance;
+
+    return DropTargetRenderData(
+      dropTarget: isCloserToStart ? node : node?.next ?? node,
+      cursorNode: node,
+    );
   }
 }

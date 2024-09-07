@@ -12,18 +12,23 @@ class _HeadingToolbarItem extends ToolbarItem {
           id: 'editor.h$level',
           group: 1,
           isActive: onlyShowInSingleSelectionAndTextType,
-          builder: (context, editorState, highlightColor, iconColor) {
+          builder: (
+            context,
+            editorState,
+            highlightColor,
+            iconColor,
+            tooltipBuilder,
+          ) {
             final selection = editorState.selection!;
             final node = editorState.getNodeAtPath(selection.start.path)!;
             final isHighlight =
                 node.type == 'heading' && node.attributes['level'] == level;
             final delta = (node.delta ?? Delta()).toJson();
-            return SVGIconItemWidget(
+            final child = SVGIconItemWidget(
               iconName: 'toolbar/h$level',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: levelToTooltips(level),
               onPressed: () => editorState.formatNode(
                 selection,
                 (node) => node.copyWith(
@@ -41,6 +46,17 @@ class _HeadingToolbarItem extends ToolbarItem {
                 ),
               ),
             );
+
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(
+                context,
+                'editor.h$level',
+                levelToTooltips(level),
+                child,
+              );
+            }
+
+            return child;
           },
         );
 

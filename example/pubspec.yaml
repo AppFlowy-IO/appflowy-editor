@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
 
   appflowy_editor:
-    path: ../
+
   provider: ^6.0.3
   url_launcher: ^6.1.5
   path_provider: ^2.0.15
@@ -43,6 +43,13 @@ dependencies:
   highlight: ^0.7.0
   http: ^1.1.0
   show_fps: ^1.0.6
+  printing: ^5.11.1
+  appflowy_editor_plugins: ^0.0.6
+  markdown:
+
+dependency_overrides:
+  appflowy_editor:
+    path: ../
 
 dev_dependencies:
   flutter_test:

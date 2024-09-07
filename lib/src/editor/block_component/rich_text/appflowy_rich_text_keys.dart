@@ -20,6 +20,7 @@ class AppFlowyRichTextKeys {
     strikethrough,
     textColor,
     backgroundColor,
+    code,
   ];
 
   // The values supported toggled even if the selection is collapsed.

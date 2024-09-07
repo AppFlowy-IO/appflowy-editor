@@ -10,6 +10,13 @@ const floatingToolbarContainerKey =
 @visibleForTesting
 const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
 
+typedef ToolbarTooltipBuilder = Widget Function(
+  BuildContext context,
+  String id,
+  String message,
+  Widget child,
+);
+
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -21,6 +28,7 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.textDirection,
+    this.tooltipBuilder,
   });
 
   final List<ToolbarItem> items;
@@ -31,6 +39,7 @@ class FloatingToolbarWidget extends StatefulWidget {
   final Color? toolbarShadowColor;
   final EditorState editorState;
   final TextDirection textDirection;
+  final ToolbarTooltipBuilder? tooltipBuilder;
 
   @override
   State<FloatingToolbarWidget> createState() => _FloatingToolbarWidgetState();
@@ -57,21 +66,22 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             textDirection: widget.textDirection,
-            children: activeItems
-                .mapIndexed(
-                  (index, item) => Center(
-                    key: Key(
-                      '${floatingToolbarItemPrefixKey}_${item.id}_$index',
-                    ),
-                    child: item.builder!(
-                      context,
-                      widget.editorState,
-                      widget.toolbarActiveColor,
-                      widget.toolbarIconColor,
-                    ),
+            children: activeItems.mapIndexed(
+              (index, item) {
+                return Center(
+                  key: Key(
+                    '${floatingToolbarItemPrefixKey}_${item.id}_$index',
                   ),
-                )
-                .toList(growable: false),
+                  child: item.builder!(
+                    context,
+                    widget.editorState,
+                    widget.toolbarActiveColor,
+                    widget.toolbarIconColor,
+                    widget.tooltipBuilder,
+                  ),
+                );
+              },
+            ).toList(growable: false),
           ),
         ),
       ),

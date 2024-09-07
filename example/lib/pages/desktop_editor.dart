@@ -74,6 +74,13 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ...textDirectionItems,
         ...alignmentItems,
       ],
+      tooltipBuilder: (context, _, message, child) {
+        return Tooltip(
+          message: message,
+          preferBelow: false,
+          child: child,
+        );
+      },
       editorState: editorState,
       textDirection: widget.textDirection,
       editorScrollController: editorScrollController,

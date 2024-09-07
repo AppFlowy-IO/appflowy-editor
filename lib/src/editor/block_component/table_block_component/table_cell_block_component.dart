@@ -27,6 +27,19 @@ typedef TableBlockCellComponentColorBuilder = Color? Function(
   Node node,
 );
 
+Node tableCellNode(String text, int rowPosition, int colPosition) {
+  return Node(
+    type: TableCellBlockKeys.type,
+    attributes: {
+      TableCellBlockKeys.rowPosition: rowPosition,
+      TableCellBlockKeys.colPosition: colPosition,
+    },
+    children: [
+      paragraphNode(text: text),
+    ],
+  );
+}
+
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
     super.configuration,

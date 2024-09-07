@@ -158,7 +158,23 @@ extension PositionExtension on Position {
     // In this case, we can manually skip to the previous/next node position
     // by translating the new offset by the padding slice to skip.
     // Note that the padding slice to skip can exceed the node's bounds.
-    final maxSkip = upwards ? padding.top : padding.bottom;
+
+    // The skip is calculated as the sum of:
+    // - the top/bottom padding of the current node to skip to the edge of
+    //    the node content rect
+    // - the top/bottom editorStyle's padding to skip the current node's
+    //    padding
+    // - the bottom/top editorStyle's padding to skip the previous/next node's
+    //    padding
+
+    // Note that editorStyle's top and bottom padding does not change by the
+    // node, so we can shorten the calculation by using the editorStyle's
+    // vertical padding.
+    final globalVerticalPadding = editorState.editorStyle.padding.vertical;
+
+    final maxSkip = upwards
+        ? padding.top + globalVerticalPadding
+        : padding.bottom + globalVerticalPadding;
 
     // Translate the new offset by the padding slice to skip.
     newOffset = newOffset.translate(0, upwards ? -maxSkip : maxSkip);

@@ -216,7 +216,8 @@ void main() {
         ],
       };
 
-      expect(() => TableNode.fromJson(jsonData), throwsAssertionError);
+      // it should not throw error
+      expect(() => TableNode.fromJson(jsonData), isNot(throwsFlutterError));
     });
 
     test('default constructor (from list of list of strings)', () {

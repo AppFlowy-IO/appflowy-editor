@@ -28,18 +28,23 @@ class _TextDirectionToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 7,
           isActive: onlyShowInTextType,
-          builder: (context, editorState, highlightColor, iconColor) {
+          builder: (
+            context,
+            editorState,
+            highlightColor,
+            iconColor,
+            tooltipBuilder,
+          ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every(
               (n) => n.attributes[blockComponentTextDirection] == name,
             );
-            return SVGIconItemWidget(
+            final child = SVGIconItemWidget(
               iconName: 'toolbar/$iconName',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: getTooltipText(id),
               onPressed: () => editorState.updateNode(
                 selection,
                 (node) => node.copyWith(
@@ -50,6 +55,17 @@ class _TextDirectionToolbarItem extends ToolbarItem {
                 ),
               ),
             );
+
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(
+                context,
+                id,
+                getTooltipText(id),
+                child,
+              );
+            }
+
+            return child;
           },
         );
 }

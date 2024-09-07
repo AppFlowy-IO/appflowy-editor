@@ -84,9 +84,11 @@ mixin NestedBlockComponentStatefulWidgetMixin<
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
       final firstChild = node.children.first;
-      final currentState =
-          firstChild.key.currentState as BlockComponentTextDirectionMixin?;
-      if (currentState != null) {
+
+      if (firstChild.key.currentState is BlockComponentTextDirectionMixin) {
+        final currentState =
+            firstChild.key.currentState as BlockComponentTextDirectionMixin;
+
         final lastDirection = currentState.lastDirection;
         direction = calculateNodeDirection(
           node: firstChild,
