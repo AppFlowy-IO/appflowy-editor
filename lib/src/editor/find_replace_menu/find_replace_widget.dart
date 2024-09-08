@@ -253,7 +253,8 @@ class _FindMenuState extends State<FindMenu> {
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('previousMatchButton'),
           onPressed: () {
-            Future.delayed(const Duration(milliseconds: 1), () {
+            // work around to request focus back to the input field
+            Future.delayed(const Duration(milliseconds: 10), () {
               FocusScope.of(context).requestFocus(
                 findTextFieldFocusNode,
               );
