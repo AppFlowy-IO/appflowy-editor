@@ -252,7 +252,15 @@ class _FindMenuState extends State<FindMenu> {
         // previous match button
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('previousMatchButton'),
-          onPressed: () => widget.searchService.navigateToMatch(moveUp: true),
+          onPressed: () {
+            // work around to request focus back to the input field
+            Future.delayed(const Duration(milliseconds: 10), () {
+              FocusScope.of(context).requestFocus(
+                findTextFieldFocusNode,
+              );
+            });
+            widget.searchService.navigateToMatch(moveUp: true);
+          },
           icon: const Icon(Icons.arrow_upward),
           tooltip: widget.localizations?.previousMatch ??
               AppFlowyEditorL10n.current.previousMatch,
@@ -260,7 +268,14 @@ class _FindMenuState extends State<FindMenu> {
         // next match button
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('nextMatchButton'),
-          onPressed: () => widget.searchService.navigateToMatch(),
+          onPressed: () {
+            Future.delayed(const Duration(milliseconds: 10), () {
+              FocusScope.of(context).requestFocus(
+                findTextFieldFocusNode,
+              );
+            });
+            widget.searchService.navigateToMatch();
+          },
           icon: const Icon(Icons.arrow_downward),
           tooltip: widget.localizations?.nextMatch ??
               AppFlowyEditorL10n.current.nextMatch,
