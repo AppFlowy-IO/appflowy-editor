@@ -32,6 +32,14 @@ extension PlatformExtension on Platform {
     return Platform.isLinux;
   }
 
+  /// Returns true if the operating system is iOS and not running on Web platform.
+  static bool get isIOS {
+    if (kIsWeb) {
+      return false;
+    }
+    return Platform.isIOS;
+  }
+
   /// Returns true if the operating system is macOS and running on Web platform.
   static bool get isWebOnMacOS {
     if (!kIsWeb) {

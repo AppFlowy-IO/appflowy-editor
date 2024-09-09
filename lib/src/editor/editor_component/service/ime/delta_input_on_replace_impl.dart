@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
@@ -29,7 +27,7 @@ Future<void> onReplace(
       return;
     }
 
-    if (Platform.isIOS) {
+    if (PlatformExtension.isIOS) {
       // remove the trailing '\n' when pressing the return key
       if (replacement.replacementText.endsWith('\n')) {
         replacement = TextEditingDeltaReplacement(
