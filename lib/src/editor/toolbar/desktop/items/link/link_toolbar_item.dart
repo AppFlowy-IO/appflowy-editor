@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/link/link_menu.dart';
+import 'package:appflowy_editor/src/editor/util/link_util.dart';
 import 'package:flutter/material.dart';
-import 'package:string_validator/string_validator.dart';
 
 const _menuWidth = 300;
 const _hasTextHeight = 244;
@@ -95,7 +95,7 @@ void showLinkMenu(
           await safeLaunchUrl(linkText);
         },
         onSubmitted: (text) async {
-          if (isURL(text)) {
+          if (isUri(text)) {
             await editorState.formatDelta(selection, {
               BuiltInAttributeKey.href: text,
             });
