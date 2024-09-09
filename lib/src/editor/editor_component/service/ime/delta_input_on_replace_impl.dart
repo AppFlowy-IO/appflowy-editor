@@ -29,7 +29,7 @@ Future<void> onReplace(
       return;
     }
 
-    if (Platform.isIOS) {
+    if (PlatformExtension.isIOS) {
       // remove the trailing '\n' when pressing the return key
       if (replacement.replacementText.endsWith('\n')) {
         replacement = TextEditingDeltaReplacement(
