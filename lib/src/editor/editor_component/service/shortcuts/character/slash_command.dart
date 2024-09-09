@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Show the slash menu
@@ -99,7 +100,7 @@ Future<bool> _showSlashMenu(
       singleColumn: singleColumn,
       style: style,
     );
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
       _selectionMenuService?.show();
     } else {
       await _selectionMenuService?.show();
