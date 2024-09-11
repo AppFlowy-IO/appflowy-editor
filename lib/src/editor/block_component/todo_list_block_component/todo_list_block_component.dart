@@ -82,8 +82,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   bool validate(Node node) {
-    return node.delta != null &&
-        node.attributes[TodoListBlockKeys.checked] is bool;
+    return node.delta != null;
   }
 }
 
@@ -135,7 +134,8 @@ class _TodoListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
+  bool get checked =>
+      widget.node.attributes[TodoListBlockKeys.checked] ?? false;
 
   @override
   Widget buildComponent(
