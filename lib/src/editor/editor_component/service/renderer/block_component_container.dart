@@ -32,7 +32,8 @@ class BlockComponentContainerState extends State<BlockComponentContainer> {
       value: widget.node,
       child: Consumer<Node>(
         builder: (_, __, ___) {
-          Log.editor.debug('node is rebuilding...: type: ${widget.node.type} ');
+          AppFlowyEditorLog.editor
+              .debug('node is rebuilding...: type: ${widget.node.type} ');
           return CompositedTransformTarget(
             link: widget.node.layerLink,
             child: widget.builder(context),

@@ -113,14 +113,15 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   bool validate(Node node) {
     // check the node is valid
     if (node.attributes.isEmpty) {
-      Log.editor.debug('TableBlockComponentBuilder: node is empty');
+      AppFlowyEditorLog.editor
+          .debug('TableBlockComponentBuilder: node is empty');
       return false;
     }
 
     // check the node has rowPosition and colPosition
     if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
         !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
-      Log.editor.debug(
+      AppFlowyEditorLog.editor.debug(
         'TableBlockComponentBuilder: node has no colsLen or rowsLen',
       );
       return false;
@@ -132,12 +133,13 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
     // check its children
     final children = node.children;
     if (children.isEmpty) {
-      Log.editor.debug('TableBlockComponentBuilder: children is empty');
+      AppFlowyEditorLog.editor
+          .debug('TableBlockComponentBuilder: children is empty');
       return false;
     }
 
     if (children.length != colsLen * rowsLen) {
-      Log.editor.debug(
+      AppFlowyEditorLog.editor.debug(
         'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
       );
       return false;
@@ -152,7 +154,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
               n.attributes[TableCellBlockKeys.rowPosition] == j,
         );
         if (child.isEmpty) {
-          Log.editor.debug(
+          AppFlowyEditorLog.editor.debug(
             'TableBlockComponentBuilder: child($i, $j) is empty',
           );
           return false;
@@ -160,7 +162,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
 
         // should only contains one child
         if (child.length != 1) {
-          Log.editor.debug(
+          AppFlowyEditorLog.editor.debug(
             'TableBlockComponentBuilder: child($i, $j) is not unique',
           );
           return false;

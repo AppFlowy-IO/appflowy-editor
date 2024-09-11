@@ -147,7 +147,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final length = _children.length;
     index ??= length;
 
-    Log.editor.debug('insert Node $entry at path ${path + [index]}}');
+    AppFlowyEditorLog.editor
+        .debug('insert Node $entry at path ${path + [index]}}');
 
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
@@ -202,7 +203,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     if (parent == null || list == null) {
       return false;
     }
-    Log.editor.debug('delete Node $this from path $path');
+    AppFlowyEditorLog.editor.debug('delete Node $this from path $path');
     super.unlink();
 
     parent?._cacheChildren = null;
