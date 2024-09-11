@@ -81,12 +81,12 @@ class _MobileScrollServiceState extends State<MobileScrollService>
 
   @override
   void disable() {
-    Log.scroll.debug('disable scroll service');
+    AppFlowyEditorLog.scroll.debug('disable scroll service');
   }
 
   @override
   void enable() {
-    Log.scroll.debug('enable scroll service');
+    AppFlowyEditorLog.scroll.debug('enable scroll service');
   }
 
   @override

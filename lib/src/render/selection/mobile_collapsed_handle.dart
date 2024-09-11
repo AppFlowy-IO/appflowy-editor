@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +22,13 @@ class MobileCollapsedHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (PlatformExtension.isIOS) {
       return _IOSCollapsedHandle(
         layerLink: layerLink,
         rect: rect,
         handleWidth: handleWidth,
       );
-    } else if (Platform.isAndroid) {
+    } else if (PlatformExtension.isAndroid) {
       return _AndroidCollapsedHandle(
         layerLink: layerLink,
         rect: rect,

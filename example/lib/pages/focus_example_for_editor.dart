@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class FocusExampleForEditor extends StatefulWidget {
   const FocusExampleForEditor({super.key});
@@ -18,7 +19,7 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
   void initState() {
     super.initState();
 
-    final jsonString = PlatformExtension.isDesktopOrWeb
+    final jsonString = UniversalPlatform.isDesktopOrWeb
         ? rootBundle.loadString('assets/example.json')
         : rootBundle.loadString('assets/mobile_example.json');
     editorState = jsonString.then((value) {

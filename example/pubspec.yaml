@@ -46,6 +46,7 @@ dependencies:
   printing: ^5.11.1
   appflowy_editor_plugins: ^0.0.6
   markdown:
+  universal_platform: ^1.1.0
 
 dependency_overrides:
   appflowy_editor:

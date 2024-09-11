@@ -1,8 +1,7 @@
-import 'package:flutter/services.dart';
-
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../infra/testable_editor.dart';
 

@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/character_shortcut_event_helper.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
 
 Future<void> onReplace(
@@ -8,7 +9,7 @@ Future<void> onReplace(
   EditorState editorState,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
-  Log.input.debug('onReplace: $replacement');
+  AppFlowyEditorLog.input.debug('onReplace: $replacement');
 
   // delete the selection
   final selection = editorState.selection;

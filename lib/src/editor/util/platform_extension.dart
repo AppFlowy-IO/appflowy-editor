@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:universal_html/html.dart' show window;
+import 'package:universal_platform/universal_platform.dart';
 
 // TODO(Xazin): Refactor to honor `Theme.platform`
 extension PlatformExtension on Platform {
@@ -9,36 +10,19 @@ extension PlatformExtension on Platform {
       window.navigator.platform?.toLowerCase() ?? '';
 
   /// Returns true if the operating system is macOS and not running on Web platform.
-  static bool get isMacOS {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isMacOS;
-  }
+  static bool get isMacOS => UniversalPlatform.isMacOS;
 
   /// Returns true if the operating system is Windows and not running on Web platform.
-  static bool get isWindows {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isWindows;
-  }
+  static bool get isWindows => UniversalPlatform.isWindows;
 
   /// Returns true if the operating system is Linux and not running on Web platform.
-  static bool get isLinux {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isLinux;
-  }
+  static bool get isLinux => UniversalPlatform.isLinux;
 
   /// Returns true if the operating system is iOS and not running on Web platform.
-  static bool get isIOS {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isIOS;
-  }
+  static bool get isIOS => UniversalPlatform.isIOS;
+
+  /// Returns true if the operating system is Android and not running on Web platform.
+  static bool get isAndroid => UniversalPlatform.isAndroid;
 
   /// Returns true if the operating system is macOS and running on Web platform.
   static bool get isWebOnMacOS {
@@ -64,31 +48,12 @@ extension PlatformExtension on Platform {
     return _webPlatform.contains('linux') == true;
   }
 
-  static bool get isDesktopOrWeb {
-    if (kIsWeb) {
-      return true;
-    }
-    return isDesktop;
-  }
+  static bool get isDesktopOrWeb =>
+      UniversalPlatform.isWeb || UniversalPlatform.isDesktop;
 
-  static bool get isDesktop {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
-  }
+  static bool get isDesktop => UniversalPlatform.isDesktop;
 
-  static bool get isMobile {
-    if (kIsWeb) {
-      return false;
-    }
-    return Platform.isAndroid || Platform.isIOS;
-  }
+  static bool get isMobile => UniversalPlatform.isMobile;
 
-  static bool get isNotMobile {
-    if (kIsWeb) {
-      return false;
-    }
-    return !isMobile;
-  }
+  static bool get isNotMobile => !isMobile;
 }
