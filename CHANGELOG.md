@@ -1,3 +1,14 @@
+## 3.3.0
+
+- feat: support moving cursor using keyboard gesture by @LucasXu0 in [#879](https://github.com/AppFlowy-IO/appflowy-editor/pull/879)
+- feat: support more link types by @SillyCoon in [#876](https://github.com/AppFlowy-IO/appflowy-editor/pull/876)
+- fix: regain focus after navigation arrows are used by @MayurSMahajan in [#878](https://github.com/AppFlowy-IO/appflowy-editor/pull/878)
+- fix: unsupported platform error on web by @kkundi in [#881](https://github.com/AppFlowy-IO/appflowy-editor/pull/881)
+- fix: platform.environment is not supported on web by @LucasXu0 in [#882](https://github.com/AppFlowy-IO/appflowy-editor/pull/882)
+- fix: document getting first or last node exception by @Linij in [#885](https://github.com/AppFlowy-IO/appflowy-editor/pull/885)
+- chore: remove todolist validation and set checked as false by default by @LucasXu0 in [#883](https://github.com/AppFlowy-IO/appflowy-editor/pull/883)
+- chore: hide Log and PlatformExtension by @LucasXu0 in [#886](https://github.com/AppFlowy-IO/appflowy-editor/pull/886)
+
 ## 3.2.0
 
 - feat: customize shortcuts in readonly mode by @LucasXu0 in [#840](https://github.com/AppFlowy-IO/appflowy-editor/pull/840)
