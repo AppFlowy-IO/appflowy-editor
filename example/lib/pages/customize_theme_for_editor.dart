@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class CustomizeThemeForEditor extends StatefulWidget {
   const CustomizeThemeForEditor({super.key});
@@ -21,7 +22,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   void initState() {
     super.initState();
 
-    final jsonString = PlatformExtension.isDesktopOrWeb
+    final jsonString = UniversalPlatform.isDesktopOrWeb
         ? rootBundle.loadString('assets/example.json')
         : rootBundle.loadString('assets/mobile_example.json');
     editorState = jsonString.then((value) {
@@ -152,7 +153,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   /// custom the text style
   EditorStyle customizeEditorStyle() {
     return EditorStyle(
-      padding: PlatformExtension.isDesktopOrWeb
+      padding: UniversalPlatform.isDesktopOrWeb
           ? const EdgeInsets.only(left: 200, right: 200)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,

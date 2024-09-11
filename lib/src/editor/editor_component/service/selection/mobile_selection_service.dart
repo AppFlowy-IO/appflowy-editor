@@ -1,18 +1,16 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_collapsed_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 /// only used in mobile
 ///
@@ -135,7 +133,7 @@ class _MobileSelectionServiceWidgetState
         _buildCollapsedHandle(),
       ],
     );
-    return Platform.isIOS
+    return PlatformExtension.isIOS
         ? MobileSelectionGestureDetector(
             onTapUp: _onTapUpIOS,
             onDoubleTapUp: _onDoubleTapUp,
@@ -310,7 +308,7 @@ class _MobileSelectionServiceWidgetState
     if (selection != null) {
       if (!selection.isCollapsed) {
         // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
+        AppFlowyEditorLog.selection.debug('update cursor area, $selection');
         _updateSelectionAreas(selection);
       }
     }
@@ -401,7 +399,7 @@ class _MobileSelectionServiceWidgetState
     if (selection != null) {
       if (!selection.isCollapsed) {
         // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
+        AppFlowyEditorLog.selection.debug('update cursor area, $selection');
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           selectionRects.clear();
           _clearSelection();
@@ -772,7 +770,8 @@ class _MobileSelectionServiceWidgetState
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
-    Log.selection.debug('update selection areas, $normalizedSelection');
+    AppFlowyEditorLog.selection
+        .debug('update selection areas, $normalizedSelection');
 
     for (var i = 0; i < backwardNodes.length; i++) {
       final node = backwardNodes[i];

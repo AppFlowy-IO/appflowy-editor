@@ -56,7 +56,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     }
 
     if (nodes.isEmpty) {
-      Log.editor.debug(
+      AppFlowyEditorLog.editor.debug(
         'empty result from node: $mdNode, text: ${mdNode.textContent}',
       );
     }

@@ -56,7 +56,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
         delta.insert(domNode.text);
       } else {
-        Log.editor.debug('Unknown node type: $domNode');
+        AppFlowyEditorLog.editor.debug('Unknown node type: $domNode');
       }
     }
     if (delta.isNotEmpty) {

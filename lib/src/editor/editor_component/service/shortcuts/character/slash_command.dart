@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

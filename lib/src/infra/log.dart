@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
 
-enum LogLevel {
+enum AppFlowyEditorLogLevel {
   off,
   error,
   warn,
@@ -9,13 +9,13 @@ enum LogLevel {
   all,
 }
 
-typedef LogHandler = void Function(String message);
+typedef AppFlowyEditorLogHandler = void Function(String message);
 
 /// Manages log service for [AppFlowyEditor]
 ///
 /// Set the log level and config the handler depending on your need.
-class LogConfiguration {
-  LogConfiguration._() {
+class AppFlowyLogConfiguration {
+  AppFlowyLogConfiguration._() {
     Logger.root.onRecord.listen((record) {
       if (handler != null) {
         handler!(
@@ -25,24 +25,25 @@ class LogConfiguration {
     });
   }
 
-  factory LogConfiguration() => _logConfiguration;
+  factory AppFlowyLogConfiguration() => _logConfiguration;
 
-  static final LogConfiguration _logConfiguration = LogConfiguration._();
+  static final AppFlowyLogConfiguration _logConfiguration =
+      AppFlowyLogConfiguration._();
 
-  LogHandler? handler;
+  AppFlowyEditorLogHandler? handler;
 
-  LogLevel _level = LogLevel.off;
+  AppFlowyEditorLogLevel _level = AppFlowyEditorLogLevel.off;
 
-  LogLevel get level => _level;
-  set level(LogLevel level) {
+  AppFlowyEditorLogLevel get level => _level;
+  set level(AppFlowyEditorLogLevel level) {
     _level = level;
     Logger.root.level = level.toLevel();
   }
 }
 
 /// For logging message in AppFlowyEditor
-class Log {
-  Log._({
+class AppFlowyEditorLog {
+  AppFlowyEditorLog._({
     required this.name,
   }) : _logger = Logger(name);
 
@@ -53,37 +54,37 @@ class Log {
   ///
   /// For example, uses the logger when registering plugins
   ///   or handling something related to [EditorState].
-  static Log editor = Log._(name: 'editor');
+  static AppFlowyEditorLog editor = AppFlowyEditorLog._(name: 'editor');
 
   /// For logging message related to [AppFlowySelectionService].
   ///
   /// For example, uses the logger when updating or clearing selection.
-  static Log selection = Log._(name: 'selection');
+  static AppFlowyEditorLog selection = AppFlowyEditorLog._(name: 'selection');
 
   /// For logging message related to [AppFlowyKeyboardService].
   ///
   /// For example, uses the logger when processing shortcut events.
-  static Log keyboard = Log._(name: 'keyboard');
+  static AppFlowyEditorLog keyboard = AppFlowyEditorLog._(name: 'keyboard');
 
   /// For logging message related to [AppFlowyInputService].
   ///
   /// For example, uses the logger when processing text inputs.
-  static Log input = Log._(name: 'input');
+  static AppFlowyEditorLog input = AppFlowyEditorLog._(name: 'input');
 
   /// For logging message related to [AppFlowyScrollService].
   ///
   /// For example, uses the logger when processing scroll events.
-  static Log scroll = Log._(name: 'scroll');
+  static AppFlowyEditorLog scroll = AppFlowyEditorLog._(name: 'scroll');
 
   /// For logging message related to [FloatingToolbar] or [MobileToolbar].
   ///
   /// For example, uses the logger when processing toolbar events.
-  static Log toolbar = Log._(name: 'toolbar');
+  static AppFlowyEditorLog toolbar = AppFlowyEditorLog._(name: 'toolbar');
 
   /// For logging message related to UI.
   ///
   /// For example, uses the logger when building the widget.
-  static Log ui = Log._(name: 'ui');
+  static AppFlowyEditorLog ui = AppFlowyEditorLog._(name: 'ui');
 
   void error(String message) => _logger.severe(message);
   void warn(String message) => _logger.warning(message);
@@ -91,53 +92,53 @@ class Log {
   void debug(String message) => _logger.fine(message);
 }
 
-extension on LogLevel {
+extension on AppFlowyEditorLogLevel {
   Level toLevel() {
     switch (this) {
-      case LogLevel.off:
+      case AppFlowyEditorLogLevel.off:
         return Level.OFF;
-      case LogLevel.error:
+      case AppFlowyEditorLogLevel.error:
         return Level.SEVERE;
-      case LogLevel.warn:
+      case AppFlowyEditorLogLevel.warn:
         return Level.WARNING;
-      case LogLevel.info:
+      case AppFlowyEditorLogLevel.info:
         return Level.INFO;
-      case LogLevel.debug:
+      case AppFlowyEditorLogLevel.debug:
         return Level.FINE;
-      case LogLevel.all:
+      case AppFlowyEditorLogLevel.all:
         return Level.ALL;
     }
   }
 
   String get name {
     switch (this) {
-      case LogLevel.off:
+      case AppFlowyEditorLogLevel.off:
         return 'OFF';
-      case LogLevel.error:
+      case AppFlowyEditorLogLevel.error:
         return 'ERROR';
-      case LogLevel.warn:
+      case AppFlowyEditorLogLevel.warn:
         return 'WARN';
-      case LogLevel.info:
+      case AppFlowyEditorLogLevel.info:
         return 'INFO';
-      case LogLevel.debug:
+      case AppFlowyEditorLogLevel.debug:
         return 'DEBUG';
-      case LogLevel.all:
+      case AppFlowyEditorLogLevel.all:
         return 'ALL';
     }
   }
 }
 
 extension on Level {
-  LogLevel toLogLevel() {
+  AppFlowyEditorLogLevel toLogLevel() {
     if (this == Level.SEVERE) {
-      return LogLevel.error;
+      return AppFlowyEditorLogLevel.error;
     } else if (this == Level.WARNING) {
-      return LogLevel.warn;
+      return AppFlowyEditorLogLevel.warn;
     } else if (this == Level.INFO) {
-      return LogLevel.info;
+      return AppFlowyEditorLogLevel.info;
     } else if (this == Level.FINE) {
-      return LogLevel.debug;
+      return AppFlowyEditorLogLevel.debug;
     }
-    return LogLevel.off;
+    return AppFlowyEditorLogLevel.off;
   }
 }

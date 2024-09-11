@@ -65,7 +65,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       ..show();
     currentTextEditingValue = formattedValue;
 
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       'attach text editing value: $textEditingValue',
     );
   }
@@ -79,7 +79,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void updateEditingValueWithDeltas(List<TextEditingDelta> textEditingDeltas) {
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       textEditingDeltas.map((delta) => delta.toString()).toString(),
     );
     apply(textEditingDeltas);

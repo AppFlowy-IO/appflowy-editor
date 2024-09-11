@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,7 +92,7 @@ class DragHandle extends _IDragHandle {
   Widget build(BuildContext context) {
     Widget child;
 
-    if (Platform.isIOS) {
+    if (PlatformExtension.isIOS) {
       child = _IOSDragHandle(
         handleHeight: handleHeight,
         handleColor: handleColor,
@@ -101,7 +101,7 @@ class DragHandle extends _IDragHandle {
         handleType: handleType,
         debugPaintSizeEnabled: debugPaintSizeEnabled,
       );
-    } else if (Platform.isAndroid) {
+    } else if (PlatformExtension.isAndroid) {
       child = _AndroidDragHandle(
         handleHeight: handleHeight,
         handleColor: handleColor,
@@ -122,7 +122,7 @@ class DragHandle extends _IDragHandle {
     }
 
     if (handleType != HandleType.none && handleType != HandleType.collapsed) {
-      final offset = Platform.isIOS ? -handleWidth : 0.0;
+      final offset = PlatformExtension.isIOS ? -handleWidth : 0.0;
       child = Stack(
         clipBehavior: Clip.none,
         children: [

@@ -280,7 +280,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         )
         .toList(growable: false);
 
-    Log.ui.debug('$items');
+    AppFlowyEditorLog.ui.debug('$items');
 
     if (keyword.length >= maxKeywordLength + 2 &&
         !(widget.deleteSlashByDefault && _searchCounter < 2)) {
@@ -462,7 +462,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    Log.keyboard.debug('slash command, on key $event');
+    AppFlowyEditorLog.keyboard.debug('slash command, on key $event');
 
     if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;

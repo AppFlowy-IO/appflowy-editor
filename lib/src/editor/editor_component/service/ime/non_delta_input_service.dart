@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
 
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
@@ -84,7 +85,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     currentTextEditingValue = formattedValue;
 
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       'attach text editing value: $textEditingValue',
     );
   }
@@ -135,13 +136,13 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   Future<void> performAction(TextInputAction action) async {
-    Log.editor.debug('performAction: $action');
+    AppFlowyEditorLog.editor.debug('performAction: $action');
     return onPerformAction(action);
   }
 
   @override
   void performPrivateCommand(String action, Map<String, dynamic> data) {
-    Log.editor.debug('performPrivateCommand: $action, $data');
+    AppFlowyEditorLog.editor.debug('performPrivateCommand: $action, $data');
   }
 
   @override
@@ -166,7 +167,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void performSelector(String selectorName) {
-    Log.editor.debug('performSelector: $selectorName');
+    AppFlowyEditorLog.editor.debug('performSelector: $selectorName');
   }
 
   @override

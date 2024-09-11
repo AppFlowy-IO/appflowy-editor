@@ -205,7 +205,8 @@ extension TextTransaction on Transaction {
     }
 
     if (index < 0 || index > delta.length) {
-      Log.editor.info('The index($index) is out of range or negative.');
+      AppFlowyEditorLog.editor
+          .info('The index($index) is out of range or negative.');
       return;
     }
 

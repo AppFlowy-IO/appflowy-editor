@@ -176,12 +176,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       if (shortcutEvent.canRespondToRawKeyEvent(event)) {
         final result = shortcutEvent.handler(editorState);
         if (result == KeyEventResult.handled) {
-          Log.keyboard.debug(
+          AppFlowyEditorLog.keyboard.debug(
             'keyboard service - handled by command shortcut event: $shortcutEvent',
           );
           return KeyEventResult.handled;
         } else if (result == KeyEventResult.skipRemainingHandlers) {
-          Log.keyboard.debug(
+          AppFlowyEditorLog.keyboard.debug(
             'keyboard service - skip by command shortcut event: $shortcutEvent',
           );
           return KeyEventResult.skipRemainingHandlers;
@@ -219,7 +219,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
       if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         focusNode.requestFocus();
-        Log.editor.debug('keyboard service - request focus');
+        AppFlowyEditorLog.editor.debug('keyboard service - request focus');
       }
     }
 
@@ -282,7 +282,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onFocusChanged() {
-    Log.editor.debug(
+    AppFlowyEditorLog.editor.debug(
       'keyboard service - focus changed: ${focusNode.hasFocus}}',
     );
 
@@ -307,7 +307,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onKeepEditorFocusChanged() {
-    Log.editor.debug(
+    AppFlowyEditorLog.editor.debug(
       'keyboard service - on keep editor focus changed: ${keepEditorFocusNotifier.value}}',
     );
 

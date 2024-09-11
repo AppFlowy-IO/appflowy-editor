@@ -47,7 +47,6 @@ class _MobileEditorState extends State<MobileEditor> {
 
   @override
   Widget build(BuildContext context) {
-    assert(PlatformExtension.isMobile);
     return MobileToolbarV2(
       toolbarHeight: 48.0,
       toolbarItems: [

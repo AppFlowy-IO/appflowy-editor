@@ -7,16 +7,16 @@ void activateLog() {
   if (!_enableLog) {
     return;
   }
-  LogConfiguration()
+  AppFlowyLogConfiguration()
     ..handler = debugPrint
-    ..level = LogLevel.all;
+    ..level = AppFlowyEditorLogLevel.all;
 }
 
 void deactivateLog() {
   if (!_enableLog) {
     return;
   }
-  LogConfiguration()
+  AppFlowyLogConfiguration()
     ..handler = null
-    ..level = LogLevel.off;
+    ..level = AppFlowyEditorLogLevel.off;
 }

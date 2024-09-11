@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// the type of this value is bool.
 ///
@@ -148,7 +148,7 @@ class EditorState {
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
   /// with this variable.
-  LogConfiguration get logConfiguration => LogConfiguration();
+  AppFlowyLogConfiguration get logConfiguration => AppFlowyLogConfiguration();
 
   /// Stores the selection menu items.
   List<SelectionMenuItem> selectionMenuItems = [];
@@ -531,7 +531,7 @@ class EditorState {
       }
       undoItem.afterSelection = transaction.afterSelection;
       if (skipDebounce && undoManager.undoStack.isNonEmpty) {
-        Log.editor.debug('Seal history item');
+        AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
         last.seal();
       } else {
@@ -553,7 +553,7 @@ class EditorState {
     _debouncedSealHistoryItemTimer?.cancel();
     _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
       if (undoManager.undoStack.isNonEmpty) {
-        Log.editor.debug('Seal history item');
+        AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
         last.seal();
       }
@@ -562,7 +562,7 @@ class EditorState {
 
   void _applyTransactionInLocal(Transaction transaction) {
     for (final op in transaction.operations) {
-      Log.editor.debug('apply op (local): ${op.toJson()}');
+      AppFlowyEditorLog.editor.debug('apply op (local): ${op.toJson()}');
 
       if (op is InsertOperation) {
         document.insert(op.path, op.nodes);
@@ -583,7 +583,7 @@ class EditorState {
     var selection = this.selection;
 
     for (final op in transaction.operations) {
-      Log.editor.debug('apply op (remote): ${op.toJson()}');
+      AppFlowyEditorLog.editor.debug('apply op (remote): ${op.toJson()}');
 
       if (op is InsertOperation) {
         document.insert(op.path, op.nodes);

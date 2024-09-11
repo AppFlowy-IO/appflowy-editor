@@ -92,7 +92,7 @@ void pasteHTML(EditorState editorState, String html) {
     return;
   }
 
-  Log.keyboard.debug('paste html: $html');
+  AppFlowyEditorLog.keyboard.debug('paste html: $html');
 
   final htmlToNodes = htmlToDocument(html).root.children.where((element) {
     final delta = element.delta;

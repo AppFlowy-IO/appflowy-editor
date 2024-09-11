@@ -59,7 +59,6 @@ class _DesktopEditorState extends State<DesktopEditor> {
 
   @override
   Widget build(BuildContext context) {
-    assert(PlatformExtension.isDesktopOrWeb);
     return FloatingToolbar(
       items: [
         paragraphItem,
