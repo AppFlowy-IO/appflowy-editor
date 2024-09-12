@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -148,11 +147,17 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       padding: const EdgeInsets.only(top: 10.0, right: 4.0),
       child: Draggable<Node>(
         data: node,
-        feedback: IntrinsicWidth(
-          child: IntrinsicHeight(
-            child: Provider.value(
-              value: context.read<EditorState>(),
-              child: widget.builder.build(blockComponentContext),
+        feedback: Opacity(
+          opacity: 0.7,
+          child: Material(
+            color: Colors.transparent,
+            child: IntrinsicWidth(
+              child: IntrinsicHeight(
+                child: Provider.value(
+                  value: context.read<EditorState>(),
+                  child: widget.builder.build(blockComponentContext),
+                ),
+              ),
             ),
           ),
         ),
