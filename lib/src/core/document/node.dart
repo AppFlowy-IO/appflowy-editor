@@ -1,8 +1,9 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 
 abstract class NodeExternalValues {
@@ -225,11 +226,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   String toString() {
-    return '''Node(id: $id,
-    type: $type,
-    attributes: $attributes,
-    children: $children,
-    )''';
+    return 'Node(id: $id, type: $type, attributes: $attributes, children: $children)';
   }
 
   Delta? get delta {

@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:example/pages/drag_to_reorder_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -93,6 +94,9 @@ class _DesktopEditorState extends State<DesktopEditor> {
           editorStyle: editorStyle,
           enableAutoComplete: true,
           autoCompleteTextProvider: _buildAutoCompleteTextProvider,
+          dropTargetStyle: const AppFlowyDropTargetStyle(
+            color: Colors.red,
+          ),
           header: Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Image.asset(
@@ -164,6 +168,16 @@ class _DesktopEditorState extends State<DesktopEditor> {
       value.configuration = value.configuration.copyWith(
         padding: (_) => const EdgeInsets.symmetric(vertical: 8.0),
       );
+
+      if (key != PageBlockKeys.type) {
+        value.showActions = (_) => true;
+        value.actionBuilder = (context, actionState) {
+          return DragToReorderAction(
+            blockComponentContext: context,
+            builder: value,
+          );
+        };
+      }
     });
     return map;
   }
