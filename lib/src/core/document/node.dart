@@ -225,11 +225,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   String toString() {
-    return '''Node(id: $id,
-    type: $type,
-    attributes: $attributes,
-    children: $children,
-    )''';
+    return 'Node(id: $id, type: $type, attributes: $attributes, children: $children)';
   }
 
   Delta? get delta {

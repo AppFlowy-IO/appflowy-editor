@@ -9,6 +9,7 @@ class BlockComponentConfiguration {
     this.placeholderText = _placeholderText,
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
+    this.enableDragToReorder = false,
   });
 
   /// The padding of a block component.
@@ -35,17 +36,22 @@ class BlockComponentConfiguration {
   /// It inherits the style from [textStyle].
   final TextStyle Function(Node node) placeholderTextStyle;
 
+  /// Whether the block component can be dragged to reorder.
+  final bool enableDragToReorder;
+
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
     TextStyle Function(Node node)? textStyle,
     String Function(Node node)? placeholderText,
     TextStyle Function(Node node)? placeholderTextStyle,
+    bool? enableDragToReorder,
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
       textStyle: textStyle ?? this.textStyle,
       placeholderText: placeholderText ?? this.placeholderText,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
+      enableDragToReorder: enableDragToReorder ?? this.enableDragToReorder,
     );
   }
 }
