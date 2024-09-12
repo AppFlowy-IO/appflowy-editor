@@ -35,14 +35,6 @@ class BlockComponentContainer extends StatelessWidget {
       ),
     );
 
-    // if (configuration.enableDragToReorder) {
-    //   return Draggable<Node>(
-    //     data: node,
-    //     feedback: child,
-    //     child: child,
-    //   );
-    // }
-
     return child;
   }
 }

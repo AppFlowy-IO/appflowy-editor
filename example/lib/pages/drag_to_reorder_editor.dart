@@ -63,12 +63,9 @@ class _DragToReorderEditorState extends State<DragToReorderEditor> {
 
       // only customize the todo list block
       if (entry.key == TodoListBlockKeys.type) {
-        builder.configuration = builder.configuration.copyWith(
-          enableDragToReorder: true,
-        );
         builder.showActions = (_) => true;
         builder.actionBuilder = (context, actionState) {
-          return _DragToReorderAction(
+          return DragToReorderAction(
             blockComponentContext: context,
             builder: builder,
           );
@@ -112,8 +109,9 @@ class _DragToReorderEditorState extends State<DragToReorderEditor> {
   }
 }
 
-class _DragToReorderAction extends StatefulWidget {
-  const _DragToReorderAction({
+class DragToReorderAction extends StatefulWidget {
+  const DragToReorderAction({
+    super.key,
     required this.blockComponentContext,
     required this.builder,
   });
@@ -122,10 +120,10 @@ class _DragToReorderAction extends StatefulWidget {
   final BlockComponentBuilder builder;
 
   @override
-  State<_DragToReorderAction> createState() => _DragToReorderActionState();
+  State<DragToReorderAction> createState() => _DragToReorderActionState();
 }
 
-class _DragToReorderActionState extends State<_DragToReorderAction> {
+class _DragToReorderActionState extends State<DragToReorderAction> {
   late final Node node;
   late final BlockComponentContext blockComponentContext;
 
