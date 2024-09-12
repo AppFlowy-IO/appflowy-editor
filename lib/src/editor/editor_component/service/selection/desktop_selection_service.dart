@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class DesktopSelectionServiceWidget extends StatefulWidget {
@@ -497,13 +498,19 @@ class _DesktopSelectionServiceWidgetState
     final startRect = blockRect.topLeft;
     final endRect = blockRect.bottomLeft;
 
-    final startDistance = (startRect - offset).distance;
-    final endDistance = (endRect - offset).distance;
+    final renderBox = selectable.context.findRenderObject() as RenderBox;
+    final globalStartRect = renderBox.localToGlobal(startRect);
+    final globalEndRect = renderBox.localToGlobal(endRect);
 
-    final isCloserToStart = startDistance < endDistance;
+    final topDistance = (globalStartRect - offset).distanceSquared;
+    final bottomDistance = (globalEndRect - offset).distanceSquared;
+
+    final isCloserToStart = topDistance < bottomDistance;
+
+    final dropPath = isCloserToStart ? node?.path : node?.path.next;
 
     return DropTargetRenderData(
-      dropTarget: isCloserToStart ? node : node?.next ?? node,
+      dropPath: dropPath ?? node?.path,
       cursorNode: node,
     );
   }

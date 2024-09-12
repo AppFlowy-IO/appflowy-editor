@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -127,7 +128,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
   late final Node node;
   late final BlockComponentContext blockComponentContext;
 
-  Node? acceptedNode;
+  Offset? globalPosition;
 
   @override
   void initState() {
@@ -160,24 +161,27 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
           context.read<EditorState>().selectionService.removeDropTarget();
         },
         onDragUpdate: (details) {
+          context
+              .read<EditorState>()
+              .selectionService
+              .renderDropTargetForOffset(details.globalPosition);
+
+          globalPosition = details.globalPosition;
+        },
+        onDragEnd: (details) {
+          context.read<EditorState>().selectionService.removeDropTarget();
+
+          if (globalPosition == null) {
+            return;
+          }
+
           final data = context
               .read<EditorState>()
               .selectionService
-              .getDropTargetRenderData(details.globalPosition);
-          if (data != null && data.dropTarget != null) {
-            context
-                .read<EditorState>()
-                .selectionService
-                .renderDropTargetForOffset(details.globalPosition);
-            acceptedNode = data.cursorNode;
-          } else {
-            context.read<EditorState>().selectionService.removeDropTarget();
-          }
-        },
-        onDragEnd: (details) {
-          debugPrint('onDragEnd, acceptedNode: $acceptedNode');
-          context.read<EditorState>().selectionService.removeDropTarget();
-          _moveNodeToNewPosition(node, acceptedNode);
+              .getDropTargetRenderData(globalPosition!);
+          final acceptedPath = data?.dropPath;
+          debugPrint('onDragEnd, acceptedPath($acceptedPath)');
+          _moveNodeToNewPosition(node, acceptedPath);
         },
         child: const Icon(
           Icons.drag_indicator_rounded,
@@ -187,22 +191,17 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     );
   }
 
-  Future<void> _moveNodeToNewPosition(Node node, Node? acceptedNode) async {
-    if (acceptedNode == null) {
-      debugPrint('acceptedNode is null');
+  Future<void> _moveNodeToNewPosition(Node node, Path? acceptedPath) async {
+    if (acceptedPath == null) {
+      debugPrint('acceptedPath is null');
       return;
     }
 
-    if (acceptedNode.id == node.id || acceptedNode.next?.id == node.id) {
-      debugPrint('ignore the same position move');
-      return;
-    }
-
-    debugPrint('move node($node) to position of node($acceptedNode)');
+    debugPrint('move node($node) to path($acceptedPath)');
 
     final editorState = context.read<EditorState>();
     final transaction = editorState.transaction;
-    transaction.insertNode(acceptedNode.path.next, node.copyWith());
+    transaction.insertNode(acceptedPath, node.copyWith());
     transaction.deleteNode(widget.blockComponentContext.node);
     await editorState.apply(transaction);
   }

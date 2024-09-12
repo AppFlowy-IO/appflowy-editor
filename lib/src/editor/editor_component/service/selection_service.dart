@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
@@ -124,13 +125,13 @@ class SelectionGestureInterceptor {
 /// and the [Node] which the cursor is directly hovering over.
 ///
 class DropTargetRenderData {
-  const DropTargetRenderData({this.dropTarget, this.cursorNode});
+  const DropTargetRenderData({this.dropPath, this.cursorNode});
 
   /// The [Node] which the drop is rendered for,
   /// this is also the [Node] in which any content should be
   /// inserted into.
   ///
-  final Node? dropTarget;
+  final List<int>? dropPath;
 
   /// The [Node] which the cursor is directly hovering over,
   /// this might be the same as [dropTarget] but might also
@@ -144,6 +145,6 @@ class DropTargetRenderData {
 
   @override
   String toString() {
-    return 'DropTargetRenderData(dropTarget: $dropTarget, cursorNode: $cursorNode)';
+    return 'DropTargetRenderData(dropPath: $dropPath, cursorNode: $cursorNode)';
   }
 }
