@@ -8,6 +8,7 @@ import 'package:example/pages/auto_complete_editor.dart';
 import 'package:example/pages/collab_editor.dart';
 import 'package:example/pages/collab_selection_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
+import 'package:example/pages/drag_to_reorder_editor.dart';
 import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
 import 'package:example/pages/fixed_toolbar_editor.dart';
@@ -167,6 +168,14 @@ class _HomePageState extends State<HomePage> {
 
           // Theme Demo
           _buildSeparator(context, 'Showcases'),
+          _buildListTile(context, 'Drag to reorder', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DragToReorderEditor(),
+              ),
+            );
+          }),
           _buildListTile(context, 'Markdown Editor', () {
             Navigator.push(
               context,

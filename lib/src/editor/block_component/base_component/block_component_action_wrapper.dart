@@ -40,6 +40,23 @@ class _BlockComponentActionWrapperState
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    if (forceShowBlockAction) {
+      alwaysShowActions = true;
+      showActionsNotifier.value = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    showActionsNotifier.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (_) => showActionsNotifier.value = true,

@@ -498,13 +498,19 @@ class _DesktopSelectionServiceWidgetState
     final startRect = blockRect.topLeft;
     final endRect = blockRect.bottomLeft;
 
-    final startDistance = (startRect - offset).distance;
-    final endDistance = (endRect - offset).distance;
+    final renderBox = selectable.context.findRenderObject() as RenderBox;
+    final globalStartRect = renderBox.localToGlobal(startRect);
+    final globalEndRect = renderBox.localToGlobal(endRect);
 
-    final isCloserToStart = startDistance < endDistance;
+    final topDistance = (globalStartRect - offset).distanceSquared;
+    final bottomDistance = (globalEndRect - offset).distanceSquared;
+
+    final isCloserToStart = topDistance < bottomDistance;
+
+    final dropPath = isCloserToStart ? node?.path : node?.path.next;
 
     return DropTargetRenderData(
-      dropTarget: isCloserToStart ? node : node?.next ?? node,
+      dropPath: dropPath ?? node?.path,
       cursorNode: node,
     );
   }
