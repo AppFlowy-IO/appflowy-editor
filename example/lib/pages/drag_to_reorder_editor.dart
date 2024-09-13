@@ -126,6 +126,7 @@ class DragToReorderAction extends StatefulWidget {
 class _DragToReorderActionState extends State<DragToReorderAction> {
   late final Node node;
   late final BlockComponentContext blockComponentContext;
+  late final EditorState editorState = context.read<EditorState>();
 
   Offset? globalPosition;
 
@@ -147,50 +148,42 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       padding: const EdgeInsets.only(top: 10.0, right: 4.0),
       child: Draggable<Node>(
         data: node,
-        feedback: Opacity(
-          opacity: 0.7,
-          child: Material(
-            color: Colors.transparent,
-            child: IntrinsicWidth(
-              child: IntrinsicHeight(
-                child: Provider.value(
-                  value: context.read<EditorState>(),
-                  child: widget.builder.build(blockComponentContext),
-                ),
-              ),
-            ),
-          ),
-        ),
+        feedback: _buildFeedback(),
         onDragStarted: () {
           debugPrint('onDragStarted');
-          context.read<EditorState>().selectionService.removeDropTarget();
+          editorState.selectionService.removeDropTarget();
         },
         onDragUpdate: (details) {
-          context
-              .read<EditorState>()
-              .selectionService
-              .renderDropTargetForOffset(details.globalPosition);
+          editorState.selectionService.renderDropTargetForOffset(
+            details.globalPosition,
+          );
 
           globalPosition = details.globalPosition;
+
+          editorState.scrollService?.startAutoScroll(details.globalPosition);
         },
         onDragEnd: (details) {
-          context.read<EditorState>().selectionService.removeDropTarget();
+          editorState.selectionService.removeDropTarget();
 
           if (globalPosition == null) {
             return;
           }
 
-          final data = context
-              .read<EditorState>()
-              .selectionService
-              .getDropTargetRenderData(globalPosition!);
+          final data = editorState.selectionService.getDropTargetRenderData(
+            globalPosition!,
+          );
           final acceptedPath = data?.dropPath;
+
           debugPrint('onDragEnd, acceptedPath($acceptedPath)');
+
           _moveNodeToNewPosition(node, acceptedPath);
         },
-        child: const Icon(
-          Icons.drag_indicator_rounded,
-          size: 18,
+        child: const MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: Icon(
+            Icons.drag_indicator_rounded,
+            size: 18,
+          ),
         ),
       ),
     );
@@ -206,8 +199,41 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
 
     final editorState = context.read<EditorState>();
     final transaction = editorState.transaction;
-    transaction.insertNode(acceptedPath, node.copyWith());
-    transaction.deleteNode(widget.blockComponentContext.node);
+    transaction.moveNode(acceptedPath, widget.blockComponentContext.node);
     await editorState.apply(transaction);
+  }
+
+  Widget _buildFeedback() {
+    Widget child;
+    if (node.type == TableBlockKeys.type) {
+      // unable to render table block without provider/context
+      // render a placeholder instead
+      child = Container(
+        width: 200,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text('Table'),
+      );
+    } else {
+      child = IntrinsicWidth(
+        child: IntrinsicHeight(
+          child: Provider.value(
+            value: editorState,
+            child: widget.builder.build(blockComponentContext),
+          ),
+        ),
+      );
+    }
+
+    return Opacity(
+      opacity: 0.7,
+      child: Material(
+        color: Colors.transparent,
+        child: child,
+      ),
+    );
   }
 }
