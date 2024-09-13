@@ -12,15 +12,20 @@ Future<void> onInsert(
 
   final textInserted = insertion.textInserted;
 
-  // character shortcut events
-  final execution = await executeCharacterShortcutEvent(
-    editorState,
-    textInserted,
-    characterShortcutEvents,
-  );
+  // In France, the backtick key is used to toggle a character style.
+  // We should prevent the execution of character shortcut events when the
+  // composing range is not collapsed.
+  if (insertion.composing.isCollapsed) {
+    // execute character shortcut events
+    final execution = await executeCharacterShortcutEvent(
+      editorState,
+      textInserted,
+      characterShortcutEvents,
+    );
 
-  if (execution) {
-    return;
+    if (execution) {
+      return;
+    }
   }
 
   var selection = editorState.selection;
