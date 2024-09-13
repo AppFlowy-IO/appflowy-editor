@@ -126,6 +126,7 @@ class DragToReorderAction extends StatefulWidget {
 class _DragToReorderActionState extends State<DragToReorderAction> {
   late final Node node;
   late final BlockComponentContext blockComponentContext;
+  late final EditorState editorState = context.read<EditorState>();
 
   Offset? globalPosition;
 
@@ -154,7 +155,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
             child: IntrinsicWidth(
               child: IntrinsicHeight(
                 child: Provider.value(
-                  value: context.read<EditorState>(),
+                  value: editorState,
                   child: widget.builder.build(blockComponentContext),
                 ),
               ),
@@ -163,34 +164,39 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
         ),
         onDragStarted: () {
           debugPrint('onDragStarted');
-          context.read<EditorState>().selectionService.removeDropTarget();
+          editorState.selectionService.removeDropTarget();
         },
         onDragUpdate: (details) {
-          context
-              .read<EditorState>()
-              .selectionService
-              .renderDropTargetForOffset(details.globalPosition);
+          editorState.selectionService.renderDropTargetForOffset(
+            details.globalPosition,
+          );
 
           globalPosition = details.globalPosition;
+
+          editorState.scrollService?.startAutoScroll(details.globalPosition);
         },
         onDragEnd: (details) {
-          context.read<EditorState>().selectionService.removeDropTarget();
+          editorState.selectionService.removeDropTarget();
 
           if (globalPosition == null) {
             return;
           }
 
-          final data = context
-              .read<EditorState>()
-              .selectionService
-              .getDropTargetRenderData(globalPosition!);
+          final data = editorState.selectionService.getDropTargetRenderData(
+            globalPosition!,
+          );
           final acceptedPath = data?.dropPath;
+
           debugPrint('onDragEnd, acceptedPath($acceptedPath)');
+
           _moveNodeToNewPosition(node, acceptedPath);
         },
-        child: const Icon(
-          Icons.drag_indicator_rounded,
-          size: 18,
+        child: const MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: Icon(
+            Icons.drag_indicator_rounded,
+            size: 18,
+          ),
         ),
       ),
     );
@@ -206,8 +212,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
 
     final editorState = context.read<EditorState>();
     final transaction = editorState.transaction;
-    transaction.insertNode(acceptedPath, node.copyWith());
-    transaction.deleteNode(widget.blockComponentContext.node);
+    transaction.moveNode(acceptedPath, widget.blockComponentContext.node);
     await editorState.apply(transaction);
   }
 }
