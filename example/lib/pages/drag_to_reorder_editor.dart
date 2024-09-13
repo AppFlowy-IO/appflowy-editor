@@ -148,20 +148,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       padding: const EdgeInsets.only(top: 10.0, right: 4.0),
       child: Draggable<Node>(
         data: node,
-        feedback: Opacity(
-          opacity: 0.7,
-          child: Material(
-            color: Colors.transparent,
-            child: IntrinsicWidth(
-              child: IntrinsicHeight(
-                child: Provider.value(
-                  value: editorState,
-                  child: widget.builder.build(blockComponentContext),
-                ),
-              ),
-            ),
-          ),
-        ),
+        feedback: _buildFeedback(),
         onDragStarted: () {
           debugPrint('onDragStarted');
           editorState.selectionService.removeDropTarget();
@@ -214,5 +201,39 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     final transaction = editorState.transaction;
     transaction.moveNode(acceptedPath, widget.blockComponentContext.node);
     await editorState.apply(transaction);
+  }
+
+  Widget _buildFeedback() {
+    Widget child;
+    if (node.type == TableBlockKeys.type) {
+      // unable to render table block without provider/context
+      // render a placeholder instead
+      child = Container(
+        width: 200,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text('Table'),
+      );
+    } else {
+      child = IntrinsicWidth(
+        child: IntrinsicHeight(
+          child: Provider.value(
+            value: editorState,
+            child: widget.builder.build(blockComponentContext),
+          ),
+        ),
+      );
+    }
+
+    return Opacity(
+      opacity: 0.7,
+      child: Material(
+        color: Colors.transparent,
+        child: child,
+      ),
+    );
   }
 }
