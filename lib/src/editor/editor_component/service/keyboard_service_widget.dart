@@ -79,7 +79,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       onNonTextUpdate: (nonTextUpdate) async => await onNonTextUpdate(
         nonTextUpdate,
         editorState,
-        widget.characterShortcutEvents,
       ),
       onPerformAction: (action) async => await onPerformAction(
         action,
