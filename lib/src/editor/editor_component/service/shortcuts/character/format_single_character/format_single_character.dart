@@ -56,6 +56,11 @@ bool handleFormatByWrappingWithSingleCharacter({
     return false;
   }
 
+  // 5. If the text inbetween is empty (continuous)
+  if (plainText.substring(lastCharIndex + 1, selection.end.offset).isEmpty) {
+    return false;
+  }
+
   // Before deletion we need to insert the character in question so that undo manager
   // will undo only the style applied and keep the character.
   final insertion = editorState.transaction
