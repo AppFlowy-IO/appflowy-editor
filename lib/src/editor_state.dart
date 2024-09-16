@@ -99,6 +99,9 @@ class EditorState {
   /// Whether the editor should disable auto scroll.
   bool disableAutoScroll = false;
 
+  /// The edge offset of the auto scroll.
+  double autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset;
+
   /// The style of the editor.
   late EditorStyle editorStyle;
 

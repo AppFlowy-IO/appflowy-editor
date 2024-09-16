@@ -108,7 +108,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         return Future.delayed(duration, () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: appFlowyEditorAutoScrollEdgeOffset,
+            edgeOffset: editorState.autoScrollEdgeOffset,
             duration: Duration.zero,
           );
         });
