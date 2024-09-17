@@ -14,7 +14,6 @@ void main() {
           composing: TextRange(start: 0, end: 3),
         ),
         EditorState.blank(),
-        [],
       );
     });
   });

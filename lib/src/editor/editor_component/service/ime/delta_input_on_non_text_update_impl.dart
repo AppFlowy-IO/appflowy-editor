@@ -5,10 +5,7 @@ import 'package:flutter/services.dart';
 Future<void> onNonTextUpdate(
   TextEditingDeltaNonTextUpdate nonTextUpdate,
   EditorState editorState,
-  List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
-  AppFlowyEditorLog.input.debug('onNonTextUpdate: $nonTextUpdate');
-
   // update the selection on Windows
   //
   // when typing characters with CJK IME on Windows, a non-text update is sent
