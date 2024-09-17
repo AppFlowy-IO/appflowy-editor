@@ -129,7 +129,8 @@ class _DesktopEditorState extends State<DesktopEditor> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 200.0),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      maxWidth: 640,
     );
   }
 
