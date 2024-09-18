@@ -21,14 +21,10 @@ class EditorStyle {
     this.defaultTextDirection,
     this.enableHapticFeedbackOnAndroid = true,
     this.textScaleFactor = 1.0,
-    this.maxWidth,
   });
 
   // The padding of the editor.
   final EdgeInsets padding;
-
-  // The max width of the editor.
-  final double? maxWidth;
 
   // The cursor color
   final Color cursorColor;
@@ -86,7 +82,6 @@ class EditorStyle {
     this.defaultTextDirection,
     this.cursorWidth = 2.0,
     this.textScaleFactor = 1.0,
-    this.maxWidth,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =
@@ -117,7 +112,6 @@ class EditorStyle {
     this.cursorWidth = 2.0,
     this.enableHapticFeedbackOnAndroid = true,
     this.textScaleFactor = 1.0,
-    this.maxWidth,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
@@ -144,7 +138,6 @@ class EditorStyle {
     bool? enableHapticFeedbackOnAndroid,
     double? cursorWidth,
     double? textScaleFactor,
-    double? maxWidth,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -164,7 +157,6 @@ class EditorStyle {
           enableHapticFeedbackOnAndroid ?? this.enableHapticFeedbackOnAndroid,
       cursorWidth: cursorWidth ?? this.cursorWidth,
       textScaleFactor: textScaleFactor ?? this.textScaleFactor,
-      maxWidth: maxWidth ?? this.maxWidth,
     );
   }
 }
