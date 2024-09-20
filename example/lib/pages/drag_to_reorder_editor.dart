@@ -160,7 +160,11 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
         onDragUpdate: (details) {
           editorState.selectionService.renderDropTargetForOffset(
             details.globalPosition,
-            builder: _buildDropArea,
+            builder: (context, data) => _buildDropArea(
+              context,
+              data,
+              widget.blockComponentContext.node,
+            ),
           );
 
           globalPosition = details.globalPosition;
@@ -177,11 +181,15 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
           final data = editorState.selectionService.getDropTargetRenderData(
             globalPosition!,
           );
+
           final acceptedPath = data?.dropPath;
 
           debugPrint('onDragEnd, acceptedPath($acceptedPath)');
 
-          _moveNodeToNewPosition(node, acceptedPath);
+          _moveNodeToNewPosition(
+            widget.blockComponentContext.node,
+            acceptedPath,
+          );
         },
         child: const MouseRegion(
           cursor: SystemMouseCursors.grab,
@@ -195,22 +203,15 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
   }
 
   Future<void> _moveNodeToNewPosition(Node node, Path? acceptedPath) async {
-    if (acceptedPath == null) {
-      debugPrint('acceptedPath is null');
+    final shouldIgnoreDrop = _shouldIgnoreDrop(node, acceptedPath);
+    if (acceptedPath == null || shouldIgnoreDrop) {
+      debugPrint(
+        'the move action should be ignored, drag node($node), accepted path($acceptedPath)',
+      );
       return;
     }
 
-    if (node.path.equals(acceptedPath)) {
-      debugPrint('node($node) is already at path($acceptedPath)');
-      return;
-    }
-
-    if (node.path.isAncestorOf(acceptedPath)) {
-      debugPrint('node($node) is ancestor of path($acceptedPath)');
-      return;
-    }
-
-    debugPrint('move node($node) to path($acceptedPath)');
+    debugPrint('move node($node, ${node.path}) to path($acceptedPath)');
 
     final editorState = context.read<EditorState>();
     final transaction = editorState.transaction;
@@ -252,10 +253,19 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     );
   }
 
-  Widget _buildDropArea(BuildContext context, DragAreaBuilderData data) {
-    final node = data.targetNode;
-    final selectable = node.selectable;
+  Widget _buildDropArea(
+    BuildContext context,
+    DragAreaBuilderData data,
+    Node dragNode,
+  ) {
+    final targetNode = data.targetNode;
 
+    final shouldIgnoreDrop = _shouldIgnoreDrop(dragNode, targetNode.path);
+    if (shouldIgnoreDrop) {
+      return const SizedBox.shrink();
+    }
+
+    final selectable = targetNode.selectable;
     if (selectable == null) {
       return const SizedBox.shrink();
     }
@@ -360,5 +370,21 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     }
 
     return (verticalPosition, horizontalPosition, globalBlockRect);
+  }
+
+  bool _shouldIgnoreDrop(Node dragNode, Path? targetPath) {
+    if (targetPath == null) {
+      return true;
+    }
+
+    if (dragNode.path.equals(targetPath)) {
+      return true;
+    }
+
+    if (dragNode.path.isAncestorOf(targetPath)) {
+      return true;
+    }
+
+    return false;
   }
 }
