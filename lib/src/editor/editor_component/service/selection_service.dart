@@ -1,9 +1,23 @@
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
+class DragAreaBuilderData {
+  DragAreaBuilderData({
+    required this.targetNode,
+    required this.dragOffset,
+  });
+
+  final Node targetNode;
+  final Offset dragOffset;
+}
+
+typedef DragAreaBuilder = Widget Function(
+  BuildContext context,
+  DragAreaBuilderData data,
+);
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
@@ -89,7 +103,12 @@ abstract class AppFlowySelectionService {
   ///
   /// Should call [removeDropTarget] to remove the line once drop is done.
   ///
-  void renderDropTargetForOffset(Offset offset);
+  /// If [builder] is provided, the line will be drawn by [builder].
+  /// Otherwise, the line will be drawn by default [DropTargetStyle].
+  void renderDropTargetForOffset(
+    Offset offset, {
+    DragAreaBuilder? builder,
+  });
 
   /// Removes the horizontal line drawn by [renderDropTargetForOffset].
   ///

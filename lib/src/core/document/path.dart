@@ -111,7 +111,7 @@ extension PathExtensions on Path {
     return Path.from(this, growable: true)..removeLast();
   }
 
-  bool isParentOf(Path other) {
+  bool isAncestorOf(Path other) {
     if (isEmpty) {
       return true;
     }

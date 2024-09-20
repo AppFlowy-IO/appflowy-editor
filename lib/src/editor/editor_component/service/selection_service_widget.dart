@@ -124,8 +124,8 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   void removeDropTarget() => forward.removeDropTarget();
 
   @override
-  void renderDropTargetForOffset(Offset offset) =>
-      forward.renderDropTargetForOffset(offset);
+  void renderDropTargetForOffset(Offset offset, {DragAreaBuilder? builder}) =>
+      forward.renderDropTargetForOffset(offset, builder: builder);
 
   @override
   DropTargetRenderData? getDropTargetRenderData(Offset offset) =>
