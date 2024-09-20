@@ -82,6 +82,10 @@ extension PathExtensions on Path {
       ..add(last + n);
   }
 
+  Path child(int index) {
+    return Path.from(this, growable: true)..add(index);
+  }
+
   Path get previous {
     Path previousPath = Path.from(this, growable: true);
     if (isEmpty) {
@@ -111,7 +115,7 @@ extension PathExtensions on Path {
     return Path.from(this, growable: true)..removeLast();
   }
 
-  bool isParentOf(Path other) {
+  bool isAncestorOf(Path other) {
     if (isEmpty) {
       return true;
     }
