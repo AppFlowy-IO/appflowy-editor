@@ -74,6 +74,6 @@ void main() async {
     const p1 = [1, 0, 1];
     const p2 = [1, 0];
 
-    expect(p2.isParentOf(p1), true);
+    expect(p2.isAncestorOf(p1), true);
   });
 }

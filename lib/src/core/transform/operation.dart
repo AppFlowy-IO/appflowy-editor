@@ -258,9 +258,9 @@ Operation? transformOperation(Operation a, Operation b) {
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
     if (b is DeleteOperation) {
-      if (a.path.isParentOf(b.path)) {
+      if (a.path.isAncestorOf(b.path)) {
         return null; // a is parent of b, we can just delete a and ignore b.
-      } else if (b.path.isParentOf(a.path)) {
+      } else if (b.path.isAncestorOf(a.path)) {
         return a.copyWith(path: b.path);
       }
     }
