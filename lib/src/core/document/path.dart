@@ -82,6 +82,10 @@ extension PathExtensions on Path {
       ..add(last + n);
   }
 
+  Path child(int index) {
+    return Path.from(this, growable: true)..add(index);
+  }
+
   Path get previous {
     Path previousPath = Path.from(this, growable: true);
     if (isEmpty) {
