@@ -266,12 +266,8 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     }
 
     final selectable = targetNode.selectable;
-    if (selectable == null) {
-      return const SizedBox.shrink();
-    }
-
-    final renderBox = selectable.context.findRenderObject() as RenderBox?;
-    if (renderBox == null) {
+    final renderBox = selectable?.context.findRenderObject() as RenderBox?;
+    if (selectable == null || renderBox == null) {
       return const SizedBox.shrink();
     }
 
