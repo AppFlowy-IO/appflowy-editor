@@ -6,6 +6,9 @@ import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_inp
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
 
+// string from flutter callback
+const String _deleteBackwardSelectorName = 'deleteBackward:';
+
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
   NonDeltaTextInputService({
     required super.onInsert,
@@ -168,6 +171,35 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void performSelector(String selectorName) {
     AppFlowyEditorLog.editor.debug('performSelector: $selectorName');
+
+    final currentTextEditingValue = this.currentTextEditingValue?.unformat();
+    if (currentTextEditingValue == null) {
+      return;
+    }
+
+    if (selectorName == _deleteBackwardSelectorName) {
+      final oldText = currentTextEditingValue.text;
+      final selection = currentTextEditingValue.selection;
+      final deleteRange = selection.isCollapsed
+          ? TextRange(
+              start: selection.start - 1,
+              end: selection.end,
+            )
+          : selection;
+      final deleteSelection = TextSelection(
+        baseOffset: selection.baseOffset - 1,
+        extentOffset: selection.extentOffset - 1,
+      );
+      // valid the result
+      onDelete(
+        TextEditingDeltaDeletion(
+          oldText: oldText,
+          deletedRange: deleteRange,
+          selection: deleteSelection,
+          composing: TextRange.empty,
+        ),
+      );
+    }
   }
 
   @override
@@ -227,6 +259,14 @@ extension on TextEditingValue {
       text: text,
       selection: selection,
       composing: composing,
+    );
+  }
+
+  TextEditingValue unformat() {
+    return TextEditingValue(
+      text: text << _len,
+      selection: selection << _len,
+      composing: composing << _len,
     );
   }
 }
