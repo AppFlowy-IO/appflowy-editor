@@ -221,6 +221,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         focusNode.requestFocus();
         AppFlowyEditorLog.editor.debug('keyboard service - request focus');
+      } else {
+        AppFlowyEditorLog.editor.debug(
+          'keyboard service - selection changed: $selection',
+        );
       }
     }
 
