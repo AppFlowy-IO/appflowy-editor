@@ -36,6 +36,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
+  final List<AppFlowyKeyboardServiceInterceptor> interceptors = [];
+
   // previous selection
   Selection? previousSelection;
 
@@ -61,36 +63,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
 
-    textInputService = NonDeltaTextInputService(
-      onInsert: (insertion) async => await onInsert(
-        insertion,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onDelete: (deletion) async => await onDelete(
-        deletion,
-        editorState,
-      ),
-      onReplace: (replacement) async => await onReplace(
-        replacement,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onNonTextUpdate: (nonTextUpdate) async => await onNonTextUpdate(
-        nonTextUpdate,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onPerformAction: (action) async => await onPerformAction(
-        action,
-        editorState,
-      ),
-      onFloatingCursor: (point) => onFloatingCursorUpdate(
-        point,
-        editorState,
-      ),
-      contentInsertionConfiguration: widget.contentInsertionConfiguration,
-    );
+    textInputService = buildTextInputService();
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
     focusNode.addListener(_onFocusChanged);
@@ -160,6 +133,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     }
 
     return child;
+  }
+
+  @override
+  void registerInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.add(interceptor);
+  }
+
+  @override
+  void unregisterInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.remove(interceptor);
   }
 
   /// handle hardware keyboard
@@ -343,5 +326,80 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         textInputService.updateCaretPosition(size, transform, rect);
       }
     }
+  }
+
+  NonDeltaTextInputService buildTextInputService() {
+    return NonDeltaTextInputService(
+      onInsert: (insertion) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptInsert(insertion)) {
+            return;
+          }
+        }
+        await onInsert(
+          insertion,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onDelete: (deletion) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptDelete(deletion)) {
+            return;
+          }
+        }
+        await onDelete(
+          deletion,
+          editorState,
+        );
+      },
+      onReplace: (replacement) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptReplace(replacement)) {
+            return;
+          }
+        }
+        await onReplace(
+          replacement,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onNonTextUpdate: (nonTextUpdate) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptNonTextUpdate(nonTextUpdate)) {
+            return;
+          }
+        }
+        await onNonTextUpdate(
+          nonTextUpdate,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onPerformAction: (action) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptPerformAction(action)) {
+            return;
+          }
+        }
+        await onPerformAction(
+          action,
+          editorState,
+        );
+      },
+      onFloatingCursor: (point) async {
+        for (final interceptor in interceptors) {
+          if (await interceptor.interceptFloatingCursor(point)) {
+            return;
+          }
+        }
+        await onFloatingCursorUpdate(
+          point,
+          editorState,
+        );
+      },
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+    );
   }
 }
