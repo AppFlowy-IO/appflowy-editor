@@ -24,6 +24,7 @@ Future<void> onInsert(
     );
 
     if (execution) {
+      editorState.sliceUpcomingAttributes = false;
       return;
     }
   }
@@ -76,7 +77,10 @@ Future<void> onInsert(
       selection.startIndex,
       textInserted,
       toggledAttributes: editorState.toggledStyle,
+      sliceAttributes: editorState.sliceUpcomingAttributes,
     )
     ..afterSelection = afterSelection;
-  return editorState.apply(transaction);
+  await editorState.apply(transaction);
+
+  editorState.sliceUpcomingAttributes = true;
 }

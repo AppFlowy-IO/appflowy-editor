@@ -183,6 +183,12 @@ class EditorState {
     toggledStyleNotifier.value = {..._toggledStyle};
   }
 
+  /// Whether the upcoming attributes should be sliced.
+  ///
+  /// If the value is true, the upcoming attributes will be sliced.
+  /// If the value is false, the upcoming attributes will be skipped.
+  bool sliceUpcomingAttributes = true;
+
   final UndoManager undoManager = UndoManager();
 
   Transaction get transaction {
