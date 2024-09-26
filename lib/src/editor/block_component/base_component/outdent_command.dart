@@ -15,18 +15,30 @@ final CommandShortcutEvent outdentCommand = CommandShortcutEvent(
 );
 
 bool isOutdentable(EditorState editorState) {
-  final selection = editorState.selection;
-  if (selection == null || !selection.isSingle) {
+  final selection = editorState.selection?.normalized;
+  if (selection == null) {
     return false;
   }
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final parent = node?.parent;
-  if (node == null ||
+
+  final nodes = editorState.getNodesInSelection(selection);
+  final parent = nodes.firstOrNull?.parent;
+
+  final isAllIndentable =
+      nodes.every((node) => indentableBlockTypes.contains(node.type));
+
+  final isAllOnSameLevel =
+      nodes.every((node) => node.path.length == nodes.first.path.length);
+
+  // final node = editorState.getNodeAtPath(selection.end.path);
+  // final parent = node?.parent;
+  if (nodes.isEmpty ||
       parent == null ||
-      !indentableBlockTypes.contains(node.type) ||
       !indentableBlockTypes.contains(parent.type) ||
-      node.path.length == 1) {
-    //  if the current node is having a path which is of size 1.
+      !isAllIndentable ||
+      !isAllOnSameLevel ||
+      nodes.first.path.length == 1) {
+    //  if the first node is having a path which is of size 1.
+    //  since all nodes are in same level, thus we can check first element
     //  for example [0], then that means, it is not indented
     //  thus we ignore this event.
     return false;
@@ -35,31 +47,43 @@ bool isOutdentable(EditorState editorState) {
 }
 
 CommandShortcutEventHandler _outdentCommandHandler = (editorState) {
-  final selection = editorState.selection;
-  if (selection == null || !selection.isSingle) {
+  final selection = editorState.selection?.normalized;
+  if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final parent = node?.parent;
-  if (node == null ||
+
+  final nodes = editorState.getNodesInSelection(selection);
+  final parent = nodes.firstOrNull?.parent;
+
+  final isAllIndentable =
+      nodes.every((node) => indentableBlockTypes.contains(node.type));
+  final isAllOnSameLevel =
+      nodes.every((node) => node.path.length == nodes.first.path.length);
+
+  if (nodes.isEmpty ||
       parent == null ||
-      !indentableBlockTypes.contains(node.type) ||
       !indentableBlockTypes.contains(parent.type) ||
-      node.path.length == 1) {
-    //  if the current node is having a path which is of size 1.
+      !isAllIndentable ||
+      !isAllOnSameLevel ||
+      nodes.first.path.length == 1) {
+    //  if the first node is having a path which is of size 1.
+    //  since all nodes are in same level, thus we can check first element
     //  for example [0], then that means, it is not indented
     //  thus we ignore this event.
     return KeyEventResult.handled; // ignore the system default tab behavior
   }
 
-  final path = node.path.sublist(0, node.path.length - 1)..last += 1;
+  final startPath = nodes.first.path.sublist(0, nodes.first.path.length - 1)
+    ..last += 1;
+  final endPath = nodes.last.path.sublist(0, nodes.last.path.length - 1)
+    ..last += nodes.length;
   final afterSelection = Selection(
-    start: selection.start.copyWith(path: path),
-    end: selection.end.copyWith(path: path),
+    start: selection.start.copyWith(path: startPath),
+    end: selection.end.copyWith(path: endPath),
   );
   final transaction = editorState.transaction
-    ..deleteNode(node)
-    ..insertNode(path, node, deepCopy: true)
+    ..deleteNodes(nodes)
+    ..insertNodes(startPath, nodes, deepCopy: true)
     ..afterSelection = afterSelection;
   editorState.apply(transaction);
 

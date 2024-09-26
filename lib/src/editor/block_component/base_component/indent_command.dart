@@ -23,41 +23,64 @@ final CommandShortcutEvent indentCommand = CommandShortcutEvent(
 
 bool isIndentable(EditorState editorState) {
   final selection = editorState.selection;
-  if (selection == null || !selection.isSingle) {
+  if (selection == null) {
     return false;
   }
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final previous = node?.previous;
-  if (node == null ||
+
+  final nodes = editorState.getNodesInSelection(selection).normalized;
+  final previous = nodes.firstOrNull?.previous;
+
+  final isAllIndentable =
+      nodes.every((node) => indentableBlockTypes.contains(node.type));
+
+  final isAllOnSameLevel =
+      nodes.every((node) => node.path.length == nodes.first.path.length);
+
+  if (nodes.isEmpty ||
       previous == null ||
       !indentableBlockTypes.contains(previous.type) ||
-      !indentableBlockTypes.contains(node.type)) {
+      !isAllIndentable ||
+      !isAllOnSameLevel) {
     return false;
   }
   return true;
 }
 
 CommandShortcutEventHandler _indentCommandHandler = (editorState) {
-  final selection = editorState.selection;
-  if (selection == null || !selection.isSingle) {
+  final selection = editorState.selection?.normalized;
+
+  if (selection == null) {
     return KeyEventResult.ignored;
   }
-  final node = editorState.getNodeAtPath(selection.end.path);
-  final previous = node?.previous;
-  if (node == null ||
-      previous == null ||
+
+  final nodes = editorState.getNodesInSelection(selection).normalized;
+
+  final isAllIndentable =
+      nodes.every((node) => indentableBlockTypes.contains(node.type));
+
+  final isAllOnSameLevel =
+      nodes.every((node) => node.path.length == nodes.first.path.length);
+
+  final previous = nodes.firstOrNull?.previous;
+
+  if (previous == null ||
       !indentableBlockTypes.contains(previous.type) ||
-      !indentableBlockTypes.contains(node.type)) {
+      !isAllIndentable ||
+      !isAllOnSameLevel) {
     return KeyEventResult.handled; // ignore the system default tab behavior
   }
-  final path = previous.path + [previous.children.length];
+
+  final startPath = previous.path + [previous.children.length];
+  final endPath = previous.path + [previous.children.length + nodes.length - 1];
+
   final afterSelection = Selection(
-    start: selection.start.copyWith(path: path),
-    end: selection.end.copyWith(path: path),
+    start: selection.start.copyWith(path: startPath),
+    end: selection.end.copyWith(path: endPath),
   );
+
   final transaction = editorState.transaction
-    ..deleteNode(node)
-    ..insertNode(path, node, deepCopy: true)
+    ..deleteNodes(nodes)
+    ..insertNodes(startPath, nodes, deepCopy: true)
     ..afterSelection = afterSelection;
   editorState.apply(transaction);
 
