@@ -81,6 +81,4 @@ Future<void> onInsert(
     )
     ..afterSelection = afterSelection;
   await editorState.apply(transaction);
-
-  editorState.sliceUpcomingAttributes = true;
 }

@@ -123,6 +123,9 @@ class EditorState {
       _toggledStyle.clear();
     }
 
+    // reset slice flag
+    sliceUpcomingAttributes = true;
+
     selectionNotifier.value = value;
   }
 
