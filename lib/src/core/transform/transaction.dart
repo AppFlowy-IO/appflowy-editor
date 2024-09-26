@@ -197,6 +197,7 @@ extension TextTransaction on Transaction {
     String text, {
     Attributes? attributes,
     Attributes? toggledAttributes,
+    bool sliceAttributes = true,
   }) {
     final delta = node.delta;
     if (delta == null) {
@@ -210,7 +211,9 @@ extension TextTransaction on Transaction {
       return;
     }
 
-    final newAttributes = attributes ?? delta.sliceAttributes(index) ?? {};
+    final newAttributes = attributes ??
+        (sliceAttributes ? delta.sliceAttributes(index) : {}) ??
+        {};
 
     if (toggledAttributes != null) {
       newAttributes.addAll(toggledAttributes);
