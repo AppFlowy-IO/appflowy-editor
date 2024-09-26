@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// [AppFlowyKeyboardService] is responsible for processing shortcut keys,
 ///   like command, shift, control keys.
@@ -41,4 +42,67 @@ abstract class AppFlowyKeyboardService {
   ///
   /// Used in mobile
   void enableKeyBoard(Selection selection);
+
+  /// Register interceptor
+  void registerInterceptor(AppFlowyKeyboardServiceInterceptor interceptor);
+
+  /// Unregister interceptor
+  void unregisterInterceptor(AppFlowyKeyboardServiceInterceptor interceptor);
+}
+
+/// [AppFlowyKeyboardServiceInterceptor] is used to intercept the keyboard service.
+///
+/// If the interceptor returns `true`, the keyboard service will not perform
+/// the built-in operation.
+abstract class AppFlowyKeyboardServiceInterceptor {
+  /// Intercept insert operation
+  Future<bool> interceptInsert(
+    TextEditingDeltaInsertion insertion,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return false;
+  }
+
+  /// Intercept delete operation
+  Future<bool> interceptDelete(
+    TextEditingDeltaDeletion deletion,
+    EditorState editorState,
+  ) async {
+    return false;
+  }
+
+  /// Intercept replace operation
+  Future<bool> interceptReplace(
+    TextEditingDeltaReplacement replacement,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return false;
+  }
+
+  /// Intercept non-text update operation
+  Future<bool> interceptNonTextUpdate(
+    TextEditingDeltaNonTextUpdate nonTextUpdate,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return false;
+  }
+
+  /// Intercept perform action operation
+  Future<bool> interceptPerformAction(
+    TextInputAction action,
+    EditorState editorState,
+  ) async {
+    return false;
+  }
+
+  /// Intercept floating cursor operation
+  Future<bool> interceptFloatingCursor(
+    RawFloatingCursorPoint point,
+    EditorState editorState,
+  ) async {
+    return false;
+  }
 }
