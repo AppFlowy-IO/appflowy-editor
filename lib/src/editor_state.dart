@@ -123,6 +123,9 @@ class EditorState {
       _toggledStyle.clear();
     }
 
+    // reset slice flag
+    sliceUpcomingAttributes = true;
+
     selectionNotifier.value = value;
   }
 
@@ -182,6 +185,12 @@ class EditorState {
     _toggledStyle[key] = value;
     toggledStyleNotifier.value = {..._toggledStyle};
   }
+
+  /// Whether the upcoming attributes should be sliced.
+  ///
+  /// If the value is true, the upcoming attributes will be sliced.
+  /// If the value is false, the upcoming attributes will be skipped.
+  bool sliceUpcomingAttributes = true;
 
   final UndoManager undoManager = UndoManager();
 
