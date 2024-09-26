@@ -43,6 +43,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   final String debounceKey = 'updateEditingValue';
 
+  // when using gesture to move cursor on mobile, the floating cursor will be visible
+  bool _isFloatingCursorVisible = false;
+
   @override
   Future<void> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
@@ -96,6 +99,13 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void updateEditingValue(TextEditingValue value) {
     if (currentTextEditingValue == value) {
+      return;
+    }
+
+    if (PlatformExtension.isIOS && _isFloatingCursorVisible) {
+      // on iOS, when using gesture to move cursor, this function will be called
+      // which may cause the unneeded delta being applied
+      // so we ignore the updateEditingValue event when the floating cursor is visible
       return;
     }
 
@@ -159,6 +169,18 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
+    switch (point.state) {
+      case FloatingCursorDragState.Start:
+        _isFloatingCursorVisible = true;
+        break;
+      case FloatingCursorDragState.Update:
+        _isFloatingCursorVisible = true;
+        break;
+      case FloatingCursorDragState.End:
+        _isFloatingCursorVisible = false;
+        break;
+    }
+
     onFloatingCursor?.call(point);
   }
 
