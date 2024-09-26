@@ -36,6 +36,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
+  final List<AppFlowyKeyboardServiceInterceptor> interceptors = [];
+
   // previous selection
   Selection? previousSelection;
 
@@ -61,36 +63,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
 
-    textInputService = NonDeltaTextInputService(
-      onInsert: (insertion) async => await onInsert(
-        insertion,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onDelete: (deletion) async => await onDelete(
-        deletion,
-        editorState,
-      ),
-      onReplace: (replacement) async => await onReplace(
-        replacement,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onNonTextUpdate: (nonTextUpdate) async => await onNonTextUpdate(
-        nonTextUpdate,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onPerformAction: (action) async => await onPerformAction(
-        action,
-        editorState,
-      ),
-      onFloatingCursor: (point) => onFloatingCursorUpdate(
-        point,
-        editorState,
-      ),
-      contentInsertionConfiguration: widget.contentInsertionConfiguration,
-    );
+    textInputService = buildTextInputService();
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
     focusNode.addListener(_onFocusChanged);
@@ -162,6 +135,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     return child;
   }
 
+  @override
+  void registerInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.add(interceptor);
+  }
+
+  @override
+  void unregisterInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.remove(interceptor);
+  }
+
   /// handle hardware keyboard
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
@@ -221,6 +204,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         focusNode.requestFocus();
         AppFlowyEditorLog.editor.debug('keyboard service - request focus');
+      } else {
+        AppFlowyEditorLog.editor.debug(
+          'keyboard service - selection changed: $selection',
+        );
       }
     }
 
@@ -339,5 +326,131 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         textInputService.updateCaretPosition(size, transform, rect);
       }
     }
+  }
+
+  NonDeltaTextInputService buildTextInputService() {
+    return NonDeltaTextInputService(
+      onInsert: (insertion) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptInsert(
+            insertion,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onInsert - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onInsert(
+          insertion,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onDelete: (deletion) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptDelete(
+            deletion,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onDelete - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onDelete(
+          deletion,
+          editorState,
+        );
+      },
+      onReplace: (replacement) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptReplace(
+            replacement,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onReplace - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onReplace(
+          replacement,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onNonTextUpdate: (nonTextUpdate) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptNonTextUpdate(
+            nonTextUpdate,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onNonTextUpdate - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onNonTextUpdate(
+          nonTextUpdate,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onPerformAction: (action) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptPerformAction(
+            action,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onPerformAction - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onPerformAction(
+          action,
+          editorState,
+        );
+      },
+      onFloatingCursor: (point) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptFloatingCursor(
+            point,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onFloatingCursor - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onFloatingCursorUpdate(
+          point,
+          editorState,
+        );
+      },
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+    );
   }
 }
