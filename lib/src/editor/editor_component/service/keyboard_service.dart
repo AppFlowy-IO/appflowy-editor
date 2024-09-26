@@ -56,34 +56,53 @@ abstract class AppFlowyKeyboardService {
 /// the built-in operation.
 abstract class AppFlowyKeyboardServiceInterceptor {
   /// Intercept insert operation
-  Future<bool> interceptInsert(TextEditingDeltaInsertion insertion) async {
+  Future<bool> interceptInsert(
+    TextEditingDeltaInsertion insertion,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
     return false;
   }
 
   /// Intercept delete operation
-  Future<bool> interceptDelete(TextEditingDeltaDeletion deletion) async {
+  Future<bool> interceptDelete(
+    TextEditingDeltaDeletion deletion,
+    EditorState editorState,
+  ) async {
     return false;
   }
 
   /// Intercept replace operation
-  Future<bool> interceptReplace(TextEditingDeltaReplacement replacement) async {
+  Future<bool> interceptReplace(
+    TextEditingDeltaReplacement replacement,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
     return false;
   }
 
   /// Intercept non-text update operation
   Future<bool> interceptNonTextUpdate(
     TextEditingDeltaNonTextUpdate nonTextUpdate,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
   ) async {
     return false;
   }
 
   /// Intercept perform action operation
-  Future<bool> interceptPerformAction(TextInputAction action) async {
+  Future<bool> interceptPerformAction(
+    TextInputAction action,
+    EditorState editorState,
+  ) async {
     return false;
   }
 
   /// Intercept floating cursor operation
-  Future<bool> interceptFloatingCursor(RawFloatingCursorPoint point) async {
+  Future<bool> interceptFloatingCursor(
+    RawFloatingCursorPoint point,
+    EditorState editorState,
+  ) async {
     return false;
   }
 }
