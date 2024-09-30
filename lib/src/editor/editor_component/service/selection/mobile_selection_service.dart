@@ -177,8 +177,12 @@ class _MobileSelectionServiceWidgetState
     return ValueListenableBuilder(
       valueListenable: selectionNotifierAfterLayout,
       builder: (context, selection, _) {
-        if (selection == null ||
-            !selection.isCollapsed ||
+        if (selection == null || !selection.isCollapsed) {
+          return const SizedBox.shrink();
+        }
+
+        // on iOS, the drag handle should be updated when typing text.
+        if (PlatformExtension.isAndroid &&
             editorState.selectionUpdateReason !=
                 SelectionUpdateReason.uiEvent) {
           return const SizedBox.shrink();
