@@ -38,6 +38,7 @@ bool isIndentable(EditorState editorState) {
   }
 
   // there's no need to consider the child nodes
+  // since we are ignoring child nodes, all nodes will be on same level
   nodes =
       nodes.where((node) => node.path.length == previous.path.length).toList();
 
@@ -45,13 +46,6 @@ bool isIndentable(EditorState editorState) {
     (node) => indentableBlockTypes.contains(node.type),
   );
   if (!isAllIndentable) {
-    return false;
-  }
-
-  final isAllOnSameLevel = nodes.every(
-    (node) => node.path.length == nodes.first.path.length,
-  );
-  if (!isAllOnSameLevel) {
     return false;
   }
 
