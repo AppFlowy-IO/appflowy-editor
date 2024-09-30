@@ -27,22 +27,34 @@ bool isIndentable(EditorState editorState) {
     return false;
   }
 
-  final nodes = editorState.getNodesInSelection(selection).normalized;
-  final previous = nodes.firstOrNull?.previous;
-
-  final isAllIndentable =
-      nodes.every((node) => indentableBlockTypes.contains(node.type));
-
-  final isAllOnSameLevel =
-      nodes.every((node) => node.path.length == nodes.first.path.length);
-
-  if (nodes.isEmpty ||
-      previous == null ||
-      !indentableBlockTypes.contains(previous.type) ||
-      !isAllIndentable ||
-      !isAllOnSameLevel) {
+  List<Node> nodes = editorState.getNodesInSelection(selection).normalized;
+  if (nodes.isEmpty) {
     return false;
   }
+
+  final previous = nodes.firstOrNull?.previous;
+  if (previous == null || !indentableBlockTypes.contains(previous.type)) {
+    return false;
+  }
+
+  // there's no need to consider the child nodes
+  nodes =
+      nodes.where((node) => node.path.length == previous.path.length).toList();
+
+  final isAllIndentable = nodes.every(
+    (node) => indentableBlockTypes.contains(node.type),
+  );
+  if (!isAllIndentable) {
+    return false;
+  }
+
+  final isAllOnSameLevel = nodes.every(
+    (node) => node.path.length == nodes.first.path.length,
+  );
+  if (!isAllOnSameLevel) {
+    return false;
+  }
+
   return true;
 }
 
@@ -53,22 +65,21 @@ CommandShortcutEventHandler _indentCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
-  final nodes = editorState.getNodesInSelection(selection).normalized;
+  if (!isIndentable(editorState)) {
+    // ignore the system default tab behavior
+    return KeyEventResult.handled;
+  }
 
-  final isAllIndentable =
-      nodes.every((node) => indentableBlockTypes.contains(node.type));
-
-  final isAllOnSameLevel =
-      nodes.every((node) => node.path.length == nodes.first.path.length);
-
+  List<Node> nodes = editorState.getNodesInSelection(selection).normalized;
   final previous = nodes.firstOrNull?.previous;
 
-  if (previous == null ||
-      !indentableBlockTypes.contains(previous.type) ||
-      !isAllIndentable ||
-      !isAllOnSameLevel) {
-    return KeyEventResult.handled; // ignore the system default tab behavior
+  if (previous == null) {
+    return KeyEventResult.ignored;
   }
+
+  // keep the nodes in the same level as the previous block
+  nodes =
+      nodes.where((node) => node.path.length == previous.path.length).toList();
 
   final startPath = previous.path + [previous.children.length];
   final endPath = previous.path + [previous.children.length + nodes.length - 1];
