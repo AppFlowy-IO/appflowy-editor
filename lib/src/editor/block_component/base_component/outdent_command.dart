@@ -30,6 +30,13 @@ bool isOutdentable(EditorState editorState) {
     return false;
   }
 
+  if (nodes.any((node) => node.path.length == 1)) {
+    //  if the any nodes is having a path which is of size 1.
+    //  for example [0], then that means, it is not indented
+    //  thus we ignore this event.
+    return false;
+  }
+
   // keep only immediate children nodes of parent
   // since we are keeping only immediate children nodes, all nodes will be on same level
   nodes = nodes
@@ -39,14 +46,6 @@ bool isOutdentable(EditorState editorState) {
   final isAllIndentable =
       nodes.every((node) => indentableBlockTypes.contains(node.type));
   if (!isAllIndentable) {
-    return false;
-  }
-
-  if (nodes.first.path.length == 1) {
-    //  if the first node is having a path which is of size 1.
-    //  since all nodes are in same level, thus we can check first element
-    //  for example [0], then that means, it is not indented
-    //  thus we ignore this event.
     return false;
   }
 
