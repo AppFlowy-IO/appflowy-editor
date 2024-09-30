@@ -1,18 +1,45 @@
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../infra/testable_editor.dart';
+import '../../../util/util.dart';
 
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
   group('cut_command_test.dart', () {
+    const text = 'Welcome to AppFlowy Editor 🔥!';
+
     testWidgets('update selection and execute cut command', (tester) async {
       await _testCutHandle(tester, Document.fromJson(paragraphdata));
+    });
+
+    test('cut current line if the selection is collapsed', () async {
+      final document = Document.blank().addParagraphs(
+        2,
+        builder: (index) => Delta()..insert('${index + 1}. $text'),
+      );
+      final editorState = EditorState(document: document);
+
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+
+      final result = cutCommand.execute(editorState);
+      expect(result, KeyEventResult.handled);
+
+      // check the clipboard
+      final lastText = AppFlowyClipboard.lastText!;
+      expect(lastText, '1. $text');
+
+      final after = editorState.getNodeAtPath([0])!;
+      expect(after.delta!.toPlainText(), '2. $text');
     });
   });
 }
