@@ -106,6 +106,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       // on iOS, when using gesture to move cursor, this function will be called
       // which may cause the unneeded delta being applied
       // so we ignore the updateEditingValue event when the floating cursor is visible
+      AppFlowyEditorLog.editor.debug(
+        'ignore updateEditingValue event when the floating cursor is visible',
+      );
       return;
     }
 
