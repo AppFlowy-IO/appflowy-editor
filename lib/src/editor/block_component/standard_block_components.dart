@@ -148,9 +148,6 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   //
   selectAllCommand,
 
-  // delete line
-  deleteLineCommand,
-
   // copy paste and cut
   copyCommand,
   ...pasteCommands,

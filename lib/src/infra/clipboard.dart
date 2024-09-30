@@ -13,6 +13,9 @@ class AppFlowyClipboardData {
 class AppFlowyClipboard {
   static AppFlowyClipboardData? _mockData;
 
+  @visibleForTesting
+  static String? lastText;
+
   static Future<void> setData({
     String? text,
     String? html,
@@ -20,6 +23,8 @@ class AppFlowyClipboard {
     if (text == null) {
       return;
     }
+
+    lastText = text;
 
     return Clipboard.setData(
       ClipboardData(
