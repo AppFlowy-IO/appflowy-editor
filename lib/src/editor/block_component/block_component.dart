@@ -6,6 +6,7 @@ export 'base_component/block_component_action_wrapper.dart';
 export 'base_component/block_component_configuration.dart';
 // base
 export 'base_component/convert_to_paragraph_command.dart';
+export 'base_component/delete_line_command.dart';
 export 'base_component/indent_command.dart';
 export 'base_component/insert_newline_in_type_command.dart';
 export 'base_component/markdown_format_helper.dart';
