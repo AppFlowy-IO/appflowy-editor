@@ -17,6 +17,7 @@ class SelectionGestureDetector extends StatefulWidget {
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,
+    this.enablePanImmediate = true,
   });
 
   @override
@@ -24,6 +25,8 @@ class SelectionGestureDetector extends StatefulWidget {
       SelectionGestureDetectorState();
 
   final Widget? child;
+
+  final bool enablePanImmediate;
 
   final GestureTapDownCallback? onTapDown;
   final GestureTapDownCallback? onDoubleTapDown;
@@ -47,25 +50,42 @@ class SelectionGestureDetectorState extends State<SelectionGestureDetector> {
     return RawGestureDetector(
       behavior: HitTestBehavior.translucent,
       gestures: {
-        PanGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-          () => PanGestureRecognizer(
-            supportedDevices: {
-              // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
-              // Exclude PointerDeviceKind.trackpad.
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-              PointerDeviceKind.stylus,
-              PointerDeviceKind.invertedStylus,
+        if (widget.enablePanImmediate)
+          ImmediateMultiDragGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<
+                  ImmediateMultiDragGestureRecognizer>(
+            () => ImmediateMultiDragGestureRecognizer(),
+            (recognizer) {
+              recognizer.onStart = (offset) {
+                return _ImmediateDrag(
+                  offset: offset,
+                  onStart: widget.onPanStart,
+                  onUpdate: widget.onPanUpdate,
+                  onEnd: widget.onPanEnd,
+                );
+              };
             },
           ),
-          (recognizer) {
-            recognizer
-              ..onStart = widget.onPanStart
-              ..onUpdate = widget.onPanUpdate
-              ..onEnd = widget.onPanEnd;
-          },
-        ),
+        if (!widget.enablePanImmediate)
+          PanGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+            () => PanGestureRecognizer(
+              supportedDevices: {
+                // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
+                // Exclude PointerDeviceKind.trackpad.
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.stylus,
+                PointerDeviceKind.invertedStylus,
+              },
+            ),
+            (recognizer) {
+              recognizer
+                // ..onStart = widget.onPanStart
+                ..onUpdate = widget.onPanUpdate
+                ..onEnd = widget.onPanEnd;
+            },
+          ),
         TapGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
           () => TapGestureRecognizer(),
@@ -121,5 +141,34 @@ class SelectionGestureDetectorState extends State<SelectionGestureDetector> {
     _doubleTapTimer?.cancel();
     _tripleTabTimer?.cancel();
     super.dispose();
+  }
+}
+
+// Custom pan gesture recognizer to trigger immediately
+// The callbacks in  _ImmediateDrag will be called immediately
+class _ImmediateDrag extends Drag {
+  _ImmediateDrag({
+    required this.offset,
+    this.onStart,
+    this.onUpdate,
+    this.onEnd,
+  }) {
+    onStart?.call(DragStartDetails(globalPosition: offset));
+  }
+
+  final Offset offset;
+
+  final GestureDragStartCallback? onStart;
+  final GestureDragUpdateCallback? onUpdate;
+  final GestureDragEndCallback? onEnd;
+
+  @override
+  void update(DragUpdateDetails details) {
+    onUpdate?.call(details);
+  }
+
+  @override
+  void end(DragEndDetails details) {
+    onEnd?.call(details);
   }
 }
