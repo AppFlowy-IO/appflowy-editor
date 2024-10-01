@@ -56,20 +56,36 @@ extension EditorCopyPaste on EditorState {
     if (node == null || delta == null) {
       return;
     }
+
     final transaction = this.transaction;
+
+    // check if the first node is a non-delta node,
+    //  if so, insert the nodes after the current selection.
+    final startWithNonDeltaBlock = nodes.first.delta == null;
+    if (startWithNonDeltaBlock) {
+      transaction.insertNodes(node.path.next, nodes);
+      await apply(transaction);
+      return;
+    }
 
     final lastNodeLength = calculateLength(nodes);
     // merge the current selected node delta into the nodes.
     if (delta.isNotEmpty) {
-      nodes.first.insertDelta(
-        delta.slice(0, selection.startIndex),
-        insertAfter: false,
-      );
+      final firstNode = nodes.first;
+      if (firstNode.delta != null) {
+        nodes.first.insertDelta(
+          delta.slice(0, selection.startIndex),
+          insertAfter: false,
+        );
+      }
 
-      nodes.last.insertDelta(
-        delta.slice(selection.endIndex),
-        insertAfter: true,
-      );
+      final lastNode = nodes.last;
+      if (lastNode.delta != null) {
+        nodes.last.insertDelta(
+          delta.slice(selection.endIndex),
+          insertAfter: true,
+        );
+      }
     }
 
     if (delta.isEmpty && node.type != ParagraphBlockKeys.type) {
