@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../infra/testable_editor.dart';
 
-const _padding = 24.0;
-
 void main() async {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -229,8 +227,9 @@ void main() async {
       await editor.startTesting();
 
       var selection = Selection(
-          start: Position(path: [1], offset: 1),
-          end: Position(path: [2], offset: 1));
+        start: Position(path: [1], offset: 1),
+        end: Position(path: [2], offset: 1),
+      );
 
       await editor.updateSelection(selection);
 
@@ -376,113 +375,4 @@ void main() async {
       await editor.dispose();
     });
   });
-}
-
-typedef TestLine = (String, String);
-
-Future<void> multiLineOutdentTestHelper(
-  WidgetTester tester,
-  TestLine firstLine,
-  TestLine secondLine,
-  TestLine ThirdLine,
-) async {
-  const text = 'Welcome to Appflowy 😁';
-  final editor = tester.editor
-    // final editor = tester.editor..addNode(paraNode);
-    ..addNode(bulletedListNode(text: text))
-    ..addNode(bulletedListNode(text: text))
-    ..addNode(bulletedListNode(text: text));
-
-  await editor.startTesting();
-
-  var selection = Selection(
-      start: Position(path: [1], offset: 1),
-      end: Position(path: [2], offset: 1));
-
-  await editor.updateSelection(selection);
-
-  await editor.pressKey(key: LogicalKeyboardKey.tab);
-
-  // Before
-  // * First line
-  // * Second line
-  // * Third line
-  // After
-  // * First line
-  //  * Second line
-  //  * Third line
-
-  expect(
-    editor.nodeAtPath([0])!.type,
-    'bulleted_list',
-  );
-  expect(
-    editor.nodeAtPath([0, 0])!.type,
-    'bulleted_list',
-  );
-  expect(
-    editor.nodeAtPath([0, 1])!.type,
-    'bulleted_list',
-  );
-
-  expect(editor.nodeAtPath([1]), null);
-  expect(editor.nodeAtPath([2]), null);
-
-  selection = Selection(
-      start: Position(path: [0, 0], offset: 1),
-      end: Position(path: [0, 1], offset: 1));
-
-  await editor.updateSelection(selection);
-
-  await editor.pressKey(
-    key: LogicalKeyboardKey.tab,
-    isShiftPressed: true,
-  );
-
-  // Before
-  // * First line
-  // * Second line
-  // * Third line
-  // After
-  // * First line
-  // * Second line
-  // * Third line
-  expect(
-    editor.nodeAtPath([0])!.type,
-    'bulleted_list',
-  );
-  expect(
-    editor.nodeAtPath([1])!.type,
-    'bulleted_list',
-  );
-  expect(
-    editor.nodeAtPath([2])!.type,
-    'bulleted_list',
-  );
-  expect(editor.nodeAtPath([0, 0]), null);
-
-  await editor.dispose();
-  // var paraNode = paragraphNode(text: firstLine.$1, textDirection: firstLine.$2);
-  //
-  // paraNode
-  //   ..insert(paragraphNode(text: childOne.$1, textDirection: childOne.$2))
-  //   ..insert(paragraphNode(text: childTwo.$1, textDirection: childTwo.$2));
-  //
-  // final editor = tester.editor..addNode(paraNode);
-  //
-  // await editor.startTesting();
-  //
-  // final selection = Selection(
-  //   start: Position(path: [0, 0], offset: 1),
-  //   end: Position(path: [0, 1], offset: 1),
-  // );
-  // await editor.updateSelection(selection);
-  //
-  // await editor.pressKey(key: LogicalKeyboardKey.tab, isShiftPressed: true);
-  // await tester.pumpAndSettle();
-  //
-  // expect(editor.nodeAtPath([1])?.delta?.toPlainText(), childOne.$1);
-  // expect(editor.nodeAtPath([2])?.delta?.toPlainText(), childTwo.$1);
-  //
-  // return editor;
 }
