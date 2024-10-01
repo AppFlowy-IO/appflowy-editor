@@ -288,14 +288,15 @@ class _DesktopSelectionServiceWidgetState
   void _onPanStart(DragStartDetails details) {
     clearSelection();
 
-    final canPanStart = _interceptors
-        .every((interceptor) => interceptor.canPanStart?.call(details) ?? true);
+    final canPanStart = _interceptors.every(
+      (interceptor) => interceptor.canPanStart?.call(details) ?? true,
+    );
 
     if (!canPanStart) {
       return;
     }
 
-    _panStartOffset = details.globalPosition.translate(-5.0, 0);
+    _panStartOffset = details.globalPosition;
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
     _panStartPosition = getNodeInOffset(_panStartOffset!)
