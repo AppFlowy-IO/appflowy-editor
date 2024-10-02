@@ -219,7 +219,6 @@ void main() async {
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
-        // final editor = tester.editor..addNode(paraNode);
         ..addNode(bulletedListNode(text: text))
         ..addNode(bulletedListNode(text: text))
         ..addNode(bulletedListNode(text: text));
@@ -301,7 +300,6 @@ void main() async {
         (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor
-        // final editor = tester.editor..addNode(paraNode);
         ..addNode(bulletedListNode(text: text))
         ..addNode(bulletedListNode(text: text))
         ..addNode(bulletedListNode(text: text));
