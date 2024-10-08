@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// Backspace key event.
 ///
@@ -96,8 +97,12 @@ CommandShortcutEventHandler _deleteRightWordCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  if (selection.start.offset == delta.length) {
+    return deleteCommand.execute(editorState);
+  }
+
   // we store the position where the current word ends.
-  var endOfWord = selection.end.moveHorizontal(
+  Position? endOfWord = selection.end.moveHorizontal(
     editorState,
     forward: false,
     selectionRange: SelectionRange.word,
