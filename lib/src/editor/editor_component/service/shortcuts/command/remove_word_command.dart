@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-/// Backspace key event.
+/// Delete key event.
 ///
 /// - support
 ///   - desktop
