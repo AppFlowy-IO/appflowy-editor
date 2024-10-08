@@ -1,12 +1,10 @@
 import 'dart:math';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
-import '../../editor/block_component/rich_text/appflowy_rich_text_keys.dart';
 
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
@@ -517,15 +515,29 @@ class Delta extends Iterable<TextOperation> {
   }
 
   Attributes? sliceAttributes(int index) {
-    if (index <= 0) {
+    if (index < 0) {
       return null;
     }
 
-    final attributes = slice(index - 1, index).first.attributes;
-    if (attributes == null ||
-        !attributes.keys.every(
-          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-        )) {
+    Attributes? attributes;
+
+    // if the index == 0, slice the attributes from the next position.
+    if (index == 0 && length >= 1) {
+      attributes = slice(index, index + 1).firstOrNull?.attributes;
+    } else {
+      attributes = slice(index - 1, index).firstOrNull?.attributes;
+    }
+
+    if (attributes == null) {
+      return null;
+    }
+
+    if (!attributes.keys.every(
+      (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+    )) {
+      AppFlowyEditorLog.editor.info(
+        'The attributes: $attributes is not supported in sliceAttributes.',
+      );
       return null;
     }
 
