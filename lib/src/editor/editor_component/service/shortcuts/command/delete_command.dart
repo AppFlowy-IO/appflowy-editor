@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// Delete key event.
 ///
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 final CommandShortcutEvent deleteCommand = CommandShortcutEvent(
   key: 'Delete Key',
   getDescription: () => AppFlowyEditorL10n.current.cmdDeleteRight,
-  command: 'delete',
+  command: 'delete, shift+delete',
   handler: _deleteCommandHandler,
 );
 
