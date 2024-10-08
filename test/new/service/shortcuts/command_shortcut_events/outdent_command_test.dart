@@ -8,7 +8,7 @@ void main() async {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  group('outdent_handler.dart', () {
+  group('outdent_command.dart', () {
     testWidgets("press shift tab in plain text", (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraphs(3, initialText: text);
@@ -211,5 +211,166 @@ void main() async {
         await editor.dispose();
       },
     );
+  });
+
+  group('outdentCommand (multi-line) - widget test multi-line outdent padding',
+      () {
+    testWidgets("indent two items of same level then outdent it",
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor
+        ..addNode(bulletedListNode(text: text))
+        ..addNode(bulletedListNode(text: text))
+        ..addNode(bulletedListNode(text: text));
+
+      await editor.startTesting();
+
+      var selection = Selection(
+        start: Position(path: [1], offset: 1),
+        end: Position(path: [2], offset: 1),
+      );
+
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+
+      // Before
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // After
+      // • Welcome to Appflowy 😁
+      //  ○ Welcome to Appflowy 😁
+      //  ○ Welcome to Appflowy 😁
+
+      expect(
+        editor.nodeAtPath([0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([0, 0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([0, 1])!.type,
+        'bulleted_list',
+      );
+
+      expect(editor.nodeAtPath([1]), null);
+      expect(editor.nodeAtPath([2]), null);
+
+      selection = Selection(
+        start: Position(path: [0, 0], offset: 1),
+        end: Position(path: [0, 1], offset: 1),
+      );
+
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.tab,
+        isShiftPressed: true,
+      );
+
+      // Before
+      // • Welcome to Appflowy 😁
+      //    ○ Welcome to Appflowy 😁
+      //    ○ Welcome to Appflowy 😁
+      // After
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      expect(
+        editor.nodeAtPath([0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([1])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([2])!.type,
+        'bulleted_list',
+      );
+      expect(editor.nodeAtPath([0, 0]), null);
+
+      await editor.dispose();
+    });
+
+    testWidgets("ignore if any bullet list of level 1 selected",
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor
+        ..addNode(bulletedListNode(text: text))
+        ..addNode(bulletedListNode(text: text))
+        ..addNode(bulletedListNode(text: text));
+
+      await editor.startTesting();
+
+      var selection = Selection.single(path: [1], startOffset: 0);
+
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+
+      // Before
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // After
+      // • Welcome to Appflowy 😁
+      //  ○ Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+
+      expect(
+        editor.nodeAtPath([0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([1])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([0, 0])!.type,
+        'bulleted_list',
+      );
+
+      expect(editor.nodeAtPath([2]), null);
+
+      selection = Selection(
+        start: Position(path: [1], offset: 1),
+        end: Position(path: [0, 0], offset: 1),
+      );
+
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.tab,
+        isShiftPressed: true,
+      );
+
+      // list will remain same as node with path [1] which is on level = 1,
+      // Before
+      // • Welcome to Appflowy 😁
+      //  ○ Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      // After
+      // • Welcome to Appflowy 😁
+      //  ○ Welcome to Appflowy 😁
+      // • Welcome to Appflowy 😁
+      expect(
+        editor.nodeAtPath([0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([0, 0])!.type,
+        'bulleted_list',
+      );
+      expect(
+        editor.nodeAtPath([1])!.type,
+        'bulleted_list',
+      );
+
+      await editor.dispose();
+    });
   });
 }
