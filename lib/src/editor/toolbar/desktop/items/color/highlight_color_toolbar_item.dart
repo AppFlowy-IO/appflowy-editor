@@ -13,6 +13,10 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
+        if (delta.everyAttributes((attr) => attr.isEmpty)) {
+          return false;
+        }
+
         return delta.everyAttributes((attributes) {
           highlightColorHex = attributes[AppFlowyRichTextKeys.backgroundColor];
           return highlightColorHex != null;

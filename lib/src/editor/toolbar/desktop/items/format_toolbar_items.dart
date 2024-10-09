@@ -41,11 +41,12 @@ class _FormatToolbarItem extends ToolbarItem {
           ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
-            final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-              return delta.everyAttributes(
-                (attributes) => attributes[name] == true,
-              );
-            });
+            final isHighlight = nodes.allSatisfyInSelection(
+              selection,
+              (delta) =>
+                  delta.isNotEmpty &&
+                  delta.everyAttributes((attr) => attr[name] == true),
+            );
 
             final child = SVGIconItemWidget(
               iconName: 'toolbar/$name',
