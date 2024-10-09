@@ -97,7 +97,7 @@ CommandShortcutEventHandler _deleteRightWordCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
-  if (selection.start.offset == delta.length) {
+  if (selection.isCollapsed && selection.start.offset == delta.length) {
     return deleteCommand.execute(editorState);
   }
 
