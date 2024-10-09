@@ -14,8 +14,12 @@ ToolbarItem buildTextColorItem({
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes((attributes) {
-          textColorHex = attributes[AppFlowyRichTextKeys.textColor];
+        if (delta.everyAttributes((attr) => attr.isEmpty)) {
+          return false;
+        }
+
+        return delta.everyAttributes((attr) {
+          textColorHex = attr[AppFlowyRichTextKeys.textColor];
           return (textColorHex != null);
         });
       });
