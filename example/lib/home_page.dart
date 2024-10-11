@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/auto_complete_editor.dart';
+import 'package:example/pages/auto_expand_editor.dart';
 import 'package:example/pages/collab_editor.dart';
 import 'package:example/pages/collab_selection_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
@@ -247,6 +248,17 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const FixedToolbarExample(),
+              ),
+            );
+          }),
+
+          _buildListTile(context, 'Auto Expand Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AutoExpandEditor(
+                  editorState: EditorState.blank(),
+                ),
               ),
             );
           }),
