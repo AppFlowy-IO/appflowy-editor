@@ -55,10 +55,10 @@ class PdfHTMLEncoder {
   }
 
   Future<List<pw.Widget>> _parseElement(
-      Iterable<dom.Node> domNodes, {
-        String? type,
-        pw.TextAlign? textAlign,
-      }) async {
+    Iterable<dom.Node> domNodes, {
+    String? type,
+    pw.TextAlign? textAlign,
+  }) async {
     final textSpan = <pw.TextSpan>[];
     final nodes = <pw.Widget>[];
     for (final domNode in domNodes) {
@@ -146,9 +146,9 @@ class PdfHTMLEncoder {
   }
 
   Future<Iterable<pw.Widget>> _parseSpecialElements(
-      dom.Element element, {
-        required String type,
-      }) async {
+    dom.Element element, {
+    required String type,
+  }) async {
     final localName = element.localName;
     switch (localName) {
       case HTMLTags.h1:
@@ -236,12 +236,12 @@ class PdfHTMLEncoder {
   }
 
   (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
-      dom.Element element,
-      ) {
+    dom.Element element,
+  ) {
     final localName = element.localName;
     pw.TextAlign? textAlign;
     pw.TextStyle attributes =
-    pw.TextStyle(fontFallback: fontFallback, font: font);
+        pw.TextStyle(fontFallback: fontFallback, font: font);
     final List<pw.TextDecoration> decoration = [];
 
     switch (localName) {
@@ -293,15 +293,15 @@ class PdfHTMLEncoder {
       }
     }
     return (
-    textAlign,
-    attributes.copyWith(decoration: pw.TextDecoration.combine(decoration))
+      textAlign,
+      attributes.copyWith(decoration: pw.TextDecoration.combine(decoration))
     );
   }
 
   pw.Widget _parseHeadingElement(
-      dom.Element element, {
-        required int level,
-      }) {
+    dom.Element element, {
+    required int level,
+  }) {
     pw.TextAlign? textAlign;
     final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
@@ -343,21 +343,21 @@ class PdfHTMLEncoder {
 
   Iterable<pw.Widget> _parseUnOrderListElement(dom.Element element) {
     final findTodos =
-    element.children.where((element) => element.text.contains('['));
+        element.children.where((element) => element.text.contains('['));
     if (findTodos.isNotEmpty) {
       return element.children
           .map(
             (child) => _parseListElement(child, type: TodoListBlockKeys.type),
-      )
+          )
           .toList();
     } else {
       return element.children
           .map(
             (child) => _parseListElement(
-          child,
-          type: BulletedListBlockKeys.type,
-        ),
-      )
+              child,
+              type: BulletedListBlockKeys.type,
+            ),
+          )
           .toList();
     }
   }
@@ -366,22 +366,22 @@ class PdfHTMLEncoder {
     return element.children
         .map(
           (child) => _parseListElement(
-        child,
-        type: NumberedListBlockKeys.type,
-      ),
-    )
+            child,
+            type: NumberedListBlockKeys.type,
+          ),
+        )
         .toList();
   }
 
   pw.Widget _parseListElement(
-      dom.Element element, {
-        required String type,
-      }) {
+    dom.Element element, {
+    required String type,
+  }) {
     //TODO: Handle Numbered Lists & Handle nested lists
     if (type == TodoListBlockKeys.type) {
       final bracketRightIndex = element.text.indexOf(']') + 1;
       final strippedString =
-      element.text.substring(bracketRightIndex, element.text.length);
+          element.text.substring(bracketRightIndex, element.text.length);
       bool condition = false;
       if (element.text.contains('[x]')) {
         condition = true;
@@ -441,8 +441,8 @@ class PdfHTMLEncoder {
   }
 
   Future<pw.Widget> _parseDeltaElement(
-      dom.Element element,
-      ) async {
+    dom.Element element,
+  ) async {
     final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
     final subNodes = <pw.Widget>[];
@@ -481,7 +481,7 @@ class PdfHTMLEncoder {
         }
       } else {
         final attributes =
-        _getDeltaAttributesFromHTMLAttributes(element.attributes);
+            _getDeltaAttributesFromHTMLAttributes(element.attributes);
         textAlign = attributes.$1;
         textSpan.add(
           pw.TextSpan(
@@ -509,9 +509,9 @@ class PdfHTMLEncoder {
   }
 
   static pw.TextStyle _assignTextDecorations(
-      pw.TextStyle style,
-      String decorationStr,
-      ) {
+    pw.TextStyle style,
+    String decorationStr,
+  ) {
     final decorations = decorationStr.split(" ");
     final textDecorations = <pw.TextDecoration>[];
     for (final type in decorations) {
@@ -529,8 +529,8 @@ class PdfHTMLEncoder {
   }
 
   (pw.TextAlign?, pw.TextStyle) _getDeltaAttributesFromHTMLAttributes(
-      LinkedHashMap<Object, String> htmlAttributes,
-      ) {
+    LinkedHashMap<Object, String> htmlAttributes,
+  ) {
     pw.TextStyle style = pw.TextStyle(font: font, fontFallback: fontFallback);
     pw.TextAlign? textAlign;
     final cssInlineStyle = htmlAttributes['style'];
