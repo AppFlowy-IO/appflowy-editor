@@ -10,10 +10,10 @@ final List<CommandShortcutEvent> toggleHeadingCommands = [
 
 /// Markdown key event.
 ///
-/// Cmd / Ctrl + T: toggle H1
-/// Cmd / Ctrl + G: toggle H2
-/// Cmd / Ctrl + J: toggle H3
-/// Cmd / Ctrl + B: toggle Body
+/// Cmd / Ctrl + Shift + T: toggle H1
+/// Cmd / Ctrl + Shift + G: toggle H2
+/// Cmd / Ctrl + Shift + J: toggle H3
+/// Cmd / Ctrl + Shift + B: toggle Body
 /// - support
 ///   - desktop
 ///   - web
@@ -70,7 +70,7 @@ KeyEventResult _toggleAttribute(
   }
 
   final node = editorState.getNodeAtPath(selection.start.path)!;
-  bool isHighlight = isBody ??
+  bool isHeading = isBody ??
       node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == level;
 
@@ -79,7 +79,7 @@ KeyEventResult _toggleAttribute(
   editorState.formatNode(
     selection,
     (node) => node.copyWith(
-      type: isHighlight ? ParagraphBlockKeys.type : HeadingBlockKeys.type,
+      type: isHeading ? ParagraphBlockKeys.type : HeadingBlockKeys.type,
       attributes: {
         HeadingBlockKeys.level: level,
         blockComponentBackgroundColor:
