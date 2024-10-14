@@ -70,8 +70,9 @@ KeyEventResult _toggleAttribute(
   }
 
   final node = editorState.getNodeAtPath(selection.start.path)!;
-  bool isHighlight =
-      isBody ?? node.type == 'heading' && node.attributes['level'] == level;
+  bool isHighlight = isBody ??
+      node.type == HeadingBlockKeys.type &&
+          node.attributes[HeadingBlockKeys.level] == level;
 
   final delta = (node.delta ?? Delta()).toJson();
 
