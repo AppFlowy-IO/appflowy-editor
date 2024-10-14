@@ -1,3 +1,32 @@
+## 4.0.0
+
+- feat: support dragging to reorder block by @LucasXu0 in [#887](https://github.com/AppFlowy-IO/appflowy-editor/pull/887)
+- feat: implement auto scroll when draggaing to reorder by @LucasXu0 in [#889](https://github.com/AppFlowy-IO/appflowy-editor/pull/889)
+- feat: Allow configuring the auto scroll edge offset by @snipd-min in [#888](https://github.com/AppFlowy-IO/appflowy-editor/pull/888)
+- feat: support moving a block to become a child of another block by @LucasXu0 in [#896](https://github.com/AppFlowy-IO/appflowy-editor/pull/896)
+- feat: listen on delete_backward changes by @LucasXu0 in [#898](https://github.com/AppFlowy-IO/appflowy-editor/pull/898)
+- feat: support formatting text when the composing range is not collapsed by @LucasXu0 in [#900](https://github.com/AppFlowy-IO/appflowy-editor/pull/900)
+- feat: support skipping slice attributes by @LucasXu0 in [#901](https://github.com/AppFlowy-IO/appflowy-editor/pull/901)
+- feat: add keyboard service interceptor to prevent default ops execution by @LucasXu0 in [#902](https://github.com/AppFlowy-IO/appflowy-editor/pull/902)
+- feat: support keyboard gesture on mobile by @LucasXu0 in [#905](https://github.com/AppFlowy-IO/appflowy-editor/pull/905)
+- feat: add 'delete line' command shortcut by @LucasXu0 in [#906](https://github.com/AppFlowy-IO/appflowy-editor/pull/906)
+- feat: implement custom pan gesture to avoid delay offset update by @LucasXu0 in [#909](https://github.com/AppFlowy-IO/appflowy-editor/pull/909)
+- feat: Multi list indentation at once by @Ahad-patel in [#903](https://github.com/AppFlowy-IO/appflowy-editor/pull/903)
+- feat: slice attribute from next position if index is 0 by @LucasXu0 in [#911](https://github.com/AppFlowy-IO/appflowy-editor/pull/911)
+- feat: add auto expanded editor showcase by @LucasXu0 in [#920](https://github.com/AppFlowy-IO/appflowy-editor/pull/920)
+- feat: override block component validator by @LucasXu0 in [#924](https://github.com/AppFlowy-IO/appflowy-editor/pull/924)
+- fix: backquote key will cause crash when using Frence IME by @LucasXu0 in [#892](https://github.com/AppFlowy-IO/appflowy-editor/pull/892)
+- fix: odd toggle behavior continuous markdown by @Xazin in [#893](https://github.com/AppFlowy-IO/appflowy-editor/pull/893)
+- fix: context menu doesn't show up when the first paragraph is empty by @q200892907 in [#891](https://github.com/AppFlowy-IO/appflowy-editor/pull/891)
+- fix: insert the pasted nodes after current selection if they start with a non-delta node by @LucasXu0 in [#908](https://github.com/AppFlowy-IO/appflowy-editor/pull/908)
+- fix: only notify ui of selection change if it actually changed by @Xazin in [#914](https://github.com/AppFlowy-IO/appflowy-editor/pull/914)
+- fix: shift+delete by @Xazin in [#916](https://github.com/AppFlowy-IO/appflowy-editor/pull/916)
+- fix: ctrl+delete does not delete newlines by @Xazin in [#917](https://github.com/AppFlowy-IO/appflowy-editor/pull/917)
+- fix: ctrl+backspace does not delete newlines by @Xazin in [#918](https://github.com/AppFlowy-IO/appflowy-editor/pull/918)
+- fix: do not highlight inactive items on empty selection by @Xazin in [#915](https://github.com/AppFlowy-IO/appflowy-editor/pull/915)
+- fix: showActionsNotifier called after it has been disposed will raise… by @LucasXu0 in [#919](https://github.com/AppFlowy-IO/appflowy-editor/pull/919)
+- chore: integrate delete line command into cut command by @LucasXu0 in [#907](https://github.com/AppFlowy-IO/appflowy-editor/pull/907)
+
 ## 3.3.0
 
 - feat: support moving cursor using keyboard gesture by @LucasXu0 in [#879](https://github.com/AppFlowy-IO/appflowy-editor/pull/879)
