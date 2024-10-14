@@ -81,9 +81,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) {
-    return node.delta != null;
-  }
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {

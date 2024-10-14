@@ -57,7 +57,7 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {

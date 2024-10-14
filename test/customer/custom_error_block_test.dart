@@ -89,9 +89,6 @@ class ErrorBlockComponentBuilder extends BlockComponentBuilder {
       ),
     );
   }
-
-  @override
-  bool validate(Node node) => true;
 }
 
 class ErrorBlockComponentWidget extends BlockComponentStatefulWidget {

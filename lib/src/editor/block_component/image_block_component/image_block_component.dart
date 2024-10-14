@@ -83,7 +83,8 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.delta == null && node.children.isEmpty;
+  BlockComponentValidate get validate =>
+      (node) => node.delta == null && node.children.isEmpty;
 }
 
 class ImageBlockComponentWidget extends BlockComponentStatefulWidget {

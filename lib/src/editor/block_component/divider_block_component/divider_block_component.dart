@@ -52,7 +52,7 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.children.isEmpty;
+  BlockComponentValidate get validate => (node) => node.children.isEmpty;
 }
 
 class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
