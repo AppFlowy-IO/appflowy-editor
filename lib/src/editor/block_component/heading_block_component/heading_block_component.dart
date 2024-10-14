@@ -63,9 +63,6 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
       ),
     );
   }
-
-  @override
-  bool validate(Node node) => true;
 }
 
 class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {

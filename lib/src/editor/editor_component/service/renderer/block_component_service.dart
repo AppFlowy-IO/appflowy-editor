@@ -12,6 +12,8 @@ typedef BlockActionBuilder = Widget Function(
   BlockComponentActionState state,
 );
 
+typedef BlockComponentValidate = bool Function(Node node);
+
 abstract class BlockComponentActionState {
   set alwaysShowActions(bool alwaysShowActions);
 }
@@ -27,11 +29,11 @@ abstract class BlockComponentBuilder with BlockComponentSelectable {
   /// return true if the node is valid.
   /// return false if the node is invalid,
   ///   and the node will be displayed as a PlaceHolder widget.
-  bool validate(Node node) => true;
+  BlockComponentValidate validate = (_) => true;
 
   BlockComponentWidget build(BlockComponentContext blockComponentContext);
 
-  bool Function(Node) showActions = (_) => false;
+  bool Function(Node node) showActions = (_) => false;
 
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 

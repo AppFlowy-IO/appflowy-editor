@@ -60,9 +60,7 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) {
-    return node.delta != null;
-  }
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {

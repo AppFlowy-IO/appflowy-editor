@@ -68,7 +68,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
+  BlockComponentValidate get validate => (node) =>
       node.attributes.isNotEmpty &&
       node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
       node.attributes.containsKey(TableCellBlockKeys.colPosition);
