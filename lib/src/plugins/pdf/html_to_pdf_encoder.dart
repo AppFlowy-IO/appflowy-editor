@@ -68,18 +68,26 @@ class PdfHTMLEncoder {
           textSpan.add(const pw.TextSpan(text: '\n'));
         } else if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
+          nodes.add(
+            pw.Paragraph(
+              text: domNode.text,
+              style: attributes.$2,
+            ),
+          );
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (textSpan.isNotEmpty) {
             final newTextSpanList = List<pw.TextSpan>.from(textSpan);
             nodes.add(
-              (pw.SizedBox(
+              pw.SizedBox(
                 width: double.infinity,
                 child: pw.RichText(
                   textAlign: textAlign,
-                  text: pw.TextSpan(children: newTextSpanList),
+                  text: pw.TextSpan(
+                    children: newTextSpanList,
+                    style: pw.TextStyle(font: font, fontFallback: fontFallback),
+                  ),
                 ),
-              )),
+              ),
             );
             textAlign = null;
             textSpan.clear();
@@ -95,13 +103,16 @@ class PdfHTMLEncoder {
         if (domNode.text.trim().isNotEmpty && textSpan.isNotEmpty) {
           final newTextSpanList = List<pw.TextSpan>.from(textSpan);
           nodes.add(
-            (pw.SizedBox(
+            pw.SizedBox(
               width: double.infinity,
               child: pw.RichText(
                 textAlign: textAlign,
-                text: pw.TextSpan(children: newTextSpanList),
+                text: pw.TextSpan(
+                  children: newTextSpanList,
+                  style: pw.TextStyle(font: font, fontFallback: fontFallback),
+                ),
               ),
-            )),
+            ),
           );
           textAlign = null;
           textSpan.clear();
@@ -119,13 +130,16 @@ class PdfHTMLEncoder {
     if (textSpan.isNotEmpty) {
       final newTextSpanList = List<pw.TextSpan>.from(textSpan);
       nodes.add(
-        (pw.SizedBox(
+        pw.SizedBox(
           width: double.infinity,
           child: pw.RichText(
             textAlign: textAlign,
-            text: pw.TextSpan(children: newTextSpanList),
+            text: pw.TextSpan(
+              children: newTextSpanList,
+              style: pw.TextStyle(font: font, fontFallback: fontFallback),
+            ),
           ),
-        )),
+        ),
       );
     }
     return nodes;
@@ -184,7 +198,12 @@ class PdfHTMLEncoder {
             dom.Element element = node as dom.Element;
             if (HTMLTags.formattingElements.contains(element.localName)) {
               final attributes = _parserFormattingElementAttributes(element);
-              cellContent.add(pw.Text(element.text, style: attributes.$2));
+              cellContent.add(
+                pw.Text(
+                  element.text,
+                  style: attributes.$2,
+                ),
+              );
             }
             if (HTMLTags.specialElements.contains(element.localName)) {
               cellContent.addAll(
@@ -226,10 +245,12 @@ class PdfHTMLEncoder {
     final List<pw.TextDecoration> decoration = [];
 
     switch (localName) {
-      case HTMLTags.bold || HTMLTags.strong:
+      case HTMLTags.bold:
+      case HTMLTags.strong:
         attributes = attributes.copyWith(fontWeight: pw.FontWeight.bold);
         break;
-      case HTMLTags.italic || HTMLTags.em:
+      case HTMLTags.italic:
+      case HTMLTags.em:
         attributes = attributes.copyWith(fontStyle: pw.FontStyle.italic);
         break;
       case HTMLTags.underline:
@@ -255,7 +276,6 @@ class PdfHTMLEncoder {
           attributes = attributes.copyWith(color: pdf.PdfColors.blue);
         }
         break;
-
       case HTMLTags.code:
         attributes = attributes.copyWith(
           background: const pw.BoxDecoration(color: pdf.PdfColors.grey),
@@ -289,7 +309,12 @@ class PdfHTMLEncoder {
       if (child is dom.Element) {
         final attributes = _parserFormattingElementAttributes(child);
         textAlign = attributes.$1;
-        textSpan.add(pw.TextSpan(text: child.text, style: attributes.$2));
+        textSpan.add(
+          pw.TextSpan(
+            text: child.text,
+            style: attributes.$2,
+          ),
+        );
       } else {
         textSpan.add(
           pw.TextSpan(
@@ -308,6 +333,8 @@ class PdfHTMLEncoder {
           style: pw.TextStyle(
             fontSize: level.getHeadingSize,
             fontWeight: pw.FontWeight.bold,
+            font: font,
+            fontFallback: fontFallback,
           ),
         ),
       ),
@@ -326,8 +353,10 @@ class PdfHTMLEncoder {
     } else {
       return element.children
           .map(
-            (child) =>
-                _parseListElement(child, type: BulletedListBlockKeys.type),
+            (child) => _parseListElement(
+              child,
+              type: BulletedListBlockKeys.type,
+            ),
           )
           .toList();
     }
@@ -336,7 +365,10 @@ class PdfHTMLEncoder {
   Iterable<pw.Widget> _parseOrderListElement(dom.Element element) {
     return element.children
         .map(
-          (child) => _parseListElement(child, type: NumberedListBlockKeys.type),
+          (child) => _parseListElement(
+            child,
+            type: NumberedListBlockKeys.type,
+          ),
         )
         .toList();
   }
@@ -369,13 +401,15 @@ class PdfHTMLEncoder {
         ],
       );
     } else {
-      return pw.Bullet(text: element.text);
+      return pw.Bullet(
+        text: element.text,
+        style: pw.TextStyle(font: font, fontFallback: fontFallback),
+      );
     }
   }
 
   Future<pw.Widget> _parseParagraphElement(dom.Element element) {
-    final textSpan = _parseDeltaElement(element);
-    return textSpan;
+    return _parseDeltaElement(element);
   }
 
   Future<pw.Widget> _parseImageElement(dom.Element element) async {
@@ -432,9 +466,7 @@ class PdfHTMLEncoder {
             );
           } else {
             if (child.localName == HTMLTags.br) {
-              textSpan.add(
-                const pw.TextSpan(text: '\n'),
-              );
+              textSpan.add(const pw.TextSpan(text: '\n'));
             } else {
               final attributes = _parserFormattingElementAttributes(child);
               textAlign = attributes.$1;
@@ -454,8 +486,7 @@ class PdfHTMLEncoder {
         textSpan.add(
           pw.TextSpan(
             text: child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '',
-            style:
-                attributes.$2.copyWith(font: font, fontFallback: fontFallback),
+            style: attributes.$2,
           ),
         );
       }
@@ -466,7 +497,10 @@ class PdfHTMLEncoder {
           width: double.infinity,
           child: pw.RichText(
             textAlign: textAlign,
-            text: pw.TextSpan(children: textSpan),
+            text: pw.TextSpan(
+              children: textSpan,
+              style: pw.TextStyle(font: font, fontFallback: fontFallback),
+            ),
           ),
         ),
         ...subNodes,
@@ -497,7 +531,7 @@ class PdfHTMLEncoder {
   (pw.TextAlign?, pw.TextStyle) _getDeltaAttributesFromHTMLAttributes(
     LinkedHashMap<Object, String> htmlAttributes,
   ) {
-    pw.TextStyle style = const pw.TextStyle();
+    pw.TextStyle style = pw.TextStyle(font: font, fontFallback: fontFallback);
     pw.TextAlign? textAlign;
     final cssInlineStyle = htmlAttributes['style'];
     final cssMap = _getCssFromString(cssInlineStyle);
@@ -518,9 +552,7 @@ class PdfHTMLEncoder {
     // decoration
     final textDecoration = cssMap['text-decoration'];
     if (textDecoration != null) {
-      style = style.copyWith(
-        decoration: _assignTextDecorations(style, textDecoration).decoration,
-      );
+      style = _assignTextDecorations(style, textDecoration);
     }
 
     // background color
@@ -528,7 +560,8 @@ class PdfHTMLEncoder {
     if (backgroundColor != null) {
       final highlightColor = ColorExt.fromRgbaString(backgroundColor);
       if (highlightColor != null) {
-        style = style.copyWith(color: highlightColor);
+        style =
+            style.copyWith(background: pw.BoxDecoration(color: highlightColor));
       }
     }
 
@@ -546,6 +579,8 @@ class PdfHTMLEncoder {
     if (fontStyle == 'italic') {
       style = style.copyWith(fontStyle: pw.FontStyle.italic);
     }
+
+    // text align
     final alignment = cssMap['text-align'];
     if (alignment != null) {
       textAlign = _alignText(alignment);
