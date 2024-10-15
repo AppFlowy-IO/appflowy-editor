@@ -28,6 +28,7 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.textDirection,
+    this.maxWidth,
     this.tooltipBuilder,
   });
 
@@ -39,6 +40,7 @@ class FloatingToolbarWidget extends StatefulWidget {
   final Color? toolbarShadowColor;
   final EditorState editorState;
   final TextDirection textDirection;
+  final double? maxWidth;
   final ToolbarTooltipBuilder? tooltipBuilder;
 
   @override
@@ -59,7 +61,10 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       elevation: widget.toolbarElevation,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: SizedBox(
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: widget.maxWidth ?? double.infinity),
+          child: SizedBox(
           height: floatingToolbarHeight,
           child: Row(
             key: floatingToolbarContainerKey,
