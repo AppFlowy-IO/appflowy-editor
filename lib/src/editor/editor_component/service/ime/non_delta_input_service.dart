@@ -215,6 +215,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         baseOffset: selection.baseOffset - 1,
         extentOffset: selection.extentOffset - 1,
       );
+
+      if (!deleteRange.isValid) {
+        return;
+      }
+
       // valid the result
       onDelete(
         TextEditingDeltaDeletion(
