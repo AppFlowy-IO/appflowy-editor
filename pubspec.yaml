@@ -8,11 +8,12 @@ environment:
   sdk: ">=3.4.0 <4.0.0"
   flutter: ">=3.22.0"
 
-description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
+description: A highly customizable rich-text editor for Flutter. The AppFlowy
+  Editor project for AppFlowy and beyond.
 
 dependencies:
   collection: "^1.18.0"
-  device_info_plus: "^10.1.0"
+  device_info_plus: "^11.0.0"
   diff_match_patch: "^0.4.1"
   file_picker: "^8.0.2"
   flutter:
