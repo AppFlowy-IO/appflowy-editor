@@ -77,6 +77,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseHeadingElement(element, level: 2);
       case HTMLTags.h3:
         return _parseHeadingElement(element, level: 3);
+      case HTMLTags.h4:
+        return _parseHeadingElement(element, level: 4);
+      case HTMLTags.h5:
+        return _parseHeadingElement(element, level: 5);
+      case HTMLTags.h6:
+        return _parseHeadingElement(element, level: 6);
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
