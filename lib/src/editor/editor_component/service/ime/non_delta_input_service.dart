@@ -207,7 +207,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       final selection = currentTextEditingValue.selection;
       final deleteRange = selection.isCollapsed
           ? TextRange(
-              start: max(0, selection.start - 1),
+              start: selection.start - 1,
               end: selection.end,
             )
           : selection;
@@ -215,6 +215,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         baseOffset: selection.baseOffset - 1,
         extentOffset: selection.extentOffset - 1,
       );
+
+      if (!deleteRange.isValid) {
+        return;
+      }
+
       // valid the result
       onDelete(
         TextEditingDeltaDeletion(
