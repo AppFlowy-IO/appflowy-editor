@@ -21,18 +21,17 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       inlineSyntaxes: [
         ...inlineSyntaxes,
         UnderlineInlineSyntax(),
+        md.SoftLineBreakSyntax(),
       ],
       encodeHtml: false,
     ).parse(input);
+
     final document = Document.blank();
-
     final nodes = mdNodes
-        .map((mdNode) => _parseNode(mdNode))
-        .toList()
+        .map((e) => _parseNode(e))
         .whereNotNull()
-        .toList()
-        .flattened;
-
+        .flattened
+        .toList(growable: false); // avoid lazy evaluation
     if (nodes.isNotEmpty) {
       document.insert([0], nodes);
     }

@@ -28,11 +28,26 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
       }
     }
 
-    final deltaDecoder = DeltaMarkdownDecoder();
-    return [
-      paragraphNode(
-        delta: deltaDecoder.convertNodes(element.children),
-      ),
-    ];
+    if (ec == null || ec.isEmpty) {
+      // return empty paragraph node if there is no children
+      return [
+        paragraphNode(),
+      ];
+    }
+
+    final nodes = <Node>[];
+    for (final child in ec) {
+      if (child is! md.Text) {
+        nodes.addAll(parseElementChildren([child], parsers));
+        continue;
+      }
+      final deltaDecoder = DeltaMarkdownDecoder();
+      nodes.add(
+        paragraphNode(
+          delta: deltaDecoder.convertNodes([child]),
+        ),
+      );
+    }
+    return nodes;
   }
 }
