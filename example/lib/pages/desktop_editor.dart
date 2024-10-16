@@ -168,6 +168,9 @@ class _DesktopEditorState extends State<DesktopEditor> {
     map.forEach((key, value) {
       value.configuration = value.configuration.copyWith(
         padding: (_) => const EdgeInsets.symmetric(vertical: 8.0),
+        blockSelectionAreaMargin: (_) => const EdgeInsets.symmetric(
+          vertical: 1.0,
+        ),
       );
 
       if (key != PageBlockKeys.type) {
