@@ -133,9 +133,18 @@ extension PathExtensions on Path {
     return true;
   }
 
-  bool inSelection(Selection? selection) {
-    return selection != null &&
+  // if isSameDepth is true, the path must be the same depth as the selection
+  bool inSelection(
+    Selection? selection, {
+    bool isSameDepth = false,
+  }) {
+    selection = selection?.normalized;
+    bool result = selection != null &&
         selection.start.path <= this &&
         this <= selection.end.path;
+    if (isSameDepth) {
+      return result && selection.start.path.length == length;
+    }
+    return result;
   }
 }

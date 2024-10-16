@@ -127,6 +127,8 @@ class DragToReorderAction extends StatefulWidget {
   State<DragToReorderAction> createState() => _DragToReorderActionState();
 }
 
+const _interceptorKey = 'drag_to_reorder_interceptor';
+
 class _DragToReorderActionState extends State<DragToReorderAction> {
   late final Node node;
   late final BlockComponentContext blockComponentContext;
@@ -134,9 +136,23 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
 
   Offset? globalPosition;
 
+  late final gestureInterceptor = SelectionGestureInterceptor(
+    key: _interceptorKey,
+    canTap: (details) => !_isTapInBounds(details.globalPosition),
+  );
+
+  // the selection will be cleared when tap the option button
+  // so we need to restore the selection after tap the option button
+  Selection? beforeSelection;
+  RenderBox? get renderBox => context.findRenderObject() as RenderBox?;
+
   @override
   void initState() {
     super.initState();
+
+    editorState.service.selectionService.registerGestureInterceptor(
+      gestureInterceptor,
+    );
 
     // copy the node to avoid the node in document being updated
     node = widget.blockComponentContext.node.copyWith();
@@ -144,6 +160,15 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       widget.blockComponentContext.buildContext,
       node,
     );
+  }
+
+  @override
+  void dispose() {
+    editorState.service.selectionService.unregisterGestureInterceptor(
+      _interceptorKey,
+    );
+
+    super.dispose();
   }
 
   @override
@@ -192,15 +217,57 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
             globalPosition!,
           );
         },
-        child: const MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: Icon(
-            Icons.drag_indicator_rounded,
-            size: 18,
+        child: GestureDetector(
+          onTap: _onTap,
+          behavior: HitTestBehavior.translucent,
+          child: const MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: Icon(
+              Icons.drag_indicator_rounded,
+              size: 18,
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _onTap() {
+    final path = widget.blockComponentContext.node.path;
+
+    debugPrint('onTap, path($path), beforeSelection($beforeSelection)');
+
+    if (beforeSelection != null && path.inSelection(beforeSelection)) {
+      debugPrint('onTap(1), set selection to block');
+      editorState.updateSelectionWithReason(
+        beforeSelection,
+        customSelectionType: SelectionType.block,
+      );
+    } else {
+      debugPrint('onTap(2), set selection to block');
+      final selection = Selection.collapsed(
+        Position(path: path),
+      );
+      editorState.updateSelectionWithReason(
+        selection,
+        customSelectionType: SelectionType.block,
+      );
+    }
+  }
+
+  bool _isTapInBounds(Offset offset) {
+    if (renderBox == null) {
+      return false;
+    }
+
+    final localPosition = renderBox!.globalToLocal(offset);
+    final result = renderBox!.paintBounds.contains(localPosition);
+    if (result) {
+      beforeSelection = editorState.selection;
+    } else {
+      beforeSelection = null;
+    }
+    return result;
   }
 
   Future<void> _moveNodeToNewPosition(

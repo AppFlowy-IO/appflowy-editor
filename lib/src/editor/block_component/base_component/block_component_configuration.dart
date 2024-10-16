@@ -9,6 +9,7 @@ class BlockComponentConfiguration {
     this.placeholderText = _placeholderText,
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
+    this.blockSelectionAreaMargin = _blockSelectionAreaPadding,
   });
 
   /// The padding of a block component.
@@ -35,17 +36,23 @@ class BlockComponentConfiguration {
   /// It inherits the style from [textStyle].
   final TextStyle Function(Node node) placeholderTextStyle;
 
+  /// The padding of a block selection area.
+  final EdgeInsets Function(Node node) blockSelectionAreaMargin;
+
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
     TextStyle Function(Node node)? textStyle,
     String Function(Node node)? placeholderText,
     TextStyle Function(Node node)? placeholderTextStyle,
+    EdgeInsets Function(Node node)? blockSelectionAreaMargin,
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
       textStyle: textStyle ?? this.textStyle,
       placeholderText: placeholderText ?? this.placeholderText,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
+      blockSelectionAreaMargin:
+          blockSelectionAreaMargin ?? this.blockSelectionAreaMargin,
     );
   }
 }
@@ -89,4 +96,8 @@ TextStyle _placeholderTextStyle(Node node) {
   return const TextStyle(
     color: Colors.grey,
   );
+}
+
+EdgeInsets _blockSelectionAreaPadding(Node node) {
+  return const EdgeInsets.symmetric(vertical: 0.0);
 }
