@@ -102,15 +102,22 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return sizedBox;
         }
 
-        if (context.read<EditorState>().selectionType == SelectionType.block) {
+        final editorState = context.read<EditorState>();
+        if (editorState.selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.inSelection(selection) ||
               prevBlockRect == null) {
             return sizedBox;
           }
+          final builder = editorState.service.rendererService
+              .blockComponentBuilder(widget.node.type);
+          final padding = builder?.configuration.blockSelectionAreaMargin(
+            widget.node,
+          );
           return Positioned.fromRect(
             rect: prevBlockRect!,
             child: Container(
+              margin: padding,
               decoration: BoxDecoration(
                 color: widget.blockColor,
                 borderRadius: BorderRadius.circular(4),
