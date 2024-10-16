@@ -230,14 +230,17 @@ class EditorState {
     Selection? selection, {
     SelectionUpdateReason reason = SelectionUpdateReason.transaction,
     Map? extraInfo,
+    SelectionType? customSelectionType,
   }) async {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
-      selectionType = SelectionType.inline;
+      selectionType = customSelectionType ?? SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
+    } else if (customSelectionType != null) {
+      selectionType = customSelectionType;
     }
 
     // broadcast to other users here

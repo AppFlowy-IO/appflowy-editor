@@ -134,6 +134,7 @@ extension PathExtensions on Path {
   }
 
   bool inSelection(Selection? selection) {
+    selection = selection?.normalized;
     return selection != null &&
         selection.start.path <= this &&
         this <= selection.end.path;
