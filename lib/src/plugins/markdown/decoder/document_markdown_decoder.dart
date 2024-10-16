@@ -21,7 +21,6 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       inlineSyntaxes: [
         ...inlineSyntaxes,
         UnderlineInlineSyntax(),
-        md.SoftLineBreakSyntax(),
       ],
       encodeHtml: false,
     ).parse(input);
