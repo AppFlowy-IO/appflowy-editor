@@ -361,7 +361,7 @@ class Delta extends Iterable<TextOperation> {
             if (thisOp.data == otherOp.data) {
               retDelta.retain(
                 opLength,
-                attributes: invertAttributes(
+                attributes: diffAttributes(
                   thisOp.attributes,
                   otherOp.attributes,
                 ),
