@@ -140,6 +140,8 @@ Future<bool> _checkIfBacktickPressed(
     AppFlowyEditorLog.input.debug('format failed');
     // revert the transaction
     editorState.undoManager.undo();
+  } else {
+    editorState.sliceUpcomingAttributes = false;
   }
 
   return true;
