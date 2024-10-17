@@ -62,6 +62,10 @@ const int _maxInt = 9007199254740991;
 
 sealed class TextOperation {
   Attributes? get attributes;
+
+  // available for TextInsert, for TextDelete and TextRetain, it's null
+  Object? get data => null;
+
   int get length;
 
   bool get isEmpty => length == 0;
@@ -80,6 +84,9 @@ class TextInsert extends TextOperation {
 
   @override
   int get length => text.length;
+
+  @override
+  Object? get data => text;
 
   @override
   Attributes? get attributes => _attributes != null ? {..._attributes} : null;
@@ -402,10 +409,10 @@ class Delta extends Iterable<TextOperation> {
             );
             final thisOp = thisIter.next(opLength);
             final otherOp = otherIter.next(opLength);
-            if (isAttributesEqual(thisOp.attributes, otherOp.attributes)) {
+            if (thisOp.data == otherOp.data) {
               retDelta.retain(
                 opLength,
-                attributes: invertAttributes(
+                attributes: diffAttributes(
                   thisOp.attributes,
                   otherOp.attributes,
                 ),
