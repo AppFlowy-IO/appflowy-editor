@@ -190,7 +190,15 @@ class EditorState {
   ///
   /// If the value is true, the upcoming attributes will be sliced.
   /// If the value is false, the upcoming attributes will be skipped.
-  bool sliceUpcomingAttributes = true;
+  bool _sliceUpcomingAttributes = true;
+  bool get sliceUpcomingAttributes => _sliceUpcomingAttributes;
+  set sliceUpcomingAttributes(bool value) {
+    if (value == _sliceUpcomingAttributes) {
+      return;
+    }
+    AppFlowyEditorLog.input.debug('sliceUpcomingAttributes: $value');
+    _sliceUpcomingAttributes = value;
+  }
 
   final UndoManager undoManager = UndoManager();
 

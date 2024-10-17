@@ -6,6 +6,57 @@ import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+typedef AppFlowyEditorSliceAttributes = Attributes? Function(
+  Delta delta,
+  int index,
+);
+
+AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
+  delta,
+  index,
+) {
+  if (index < 0) {
+    return null;
+  }
+
+  Attributes? attributes;
+
+  // if the index == 0, slice the attributes from the next position.
+  if (index == 0 && delta.isNotEmpty) {
+    attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+  } else {
+    attributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+  }
+
+  if (attributes == null) {
+    return null;
+  }
+
+  if (!attributes.keys.every(
+    (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+  )) {
+    AppFlowyEditorLog.editor.info(
+      'The attributes: $attributes is not supported in sliceAttributes.',
+    );
+    return null;
+  }
+
+  return attributes;
+};
+
+/// Default slice attributes function.
+///
+/// You can override the default slice attributes function by customizing
+/// different slice rules, and fallback to the default one if not specified.
+///
+/// Rules
+/// 1. If the index is less than 0, return null.
+/// 2. If the index is 0, slice the attributes from the next position.
+/// 3. If the index is greater than 0, slice the attributes from the previous position.
+/// 4. If the attributes is not supported, return null.
+AppFlowyEditorSliceAttributes? appflowyEditorSliceAttributes =
+    defaultAppFlowyEditorSliceAttributes;
+
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
 
@@ -515,33 +566,7 @@ class Delta extends Iterable<TextOperation> {
   }
 
   Attributes? sliceAttributes(int index) {
-    if (index < 0) {
-      return null;
-    }
-
-    Attributes? attributes;
-
-    // if the index == 0, slice the attributes from the next position.
-    if (index == 0 && length >= 1) {
-      attributes = slice(index, index + 1).firstOrNull?.attributes;
-    } else {
-      attributes = slice(index - 1, index).firstOrNull?.attributes;
-    }
-
-    if (attributes == null) {
-      return null;
-    }
-
-    if (!attributes.keys.every(
-      (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-    )) {
-      AppFlowyEditorLog.editor.info(
-        'The attributes: $attributes is not supported in sliceAttributes.',
-      );
-      return null;
-    }
-
-    return attributes;
+    return appflowyEditorSliceAttributes?.call(this, index);
   }
 }
 
