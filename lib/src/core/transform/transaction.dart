@@ -382,177 +382,27 @@ extension TextTransaction on Transaction {
     }
 
     if (nodes.length == texts.length) {
-      final length = nodes.length;
-
-      if (length == 1) {
-        replaceText(
-          nodes.first,
-          selection.startIndex,
-          selection.endIndex - selection.startIndex,
-          texts.first,
-        );
-        return;
-      }
-
-      for (var i = 0; i < nodes.length; i++) {
-        final node = nodes[i];
-        final delta = node.delta;
-        if (delta == null) {
-          continue;
-        }
-        if (i == 0) {
-          replaceText(
-            node,
-            selection.startIndex,
-            delta.length - selection.startIndex,
-            texts.first,
-          );
-        } else if (i == length - 1) {
-          replaceText(
-            node,
-            0,
-            selection.endIndex,
-            texts.last,
-          );
-        } else {
-          replaceText(
-            node,
-            0,
-            delta.toPlainText().length,
-            texts[i],
-          );
-        }
-      }
-      return;
+      return replaceTextsWithEqualNodes(
+        nodes,
+        selection,
+        texts,
+      );
     }
 
     if (nodes.length > texts.length) {
-      final length = nodes.length;
-      for (var i = 0; i < nodes.length; i++) {
-        final node = nodes[i];
-        final delta = node.delta;
-        if (delta == null) {
-          continue;
-        }
-        if (i == 0) {
-          replaceText(
-            node,
-            selection.startIndex,
-            delta.length - selection.startIndex,
-            texts.first,
-          );
-        } else if (i == length - 1 && texts.length >= 2) {
-          replaceText(
-            node,
-            0,
-            selection.endIndex,
-            texts.last,
-          );
-        } else if (i < texts.length - 1) {
-          replaceText(
-            node,
-            0,
-            delta.length,
-            texts[i],
-          );
-        } else {
-          deleteNode(node);
-          if (i == nodes.length - 1) {
-            final delta = nodes.last.delta;
-            if (delta == null) {
-              continue;
-            }
-            final newDelta = Delta()
-              ..insert(texts[0])
-              ..addAll(
-                delta.slice(selection.end.offset),
-              );
-            replaceText(
-              node,
-              selection.start.offset,
-              texts[0].length,
-              newDelta.toPlainText(),
-            );
-          }
-        }
-      }
-      afterSelection = null;
-      return;
+      return replaceTextsWithMoreNodes(
+        nodes,
+        selection,
+        texts,
+      );
     }
 
     if (nodes.length < texts.length) {
-      final length = texts.length;
-      var path = nodes.first.path;
-
-      for (var i = 0; i < texts.length; i++) {
-        final text = texts[i];
-        if (i == 0) {
-          final node = nodes.first;
-          final delta = node.delta;
-          if (delta == null) {
-            continue;
-          }
-          replaceText(
-            nodes.first,
-            selection.startIndex,
-            delta.length - selection.startIndex,
-            text,
-          );
-          path = path.next;
-        } else if (i == length - 1 && nodes.length >= 2) {
-          replaceText(
-            nodes.last,
-            0,
-            selection.endIndex,
-            text,
-          );
-          path = path.next;
-        } else {
-          if (i < nodes.length - 1) {
-            final node = nodes[i];
-            final delta = node.delta;
-            if (delta == null) {
-              continue;
-            }
-            replaceText(
-              node,
-              0,
-              delta.length,
-              text,
-            );
-            path = path.next;
-          } else {
-            if (i == texts.length - 1) {
-              final delta = nodes.last.delta;
-              if (delta == null) {
-                continue;
-              }
-              final mewDelta = Delta()
-                ..insert(text)
-                ..addAll(
-                  delta.slice(selection.end.offset),
-                );
-              insertNode(
-                path,
-                Node(
-                  type: 'paragraph',
-                  attributes: {'delta': mewDelta.toJson()},
-                ),
-              );
-            } else {
-              insertNode(
-                path,
-                Node(
-                  type: 'paragraph',
-                  attributes: {'delta': (Delta()..insert(text)).toJson()},
-                ),
-              );
-            }
-          }
-        }
-      }
-      afterSelection = null;
-      return;
+      return replaceTextsWithLessNodes(
+        nodes,
+        selection,
+        texts,
+      );
     }
   }
 
@@ -568,11 +418,13 @@ extension TextTransaction on Transaction {
         continue;
       }
       final deltaQueue = entry.value;
-      final composed =
-          deltaQueue.fold<Delta>(node.delta!, (p, e) => p.compose(e));
+      final composed = deltaQueue.fold<Delta>(
+        node.delta!,
+        (p, e) => p.compose(e),
+      );
       assert(composed.every((element) => element is TextInsert));
       updateNode(node, {
-        'delta': composed.toJson(),
+        blockComponentDelta: composed.toJson(),
       });
     }
     markNeedsComposing = false;
@@ -582,5 +434,200 @@ extension TextTransaction on Transaction {
   void addDeltaToComposeMap(Node node, Delta delta) {
     markNeedsComposing = true;
     _composeMap.putIfAbsent(node, () => []).add(delta);
+  }
+
+  void replaceTextsWithEqualNodes(
+    List<Node> nodes,
+    Selection selection,
+    List<String> texts,
+  ) {
+    if (nodes.length != texts.length) {
+      return;
+    }
+
+    final length = nodes.length;
+
+    if (length == 1) {
+      replaceText(
+        nodes.first,
+        selection.startIndex,
+        selection.endIndex - selection.startIndex,
+        texts.first,
+      );
+      return;
+    }
+
+    for (var i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      if (i == 0) {
+        replaceText(
+          node,
+          selection.startIndex,
+          delta.length - selection.startIndex,
+          texts.first,
+        );
+      } else if (i == length - 1) {
+        replaceText(
+          node,
+          0,
+          selection.endIndex,
+          texts.last,
+        );
+      } else {
+        replaceText(
+          node,
+          0,
+          delta.toPlainText().length,
+          texts[i],
+        );
+      }
+    }
+    return;
+  }
+
+  void replaceTextsWithMoreNodes(
+    List<Node> nodes,
+    Selection selection,
+    List<String> texts,
+  ) {
+    if (nodes.length <= texts.length) {
+      return;
+    }
+
+    final length = nodes.length;
+    for (var i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      final delta = node.delta;
+      if (delta == null) {
+        continue;
+      }
+      if (i == 0) {
+        replaceText(
+          node,
+          selection.startIndex,
+          delta.length - selection.startIndex,
+          texts.first,
+        );
+      } else if (i == length - 1 && texts.length >= 2) {
+        replaceText(
+          node,
+          0,
+          selection.endIndex,
+          texts.last,
+        );
+      } else if (i < texts.length - 1) {
+        replaceText(
+          node,
+          0,
+          delta.length,
+          texts[i],
+        );
+      } else {
+        deleteNode(node);
+        if (i == nodes.length - 1) {
+          final delta = nodes.last.delta?.slice(selection.end.offset);
+          if (delta == null || delta.isEmpty) {
+            continue;
+          }
+          final newDelta = Delta()
+            ..insert(texts[0])
+            ..addAll(
+              delta.slice(selection.end.offset),
+            );
+          replaceText(
+            node,
+            selection.start.offset,
+            texts[0].length,
+            newDelta.toPlainText(),
+          );
+        }
+      }
+    }
+    afterSelection = null;
+  }
+
+  void replaceTextsWithLessNodes(
+    List<Node> nodes,
+    Selection selection,
+    List<String> texts,
+  ) {
+    if (nodes.length >= texts.length) {
+      return;
+    }
+
+    final length = texts.length;
+    var path = nodes.first.path;
+
+    for (var i = 0; i < texts.length; i++) {
+      final text = texts[i];
+      if (i == 0) {
+        final node = nodes.first;
+        final delta = node.delta;
+        if (delta == null) {
+          continue;
+        }
+        replaceText(
+          nodes.first,
+          selection.startIndex,
+          delta.length - selection.startIndex,
+          text,
+        );
+        path = path.next;
+      } else if (i == length - 1 && nodes.length >= 2) {
+        replaceText(
+          nodes.last,
+          0,
+          selection.endIndex,
+          text,
+        );
+        path = path.next;
+      } else {
+        if (i < nodes.length - 1) {
+          final node = nodes[i];
+          final delta = node.delta;
+          if (delta == null) {
+            continue;
+          }
+          replaceText(
+            node,
+            0,
+            delta.length,
+            text,
+          );
+          path = path.next;
+        } else {
+          if (i == texts.length - 1) {
+            final delta = nodes.last.delta;
+            if (delta == null) {
+              continue;
+            }
+            final mewDelta = Delta()
+              ..insert(text)
+              ..addAll(
+                delta.slice(selection.end.offset),
+              );
+            insertNode(
+              path,
+              paragraphNode(
+                delta: mewDelta,
+              ),
+            );
+          } else {
+            insertNode(
+              path,
+              paragraphNode(
+                delta: Delta()..insert(text),
+              ),
+            );
+          }
+        }
+      }
+    }
+
+    afterSelection = null;
   }
 }
