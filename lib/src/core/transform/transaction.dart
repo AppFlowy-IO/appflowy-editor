@@ -535,9 +535,7 @@ extension TextTransaction on Transaction {
           }
           final newDelta = Delta()
             ..insert(texts[0])
-            ..addAll(
-              delta.slice(selection.end.offset),
-            );
+            ..addAll(delta);
           replaceText(
             node,
             selection.start.offset,
