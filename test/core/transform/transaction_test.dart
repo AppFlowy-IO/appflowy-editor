@@ -314,5 +314,119 @@ void main() async {
         null,
       );
     });
+
+    const replaceText1 = 'Click to start typing.';
+    const replaceText2 = 'Highlight text to style it using the editing menu.';
+    const replaceText3 =
+        'Type / to access a menu for adding different content blocks.';
+
+    const text1 = 'Click anywhere and just start typing';
+    const text2 =
+        'Highlight any text, and use the editing menu to style your writing however you like.';
+    const text3 =
+        'As soon as you type / a menu will pop up. Select different types of content blocks you can add.';
+
+    test('replace texts, nodes.length > texts.length', () async {
+      final document = Document(
+        root: pageNode(
+          children: [
+            todoListNode(checked: false, text: text1),
+            todoListNode(checked: false, text: text2),
+            todoListNode(checked: false, text: text3),
+          ],
+        ),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [2], offset: text3.length),
+      );
+      editorState.selection = selection;
+      final transaction = editorState.transaction;
+      final nodes = editorState.getNodesInSelection(selection);
+      transaction.replaceTexts(nodes, selection, [replaceText1]);
+      await editorState.apply(transaction);
+      expect(editorState.document.root.children.length, 1);
+      expect(
+        editorState.getNodeAtPath([0])?.delta?.toPlainText(),
+        replaceText1,
+      );
+    });
+
+    test('replace texts, nodes.length < texts.length', () async {
+      final document = Document(
+        root: pageNode(
+          children: [
+            todoListNode(checked: false, text: text1),
+          ],
+        ),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [0], offset: text1.length),
+      );
+      editorState.selection = selection;
+      final transaction = editorState.transaction;
+      final nodes = editorState.getNodesInSelection(selection);
+      transaction.replaceTexts(
+        nodes,
+        selection,
+        [replaceText1, replaceText2, replaceText3],
+      );
+      await editorState.apply(transaction);
+      expect(editorState.document.root.children.length, 3);
+      expect(
+        editorState.getNodeAtPath([0])?.delta?.toPlainText(),
+        replaceText1,
+      );
+      expect(
+        editorState.getNodeAtPath([1])?.delta?.toPlainText(),
+        replaceText2,
+      );
+      expect(
+        editorState.getNodeAtPath([2])?.delta?.toPlainText(),
+        replaceText3,
+      );
+    });
+
+    test('replace texts, nodes.length == texts.length', () async {
+      final document = Document(
+        root: pageNode(
+          children: [
+            todoListNode(checked: false, text: text1),
+            todoListNode(checked: false, text: text2),
+            todoListNode(checked: false, text: text3),
+          ],
+        ),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [2], offset: text3.length),
+      );
+      editorState.selection = selection;
+      final transaction = editorState.transaction;
+      final nodes = editorState.getNodesInSelection(selection);
+      transaction.replaceTexts(
+        nodes,
+        selection,
+        [replaceText1, replaceText2, replaceText3],
+      );
+      await editorState.apply(transaction);
+      expect(editorState.document.root.children.length, 3);
+      expect(
+        editorState.getNodeAtPath([0])?.delta?.toPlainText(),
+        replaceText1,
+      );
+      expect(
+        editorState.getNodeAtPath([1])?.delta?.toPlainText(),
+        replaceText2,
+      );
+      expect(
+        editorState.getNodeAtPath([2])?.delta?.toPlainText(),
+        replaceText3,
+      );
+    });
   });
 }
