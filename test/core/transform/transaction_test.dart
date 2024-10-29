@@ -460,4 +460,185 @@ void main() async {
       ]);
     });
   });
+
+  test('test replace texts, after selection - 1', () async {
+    final document = Document(
+      root: pageNode(
+        children: [
+          bulletedListNode(
+            text: 'bulleted item 1',
+            children: [
+              paragraphNode(text: 'paragraph 1-1'),
+              paragraphNode(text: 'paragraph 1-2'),
+              paragraphNode(text: 'paragraph 1-3'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 2',
+            children: [
+              paragraphNode(text: 'paragraph 2-1'),
+              paragraphNode(text: 'paragraph 2-2'),
+              paragraphNode(text: 'paragraph 2-3'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 3',
+            children: [
+              paragraphNode(text: 'paragraph 3-1'),
+              paragraphNode(text: 'paragraph 3-2'),
+              paragraphNode(text: 'paragraph 3-3'),
+            ],
+          ),
+        ],
+      ),
+    );
+    final editorState = EditorState(document: document);
+    final selection = Selection(
+      start: Position(path: [0, 0], offset: 0),
+      end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
+    );
+    editorState.selection = selection;
+    final transaction = editorState.transaction;
+    final nodes = editorState.getNodesInSelection(selection);
+    transaction.replaceTexts(
+      nodes,
+      selection,
+      ['replaced 1-1', 'replaced 1-2', 'replaced 1-3'],
+    );
+    await editorState.apply(transaction);
+    expect(editorState.document.root.children.length, 3);
+    expect(
+      editorState.getNodeAtPath([0, 0])?.delta?.toPlainText(),
+      'replaced 1-1',
+    );
+    expect(
+      editorState.getNodeAtPath([0, 1])?.delta?.toPlainText(),
+      'replaced 1-2',
+    );
+    expect(
+      editorState.getNodeAtPath([0, 2])?.delta?.toPlainText(),
+      'replaced 1-3',
+    );
+    expect(
+      editorState.selection,
+      selection.copyWith(
+        end: Position(path: [0, 2], offset: 'replaced 1-3'.length),
+      ),
+    );
+  });
+
+  test('test replace texts, after selection - 2', () async {
+    final document = Document(
+      root: pageNode(
+        children: [
+          bulletedListNode(
+            text: 'bulleted item 1',
+            children: [
+              paragraphNode(text: 'paragraph 1-1'),
+              paragraphNode(text: 'paragraph 1-2'),
+              paragraphNode(text: 'paragraph 1-3'),
+              paragraphNode(text: 'paragraph 1-4'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 2',
+            children: [
+              paragraphNode(text: 'paragraph 2-1'),
+              paragraphNode(text: 'paragraph 2-2'),
+              paragraphNode(text: 'paragraph 2-3'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 3',
+            children: [
+              paragraphNode(text: 'paragraph 3-1'),
+              paragraphNode(text: 'paragraph 3-2'),
+              paragraphNode(text: 'paragraph 3-3'),
+            ],
+          ),
+        ],
+      ),
+    );
+    final editorState = EditorState(document: document);
+    final selection = Selection(
+      start: Position(path: [0, 0], offset: 0),
+      end: Position(path: [0, 3], offset: 'paragraph 1-4'.length),
+    );
+    editorState.selection = selection;
+    final transaction = editorState.transaction;
+    final nodes = editorState.getNodesInSelection(selection);
+    transaction.replaceTexts(
+      nodes,
+      selection,
+      ['replaced 1-1', 'replaced 1-2', 'replaced 1-3'],
+    );
+    await editorState.apply(transaction);
+    expect(editorState.getNodeAtPath([0])!.children.length, 3);
+    expect(
+      editorState.selection,
+      selection.copyWith(
+        end: Position(path: [0, 2], offset: 'replaced 1-3'.length),
+      ),
+    );
+  });
+
+  test('test replace texts, after selection - 3', () async {
+    final document = Document(
+      root: pageNode(
+        children: [
+          bulletedListNode(
+            text: 'bulleted item 1',
+            children: [
+              paragraphNode(text: 'paragraph 1-1'),
+              paragraphNode(text: 'paragraph 1-2'),
+              paragraphNode(text: 'paragraph 1-3'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 2',
+            children: [
+              paragraphNode(text: 'paragraph 2-1'),
+              paragraphNode(text: 'paragraph 2-2'),
+              paragraphNode(text: 'paragraph 2-3'),
+            ],
+          ),
+          bulletedListNode(
+            text: 'bulleted item 3',
+            children: [
+              paragraphNode(text: 'paragraph 3-1'),
+              paragraphNode(text: 'paragraph 3-2'),
+              paragraphNode(text: 'paragraph 3-3'),
+            ],
+          ),
+        ],
+      ),
+    );
+    final editorState = EditorState(document: document);
+    final selection = Selection(
+      start: Position(path: [0, 0], offset: 0),
+      end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
+    );
+    editorState.selection = selection;
+    final transaction = editorState.transaction;
+    final nodes = editorState.getNodesInSelection(selection);
+    transaction.replaceTexts(
+      nodes,
+      selection,
+      [
+        'replaced 1-1',
+        'replaced 1-2',
+        'replaced 1-3',
+        'replaced 1-4',
+        'replaced 1-5',
+      ],
+    );
+    await editorState.apply(transaction);
+    expect(editorState.getNodeAtPath([0])!.children.length, 5);
+    expect(
+      editorState.selection,
+      selection.copyWith(
+        end: Position(path: [0, 4], offset: 'replaced 1-5'.length),
+      ),
+    );
+  });
 }

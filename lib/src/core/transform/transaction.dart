@@ -486,6 +486,13 @@ extension TextTransaction on Transaction {
         );
       }
     }
+
+    final normalizedSelection = selection.normalized;
+    final afterSelection = normalizedSelection.copyWith(
+      end: normalizedSelection.end.copyWith(offset: texts.last.length),
+    );
+    this.afterSelection = afterSelection;
+
     return;
   }
 
@@ -545,7 +552,17 @@ extension TextTransaction on Transaction {
         }
       }
     }
-    afterSelection = null;
+
+    final normalizedSelection = selection.normalized;
+    final afterSelection = normalizedSelection.copyWith(
+      end: Position(
+        path: normalizedSelection.end.path.previousNPath(
+          nodes.length - texts.length,
+        ),
+        offset: texts.last.length,
+      ),
+    );
+    this.afterSelection = afterSelection;
   }
 
   void replaceTextsWithLessNodes(
@@ -626,6 +643,15 @@ extension TextTransaction on Transaction {
       }
     }
 
-    afterSelection = null;
+    final normalizedSelection = selection.normalized;
+    final afterSelection = normalizedSelection.copyWith(
+      end: Position(
+        path: normalizedSelection.end.path.nextNPath(
+          texts.length - nodes.length,
+        ),
+        offset: texts.last.length,
+      ),
+    );
+    this.afterSelection = afterSelection;
   }
 }
