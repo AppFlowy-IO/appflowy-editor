@@ -347,7 +347,7 @@ extension TextTransaction on Transaction {
       return;
     }
     var newAttributes = attributes;
-    if (index != 0 && attributes == null) {
+    if (attributes == null) {
       newAttributes = attributes ?? delta.sliceAttributes(index);
 
       if (newAttributes == null) {

@@ -428,5 +428,36 @@ void main() async {
         replaceText3,
       );
     });
+
+    test('test replace texts, attributes', () async {
+      final document = Document(
+        root: pageNode(
+          children: [
+            paragraphNode(
+              delta: Delta()
+                ..insert('Hello', attributes: {'href': 'appflowy.io'}),
+            ),
+          ],
+        ),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [0], offset: 5),
+      );
+      editorState.selection = selection;
+      final transaction = editorState.transaction;
+      final node = editorState.getNodeAtPath([0])!;
+      transaction.replaceText(node, 0, 5, 'AppFlowy');
+      await editorState.apply(transaction);
+      expect(editorState.document.root.children.length, 1);
+      final delta = editorState.getNodeAtPath([0])?.delta;
+      expect(delta?.toJson(), [
+        {
+          'insert': 'AppFlowy',
+          'attributes': {'href': 'appflowy.io'},
+        }
+      ]);
+    });
   });
 }
