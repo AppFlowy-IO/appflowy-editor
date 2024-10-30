@@ -71,7 +71,7 @@ class SearchServiceV3 {
 
   // Public entry method for _findAndHighlight, do necessary checks
   // and clear previous highlights before calling the private method
-  String findAndHighlight(String target, {bool unHighlight = false}) {
+  String findAndHighlight(String target) {
     Pattern pattern;
 
     try {
@@ -92,7 +92,7 @@ class SearchServiceV3 {
 
     if (target.isEmpty) return 'Empty';
 
-    _findAndHighlight(pattern, unHighlight: unHighlight);
+    _findAndHighlight(pattern);
 
     return '';
   }
@@ -109,13 +109,16 @@ class SearchServiceV3 {
       nodes: editorState.document.root.children,
     );
 
-    if (matchWrappers.value.isNotEmpty) {
+    if (matchWrappers.value.isEmpty || unHighlight) {
+      editorState.updateSelectionWithReason(
+        null,
+        reason: SelectionUpdateReason.searchHighlight,
+      );
+    } else {
       selectedIndex = selectedIndex;
       _highlightCurrentMatch(
         pattern,
       );
-    } else {
-      editorState.updateSelectionWithReason(null);
     }
   }
 
@@ -146,10 +149,13 @@ class SearchServiceV3 {
   void _highlightCurrentMatch(
     Pattern pattern,
   ) {
-    final selection = matchWrappers.value[selectedIndex].selection;
+    final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
+
+    editorState.scrollService?.jumpTo(path.first);
 
     editorState.updateSelectionWithReason(
       selection,
+      reason: SelectionUpdateReason.searchHighlight,
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
       },

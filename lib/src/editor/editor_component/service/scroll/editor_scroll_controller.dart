@@ -190,10 +190,14 @@ class EditorScrollController {
       );
     }
 
-    itemScrollController.jumpTo(
-      index: max(0, offset.toInt()),
-      alignment: 0.5,
-    );
+    final index = offset.toInt();
+    final (start, end) = visibleRangeNotifier.value;
+    if (index < start || index > end) {
+      itemScrollController.jumpTo(
+        index: max(0, index),
+        alignment: 0.5,
+      );
+    }
   }
 
   void jumpToTop() {
