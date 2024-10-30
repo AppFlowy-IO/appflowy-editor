@@ -149,9 +149,9 @@ class SearchServiceV3 {
   void _highlightCurrentMatch(
     Pattern pattern,
   ) {
-    final selection = matchWrappers.value[selectedIndex].selection;
+    final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
 
-    editorState.scrollService?.jumpTo(selection.end.path.first);
+    editorState.scrollService?.jumpTo(path.first);
 
     editorState.updateSelectionWithReason(
       selection,
