@@ -129,7 +129,15 @@ class EditorState {
     selectionNotifier.value = value;
   }
 
-  SelectionType? selectionType;
+  SelectionType? _selectionType;
+  set selectionType(SelectionType? value) {
+    if (value == _selectionType) {
+      return;
+    }
+    _selectionType = value;
+  }
+
+  SelectionType? get selectionType => _selectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
@@ -243,12 +251,12 @@ class EditorState {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
-      selectionType = customSelectionType ?? SelectionType.inline;
+      _selectionType = customSelectionType ?? SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
     } else if (customSelectionType != null) {
-      selectionType = customSelectionType;
+      _selectionType = customSelectionType;
     }
 
     // broadcast to other users here

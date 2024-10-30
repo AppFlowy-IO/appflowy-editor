@@ -321,6 +321,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: {
         selectionDragModeKey: dragMode,
         selectionExtraInfoDoNotAttachTextService:
@@ -525,6 +526,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: null,
     );
   }
@@ -598,6 +600,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
       },
@@ -618,6 +621,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       Selection.collapsed(position),
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: null,
     );
   }
