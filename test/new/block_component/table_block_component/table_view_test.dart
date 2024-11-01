@@ -10,9 +10,6 @@ void main() async {
   });
 
   group('table_view.dart', () {
-    // TODO(zoli)
-    // testWidgets('resize column', (tester) async {});
-
     testWidgets('row height changing base on cell height', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
