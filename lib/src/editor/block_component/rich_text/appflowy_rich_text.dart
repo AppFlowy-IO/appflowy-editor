@@ -179,14 +179,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    double? cursorHeight =
-        _renderParagraph?.getFullHeightForCaret(textPosition);
-    Offset? cursorOffset =
-        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
-            Offset.zero;
-
-    double? placeholderCursorHeight = _placeholderRenderParagraph
-        ?.getFullHeightForCaret(const TextPosition(offset: 0));
+    double? placeholderCursorHeight =
+        _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
     Offset? placeholderCursorOffset =
         _placeholderRenderParagraph?.getOffsetForCaret(
               textPosition,
@@ -202,9 +196,21 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       }
     }
 
-    cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight ?? 0);
+    double? cursorHeight =
+        _renderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? cursorOffset =
+        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
+            Offset.zero;
 
-    if (widget.cursorHeight != null) {
+    if (placeholderCursorHeight != null) {
+      cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight);
+    }
+
+    if (delta?.isEmpty == true) {
+      cursorOffset = placeholderCursorOffset;
+    }
+
+    if (widget.cursorHeight != null && cursorHeight != null) {
       cursorOffset = Offset(
         cursorOffset.dx,
         cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
@@ -359,6 +365,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textScaler: TextScaler.linear(
         widget.editorState.editorStyle.textScaleFactor,
       ),
+      overflow: TextOverflow.ellipsis,
     );
   }
 
