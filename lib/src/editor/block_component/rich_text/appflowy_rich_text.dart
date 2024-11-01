@@ -116,17 +116,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Widget build(BuildContext context) {
-    Widget child = _buildRichText(context);
-
-    final delta = widget.node.delta;
-    if (delta == null || delta.isEmpty) {
-      child = Stack(
-        children: [
-          _buildPlaceholderText(context),
-          _buildRichText(context),
-        ],
-      );
-    }
+    Widget child = Stack(
+      children: [
+        _buildPlaceholderText(context),
+        _buildRichText(context),
+      ],
+    );
 
     if (enableAutoComplete) {
       final autoCompleteText = _buildAutoCompleteRichText();
@@ -184,28 +179,32 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    var cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
-    var cursorOffset =
+    double? cursorHeight =
+        _renderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? cursorOffset =
         _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
             Offset.zero;
-    if (delta?.isEmpty == true || cursorHeight == null || cursorHeight == 0) {
-      cursorHeight =
-          _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
-      cursorOffset = _placeholderRenderParagraph?.getOffsetForCaret(
-            textPosition,
-            Rect.zero,
-          ) ??
-          Offset.zero;
-      if (textDirection() == TextDirection.rtl) {
-        if (widget.placeholderText.trim().isNotEmpty) {
-          cursorOffset = cursorOffset.translate(
-            _placeholderRenderParagraph?.size.width ?? 0,
-            0,
-          );
-        }
+
+    double? placeholderCursorHeight = _placeholderRenderParagraph
+        ?.getFullHeightForCaret(const TextPosition(offset: 0));
+    Offset? placeholderCursorOffset =
+        _placeholderRenderParagraph?.getOffsetForCaret(
+              textPosition,
+              Rect.zero,
+            ) ??
+            Offset.zero;
+    if (textDirection() == TextDirection.rtl) {
+      if (widget.placeholderText.trim().isNotEmpty) {
+        placeholderCursorOffset = placeholderCursorOffset.translate(
+          _placeholderRenderParagraph?.size.width ?? 0,
+          0,
+        );
       }
     }
-    if (widget.cursorHeight != null && cursorHeight != null) {
+
+    cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight ?? 0);
+
+    if (widget.cursorHeight != null) {
       cursorOffset = Offset(
         cursorOffset.dx,
         cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
@@ -340,6 +339,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textSpan = widget.placeholderTextSpanDecorator!(textSpan);
     }
     textSpan = adjustTextSpan(textSpan);
+    final delta = widget.node.delta;
+    if (delta != null && delta.isNotEmpty) {
+      textSpan = textSpan.updateTextStyle(
+        const TextStyle(color: Colors.transparent),
+      );
+    }
     return RichText(
       key: placeholderTextKey,
       textHeightBehavior: TextHeightBehavior(
@@ -351,8 +356,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       ),
       text: textSpan,
       textDirection: textDirection(),
-      textScaler:
-          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      textScaler: TextScaler.linear(
+        widget.editorState.editorStyle.textScaleFactor,
+      ),
     );
   }
 
