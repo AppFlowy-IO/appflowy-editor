@@ -1,8 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 enum SelectionRange {
   character,
@@ -199,8 +198,12 @@ extension PositionExtension on Position {
     // is not visible on the screen. It seems happens only if upwards is true (?)
     // In this case, we can manually get the previous/next node position.
     int offset = editorSelection.end.offset;
-    final List<int> nodePath = editorSelection.end.path;
-    final List<int> neighbourPath = upwards ? nodePath.previous : nodePath.next;
+    final Path nodePath = editorSelection.end.path;
+    Path neighbourPath = upwards ? nodePath.previous : nodePath.next;
+    if (neighbourPath.equals(nodePath)) {
+      final last = neighbourPath.removeLast();
+      neighbourPath = upwards ? neighbourPath : (neighbourPath..add(last + 1));
+    }
     if (neighbourPath.isNotEmpty && !neighbourPath.equals(nodePath)) {
       final neighbour = editorState.document.nodeAtPath(neighbourPath);
       final selectable = neighbour?.selectable;
