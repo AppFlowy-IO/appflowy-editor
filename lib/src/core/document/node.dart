@@ -1,8 +1,9 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 
 abstract class NodeExternalValues {
@@ -147,7 +148,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final length = _children.length;
     index ??= length;
 
-    Log.editor.debug('insert Node $entry at path ${path + [index]}}');
+    AppFlowyEditorLog.editor
+        .debug('insert Node $entry at path ${path + [index]}}');
 
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
@@ -174,6 +176,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void insertAfter(Node entry) {
+    entry._resetRelationshipIfNeeded();
     entry.parent = parent;
     super.insertAfter(entry);
 
@@ -185,6 +188,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   void insertBefore(Node entry) {
+    entry._resetRelationshipIfNeeded();
     entry.parent = parent;
     super.insertBefore(entry);
 
@@ -196,10 +200,11 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   bool unlink() {
-    if (parent == null) {
+    // Add a null check to avoid unlink failure
+    if (parent == null || list == null) {
       return false;
     }
-    Log.editor.debug('delete Node $this from path $path');
+    AppFlowyEditorLog.editor.debug('delete Node $this from path $path');
     super.unlink();
 
     parent?._cacheChildren = null;
@@ -221,11 +226,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   @override
   String toString() {
-    return '''Node(id: $id,
-    type: $type,
-    attributes: $attributes,
-    children: $children,
-    )''';
+    return 'Node(id: $id, type: $type, attributes: $attributes, children: $children)';
   }
 
   Delta? get delta {

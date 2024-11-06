@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/find_replace_menu/find_menu_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 List<CommandShortcutEvent> findAndReplaceCommands({
@@ -76,6 +77,7 @@ CommandShortcutEvent openFindDialog({
 }) =>
     CommandShortcutEvent(
       key: 'show the find dialog',
+      getDescription: () => AppFlowyEditorL10n.current.cmdOpenFind,
       command: 'ctrl+f',
       macOSCommand: 'cmd+f',
       handler: (editorState) => _showFindAndReplaceDialog(
@@ -93,6 +95,7 @@ CommandShortcutEvent openReplaceDialog({
 }) =>
     CommandShortcutEvent(
       key: 'show the find and replace dialog',
+      getDescription: () => AppFlowyEditorL10n.current.cmdOpenFindAndReplace,
       command: 'ctrl+h',
       macOSCommand: 'cmd+h',
       handler: (editorState) => _showFindAndReplaceDialog(

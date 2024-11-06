@@ -1,62 +1,76 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
+
 final List<CommandShortcutEvent> tableCommands = [
-  _enterInTableCell,
-  _leftInTableCell,
-  _rightInTableCell,
-  _upInTableCell,
-  _downInTableCell,
-  _tabInTableCell,
-  _shiftTabInTableCell,
-  _backSpaceInTableCell,
+  enterInTableCell,
+  leftInTableCell,
+  rightInTableCell,
+  upInTableCell,
+  downInTableCell,
+  tabInTableCell,
+  shiftTabInTableCell,
+  backSpaceInTableCell,
 ];
 
-final CommandShortcutEvent _enterInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent enterInTableCell = CommandShortcutEvent(
   key: 'Don\'t add new line in table cell',
+  getDescription: () => AppFlowyEditorL10n.current.cmdTableLineBreak,
   command: 'enter',
   handler: _enterInTableCellHandler,
 );
 
-final CommandShortcutEvent _leftInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent leftInTableCell = CommandShortcutEvent(
   key: 'Move to left cell if its at start of current cell',
+  getDescription: () => AppFlowyEditorL10n
+      .current.cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell,
   command: 'arrow left',
   handler: _leftInTableCellHandler,
 );
 
-final CommandShortcutEvent _rightInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent rightInTableCell = CommandShortcutEvent(
   key: 'Move to right cell if its at the end of current cell',
+  getDescription: () => AppFlowyEditorL10n
+      .current.cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell,
   command: 'arrow right',
   handler: _rightInTableCellHandler,
 );
 
-final CommandShortcutEvent _upInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent upInTableCell = CommandShortcutEvent(
   key: 'Move to up cell at same offset',
+  getDescription: () =>
+      AppFlowyEditorL10n.current.cmdTableMoveToUpCellAtSameOffset,
   command: 'arrow up',
   handler: _upInTableCellHandler,
 );
 
-final CommandShortcutEvent _downInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent downInTableCell = CommandShortcutEvent(
   key: 'Move to down cell at same offset',
+  getDescription: () =>
+      AppFlowyEditorL10n.current.cmdTableMoveToDownCellAtSameOffset,
   command: 'arrow down',
   handler: _downInTableCellHandler,
 );
 
-final CommandShortcutEvent _tabInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent tabInTableCell = CommandShortcutEvent(
   key: 'Navigate around the cells at same offset',
+  getDescription: () => AppFlowyEditorL10n.current.cmdTableNavigateCells,
   command: 'tab',
   handler: _tabInTableCellHandler,
 );
 
-final CommandShortcutEvent _shiftTabInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent shiftTabInTableCell = CommandShortcutEvent(
   key: 'Navigate around the cells at same offset in reverse',
+  getDescription: () => AppFlowyEditorL10n.current.cmdTableNavigateCellsReverse,
   command: 'shift+tab',
   handler: _shiftTabInTableCellHandler,
 );
 
-final CommandShortcutEvent _backSpaceInTableCell = CommandShortcutEvent(
+final CommandShortcutEvent backSpaceInTableCell = CommandShortcutEvent(
   key: 'Stop at the beginning of the cell',
+  getDescription: () =>
+      AppFlowyEditorL10n.current.cmdTableStopAtTheBeginningOfTheCell,
   command: 'backspace',
   handler: _backspaceInTableCellHandler,
 );

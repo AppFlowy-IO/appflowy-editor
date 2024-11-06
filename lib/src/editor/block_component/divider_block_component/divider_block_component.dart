@@ -52,7 +52,7 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.children.isEmpty;
+  BlockComponentValidate get validate => (node) => node.children.isEmpty;
 }
 
 class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -111,6 +111,7 @@ class _DividerBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       cursorColor: editorState.editorStyle.cursorColor,
       selectionColor: editorState.editorStyle.selectionColor,

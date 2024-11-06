@@ -150,5 +150,8 @@
   "rowDuplicate": "复制整行",
   "colClear": "清空整列",
   "rowClear": "清空整行",
-  "slashPlaceHolder": "单击 / 以插入内容，或开始输入"
+  "slashPlaceHolder": "单击 / 以插入内容，或开始输入",
+  "textAlignLeft": "靠左对齐",
+  "textAlignCenter": "居中对齐",
+  "textAlignRight": "靠右对齐"
 }

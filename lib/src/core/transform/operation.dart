@@ -229,7 +229,6 @@ class UpdateTextOperation extends Operation {
   int get hashCode => delta.hashCode ^ inverted.hashCode;
 }
 
-// TODO(Lucas.Xu): refactor this part
 Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
   if (preInsertPath.length > b.length || preInsertPath.isEmpty || b.isEmpty) {
     return b;
@@ -259,9 +258,9 @@ Operation? transformOperation(Operation a, Operation b) {
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
     if (b is DeleteOperation) {
-      if (a.path.isParentOf(b.path)) {
+      if (a.path.isAncestorOf(b.path)) {
         return null; // a is parent of b, we can just delete a and ignore b.
-      } else if (b.path.isParentOf(a.path)) {
+      } else if (b.path.isAncestorOf(a.path)) {
         return a.copyWith(path: b.path);
       }
     }
@@ -269,6 +268,5 @@ Operation? transformOperation(Operation a, Operation b) {
     return b.copyWith(path: newPath);
   }
 
-  // TODO: transform update and textedit
   return b;
 }

@@ -51,9 +51,7 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     final scrollController = context.read<EditorScrollController?>();
     final items = node.children;
 
-    if (scrollController == null ||
-        scrollController.shrinkWrap ||
-        !editorState.editable) {
+    if (scrollController == null || scrollController.shrinkWrap) {
       return SingleChildScrollView(
         child: Builder(
           builder: (context) {
@@ -65,7 +63,11 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               children: [
                 if (header != null) header!,
                 ...items.map(
-                  (e) => Padding(
+                  (e) => Container(
+                    constraints: BoxConstraints(
+                      maxWidth:
+                          editorState.editorStyle.maxWidth ?? double.infinity,
+                    ),
                     padding: editorState.editorStyle.padding,
                     child: editorState.renderer.build(context, e),
                   ),
@@ -99,11 +101,16 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
             );
           }
 
-          return Padding(
-            padding: editorState.editorStyle.padding,
-            child: editorState.renderer.build(
-              context,
-              items[index - (header != null ? 1 : 0)],
+          return Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: editorState.editorStyle.maxWidth ?? double.infinity,
+              ),
+              padding: editorState.editorStyle.padding,
+              child: editorState.renderer.build(
+                context,
+                items[index - (header != null ? 1 : 0)],
+              ),
             ),
           );
         },

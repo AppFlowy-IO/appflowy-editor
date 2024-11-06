@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Cmd / Ctrl + K: show link menu
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 ///   - web
 final CommandShortcutEvent showLinkMenuCommand = CommandShortcutEvent(
   key: 'link menu',
+  getDescription: () => AppFlowyEditorL10n.current.cmdConvertToLink,
   command: 'ctrl+k',
   macOSCommand: 'cmd+k',
   handler: _showLinkMenu,

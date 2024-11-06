@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Arrow down key events.
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 // toggle the todo list
 final CommandShortcutEvent toggleTodoListCommand = CommandShortcutEvent(
   key: 'toggle the todo list',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleTodoList,
   command: 'ctrl+enter',
   macOSCommand: 'cmd+enter',
   handler: _toggleTodoListCommandHandler,

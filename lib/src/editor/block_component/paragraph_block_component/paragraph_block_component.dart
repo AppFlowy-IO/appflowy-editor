@@ -60,9 +60,7 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) {
-    return node.delta != null;
-  }
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -198,6 +196,7 @@ class _ParagraphBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,

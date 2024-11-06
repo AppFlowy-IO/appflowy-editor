@@ -81,6 +81,10 @@ class TestableEditor {
             ...TestableFindAndReplaceCommands(context: context)
                 .testableFindAndReplaceCommands,
           ],
+          characterShortcutEvents: [
+            ...standardCharacterShortcutEvents,
+            formatGreaterHyphen,
+          ],
           editorStyle: inMobile
               ? EditorStyle.mobile(
                   defaultTextDirection: defaultTextDirection,
@@ -230,6 +234,7 @@ class TestableEditor {
     LogicalKeyboardKey.asterisk: '*',
     LogicalKeyboardKey.underscore: '_',
   };
+
   Future<void> pressKey({
     String? character,
     LogicalKeyboardKey? key,
@@ -324,7 +329,7 @@ class MockIMEInput {
     }
     await imeInput.apply([
       TextEditingDeltaInsertion(
-        oldText: ' ${delta.toPlainText()}', // TODO: fix this workaround
+        oldText: ' ${delta.toPlainText()}',
         textInserted: text,
         insertionOffset: selection.startIndex + 1,
         selection: TextSelection.collapsed(

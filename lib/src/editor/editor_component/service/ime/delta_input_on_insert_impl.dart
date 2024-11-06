@@ -8,17 +8,25 @@ Future<void> onInsert(
   EditorState editorState,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
-  Log.input.debug('onInsert: $insertion');
+  AppFlowyEditorLog.input.debug('onInsert: $insertion');
 
-  // character events
-  final execution = await executeCharacterShortcutEvent(
-    editorState,
-    insertion.textInserted,
-    characterShortcutEvents,
-  );
+  final textInserted = insertion.textInserted;
 
-  if (execution) {
-    return;
+  // In France, the backtick key is used to toggle a character style.
+  // We should prevent the execution of character shortcut events when the
+  // composing range is not collapsed.
+  if (insertion.composing.isCollapsed) {
+    // execute character shortcut events
+    final execution = await executeCharacterShortcutEvent(
+      editorState,
+      textInserted,
+      characterShortcutEvents,
+    );
+
+    if (execution) {
+      editorState.sliceUpcomingAttributes = false;
+      return;
+    }
   }
 
   var selection = editorState.selection;
@@ -52,12 +60,25 @@ Future<void> onInsert(
     );
   }
 
+  final afterSelection = Selection(
+    start: Position(
+      path: node.path,
+      offset: insertion.selection.baseOffset,
+    ),
+    end: Position(
+      path: node.path,
+      offset: insertion.selection.extentOffset,
+    ),
+  );
+
   final transaction = editorState.transaction
     ..insertText(
       node,
       selection.startIndex,
-      insertion.textInserted,
+      textInserted,
       toggledAttributes: editorState.toggledStyle,
-    );
-  return editorState.apply(transaction);
+      sliceAttributes: editorState.sliceUpcomingAttributes,
+    )
+    ..afterSelection = afterSelection;
+  await editorState.apply(transaction);
 }

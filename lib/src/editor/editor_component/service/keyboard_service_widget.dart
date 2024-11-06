@@ -14,9 +14,11 @@ class KeyboardServiceWidget extends StatefulWidget {
     this.commandShortcutEvents = const [],
     this.characterShortcutEvents = const [],
     this.focusNode,
+    this.contentInsertionConfiguration,
     required this.child,
   });
 
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
   final FocusNode? focusNode;
   final List<CommandShortcutEvent> commandShortcutEvents;
   final List<CharacterShortcutEvent> characterShortcutEvents;
@@ -33,6 +35,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   late final EditorState editorState;
   late final TextInputService textInputService;
   late final FocusNode focusNode;
+
+  final List<AppFlowyKeyboardServiceInterceptor> interceptors = [];
 
   // previous selection
   Selection? previousSelection;
@@ -59,34 +63,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     editorState.service.selectionService
         .registerGestureInterceptor(interceptor);
 
-    textInputService = NonDeltaTextInputService(
-      onInsert: (insertion) async => await onInsert(
-        insertion,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onDelete: (deletion) async => await onDelete(
-        deletion,
-        editorState,
-      ),
-      onReplace: (replacement) async => await onReplace(
-        replacement,
-        editorState,
-        widget.characterShortcutEvents,
-      ),
-      onNonTextUpdate: (nonTextUpdate) async => await onNonTextUpdate(
-        nonTextUpdate,
-        editorState,
-      ),
-      onPerformAction: (action) async => await onPerformAction(
-        action,
-        editorState,
-      ),
-      onFloatingCursor: (point) => onFloatingCursorUpdate(
-        point,
-        editorState,
-      ),
-    );
+    textInputService = buildTextInputService();
 
     focusNode = widget.focusNode ?? FocusNode(debugLabel: 'keyboard service');
     focusNode.addListener(_onFocusChanged);
@@ -131,9 +108,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   @override
-  KeyEventResult onKey(RawKeyEvent event) => throw UnimplementedError();
-
-  @override
   Widget build(BuildContext context) {
     Widget child = widget.child;
     // if there is no command shortcut event, we don't need to handle hardware keyboard.
@@ -142,7 +116,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       // the Focus widget is used to handle hardware keyboard.
       child = Focus(
         focusNode: focusNode,
-        onKey: _onKey,
+        onKeyEvent: _onKeyEvent,
         child: child,
       );
     }
@@ -161,9 +135,20 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     return child;
   }
 
+  @override
+  void registerInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.add(interceptor);
+  }
+
+  @override
+  void unregisterInterceptor(AppFlowyKeyboardServiceInterceptor interceptor) {
+    interceptors.remove(interceptor);
+  }
+
   /// handle hardware keyboard
-  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
-    if (event is! RawKeyDownEvent || !enableShortcuts) {
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
+        !enableShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
@@ -175,12 +160,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       if (shortcutEvent.canRespondToRawKeyEvent(event)) {
         final result = shortcutEvent.handler(editorState);
         if (result == KeyEventResult.handled) {
-          Log.keyboard.debug(
+          AppFlowyEditorLog.keyboard.debug(
             'keyboard service - handled by command shortcut event: $shortcutEvent',
           );
           return KeyEventResult.handled;
         } else if (result == KeyEventResult.skipRemainingHandlers) {
-          Log.keyboard.debug(
+          AppFlowyEditorLog.keyboard.debug(
             'keyboard service - skip by command shortcut event: $shortcutEvent',
           );
           return KeyEventResult.skipRemainingHandlers;
@@ -218,7 +203,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
       if (editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent) {
         focusNode.requestFocus();
-        Log.editor.debug('keyboard service - request focus');
+        AppFlowyEditorLog.editor.debug('keyboard service - request focus');
+      } else {
+        AppFlowyEditorLog.editor.debug(
+          'keyboard service - selection changed: $selection',
+        );
       }
     }
 
@@ -236,6 +225,8 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,
           keyboardAppearance: Theme.of(context).brightness,
+          allowedMimeTypes:
+              widget.contentInsertionConfiguration?.allowedMimeTypes ?? [],
         ),
       );
       // disable shortcuts when the IME active
@@ -279,7 +270,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onFocusChanged() {
-    Log.editor.debug(
+    AppFlowyEditorLog.editor.debug(
       'keyboard service - focus changed: ${focusNode.hasFocus}}',
     );
 
@@ -304,7 +295,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onKeepEditorFocusChanged() {
-    Log.editor.debug(
+    AppFlowyEditorLog.editor.debug(
       'keyboard service - on keep editor focus changed: ${keepEditorFocusNotifier.value}}',
     );
 
@@ -335,5 +326,131 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         textInputService.updateCaretPosition(size, transform, rect);
       }
     }
+  }
+
+  NonDeltaTextInputService buildTextInputService() {
+    return NonDeltaTextInputService(
+      onInsert: (insertion) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptInsert(
+            insertion,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onInsert - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onInsert(
+          insertion,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onDelete: (deletion) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptDelete(
+            deletion,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onDelete - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onDelete(
+          deletion,
+          editorState,
+        );
+      },
+      onReplace: (replacement) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptReplace(
+            replacement,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onReplace - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onReplace(
+          replacement,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onNonTextUpdate: (nonTextUpdate) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptNonTextUpdate(
+            nonTextUpdate,
+            editorState,
+            widget.characterShortcutEvents,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onNonTextUpdate - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onNonTextUpdate(
+          nonTextUpdate,
+          editorState,
+          widget.characterShortcutEvents,
+        );
+      },
+      onPerformAction: (action) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptPerformAction(
+            action,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onPerformAction - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onPerformAction(
+          action,
+          editorState,
+        );
+      },
+      onFloatingCursor: (point) async {
+        for (final interceptor in interceptors) {
+          final result = await interceptor.interceptFloatingCursor(
+            point,
+            editorState,
+          );
+          if (result) {
+            AppFlowyEditorLog.input.info(
+              'keyboard service onFloatingCursor - intercepted by interceptor: $interceptor',
+            );
+            return;
+          }
+        }
+
+        await onFloatingCursorUpdate(
+          point,
+          editorState,
+        );
+      },
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+    );
   }
 }

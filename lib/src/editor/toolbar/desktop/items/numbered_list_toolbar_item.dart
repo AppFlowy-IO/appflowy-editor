@@ -1,19 +1,20 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+const _kNumberedListItemId = 'editor.numbered_list';
+
 final ToolbarItem numberedListItem = ToolbarItem(
-  id: 'editor.numbered_list',
+  id: _kNumberedListItemId,
   group: 3,
-  isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor, iconColor) {
+  isActive: onlyShowInTextType,
+  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'numbered_list';
-    return SVGIconItemWidget(
+    final child = SVGIconItemWidget(
       iconName: 'toolbar/numbered_list',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      tooltip: AppFlowyEditorL10n.current.numberedList,
       onPressed: () => editorState.formatNode(
         selection,
         (node) => node.copyWith(
@@ -21,5 +22,16 @@ final ToolbarItem numberedListItem = ToolbarItem(
         ),
       ),
     );
+
+    if (tooltipBuilder != null) {
+      return tooltipBuilder(
+        context,
+        _kNumberedListItemId,
+        AppFlowyEditorL10n.current.numberedList,
+        child,
+      );
+    }
+
+    return child;
   },
 );

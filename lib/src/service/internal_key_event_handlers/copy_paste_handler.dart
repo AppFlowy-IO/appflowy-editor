@@ -92,7 +92,7 @@ void pasteHTML(EditorState editorState, String html) {
     return;
   }
 
-  Log.keyboard.debug('paste html: $html');
+  AppFlowyEditorLog.keyboard.debug('paste html: $html');
 
   final htmlToNodes = htmlToDocument(html).root.children.where((element) {
     final delta = element.delta;
@@ -136,22 +136,38 @@ Selection _computeSelectionAfterPasteMultipleNodes(
 
 void handleCopy(EditorState editorState) async {
   final selection = editorState.selection?.normalized;
-  if (selection == null || selection.isCollapsed) {
+  if (selection == null) {
     return;
   }
-  final text = editorState.getTextInSelection(selection).join('\n');
-  final nodes = editorState.getSelectedNodes(selection: selection);
-  if (nodes.isEmpty) {
-    return;
-  }
-  final html = documentToHTML(
-    Document(
-      root: Node(
-        type: 'page',
-        children: nodes,
+  String text;
+  String html;
+
+  if (selection.isCollapsed) {
+    final node = editorState.getNodeAtPath(selection.end.path);
+    if (node == null) {
+      return;
+    }
+    text = node.delta?.toPlainText() ?? '';
+    html = documentToHTML(
+      Document(
+        root: pageNode(children: [node.copyWith()]),
       ),
-    ),
-  );
+    );
+  } else {
+    text = editorState.getTextInSelection(selection).join('\n');
+    final nodes = editorState.getSelectedNodes(selection: selection);
+    if (nodes.isEmpty) {
+      return;
+    }
+    html = documentToHTML(
+      Document(
+        root: pageNode(
+          children: nodes.map((node) => node.copyWith()),
+        ),
+      ),
+    );
+  }
+
   return AppFlowyClipboard.setData(
     text: text,
     html: html.isEmpty ? null : html,
@@ -332,13 +348,30 @@ void handleCut(EditorState editorState) {
   deleteSelectedContent(editorState);
 }
 
-void deleteSelectedContent(EditorState editorState) async {
+Future<void> deleteSelectedContent(EditorState editorState) async {
   final selection = editorState.selection?.normalized;
-  if (selection == null || selection.isCollapsed) {
+  if (selection == null) {
     return;
   }
-  final tb = editorState.transaction;
-  await editorState.deleteSelection(selection);
-  tb.afterSelection = Selection.collapsed(selection.start);
-  editorState.apply(tb);
+  final transaction = editorState.transaction;
+  if (selection.isCollapsed) {
+    // if the selection is collapsed, delete the current node
+    final node = editorState.getNodeAtPath(selection.end.path);
+    if (node == null) {
+      return;
+    }
+    transaction.deleteNode(node);
+    final nextNode = node.next;
+    if (nextNode != null && nextNode.delta != null) {
+      transaction.afterSelection = Selection.collapsed(
+        Position(path: node.path, offset: nextNode.delta?.length ?? 0),
+      );
+    }
+  } else {
+    // if the selection is not collapsed, delete the selection
+    await editorState.deleteSelection(selection);
+    transaction.afterSelection = Selection.collapsed(selection.start);
+  }
+
+  await editorState.apply(transaction);
 }

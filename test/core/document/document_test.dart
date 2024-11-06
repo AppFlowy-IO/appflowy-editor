@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
-  group('documemnt.dart', () {
+  group('document.dart', () {
     test('insert', () {
       final document = Document.blank();
 
@@ -219,5 +219,15 @@ void main() async {
 
     final last = document.last!;
     expect(last.delta!.toPlainText(), secondChild);
+  });
+
+  test('Document.blank().first is null', () {
+    final document = Document.blank();
+    expect(document.first, isNull);
+  });
+
+  test('Document.blank().last is null', () {
+    final document = Document.blank();
+    expect(document.last, isNull);
   });
 }

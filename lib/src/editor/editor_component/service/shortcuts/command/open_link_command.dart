@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent openInlineLinkCommand = CommandShortcutEvent(
   key: 'open inline link',
+  getDescription: () => AppFlowyEditorL10n.current.cmdOpenLink,
   command: 'alt+enter',
   handler: _openInlineLink,
 );
@@ -15,7 +16,6 @@ final CommandShortcutEvent openInlineLinkCommand = CommandShortcutEvent(
 KeyEventResult _openInlineLink(
   EditorState editorState,
 ) {
-  //TODO:If selection is collapsed, isHref is false.
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;

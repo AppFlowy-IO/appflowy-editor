@@ -128,51 +128,82 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
 void _addRow(Node tableNode, int position, EditorState editorState) async {
   assert(position >= 0);
 
-  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
-      colsLen = tableNode.attributes[TableBlockKeys.colsLen];
+  final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen];
+  final int colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
+  // insert new rows
+  var error = false;
+
+  // generate new table cell nodes & update node attributes
   for (var i = 0; i < colsLen; i++) {
+    final firstCellInCol = getCellNode(tableNode, i, 0);
+    final colBgColor =
+        firstCellInCol?.attributes[TableCellBlockKeys.colBackgroundColor];
+    final containsColBgColor = colBgColor != null;
+
     final node = Node(
       type: TableCellBlockKeys.type,
       attributes: {
         TableCellBlockKeys.colPosition: i,
         TableCellBlockKeys.rowPosition: position,
+        if (containsColBgColor)
+          TableCellBlockKeys.colBackgroundColor: colBgColor,
       },
+      children: [paragraphNode()],
     );
-    node.insert(paragraphNode());
-    final firstCellInCol = getCellNode(tableNode, i, 0);
-    if (firstCellInCol?.attributes
-            .containsKey(TableCellBlockKeys.colBackgroundColor) ??
-        false) {
-      node.updateAttributes({
-        TableCellBlockKeys.colBackgroundColor:
-            firstCellInCol!.attributes[TableCellBlockKeys.colBackgroundColor],
-      });
-    }
 
     late Path insertPath;
     if (position == 0) {
-      insertPath = getCellNode(tableNode, i, 0)!.path;
+      final firstCellInCol = getCellNode(tableNode, i, 0);
+      if (firstCellInCol == null) {
+        error = true;
+        break;
+      }
+      insertPath = firstCellInCol.path;
     } else {
-      insertPath = getCellNode(tableNode, i, position - 1)!.path.next;
+      final cellInPrevRow = getCellNode(tableNode, i, position - 1);
+      if (cellInPrevRow == null) {
+        error = true;
+        break;
+      }
+      insertPath = cellInPrevRow.path.next;
     }
 
     final transaction = editorState.transaction;
+
     if (position != rowsLen) {
       for (var j = position; j < rowsLen; j++) {
-        final node = getCellNode(tableNode, i, j)!;
-        transaction.updateNode(node, {TableCellBlockKeys.rowPosition: j + 1});
+        final cellNode = getCellNode(tableNode, i, j);
+        if (cellNode == null) {
+          error = true;
+          break;
+        }
+        transaction.updateNode(
+          cellNode,
+          {
+            TableCellBlockKeys.rowPosition: j + 1,
+          },
+        );
       }
     }
-    transaction.insertNode(
-      insertPath,
-      newCellNode(tableNode, node),
-    );
+
+    transaction.insertNode(insertPath, node);
+
     await editorState.apply(transaction, withUpdateSelection: false);
   }
 
+  if (error) {
+    AppFlowyEditorLog.editor.debug('unable to insert row');
+    return;
+  }
+
   final transaction = editorState.transaction;
-  transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
+
+  // update the row length
+  transaction.updateNode(tableNode, {
+    TableBlockKeys.rowsLen: rowsLen + 1,
+  });
+
   await editorState.apply(transaction, withUpdateSelection: false);
 }
 

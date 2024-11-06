@@ -2,12 +2,14 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
 class DocumentHTMLDecoder extends Converter<String, Document> {
   DocumentHTMLDecoder();
+
+  // Set to true to enable parsing color from HTML
+  static bool enableColorParse = true;
 
   @override
   Document convert(String input) {
@@ -54,7 +56,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
         delta.insert(domNode.text);
       } else {
-        assert(false, 'Unknown node type: $domNode');
+        AppFlowyEditorLog.editor.debug('Unknown node type: $domNode');
       }
     }
     if (delta.isNotEmpty) {
@@ -75,6 +77,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseHeadingElement(element, level: 2);
       case HTMLTags.h3:
         return _parseHeadingElement(element, level: 3);
+      case HTMLTags.h4:
+        return _parseHeadingElement(element, level: 4);
+      case HTMLTags.h5:
+        return _parseHeadingElement(element, level: 5);
+      case HTMLTags.h6:
+        return _parseHeadingElement(element, level: 6);
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
@@ -418,25 +426,25 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
 
     // background color
     final backgroundColor = css['background-color'];
-    if (backgroundColor != null) {
+    if (enableColorParse && backgroundColor != null) {
       final highlightColor = backgroundColor.tryToColor()?.toHex();
       if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[AppFlowyRichTextKeys.backgroundColor] = highlightColor;
       }
     }
 
     // background
     final background = css['background'];
-    if (background != null) {
+    if (enableColorParse && background != null) {
       final highlightColor = background.tryToColor()?.toHex();
       if (highlightColor != null) {
-        attributes[AppFlowyRichTextKeys.highlightColor] = highlightColor;
+        attributes[AppFlowyRichTextKeys.backgroundColor] = highlightColor;
       }
     }
 
     // color
     final color = css['color'];
-    if (color != null) {
+    if (enableColorParse && color != null) {
       final textColor = color.tryToColor()?.toHex();
       if (textColor != null) {
         attributes[AppFlowyRichTextKeys.textColor] = textColor;
@@ -473,6 +481,9 @@ class HTMLTags {
   static const h1 = 'h1';
   static const h2 = 'h2';
   static const h3 = 'h3';
+  static const h4 = 'h4';
+  static const h5 = 'h5';
+  static const h6 = 'h6';
   static const orderedList = 'ol';
   static const unorderedList = 'ul';
   static const list = 'li';
@@ -487,6 +498,7 @@ class HTMLTags {
   static const del = 'del';
   static const strong = 'strong';
   static const checkbox = 'input';
+  static const br = 'br';
   static const span = 'span';
   static const code = 'code';
   static const blockQuote = 'blockquote';
@@ -519,6 +531,9 @@ class HTMLTags {
     HTMLTags.h1,
     HTMLTags.h2,
     HTMLTags.h3,
+    HTMLTags.h4,
+    HTMLTags.h5,
+    HTMLTags.h6,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
     HTMLTags.div,

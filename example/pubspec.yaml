@@ -31,18 +31,32 @@ dependencies:
     sdk: flutter
 
   appflowy_editor:
-    path: ../
+
   provider: ^6.0.3
   url_launcher: ^6.1.5
   path_provider: ^2.0.15
   google_fonts: ^6.1.0
   flutter_localizations:
     sdk: flutter
-  file_picker: ^6.1.1
+  file_picker: ^8.0.2
   universal_html: ^2.0.8
   highlight: ^0.7.0
   http: ^1.1.0
   show_fps: ^1.0.6
+  printing: ^5.11.1
+  appflowy_editor_plugins: ^0.0.6
+  markdown:
+  universal_platform: ^1.1.0
+
+dependency_overrides:
+  appflowy_editor:
+    path: ../
+
+  appflowy_editor_plugins:
+    git:
+      url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
+      path: "packages/appflowy_editor_plugins"
+      ref: "2d3d4fb"
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col_border.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +11,7 @@ class TableCol extends StatefulWidget {
     required this.tableNode,
     required this.editorState,
     required this.colIdx,
-    required this.borderColor,
-    required this.borderHoverColor,
+    required this.tableStyle,
     this.menuBuilder,
   });
 
@@ -23,8 +21,7 @@ class TableCol extends StatefulWidget {
 
   final TableBlockComponentMenuBuilder? menuBuilder;
 
-  final Color borderColor;
-  final Color borderHoverColor;
+  final TableStyle tableStyle;
 
   @override
   State<TableCol> createState() => _TableColState();
@@ -45,8 +42,8 @@ class _TableColState extends State<TableCol> {
           tableNode: widget.tableNode,
           editorState: widget.editorState,
           colIdx: widget.colIdx,
-          borderColor: widget.borderColor,
-          borderHoverColor: widget.borderHoverColor,
+          borderColor: widget.tableStyle.borderColor,
+          borderHoverColor: widget.tableStyle.borderHoverColor,
         ),
       );
     }
@@ -82,8 +79,8 @@ class _TableColState extends State<TableCol> {
         tableNode: widget.tableNode,
         editorState: widget.editorState,
         colIdx: widget.colIdx,
-        borderColor: widget.borderColor,
-        borderHoverColor: widget.borderHoverColor,
+        borderColor: widget.tableStyle.borderColor,
+        borderHoverColor: widget.tableStyle.borderHoverColor,
       ),
     ]);
 
@@ -95,7 +92,7 @@ class _TableColState extends State<TableCol> {
     final List<Widget> cells = [];
     final Widget cellBorder = Container(
       height: widget.tableNode.config.borderWidth,
-      color: widget.borderColor,
+      color: widget.tableStyle.borderColor,
     );
 
     for (var i = 0; i < rowsLen; i++) {
@@ -135,7 +132,11 @@ class _TableColState extends State<TableCol> {
         }
 
         final transaction = widget.editorState.transaction;
-        widget.tableNode.updateRowHeight(row, transaction: transaction);
+        widget.tableNode.updateRowHeight(
+          row,
+          editorState: widget.editorState,
+          transaction: transaction,
+        );
         if (transaction.operations.isNotEmpty) {
           transaction.afterSelection = transaction.beforeSelection;
           widget.editorState.apply(transaction);

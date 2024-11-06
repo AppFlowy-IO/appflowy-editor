@@ -85,12 +85,12 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void disable() {
-    Log.scroll.debug('disable scroll service');
+    AppFlowyEditorLog.scroll.debug('disable scroll service');
   }
 
   @override
   void enable() {
-    Log.scroll.debug('enable scroll service');
+    AppFlowyEditorLog.scroll.debug('enable scroll service');
   }
 
   @override
@@ -100,6 +100,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     AxisDirection? direction,
     Duration? duration,
   }) {
+    if (editorState.disableAutoScroll) {
+      return;
+    }
+
     autoScroller?.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
@@ -110,6 +114,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
 
   @override
   void stopAutoScroll() {
+    if (editorState.disableAutoScroll) {
+      return;
+    }
+
     autoScroller?.stopAutoScroll();
   }
 

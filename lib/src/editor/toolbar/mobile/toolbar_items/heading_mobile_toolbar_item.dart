@@ -92,6 +92,9 @@ class _HeadingMenuState extends State<_HeadingMenu> {
                     ParagraphBlockKeys.delta: (node.delta ?? Delta()).toJson(),
                   },
                 ),
+                selectionExtraInfo: {
+                  selectionExtraInfoDoNotAttachTextService: true,
+                },
               );
             });
           },

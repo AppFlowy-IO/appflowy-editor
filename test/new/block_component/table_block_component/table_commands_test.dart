@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +29,7 @@ void main() async {
           startOffset: 0,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.enter);
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
 
       var selection = editor.selection!;
       var cell01 = getCellNode(tableNode.node, 0, 1)!;
@@ -59,7 +58,7 @@ void main() async {
           startOffset: 0,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.enter);
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
 
       var selection = editor.selection!;
 
@@ -88,7 +87,8 @@ void main() async {
           startOffset: 0,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
+      await tester.pumpAndSettle();
 
       var selection = editor.selection!;
 
@@ -123,7 +123,7 @@ void main() async {
       //     ),
       //   ),
       // );
-      // await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      // await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
       // var selection = editor.selection!;
 
@@ -165,7 +165,7 @@ void main() async {
           ),
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
       var selection = editor.selection!;
 
@@ -204,7 +204,7 @@ void main() async {
           ),
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.backspace);
+      await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
       var selection = editor.selection!;
 
@@ -237,7 +237,7 @@ void main() async {
           startOffset: 1,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowUp);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowUp);
 
       var selection = editor.selection!;
 
@@ -251,7 +251,7 @@ void main() async {
           startOffset: 3,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowUp);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowUp);
 
       selection = editor.selection!;
 
@@ -281,7 +281,7 @@ void main() async {
           startOffset: 1,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowDown);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowDown);
 
       var selection = editor.selection!;
 
@@ -295,7 +295,7 @@ void main() async {
           startOffset: 3,
         ),
       );
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowDown);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowDown);
 
       selection = editor.selection!;
 
@@ -325,7 +325,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
 
       var selection = editor.selection!;
 
@@ -340,7 +340,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
 
       selection = editor.selection!;
 
@@ -370,7 +370,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
 
       var selection = editor.selection!;
 
@@ -400,7 +400,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
 
       var selection = editor.selection!;
 
@@ -432,7 +432,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
 
       var selection = editor.selection!;
 
@@ -448,7 +448,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.arrowRight);
+      await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
 
       selection = editor.selection!;
 
@@ -480,7 +480,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       var selection = editor.selection!;
 
@@ -495,7 +495,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       selection = editor.selection!;
 
@@ -511,7 +511,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       selection = editor.selection!;
 
@@ -543,8 +543,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab, isShiftPressed: true);
 
       var selection = editor.selection!;
 
@@ -559,8 +558,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab, isShiftPressed: true);
 
       selection = editor.selection!;
 
@@ -576,8 +574,7 @@ void main() async {
         ),
       );
 
-      await simulateKeyDownEvent(LogicalKeyboardKey.shiftLeft);
-      await simulateKeyDownEvent(LogicalKeyboardKey.tab);
+      await editor.pressKey(key: LogicalKeyboardKey.tab, isShiftPressed: true);
 
       selection = editor.selection!;
 

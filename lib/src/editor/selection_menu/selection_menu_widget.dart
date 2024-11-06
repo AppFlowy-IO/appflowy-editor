@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 typedef SelectionMenuItemHandler = void Function(
   EditorState editorState,
@@ -10,31 +11,40 @@ typedef SelectionMenuItemHandler = void Function(
   BuildContext context,
 );
 
+typedef SelectionMenuItemNameBuilder = Widget Function(
+  String name,
+  SelectionMenuStyle style,
+  bool isSelected,
+);
+
 /// Selection Menu Item
 class SelectionMenuItem {
   SelectionMenuItem({
-    required this.name,
+    required String Function() getName,
     required this.icon,
     required this.keywords,
     required SelectionMenuItemHandler handler,
-  }) {
+    this.nameBuilder,
+  }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
       if (deleteSlash) {
         _deleteSlash(editorState);
       }
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
       handler(editorState, menuService, context);
       onSelected?.call();
-      // });
     };
   }
 
-  final String name;
+  final String Function() _getName;
   final Widget Function(
     EditorState editorState,
     bool onSelected,
     SelectionMenuStyle style,
   ) icon;
+  final SelectionMenuItemNameBuilder? nameBuilder;
+
+  String get name => _getName();
 
   /// Customizes keywords for item.
   ///
@@ -71,7 +81,7 @@ class SelectionMenuItem {
   }
 
   /// Creates a selection menu entry for inserting a [Node].
-  /// [name] and [iconData] define the appearance within the selection menu.
+  /// [getName] and [iconData] define the appearance within the selection menu.
   ///
   /// The insert position is determined by the result of [replace] and
   /// [insertBefore]
@@ -82,11 +92,17 @@ class SelectionMenuItem {
   /// [updateSelection] can be used to update the selection after the node
   /// has been inserted.
   factory SelectionMenuItem.node({
-    required String name,
-    required IconData iconData,
+    required String Function() getName,
     required List<String> keywords,
     required Node Function(EditorState editorState, BuildContext context)
         nodeBuilder,
+    IconData? iconData,
+    Widget Function(
+      EditorState editorState,
+      bool onSelected,
+      SelectionMenuStyle style,
+    )? iconBuilder,
+    SelectionMenuItemNameBuilder? nameBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
@@ -96,15 +112,28 @@ class SelectionMenuItem {
       bool insertedBefore,
     )? updateSelection,
   }) {
+    // the iconData and iconBuilder are mutually exclusive
+    assert(iconData == null || iconBuilder == null);
+    assert(iconData != null || iconBuilder != null);
+
     return SelectionMenuItem(
-      name: name,
-      icon: (editorState, onSelected, style) => Icon(
-        iconData,
-        color: onSelected
-            ? style.selectionMenuItemSelectedIconColor
-            : style.selectionMenuItemIconColor,
-        size: 18.0,
-      ),
+      getName: getName,
+      nameBuilder: nameBuilder,
+      icon: (editorState, onSelected, style) {
+        if (iconData != null) {
+          return Icon(
+            iconData,
+            color: onSelected
+                ? style.selectionMenuItemSelectedIconColor
+                : style.selectionMenuItemIconColor,
+            size: 18.0,
+          );
+        } else if (iconBuilder != null) {
+          return iconBuilder.call(editorState, onSelected, style);
+        }
+
+        return const SizedBox.shrink();
+      },
       keywords: keywords,
       handler: (editorState, _, context) {
         final selection = editorState.selection;
@@ -197,6 +226,8 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.selectionMenuStyle,
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
+    this.singleColumn = false,
+    this.nameBuilder,
   });
 
   final List<SelectionMenuItem> items;
@@ -212,6 +243,9 @@ class SelectionMenuWidget extends StatefulWidget {
   final SelectionMenuStyle selectionMenuStyle;
 
   final bool deleteSlashByDefault;
+  final bool singleColumn;
+
+  final SelectionMenuItemNameBuilder? nameBuilder;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
@@ -222,6 +256,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
   int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
+  AutoScrollController? _scrollController;
 
   int _searchCounter = 0;
 
@@ -245,7 +280,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         )
         .toList(growable: false);
 
-    Log.ui.debug('$items');
+    AppFlowyEditorLog.ui.debug('$items');
 
     if (keyword.length >= maxKeywordLength + 2 &&
         !(widget.deleteSlashByDefault && _searchCounter < 2)) {
@@ -267,6 +302,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     super.initState();
 
     _showingItems = widget.items;
+    if (widget.singleColumn) {
+      _scrollController = AutoScrollController();
+    }
 
     keepEditorFocusNotifier.increase();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -278,6 +316,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   void dispose() {
     _focusNode.dispose();
     keepEditorFocusNotifier.decrease();
+    _scrollController?.dispose();
 
     super.dispose();
   }
@@ -286,7 +325,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
-      onKey: _onKey,
+      onKeyEvent: _onKeyEvent,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: widget.selectionMenuStyle.selectionMenuBackgroundColor,
@@ -311,23 +350,83 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     );
   }
 
+  void _scrollToSelectedIndex() {
+    if (_scrollController == null) {
+      return;
+    }
+
+    _scrollController?.scrollToIndex(
+      _selectedIndex,
+      duration: const Duration(milliseconds: 200),
+      preferPosition: AutoScrollPosition.begin,
+    );
+  }
+
   Widget _buildResultsWidget(
     BuildContext buildContext,
     List<SelectionMenuItem> items,
     int itemCountFilter,
     int selectedIndex,
   ) {
-    List<Widget> columns = [];
-    List<Widget> itemWidgets = [];
+    if (widget.singleColumn) {
+      List<Widget> itemWidgets = [];
+      for (var i = 0; i < items.length; i++) {
+        itemWidgets.add(
+          AutoScrollTag(
+            key: ValueKey(i),
+            index: i,
+            controller: _scrollController!,
+            child: SelectionMenuItemWidget(
+              item: items[i],
+              isSelected: selectedIndex == i,
+              editorState: widget.editorState,
+              menuService: widget.menuService,
+              selectionMenuStyle: widget.selectionMenuStyle,
+            ),
+          ),
+        );
+      }
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 300,
+          minWidth: 300,
+          maxWidth: 300,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          controller: _scrollController,
+          children: itemWidgets,
+        ),
+      );
+    } else {
+      List<Widget> columns = [];
+      List<Widget> itemWidgets = [];
+      // apply item count filter
+      if (itemCountFilter > 0) {
+        items = items.take(itemCountFilter).toList();
+      }
 
-    // apply item count filter
-
-    if (itemCountFilter > 0) {
-      items = items.take(itemCountFilter).toList();
-    }
-
-    for (var i = 0; i < items.length; i++) {
-      if (i != 0 && i % (widget.maxItemInRow) == 0) {
+      for (var i = 0; i < items.length; i++) {
+        if (i != 0 && i % (widget.maxItemInRow) == 0) {
+          columns.add(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: itemWidgets,
+            ),
+          );
+          itemWidgets = [];
+        }
+        itemWidgets.add(
+          SelectionMenuItemWidget(
+            item: items[i],
+            isSelected: selectedIndex == i,
+            editorState: widget.editorState,
+            menuService: widget.menuService,
+            selectionMenuStyle: widget.selectionMenuStyle,
+          ),
+        );
+      }
+      if (itemWidgets.isNotEmpty) {
         columns.add(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,29 +435,11 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         );
         itemWidgets = [];
       }
-      itemWidgets.add(
-        SelectionMenuItemWidget(
-          item: items[i],
-          isSelected: selectedIndex == i,
-          editorState: widget.editorState,
-          menuService: widget.menuService,
-          selectionMenuStyle: widget.selectionMenuStyle,
-        ),
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: columns,
       );
     }
-    if (itemWidgets.isNotEmpty) {
-      columns.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: itemWidgets,
-        ),
-      );
-      itemWidgets = [];
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: columns,
-    );
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
@@ -380,9 +461,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles arrow keys to switch selected items
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
-  KeyEventResult _onKey(FocusNode node, RawKeyEvent event) {
-    Log.keyboard.debug('slash command, on key $event');
-    if (event is! RawKeyDownEvent) {
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    AppFlowyEditorLog.keyboard.debug('slash command, on key $event');
+
+    if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
     }
 
@@ -441,6 +523,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     if (newSelectedIndex != _selectedIndex) {
       setState(() {
         _selectedIndex = newSelectedIndex.clamp(0, _showingItems.length - 1);
+        _scrollToSelectedIndex();
       });
       return KeyEventResult.handled;
     }

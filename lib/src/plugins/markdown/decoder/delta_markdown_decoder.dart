@@ -7,7 +7,7 @@ import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/und
 import 'package:markdown/markdown.dart' as md;
 
 class DeltaMarkdownDecoder extends Converter<String, Delta>
-    with md.NodeVisitor {
+    implements md.NodeVisitor {
   final _delta = Delta();
   final Attributes _attributes = {};
   final List<md.InlineSyntax> customInlineSyntaxes;
@@ -28,6 +28,17 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       encodeHtml: false,
     ).parseInline(input);
     for (final node in document) {
+      node.accept(this);
+    }
+    return _delta;
+  }
+
+  Delta convertNodes(List<md.Node>? nodes) {
+    if (nodes == null) {
+      return Delta();
+    }
+
+    for (final node in nodes) {
       node.accept(this);
     }
     return _delta;
@@ -64,7 +75,11 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.underline] = true;
     } else {
       element.attributes.forEach((key, value) {
-        _attributes[key] = jsonDecode(value);
+        try {
+          _attributes[key] = jsonDecode(value);
+        } catch (_) {
+          return;
+        }
       });
     }
   }

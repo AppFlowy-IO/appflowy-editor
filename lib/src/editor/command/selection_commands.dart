@@ -175,7 +175,7 @@ extension SelectionTransform on EditorState {
     // After the selection is deleted, we want to move the selection to the
     // beginning of the deleted selection.
     transaction.afterSelection = selection.collapse(atStart: true);
-    Log.editor
+    AppFlowyEditorLog.editor
         .debug(transaction.operations.map((e) => e.toString()).toString());
 
     // Apply the transaction.
@@ -186,7 +186,6 @@ extension SelectionTransform on EditorState {
 
   /// move the cursor forward.
   ///
-  /// TODO: I think we should add move forward function to the SelectableMixin.
   /// Don't hardcode the logic here.
   /// For example,
   ///   final position = node.selectable?.moveForward(selection.startIndex);

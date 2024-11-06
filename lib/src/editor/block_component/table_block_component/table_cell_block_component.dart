@@ -22,13 +22,33 @@ class TableCellBlockKeys {
   static const String colBackgroundColor = 'colBackgroundColor';
 }
 
+typedef TableBlockCellComponentColorBuilder = Color? Function(
+  BuildContext context,
+  Node node,
+);
+
+Node tableCellNode(String text, int rowPosition, int colPosition) {
+  return Node(
+    type: TableCellBlockKeys.type,
+    attributes: {
+      TableCellBlockKeys.rowPosition: rowPosition,
+      TableCellBlockKeys.colPosition: colPosition,
+    },
+    children: [
+      paragraphNode(text: text),
+    ],
+  );
+}
+
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
     super.configuration,
     this.menuBuilder,
+    this.colorBuilder,
   });
 
   final TableBlockComponentMenuBuilder? menuBuilder;
+  final TableBlockCellComponentColorBuilder? colorBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -38,6 +58,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       configuration: configuration,
       menuBuilder: menuBuilder,
+      colorBuilder: colorBuilder,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -47,7 +68,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
+  BlockComponentValidate get validate => (node) =>
       node.attributes.isNotEmpty &&
       node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
       node.attributes.containsKey(TableCellBlockKeys.colPosition);
@@ -58,12 +79,14 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
     super.key,
     required super.node,
     this.menuBuilder,
+    this.colorBuilder,
     super.showActions,
     super.actionBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 
   final TableBlockComponentMenuBuilder? menuBuilder;
+  final TableBlockCellComponentColorBuilder? colorBuilder;
 
   @override
   State<TableCelBlockWidget> createState() => _TableCeBlockWidgetState();
@@ -87,6 +110,7 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             ),
             color: context.select(
               (Node n) =>
+                  widget.colorBuilder?.call(context, n) ??
                   (n.attributes[TableCellBlockKeys.colBackgroundColor]
                           as String?)
                       ?.tryToColor() ??

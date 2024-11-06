@@ -1,13 +1,51 @@
-name: appflowy_editor
-description: A highly customizable rich-text editor for Flutter. The AppFlowy Editor project for AppFlowy and beyond.
-version: 2.3.0
-homepage: https://github.com/AppFlowy-IO/appflowy-editor
+name: "appflowy_editor"
 
-topics:
- - ui
- - widgets
- - editor
- - appflowy
+version: 4.0.0
+
+homepage: "https://github.com/AppFlowy-IO/appflowy-editor"
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+description: A highly customizable rich-text editor for Flutter. The AppFlowy
+  Editor project for AppFlowy and beyond.
+
+dependencies:
+  collection: "^1.18.0"
+  device_info_plus: "^11.0.0"
+  diff_match_patch: "^0.4.1"
+  file_picker: "^8.0.2"
+  flutter:
+    sdk: flutter
+  flutter_svg: "^2.0.6"
+  html: "^0.15.0"
+  http: "^1.2.0"
+  intl: "^0.19.0"
+  keyboard_height_plugin: "^0.1.5"
+  logging: "^1.2.0"
+  markdown: "^7.2.1"
+  nanoid: "^1.0.0"
+  numerus: "^2.1.2"
+  pdf: "^3.10.7"
+  provider: "^6.0.5"
+  scroll_to_index: "^3.0.1"
+  string_validator: "^1.0.0"
+  universal_html: "^2.2.4"
+  universal_platform: ^1.1.0
+  url_launcher: "^6.1.11"
+
+dev_dependencies:
+  flutter_lints: "^4.0.0"
+  flutter_localizations:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  intl_utils: "^2.8.2"
+  mockito: "^5.4.1"
+  network_image_mock: "^2.1.1"
+  path_provider: "^2.0.5"
+  pubspec_dependency_sorter: "^1.0.5"
 
 platforms:
   android:
@@ -17,85 +55,19 @@ platforms:
   windows:
   web:
 
-environment:
-  sdk: ">=3.1.5 <4.0.0"
-  flutter: ">=3.13.0"
+topics:
+  - ui
+  - widgets
+  - editor
+  - appflowy
 
-dependencies:
-  flutter:
-    sdk: flutter
-
-  rich_clipboard: ^1.0.0
-  html: ^0.15.0
-  flutter_svg: ^2.0.6
-  provider: ^6.0.5
-  url_launcher: ^6.1.11
-  logging: ^1.2.0
-  intl_utils: ^2.8.2
-  intl: ^0.18.0
-  markdown: ^7.1.0
-  flutter_localizations:
-    sdk: flutter
-  tuple: ^2.0.1
-  collection: ^1.17.0
-  nanoid: ^1.0.0
-  visibility_detector: ^0.4.0+2
-  file_picker: ^6.1.1
-  path: ^1.8.3
-  path_provider: ^2.0.5
-  diff_match_patch: ^0.4.1
-  string_validator: ^1.0.0
-  universal_html: ^2.2.4
-  keyboard_height_plugin: ^0.0.4
-  numerus: ^2.1.2
-  device_info_plus: ^9.1.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.1
-  network_image_mock: ^2.1.1
-  mockito: ^5.4.1
-  leak_tracker: 9.0.16
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-  # To add assets to your package, add an assets section, like this:
   assets:
-    - assets/images/toolbar/
-    - assets/images/selection_menu/
-    - assets/images/image_toolbar/
-    - assets/images/
-    - assets/mobile/toolbar_icons/
-  #
-  # For details regarding assets in packages, see
-  # https://flutter.dev/assets-and-images/#from-packages
-  #
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
-
-  # To add custom fonts to your package, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts in packages, see
-  # https://flutter.dev/custom-fonts/#from-packages
+    - "assets/images/toolbar/"
+    - "assets/images/selection_menu/"
+    - "assets/images/image_toolbar/"
+    - "assets/images/"
+    - "assets/mobile/toolbar_icons/"
 
 flutter_intl:
   enabled: true

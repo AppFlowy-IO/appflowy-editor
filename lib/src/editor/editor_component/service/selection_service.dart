@@ -4,6 +4,21 @@ import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
+class DragAreaBuilderData {
+  DragAreaBuilderData({
+    required this.targetNode,
+    required this.dragOffset,
+  });
+
+  final Node targetNode;
+  final Offset dragOffset;
+}
+
+typedef DragAreaBuilder = Widget Function(
+  BuildContext context,
+  DragAreaBuilderData data,
+);
+
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
 ///
@@ -81,15 +96,75 @@ abstract class AppFlowySelectionService {
     DragEndDetails details,
     MobileSelectionDragMode mode,
   );
+
+  /// Draws a horizontal line between the nearest nodes to the [offset].
+  ///
+  /// The [offset] must be under the global coordinate system.
+  ///
+  /// Should call [removeDropTarget] to remove the line once drop is done.
+  ///
+  /// If [builder] is provided, the line will be drawn by [builder].
+  /// Otherwise, the line will be drawn by default [DropTargetStyle].
+  void renderDropTargetForOffset(
+    Offset offset, {
+    DragAreaBuilder? builder,
+  });
+
+  /// Removes the horizontal line drawn by [renderDropTargetForOffset].
+  ///
+  void removeDropTarget();
+
+  /// Returns the [DropTargetRenderData] for the [offset].
+  ///
+  DropTargetRenderData? getDropTargetRenderData(Offset offset);
 }
 
 class SelectionGestureInterceptor {
   SelectionGestureInterceptor({
     required this.key,
     this.canTap,
+    this.canDoubleTap,
+    this.canPanStart,
+    this.canPanUpdate,
+    this.canPanEnd,
   });
 
   final String key;
 
   bool Function(TapDownDetails details)? canTap;
+  bool Function(TapDownDetails details)? canDoubleTap;
+  bool Function(DragStartDetails details)? canPanStart;
+  bool Function(DragUpdateDetails details)? canPanUpdate;
+  bool Function(DragEndDetails details)? canPanEnd;
+}
+
+/// Data returned when calling [AppFlowySelectionService.getDropTargetRenderData]
+///
+/// Includes the position (path) which the drop target is rendered for
+/// and the [Node] which the cursor is directly hovering over.
+///
+class DropTargetRenderData {
+  const DropTargetRenderData({this.dropPath, this.cursorNode});
+
+  /// The path which the drop is rendered for,
+  /// this is the position in which any content should be
+  /// inserted into.
+  ///
+  final List<int>? dropPath;
+
+  /// The [Node] which the cursor is directly hovering over,
+  /// this node __might__ be at same position as [dropPath] but might also
+  /// be another [Node] depending on distance to top/bottom of the [Node] to the
+  /// cursors offset.
+  ///
+  /// This is useful in case you want to cancel or pause the drop
+  /// for specific [Node]s, in case they as example implement their
+  /// own drop logic.
+  ///
+  final Node? cursorNode;
+
+  @override
+  String toString() {
+    return 'DropTargetRenderData(dropPath: $dropPath, cursorNode: $cursorNode)';
+  }
 }

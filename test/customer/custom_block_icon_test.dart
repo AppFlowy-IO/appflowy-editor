@@ -58,10 +58,10 @@ class CustomBlockIcon extends StatelessWidget {
         iconBuilder: (_, __) => Icon(iconMap[BulletedListBlockKeys.type]),
       ),
       NumberedListBlockKeys.type: NumberedListBlockComponentBuilder(
-        iconBuilder: (_, __) => Icon(iconMap[NumberedListBlockKeys.type]),
+        iconBuilder: (_, __, ___) => Icon(iconMap[NumberedListBlockKeys.type]),
       ),
       TodoListBlockKeys.type: TodoListBlockComponentBuilder(
-        iconBuilder: (_, __) => Icon(iconMap[TodoListBlockKeys.type]),
+        iconBuilder: (_, __, ___) => Icon(iconMap[TodoListBlockKeys.type]),
       ),
       QuoteBlockKeys.type: QuoteBlockComponentBuilder(
         iconBuilder: (_, __) => Icon(iconMap[QuoteBlockKeys.type]),

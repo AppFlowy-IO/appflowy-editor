@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Page up key event.
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 ///
 final CommandShortcutEvent pageUpCommand = CommandShortcutEvent(
   key: 'scroll one page up',
+  getDescription: () => AppFlowyEditorL10n.current.cmdScrollPageUp,
   command: 'page up',
   handler: _pageUpCommandHandler,
 );

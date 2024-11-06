@@ -56,13 +56,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       _textInputConnection = TextInput.attach(
         this,
         configuration,
-        // TextInputConfiguration(
-        //   enableDeltaModel: true,
-        //   inputType: TextInputType.multiline,
-        //   textCapitalization: TextCapitalization.sentences,
-        //   inputAction: TextInputAction.newline,
-        //   keyboardAppearance: Theme.of(context).brightness,
-        // ),
       );
     }
 
@@ -72,7 +65,7 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
       ..show();
     currentTextEditingValue = formattedValue;
 
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       'attach text editing value: $textEditingValue',
     );
   }
@@ -86,14 +79,12 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
 
   @override
   void updateEditingValueWithDeltas(List<TextEditingDelta> textEditingDeltas) {
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       textEditingDeltas.map((delta) => delta.toString()).toString(),
     );
     apply(textEditingDeltas);
   }
 
-  // TODO: support IME in linux / windows / ios / android
-  // Only support macOS now.
   @override
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect) {
     _textInputConnection

@@ -74,23 +74,19 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   }
 
   @override
-  void jumpToTop() {
-    // TODO: implement jumpToTop
-  }
+  void jumpToTop() {}
 
   @override
-  void jumpToBottom() {
-    // TODO: implement jumpToBottom
-  }
+  void jumpToBottom() {}
 
   @override
   void disable() {
-    Log.scroll.debug('disable scroll service');
+    AppFlowyEditorLog.scroll.debug('disable scroll service');
   }
 
   @override
   void enable() {
-    Log.scroll.debug('enable scroll service');
+    AppFlowyEditorLog.scroll.debug('enable scroll service');
   }
 
   @override

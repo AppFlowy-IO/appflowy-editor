@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Toggle Color Commands
@@ -28,6 +29,7 @@ class ToggleColorsStyle {
 
 final CommandShortcutEvent toggleHighlightCommand = CommandShortcutEvent(
   key: 'toggle highlight',
+  getDescription: () => AppFlowyEditorL10n.current.cmdToggleHighlight,
   command: 'ctrl+shift+h',
   macOSCommand: 'cmd+shift+h',
   handler: (editorState) => _toggleHighlight(
@@ -41,6 +43,7 @@ CommandShortcutEvent customToggleHighlightCommand({
 }) =>
     CommandShortcutEvent(
       key: 'toggle highlight',
+      getDescription: () => AppFlowyEditorL10n.current.cmdToggleHighlight,
       command: 'ctrl+shift+h',
       macOSCommand: 'cmd+shift+h',
       handler: (editorState) => _toggleHighlight(editorState, style: style),
@@ -64,14 +67,14 @@ KeyEventResult _toggleHighlight(
   final nodes = editorState.getNodesInSelection(selection);
   final isHighlighted = nodes.allSatisfyInSelection(selection, (delta) {
     return delta.everyAttributes(
-      (attributes) => attributes[AppFlowyRichTextKeys.highlightColor] != null,
+      (attributes) => attributes[AppFlowyRichTextKeys.backgroundColor] != null,
     );
   });
 
   editorState.formatDelta(
     selection,
     {
-      AppFlowyRichTextKeys.highlightColor:
+      AppFlowyRichTextKeys.backgroundColor:
           isHighlighted ? null : style.highlightColor.toHex(),
     },
   );

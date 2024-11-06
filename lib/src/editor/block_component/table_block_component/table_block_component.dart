@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,16 +24,38 @@ class TableBlockKeys {
   static const String colsHeight = 'colsHeight';
 }
 
+class TableStyle {
+  final double colWidth;
+  final double rowHeight;
+  final double colMinimumWidth;
+  final double borderWidth;
+  final Widget addIcon;
+  final Widget handlerIcon;
+  final Color borderColor;
+  final Color borderHoverColor;
+
+  const TableStyle({
+    this.colWidth = 160,
+    this.rowHeight = 40,
+    this.colMinimumWidth = 40,
+    this.borderWidth = 2,
+    this.addIcon = TableDefaults.addIcon,
+    this.handlerIcon = TableDefaults.handlerIcon,
+    this.borderColor = TableDefaults.borderColor,
+    this.borderHoverColor = TableDefaults.borderHoverColor,
+  });
+}
+
 class TableDefaults {
   const TableDefaults._();
 
-  static const double colWidth = 80.0;
+  static double colWidth = 160.0;
 
-  static const double rowHeight = 40.0;
+  static double rowHeight = 40.0;
 
-  static const double colMinimumWidth = 40.0;
+  static double colMinimumWidth = 40.0;
 
-  static const double borderWidth = 2.0;
+  static double borderWidth = 2.0;
 
   static const Widget addIcon = Icon(Icons.add, size: 20);
 
@@ -59,30 +80,27 @@ typedef TableBlockComponentMenuBuilder = Widget Function(
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
     super.configuration,
-    this.addIcon = TableDefaults.addIcon,
-    this.borderColor = TableDefaults.borderColor,
-    this.borderHoverColor = TableDefaults.borderHoverColor,
+    this.tableStyle = const TableStyle(),
     this.menuBuilder,
   });
 
-  final Widget addIcon;
   final TableBlockComponentMenuBuilder? menuBuilder;
-
-  final Color borderColor;
-  final Color borderHoverColor;
+  final TableStyle tableStyle;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+    TableDefaults.colWidth = tableStyle.colWidth;
+    TableDefaults.rowHeight = tableStyle.rowHeight;
+    TableDefaults.colMinimumWidth = tableStyle.colMinimumWidth;
+    TableDefaults.borderWidth = tableStyle.borderWidth;
     return TableBlockComponentWidget(
       key: node.key,
       tableNode: TableNode(node: node),
       node: node,
       configuration: configuration,
-      addIcon: addIcon,
       menuBuilder: menuBuilder,
-      borderColor: borderColor,
-      borderHoverColor: borderHoverColor,
+      tableStyle: tableStyle,
       showActions: showActions(node),
       actionBuilder: (context, state) => actionBuilder(
         blockComponentContext,
@@ -92,10 +110,68 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
-      node.attributes.isNotEmpty &&
-      node.attributes.containsKey(TableBlockKeys.colsLen) &&
-      node.attributes.containsKey(TableBlockKeys.rowsLen);
+  BlockComponentValidate get validate => (node) {
+        // check the node is valid
+        if (node.attributes.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: node is empty');
+          return false;
+        }
+
+        // check the node has rowPosition and colPosition
+        if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
+            !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: node has no colsLen or rowsLen',
+          );
+          return false;
+        }
+
+        final colsLen = node.attributes[TableBlockKeys.colsLen];
+        final rowsLen = node.attributes[TableBlockKeys.rowsLen];
+
+        // check its children
+        final children = node.children;
+        if (children.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: children is empty');
+          return false;
+        }
+
+        if (children.length != colsLen * rowsLen) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
+          );
+          return false;
+        }
+
+        // all children should contain rowPosition and colPosition
+        for (var i = 0; i < colsLen; i++) {
+          for (var j = 0; j < rowsLen; j++) {
+            final child = children.where(
+              (n) =>
+                  n.attributes[TableCellBlockKeys.colPosition] == i &&
+                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+            );
+            if (child.isEmpty) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is empty',
+              );
+              return false;
+            }
+
+            // should only contains one child
+            if (child.length != 1) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is not unique',
+              );
+              return false;
+            }
+          }
+        }
+
+        return true;
+      };
 }
 
 class TableBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -103,9 +179,7 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
     super.key,
     required this.tableNode,
     required super.node,
-    required this.addIcon,
-    required this.borderColor,
-    required this.borderHoverColor,
+    this.tableStyle = const TableStyle(),
     this.menuBuilder,
     super.showActions,
     super.actionBuilder,
@@ -114,11 +188,8 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
 
   final TableNode tableNode;
 
-  final Widget addIcon;
   final TableBlockComponentMenuBuilder? menuBuilder;
-
-  final Color borderColor;
-  final Color borderHoverColor;
+  final TableStyle tableStyle;
 
   @override
   State<TableBlockComponentWidget> createState() =>
@@ -147,10 +218,8 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
         child: TableView(
           tableNode: widget.tableNode,
           editorState: editorState,
-          addIcon: widget.addIcon,
           menuBuilder: widget.menuBuilder,
-          borderColor: widget.borderColor,
-          borderHoverColor: widget.borderHoverColor,
+          tableStyle: widget.tableStyle,
         ),
       ),
     );
@@ -165,6 +234,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
@@ -184,6 +254,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   }
 
   final tableKey = GlobalKey();
+
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   @override
@@ -251,7 +322,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
 }
 
 SelectionMenuItem tableMenuItem = SelectionMenuItem(
-  name: AppFlowyEditorL10n.current.table,
+  getName: () => AppFlowyEditorL10n.current.table,
   icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
     icon: Icons.table_view,
     isSelected: isSelected,

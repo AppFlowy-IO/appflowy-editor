@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 /// 1. used to update the child widget when node is changed
 /// ~~2. used to show block component actions~~
 /// 3. used to add the layer link to the child widget
-class BlockComponentContainer extends StatefulWidget {
+class BlockComponentContainer extends StatelessWidget {
   const BlockComponentContainer({
     super.key,
     required this.configuration,
@@ -17,28 +17,24 @@ class BlockComponentContainer extends StatefulWidget {
 
   final Node node;
   final BlockComponentConfiguration configuration;
-
   final WidgetBuilder builder;
 
   @override
-  State<BlockComponentContainer> createState() =>
-      BlockComponentContainerState();
-}
-
-class BlockComponentContainerState extends State<BlockComponentContainer> {
-  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Node>.value(
-      value: widget.node,
+    final child = ChangeNotifierProvider<Node>.value(
+      value: node,
       child: Consumer<Node>(
         builder: (_, __, ___) {
-          Log.editor.debug('node is rebuilding...: type: ${widget.node.type} ');
+          AppFlowyEditorLog.editor
+              .debug('node is rebuilding...: type: ${node.type} ');
           return CompositedTransformTarget(
-            link: widget.node.layerLink,
-            child: widget.builder(context),
+            link: node.layerLink,
+            child: builder(context),
           );
         },
       ),
     );
+
+    return child;
   }
 }

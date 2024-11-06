@@ -4,21 +4,30 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:example/pages/auto_complete_editor.dart';
+import 'package:example/pages/auto_expand_editor.dart';
+import 'package:example/pages/collab_editor.dart';
+import 'package:example/pages/collab_selection_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
+import 'package:example/pages/drag_to_reorder_editor.dart';
 import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
+import 'package:example/pages/fixed_toolbar_editor.dart';
 import 'package:example/pages/focus_example_for_editor.dart';
+import 'package:example/pages/markdown_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:universal_platform/universal_platform.dart';
 
 enum ExportFileType {
   documentJson,
   markdown,
-  html,
+  pdf,
   delta,
 }
 
@@ -30,8 +39,8 @@ extension on ExportFileType {
         return 'json';
       case ExportFileType.markdown:
         return 'md';
-      case ExportFileType.html:
-        return 'html';
+      case ExportFileType.pdf:
+        return 'pdf';
     }
   }
 }
@@ -54,7 +63,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _jsonString = PlatformExtension.isDesktopOrWeb
+    _jsonString = UniversalPlatform.isDesktopOrWeb
         ? rootBundle.loadString('assets/example.json')
         : rootBundle.loadString('assets/mobile_example.json');
 
@@ -85,7 +94,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
+      extendBodyBehindAppBar: UniversalPlatform.isDesktopOrWeb,
       drawer: _buildDrawer(context),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 134, 46, 247),
@@ -94,7 +103,8 @@ class _HomePageState extends State<HomePage> {
         title: const Text('AppFlowy Editor'),
       ),
       body: SafeArea(
-        child: _buildBody(context),
+        maintainBottomViewPadding: true,
+        child: _widgetBuilder(context),
       ),
     );
   }
@@ -116,7 +126,7 @@ class _HomePageState extends State<HomePage> {
           // AppFlowy Editor Demo
           _buildSeparator(context, 'AppFlowy Editor Demo'),
           _buildListTile(context, 'With Example.json', () {
-            final jsonString = PlatformExtension.isDesktopOrWeb
+            final jsonString = UniversalPlatform.isDesktopOrWeb
                 ? rootBundle.loadString('assets/example.json')
                 : rootBundle.loadString('assets/mobile_example.json');
             _loadEditor(context, jsonString);
@@ -139,13 +149,12 @@ class _HomePageState extends State<HomePage> {
             final htmlString =
                 await rootBundle.loadString('assets/example.html');
             final html = htmlToDocument(htmlString);
-            // final html = HTMLToNodesConverter(htmlString).toDocument();
             final jsonString = Future<String>.value(
               jsonEncode(
                 html.toJson(),
               ).toString(),
             );
-            if (mounted) {
+            if (context.mounted) {
               _loadEditor(context, jsonString);
             }
           }),
@@ -160,6 +169,46 @@ class _HomePageState extends State<HomePage> {
 
           // Theme Demo
           _buildSeparator(context, 'Showcases'),
+          _buildListTile(context, 'Drag to reorder', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DragToReorderEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Markdown Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MarkdownEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Auto complete Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AutoCompleteEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Collab Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CollabEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Collab Selection', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CollabSelectionEditor(),
+              ),
+            );
+          }),
           _buildListTile(context, 'Custom Theme', () {
             Navigator.push(
               context,
@@ -194,6 +243,25 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }),
+          _buildListTile(context, 'Fixed Toolbar', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FixedToolbarExample(),
+              ),
+            );
+          }),
+
+          _buildListTile(context, 'Auto Expand Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AutoExpandEditor(
+                  editorState: EditorState.blank(),
+                ),
+              ),
+            );
+          }),
 
           // Encoder Demo
           _buildSeparator(context, 'Export To X Demo'),
@@ -202,6 +270,10 @@ class _HomePageState extends State<HomePage> {
           }),
           _buildListTile(context, 'Export to Markdown', () {
             _exportFile(_editorState, ExportFileType.markdown);
+          }),
+
+          _buildListTile(context, 'Export to PDF', () {
+            _exportFile(_editorState, ExportFileType.pdf);
           }),
 
           // Decoder Demo
@@ -218,10 +290,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return _widgetBuilder(context);
   }
 
   Widget _buildListTile(
@@ -297,7 +365,10 @@ class _HomePageState extends State<HomePage> {
       case ExportFileType.markdown:
         result = documentToMarkdown(editorState.document);
         break;
-      case ExportFileType.html:
+      case ExportFileType.pdf:
+        result = documentToMarkdown(editorState.document);
+        break;
+
       case ExportFileType.delta:
         throw UnimplementedError();
     }
@@ -309,7 +380,7 @@ class _HomePageState extends State<HomePage> {
       )
         ..setAttribute('download', 'document.${fileType.extension}')
         ..click();
-    } else if (PlatformExtension.isMobile) {
+    } else if (UniversalPlatform.isMobile) {
       final appStorageDirectory = await getApplicationDocumentsDirectory();
 
       final path = File(
@@ -332,6 +403,17 @@ class _HomePageState extends State<HomePage> {
       );
       if (path != null) {
         await File(path).writeAsString(result);
+        if (fileType == ExportFileType.pdf) {
+          final pdf = await PdfHTMLEncoder(
+            fontFallback: [
+              await PdfGoogleFonts.notoColorEmoji(),
+              await PdfGoogleFonts.notoColorEmojiRegular(),
+            ],
+          ).convert(result);
+
+          await File(path).writeAsBytes(await pdf.save());
+        }
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -377,7 +459,7 @@ class _HomePageState extends State<HomePage> {
         final document = quillDeltaEncoder.convert(delta);
         jsonString = jsonEncode(document.toJson());
         break;
-      case ExportFileType.html:
+      case ExportFileType.pdf:
         throw UnimplementedError();
     }
 

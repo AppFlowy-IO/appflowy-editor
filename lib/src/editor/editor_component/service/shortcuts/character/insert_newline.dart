@@ -1,6 +1,6 @@
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
 import 'package:appflowy_editor/src/editor/command/transform.dart';
-import 'package:appflowy_editor/src/editor/util/util.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
 
 /// insert a new line block
@@ -19,7 +19,8 @@ final CharacterShortcutEvent insertNewLine = CharacterShortcutEvent(
 CharacterShortcutEventHandler _insertNewLineHandler = (editorState) async {
   // on desktop or web, shift + enter to insert a '\n' character to the same line.
   // so, we should return the false to let the system handle it.
-  if (PlatformExtension.isNotMobile && RawKeyboard.instance.isShiftPressed) {
+  if (PlatformExtension.isNotMobile &&
+      HardwareKeyboard.instance.isShiftPressed) {
     return false;
   }
 

@@ -75,15 +75,15 @@ class Document {
   final Node root;
 
   /// First node of the document.
-  Node? get first => root.children.first;
+  Node? get first => root.children.firstOrNull;
 
   /// Last node of the document.
   Node? get last {
-    var last = root.children.last;
-    while (last.children.isNotEmpty) {
-      last = last.children.last;
+    Node? current = root.children.lastOrNull;
+    while (current != null && current.children.isNotEmpty) {
+      current = current.children.last;
     }
-    return last;
+    return current;
   }
 
   /// Must call this method when the [Document] is no longer needed.

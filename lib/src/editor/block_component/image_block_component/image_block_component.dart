@@ -83,7 +83,8 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.delta == null && node.children.isEmpty;
+  BlockComponentValidate get validate =>
+      (node) => node.delta == null && node.children.isEmpty;
 }
 
 class ImageBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -162,6 +163,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
@@ -196,6 +198,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
                   node: node,
                   delegate: this,
                   listenable: editorState.selectionNotifier,
+                  remoteSelection: editorState.remoteSelections,
                   cursorColor: editorState.editorStyle.cursorColor,
                   selectionColor: editorState.editorStyle.selectionColor,
                   child: child!,

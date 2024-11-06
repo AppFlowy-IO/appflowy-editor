@@ -60,7 +60,7 @@ const htmlTablejson = {
               "colPosition": 0,
               "rowPosition": 0,
               "height": 40.0,
-              "width": 80.0,
+              "width": 160.0,
             },
           },
           {
@@ -82,7 +82,7 @@ const htmlTablejson = {
               "colPosition": 1,
               "rowPosition": 0,
               "height": 40.0,
-              "width": 80.0,
+              "width": 160.0,
             },
           },
           {
@@ -104,7 +104,7 @@ const htmlTablejson = {
               "colPosition": 0,
               "rowPosition": 1,
               "height": 40.0,
-              "width": 80.0,
+              "width": 160.0,
             },
           },
           {
@@ -123,14 +123,14 @@ const htmlTablejson = {
               "colPosition": 1,
               "rowPosition": 1,
               "height": 40.0,
-              "width": 80.0,
+              "width": 160.0,
             },
           }
         ],
         "data": {
           "rowsLen": 2,
           "colsLen": 2,
-          "colDefaultWidth": 80,
+          "colDefaultWidth": 160,
           "rowDefaultHeight": 40,
           "colMinimumWidth": 40,
         },

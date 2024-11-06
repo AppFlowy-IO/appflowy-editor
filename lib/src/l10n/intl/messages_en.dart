@@ -55,6 +55,120 @@ class MessageLookup extends MessageLookupByLibrary {
         "clearHighlightColor":
             MessageLookupByLibrary.simpleMessage("Clear highlight color"),
         "closeFind": MessageLookupByLibrary.simpleMessage("Close"),
+        "cmdConvertToLink":
+            MessageLookupByLibrary.simpleMessage("Convert to link"),
+        "cmdConvertToParagraph":
+            MessageLookupByLibrary.simpleMessage("convert to paragraph"),
+        "cmdCopySelection":
+            MessageLookupByLibrary.simpleMessage("Copy selection"),
+        "cmdCutSelection":
+            MessageLookupByLibrary.simpleMessage("Cut selection"),
+        "cmdDeleteLeft": MessageLookupByLibrary.simpleMessage(
+            "Delete character to the left"),
+        "cmdDeleteLineLeft":
+            MessageLookupByLibrary.simpleMessage("Delete to beginning of line"),
+        "cmdDeleteRight": MessageLookupByLibrary.simpleMessage(
+            "Delete character to the right"),
+        "cmdDeleteWordLeft":
+            MessageLookupByLibrary.simpleMessage("delete word at left"),
+        "cmdDeleteWordRight":
+            MessageLookupByLibrary.simpleMessage("delete word at right"),
+        "cmdExitEditing":
+            MessageLookupByLibrary.simpleMessage("exit editing mode"),
+        "cmdIndent": MessageLookupByLibrary.simpleMessage("indent"),
+        "cmdMoveCursorBottom":
+            MessageLookupByLibrary.simpleMessage("move cursor to the bottom"),
+        "cmdMoveCursorBottomSelect": MessageLookupByLibrary.simpleMessage(
+            "Select all until end of file"),
+        "cmdMoveCursorDown":
+            MessageLookupByLibrary.simpleMessage("move cursor down"),
+        "cmdMoveCursorDownSelect":
+            MessageLookupByLibrary.simpleMessage("Select downward"),
+        "cmdMoveCursorLeft":
+            MessageLookupByLibrary.simpleMessage("move cursor left"),
+        "cmdMoveCursorLeftSelect":
+            MessageLookupByLibrary.simpleMessage("Select left"),
+        "cmdMoveCursorLineEnd": MessageLookupByLibrary.simpleMessage(
+            "move cursor to the end of line"),
+        "cmdMoveCursorLineEndSelect":
+            MessageLookupByLibrary.simpleMessage("Select to end of line"),
+        "cmdMoveCursorLineStart": MessageLookupByLibrary.simpleMessage(
+            "move cursor to start of line"),
+        "cmdMoveCursorLineStartSelect":
+            MessageLookupByLibrary.simpleMessage("Select to start of line"),
+        "cmdMoveCursorRight":
+            MessageLookupByLibrary.simpleMessage("move cursor right"),
+        "cmdMoveCursorRightSelect":
+            MessageLookupByLibrary.simpleMessage("Select right"),
+        "cmdMoveCursorTop":
+            MessageLookupByLibrary.simpleMessage("move cursor to the top"),
+        "cmdMoveCursorTopSelect": MessageLookupByLibrary.simpleMessage(
+            "Select all until start of file"),
+        "cmdMoveCursorUp":
+            MessageLookupByLibrary.simpleMessage("move cursor up"),
+        "cmdMoveCursorUpSelect":
+            MessageLookupByLibrary.simpleMessage("Select upward"),
+        "cmdMoveCursorWordLeft": MessageLookupByLibrary.simpleMessage(
+            "move cursor to word on the left"),
+        "cmdMoveCursorWordLeftSelect":
+            MessageLookupByLibrary.simpleMessage("Select word to the left"),
+        "cmdMoveCursorWordRight": MessageLookupByLibrary.simpleMessage(
+            "move cursor to word on the right"),
+        "cmdMoveCursorWordRightSelect":
+            MessageLookupByLibrary.simpleMessage("Select word to the right"),
+        "cmdOpenFind": MessageLookupByLibrary.simpleMessage("Open Find"),
+        "cmdOpenFindAndReplace":
+            MessageLookupByLibrary.simpleMessage("Open Find and Replace"),
+        "cmdOpenLink": MessageLookupByLibrary.simpleMessage("open link"),
+        "cmdOpenLinks": MessageLookupByLibrary.simpleMessage("open links"),
+        "cmdOutdent": MessageLookupByLibrary.simpleMessage("outdent"),
+        "cmdPasteContent":
+            MessageLookupByLibrary.simpleMessage("paste content"),
+        "cmdPasteContentAsPlainText":
+            MessageLookupByLibrary.simpleMessage("paste content as plain text"),
+        "cmdRedo": MessageLookupByLibrary.simpleMessage("redo"),
+        "cmdScrollPageDown":
+            MessageLookupByLibrary.simpleMessage("scroll page down"),
+        "cmdScrollPageUp":
+            MessageLookupByLibrary.simpleMessage("scroll page up"),
+        "cmdScrollToBottom":
+            MessageLookupByLibrary.simpleMessage("scroll to bottom"),
+        "cmdScrollToTop": MessageLookupByLibrary.simpleMessage("scroll to top"),
+        "cmdSelectAll": MessageLookupByLibrary.simpleMessage("select all"),
+        "cmdTableLineBreak":
+            MessageLookupByLibrary.simpleMessage("Table: add line break"),
+        "cmdTableMoveToDownCellAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to down cell at same offset"),
+        "cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to left cell if its at start of current cell"),
+        "cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to right cell if its at the end of current cell"),
+        "cmdTableMoveToUpCellAtSameOffset":
+            MessageLookupByLibrary.simpleMessage(
+                "Move to up cell at same offset"),
+        "cmdTableNavigateCells": MessageLookupByLibrary.simpleMessage(
+            "Navigate around the cells at same offset"),
+        "cmdTableNavigateCellsReverse": MessageLookupByLibrary.simpleMessage(
+            "Navigate around the cells at same offset in reverse"),
+        "cmdTableStopAtTheBeginningOfTheCell":
+            MessageLookupByLibrary.simpleMessage(
+                "Stop at the beginning of the cell"),
+        "cmdToggleBold": MessageLookupByLibrary.simpleMessage("toggle bold"),
+        "cmdToggleCode": MessageLookupByLibrary.simpleMessage("toggle code"),
+        "cmdToggleHighlight":
+            MessageLookupByLibrary.simpleMessage("toggle highlight"),
+        "cmdToggleItalic":
+            MessageLookupByLibrary.simpleMessage("toggle italic"),
+        "cmdToggleStrikethrough":
+            MessageLookupByLibrary.simpleMessage("toggle strikethrough"),
+        "cmdToggleTodoList":
+            MessageLookupByLibrary.simpleMessage("toggle the todo list"),
+        "cmdToggleUnderline":
+            MessageLookupByLibrary.simpleMessage("toggle underline"),
+        "cmdUndo": MessageLookupByLibrary.simpleMessage("undo"),
         "colAddAfter": MessageLookupByLibrary.simpleMessage("Add after"),
         "colAddBefore": MessageLookupByLibrary.simpleMessage("Add before"),
         "colClear": MessageLookupByLibrary.simpleMessage("Clear Content"),
@@ -88,7 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hexValue": MessageLookupByLibrary.simpleMessage("Hex value"),
         "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
         "highlightColor":
-            MessageLookupByLibrary.simpleMessage("Highlight color"),
+            MessageLookupByLibrary.simpleMessage("Highlight Color"),
         "image": MessageLookupByLibrary.simpleMessage("Image"),
         "imageLoadFailed":
             MessageLookupByLibrary.simpleMessage("Could not load the image"),
@@ -109,6 +223,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkText": MessageLookupByLibrary.simpleMessage("Text"),
         "linkTextHint":
             MessageLookupByLibrary.simpleMessage("Please enter text"),
+        "listItemPlaceholder":
+            MessageLookupByLibrary.simpleMessage("List item"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "ltr": MessageLookupByLibrary.simpleMessage("LTR"),
         "mobileHeading1": MessageLookupByLibrary.simpleMessage("Heading 1"),
@@ -140,6 +256,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "strikethrough": MessageLookupByLibrary.simpleMessage("Strikethrough"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
+        "textAlignCenter": MessageLookupByLibrary.simpleMessage("Align Center"),
+        "textAlignLeft": MessageLookupByLibrary.simpleMessage("Align Left"),
+        "textAlignRight": MessageLookupByLibrary.simpleMessage("Align Right"),
         "textColor": MessageLookupByLibrary.simpleMessage("Text Color"),
         "tint1": MessageLookupByLibrary.simpleMessage("Tint 1"),
         "tint2": MessageLookupByLibrary.simpleMessage("Tint 2"),
@@ -150,10 +269,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "tint7": MessageLookupByLibrary.simpleMessage("Tint 7"),
         "tint8": MessageLookupByLibrary.simpleMessage("Tint 8"),
         "tint9": MessageLookupByLibrary.simpleMessage("Tint 9"),
+        "toDoPlaceholder": MessageLookupByLibrary.simpleMessage("To-do"),
         "underline": MessageLookupByLibrary.simpleMessage("Underline"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
-        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload Image"),
+        "uploadImage": MessageLookupByLibrary.simpleMessage("Upload"),
         "urlHint": MessageLookupByLibrary.simpleMessage("URL"),
-        "urlImage": MessageLookupByLibrary.simpleMessage("URL Image")
+        "urlImage": MessageLookupByLibrary.simpleMessage("URL")
       };
 }

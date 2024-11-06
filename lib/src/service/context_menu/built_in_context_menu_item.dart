@@ -7,21 +7,21 @@ final standardContextMenuItems = [
   [
     // cut
     ContextMenuItem(
-      name: AppFlowyEditorL10n.current.cut,
+      getName: () => AppFlowyEditorL10n.current.cut,
       onPressed: (editorState) {
         handleCut(editorState);
       },
     ),
     // copy
     ContextMenuItem(
-      name: AppFlowyEditorL10n.current.copy,
+      getName: () => AppFlowyEditorL10n.current.copy,
       onPressed: (editorState) {
         handleCopy(editorState);
       },
     ),
     // Paste
     ContextMenuItem(
-      name: AppFlowyEditorL10n.current.paste,
+      getName: () => AppFlowyEditorL10n.current.paste,
       onPressed: (editorState) {
         handlePaste(editorState);
       },

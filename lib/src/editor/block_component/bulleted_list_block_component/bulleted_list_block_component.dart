@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BulletedListBlockKeys {
   const BulletedListBlockKeys._();
@@ -59,7 +60,7 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class BulletedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -168,6 +169,7 @@ class _BulletedListBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       supportTypes: const [
         BlockSelectionType.block,
@@ -218,14 +220,17 @@ class _BulletedListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
     return Container(
-      constraints: const BoxConstraints(minWidth: 26, minHeight: 22),
+      constraints:
+          const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
       padding: const EdgeInsets.only(right: 4.0),
       child: Center(
         child: Text(
           icon,
           style: textStyle,
-          textScaler: const TextScaler.linear(0.5),
+          textScaler: TextScaler.linear(0.5 * textScaleFactor),
         ),
       ),
     );

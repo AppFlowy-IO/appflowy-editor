@@ -1,5 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
+final _listTypes = [
+  BulletedListBlockKeys.type,
+  TodoListBlockKeys.type,
+  NumberedListBlockKeys.type,
+];
+
 extension EditorCopyPaste on EditorState {
   Future<void> pasteSingleLineNode(Node insertedNode) async {
     final selection = await deleteSelectionIfNeeded();
@@ -13,8 +19,8 @@ extension EditorCopyPaste on EditorState {
     }
     final transaction = this.transaction;
     final insertedDelta = insertedNode.delta;
-    // if the node is empty, replace it with the inserted node.
-    if (delta.isEmpty) {
+    // if the node is empty paragraph (default), replace it with the inserted node.
+    if (delta.isEmpty && node.type == ParagraphBlockKeys.type) {
       transaction.insertNode(
         selection.end.path.next,
         insertedNode,
@@ -31,6 +37,9 @@ extension EditorCopyPaste on EditorState {
     } else if (insertedDelta != null) {
       // if the node is not empty, insert the delta from inserted node after the selection.
       transaction.insertTextDelta(node, selection.endIndex, insertedDelta);
+      if (_listTypes.contains(node.type) && insertedNode.children.isNotEmpty) {
+        transaction.insertNodes(node.path + [0], insertedNode.children);
+      }
     }
     await apply(transaction);
   }
@@ -47,20 +56,36 @@ extension EditorCopyPaste on EditorState {
     if (node == null || delta == null) {
       return;
     }
+
     final transaction = this.transaction;
+
+    // check if the first node is a non-delta node,
+    //  if so, insert the nodes after the current selection.
+    final startWithNonDeltaBlock = nodes.first.delta == null;
+    if (startWithNonDeltaBlock) {
+      transaction.insertNodes(node.path.next, nodes);
+      await apply(transaction);
+      return;
+    }
 
     final lastNodeLength = calculateLength(nodes);
     // merge the current selected node delta into the nodes.
     if (delta.isNotEmpty) {
-      nodes.first.insertDelta(
-        delta.slice(0, selection.startIndex),
-        insertAfter: false,
-      );
+      final firstNode = nodes.first;
+      if (firstNode.delta != null) {
+        nodes.first.insertDelta(
+          delta.slice(0, selection.startIndex),
+          insertAfter: false,
+        );
+      }
 
-      nodes.last.insertDelta(
-        delta.slice(selection.endIndex),
-        insertAfter: true,
-      );
+      final lastNode = nodes.last;
+      if (lastNode.delta != null) {
+        nodes.last.insertDelta(
+          delta.slice(selection.endIndex),
+          insertAfter: true,
+        );
+      }
     }
 
     if (delta.isEmpty && node.type != ParagraphBlockKeys.type) {

@@ -11,9 +11,9 @@ class SearchServiceV3 {
 
   final EditorState editorState;
 
-  //matchWrappers.value will contain a list of matchWrappers of the matched patterns
-  //the position here consists of the match and the node path of
-  //matched pattern. We will use this to traverse between the matched patterns.
+  // matchWrappers.value will contain a list of matchWrappers of the matched patterns
+  // the position here consists of the match and the node path of
+  // matched pattern. We will use this to traverse between the matched patterns.
   ValueNotifier<List<MatchWrapper>> matchWrappers = ValueNotifier([]);
   SearchAlgorithm searchAlgorithm = DartBuiltIn();
   String targetString = '';
@@ -36,15 +36,11 @@ class SearchServiceV3 {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
-    _prevSelectedIndex = _selectedIndex;
     _selectedIndex = matchWrappers.value.isEmpty
         ? -1
         : index.clamp(0, matchWrappers.value.length - 1);
     currentSelectedIndex.value = _selectedIndex;
   }
-
-  // only used for scrolling to the first or the last match.
-  int _prevSelectedIndex = 0;
 
   ValueNotifier<int> currentSelectedIndex = ValueNotifier(0);
 
@@ -75,7 +71,7 @@ class SearchServiceV3 {
 
   // Public entry method for _findAndHighlight, do necessary checks
   // and clear previous highlights before calling the private method
-  String findAndHighlight(String target, {bool unHighlight = false}) {
+  String findAndHighlight(String target) {
     Pattern pattern;
 
     try {
@@ -96,7 +92,7 @@ class SearchServiceV3 {
 
     if (target.isEmpty) return 'Empty';
 
-    _findAndHighlight(pattern, unHighlight: unHighlight);
+    _findAndHighlight(pattern);
 
     return '';
   }
@@ -113,13 +109,16 @@ class SearchServiceV3 {
       nodes: editorState.document.root.children,
     );
 
-    if (matchWrappers.value.isNotEmpty) {
+    if (matchWrappers.value.isEmpty || unHighlight) {
+      editorState.updateSelectionWithReason(
+        null,
+        reason: SelectionUpdateReason.searchHighlight,
+      );
+    } else {
       selectedIndex = selectedIndex;
       _highlightCurrentMatch(
         pattern,
       );
-    } else {
-      editorState.updateSelectionWithReason(null);
     }
   }
 
@@ -150,21 +149,13 @@ class SearchServiceV3 {
   void _highlightCurrentMatch(
     Pattern pattern,
   ) {
-    final selection = matchWrappers.value[selectedIndex].selection;
+    final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
 
-    // https://github.com/google/flutter.widgets/issues/151
-    // there's a bug in the scrollable_positioned_list package
-    // we can't scroll to the index without animation.
-    // so we just scroll the position if the index is the first or the last.
-    final length = matchWrappers.value.length - 1;
-    if (_prevSelectedIndex != selectedIndex &&
-        ((_prevSelectedIndex == length && selectedIndex == 0) ||
-            (_prevSelectedIndex == 0 && selectedIndex == length))) {
-      editorState.scrollService?.jumpTo(selection.start.path.first);
-    }
+    editorState.scrollService?.jumpTo(path.first);
 
     editorState.updateSelectionWithReason(
       selection,
+      reason: SelectionUpdateReason.searchHighlight,
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
       },

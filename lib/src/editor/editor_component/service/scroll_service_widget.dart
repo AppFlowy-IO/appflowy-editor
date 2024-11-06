@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -101,14 +102,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       if (PlatformExtension.isMobile) {
         // soft keyboard
         // workaround: wait for the soft keyboard to show up
-        return Future.delayed(
-            Duration(
-              milliseconds:
-                  KeyboardHeightObserver.currentKeyboardHeight == 0 ? 250 : 0,
-            ), () {
+        final duration = KeyboardHeightObserver.currentKeyboardHeight == 0
+            ? const Duration(milliseconds: 250)
+            : Duration.zero;
+        return Future.delayed(duration, () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: 150,
+            edgeOffset: editorState.autoScrollEdgeOffset,
             duration: Duration.zero,
           );
         });

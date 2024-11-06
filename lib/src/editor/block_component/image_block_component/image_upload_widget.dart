@@ -217,8 +217,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       height: 36,
       child: TextButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(const Color(0xFF00BCF0)),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          backgroundColor: WidgetStateProperty.all(const Color(0xFF00BCF0)),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),
@@ -296,7 +296,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
               dialogTitle: '',
               allowMultiple: false,
               type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
-              allowedExtensions: allowedExtensions,
+              allowedExtensions: kIsWeb ? allowedExtensions : null,
               withData: kIsWeb,
             );
             if (result != null && result.files.isNotEmpty) {

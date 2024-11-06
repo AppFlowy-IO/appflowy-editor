@@ -27,16 +27,31 @@ class Diff {
 Diff getDiff(String oldText, String newText, int cursorPosition) {
   var end = oldText.length;
   final delta = newText.length - end;
-  for (final limit = math.max(0, cursorPosition - delta);
-      end > limit && oldText[end - 1] == newText[end + delta - 1];
-      end--) {}
+  final limit = math.max(0, cursorPosition - delta);
+
+  while (end > limit && oldText[end - 1] == newText[end + delta - 1]) {
+    end--;
+  }
+
   var start = 0;
-  for (final startLimit = cursorPosition - math.max(0, delta);
-      start < startLimit && oldText[start] == newText[start];
-      start++) {}
+  final startLimit = cursorPosition - math.max(0, delta);
+
+  while (start < startLimit && oldText[start] == newText[start]) {
+    start++;
+  }
+
   final deleted = (start >= end) ? '' : oldText.substring(start, end);
   final inserted = newText.substring(start, end + delta);
-  return Diff(start, deleted, inserted);
+
+  var i = 0;
+  while (
+      i < deleted.length && i < inserted.length && deleted[i] == inserted[i]) {
+    i++;
+  }
+
+  return i != 0
+      ? Diff(start + i, deleted.substring(i), inserted.substring(i))
+      : Diff(start, deleted, inserted);
 }
 
 List<TextEditingDelta> getTextEditingDeltas(

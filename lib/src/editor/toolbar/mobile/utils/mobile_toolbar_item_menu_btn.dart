@@ -22,9 +22,9 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
       onPressed: onPressed,
       style: ButtonStyle(
         alignment: label == null ? Alignment.center : Alignment.centerLeft,
-        foregroundColor: MaterialStateProperty.all(style.foregroundColor),
+        foregroundColor: WidgetStateProperty.all(style.foregroundColor),
         splashFactory: NoSplash.splashFactory,
-        side: MaterialStateProperty.resolveWith<BorderSide>(
+        side: WidgetStateProperty.resolveWith<BorderSide>(
           (states) {
             if (isSelected == true) {
               return BorderSide(
@@ -35,12 +35,12 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
             return BorderSide(color: style.itemOutlineColor);
           },
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(style.borderRadius),
           ),
         ),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           EdgeInsets.zero,
         ),
       ),

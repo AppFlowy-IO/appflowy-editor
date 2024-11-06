@@ -96,7 +96,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     final backgroundColor = attributes?['background'] as String?;
     final backgroundHex = _convertColorToHexString(backgroundColor);
     if (backgroundHex != null) {
-      attrs[AppFlowyRichTextKeys.highlightColor] = backgroundHex;
+      attrs[AppFlowyRichTextKeys.backgroundColor] = backgroundHex;
     }
     node.updateAttributes({
       'delta': (node.delta?..insert(text, attributes: attrs))?.toJson(),

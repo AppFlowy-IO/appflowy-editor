@@ -150,5 +150,8 @@
   "rowDuplicate": "複製整列",
   "colClear": "清空整行",
   "rowClear": "清空整列",
-  "slashPlaceHolder": "輸入 / 以插入内容，或開始鍵入"
+  "slashPlaceHolder": "輸入 / 以插入内容，或開始鍵入",
+  "textAlignLeft": "靠左對齊",
+  "textAlignCenter": "置中對齊",
+  "textAlignRight": "靠右對齊"
 }

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/non_delta_input_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -74,6 +77,31 @@ void main() {
       // Perform action
       inputService.performAction(TextInputAction.newline);
       expect(onPerformAction, true);
+    });
+
+    test('content insertion configuration is handled', () {
+      final completer = Completer<bool>();
+      final config = ContentInsertionConfiguration(
+        allowedMimeTypes: ['mimeType'],
+        onContentInserted: (value) => completer.complete(true),
+      );
+      final inputService = NonDeltaTextInputService(
+        onInsert: (_) async {},
+        onDelete: (_) async {},
+        onReplace: (_) async {},
+        onNonTextUpdate: (_) async {},
+        onPerformAction: (_) async {},
+        contentInsertionConfiguration: config,
+      );
+
+      inputService.insertContent(
+        const KeyboardInsertedContent(
+          mimeType: 'mimeType',
+          uri: 'uri',
+        ),
+      );
+
+      expect(completer.future, completion(true));
     });
   });
 }
