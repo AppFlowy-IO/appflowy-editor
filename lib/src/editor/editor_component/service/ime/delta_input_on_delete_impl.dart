@@ -9,7 +9,7 @@ Future<void> onDelete(
   AppFlowyEditorLog.input.debug('onDelete: $deletion');
 
   final selection = editorState.selection;
-  if (selection == null || (selection.end.offset == 0 && selection.end.path.length == 3)) {
+  if (selection == null || (selection.end.offset == 0 && selection.end.path.length > 1)) {
     return;
   }
 
