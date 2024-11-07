@@ -342,6 +342,17 @@ void _pasteRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
   }
 }
 
+bool _isNodeInsideTable(Node node) {
+  Node? current = node;
+  while (current != null) {
+    if (current.type == 'table') {
+      return true;
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
 /// 2. delete selected content
 void handleCut(EditorState editorState) {
   handleCopy(editorState);
@@ -357,7 +368,7 @@ Future<void> deleteSelectedContent(EditorState editorState) async {
   if (selection.isCollapsed) {
     // if the selection is collapsed, delete the current node
     final node = editorState.getNodeAtPath(selection.end.path);
-    if (node == null) {
+    if (node == null || _isNodeInsideTable(node)) {
       return;
     }
     transaction.deleteNode(node);
