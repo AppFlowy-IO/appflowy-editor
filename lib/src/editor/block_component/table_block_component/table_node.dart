@@ -166,7 +166,7 @@ class TableNode {
   }) {
     w = w < _config.colMinimumWidth ? _config.colMinimumWidth : w;
     if (getColWidth(col) != w || force) {
-      for (var i = 0; i < rowsLen; i++) {
+      for (int i = 0; i < rowsLen; i++) {
         if (transaction != null) {
           transaction.updateNode(_cells[col][i], {TableCellBlockKeys.width: w});
         } else {
@@ -192,21 +192,29 @@ class TableNode {
         .map<double>((c) => c[row].children.first.rect.height + 8)
         .reduce(max);
 
-    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight) {
-      for (var i = 0; i < colsLen; i++) {
+    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight &&
+        !maxHeight.isNaN) {
+      for (int i = 0; i < colsLen; i++) {
+        final currHeight = _cells[i][row].attributes[TableCellBlockKeys.height];
+        if (currHeight == maxHeight) {
+          continue;
+        }
+
         if (transaction != null) {
           transaction.updateNode(
             _cells[i][row],
             {TableCellBlockKeys.height: maxHeight},
           );
         } else {
-          _cells[i][row]
-              .updateAttributes({TableCellBlockKeys.height: maxHeight});
+          _cells[i][row].updateAttributes(
+            {TableCellBlockKeys.height: maxHeight},
+          );
         }
       }
     }
 
-    if (node.attributes[TableBlockKeys.colsHeight] != colsHeight) {
+    if (node.attributes[TableBlockKeys.colsHeight] != colsHeight &&
+        !colsHeight.isNaN) {
       if (transaction != null) {
         transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
         if (editorState != null && editorState.editable != true) {
