@@ -50,6 +50,7 @@ class SelectionMenuItem {
   ///
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
+  List<String> get allKeywords => keywords + [name.toLowerCase()];
   late final SelectionMenuItemHandler handler;
 
   VoidCallback? onSelected;
@@ -270,7 +271,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     var maxKeywordLength = 0;
     final items = widget.items
         .where(
-          (item) => item.keywords.any((keyword) {
+          (item) => item.allKeywords.any((keyword) {
             final value = keyword.contains(newKeyword.toLowerCase());
             if (value) {
               maxKeywordLength = max(maxKeywordLength, keyword.length);
