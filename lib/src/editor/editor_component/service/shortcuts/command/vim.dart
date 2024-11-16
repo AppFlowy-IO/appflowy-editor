@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'dart:math';
 
 final List<CommandShortcutEvent> vimKeyModes = [
@@ -59,6 +60,7 @@ final CommandShortcutEvent insertOnNewLineCommand = CommandShortcutEvent(
   key: 'insert new line below previous selection',
   command: 'o',
   handler: _insertOnNewLineCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdInsertBelow,
 );
 
 CommandShortcutEventHandler _insertOnNewLineCommandHandler = (editorState) {
@@ -89,6 +91,7 @@ final CommandShortcutEvent insertInlineCommand = CommandShortcutEvent(
   key: 'enter insert mode from previous selection',
   command: 'i',
   handler: _insertInlineCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdInsertCurrentPos,
 );
 
 CommandShortcutEventHandler _insertInlineCommandHandler = (editorState) {
@@ -117,6 +120,7 @@ final CommandShortcutEvent insertNextInlineCommand = CommandShortcutEvent(
   key: 'enter insert mode on next character',
   command: 'a',
   handler: _insertNextInlineCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdInsertNextPos,
 );
 
 CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
@@ -147,6 +151,7 @@ final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
   key: 'move the cursor downward in normal mode',
   command: 'j',
   handler: _jumpDownCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdJumpDown,
 );
 
 CommandShortcutEventHandler _jumpDownCommandHandler = (editorState) {
@@ -176,6 +181,7 @@ final CommandShortcutEvent jumpUpCommand = CommandShortcutEvent(
   key: 'move the cursor upward in normal mode',
   command: 'k',
   handler: _jumpUpCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdJumpUp,
 );
 
 CommandShortcutEventHandler _jumpUpCommandHandler = (editorState) {
@@ -207,6 +213,7 @@ final CommandShortcutEvent jumpLeftCommand = CommandShortcutEvent(
   key: 'move the cursor to the left in normal mode',
   command: 'h',
   handler: _jumpLeftCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdJumpLeft,
 );
 
 CommandShortcutEventHandler _jumpLeftCommandHandler = (editorState) {
@@ -237,6 +244,7 @@ final CommandShortcutEvent jumpRightCommand = CommandShortcutEvent(
   key: 'move the cursor to the right in normal mode',
   command: 'l',
   handler: _jumpRightCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdJumpRight,
 );
 
 CommandShortcutEventHandler _jumpRightCommandHandler = (editorState) {
@@ -268,6 +276,7 @@ final CommandShortcutEvent vimSelectLineCommand = CommandShortcutEvent(
   key: 'enter insert mode from previous selection',
   command: 'shift+v',
   handler: _vimSelectLineCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdLineSelect,
 );
 /*
 What we probably need is to follow the `select all command`
@@ -310,6 +319,7 @@ final CommandShortcutEvent vimUndoCommand = CommandShortcutEvent(
   key: 'vim undo in normal mode',
   command: 'u',
   handler: _vimUndoCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimUndo,
 );
 
 CommandShortcutEventHandler _vimUndoCommandHandler = (editorState) {
@@ -339,6 +349,7 @@ final CommandShortcutEvent vimRedoCommand = CommandShortcutEvent(
   key: 'vim redo in normal mode',
   command: 'ctrl+r',
   handler: _vimRedoCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimRedo,
 );
 
 CommandShortcutEventHandler _vimRedoCommandHandler = (editorState) {
@@ -364,6 +375,7 @@ final CommandShortcutEvent vimPageDownCommand = CommandShortcutEvent(
   key: 'scroll one page down in normal mode',
   command: 'ctrl+f',
   handler: _vimPageDownCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpPageDown,
 );
 
 CommandShortcutEventHandler _vimPageDownCommandHandler = (editorState) {
@@ -401,6 +413,7 @@ final CommandShortcutEvent vimHalfPageDownCommand = CommandShortcutEvent(
   key: 'scroll half page down in normal mode',
   command: 'ctrl+d',
   handler: _vimHalfPageDownCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpHalfPageDown,
 );
 
 CommandShortcutEventHandler _vimHalfPageDownCommandHandler = (editorState) {
@@ -438,6 +451,7 @@ final CommandShortcutEvent vimPageUpCommand = CommandShortcutEvent(
   key: 'scroll one page up in normal mode',
   command: 'ctrl+b',
   handler: _vimPageUpCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpPageUp,
 );
 
 CommandShortcutEventHandler _vimPageUpCommandHandler = (editorState) {
@@ -480,6 +494,7 @@ final CommandShortcutEvent vimHalfPageUpCommand = CommandShortcutEvent(
   key: 'scroll one page up in normal mode',
   command: 'ctrl+u',
   handler: _vimHalfPageUpCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpPageUp,
 );
 
 CommandShortcutEventHandler _vimHalfPageUpCommandHandler = (editorState) {
@@ -522,6 +537,7 @@ final CommandShortcutEvent vimMoveCursorToStartCommand = CommandShortcutEvent(
   key: 'vim move cursor to start of line in normal mode',
   command: 'Digit 0',
   handler: _vimMoveCursorToStartHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpFirstChar,
 );
 
 CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
@@ -551,6 +567,7 @@ final CommandShortcutEvent vimMoveCursorToEndCommand = CommandShortcutEvent(
   //NOTE: Used Digit 4, dollar sign would throw error
   command: 'shift+Digit 4',
   handler: _vimMoveCursorToEndHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpEndChar,
 );
 
 CommandShortcutEventHandler _vimMoveCursorToEndHandler = (editorState) {
@@ -579,6 +596,7 @@ final CommandShortcutEvent jumpWordBackwardCommand = CommandShortcutEvent(
   key: 'move the cursor backward to the next word in normal mode',
   command: 'b',
   handler: _jumpWordBackwardCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimBackWordJump,
 );
 
 CommandShortcutEventHandler _jumpWordBackwardCommandHandler = (editorState) {
@@ -645,6 +663,7 @@ final CommandShortcutEvent jumpWordForwardCommand = CommandShortcutEvent(
   key: 'move the cursor backward to the next wordl in normal mode',
   command: 'w',
   handler: _jumpWordForwardCommandHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimForwardWordJump,
 );
 
 CommandShortcutEventHandler _jumpWordForwardCommandHandler = (editorState) {
@@ -729,6 +748,7 @@ final CommandShortcutEvent vimJumpToLineCommand = CommandShortcutEvent(
   // command: 'Digit 5',
   command: 'Digit 5' 'j',
   handler: _vimJumpToLineHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimNumJumper,
 );
 
 CommandShortcutEventHandler _vimJumpToLineHandler = (editorState) {
@@ -761,6 +781,7 @@ final CommandShortcutEvent vimDeleteUnderCursorCommand = CommandShortcutEvent(
   key: 'vim delete character under cursor in normal mode',
   command: 'd',
   handler: _vimDeleteUnderCursorHandler,
+  getDescription: () => AppFlowyEditorL10n.current.cmdVimDeleteCharCursor,
 );
 
 CommandShortcutEventHandler _vimDeleteUnderCursorHandler = (editorState) {

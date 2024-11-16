@@ -129,6 +129,7 @@ class EditorState {
 
   /// Whether Vim mode is enabled or not
   bool vimMode = false;
+
   /// Remote selection is the selection from other users.
   final PropertyValueNotifier<List<RemoteSelection>> remoteSelections =
       PropertyValueNotifier<List<RemoteSelection>>([]);
@@ -151,7 +152,7 @@ class EditorState {
     prevSelectionNotifier.value = value;
   }
 
-  SelectionType? selectionType;
+  //SelectionType? selectionType;
   SelectionType? _selectionType;
   set selectionType(SelectionType? value) {
     if (value == _selectionType) {
@@ -622,7 +623,7 @@ class EditorState {
   void _applyTransactionInLocal(Transaction transaction) {
     for (final op in transaction.operations) {
       AppFlowyEditorLog.editor.debug('apply op (local): ${op.toJson()}');
-      if(!edit && mode && vimMode == VimModes.normalMode){
+      if (!editable && vimMode && mode == VimModes.normalMode) {
         return;
       }
 

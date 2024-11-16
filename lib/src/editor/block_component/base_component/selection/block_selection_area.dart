@@ -103,7 +103,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           return sizedBox;
         }
 
-        final editorState = context.read<EditorState>();
+        //final editorState = context.read<EditorState>();
         if (editorState.selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.inSelection(selection, isSameDepth: true) ||
