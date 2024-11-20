@@ -225,13 +225,11 @@ CommandShortcutEventHandler _jumpLeftCommandHandler = (editorState) {
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection != null &&
         editorState.mode == VimModes.normalMode) {
-      final selection = editorState.selection;
-      final leftPosition =
-          selection?.end.moveHorizontal(editorState, forward: true);
-      editorState.updateSelectionWithReason(
-        leftPosition == null ? null : Selection.collapsed(leftPosition),
-        reason: SelectionUpdateReason.uiEvent,
-      );
+      if (isRTL(editorState)) {
+        editorState.moveCursorBackward(SelectionMoveRange.character);
+      } else {
+        editorState.moveCursorForward(SelectionMoveRange.character);
+      }
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
@@ -256,13 +254,11 @@ CommandShortcutEventHandler _jumpRightCommandHandler = (editorState) {
       afKeyboard.currentState is AppFlowyKeyboardService) {
     if (editorState.selection != null &&
         editorState.mode == VimModes.normalMode) {
-      final selection = editorState.selection;
-      final rightPosition =
-          selection?.end.moveHorizontal(editorState, forward: false);
-      editorState.updateSelectionWithReason(
-        rightPosition == null ? null : Selection.collapsed(rightPosition),
-        reason: SelectionUpdateReason.uiEvent,
-      );
+      if (isRTL(editorState)) {
+        editorState.moveCursorBackward(SelectionMoveRange.character);
+      } else {
+        editorState.moveCursorForward(SelectionMoveRange.character);
+      }
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
@@ -292,7 +288,6 @@ CommandShortcutEventHandler _vimSelectLineCommandHandler = (editorState) {
       final selection = editorState.selection;
       editorState.selectionService.updateSelection(selection);
       editorState.prevSelection = null;
-
       final nodes = editorState.getNodesInSelection(selection!);
       if (nodes.isEmpty) {
         return KeyEventResult.ignored;
