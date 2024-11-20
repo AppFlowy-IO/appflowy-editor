@@ -214,6 +214,10 @@ void _deleteCol(Node tableNode, int col, EditorState editorState) {
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
   if (colsLen == 1) {
+    if (editorState.document.root.children.length == 1) {
+      final emptyParagraph = paragraphNode();
+      transaction.insertNode(tableNode.path, emptyParagraph);
+    }
     transaction.deleteNode(tableNode);
     tableNode.dispose();
   } else {
@@ -238,6 +242,10 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
   if (rowsLen == 1) {
+    if (editorState.document.root.children.length == 1) {
+      final emptyParagraph = paragraphNode();
+      transaction.insertNode(tableNode.path, emptyParagraph);
+    }
     transaction.deleteNode(tableNode);
     tableNode.dispose();
   } else {
