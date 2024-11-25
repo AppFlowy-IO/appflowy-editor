@@ -173,7 +173,7 @@ extension NodesExtensions<T extends Node> on List<T> {
     for (var i = 0; i < nodes.length; i++) {
       final node = nodes[i];
       var delta = node.delta;
-      if (delta == null) {
+      if (delta == null || delta.isEmpty) {
         continue;
       }
 
