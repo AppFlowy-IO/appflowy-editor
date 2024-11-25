@@ -28,5 +28,22 @@ void main() async {
       await editorState.apply(transaction);
       expect(count, 2);
     });
+
+    test('transaction stream', () async {
+      final editorState = EditorState.blank(
+        withInitialText: false,
+      );
+      var isInMemoryUpdate = false;
+      editorState.transactionStream.listen((event) {
+        isInMemoryUpdate = event.$3.inMemoryUpdate;
+      });
+      final transaction = editorState.transaction;
+      transaction.insertNode([0], paragraphNode(text: 'Hello World!'));
+      await editorState.apply(
+        transaction,
+        options: const ApplyOptions(inMemoryUpdate: true),
+      );
+      expect(isInMemoryUpdate, true);
+    });
   });
 }
