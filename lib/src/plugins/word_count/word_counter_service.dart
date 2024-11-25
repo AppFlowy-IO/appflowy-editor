@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/widgets.dart';
 
 const _emptyCounters = Counters();
 
@@ -99,7 +98,7 @@ class WordCountService with ChangeNotifier {
   ///
   bool isRunning = false;
 
-  StreamSubscription<(TransactionTime, Transaction)>? _streamSubscription;
+  StreamSubscription<EditorTransactionValue>? _streamSubscription;
 
   /// This method can be used to get the word and character
   /// count of the [Document] of the [EditorState].
@@ -221,9 +220,9 @@ class WordCountService with ChangeNotifier {
     return Counters(wordCount: wordCount, charCount: charCount);
   }
 
-  void _onDocUpdate((TransactionTime time, Transaction t) event) {
+  void _onDocUpdate(EditorTransactionValue value) {
     if (debounceDuration.inMilliseconds == 0) {
-      return _recountOnTransactionUpdate(event.$1);
+      return _recountOnTransactionUpdate(value.$1);
     }
 
     if (_documentTimer?.isActive ?? false) {
@@ -232,7 +231,7 @@ class WordCountService with ChangeNotifier {
 
     _documentTimer = Timer(
       debounceDuration,
-      () => _recountOnTransactionUpdate(event.$1),
+      () => _recountOnTransactionUpdate(value.$1),
     );
   }
 
