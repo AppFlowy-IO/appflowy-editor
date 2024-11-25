@@ -193,5 +193,43 @@ void main() async {
       });
       expect(result, false);
     });
+
+    test('2 non-empty nodes with 1 empty node', () {
+      final document = Document.blank()
+        ..addParagraph(
+          builder: (index) => Delta()
+            ..insert(
+              'Hello',
+              attributes: {AppFlowyRichTextKeys.bold: true},
+            ),
+        )
+        ..addParagraph(
+          builder: (index) => Delta(),
+        )
+        ..addParagraph(
+          builder: (index) => Delta()
+            ..insert(
+              'World',
+              attributes: {
+                AppFlowyRichTextKeys.bold: true,
+              },
+            ),
+        );
+      final editorState = EditorState(document: document);
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [2], offset: 5),
+      );
+      final nodes = editorState.getNodesInSelection(selection);
+      final isHighlight = nodes.allSatisfyInSelection(
+        selection,
+        (delta) =>
+            delta.isNotEmpty &&
+            delta.everyAttributes(
+              (attr) => attr[AppFlowyRichTextKeys.bold] == true,
+            ),
+      );
+      expect(isHighlight, true);
+    });
   });
 }
