@@ -17,13 +17,13 @@ Future<void> onDelete(
   if (selection.isSingle) {
     final node = editorState.getNodeAtPath(selection.start.path);
     final delta = node?.delta;
-    if (delta != null &&
+    if (node != null &&
+        delta != null &&
         (deletion.composing.isValid || !deletion.deletedRange.isCollapsed)) {
-      final node = editorState.getNodesInSelection(selection).first;
       final start = delta.prevRunePosition(deletion.deletedRange.end);
       final length = deletion.deletedRange.end - start;
       final transaction = editorState.transaction;
-      transaction..deleteText(node, start, length);
+      transaction.deleteText(node, start, length);
       await editorState.apply(transaction);
       return;
     }

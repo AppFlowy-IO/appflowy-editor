@@ -26,5 +26,30 @@ void main() {
 
       expect(document.first!.delta!.toPlainText(), 'Flowy!');
     });
+
+    test('delete an emoji', () async {
+      const text = '👍👍👍';
+      final document = Document.blank().addParagraph(initialText: text);
+
+      final editorState = EditorState(document: document);
+      editorState.selection = Selection.collapsed(
+        Position(
+          path: [0],
+          offset: text.length,
+        ),
+      );
+
+      await onDelete(
+        const TextEditingDeltaDeletion(
+          oldText: text,
+          deletedRange: TextRange(start: 5, end: 6),
+          selection: TextSelection(baseOffset: 5, extentOffset: 5),
+          composing: TextRange.empty,
+        ),
+        editorState,
+      );
+
+      expect(document.first!.delta!.toPlainText(), '👍👍');
+    });
   });
 }
