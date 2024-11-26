@@ -150,8 +150,10 @@ void main() async {
       pasteTextWithoutFormattingCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
-      expect(editor.nodeAtPath([0])!.delta!.toPlainText(),
-          'Existing text Plain text',);
+      expect(
+        editor.nodeAtPath([0])!.delta!.toPlainText(),
+        'Existing text Plain text',
+      );
     });
   });
 }
