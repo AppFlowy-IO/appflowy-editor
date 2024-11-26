@@ -16,25 +16,14 @@ Future<void> onDelete(
   // IME
   if (selection.isSingle) {
     final node = editorState.getNodeAtPath(selection.start.path);
-    if (node?.delta != null &&
+    final delta = node?.delta;
+    if (delta != null &&
         (deletion.composing.isValid || !deletion.deletedRange.isCollapsed)) {
       final node = editorState.getNodesInSelection(selection).first;
-      final start = deletion.deletedRange.start;
+      final start = delta.prevRunePosition(deletion.deletedRange.end);
       final length = deletion.deletedRange.end - start;
       final transaction = editorState.transaction;
-      final afterSelection = Selection(
-        start: Position(
-          path: node.path,
-          offset: deletion.selection.baseOffset,
-        ),
-        end: Position(
-          path: node.path,
-          offset: deletion.selection.extentOffset,
-        ),
-      );
-      transaction
-        ..deleteText(node, start, length)
-        ..afterSelection = afterSelection;
+      transaction..deleteText(node, start, length);
       await editorState.apply(transaction);
       return;
     }
