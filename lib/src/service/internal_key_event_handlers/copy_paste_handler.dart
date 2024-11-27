@@ -6,6 +6,11 @@ RegExp _linkRegex = RegExp(
   r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
 );
 
+RegExp _phoneRegex = RegExp(r'^\+?' // Optional '+' at start
+    r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
+    r'[0-9]$' // Ensure it ends with a digit
+    );
+
 void _pasteSingleLine(
   EditorState editorState,
   Selection selection,
@@ -18,7 +23,11 @@ void _pasteSingleLine(
       ? {
           AppFlowyRichTextKeys.href: line,
         }
-      : {};
+      : _phoneRegex.hasMatch(line)
+          ? {
+              AppFlowyRichTextKeys.href: line,
+            }
+          : {};
 
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
