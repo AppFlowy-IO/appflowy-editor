@@ -102,5 +102,21 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets('select invisible content should not show the toolbar',
+        (tester) async {
+      final editor = tester.editor..addParagraphs(3, initialText: '');
+      await editor.startTesting(withFloatingToolbar: true);
+
+      final selection = Selection(
+        start: Position(path: [0], offset: 0),
+        end: Position(path: [2], offset: 0),
+      );
+      await editor.updateSelection(selection);
+
+      expect(find.byType(FloatingToolbarWidget), findsNothing);
+
+      await editor.dispose();
+    });
   });
 }
