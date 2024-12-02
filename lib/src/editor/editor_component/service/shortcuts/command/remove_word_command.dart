@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
 
 /// Delete key event.
 ///
@@ -12,7 +11,7 @@ final CommandShortcutEvent deleteLeftWordCommand = CommandShortcutEvent(
   key: 'delete the left word',
   getDescription: () => AppFlowyEditorL10n.current.cmdDeleteWordLeft,
   command: 'ctrl+backspace',
-  macOSCommand: 'alt+backspace',
+  macOSCommand: 'alt+backspace,alt+delete',
   handler: _deleteLeftWordCommandHandler,
 );
 

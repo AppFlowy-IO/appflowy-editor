@@ -13,7 +13,7 @@ final CommandShortcutEvent deleteLeftSentenceCommand = CommandShortcutEvent(
   key: 'delete the left line',
   getDescription: () => AppFlowyEditorL10n.current.cmdDeleteLineLeft,
   command: 'ctrl+alt+backspace',
-  macOSCommand: 'cmd+backspace',
+  macOSCommand: 'cmd+backspace,cmd+delete',
   handler: _deleteLeftSentenceCommandHandler,
 );
 
