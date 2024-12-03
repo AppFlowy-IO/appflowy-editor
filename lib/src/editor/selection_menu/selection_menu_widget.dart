@@ -358,8 +358,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     _scrollController?.scrollToIndex(
       _selectedIndex,
-      duration: const Duration(milliseconds: 200),
-      preferPosition: AutoScrollPosition.begin,
+      preferPosition: AutoScrollPosition.middle,
     );
   }
 
@@ -465,6 +464,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     AppFlowyEditorLog.keyboard.debug('slash command, on key $event');
 
+    if (event is KeyRepeatEvent) {
+      return KeyEventResult.skipRemainingHandlers;
+    }
+
     if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
     }
@@ -506,18 +509,46 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     var newSelectedIndex = _selectedIndex;
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      // When going left, wrap to the end of the previous row
       newSelectedIndex -= widget.maxItemInRow;
+      if (newSelectedIndex < 0) {
+        // Calculate the last row's starting position
+        final lastRowStart = (_showingItems.length - 1) -
+            ((_showingItems.length - 1) % widget.maxItemInRow);
+        // Move to the same column in the last row
+        newSelectedIndex =
+            lastRowStart + (_selectedIndex % widget.maxItemInRow);
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
     } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      // When going right, wrap to the start of the next row
       newSelectedIndex += widget.maxItemInRow;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      newSelectedIndex -= 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      newSelectedIndex += 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
-      newSelectedIndex += widget.maxItemInRow;
-      var currRow = (newSelectedIndex) % widget.maxItemInRow;
       if (newSelectedIndex >= _showingItems.length) {
-        newSelectedIndex = (currRow + 1) % widget.maxItemInRow;
+        newSelectedIndex = _selectedIndex % widget.maxItemInRow;
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      if (newSelectedIndex > 0) {
+        newSelectedIndex -= 1;
+      } else {
+        // Wrap to the last item
+        newSelectedIndex = _showingItems.length - 1;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (newSelectedIndex < _showingItems.length - 1) {
+        newSelectedIndex += 1;
+      } else {
+        // Wrap to the first item
+        newSelectedIndex = 0;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
+      newSelectedIndex += 1;
+      if (newSelectedIndex >= _showingItems.length) {
+        newSelectedIndex = 0;
       }
     }
 
