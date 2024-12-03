@@ -20,6 +20,7 @@ class SelectionMenu extends SelectionMenuService {
     required this.editorState,
     required this.selectionMenuItems,
     this.deleteSlashByDefault = true,
+    this.deleteKeywordsByDefault = false,
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
     this.singleColumn = false,
@@ -29,7 +30,9 @@ class SelectionMenu extends SelectionMenuService {
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final bool deleteKeywordsByDefault;
   final bool singleColumn;
+
   @override
   final SelectionMenuStyle style;
 
@@ -110,6 +113,7 @@ class SelectionMenu extends SelectionMenuService {
                       items: selectionMenuItems
                         ..forEach((element) {
                           element.deleteSlash = deleteSlashByDefault;
+                          element.deleteKeywords = deleteKeywordsByDefault;
                           element.onSelected = () {
                             dismiss();
                           };

@@ -25,9 +25,11 @@ class SelectionMenuItem {
     required this.keywords,
     required SelectionMenuItemHandler handler,
     this.nameBuilder,
+    this.deleteKeywords = false,
+    this.deleteSlash = true,
   }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
-      if (deleteSlash) {
+      if (deleteSlash || deleteKeywords) {
         _deleteSlash(editorState);
       }
 
@@ -55,7 +57,8 @@ class SelectionMenuItem {
 
   VoidCallback? onSelected;
 
-  bool deleteSlash = true;
+  bool deleteSlash;
+  bool deleteKeywords;
 
   void _deleteSlash(EditorState editorState) {
     final selection = editorState.selection;
@@ -68,14 +71,20 @@ class SelectionMenuItem {
       return;
     }
     final end = selection.start.offset;
-    final lastSlashIndex =
-        delta.toPlainText().substring(0, end).lastIndexOf('/');
+    int deletedIndex = 0;
+
+    if (deleteKeywords) {
+      deletedIndex = 0;
+    } else if (deleteSlash) {
+      deletedIndex = delta.toPlainText().substring(0, end).lastIndexOf('/');
+    }
+
     // delete all the texts after '/' along with '/'
     final transaction = editorState.transaction
       ..deleteText(
         node,
-        lastSlashIndex,
-        end - lastSlashIndex,
+        deletedIndex,
+        end - deletedIndex,
       );
 
     editorState.apply(transaction);
@@ -593,12 +602,12 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       return;
     }
     widget.onSelectionUpdate();
-    final transaction = widget.editorState.transaction
-      ..insertText(
-        node,
-        selection.end.offset,
-        text,
-      );
+    final transaction = widget.editorState.transaction;
+    transaction.insertText(
+      node,
+      selection.end.offset,
+      text,
+    );
     widget.editorState.apply(transaction);
   }
 }
