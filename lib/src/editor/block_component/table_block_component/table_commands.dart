@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -146,14 +148,25 @@ CommandShortcutEventHandler _upInTableCellHandler = (editorState) {
   final inTableNodes = _inTableNodes(editorState);
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection)) {
-    final nextNode = _getNextNode(inTableNodes, 0, -1);
-    if (_nodeHasTextChild(nextNode)) {
-      final target = nextNode!.childAtIndexOrNull(0)!;
-      final off = target.delta!.length > selection!.start.offset
-          ? selection.start.offset
-          : target.delta!.length;
+    try {
+      final nextNode = _getNextNode(inTableNodes, 0, -1);
+      if (_nodeHasTextChild(nextNode)) {
+        final target = nextNode!.childAtIndexOrNull(0)!;
+        final off = target.delta!.length > selection!.start.offset
+            ? selection.start.offset
+            : target.delta!.length;
+        editorState.selectionService.updateSelection(
+          Selection.single(path: target.path, startOffset: off),
+        );
+      }
+    } on OutOfBoundsException catch (e) {
+      final nextNode = e.next;
+      final off = min(nextNode.delta!.length, selection!.start.offset);
       editorState.selectionService.updateSelection(
-        Selection.single(path: target.path, startOffset: off),
+        Selection(
+          start: Position(path: nextNode.path, offset: off),
+          end: Position(path: nextNode.path, offset: off),
+        ),
       );
     }
     return KeyEventResult.handled;
@@ -165,16 +178,28 @@ CommandShortcutEventHandler _downInTableCellHandler = (editorState) {
   final inTableNodes = _inTableNodes(editorState);
   final selection = editorState.selection;
   if (_hasSelectionAndTableCell(inTableNodes, selection)) {
-    final nextNode = _getNextNode(inTableNodes, 0, 1);
-    if (_nodeHasTextChild(nextNode)) {
-      final target = nextNode!.childAtIndexOrNull(0)!;
-      final off = target.delta!.length > selection!.start.offset
-          ? selection.start.offset
-          : target.delta!.length;
+    try {
+      final nextNode = _getNextNode(inTableNodes, 0, 1);
+      if (_nodeHasTextChild(nextNode)) {
+        final target = nextNode!.childAtIndexOrNull(0)!;
+        final off = target.delta!.length > selection!.start.offset
+            ? selection.start.offset
+            : target.delta!.length;
+        editorState.selectionService.updateSelection(
+          Selection.single(path: target.path, startOffset: off),
+        );
+      }
+    } on OutOfBoundsException catch (e) {
+      final nextNode = e.next;
+      final off = min(nextNode.delta!.length, selection!.start.offset);
       editorState.selectionService.updateSelection(
-        Selection.single(path: target.path, startOffset: off),
+        Selection(
+          start: Position(path: nextNode.path, offset: off),
+          end: Position(path: nextNode.path, offset: off),
+        ),
       );
     }
+
     return KeyEventResult.handled;
   }
   return KeyEventResult.ignored;
@@ -277,9 +302,16 @@ Node? _getNextNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
   // Calculate the next row index, taking into account the row difference and adjusting for additional rows due to column change.
   var nextRow = row + rowDiff + ((col + colDiff) ~/ numCols);
 
-  return isValidPosition(nextCol, nextRow, numCols, numRows)
-      ? getCellNode(table, nextCol, nextRow)
-      : null;
+  if (isValidPosition(nextCol, nextRow, numCols, numRows)) {
+    return getCellNode(table, nextCol, nextRow);
+  }
+
+  if (isLeavingTableVertically(nextRow, numRows)) {
+    final next = getSibling(table, nextRow < 0);
+    if (next != null) throw OutOfBoundsException(next);
+  }
+
+  return null;
 }
 
 Node? _getPreviousNode(Iterable<Node> nodes, int colDiff, int rowDiff) {
@@ -314,3 +346,18 @@ bool _nodeHasTextChild(Node? n) =>
     n != null &&
     n.children.isNotEmpty &&
     n.childAtIndexOrNull(0)!.delta != null;
+
+bool isLeavingTableVertically(int row, int numRows) =>
+    row < 0 || row >= numRows;
+
+Node? getSibling(Node tableNode, bool isPrevious) =>
+    isPrevious ? tableNode.previous : tableNode.next;
+
+/// when the cursor reaches the boundary of the current Node, and the subsequent key
+/// operation would cause the cursor to jump out of the boundary this exception is thrown.
+/// TODO: There should be a place to uniformly store these exceptions.
+class OutOfBoundsException implements Exception {
+  final Node next;
+
+  OutOfBoundsException(this.next);
+}
