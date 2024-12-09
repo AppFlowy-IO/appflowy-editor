@@ -21,7 +21,7 @@ void main() async {
 
       // add cursor in the end of the text
       final selection = Selection.collapsed(
-        Position(path: [0], offset: text.length + 1),
+        Position(path: [0], offset: '[$text]($link'.length),
       );
       editorState.selection = selection;
       // run targeted CharacterShortcutEvent
@@ -42,17 +42,16 @@ void main() async {
     // App[href:appflowy.com]Flowy
     test('App[Flowy](appflowy.com) to App[href:appflowy.com]Flowy', () async {
       const text1 = 'App';
-      const text2 = 'Flowy';
-      const link = 'appflowy.com';
+      const text2 = '[Flowy](appflowy.com';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()..insert('$text1[$text2]($link'),
+        builder: (index) => Delta()..insert(text1 + text2),
       );
 
       final editorState = EditorState(document: document);
 
       final selection = Selection.collapsed(
-        Position(path: [0], offset: text1.length + text2.length + 1),
+        Position(path: [0], offset: text1.length + text2.length),
       );
       editorState.selection = selection;
 
@@ -60,11 +59,11 @@ void main() async {
 
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
-      expect(after.delta!.toPlainText(), '$text1$text2');
+      expect(after.delta!.toPlainText(), 'AppFlowy');
       expect(after.delta!.toList()[0].attributes, null);
       expect(
         after.delta!.toList()[1].attributes,
-        {AppFlowyRichTextKeys.href: link},
+        {AppFlowyRichTextKeys.href: 'appflowy.com'},
       );
     });
 
