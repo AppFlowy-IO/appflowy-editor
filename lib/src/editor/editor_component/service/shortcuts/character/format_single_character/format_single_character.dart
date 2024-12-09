@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
 
 enum FormatStyleByWrappingWithSingleChar {
   code,
@@ -51,7 +52,35 @@ class CheckSingleFormatFormatResult {
     return (false, null);
   }
 
-  final plainText = delta.toPlainText().substring(0, selection.end.offset);
+  // find the last inline code attributes
+  final lastInlineCode = delta.indexed.lastWhereOrNull((element) {
+    final (_, op) = element;
+    if (op.attributes?[AppFlowyRichTextKeys.code] == true) {
+      return true;
+    }
+    return false;
+  });
+  int startIndex = 0;
+  if (lastInlineCode != null &&
+      formatStyle != FormatStyleByWrappingWithSingleChar.code) {
+    final (lastInlineCodeIndex, _) = lastInlineCode;
+    startIndex = delta.indexed.fold(0, (sum, element) {
+      final (index, op) = element;
+      if (index <= lastInlineCodeIndex) {
+        return sum + op.length;
+      }
+      return sum;
+    });
+  }
+
+  if (startIndex >= selection.end.offset) {
+    return (false, null);
+  }
+
+  final plainText = delta.toPlainText().substring(
+        startIndex,
+        selection.end.offset,
+      );
   final lastCharIndex = plainText.lastIndexOf(character);
   final textAfterLastChar = plainText.substring(lastCharIndex + 1);
   bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
@@ -80,7 +109,10 @@ class CheckSingleFormatFormatResult {
   }
 
   // 5. If the text inbetween is empty (continuous)
-  if (plainText.substring(lastCharIndex + 1, selection.end.offset).isEmpty) {
+  final rawPlainText = delta.toPlainText();
+  if (rawPlainText
+      .substring(startIndex + lastCharIndex + 1, selection.end.offset)
+      .isEmpty) {
     return (false, null);
   }
 
@@ -88,7 +120,7 @@ class CheckSingleFormatFormatResult {
     true,
     CheckSingleFormatFormatResult(
       node: node,
-      lastCharIndex: lastCharIndex,
+      lastCharIndex: startIndex + lastCharIndex,
       path: path,
       delta: delta,
     )
