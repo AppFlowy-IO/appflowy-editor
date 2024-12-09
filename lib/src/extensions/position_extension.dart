@@ -216,6 +216,17 @@ extension PositionExtension on Position {
       }
     }
 
+    final delta = node.delta;
+    if (delta != null) {
+      if (upwards) {
+        return Position(path: path, offset: 0);
+      } else {
+        final length = delta.length;
+        // move the cursor to the end of the node
+        return Position(path: path, offset: length);
+      }
+    }
+
     // The cursor is already at the top or bottom of the document.
     return this;
   }
