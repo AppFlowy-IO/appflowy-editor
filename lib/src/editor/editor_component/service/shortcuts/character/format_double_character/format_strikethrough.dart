@@ -1,5 +1,5 @@
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character/format_double_character/format_double_characters.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character_shortcut_event.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/character/double/format_double_characters.dart';
 
 const _tile = '~';
 

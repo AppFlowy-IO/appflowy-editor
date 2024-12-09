@@ -1,8 +1,8 @@
-export 'double/format_bold.dart';
-export 'double/format_double_characters.dart';
-export 'double/format_double_hyphen.dart';
-export 'double/format_arrow_character.dart';
-export 'double/format_strikethrough.dart';
+export 'format_double_character/format_arrow_character.dart';
+export 'format_double_character/format_bold.dart';
+export 'format_double_character/format_double_characters.dart';
+export 'format_double_character/format_double_hyphen.dart';
+export 'format_double_character/format_strikethrough.dart';
 export 'format_single_character/format_code.dart';
 export 'format_single_character/format_italic.dart';
 export 'format_single_character/format_single_character.dart';
