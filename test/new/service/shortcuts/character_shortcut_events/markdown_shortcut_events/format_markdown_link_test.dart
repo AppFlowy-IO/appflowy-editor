@@ -92,5 +92,37 @@ void main() async {
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), text);
     });
+
+    // Before
+    // Hello [AppFlowy](appflowy.com World
+    // After
+    // Hello [AppFlowy](appflowy.com) World
+    test('format the text in markdown link syntax to appflowy href', () async {
+      const text1 = 'Hello [AppFlowy](appflowy.com';
+      const text2 = ' World';
+      final document = Document.blank().addParagraphs(
+        1,
+        builder: (index) => Delta()..insert(text1 + text2),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text1.length),
+      );
+      editorState.selection = selection;
+      final result = await formatMarkdownLinkToLink.execute(editorState);
+      expect(result, true);
+      final after = editorState.getNodeAtPath([0])!;
+      expect(
+        after.delta!.toJson(),
+        [
+          {'insert': 'Hello '},
+          {
+            'insert': 'AppFlowy',
+            'attributes': {'href': 'appflowy.com'},
+          },
+          {'insert': ' World'},
+        ],
+      );
+    });
   });
 }
