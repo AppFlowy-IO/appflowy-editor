@@ -283,7 +283,14 @@ extension on TextEditingValue {
   TextEditingValue format() {
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
-    final composing = this.composing >> _len;
+
+    TextRange composing = this.composing >> _len;
+    final textLength = text.length;
+
+    // check invalid composing
+    if (composing.start > textLength || composing.end > textLength) {
+      composing = TextRange.empty;
+    }
 
     return TextEditingValue(
       text: text,
