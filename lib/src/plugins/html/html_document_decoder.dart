@@ -18,7 +18,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     if (body == null) {
       return Document.blank(withInitialText: false);
     }
-    final nodes = _parseElement(body.nodes);
+    late Iterable<Node> nodes;
+    if (body.children.length == 1) {
+      nodes = _parseElement(body.firstChild!.children);
+    } else {
+      nodes = _parseElement(body.nodes);
+    }
     return Document.blank(withInitialText: false)
       ..insert(
         [0],
@@ -324,7 +329,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     dom.Element element, {
     required String type,
   }) {
-    final (delta, node) = _parseDeltaElement(element, type: type);
+    var (delta, node) = _parseDeltaElement(element, type: type);
+    if (delta.isEmpty && element.children.length == 1) {
+      (delta, node) = _parseDeltaElement(element.children.first, type: type);
+    }
     return Node(
       type: type,
       children: node,
