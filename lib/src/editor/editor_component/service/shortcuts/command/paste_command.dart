@@ -89,7 +89,9 @@ extension on EditorState {
     while (nodes.isNotEmpty && nodes.first.delta?.isEmpty == true) {
       nodes.removeAt(0);
     }
-    while (nodes.isNotEmpty && nodes.last.delta?.isEmpty == true) {
+    while (nodes.isNotEmpty &&
+        nodes.last.delta?.isEmpty == true &&
+        nodes.last.children.isEmpty) {
       nodes.removeLast();
     }
     if (nodes.isEmpty) {
