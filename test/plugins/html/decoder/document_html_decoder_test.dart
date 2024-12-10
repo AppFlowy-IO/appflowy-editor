@@ -26,5 +26,11 @@ void main() async {
       final result = DocumentHTMLDecoder().convert(htmlSample3);
       expect(result.toJson(), documentSample3);
     });
+
+    test('parse html sample 4', () async {
+      // sample 4 contains lists
+      final result = DocumentHTMLDecoder().convert(htmlSample4);
+      expect(result.toJson(), documentSample4);
+    });
   });
 }
