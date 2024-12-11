@@ -19,29 +19,50 @@ AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
     return null;
   }
 
-  Attributes? attributes;
-
   // if the index == 0, slice the attributes from the next position.
   if (index == 0 && delta.isNotEmpty) {
-    attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
-  } else {
-    attributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+    final attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+    if (attributes == null) {
+      return null;
+    }
+
+    // if the attributes is not supported, return null.
+    if (attributes.keys.any(
+      (element) => !AppFlowyRichTextKeys.supportSliced.contains(element),
+    )) {
+      return null;
+    }
+
+    return attributes;
   }
 
-  if (attributes == null) {
+  // if the index is not 0, slice the attributes from the previous position.
+  final prevAttributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+  if (prevAttributes == null) {
     return null;
   }
-
-  if (!attributes.keys.every(
-    (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+  // if the prevAttributes doesn't include the code, return it.
+  // Otherwise, check if the nextAttributes includes the code.
+  if (!prevAttributes.keys.any(
+    (element) => element == AppFlowyRichTextKeys.code,
   )) {
-    AppFlowyEditorLog.editor.info(
-      'The attributes: $attributes is not supported in sliceAttributes.',
-    );
-    return null;
+    return prevAttributes;
   }
 
-  return attributes;
+  // check if the nextAttributes includes the code.
+  final nextAttributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+  if (nextAttributes == null) {
+    return prevAttributes..remove(AppFlowyRichTextKeys.code);
+  }
+
+  // if the nextAttributes doesn't include the code, exclude the code format.
+  if (!nextAttributes.keys.any(
+    (element) => element == AppFlowyRichTextKeys.code,
+  )) {
+    return prevAttributes..remove(AppFlowyRichTextKeys.code);
+  }
+
+  return prevAttributes;
 };
 
 /// Default slice attributes function.

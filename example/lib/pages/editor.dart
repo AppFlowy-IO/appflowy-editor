@@ -32,13 +32,6 @@ class _EditorState extends State<Editor> {
   WordCountService? wordCountService;
 
   @override
-  void initState() {
-    super.initState();
-
-    appflowyEditorSliceAttributes = sliceAttributes;
-  }
-
-  @override
   void didUpdateWidget(covariant Editor oldWidget) {
     if (oldWidget.jsonString != widget.jsonString) {
       editorState = null;
@@ -161,62 +154,6 @@ class _EditorState extends State<Editor> {
           ),
         ),
       ],
-    );
-  }
-
-  Attributes? sliceAttributes(Delta delta, int index) {
-    if (index < 0) {
-      return null;
-    }
-
-    // if the index == 0, slice the attributes from the next position.
-    if (index == 0 && delta.isNotEmpty) {
-      final attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
-      if (attributes == null) {
-        return null;
-      }
-
-      if (!isSupportSliced(attributes)) {
-        return null;
-      }
-
-      return attributes;
-    }
-
-    // if the index is not 0, slice the attributes from the previous position.
-    final prevAttributes =
-        delta.slice(index - 1, index).firstOrNull?.attributes;
-    if (prevAttributes == null) {
-      return null;
-    }
-    // if the prevAttributes doesn't include the code, return it.
-    // Otherwise, check if the nextAttributes includes the code.
-    if (!prevAttributes.keys.any(
-      (element) => element == AppFlowyRichTextKeys.code,
-    )) {
-      return prevAttributes;
-    }
-
-    // check if the nextAttributes includes the code.
-    final nextAttributes =
-        delta.slice(index, index + 1).firstOrNull?.attributes;
-    if (nextAttributes == null) {
-      return prevAttributes..remove(AppFlowyRichTextKeys.code);
-    }
-
-    // if the nextAttributes doesn't include the code, exclude the code format.
-    if (!nextAttributes.keys.any(
-      (element) => element == AppFlowyRichTextKeys.code,
-    )) {
-      return prevAttributes..remove(AppFlowyRichTextKeys.code);
-    }
-
-    return prevAttributes;
-  }
-
-  bool isSupportSliced(Attributes attributes) {
-    return attributes.keys.every(
-      (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
     );
   }
 }

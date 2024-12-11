@@ -35,7 +35,7 @@ void main() async {
     ]);
   });
 
-  testWidgets('keep attributes if pressing backspace', (tester) async {
+  testWidgets('don\'t keep attributes if pressing backspace', (tester) async {
     final editor = tester.editor..addEmptyParagraph();
     await editor.startTesting();
     await tester.pumpAndSettle();
@@ -58,9 +58,10 @@ void main() async {
     final delta = node?.delta;
     expect(delta?.toJson(), [
       {
-        'insert': 'HelloWorld',
+        'insert': 'Hello',
         'attributes': {'code': true},
       },
+      {'insert': 'World'},
     ]);
   });
 
