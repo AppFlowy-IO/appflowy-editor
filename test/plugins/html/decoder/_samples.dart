@@ -557,3 +557,81 @@ const documentSample3 = {
     ],
   },
 };
+
+const htmlSample4 = '''<meta charset='utf-8'>
+<h1>Problem</h1>
+<ol>
+    <li>Checkout conversion is too low: only 18% of users who click on “Book” checkout. Comparable funnels for hotel booking sites achieve ~30%(<span></span><a
+            href="https://skift.com/2014/03/18/online-booking-abandonment-is-huge-in-travel-as-consumers-comparison-shop/">source</a><span></span>).We are missing out!</li>
+    <li>No clear dropout reason: prior support tickets and survey results show a long tail of possible issues (questions on amenities, fees, checkout time), no clear categories.</li>
+    <li>Adding help content didn’t do much: last quarter we A/B tested content and UI to better point to help content and booking info. This nudged conversion by 1.5% points.</li>
+    <p>I highly recommend bullets for readability. Use bold words to quickly convey the gist of each point, and limit bullets to 2-3 lines. I prefer numbered lists so one can refer to a point verbally.</p>
+</ol>''';
+const documentSample4 = {
+  "document": {
+    "type": "page",
+    "children": [
+      {
+        "type": "heading",
+        "data": {
+          "delta": [
+            {"insert": "Problem"},
+          ],
+          "level": 1,
+        },
+      },
+      {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "Checkout conversion is too low: only 18% of users who click on “Book” checkout. Comparable funnels for hotel booking sites achieve ~30%(",
+            },
+            {
+              "insert": "source",
+              "attributes": {
+                "href":
+                    "https://skift.com/2014/03/18/online-booking-abandonment-is-huge-in-travel-as-consumers-comparison-shop/",
+              },
+            },
+            {"insert": ").We are missing out!"},
+          ],
+        },
+      },
+      {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "No clear dropout reason: prior support tickets and survey results show a long tail of possible issues (questions on amenities, fees, checkout time), no clear categories.",
+            }
+          ],
+        },
+      },
+      {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "Adding help content didn’t do much: last quarter we A/B tested content and UI to better point to help content and booking info. This nudged conversion by 1.5% points.",
+            }
+          ],
+        },
+      },
+      {
+        "type": "numbered_list",
+        "data": {
+          "delta": [
+            {
+              "insert":
+                  "I highly recommend bullets for readability. Use bold words to quickly convey the gist of each point, and limit bullets to 2-3 lines. I prefer numbered lists so one can refer to a point verbally.",
+            }
+          ],
+        },
+      }
+    ],
+  },
+};
