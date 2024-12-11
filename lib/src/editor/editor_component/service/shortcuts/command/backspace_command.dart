@@ -84,6 +84,14 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
           ),
         );
     } else {
+      // If the deletion crosses columns and starts from the beginning position
+      // skip the node deletion process
+      // otherwise it will cause an error in table rendering.
+      if (node.parent?.type == TableCellBlockKeys.type &&
+          position.offset == 0) {
+        return KeyEventResult.handled;
+      }
+
       Node? tableParent =
           node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
