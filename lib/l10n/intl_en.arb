@@ -178,5 +178,9 @@
   "cmdToggleStrikethrough": "toggle strikethrough",
   "cmdToggleTodoList": "toggle the todo list",
   "cmdToggleUnderline": "toggle underline",
-  "cmdUndo": "undo"
+  "cmdUndo": "undo",
+  "cmdToggleH1": "toggle H1",
+  "cmdToggleH2": "toggle H2",
+  "cmdToggleH3": "toggle H3",
+  "cmdToggleBody": "toggle body"
 }

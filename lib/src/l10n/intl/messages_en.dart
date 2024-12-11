@@ -156,8 +156,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmdTableStopAtTheBeginningOfTheCell":
             MessageLookupByLibrary.simpleMessage(
                 "Stop at the beginning of the cell"),
+        "cmdToggleBody": MessageLookupByLibrary.simpleMessage("toggle body"),
         "cmdToggleBold": MessageLookupByLibrary.simpleMessage("toggle bold"),
         "cmdToggleCode": MessageLookupByLibrary.simpleMessage("toggle code"),
+        "cmdToggleH1": MessageLookupByLibrary.simpleMessage("toggle H1"),
+        "cmdToggleH2": MessageLookupByLibrary.simpleMessage("toggle H2"),
+        "cmdToggleH3": MessageLookupByLibrary.simpleMessage("toggle H3"),
         "cmdToggleHighlight":
             MessageLookupByLibrary.simpleMessage("toggle highlight"),
         "cmdToggleItalic":
