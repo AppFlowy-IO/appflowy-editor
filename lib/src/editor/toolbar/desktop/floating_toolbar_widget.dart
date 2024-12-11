@@ -65,28 +65,29 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
           constraints:
               BoxConstraints(maxWidth: widget.maxWidth ?? double.infinity),
           child: SizedBox(
-          height: floatingToolbarHeight,
-          child: Row(
-            key: floatingToolbarContainerKey,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            textDirection: widget.textDirection,
-            children: activeItems.mapIndexed(
-              (index, item) {
-                return Center(
-                  key: Key(
-                    '${floatingToolbarItemPrefixKey}_${item.id}_$index',
-                  ),
-                  child: item.builder!(
-                    context,
-                    widget.editorState,
-                    widget.toolbarActiveColor,
-                    widget.toolbarIconColor,
-                    widget.tooltipBuilder,
-                  ),
-                );
-              },
-            ).toList(growable: false),
+            height: floatingToolbarHeight,
+            child: Row(
+              key: floatingToolbarContainerKey,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              textDirection: widget.textDirection,
+              children: activeItems.mapIndexed(
+                (index, item) {
+                  return Center(
+                    key: Key(
+                      '${floatingToolbarItemPrefixKey}_${item.id}_$index',
+                    ),
+                    child: item.builder!(
+                      context,
+                      widget.editorState,
+                      widget.toolbarActiveColor,
+                      widget.toolbarIconColor,
+                      widget.tooltipBuilder,
+                    ),
+                  );
+                },
+              ).toList(growable: false),
+            ),
           ),
         ),
       ),
