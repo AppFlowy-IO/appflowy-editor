@@ -12,6 +12,14 @@ void main() {
       expect(document.toJson(), data);
     });
 
+    test('soft line break with two spaces', () {
+      const markdown = 'first line  \nsecond line';
+      final document = markdownToDocument(markdown);
+      expect(document.root.children.length, 2);
+      expect(document.root.children[0].delta?.toPlainText(), 'first line');
+      expect(document.root.children[1].delta?.toPlainText(), 'second line');
+    });
+
     test('documentToMarkdown()', () {
       final document = markdownToDocument(markdownDocument);
       final markdown = documentToMarkdown(document);

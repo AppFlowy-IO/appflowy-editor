@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class CollabSelectionEditor extends StatefulWidget {
   const CollabSelectionEditor({super.key});
@@ -54,7 +55,7 @@ class _CollabSelectionEditorState extends State<CollabSelectionEditor> {
   void initState() {
     super.initState();
 
-    future = PlatformExtension.isDesktopOrWeb
+    future = UniversalPlatform.isDesktopOrWeb
         ? rootBundle.loadString('assets/example.json')
         : rootBundle.loadString('assets/mobile_example.json').then((value) {
             return value;

@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,7 @@ class MobileSelectionHandle extends StatelessWidget {
 
     var adjustedRect = rect;
     if (handleType != HandleType.none) {
-      if (Platform.isIOS) {
+      if (PlatformExtension.isIOS) {
         // on iOS, the cursor will still be visible if the selection is not collapsed.
         // So, adding a threshold padding to avoid row overflow.
         const threshold = 0.25;
@@ -39,7 +38,7 @@ class MobileSelectionHandle extends StatelessWidget {
           rect.width + 4 * (handleWidth + threshold),
           rect.height + 2 * handleBallWidth,
         );
-      } else if (Platform.isAndroid) {
+      } else if (PlatformExtension.isAndroid) {
         // on Android, normally the cursor will be hidden if the selection is not collapsed.
         // Extend the click area to make it easier to click.
         adjustedRect = Rect.fromLTWH(

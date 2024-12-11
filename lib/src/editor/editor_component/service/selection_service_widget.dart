@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-
-import 'package:provider/provider.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/desktop_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:provider/provider.dart';
 
 class SelectionServiceWidget extends StatefulWidget {
   const SelectionServiceWidget({
@@ -125,8 +124,8 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   void removeDropTarget() => forward.removeDropTarget();
 
   @override
-  void renderDropTargetForOffset(Offset offset) =>
-      forward.renderDropTargetForOffset(offset);
+  void renderDropTargetForOffset(Offset offset, {DragAreaBuilder? builder}) =>
+      forward.renderDropTargetForOffset(offset, builder: builder);
 
   @override
   DropTargetRenderData? getDropTargetRenderData(Offset offset) =>

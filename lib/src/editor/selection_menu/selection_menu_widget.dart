@@ -25,9 +25,11 @@ class SelectionMenuItem {
     required this.keywords,
     required SelectionMenuItemHandler handler,
     this.nameBuilder,
+    this.deleteKeywords = false,
+    this.deleteSlash = true,
   }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
-      if (deleteSlash) {
+      if (deleteSlash || deleteKeywords) {
         _deleteSlash(editorState);
       }
 
@@ -50,11 +52,13 @@ class SelectionMenuItem {
   ///
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
+  List<String> get allKeywords => keywords + [name.toLowerCase()];
   late final SelectionMenuItemHandler handler;
 
   VoidCallback? onSelected;
 
-  bool deleteSlash = true;
+  bool deleteSlash;
+  bool deleteKeywords;
 
   void _deleteSlash(EditorState editorState) {
     final selection = editorState.selection;
@@ -67,14 +71,20 @@ class SelectionMenuItem {
       return;
     }
     final end = selection.start.offset;
-    final lastSlashIndex =
-        delta.toPlainText().substring(0, end).lastIndexOf('/');
+    int deletedIndex = 0;
+
+    if (deleteKeywords) {
+      deletedIndex = 0;
+    } else if (deleteSlash) {
+      deletedIndex = delta.toPlainText().substring(0, end).lastIndexOf('/');
+    }
+
     // delete all the texts after '/' along with '/'
     final transaction = editorState.transaction
       ..deleteText(
         node,
-        lastSlashIndex,
-        end - lastSlashIndex,
+        deletedIndex,
+        end - deletedIndex,
       );
 
     editorState.apply(transaction);
@@ -270,7 +280,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     var maxKeywordLength = 0;
     final items = widget.items
         .where(
-          (item) => item.keywords.any((keyword) {
+          (item) => item.allKeywords.any((keyword) {
             final value = keyword.contains(newKeyword.toLowerCase());
             if (value) {
               maxKeywordLength = max(maxKeywordLength, keyword.length);
@@ -280,7 +290,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         )
         .toList(growable: false);
 
-    Log.ui.debug('$items');
+    AppFlowyEditorLog.ui.debug('$items');
 
     if (keyword.length >= maxKeywordLength + 2 &&
         !(widget.deleteSlashByDefault && _searchCounter < 2)) {
@@ -357,8 +367,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     _scrollController?.scrollToIndex(
       _selectedIndex,
-      duration: const Duration(milliseconds: 200),
-      preferPosition: AutoScrollPosition.begin,
+      preferPosition: AutoScrollPosition.middle,
     );
   }
 
@@ -462,7 +471,11 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    Log.keyboard.debug('slash command, on key $event');
+    AppFlowyEditorLog.keyboard.debug('slash command, on key $event');
+
+    if (event is KeyRepeatEvent) {
+      return KeyEventResult.skipRemainingHandlers;
+    }
 
     if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
@@ -505,18 +518,46 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     var newSelectedIndex = _selectedIndex;
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      // When going left, wrap to the end of the previous row
       newSelectedIndex -= widget.maxItemInRow;
+      if (newSelectedIndex < 0) {
+        // Calculate the last row's starting position
+        final lastRowStart = (_showingItems.length - 1) -
+            ((_showingItems.length - 1) % widget.maxItemInRow);
+        // Move to the same column in the last row
+        newSelectedIndex =
+            lastRowStart + (_selectedIndex % widget.maxItemInRow);
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
     } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      // When going right, wrap to the start of the next row
       newSelectedIndex += widget.maxItemInRow;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      newSelectedIndex -= 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      newSelectedIndex += 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
-      newSelectedIndex += widget.maxItemInRow;
-      var currRow = (newSelectedIndex) % widget.maxItemInRow;
       if (newSelectedIndex >= _showingItems.length) {
-        newSelectedIndex = (currRow + 1) % widget.maxItemInRow;
+        newSelectedIndex = _selectedIndex % widget.maxItemInRow;
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      if (newSelectedIndex > 0) {
+        newSelectedIndex -= 1;
+      } else {
+        // Wrap to the last item
+        newSelectedIndex = _showingItems.length - 1;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (newSelectedIndex < _showingItems.length - 1) {
+        newSelectedIndex += 1;
+      } else {
+        // Wrap to the first item
+        newSelectedIndex = 0;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
+      newSelectedIndex += 1;
+      if (newSelectedIndex >= _showingItems.length) {
+        newSelectedIndex = 0;
       }
     }
 
@@ -561,12 +602,12 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       return;
     }
     widget.onSelectionUpdate();
-    final transaction = widget.editorState.transaction
-      ..insertText(
-        node,
-        selection.end.offset,
-        text,
-      );
+    final transaction = widget.editorState.transaction;
+    transaction.insertText(
+      node,
+      selection.end.offset,
+      text,
+    );
     widget.editorState.apply(transaction);
   }
 }

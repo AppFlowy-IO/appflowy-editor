@@ -29,14 +29,37 @@ class _BlockComponentActionWrapperState
     implements BlockComponentActionState {
   final showActionsNotifier = ValueNotifier<bool>(false);
 
+  bool isDisposed = false;
+
   bool _alwaysShowActions = false;
   bool get alwaysShowActions => _alwaysShowActions;
   @override
   set alwaysShowActions(bool alwaysShowActions) {
+    if (isDisposed) {
+      return;
+    }
     _alwaysShowActions = alwaysShowActions;
     if (_alwaysShowActions == false && showActionsNotifier.value == true) {
       showActionsNotifier.value = false;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (forceShowBlockAction) {
+      alwaysShowActions = true;
+      showActionsNotifier.value = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    isDisposed = true;
+    showActionsNotifier.dispose();
+
+    super.dispose();
   }
 
   @override

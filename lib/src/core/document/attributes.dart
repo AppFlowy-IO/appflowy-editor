@@ -52,6 +52,23 @@ Attributes invertAttributes(Attributes? from, Attributes? to) {
   return attributes;
 }
 
+Attributes? diffAttributes(
+  Map<String, dynamic>? from,
+  Map<String, dynamic>? to,
+) {
+  from ??= const {};
+  to ??= const {};
+  final attributes = Attributes.from({});
+
+  for (final key in (from.keys.toList()..addAll(to.keys))) {
+    if (from[key] != to[key]) {
+      attributes[key] = to.containsKey(key) ? to[key] : null;
+    }
+  }
+
+  return attributes;
+}
+
 int hashAttributes(Attributes base) => Object.hashAllUnordered(
       base.entries.map((e) => Object.hash(e.key, e.value)),
     );

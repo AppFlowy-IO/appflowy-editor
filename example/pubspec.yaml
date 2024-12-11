@@ -46,10 +46,17 @@ dependencies:
   printing: ^5.11.1
   appflowy_editor_plugins: ^0.0.6
   markdown:
+  universal_platform: ^1.1.0
 
 dependency_overrides:
   appflowy_editor:
     path: ../
+
+  appflowy_editor_plugins:
+    git:
+      url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
+      path: "packages/appflowy_editor_plugins"
+      ref: "3f82111"
 
 dev_dependencies:
   flutter_test:

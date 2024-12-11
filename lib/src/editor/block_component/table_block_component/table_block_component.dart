@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,10 +110,68 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
-      node.attributes.isNotEmpty &&
-      node.attributes.containsKey(TableBlockKeys.colsLen) &&
-      node.attributes.containsKey(TableBlockKeys.rowsLen);
+  BlockComponentValidate get validate => (node) {
+        // check the node is valid
+        if (node.attributes.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: node is empty');
+          return false;
+        }
+
+        // check the node has rowPosition and colPosition
+        if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
+            !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: node has no colsLen or rowsLen',
+          );
+          return false;
+        }
+
+        final colsLen = node.attributes[TableBlockKeys.colsLen];
+        final rowsLen = node.attributes[TableBlockKeys.rowsLen];
+
+        // check its children
+        final children = node.children;
+        if (children.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: children is empty');
+          return false;
+        }
+
+        if (children.length != colsLen * rowsLen) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
+          );
+          return false;
+        }
+
+        // all children should contain rowPosition and colPosition
+        for (var i = 0; i < colsLen; i++) {
+          for (var j = 0; j < rowsLen; j++) {
+            final child = children.where(
+              (n) =>
+                  n.attributes[TableCellBlockKeys.colPosition] == i &&
+                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+            );
+            if (child.isEmpty) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is empty',
+              );
+              return false;
+            }
+
+            // should only contains one child
+            if (child.length != 1) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is not unique',
+              );
+              return false;
+            }
+          }
+        }
+
+        return true;
+      };
 }
 
 class TableBlockComponentWidget extends BlockComponentStatefulWidget {

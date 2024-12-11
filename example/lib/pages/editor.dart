@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/desktop_editor.dart';
 import 'package:example/pages/mobile_editor.dart';
-
-import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/material.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class Editor extends StatefulWidget {
   const Editor({
@@ -31,6 +30,13 @@ class _EditorState extends State<Editor> {
 
   EditorState? editorState;
   WordCountService? wordCountService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    appflowyEditorSliceAttributes = sliceAttributes;
+  }
 
   @override
   void didUpdateWidget(covariant Editor oldWidget) {
@@ -97,7 +103,7 @@ class _EditorState extends State<Editor> {
 
                   editorState.logConfiguration
                     ..handler = debugPrint
-                    ..level = LogLevel.off;
+                    ..level = AppFlowyEditorLogLevel.all;
 
                   editorState.transactionStream.listen((event) {
                     if (event.$1 == TransactionTime.after) {
@@ -111,12 +117,12 @@ class _EditorState extends State<Editor> {
                   registerWordCounter();
                 }
 
-                if (PlatformExtension.isDesktopOrWeb) {
+                if (UniversalPlatform.isDesktopOrWeb) {
                   return DesktopEditor(
                     editorState: editorState!,
                     textDirection: widget.textDirection,
                   );
-                } else if (PlatformExtension.isMobile) {
+                } else if (UniversalPlatform.isMobile) {
                   return MobileEditor(editorState: editorState!);
                 }
               }
@@ -134,7 +140,7 @@ class _EditorState extends State<Editor> {
               color: Colors.black.withOpacity(0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(8),
-                bottomLeft: PlatformExtension.isMobile
+                bottomLeft: UniversalPlatform.isMobile
                     ? const Radius.circular(8)
                     : Radius.zero,
               ),
@@ -155,6 +161,62 @@ class _EditorState extends State<Editor> {
           ),
         ),
       ],
+    );
+  }
+
+  Attributes? sliceAttributes(Delta delta, int index) {
+    if (index < 0) {
+      return null;
+    }
+
+    // if the index == 0, slice the attributes from the next position.
+    if (index == 0 && delta.isNotEmpty) {
+      final attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+      if (attributes == null) {
+        return null;
+      }
+
+      if (!isSupportSliced(attributes)) {
+        return null;
+      }
+
+      return attributes;
+    }
+
+    // if the index is not 0, slice the attributes from the previous position.
+    final prevAttributes =
+        delta.slice(index - 1, index).firstOrNull?.attributes;
+    if (prevAttributes == null) {
+      return null;
+    }
+    // if the prevAttributes doesn't include the code, return it.
+    // Otherwise, check if the nextAttributes includes the code.
+    if (!prevAttributes.keys.any(
+      (element) => element == AppFlowyRichTextKeys.code,
+    )) {
+      return prevAttributes;
+    }
+
+    // check if the nextAttributes includes the code.
+    final nextAttributes =
+        delta.slice(index, index + 1).firstOrNull?.attributes;
+    if (nextAttributes == null) {
+      return prevAttributes..remove(AppFlowyRichTextKeys.code);
+    }
+
+    // if the nextAttributes doesn't include the code, exclude the code format.
+    if (!nextAttributes.keys.any(
+      (element) => element == AppFlowyRichTextKeys.code,
+    )) {
+      return prevAttributes..remove(AppFlowyRichTextKeys.code);
+    }
+
+    return prevAttributes;
+  }
+
+  bool isSupportSliced(Attributes attributes) {
+    return attributes.keys.every(
+      (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
     );
   }
 }

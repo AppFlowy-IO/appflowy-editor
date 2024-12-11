@@ -82,6 +82,10 @@ extension PathExtensions on Path {
       ..add(last + n);
   }
 
+  Path child(int index) {
+    return Path.from(this, growable: true)..add(index);
+  }
+
   Path get previous {
     Path previousPath = Path.from(this, growable: true);
     if (isEmpty) {
@@ -111,7 +115,7 @@ extension PathExtensions on Path {
     return Path.from(this, growable: true)..removeLast();
   }
 
-  bool isParentOf(Path other) {
+  bool isAncestorOf(Path other) {
     if (isEmpty) {
       return true;
     }
@@ -129,9 +133,18 @@ extension PathExtensions on Path {
     return true;
   }
 
-  bool inSelection(Selection? selection) {
-    return selection != null &&
+  // if isSameDepth is true, the path must be the same depth as the selection
+  bool inSelection(
+    Selection? selection, {
+    bool isSameDepth = false,
+  }) {
+    selection = selection?.normalized;
+    bool result = selection != null &&
         selection.start.path <= this &&
         this <= selection.end.path;
+    if (isSameDepth) {
+      return result && selection.start.path.length == length;
+    }
+    return result;
   }
 }

@@ -519,6 +519,53 @@ void main() {
         final diff = delta.diff(restored);
         expect(delta.compose(diff), restored);
       });
+
+      test('insert', () {
+        final a = Delta()..insert('Hello');
+        final b = Delta()..insert('Hello!');
+        final expected = Delta()
+          ..retain(5)
+          ..insert('!');
+        expect(a.diff(b), expected);
+      });
+
+      test('delete', () {
+        final a = Delta()..insert('Hello!');
+        final b = Delta()..insert('Hello');
+        final expected = Delta()
+          ..retain(5)
+          ..delete(1);
+        expect(a.diff(b), expected);
+      });
+
+      test('retain', () {
+        final a = Delta()..insert('A');
+        final b = Delta()..insert('A');
+        final expected = Delta();
+        expect(a.diff(b), expected);
+      });
+
+      test('retain with attributes - 1', () {
+        final a = Delta()..insert('Hello');
+        final b = Delta()..insert('Hello', attributes: {'bold': true});
+        final expected = Delta()
+          ..retain(
+            5,
+            attributes: {'bold': true},
+          );
+        expect(a.diff(b), expected);
+      });
+
+      test('retain with attributes - 2', () {
+        final a = Delta()..insert('Hello', attributes: {'bold': true});
+        final b = Delta()..insert('Hello', attributes: {'italic': true});
+        final expected = Delta()
+          ..retain(
+            5,
+            attributes: {'bold': null, 'italic': true},
+          );
+        expect(a.diff(b), expected);
+      });
     });
   });
 }

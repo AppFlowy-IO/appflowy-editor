@@ -1,18 +1,71 @@
 import 'dart:math';
 
-import 'package:appflowy_editor/src/core/document/attributes.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import '../../editor/block_component/rich_text/appflowy_rich_text_keys.dart';
+typedef AppFlowyEditorSliceAttributes = Attributes? Function(
+  Delta delta,
+  int index,
+);
+
+AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
+  delta,
+  index,
+) {
+  if (index < 0) {
+    return null;
+  }
+
+  Attributes? attributes;
+
+  // if the index == 0, slice the attributes from the next position.
+  if (index == 0 && delta.isNotEmpty) {
+    attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+  } else {
+    attributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+  }
+
+  if (attributes == null) {
+    return null;
+  }
+
+  if (!attributes.keys.every(
+    (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+  )) {
+    AppFlowyEditorLog.editor.info(
+      'The attributes: $attributes is not supported in sliceAttributes.',
+    );
+    return null;
+  }
+
+  return attributes;
+};
+
+/// Default slice attributes function.
+///
+/// You can override the default slice attributes function by customizing
+/// different slice rules, and fallback to the default one if not specified.
+///
+/// Rules
+/// 1. If the index is less than 0, return null.
+/// 2. If the index is 0, slice the attributes from the next position.
+/// 3. If the index is greater than 0, slice the attributes from the previous position.
+/// 4. If the attributes is not supported, return null.
+AppFlowyEditorSliceAttributes? appflowyEditorSliceAttributes =
+    defaultAppFlowyEditorSliceAttributes;
 
 // constant number: 2^53 - 1
 const int _maxInt = 9007199254740991;
 
 sealed class TextOperation {
   Attributes? get attributes;
+
+  // available for TextInsert, for TextDelete and TextRetain, it's null
+  Object? get data => null;
+
   int get length;
 
   bool get isEmpty => length == 0;
@@ -31,6 +84,9 @@ class TextInsert extends TextOperation {
 
   @override
   int get length => text.length;
+
+  @override
+  Object? get data => text;
 
   @override
   Attributes? get attributes => _attributes != null ? {..._attributes} : null;
@@ -353,10 +409,10 @@ class Delta extends Iterable<TextOperation> {
             );
             final thisOp = thisIter.next(opLength);
             final otherOp = otherIter.next(opLength);
-            if (isAttributesEqual(thisOp.attributes, otherOp.attributes)) {
+            if (thisOp.data == otherOp.data) {
               retDelta.retain(
                 opLength,
-                attributes: invertAttributes(
+                attributes: diffAttributes(
                   thisOp.attributes,
                   otherOp.attributes,
                 ),
@@ -517,19 +573,7 @@ class Delta extends Iterable<TextOperation> {
   }
 
   Attributes? sliceAttributes(int index) {
-    if (index <= 0) {
-      return null;
-    }
-
-    final attributes = slice(index - 1, index).first.attributes;
-    if (attributes == null ||
-        !attributes.keys.every(
-          (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
-        )) {
-      return null;
-    }
-
-    return attributes;
+    return appflowyEditorSliceAttributes?.call(this, index);
   }
 }
 

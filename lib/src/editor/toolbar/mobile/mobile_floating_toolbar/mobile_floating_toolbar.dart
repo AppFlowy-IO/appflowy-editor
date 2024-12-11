@@ -159,6 +159,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   }
 
   final String _debounceKey = 'show the toolbar';
+
   void _clear() {
     Debounce.cancel(_debounceKey);
 
@@ -185,9 +186,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     if (rects.isEmpty) {
       return;
     }
-
     final rect = _findSuitableRect(rects);
-    if (rect.isEmpty) {
+    // Empty is determined only if there is only one selection area
+    if (rects.length <= 1 && rect.isEmpty) {
       return;
     }
     _toolbarContainer = OverlayEntry(

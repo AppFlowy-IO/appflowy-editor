@@ -121,4 +121,11 @@ class Selection {
       'end': end.toJson(),
     };
   }
+
+  Selection shift(int offset) {
+    return copyWith(
+      start: start.copyWith(offset: start.offset + offset),
+      end: end.copyWith(offset: end.offset + offset),
+    );
+  }
 }

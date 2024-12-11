@@ -1,18 +1,16 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_magnifier.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_collapsed_handle.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_selection_handle.dart';
 import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
+import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 /// only used in mobile
 ///
@@ -135,7 +133,7 @@ class _MobileSelectionServiceWidgetState
         _buildCollapsedHandle(),
       ],
     );
-    return Platform.isIOS
+    return PlatformExtension.isIOS
         ? MobileSelectionGestureDetector(
             onTapUp: _onTapUpIOS,
             onDoubleTapUp: _onDoubleTapUp,
@@ -179,8 +177,12 @@ class _MobileSelectionServiceWidgetState
     return ValueListenableBuilder(
       valueListenable: selectionNotifierAfterLayout,
       builder: (context, selection, _) {
-        if (selection == null ||
-            !selection.isCollapsed ||
+        if (selection == null || !selection.isCollapsed) {
+          return const SizedBox.shrink();
+        }
+
+        // on iOS, the drag handle should be updated when typing text.
+        if (PlatformExtension.isAndroid &&
             editorState.selectionUpdateReason !=
                 SelectionUpdateReason.uiEvent) {
           return const SizedBox.shrink();
@@ -310,7 +312,7 @@ class _MobileSelectionServiceWidgetState
     if (selection != null) {
       if (!selection.isCollapsed) {
         // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
+        AppFlowyEditorLog.selection.debug('update cursor area, $selection');
         _updateSelectionAreas(selection);
       }
     }
@@ -319,6 +321,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: {
         selectionDragModeKey: dragMode,
         selectionExtraInfoDoNotAttachTextService:
@@ -401,7 +404,7 @@ class _MobileSelectionServiceWidgetState
     if (selection != null) {
       if (!selection.isCollapsed) {
         // updates selection area.
-        Log.selection.debug('update cursor area, $selection');
+        AppFlowyEditorLog.selection.debug('update cursor area, $selection');
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           selectionRects.clear();
           _clearSelection();
@@ -523,6 +526,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: null,
     );
   }
@@ -596,6 +600,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
       },
@@ -616,6 +621,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       Selection.collapsed(position),
       reason: SelectionUpdateReason.uiEvent,
+      customSelectionType: SelectionType.inline,
       extraInfo: null,
     );
   }
@@ -772,7 +778,8 @@ class _MobileSelectionServiceWidgetState
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
-    Log.selection.debug('update selection areas, $normalizedSelection');
+    AppFlowyEditorLog.selection
+        .debug('update selection areas, $normalizedSelection');
 
     for (var i = 0; i < backwardNodes.length; i++) {
       final node = backwardNodes[i];
@@ -834,7 +841,7 @@ class _MobileSelectionServiceWidgetState
   }
 
   @override
-  void renderDropTargetForOffset(Offset offset) {
+  void renderDropTargetForOffset(Offset offset, {DragAreaBuilder? builder}) {
     // Do nothing on mobile
   }
 

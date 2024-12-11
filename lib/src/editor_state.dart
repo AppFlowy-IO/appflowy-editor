@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
+import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
-import 'package:appflowy_editor/src/history/undo_manager.dart';
+typedef EditorTransactionValue = (
+  TransactionTime time,
+  Transaction transaction,
+  ApplyOptions options,
+);
 
 /// the type of this value is bool.
 ///
@@ -15,15 +21,20 @@ const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
 
 class ApplyOptions {
+  const ApplyOptions({
+    this.recordUndo = true,
+    this.recordRedo = false,
+    this.inMemoryUpdate = false,
+  });
+
   /// This flag indicates that
   /// whether the transaction should be recorded into
   /// the undo stack
   final bool recordUndo;
   final bool recordRedo;
-  const ApplyOptions({
-    this.recordUndo = true,
-    this.recordRedo = false,
-  });
+
+  /// This flag used to determine whether the transaction is in-memory update.
+  final bool inMemoryUpdate;
 }
 
 @Deprecated('use SelectionUpdateReason instead')
@@ -99,6 +110,9 @@ class EditorState {
   /// Whether the editor should disable auto scroll.
   bool disableAutoScroll = false;
 
+  /// The edge offset of the auto scroll.
+  double autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset;
+
   /// The style of the editor.
   late EditorStyle editorStyle;
 
@@ -120,10 +134,21 @@ class EditorState {
       _toggledStyle.clear();
     }
 
+    // reset slice flag
+    sliceUpcomingAttributes = true;
+
     selectionNotifier.value = value;
   }
 
-  SelectionType? selectionType;
+  SelectionType? _selectionType;
+  set selectionType(SelectionType? value) {
+    if (value == _selectionType) {
+      return;
+    }
+    _selectionType = value;
+  }
+
+  SelectionType? get selectionType => _selectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
@@ -148,7 +173,7 @@ class EditorState {
   /// Configures log output parameters,
   /// such as log level and log output callbacks,
   /// with this variable.
-  LogConfiguration get logConfiguration => LogConfiguration();
+  AppFlowyLogConfiguration get logConfiguration => AppFlowyLogConfiguration();
 
   /// Stores the selection menu items.
   List<SelectionMenuItem> selectionMenuItems = [];
@@ -158,9 +183,8 @@ class EditorState {
   List<ToolbarItem> toolbarItems = [];
 
   /// listen to this stream to get notified when the transaction applies.
-  Stream<(TransactionTime, Transaction)> get transactionStream =>
-      _observer.stream;
-  final StreamController<(TransactionTime, Transaction)> _observer =
+  Stream<EditorTransactionValue> get transactionStream => _observer.stream;
+  final StreamController<EditorTransactionValue> _observer =
       StreamController.broadcast(sync: true);
 
   /// Store the toggled format style, like bold, italic, etc.
@@ -178,6 +202,20 @@ class EditorState {
   void updateToggledStyle(String key, dynamic value) {
     _toggledStyle[key] = value;
     toggledStyleNotifier.value = {..._toggledStyle};
+  }
+
+  /// Whether the upcoming attributes should be sliced.
+  ///
+  /// If the value is true, the upcoming attributes will be sliced.
+  /// If the value is false, the upcoming attributes will be skipped.
+  bool _sliceUpcomingAttributes = true;
+  bool get sliceUpcomingAttributes => _sliceUpcomingAttributes;
+  set sliceUpcomingAttributes(bool value) {
+    if (value == _sliceUpcomingAttributes) {
+      return;
+    }
+    AppFlowyEditorLog.input.debug('sliceUpcomingAttributes: $value');
+    _sliceUpcomingAttributes = value;
   }
 
   final UndoManager undoManager = UndoManager();
@@ -218,14 +256,17 @@ class EditorState {
     Selection? selection, {
     SelectionUpdateReason reason = SelectionUpdateReason.transaction,
     Map? extraInfo,
+    SelectionType? customSelectionType,
   }) async {
     final completer = Completer<void>();
 
     if (reason == SelectionUpdateReason.uiEvent) {
-      selectionType = SelectionType.inline;
+      _selectionType = customSelectionType ?? SelectionType.inline;
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => completer.complete(),
       );
+    } else if (customSelectionType != null) {
+      _selectionType = customSelectionType;
     }
 
     // broadcast to other users here
@@ -306,14 +347,14 @@ class EditorState {
     } else {
       // broadcast to other users here, before applying the transaction
       if (!_observer.isClosed) {
-        _observer.add((TransactionTime.before, transaction));
+        _observer.add((TransactionTime.before, transaction, options));
       }
 
       _applyTransactionInLocal(transaction);
 
       // broadcast to other users here, after applying the transaction
       if (!_observer.isClosed) {
-        _observer.add((TransactionTime.after, transaction));
+        _observer.add((TransactionTime.after, transaction, options));
       }
 
       _recordRedoOrUndo(options, transaction, skipHistoryDebounce);
@@ -531,7 +572,7 @@ class EditorState {
       }
       undoItem.afterSelection = transaction.afterSelection;
       if (skipDebounce && undoManager.undoStack.isNonEmpty) {
-        Log.editor.debug('Seal history item');
+        AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
         last.seal();
       } else {
@@ -553,7 +594,7 @@ class EditorState {
     _debouncedSealHistoryItemTimer?.cancel();
     _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
       if (undoManager.undoStack.isNonEmpty) {
-        Log.editor.debug('Seal history item');
+        AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
         last.seal();
       }
@@ -562,7 +603,7 @@ class EditorState {
 
   void _applyTransactionInLocal(Transaction transaction) {
     for (final op in transaction.operations) {
-      Log.editor.debug('apply op (local): ${op.toJson()}');
+      AppFlowyEditorLog.editor.debug('apply op (local): ${op.toJson()}');
 
       if (op is InsertOperation) {
         document.insert(op.path, op.nodes);
@@ -583,7 +624,7 @@ class EditorState {
     var selection = this.selection;
 
     for (final op in transaction.operations) {
-      Log.editor.debug('apply op (remote): ${op.toJson()}');
+      AppFlowyEditorLog.editor.debug('apply op (remote): ${op.toJson()}');
 
       if (op is InsertOperation) {
         document.insert(op.path, op.nodes);

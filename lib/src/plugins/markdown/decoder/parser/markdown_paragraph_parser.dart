@@ -28,11 +28,51 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
       }
     }
 
-    final deltaDecoder = DeltaMarkdownDecoder();
-    return [
-      paragraphNode(
-        delta: deltaDecoder.convertNodes(element.children),
-      ),
-    ];
+    if (ec == null || ec.isEmpty) {
+      // return empty paragraph node if there is no children
+      return [
+        paragraphNode(),
+      ];
+    }
+
+    // Split the paragraph node by <br> tag
+    final splitContent = _splitByBrTag(ec);
+
+    // Transform each split content into a paragraph node
+    return splitContent.map((content) {
+      final deltaDecoder = DeltaMarkdownDecoder();
+      final delta = deltaDecoder.convertNodes(content);
+      return paragraphNode(delta: delta);
+    }).toList();
   }
+}
+
+// split the <p> children by <br> tag, mostly it's used for handling the soft line break
+// for example:
+// ```html
+// <p>
+// Hello<br>World
+// </p>
+// ```
+// will be split into:
+// ```document
+// Hello
+//
+// World
+// ```
+List<List<md.Node>> _splitByBrTag(List<md.Node> nodes) {
+  return nodes
+      .fold<List<List<md.Node>>>(
+        [[]],
+        (acc, node) {
+          if (node is md.Element && node.tag == 'br') {
+            acc.add([]);
+          } else {
+            acc.last.add(node);
+          }
+          return acc;
+        },
+      )
+      .where((group) => group.isNotEmpty)
+      .toList();
 }

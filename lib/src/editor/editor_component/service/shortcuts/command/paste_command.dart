@@ -77,14 +77,23 @@ RegExp _hrefRegex = RegExp(
   r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
 );
 
+RegExp _phoneRegex = RegExp(r'^\+?' // Optional '+' at start
+    r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
+    r'[0-9]$' // Ensure it ends with a digit
+    );
+
 extension on EditorState {
   Future<bool> pasteHtml(String html) async {
     final nodes = htmlToDocument(html).root.children.toList();
     // remove the front and back empty line
-    while (nodes.isNotEmpty && nodes.first.delta?.isEmpty == true) {
+    while (nodes.isNotEmpty &&
+        nodes.first.delta?.isEmpty == true &&
+        nodes.first.children.isEmpty) {
       nodes.removeAt(0);
     }
-    while (nodes.isNotEmpty && nodes.last.delta?.isEmpty == true) {
+    while (nodes.isNotEmpty &&
+        nodes.last.delta?.isEmpty == true &&
+        nodes.last.children.isEmpty) {
       nodes.removeLast();
     }
     if (nodes.isEmpty) {
@@ -107,7 +116,7 @@ extension on EditorState {
       return;
     }
 
-    if (await maybeConvertToUrl(plainText)) {
+    if (await maybeConvertToUrlOrPhone(plainText)) {
       return;
     }
 
@@ -120,25 +129,30 @@ extension on EditorState {
         )
         .map((paragraph) {
           Delta delta = Delta();
-          if (_hrefRegex.hasMatch(paragraph)) {
-            final firstMatch = _hrefRegex.firstMatch(paragraph);
-            if (firstMatch != null) {
-              int startPos = firstMatch.start;
-              int endPos = firstMatch.end;
-              final String? url = firstMatch.group(0);
-              if (url != null) {
-                /// insert the text before the link
+          if (_hrefRegex.hasMatch(paragraph) ||
+              _phoneRegex.hasMatch(paragraph)) {
+            final match = _hrefRegex.firstMatch(paragraph) ??
+                _phoneRegex.firstMatch(paragraph);
+            if (match != null) {
+              int startPos = match.start;
+              int endPos = match.end;
+              final String? entity = match.group(0);
+              if (entity != null) {
+                /// insert the text before the link or phone
                 if (startPos > 0) {
                   delta.insert(paragraph.substring(0, startPos));
                 }
 
-                /// insert the link
+                /// insert the link or phone
                 delta.insert(
                   paragraph.substring(startPos, endPos),
-                  attributes: {AppFlowyRichTextKeys.href: url},
+                  attributes: {
+                    AppFlowyRichTextKeys.href:
+                        _phoneRegex.hasMatch(entity) ? 'tel:$entity' : entity,
+                  },
                 );
 
-                /// insert the text after the link
+                /// insert the text after the link or phone
                 if (endPos < paragraph.length) {
                   delta.insert(paragraph.substring(endPos));
                 }
@@ -162,12 +176,12 @@ extension on EditorState {
     }
   }
 
-  Future<bool> maybeConvertToUrl(String plainText) async {
+  Future<bool> maybeConvertToUrlOrPhone(String plainText) async {
     final selection = this.selection;
     if (selection == null ||
         !selection.isSingle ||
         selection.isCollapsed ||
-        !_hrefRegex.hasMatch(plainText)) {
+        (!_hrefRegex.hasMatch(plainText) && !_phoneRegex.hasMatch(plainText))) {
       return false;
     }
 
@@ -177,8 +191,9 @@ extension on EditorState {
     }
 
     final transaction = this.transaction;
+    final isPhone = _phoneRegex.hasMatch(plainText);
     transaction.formatText(node, selection.startIndex, selection.length, {
-      AppFlowyRichTextKeys.href: plainText,
+      AppFlowyRichTextKeys.href: isPhone ? 'tel:$plainText' : plainText,
     });
     await apply(transaction);
     return true;

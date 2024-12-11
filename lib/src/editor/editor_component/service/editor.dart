@@ -17,7 +17,7 @@ KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
 /// The default value of the auto scroll edge offset on mobile
 /// The editor will scroll when the cursor is close to the edge of the screen
-double appFlowyEditorAutoScrollEdgeOffset = 220.0;
+const double appFlowyEditorAutoScrollEdgeOffset = 220.0;
 
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
@@ -45,6 +45,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.disableKeyboardService = false,
     this.disableScrollService = false,
     this.disableAutoScroll = false,
+    this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -216,6 +217,10 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   final bool disableAutoScroll;
 
+  /// The edge offset of the auto scroll.
+  ///
+  final double autoScrollEdgeOffset;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -362,6 +367,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.enableAutoComplete = widget.enableAutoComplete;
     editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
     editorState.disableAutoScroll = widget.disableAutoScroll;
+    editorState.autoScrollEdgeOffset = widget.autoScrollEdgeOffset;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

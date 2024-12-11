@@ -8,19 +8,25 @@ Future<void> onInsert(
   EditorState editorState,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
-  Log.input.debug('onInsert: $insertion');
+  AppFlowyEditorLog.input.debug('onInsert: $insertion');
 
   final textInserted = insertion.textInserted;
 
-  // character shortcut events
-  final execution = await executeCharacterShortcutEvent(
-    editorState,
-    textInserted,
-    characterShortcutEvents,
-  );
+  // In France, the backtick key is used to toggle a character style.
+  // We should prevent the execution of character shortcut events when the
+  // composing range is not collapsed.
+  if (insertion.composing.isCollapsed) {
+    // execute character shortcut events
+    final execution = await executeCharacterShortcutEvent(
+      editorState,
+      textInserted,
+      characterShortcutEvents,
+    );
 
-  if (execution) {
-    return;
+    if (execution) {
+      editorState.sliceUpcomingAttributes = false;
+      return;
+    }
   }
 
   var selection = editorState.selection;
@@ -71,7 +77,8 @@ Future<void> onInsert(
       selection.startIndex,
       textInserted,
       toggledAttributes: editorState.toggledStyle,
+      sliceAttributes: editorState.sliceUpcomingAttributes,
     )
     ..afterSelection = afterSelection;
-  return editorState.apply(transaction);
+  await editorState.apply(transaction);
 }

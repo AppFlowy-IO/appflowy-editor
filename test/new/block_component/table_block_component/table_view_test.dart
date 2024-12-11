@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,9 +10,6 @@ void main() async {
   });
 
   group('table_view.dart', () {
-    // TODO(zoli)
-    // testWidgets('resize column', (tester) async {});
-
     testWidgets('row height changing base on cell height', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],

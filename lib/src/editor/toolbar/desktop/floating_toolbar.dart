@@ -153,13 +153,26 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   void _showToolbar() {
-    if (editorState.selection?.isCollapsed ?? true) {
+    final selection = editorState.selection;
+    if (selection == null || selection.isCollapsed) {
       return;
     }
+
     if (editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
         true) {
       return;
     }
+
+    // check the content is visible
+    final nodes = editorState.getSelectedNodes();
+    if (nodes.isEmpty ||
+        nodes.every((node) {
+          final delta = node.delta;
+          return delta == null || delta.isEmpty;
+        })) {
+      return;
+    }
+
     final rects = editorState.selectionRects();
     if (rects.isEmpty) {
       return;

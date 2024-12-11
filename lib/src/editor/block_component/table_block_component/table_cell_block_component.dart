@@ -27,6 +27,19 @@ typedef TableBlockCellComponentColorBuilder = Color? Function(
   Node node,
 );
 
+Node tableCellNode(String text, int rowPosition, int colPosition) {
+  return Node(
+    type: TableCellBlockKeys.type,
+    attributes: {
+      TableCellBlockKeys.rowPosition: rowPosition,
+      TableCellBlockKeys.colPosition: colPosition,
+    },
+    children: [
+      paragraphNode(text: text),
+    ],
+  );
+}
+
 class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   TableCellBlockComponentBuilder({
     super.configuration,
@@ -55,7 +68,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  bool validate(Node node) =>
+  BlockComponentValidate get validate => (node) =>
       node.attributes.isNotEmpty &&
       node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
       node.attributes.containsKey(TableCellBlockKeys.colPosition);
