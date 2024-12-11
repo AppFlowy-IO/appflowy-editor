@@ -86,10 +86,14 @@ extension on EditorState {
   Future<bool> pasteHtml(String html) async {
     final nodes = htmlToDocument(html).root.children.toList();
     // remove the front and back empty line
-    while (nodes.isNotEmpty && nodes.first.delta?.isEmpty == true) {
+    while (nodes.isNotEmpty &&
+        nodes.first.delta?.isEmpty == true &&
+        nodes.first.children.isEmpty) {
       nodes.removeAt(0);
     }
-    while (nodes.isNotEmpty && nodes.last.delta?.isEmpty == true) {
+    while (nodes.isNotEmpty &&
+        nodes.last.delta?.isEmpty == true &&
+        nodes.last.children.isEmpty) {
       nodes.removeLast();
     }
     if (nodes.isEmpty) {
