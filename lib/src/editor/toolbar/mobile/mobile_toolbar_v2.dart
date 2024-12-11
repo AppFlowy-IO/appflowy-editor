@@ -123,7 +123,6 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
                 true) {
           return const SizedBox.shrink();
         }
-
         return RepaintBoundary(
           child: MobileToolbarTheme(
             backgroundColor: widget.backgroundColor,
@@ -170,6 +169,7 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
         return child;
       },
     );
+
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Overlay.of(context, rootOverlay: true).insert(toolbarOverlay!);
@@ -270,6 +270,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
     // if the keyboard is not closed initiative, we need to close the menu at same time
     if (!closeKeyboardInitiative &&
         cachedKeyboardHeight.value != 0 &&
+        !showMenuNotifier.value &&
         height == 0) {
       widget.editorState.selection = null;
     }
@@ -340,8 +341,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
                 } else {
                   canUpdateCachedKeyboardHeight = false;
                   selectedMenuIndex = index;
-                  showItemMenu();
                   closeKeyboardInitiative = true;
+                  showItemMenu();
                   _closeKeyboard();
                 }
               },
