@@ -11,9 +11,14 @@ typedef AppFlowyEditorSliceAttributes = Attributes? Function(
   int index,
 );
 
+/// Default slice attributes function.
+///
+/// For the BIUS attributes, the slice attributes function will slice the attributes from the previous position,
+///   if the index is 0, it will slice the attributes from the next position.
+/// For the link and code attributes, the slice attributes function will only work if the index is in the range of the link or code.
 AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
   delta,
-  index,
+  int index,
 ) {
   if (index < 0) {
     return null;
@@ -41,10 +46,10 @@ AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
   if (prevAttributes == null) {
     return null;
   }
-  // if the prevAttributes doesn't include the code, return it.
-  // Otherwise, check if the nextAttributes includes the code.
+  // if the prevAttributes doesn't include the code/href, return it.
+  // Otherwise, check if the nextAttributes includes the code/href.
   if (!prevAttributes.keys.any(
-    (element) => element == AppFlowyRichTextKeys.code,
+    (element) => AppFlowyRichTextKeys.partialSliced.contains(element),
   )) {
     return prevAttributes;
   }
@@ -52,14 +57,20 @@ AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
   // check if the nextAttributes includes the code.
   final nextAttributes = delta.slice(index, index + 1).firstOrNull?.attributes;
   if (nextAttributes == null) {
-    return prevAttributes..remove(AppFlowyRichTextKeys.code);
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
   }
 
-  // if the nextAttributes doesn't include the code, exclude the code format.
+  // if the nextAttributes doesn't include the code/href, exclude the code/href format.
   if (!nextAttributes.keys.any(
-    (element) => element == AppFlowyRichTextKeys.code,
+    (element) => AppFlowyRichTextKeys.partialSliced.contains(element),
   )) {
-    return prevAttributes..remove(AppFlowyRichTextKeys.code);
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
   }
 
   return prevAttributes;
