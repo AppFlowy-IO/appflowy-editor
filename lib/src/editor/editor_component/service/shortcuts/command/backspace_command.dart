@@ -24,10 +24,14 @@ CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  final reason = editorState.selectionUpdateReason;
+
   if (selectionType == SelectionType.block) {
     return _backspaceInBlockSelection(editorState);
   } else if (selection.isCollapsed) {
     return _backspaceInCollapsedSelection(editorState);
+  } else if (reason == SelectionUpdateReason.selectAll) {
+    return _backspaceInSelectAll(editorState);
   } else {
     return _backspaceInNotCollapsedSelection(editorState);
   }
@@ -160,6 +164,20 @@ CommandShortcutEventHandler _backspaceInBlockSelection = (editorState) {
   editorState
       .apply(transaction)
       .then((value) => editorState.selectionType = null);
+
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _backspaceInSelectAll = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  final transaction = editorState.transaction;
+  final nodes = editorState.getNodesInSelection(selection);
+  transaction.deleteNodes(nodes);
+  editorState.apply(transaction);
 
   return KeyEventResult.handled;
 };
