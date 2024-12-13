@@ -20,12 +20,11 @@ CommandShortcutEventHandler _selectAllCommandHandler = (editorState) {
       editorState.selection == null) {
     return KeyEventResult.ignored;
   }
-  final firstSelectable = editorState.getFirstSelectable();
   final lastSelectable = editorState.getLastSelectable();
-  if (firstSelectable == null || lastSelectable == null) {
+  if (lastSelectable == null) {
     return KeyEventResult.handled;
   }
-  final start = firstSelectable.$2.start(firstSelectable.$1);
+  final start = Position(path: [0]);
   final end = lastSelectable.$2.end(lastSelectable.$1);
   editorState.updateSelectionWithReason(
     Selection(start: start, end: end),

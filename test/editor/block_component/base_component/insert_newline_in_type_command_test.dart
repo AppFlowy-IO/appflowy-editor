@@ -3,6 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('InsertNewlineInTypeCommand tests', () {
+    setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
+    });
+
     test('bulleted list', () async {
       final bulletedNode = bulletedListNode(
         text: 'bulleted list 1',

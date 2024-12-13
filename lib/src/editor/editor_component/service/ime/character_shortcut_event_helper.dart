@@ -12,6 +12,9 @@ Future<bool> executeCharacterShortcutEvent(
   for (final shortcutEvent in characterShortcutEvents) {
     if (shortcutEvent.character == character &&
         await shortcutEvent.handler(editorState)) {
+      AppFlowyEditorLog.input.debug(
+        'keyboard service - handled by character shortcut event: $shortcutEvent',
+      );
       return true;
     }
   }
