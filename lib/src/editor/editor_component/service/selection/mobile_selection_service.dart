@@ -393,7 +393,7 @@ class _MobileSelectionServiceWidgetState
     final selection = editorState.selection;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      selectionNotifierAfterLayout.value = selection;
+      if (mounted) selectionNotifierAfterLayout.value = selection;
     });
 
     if (currentSelection.value != selection) {
