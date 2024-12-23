@@ -19,6 +19,14 @@ void main() {
       expect(diff.toString(), 'Diff[0, "", "W"]');
     });
 
+    test('getDiff for Chinese', () {
+      const oldText = '一个';
+      const newText = '一个两个';
+
+      final diff = getDiff(oldText, newText, 0);
+      expect(diff.toString(), 'Diff[2, "", "两个"]');
+    });
+
     test('getTextEditingDeltas insertion', () {
       const oldValue = TextEditingValue(text: 'elcome');
       const newValue = TextEditingValue(text: 'Welcome');
