@@ -169,7 +169,7 @@ class _TodoListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textDirection: textDirection,
               textSpanDecorator: (textSpan) =>
