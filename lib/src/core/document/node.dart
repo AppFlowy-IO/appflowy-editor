@@ -1,9 +1,8 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 
 abstract class NodeExternalValues {
@@ -254,6 +253,11 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     return map;
   }
 
+  /// Copy the node
+  ///
+  /// If the parameters are not provided, the original value will be used.
+  ///
+  /// Be careful of the children, they will be deep copied if not provided.
   Node copyWith({
     String? type,
     Iterable<Node>? children,
@@ -275,6 +279,13 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     node.externalValues = externalValues;
     node.extraInfos = extraInfos;
     return node;
+  }
+
+  /// Deep copy the node
+  ///
+  /// This is a deep copy of the node, including the children.
+  Node deepCopy() {
+    return copyWith();
   }
 
   Path _computePath([Path previous = const []]) {
