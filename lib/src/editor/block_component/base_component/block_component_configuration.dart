@@ -10,6 +10,7 @@ class BlockComponentConfiguration {
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
     this.blockSelectionAreaMargin = _blockSelectionAreaPadding,
+    this.textAlign = _textAlign,
   });
 
   /// The padding of a block component.
@@ -39,12 +40,19 @@ class BlockComponentConfiguration {
   /// The padding of a block selection area.
   final EdgeInsets Function(Node node) blockSelectionAreaMargin;
 
+  /// The text align of a block component.
+  ///
+  /// This value is only available for the block with text,
+  /// e.g. paragraph, heading, quote, to-do list, bulleted list, numbered list
+  final TextAlign Function(Node node) textAlign;
+
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
     TextStyle Function(Node node)? textStyle,
     String Function(Node node)? placeholderText,
     TextStyle Function(Node node)? placeholderTextStyle,
     EdgeInsets Function(Node node)? blockSelectionAreaMargin,
+    TextAlign Function(Node node)? textAlign,
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
@@ -53,6 +61,7 @@ class BlockComponentConfiguration {
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
       blockSelectionAreaMargin:
           blockSelectionAreaMargin ?? this.blockSelectionAreaMargin,
+      textAlign: textAlign ?? this.textAlign,
     );
   }
 }
@@ -69,6 +78,8 @@ mixin BlockComponentConfigurable<T extends StatefulWidget> on State<T> {
 
   TextStyle get placeholderTextStyle =>
       configuration.placeholderTextStyle(node);
+
+  TextAlign get textAlign => configuration.textAlign(node);
 }
 
 EdgeInsets _padding(Node node) {
@@ -100,4 +111,8 @@ TextStyle _placeholderTextStyle(Node node) {
 
 EdgeInsets _blockSelectionAreaPadding(Node node) {
   return const EdgeInsets.symmetric(vertical: 0.0);
+}
+
+TextAlign _textAlign(Node node) {
+  return TextAlign.left;
 }

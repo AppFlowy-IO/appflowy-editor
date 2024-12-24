@@ -137,7 +137,7 @@ class _HeadingBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               textSpanDecorator: (textSpan) {
                 var result = textSpan.updateTextStyle(textStyle);
                 result = result.updateTextStyle(
