@@ -29,7 +29,9 @@ Diff getDiff(String oldText, String newText, int cursorPosition) {
   final delta = newText.length - end;
   final limit = math.max(0, cursorPosition - delta);
 
-  while (end > limit && oldText[end - 1] == newText[end + delta - 1]) {
+  while (end > limit &&
+      oldText[end - 1] == newText[end + delta - 1] &&
+      !newText.startsWith(oldText)) {
     end--;
   }
 
