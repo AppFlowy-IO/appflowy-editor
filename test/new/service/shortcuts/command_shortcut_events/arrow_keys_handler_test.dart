@@ -117,8 +117,8 @@ void main() async {
   });
 
   testWidgets('''move the cursor one word right
-  MacOS: presses alt + arrow right key, 
-  Windows & Linux: presses ctrl + arrow right key, 
+  MacOS: presses alt + arrow right key,
+  Windows & Linux: presses ctrl + arrow right key,
   ''', (tester) async {
     const text = 'Welcome to Appflowy';
     final editor = tester.editor..addParagraphs(2, initialText: text);
@@ -160,8 +160,8 @@ void main() async {
   });
 
   testWidgets('''move the cursor one word left
-  MacOS: presses alt + arrow left key, 
-  Windows & Linux: presses ctrl + arrow left key, 
+  MacOS: presses alt + arrow left key,
+  Windows & Linux: presses ctrl + arrow left key,
   ''', (tester) async {
     const text = 'Welcome to Appflowy';
     final editor = tester.editor..addParagraphs(2, initialText: text);
@@ -413,7 +413,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [6], offset: 0),
+        end: Position(path: [6], offset: text.length),
       ),
     );
     for (int i = 0; i < 3; i++) {

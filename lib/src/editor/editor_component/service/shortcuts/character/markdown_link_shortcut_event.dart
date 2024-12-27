@@ -30,7 +30,8 @@ bool handleFormatMarkdownLinkToLink({
     return false;
   }
 
-  final plainText = '${delta.toPlainText()})';
+  final slicedDelta = delta.slice(0, selection.end.offset);
+  final plainText = '${slicedDelta.toPlainText()})';
 
   // Determine if regex matches the plainText.
   if (!_linkRegex.hasMatch(plainText)) {

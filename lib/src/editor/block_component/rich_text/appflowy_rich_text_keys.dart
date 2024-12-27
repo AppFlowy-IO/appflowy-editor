@@ -13,6 +13,7 @@ class AppFlowyRichTextKeys {
   static String autoComplete = 'auto_complete';
   static String transparent = 'transparent';
 
+  /// The attributes supported sliced.
   static List<String> supportSliced = [
     bold,
     italic,
@@ -21,6 +22,14 @@ class AppFlowyRichTextKeys {
     textColor,
     backgroundColor,
     code,
+  ];
+
+  /// The attributes is partially supported sliced.
+  ///
+  /// For the code and href attributes, the slice attributes function will only work if the index is in the range of the code or href.
+  static List<String> partialSliced = [
+    code,
+    href,
   ];
 
   // The values supported toggled even if the selection is collapsed.

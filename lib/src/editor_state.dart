@@ -8,6 +8,12 @@ import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+typedef EditorTransactionValue = (
+  TransactionTime time,
+  Transaction transaction,
+  ApplyOptions options,
+);
+
 /// the type of this value is bool.
 ///
 /// set true to this key to prevent attaching the text service when selection is changed.
@@ -15,15 +21,20 @@ const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
 
 class ApplyOptions {
+  const ApplyOptions({
+    this.recordUndo = true,
+    this.recordRedo = false,
+    this.inMemoryUpdate = false,
+  });
+
   /// This flag indicates that
   /// whether the transaction should be recorded into
   /// the undo stack
   final bool recordUndo;
   final bool recordRedo;
-  const ApplyOptions({
-    this.recordUndo = true,
-    this.recordRedo = false,
-  });
+
+  /// This flag used to determine whether the transaction is in-memory update.
+  final bool inMemoryUpdate;
 }
 
 @Deprecated('use SelectionUpdateReason instead')
@@ -196,9 +207,8 @@ class EditorState {
   List<ToolbarItem> toolbarItems = [];
 
   /// listen to this stream to get notified when the transaction applies.
-  Stream<(TransactionTime, Transaction)> get transactionStream =>
-      _observer.stream;
-  final StreamController<(TransactionTime, Transaction)> _observer =
+  Stream<EditorTransactionValue> get transactionStream => _observer.stream;
+  final StreamController<EditorTransactionValue> _observer =
       StreamController.broadcast(sync: true);
 
   /// Store the toggled format style, like bold, italic, etc.
@@ -366,14 +376,14 @@ class EditorState {
     } else {
       // broadcast to other users here, before applying the transaction
       if (!_observer.isClosed) {
-        _observer.add((TransactionTime.before, transaction));
+        _observer.add((TransactionTime.before, transaction, options));
       }
 
       _applyTransactionInLocal(transaction);
 
       // broadcast to other users here, after applying the transaction
       if (!_observer.isClosed) {
-        _observer.add((TransactionTime.after, transaction));
+        _observer.add((TransactionTime.after, transaction, options));
       }
 
       _recordRedoOrUndo(options, transaction, skipHistoryDebounce);

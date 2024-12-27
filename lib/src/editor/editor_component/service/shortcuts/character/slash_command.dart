@@ -5,6 +5,15 @@ import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+const Set<String> _defaultSupportSlashMenuNodeTypes = {
+  ParagraphBlockKeys.type,
+  HeadingBlockKeys.type,
+  TodoListBlockKeys.type,
+  BulletedListBlockKeys.type,
+  NumberedListBlockKeys.type,
+  QuoteBlockKeys.type,
+};
+
 /// Show the slash menu
 ///
 /// - support
@@ -23,8 +32,10 @@ final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
 CharacterShortcutEvent customSlashCommand(
   List<SelectionMenuItem> items, {
   bool shouldInsertSlash = true,
+  bool deleteKeywordsByDefault = false,
   bool singleColumn = true,
   SelectionMenuStyle style = SelectionMenuStyle.light,
+  Set<String> supportSlashMenuNodeTypes = _defaultSupportSlashMenuNodeTypes,
 }) {
   return CharacterShortcutEvent(
     key: 'show the slash menu',
@@ -33,20 +44,13 @@ CharacterShortcutEvent customSlashCommand(
       editorState,
       items,
       shouldInsertSlash: shouldInsertSlash,
+      deleteKeywordsByDefault: deleteKeywordsByDefault,
       singleColumn: singleColumn,
       style: style,
+      supportSlashMenuNodeTypes: supportSlashMenuNodeTypes,
     ),
   );
 }
-
-final Set<String> supportSlashMenuNodeWhiteList = {
-  ParagraphBlockKeys.type,
-  HeadingBlockKeys.type,
-  TodoListBlockKeys.type,
-  BulletedListBlockKeys.type,
-  NumberedListBlockKeys.type,
-  QuoteBlockKeys.type,
-};
 
 SelectionMenuService? _selectionMenuService;
 Future<bool> _showSlashMenu(
@@ -54,7 +58,9 @@ Future<bool> _showSlashMenu(
   List<SelectionMenuItem> items, {
   bool shouldInsertSlash = true,
   bool singleColumn = true,
+  bool deleteKeywordsByDefault = false,
   SelectionMenuStyle style = SelectionMenuStyle.light,
+  Set<String> supportSlashMenuNodeTypes = _defaultSupportSlashMenuNodeTypes,
 }) async {
   if (PlatformExtension.isMobile) {
     return false;
@@ -79,7 +85,8 @@ Future<bool> _showSlashMenu(
   final node = editorState.getNodeAtPath(selection.start.path);
 
   // only enable in white-list nodes
-  if (node == null || !_isSupportSlashMenuNode(node)) {
+  if (node == null ||
+      !_isSupportSlashMenuNode(node, supportSlashMenuNodeTypes)) {
     return false;
   }
 
@@ -98,6 +105,7 @@ Future<bool> _showSlashMenu(
       editorState: editorState,
       selectionMenuItems: items,
       deleteSlashByDefault: shouldInsertSlash,
+      deleteKeywordsByDefault: deleteKeywordsByDefault,
       singleColumn: singleColumn,
       style: style,
     );
@@ -117,10 +125,22 @@ Future<bool> _showSlashMenu(
   return true;
 }
 
-bool _isSupportSlashMenuNode(Node node) {
-  var result = supportSlashMenuNodeWhiteList.contains(node.type);
-  if (node.level > 1 && node.parent != null) {
-    return result && _isSupportSlashMenuNode(node.parent!);
+bool _isSupportSlashMenuNode(
+  Node node,
+  Set<String> supportSlashMenuNodeWhiteList,
+) {
+  // Check if current node type is supported
+  if (!supportSlashMenuNodeWhiteList.contains(node.type)) {
+    return false;
   }
-  return result;
+
+  // If node has a parent and level > 1, recursively check parent nodes
+  if (node.level > 1 && node.parent != null) {
+    return _isSupportSlashMenuNode(
+      node.parent!,
+      supportSlashMenuNodeWhiteList,
+    );
+  }
+
+  return true;
 }

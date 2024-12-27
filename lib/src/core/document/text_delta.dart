@@ -11,37 +11,69 @@ typedef AppFlowyEditorSliceAttributes = Attributes? Function(
   int index,
 );
 
+/// Default slice attributes function.
+///
+/// For the BIUS attributes, the slice attributes function will slice the attributes from the previous position,
+///   if the index is 0, it will slice the attributes from the next position.
+/// For the link and code attributes, the slice attributes function will only work if the index is in the range of the link or code.
 AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes = (
   delta,
-  index,
+  int index,
 ) {
   if (index < 0) {
     return null;
   }
 
-  Attributes? attributes;
-
   // if the index == 0, slice the attributes from the next position.
   if (index == 0 && delta.isNotEmpty) {
-    attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
-  } else {
-    attributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+    final attributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+    if (attributes == null) {
+      return null;
+    }
+
+    // if the attributes is not supported, return null.
+    if (attributes.keys.any(
+      (element) => !AppFlowyRichTextKeys.supportSliced.contains(element),
+    )) {
+      return null;
+    }
+
+    return attributes;
   }
 
-  if (attributes == null) {
+  // if the index is not 0, slice the attributes from the previous position.
+  final prevAttributes = delta.slice(index - 1, index).firstOrNull?.attributes;
+  if (prevAttributes == null) {
     return null;
   }
-
-  if (!attributes.keys.every(
-    (element) => AppFlowyRichTextKeys.supportSliced.contains(element),
+  // if the prevAttributes doesn't include the code/href, return it.
+  // Otherwise, check if the nextAttributes includes the code/href.
+  if (!prevAttributes.keys.any(
+    (element) => AppFlowyRichTextKeys.partialSliced.contains(element),
   )) {
-    AppFlowyEditorLog.editor.info(
-      'The attributes: $attributes is not supported in sliceAttributes.',
-    );
-    return null;
+    return prevAttributes;
   }
 
-  return attributes;
+  // check if the nextAttributes includes the code.
+  final nextAttributes = delta.slice(index, index + 1).firstOrNull?.attributes;
+  if (nextAttributes == null) {
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
+  }
+
+  // if the nextAttributes doesn't include the code/href, exclude the code/href format.
+  if (!nextAttributes.keys.any(
+    (element) => AppFlowyRichTextKeys.partialSliced.contains(element),
+  )) {
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
+  }
+
+  return prevAttributes;
 };
 
 /// Default slice attributes function.

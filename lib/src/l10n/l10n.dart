@@ -1841,6 +1841,45 @@ class AppFlowyEditorLocalizations {
     );
   }
 
+  /// `toggle H1`
+  String get cmdToggleH1 {
+    return Intl.message(
+      'toggle H1',
+      name: 'cmdToggleH1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle H2`
+  String get cmdToggleH2 {
+    return Intl.message(
+      'toggle H2',
+      name: 'cmdToggleH2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle H3`
+  String get cmdToggleH3 {
+    return Intl.message(
+      'toggle H3',
+      name: 'cmdToggleH3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `toggle body`
+  String get cmdToggleBody {
+    return Intl.message(
+      'toggle body',
+      name: 'cmdToggleBody',
+      desc: '',
+      args: [],
+    );
+  }
   /// `vim insert below`
   String get cmdInsertBelow {
     return Intl.message('insert below',
@@ -1950,7 +1989,7 @@ class AppFlowyEditorLocalizations {
   String get cmdVimNumJumper {
     return Intl.message('jump around with numbers',
         name: 'cmdVimNumJumper', desc: '', args: []);
-  }
+}
 }
 
 class AppLocalizationDelegate

@@ -168,7 +168,7 @@ class _ParagraphBlockComponentWidgetState
             delegate: this,
             node: widget.node,
             editorState: editorState,
-            textAlign: alignment?.toTextAlign,
+            textAlign: alignment?.toTextAlign ?? textAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
             textSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(textStyle),

@@ -137,7 +137,7 @@ class _HeadingBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               textSpanDecorator: (textSpan) {
                 var result = textSpan.updateTextStyle(textStyle);
                 result = result.updateTextStyle(
@@ -165,17 +165,9 @@ class _HeadingBlockComponentWidgetState
       ),
     );
 
-    child = Container(
-      color: backgroundColor,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
-    );
-
     child = BlockSelectionContainer(
       node: node,
+      key: blockComponentKey,
       delegate: this,
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
@@ -184,6 +176,14 @@ class _HeadingBlockComponentWidgetState
         BlockSelectionType.block,
       ],
       child: child,
+    );
+
+    child = Padding(
+      padding: padding,
+      child: Container(
+        color: backgroundColor,
+        child: child,
+      ),
     );
 
     if (widget.showActions && widget.actionBuilder != null) {
