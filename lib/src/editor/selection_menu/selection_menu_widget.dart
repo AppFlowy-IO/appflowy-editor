@@ -346,7 +346,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
               color: Colors.black.withValues(alpha: 0.1),
             ),
           ],
-          borderRadius: BorderRadius.circular(6.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         child: _showingItems.isEmpty
             ? _buildNoResultsWidget(context)
@@ -407,6 +407,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         child: ListView(
           shrinkWrap: true,
           controller: _scrollController,
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
           children: itemWidgets,
         ),
       );
@@ -462,14 +463,23 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
+    final theme = Theme.of(context);
+
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         width: 140,
         child: Material(
+          color: Colors.transparent,
           child: Text(
+            // TODO: Localize this text
             "No results",
-            style: TextStyle(fontSize: 18.0, color: Colors.grey),
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
             textAlign: TextAlign.center,
           ),
         ),
