@@ -31,75 +31,75 @@ class ContextMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = <Widget>[];
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Stack(
+      children: [
+        Positioned(
+          top: position.dy,
+          left: position.dx,
+          child: Material(
+            clipBehavior: Clip.antiAlias,
+            elevation: 3,
+            color: colorScheme.surfaceContainer,
+            surfaceTintColor: colorScheme.surfaceTint,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: IntrinsicWidth(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: _buildMenuItems(context),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildMenuItems(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    final menuWidgets = <Widget>[];
+
     for (var i = 0; i < items.length; i++) {
       for (var j = 0; j < items[i].length; j++) {
-        if (items[i][j].isApplicable != null &&
-            !items[i][j].isApplicable!(editorState)) {
+        final menuItem = items[i][j];
+
+        if (menuItem.isApplicable != null &&
+            !menuItem.isApplicable!(editorState)) {
           continue;
         }
 
         if (j == 0 && i != 0) {
-          children.add(const Divider());
+          menuWidgets.add(const Divider());
         }
 
-        children.add(
-          StatefulBuilder(
-            builder: (BuildContext context, setState) {
-              return Material(
-                child: InkWell(
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  onTap: () {
-                    items[i][j].onPressed(editorState);
-                    onPressed();
-                  },
-                  onHover: (value) => setState(() {}),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      items[i][j].name,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-              );
+        menuWidgets.add(
+          InkWell(
+            onTap: () {
+              menuItem.onPressed(editorState);
+              onPressed();
             },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
+              child: Text(
+                menuItem.name,
+                style: textTheme.bodyLarge,
+              ),
+            ),
           ),
         );
       }
     }
 
-    return Positioned(
-      top: position.dy,
-      left: position.dx,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        constraints: const BoxConstraints(
-          minWidth: 140,
-        ),
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 5,
-              spreadRadius: 1,
-              color: Colors.black.withValues(alpha: 0.1),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(6.0),
-        ),
-        child: IntrinsicWidth(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ),
-    );
+    return menuWidgets;
   }
 }
