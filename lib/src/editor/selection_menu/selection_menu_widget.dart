@@ -381,16 +381,19 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       List<Widget> itemWidgets = [];
       for (var i = 0; i < items.length; i++) {
         itemWidgets.add(
-          AutoScrollTag(
-            key: ValueKey(i),
-            index: i,
-            controller: _scrollController!,
-            child: SelectionMenuItemWidget(
-              item: items[i],
-              isSelected: selectedIndex == i,
-              editorState: widget.editorState,
-              menuService: widget.menuService,
-              selectionMenuStyle: widget.selectionMenuStyle,
+          MouseRegion(
+            onEnter: (_) => _onHover(i),
+            child: AutoScrollTag(
+              key: ValueKey(i),
+              index: i,
+              controller: _scrollController!,
+              child: SelectionMenuItemWidget(
+                item: items[i],
+                isSelected: selectedIndex == i,
+                editorState: widget.editorState,
+                menuService: widget.menuService,
+                selectionMenuStyle: widget.selectionMenuStyle,
+              ),
             ),
           ),
         );
@@ -410,13 +413,12 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     } else {
       List<Widget> columns = [];
       List<Widget> itemWidgets = [];
-      // apply item count filter
       if (itemCountFilter > 0) {
         items = items.take(itemCountFilter).toList();
       }
 
       for (var i = 0; i < items.length; i++) {
-        if (i != 0 && i % (widget.maxItemInRow) == 0) {
+        if (i != 0 && i % widget.maxItemInRow == 0) {
           columns.add(
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,12 +428,15 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
           itemWidgets = [];
         }
         itemWidgets.add(
-          SelectionMenuItemWidget(
-            item: items[i],
-            isSelected: selectedIndex == i,
-            editorState: widget.editorState,
-            menuService: widget.menuService,
-            selectionMenuStyle: widget.selectionMenuStyle,
+          MouseRegion(
+            onEnter: (_) => _onHover(i),
+            child: SelectionMenuItemWidget(
+              item: items[i],
+              isSelected: selectedIndex == i,
+              editorState: widget.editorState,
+              menuService: widget.menuService,
+              selectionMenuStyle: widget.selectionMenuStyle,
+            ),
           ),
         );
       }
@@ -442,13 +447,18 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
             children: itemWidgets,
           ),
         );
-        itemWidgets = [];
       }
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: columns,
       );
     }
+  }
+
+  void _onHover(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
