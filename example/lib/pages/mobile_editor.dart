@@ -43,8 +43,6 @@ class _MobileEditorState extends State<MobileEditor> {
 
     editorStyle = _buildMobileEditorStyle();
     blockComponentBuilders = _buildBlockComponentBuilders();
-
-    editorState.debugInfo.debugPaintSizeEnabled = true;
   }
 
   @override

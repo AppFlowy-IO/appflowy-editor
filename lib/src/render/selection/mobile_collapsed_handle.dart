@@ -1,8 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MobileCollapsedHandle extends StatelessWidget {
   const MobileCollapsedHandle({
@@ -24,13 +22,11 @@ class MobileCollapsedHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final debugInfo = context.read<EditorState>().debugInfo;
     if (PlatformExtension.isIOS) {
       return _IOSCollapsedHandle(
         layerLink: layerLink,
         rect: rect,
         handleWidth: handleWidth,
-        debugPaintSizeEnabled: debugInfo.debugPaintSizeEnabled,
       );
     } else if (PlatformExtension.isAndroid) {
       return _AndroidCollapsedHandle(
@@ -40,7 +36,6 @@ class MobileCollapsedHandle extends StatelessWidget {
         handleWidth: handleWidth,
         handleBallWidth: handleBallWidth,
         enableHapticFeedbackOnAndroid: enableHapticFeedbackOnAndroid,
-        debugPaintSizeEnabled: debugInfo.debugPaintSizeEnabled,
       );
     }
     throw UnsupportedError('Unsupported platform');
@@ -52,13 +47,11 @@ class _IOSCollapsedHandle extends StatelessWidget {
     required this.layerLink,
     required this.rect,
     this.handleWidth = 2.0,
-    this.debugPaintSizeEnabled = false,
   });
 
   final Rect rect;
   final LayerLink layerLink;
   final double handleWidth;
-  final bool debugPaintSizeEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +78,6 @@ class _IOSCollapsedHandle extends StatelessWidget {
                 handleType: HandleType.collapsed,
                 handleColor: Colors.transparent,
                 handleWidth: adjustedRect.width,
-                debugPaintSizeEnabled: debugPaintSizeEnabled,
               ),
             ),
           ],
@@ -103,7 +95,6 @@ class _AndroidCollapsedHandle extends StatelessWidget {
     this.handleBallWidth = 6.0,
     this.handleWidth = 2.0,
     this.enableHapticFeedbackOnAndroid = true,
-    this.debugPaintSizeEnabled = false,
   });
 
   final Rect rect;
@@ -112,7 +103,6 @@ class _AndroidCollapsedHandle extends StatelessWidget {
   final double handleWidth;
   final double handleBallWidth;
   final bool enableHapticFeedbackOnAndroid;
-  final bool debugPaintSizeEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +132,6 @@ class _AndroidCollapsedHandle extends StatelessWidget {
                 handleColor: handleColor,
                 handleWidth: adjustedRect.width,
                 handleBallWidth: handleBallWidth,
-                debugPaintSizeEnabled: debugPaintSizeEnabled,
               ),
             ),
           ],
