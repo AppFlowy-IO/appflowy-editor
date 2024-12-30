@@ -376,7 +376,9 @@ class EditorState {
       _recordRedoOrUndo(options, transaction, skipHistoryDebounce);
 
       if (withUpdateSelection) {
-        _selectionUpdateReason = SelectionUpdateReason.transaction;
+        _selectionUpdateReason =
+            transaction.reason ?? SelectionUpdateReason.transaction;
+        _selectionType = transaction.customSelectionType;
         if (transaction.selectionExtraInfo != null) {
           selectionExtraInfo = transaction.selectionExtraInfo;
         }

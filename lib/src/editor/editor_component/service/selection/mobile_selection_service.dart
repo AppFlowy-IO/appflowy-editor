@@ -324,6 +324,10 @@ class _MobileSelectionServiceWidgetState
 
   // The collapsed handle will be dismissed when no user interaction is detected.
   void _clearCollapsedHandleOnAndroid() {
+    if (!PlatformExtension.isAndroid) {
+      return;
+    }
+    collapsedHandleTimer?.cancel();
     collapsedHandleTimer = Timer(
       editorState.editorStyle.autoDismissCollapsedHandleDuration,
       () {

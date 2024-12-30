@@ -145,6 +145,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
+  void clearComposingTextRange() {
+    composingTextRange = TextRange.empty;
+  }
+
+  @override
   void connectionClosed() {}
 
   @override
