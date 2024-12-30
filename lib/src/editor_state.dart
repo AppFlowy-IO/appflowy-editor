@@ -14,6 +14,17 @@ typedef EditorTransactionValue = (
   ApplyOptions options,
 );
 
+class EditorStateDebugInfo {
+  EditorStateDebugInfo({
+    this.debugPaintSizeEnabled = false,
+  });
+
+  /// Enable the debug paint size for selection handle.
+  ///
+  /// It only available on mobile.
+  bool debugPaintSizeEnabled;
+}
+
 /// the type of this value is bool.
 ///
 /// set true to this key to prevent attaching the text service when selection is changed.
@@ -165,6 +176,11 @@ class EditorState {
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
+
+  /// Customize the debug info for the editor state.
+  ///
+  /// Refer to [EditorStateDebugInfo] for more details.
+  EditorStateDebugInfo debugInfo = EditorStateDebugInfo();
 
   /// store the auto scroller instance in here temporarily.
   AutoScroller? autoScroller;
