@@ -80,6 +80,8 @@ extension TextTransforms on EditorState {
         offset: 0,
       ),
     );
+    transaction.selectionExtraInfo = {};
+    transaction.customSelectionType = SelectionType.inline;
 
     // Apply the transaction.
     return apply(transaction);
