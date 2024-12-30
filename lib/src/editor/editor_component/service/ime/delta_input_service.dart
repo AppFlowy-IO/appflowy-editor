@@ -93,6 +93,11 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   }
 
   @override
+  void clearComposingTextRange() {
+    composingTextRange = TextRange.empty;
+  }
+
+  @override
   void connectionClosed() {}
 
   @override

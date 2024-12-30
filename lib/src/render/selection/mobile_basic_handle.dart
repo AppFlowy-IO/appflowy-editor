@@ -66,6 +66,7 @@ abstract class _IDragHandle extends StatelessWidget {
     this.handleWidth = 2.0,
     this.handleBallWidth = 6.0,
     this.debugPaintSizeEnabled = false,
+    this.onDragging,
     required this.handleType,
   });
 
@@ -75,6 +76,7 @@ abstract class _IDragHandle extends StatelessWidget {
   final double handleBallWidth;
   final HandleType handleType;
   final bool debugPaintSizeEnabled;
+  final ValueChanged<bool>? onDragging;
 }
 
 class DragHandle extends _IDragHandle {
@@ -86,6 +88,7 @@ class DragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   @override
@@ -100,6 +103,7 @@ class DragHandle extends _IDragHandle {
         handleBallWidth: handleBallWidth,
         handleType: handleType,
         debugPaintSizeEnabled: debugPaintSizeEnabled,
+        onDragging: onDragging,
       );
     } else if (PlatformExtension.isAndroid) {
       child = _AndroidDragHandle(
@@ -109,6 +113,7 @@ class DragHandle extends _IDragHandle {
         handleBallWidth: handleBallWidth,
         handleType: handleType,
         debugPaintSizeEnabled: debugPaintSizeEnabled,
+        onDragging: onDragging,
       );
     } else {
       throw UnsupportedError('Unsupported platform');
@@ -152,6 +157,7 @@ class _IOSDragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   @override
@@ -222,18 +228,21 @@ class _IOSDragHandle extends _IDragHandle {
           details.translate(0, offset),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanUpdate: (details) {
         editorState.service.selectionService.onPanUpdate(
           details.translate(0, offset),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanEnd: (details) {
         editorState.service.selectionService.onPanEnd(
           details,
           handleType.dragMode,
         );
+        onDragging?.call(false);
       },
       child: child,
     );
@@ -251,6 +260,7 @@ class _AndroidDragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   Selection? selection;
@@ -327,6 +337,7 @@ class _AndroidDragHandle extends _IDragHandle {
           details.translate(0, -ballWidth),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanUpdate: (details) {
         final selection = editorState.service.selectionService.onPanUpdate(
@@ -337,12 +348,14 @@ class _AndroidDragHandle extends _IDragHandle {
           HapticFeedback.selectionClick();
         }
         this.selection = selection;
+        onDragging?.call(true);
       },
       onPanEnd: (details) {
         editorState.service.selectionService.onPanEnd(
           details,
           handleType.dragMode,
         );
+        onDragging?.call(false);
       },
       child: child,
     );
