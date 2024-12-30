@@ -36,6 +36,12 @@ class Transaction {
   /// The before selection is to be recovered if needed.
   Selection? beforeSelection;
 
+  /// The custom selection type is to be applied.
+  SelectionType? customSelectionType;
+
+  /// The custom selection reason is to be applied.
+  SelectionUpdateReason? reason;
+
   Map? selectionExtraInfo;
 
   // mark needs to be composed

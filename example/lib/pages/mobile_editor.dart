@@ -43,6 +43,8 @@ class _MobileEditorState extends State<MobileEditor> {
 
     editorStyle = _buildMobileEditorStyle();
     blockComponentBuilders = _buildBlockComponentBuilders();
+
+    editorState.debugInfo.debugPaintSizeEnabled = true;
   }
 
   @override
@@ -125,7 +127,9 @@ class _MobileEditorState extends State<MobileEditor> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       magnifierSize: const Size(144, 96),
-      mobileDragHandleBallSize: const Size(12, 12),
+      mobileDragHandleBallSize: const Size.square(8),
+      mobileDragHandleLeftExtend: 12.0,
+      mobileDragHandleWidthExtend: 24.0,
     );
   }
 

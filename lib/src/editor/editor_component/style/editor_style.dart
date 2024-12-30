@@ -22,6 +22,11 @@ class EditorStyle {
     this.enableHapticFeedbackOnAndroid = true,
     this.textScaleFactor = 1.0,
     this.maxWidth,
+    this.mobileDragHandleTopExtend,
+    this.mobileDragHandleWidthExtend,
+    this.mobileDragHandleLeftExtend,
+    this.mobileDragHandleHeightExtend,
+    this.autoDismissCollapsedHandleDuration = const Duration(seconds: 3),
   });
 
   // The padding of the editor.
@@ -69,6 +74,25 @@ class EditorStyle {
   // Only works on mobile.
   final Size mobileDragHandleBallSize;
 
+  /// The extend of the mobile drag handle.
+  ///
+  /// By default, the hit test area of drag handle is the ball size.
+  /// If you want to extend the hit test area, you can set this value.
+  ///
+  /// For example, if you set this value to 10, the hit test area of drag handle
+  /// will be the ball size + 10 * 2.
+  final double? mobileDragHandleTopExtend;
+  final double? mobileDragHandleLeftExtend;
+  final double? mobileDragHandleWidthExtend;
+  final double? mobileDragHandleHeightExtend;
+
+  /// The auto-dismiss time of the collapsed handle.
+  ///
+  /// The collapsed handle will be dismissed when no user interaction is detected.
+  ///
+  /// Only works on Android.
+  final Duration autoDismissCollapsedHandleDuration;
+
   final double mobileDragHandleWidth;
 
   // only works on android
@@ -101,7 +125,12 @@ class EditorStyle {
         mobileDragHandleBallSize = Size.zero,
         mobileDragHandleWidth = 0.0,
         enableHapticFeedbackOnAndroid = false,
-        dragHandleColor = Colors.transparent;
+        dragHandleColor = Colors.transparent,
+        mobileDragHandleTopExtend = null,
+        mobileDragHandleWidthExtend = null,
+        mobileDragHandleLeftExtend = null,
+        mobileDragHandleHeightExtend = null,
+        autoDismissCollapsedHandleDuration = const Duration(seconds: 0);
 
   const EditorStyle.mobile({
     EdgeInsets? padding,
@@ -118,6 +147,11 @@ class EditorStyle {
     this.enableHapticFeedbackOnAndroid = true,
     this.textScaleFactor = 1.0,
     this.maxWidth,
+    this.mobileDragHandleTopExtend,
+    this.mobileDragHandleWidthExtend,
+    this.mobileDragHandleLeftExtend,
+    this.mobileDragHandleHeightExtend,
+    this.autoDismissCollapsedHandleDuration = const Duration(seconds: 3),
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
@@ -145,6 +179,11 @@ class EditorStyle {
     double? cursorWidth,
     double? textScaleFactor,
     double? maxWidth,
+    double? mobileDragHandleTopExtend,
+    double? mobileDragHandleWidthExtend,
+    double? mobileDragHandleLeftExtend,
+    double? mobileDragHandleHeightExtend,
+    Duration? autoDismissCollapsedHandleDuration,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -165,6 +204,16 @@ class EditorStyle {
       cursorWidth: cursorWidth ?? this.cursorWidth,
       textScaleFactor: textScaleFactor ?? this.textScaleFactor,
       maxWidth: maxWidth ?? this.maxWidth,
+      mobileDragHandleTopExtend:
+          mobileDragHandleTopExtend ?? this.mobileDragHandleTopExtend,
+      mobileDragHandleWidthExtend:
+          mobileDragHandleWidthExtend ?? this.mobileDragHandleWidthExtend,
+      mobileDragHandleLeftExtend:
+          mobileDragHandleLeftExtend ?? this.mobileDragHandleLeftExtend,
+      mobileDragHandleHeightExtend:
+          mobileDragHandleHeightExtend ?? this.mobileDragHandleHeightExtend,
+      autoDismissCollapsedHandleDuration: autoDismissCollapsedHandleDuration ??
+          this.autoDismissCollapsedHandleDuration,
     );
   }
 }

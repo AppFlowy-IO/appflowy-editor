@@ -25,6 +25,8 @@ abstract class TextInputService {
   TextRange? get composingTextRange;
   bool get attached;
 
+  void clearComposingTextRange();
+
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
 
   /// Updates the [TextEditingValue] of the text currently being edited.
