@@ -5,6 +5,11 @@ Future<bool> executeCharacterShortcutEvent(
   String? character,
   List<CharacterShortcutEvent> characterShortcutEvents,
 ) async {
+  // if the character is a space + enter, we should execute the enter event
+  if (character == ' \n') {
+    character = '\n';
+  }
+
   if (character?.length != 1) {
     return false;
   }
