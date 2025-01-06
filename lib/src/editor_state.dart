@@ -57,6 +57,7 @@ enum CursorUpdateReason {
 enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
+  remote, // like remote selection
   selectAll,
   searchHighlight, // Highlighting search results
 }
@@ -359,6 +360,7 @@ class EditorState {
     final completer = Completer<void>();
 
     if (isRemote) {
+      _selectionUpdateReason = SelectionUpdateReason.remote;
       selection = _applyTransactionFromRemote(transaction);
     } else {
       // broadcast to other users here, before applying the transaction
