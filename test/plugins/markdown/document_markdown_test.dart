@@ -26,6 +26,16 @@ void main() {
 
       expect(markdown, markdownDocumentEncoded);
     });
+
+    test('paragraph + image', () {
+      const markdown = '''This is the first line
+![image](https://example.com/image.png)''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 2);
+      expect(nodes[0].delta?.toPlainText(), 'This is the first line\n');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+    });
   });
 }
 
