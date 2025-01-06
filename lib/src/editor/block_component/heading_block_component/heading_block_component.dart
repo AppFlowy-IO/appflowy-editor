@@ -139,7 +139,9 @@ class _HeadingBlockComponentWidgetState
               editorState: editorState,
               textAlign: alignment?.toTextAlign ?? textAlign,
               textSpanDecorator: (textSpan) {
-                var result = textSpan.updateTextStyle(textStyle);
+                var result = textSpan.updateTextStyle(
+                  textStyleWithTextSpan(textSpan: textSpan),
+                );
                 result = result.updateTextStyle(
                   widget.textStyleBuilder?.call(level) ??
                       defaultTextStyle(level),
@@ -153,7 +155,7 @@ class _HeadingBlockComponentWidgetState
                         defaultTextStyle(level),
                   )
                   .updateTextStyle(
-                    placeholderTextStyle,
+                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
                   ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,

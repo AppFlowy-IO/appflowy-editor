@@ -85,7 +85,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         }
         return const EdgeInsets.symmetric(vertical: 5);
       },
-      textStyle: (node) {
+      textStyle: (node, {TextSpan? textSpan}) {
         if (HeadingBlockKeys.type == node.type) {
           return const TextStyle(color: Colors.yellow);
         }

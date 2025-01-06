@@ -163,10 +163,15 @@ class _ParagraphBlockComponentWidgetState
             editorState: editorState,
             textAlign: alignment?.toTextAlign ?? textAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
-            textSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(textStyle),
+            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+              textStyleWithTextSpan(
+                textSpan: textSpan,
+              ),
+            ),
             placeholderTextSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(placeholderTextStyle),
+                textSpan.updateTextStyle(
+              placeholderTextStyleWithTextSpan(textSpan: textSpan),
+            ),
             textDirection: textDirection,
             cursorColor: editorState.editorStyle.cursorColor,
             selectionColor: editorState.editorStyle.selectionColor,
