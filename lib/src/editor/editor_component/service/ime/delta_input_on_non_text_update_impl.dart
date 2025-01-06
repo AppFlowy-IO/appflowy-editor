@@ -59,7 +59,7 @@ Future<void> onNonTextUpdate(
     // for the another keyboards (e.g. system keyboard), they will trigger the
     // `onFloatingCursor` event instead.
     AppFlowyEditorLog.input.debug('[Android] onNonTextUpdate: $nonTextUpdate');
-    if (selection != null && selection != editorState.selection) {
+    if (selection != null) {
       editorState.updateSelectionWithReason(
         Selection.collapsed(
           Position(
