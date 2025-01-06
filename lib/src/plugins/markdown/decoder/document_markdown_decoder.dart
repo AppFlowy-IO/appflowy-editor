@@ -17,7 +17,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
   @override
   Document convert(String input) {
     final List<md.Node> mdNodes = md.Document(
-      extensionSet: md.ExtensionSet.gitHubWeb,
+      extensionSet: md.ExtensionSet.gitHubFlavored,
       inlineSyntaxes: [
         ...inlineSyntaxes,
         UnderlineInlineSyntax(),
