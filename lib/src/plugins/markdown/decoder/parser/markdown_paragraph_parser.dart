@@ -39,25 +39,13 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
     final splitContent = _splitByBrTag(ec);
 
     // Transform each split content into a paragraph node
-    final result = <Node>[];
-    for (final content in splitContent) {
-      for (final node in content) {
-        if (node is md.Element && node.tag == 'img') {
-          final image = const MarkdownImageParserV2()
-              .transform(node, parsers)
-              .firstOrNull;
-          if (image != null) {
-            result.add(image);
-            continue;
-          }
-        }
-        final deltaDecoder = DeltaMarkdownDecoder();
-        final delta = deltaDecoder.convertNodes([node]);
-        result.add(paragraphNode(delta: delta));
-      }
-    }
+    return splitContent.map((content) {
+      final deltaDecoder = DeltaMarkdownDecoder();
+      final delta = deltaDecoder.convertNodes(content);
+      return paragraphNode(delta: delta);
+    }).toList();
 
-    return result;
+    // return result;
   }
 }
 
