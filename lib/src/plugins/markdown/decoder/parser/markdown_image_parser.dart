@@ -15,6 +15,12 @@ class MarkdownImageParserV2 extends CustomMarkdownParser {
       return [];
     }
 
+    if (element.attributes['src'] != null) {
+      return [
+        imageNode(url: element.attributes['src']!),
+      ];
+    }
+
     if (element.children?.length != 1 ||
         element.children?.first is! md.Element) {
       return [];
