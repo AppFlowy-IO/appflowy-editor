@@ -25,7 +25,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     implements AppFlowyScrollService {
   final _forwardKey =
       GlobalKey(debugLabel: 'forward_to_platform_scroll_service');
-  AppFlowyScrollService get forward =>
+  late AppFlowyScrollService forward =
       _forwardKey.currentState as AppFlowyScrollService;
 
   late EditorState editorState = context.read<EditorState>();
@@ -103,9 +103,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             : Duration.zero;
 
         Future.delayed(duration, () {
-          if (_forwardKey.currentContext == null) {
-            return;
-          }
           if (endTouchPoint == null) {
             jumpTo(selection.end.path.first);
           } else {
@@ -117,9 +114,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           }
         });
       } else {
-        if (_forwardKey.currentContext == null) {
-          return;
-        }
         if (endTouchPoint == null) {
           jumpTo(selection.end.path.first);
         } else {
