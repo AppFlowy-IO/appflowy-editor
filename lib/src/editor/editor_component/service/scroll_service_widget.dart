@@ -103,6 +103,9 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             : Duration.zero;
 
         Future.delayed(duration, () {
+          if (_forwardKey.currentContext == null) {
+            return;
+          }
           if (endTouchPoint == null) {
             jumpTo(selection.end.path.first);
           } else {
@@ -114,6 +117,9 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           }
         });
       } else {
+        if (_forwardKey.currentContext == null) {
+          return;
+        }
         if (endTouchPoint == null) {
           jumpTo(selection.end.path.first);
         } else {
