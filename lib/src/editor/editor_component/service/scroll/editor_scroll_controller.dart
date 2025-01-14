@@ -190,14 +190,24 @@ class EditorScrollController {
       );
     }
 
-    final index = offset.toInt();
+    int index = max(0, offset.toInt());
     final (start, end) = visibleRangeNotifier.value;
-    if (index < start || index > end) {
-      itemScrollController.jumpTo(
-        index: max(0, index),
-        alignment: 0.5,
-      );
+
+    if (start <= index && index <= end) {
+      return;
     }
+
+    double alignment = 0.5;
+    if (index == 0) {
+      alignment = 0.0;
+    } else if (index == editorState.document.root.children.length - 1) {
+      alignment = 1.0;
+    }
+
+    itemScrollController.jumpTo(
+      index: index,
+      alignment: alignment,
+    );
   }
 
   void jumpToTop() {
