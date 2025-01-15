@@ -58,6 +58,7 @@ class BlockComponentConfiguration {
     BlockComponentTextStyleBuilder? placeholderTextStyle,
     EdgeInsets Function(Node node)? blockSelectionAreaMargin,
     TextAlign Function(Node node)? textAlign,
+    EdgeInsets Function(Node node, TextDirection textDirection)? indentPadding,
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
@@ -67,6 +68,7 @@ class BlockComponentConfiguration {
       blockSelectionAreaMargin:
           blockSelectionAreaMargin ?? this.blockSelectionAreaMargin,
       textAlign: textAlign ?? this.textAlign,
+      indentPadding: indentPadding ?? this.indentPadding,
     );
   }
 }
