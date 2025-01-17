@@ -54,6 +54,6 @@ extension HexExtension on Color {
     final green = (g * 255).toInt().toRadixString(16).padLeft(2, '0');
     final blue = (b * 255).toInt().toRadixString(16).padLeft(2, '0');
 
-    return '0x$alpha$red$green$blue'.toUpperCase();
+    return '0x$alpha$red$green$blue'.toLowerCase();
   }
 }
