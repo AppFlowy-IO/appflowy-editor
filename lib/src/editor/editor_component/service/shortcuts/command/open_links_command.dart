@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 /// Option/Alt + Shift + Enter: to open links
@@ -27,13 +26,13 @@ KeyEventResult _openLinksHandler(
   // A set to store the links which should be opened
   final links = nodes
       .map((node) => node.delta)
-      .whereNotNull()
+      .nonNulls
       .expand(
         (node) => node.map<String?>(
           (op) => op.attributes?[AppFlowyRichTextKeys.href],
         ),
       )
-      .whereNotNull()
+      .nonNulls
       .toSet();
 
   for (final link in links) {

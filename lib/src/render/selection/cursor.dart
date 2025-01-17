@@ -87,7 +87,7 @@ class CursorState extends State<Cursor> {
         return Container(
           width: size.width,
           height: size.height,
-          color: color.withOpacity(0.2),
+          color: color.withValues(alpha: 0.2),
         );
     }
   }

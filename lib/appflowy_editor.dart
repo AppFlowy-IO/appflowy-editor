@@ -1,5 +1,5 @@
 /// AppFlowyEditor library
-library appflowy_editor;
+library;
 
 // core part, including document, node, selection, etc.
 export 'src/core/core.dart';

@@ -121,7 +121,7 @@ class DragHandle extends _IDragHandle {
 
     if (debugPaintSizeEnabled) {
       child = ColoredBox(
-        color: Colors.red.withOpacity(0.5),
+        color: Colors.red.withValues(alpha: 0.5),
         child: child,
       );
     }

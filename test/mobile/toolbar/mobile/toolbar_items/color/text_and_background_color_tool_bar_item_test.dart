@@ -94,7 +94,7 @@ void main() {
         return delta.whereType<TextInsert>().every(
               (element) =>
                   element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
-                  Colors.red.withOpacity(0.3).toHex(),
+                  Colors.red.withValues(alpha: 0.3).toHex(),
             );
       }),
       true,

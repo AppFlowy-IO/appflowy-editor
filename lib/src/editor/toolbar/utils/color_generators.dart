@@ -53,35 +53,35 @@ List<ColorOption> generateTextColorOptions() {
 List<ColorOption> generateHighlightColorOptions() {
   return [
     ColorOption(
-      colorHex: Colors.grey.withOpacity(0.3).toHex(),
+      colorHex: Colors.grey.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorGray,
     ),
     ColorOption(
-      colorHex: Colors.brown.withOpacity(0.3).toHex(),
+      colorHex: Colors.brown.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorBrown,
     ),
     ColorOption(
-      colorHex: Colors.yellow.withOpacity(0.3).toHex(),
+      colorHex: Colors.yellow.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorYellow,
     ),
     ColorOption(
-      colorHex: Colors.green.withOpacity(0.3).toHex(),
+      colorHex: Colors.green.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorGreen,
     ),
     ColorOption(
-      colorHex: Colors.blue.withOpacity(0.3).toHex(),
+      colorHex: Colors.blue.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorBlue,
     ),
     ColorOption(
-      colorHex: Colors.purple.withOpacity(0.3).toHex(),
+      colorHex: Colors.purple.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorPurple,
     ),
     ColorOption(
-      colorHex: Colors.pink.withOpacity(0.3).toHex(),
+      colorHex: Colors.pink.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorPink,
     ),
     ColorOption(
-      colorHex: Colors.red.withOpacity(0.3).toHex(),
+      colorHex: Colors.red.withValues(alpha: 0.3).toHex(),
       name: AppFlowyEditorL10n.current.backgroundColorRed,
     ),
   ];

@@ -49,6 +49,11 @@ extension ColorExtension on String {
 
 extension HexExtension on Color {
   String toHex() {
-    return '0x${value.toRadixString(16)}';
+    final alpha = (a * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final red = (r * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final green = (g * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final blue = (b * 255).toInt().toRadixString(16).padLeft(2, '0');
+
+    return '0x$alpha$red$green$blue'.toLowerCase();
   }
 }

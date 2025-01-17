@@ -18,7 +18,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     padding: const EdgeInsets.symmetric(horizontal: 16),
     cursorColor: Colors.transparent,
     cursorWidth: 0,
-    selectionColor: Colors.grey.withOpacity(0.3),
+    selectionColor: Colors.grey.withValues(alpha: 0.3),
     textStyleConfiguration: TextStyleConfiguration(
       lineHeight: 1.2,
       applyHeightToFirstAscent: true,

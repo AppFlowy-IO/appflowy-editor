@@ -210,7 +210,7 @@ class _ResizableImageState extends State<ResizableImage> {
                   child: Container(
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5.0),
                       ),
