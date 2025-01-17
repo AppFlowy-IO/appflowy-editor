@@ -71,7 +71,7 @@ class _ColorPickerState extends State<ColorPicker> {
           BoxShadow(
             blurRadius: 5,
             spreadRadius: 1,
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
           ),
         ],
         borderRadius: BorderRadius.circular(6.0),
@@ -294,6 +294,11 @@ class _ColorPickerState extends State<ColorPicker> {
 
 extension ConvertToHex on Color {
   String toHex() {
-    return '0x${value.toRadixString(16)}';
+    final alpha = (a * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final red = (r * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final green = (g * 255).toInt().toRadixString(16).padLeft(2, '0');
+    final blue = (b * 255).toInt().toRadixString(16).padLeft(2, '0');
+
+    return '0x$alpha$red$green$blue'.toUpperCase();
   }
 }

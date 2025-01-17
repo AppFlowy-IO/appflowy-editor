@@ -29,7 +29,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     final document = Document.blank();
     final nodes = mdNodes
         .map((e) => _parseNode(e))
-        .whereNotNull()
+        .nonNulls
         .flattened
         .toList(growable: false); // avoid lazy evaluation
     if (nodes.isNotEmpty) {
