@@ -7,6 +7,20 @@ void insertHeadingAfterSelection(EditorState editorState, int level) {
   );
 }
 
+void insertContextAfterSelection(EditorState editorState) {
+  insertNodeAfterSelection(
+    editorState,
+    contextNode(),
+  );
+}
+
+void insertTransitionAfterSelection(EditorState editorState) {
+  insertNodeAfterSelection(
+    editorState,
+    transitionNode(),
+  );
+}
+
 void insertQuoteAfterSelection(EditorState editorState) {
   insertNodeAfterSelection(
     editorState,

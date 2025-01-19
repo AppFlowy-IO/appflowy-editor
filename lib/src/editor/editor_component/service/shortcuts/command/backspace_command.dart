@@ -176,7 +176,19 @@ CommandShortcutEventHandler _backspaceInSelectAll = (editorState) {
 
   final transaction = editorState.transaction;
   final nodes = editorState.getNodesInSelection(selection);
-  transaction.deleteNodes(nodes);
+
+  if (nodes.isNotEmpty) {
+    // Ensure at least one node remains in the editor
+    final nodesToDelete = nodes.skip(1).toList();
+
+    transaction.deleteNodes(nodesToDelete);
+
+    final firstNode = nodes.first;
+    if (firstNode.delta != null) {
+      transaction.deleteText(firstNode, 0, firstNode.delta!.length);
+    }
+  }
+
   editorState.apply(transaction);
 
   return KeyEventResult.handled;
