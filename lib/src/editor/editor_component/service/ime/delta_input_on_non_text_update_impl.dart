@@ -60,15 +60,19 @@ Future<void> onNonTextUpdate(
     // `onFloatingCursor` event instead.
     AppFlowyEditorLog.input.debug('[Android] onNonTextUpdate: $nonTextUpdate');
     if (selection != null) {
-      editorState.updateSelectionWithReason(
-        Selection.collapsed(
-          Position(
-            path: selection.start.path,
-            offset: nonTextUpdate.selection.start,
+      final nonTextUpdateStart = nonTextUpdate.selection.start;
+      final selectionStart = selection.start.offset;
+      if (nonTextUpdateStart != selectionStart) {
+        editorState.updateSelectionWithReason(
+          Selection.collapsed(
+            Position(
+              path: selection.start.path,
+              offset: nonTextUpdateStart,
+            ),
           ),
-        ),
-        reason: SelectionUpdateReason.uiEvent,
-      );
+          reason: SelectionUpdateReason.uiEvent,
+        );
+      }
     }
   } else if (PlatformExtension.isIOS) {
     // on iOS, the cursor movement will trigger the `onFloatingCursor` event.
