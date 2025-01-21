@@ -369,7 +369,7 @@ void main() {
     );
   });
 
-  test('sample 13', () {
+  test('sample 13 - copy divider and headings from ChatGPT', () {
     const html =
         '''<h1>Sales Performance Report - Q4 2024</h1><p>This report provides an overview of the sales performance for the fourth quarter of 2024, including revenue, product performance, and regional sales comparison.</p><hr>''';
     final document = htmlToDocument(html);
@@ -377,5 +377,57 @@ void main() {
     expect(document.nodeAtPath([0])!.type, HeadingBlockKeys.type);
     expect(document.nodeAtPath([1])!.type, ParagraphBlockKeys.type);
     expect(document.nodeAtPath([2])!.type, DividerBlockKeys.type);
+  });
+
+  test('sample 14 - copy table from ChatGPT', () {
+    const html = '''<meta charset="utf-8" />
+<table>
+    <thead>
+        <tr>
+            <th>Region</th>
+            <th>Total Sales (in \$)</th>
+            <th>Sales Growth (%)</th>
+            <th>Best Performing Product</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>North America</td>
+            <td>5,200,000</td>
+            <td>8.5</td>
+            <td>Product A</td>
+        </tr>
+        <tr>
+            <td>Europe</td>
+            <td>3,800,000</td>
+            <td>6.2</td>
+            <td>Product B</td>
+        </tr>
+        <tr>
+            <td>Asia-Pacific</td>
+            <td>2,500,000</td>
+            <td>10.1</td>
+            <td>Product C</td>
+        </tr>
+        <tr>
+            <td>Latin America</td>
+            <td>1,200,000</td>
+            <td>4.0</td>
+            <td>Product A</td>
+        </tr>
+        <tr>
+            <td>Middle East</td>
+            <td>950,000</td>
+            <td>12.5</td>
+            <td>Product D</td>
+        </tr>
+    </tbody>
+</table>
+''';
+    final document = htmlToDocument(html);
+    final table = document.nodeAtPath([0])!;
+    expect(table.type, TableBlockKeys.type);
+
+    print(table.toJson());
   });
 }
