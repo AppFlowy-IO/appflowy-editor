@@ -230,11 +230,9 @@ class _FindMenuState extends State<FindMenu> {
               //  will request focus, here's a workaround to request the
               //  focus back to the findTextField
               Future.delayed(const Duration(milliseconds: 50), () {
-                if (context.mounted) {
-                  FocusScope.of(context).requestFocus(
-                    findTextFieldFocusNode,
-                  );
-                }
+                FocusScope.of(context).requestFocus(
+                  findTextFieldFocusNode,
+                );
               });
             },
             decoration: _buildInputDecoration(
@@ -257,11 +255,9 @@ class _FindMenuState extends State<FindMenu> {
           onPressed: () {
             // work around to request focus back to the input field
             Future.delayed(const Duration(milliseconds: 10), () {
-              if (context.mounted) {
-                FocusScope.of(context).requestFocus(
-                  findTextFieldFocusNode,
-                );
-              }
+              FocusScope.of(context).requestFocus(
+                findTextFieldFocusNode,
+              );
             });
             widget.searchService.navigateToMatch(moveUp: true);
           },
@@ -274,11 +270,9 @@ class _FindMenuState extends State<FindMenu> {
           iconButtonKey: const Key('nextMatchButton'),
           onPressed: () {
             Future.delayed(const Duration(milliseconds: 10), () {
-              if (context.mounted) {
-                FocusScope.of(context).requestFocus(
-                  findTextFieldFocusNode,
-                );
-              }
+              FocusScope.of(context).requestFocus(
+                findTextFieldFocusNode,
+              );
             });
             widget.searchService.navigateToMatch();
           },
@@ -406,11 +400,9 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
               _replaceSelectedWord();
 
               Future.delayed(const Duration(milliseconds: 50), () {
-                if (context.mounted) {
-                  FocusScope.of(context).requestFocus(
-                    replaceTextFieldFocusNode,
-                  );
-                }
+                FocusScope.of(context).requestFocus(
+                  replaceTextFieldFocusNode,
+                );
               });
             },
             decoration: _buildInputDecoration(
