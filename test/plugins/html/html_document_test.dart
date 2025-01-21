@@ -368,4 +368,14 @@ void main() {
       ],
     );
   });
+
+  test('sample 13', () {
+    const html =
+        '''<h1>Sales Performance Report - Q4 2024</h1><p>This report provides an overview of the sales performance for the fourth quarter of 2024, including revenue, product performance, and regional sales comparison.</p><hr>''';
+    final document = htmlToDocument(html);
+    expect(document.root.children.length, 3);
+    expect(document.nodeAtPath([0])!.type, HeadingBlockKeys.type);
+    expect(document.nodeAtPath([1])!.type, ParagraphBlockKeys.type);
+    expect(document.nodeAtPath([2])!.type, DividerBlockKeys.type);
+  });
 }
