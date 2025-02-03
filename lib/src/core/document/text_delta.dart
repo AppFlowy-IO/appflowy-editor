@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 typedef AppFlowyEditorSliceAttributes = Attributes? Function(
   Delta delta,
@@ -115,7 +116,7 @@ class TextInsert extends TextOperation {
   final Attributes? _attributes;
 
   @override
-  int get length => text.length;
+  int get length => text.characters.length;
 
   @override
   Object? get data => text;
