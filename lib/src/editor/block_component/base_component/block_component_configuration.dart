@@ -122,5 +122,5 @@ EdgeInsets _blockSelectionAreaPadding(Node node) {
 }
 
 TextAlign _textAlign(Node node) {
-  return TextAlign.left;
+  return TextAlign.start;
 }
