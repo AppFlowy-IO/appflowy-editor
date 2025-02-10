@@ -121,6 +121,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return [_parseBlockQuoteElement(element)];
       case HTMLTags.image:
         return [_parseImageElement(element)];
+      case HTMLTags.divider:
+        return [dividerNode()];
       default:
         return _parseParagraphElement(element);
     }
@@ -568,6 +570,7 @@ class HTMLTags {
     HTMLTags.checkbox,
     HTMLTags.image,
     HTMLTags.section,
+    HTMLTags.divider,
   ];
 
   static bool isTopLevel(String tag) {

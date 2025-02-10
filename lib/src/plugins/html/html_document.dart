@@ -1,4 +1,4 @@
-library;
+library delta_markdown;
 
 import 'dart:convert';
 
