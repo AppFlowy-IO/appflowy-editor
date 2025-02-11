@@ -38,12 +38,16 @@ class _IgnoreEditorSelectionGestureState
         return true;
       },
     );
-    editorState.selectionService.registerGestureInterceptor(interceptor);
+    if (editorState.editable) {
+      editorState.selectionService.registerGestureInterceptor(interceptor);
+    }
   }
 
   @override
   void dispose() {
-    editorState.selectionService.unregisterGestureInterceptor(key);
+    if (editorState.editable) {
+      editorState.selectionService.unregisterGestureInterceptor(key);
+    }
     super.dispose();
   }
 
