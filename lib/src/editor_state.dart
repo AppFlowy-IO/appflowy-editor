@@ -117,7 +117,14 @@ class EditorState {
   final Duration minHistoryItemDuration;
 
   /// Whether the editor is editable.
-  bool editable = true;
+  ValueNotifier<bool> editableNotifier = ValueNotifier(true);
+  bool get editable => editableNotifier.value;
+  set editable(bool value) {
+    if (value == editable) {
+      return;
+    }
+    editableNotifier.value = value;
+  }
 
   /// Whether the editor should disable auto scroll.
   bool disableAutoScroll = false;

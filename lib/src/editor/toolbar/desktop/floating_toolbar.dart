@@ -163,6 +163,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       return;
     }
 
+    if (!editorState.editable) {
+      return;
+    }
+
     // check the content is visible
     final nodes = editorState.getSelectedNodes();
     if (nodes.isEmpty ||
