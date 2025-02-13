@@ -210,7 +210,8 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       cursorColor: widget.urlInputBorderColor,
       decoration: InputDecoration(
         hintText: 'URL',
-        hintStyle: TextStyle(fontSize: 14.0, color: widget.uploadButtonTextColor),
+        hintStyle:
+            TextStyle(fontSize: 14.0, color: widget.uploadButtonTextColor),
         contentPadding: const EdgeInsets.all(16.0),
         isDense: true,
         focusedBorder: OutlineInputBorder(
