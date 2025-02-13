@@ -26,6 +26,37 @@ void main() {
 
       expect(markdown, markdownDocumentEncoded);
     });
+
+    test('paragraph + image with single \n', () {
+      const markdown = '''This is the first line
+![image](https://example.com/image.png)''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 2);
+      expect(nodes[0].delta?.toPlainText(), 'This is the first line');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+    });
+
+    test('paragraph + image with double \n', () {
+      const markdown = '''This is the first line
+
+![image](https://example.com/image.png)''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 2);
+      expect(nodes[0].delta?.toPlainText(), 'This is the first line');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+    });
+
+    test('paragraph + image without \n', () {
+      const markdown =
+          '''This is the first line![image](https://example.com/image.png)''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 2);
+      expect(nodes[0].delta?.toPlainText(), 'This is the first line');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+    });
   });
 }
 

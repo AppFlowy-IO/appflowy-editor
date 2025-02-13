@@ -32,20 +32,18 @@ class AutoExpandEditor extends StatelessWidget {
                 maxHeight: 360,
                 maxWidth: 400,
               ),
-              child: SingleChildScrollView(
-                child: IntrinsicHeight(
-                  child: AppFlowyEditor(
+              child: IntrinsicHeight(
+                child: AppFlowyEditor(
+                  editorState: editorState,
+                  shrinkWrap: true,
+                  autoScrollEdgeOffset: 24,
+                  editorStyle: const EditorStyle.desktop(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  blockComponentBuilders: _buildBlockComponentBuilders(),
+                  editorScrollController: EditorScrollController(
                     editorState: editorState,
-                    disableAutoScroll: true,
                     shrinkWrap: true,
-                    editorStyle: const EditorStyle.desktop(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                    blockComponentBuilders: _buildBlockComponentBuilders(),
-                    editorScrollController: EditorScrollController(
-                      editorState: editorState,
-                      shrinkWrap: true,
-                    ),
                   ),
                 ),
               ),

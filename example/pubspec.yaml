@@ -56,7 +56,7 @@ dependency_overrides:
     git:
       url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
       path: "packages/appflowy_editor_plugins"
-      ref: "3f82111"
+      ref: "ca82890"
 
 dev_dependencies:
   flutter_test:

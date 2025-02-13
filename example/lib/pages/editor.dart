@@ -130,7 +130,7 @@ class _EditorState extends State<Editor> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(8),
                 bottomLeft: UniversalPlatform.isMobile

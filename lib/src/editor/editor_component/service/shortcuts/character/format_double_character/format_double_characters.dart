@@ -92,9 +92,6 @@ bool handleFormatByWrappingWithDoubleCharacter({
     case DoubleCharacterFormatStyle.strikethrough:
       style = 'strikethrough';
       break;
-    default:
-      style = '';
-      assert(false, 'Invalid format style');
   }
 
   // if the text is already formatted, we should remove the format.

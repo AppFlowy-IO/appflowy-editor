@@ -1,6 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+typedef BlockComponentTextStyleBuilder = TextStyle Function(
+  Node node, {
+  TextSpan? textSpan,
+});
+
 /// only for the common config of block component
 class BlockComponentConfiguration {
   const BlockComponentConfiguration({
@@ -10,6 +15,7 @@ class BlockComponentConfiguration {
     this.textStyle = _textStyle,
     this.placeholderTextStyle = _placeholderTextStyle,
     this.blockSelectionAreaMargin = _blockSelectionAreaPadding,
+    this.textAlign = _textAlign,
   });
 
   /// The padding of a block component.
@@ -26,7 +32,7 @@ class BlockComponentConfiguration {
   ) indentPadding;
 
   /// The text style of a block component.
-  final TextStyle Function(Node node) textStyle;
+  final BlockComponentTextStyleBuilder textStyle;
 
   /// The placeholder text of a block component.
   final String Function(Node node) placeholderText;
@@ -34,17 +40,25 @@ class BlockComponentConfiguration {
   /// The placeholder text style of a block component.
   ///
   /// It inherits the style from [textStyle].
-  final TextStyle Function(Node node) placeholderTextStyle;
+  final BlockComponentTextStyleBuilder placeholderTextStyle;
 
   /// The padding of a block selection area.
   final EdgeInsets Function(Node node) blockSelectionAreaMargin;
 
+  /// The text align of a block component.
+  ///
+  /// This value is only available for the block with text,
+  /// e.g. paragraph, heading, quote, to-do list, bulleted list, numbered list
+  final TextAlign Function(Node node) textAlign;
+
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
-    TextStyle Function(Node node)? textStyle,
+    BlockComponentTextStyleBuilder? textStyle,
     String Function(Node node)? placeholderText,
-    TextStyle Function(Node node)? placeholderTextStyle,
+    BlockComponentTextStyleBuilder? placeholderTextStyle,
     EdgeInsets Function(Node node)? blockSelectionAreaMargin,
+    TextAlign Function(Node node)? textAlign,
+    EdgeInsets Function(Node node, TextDirection textDirection)? indentPadding,
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
@@ -53,6 +67,8 @@ class BlockComponentConfiguration {
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
       blockSelectionAreaMargin:
           blockSelectionAreaMargin ?? this.blockSelectionAreaMargin,
+      textAlign: textAlign ?? this.textAlign,
+      indentPadding: indentPadding ?? this.indentPadding,
     );
   }
 }
@@ -63,12 +79,15 @@ mixin BlockComponentConfigurable<T extends StatefulWidget> on State<T> {
 
   EdgeInsets get padding => configuration.padding(node);
 
-  TextStyle get textStyle => configuration.textStyle(node);
+  TextStyle textStyleWithTextSpan({TextSpan? textSpan}) =>
+      configuration.textStyle(node, textSpan: textSpan);
+
+  TextStyle placeholderTextStyleWithTextSpan({TextSpan? textSpan}) =>
+      configuration.placeholderTextStyle(node, textSpan: textSpan);
 
   String get placeholderText => configuration.placeholderText(node);
 
-  TextStyle get placeholderTextStyle =>
-      configuration.placeholderTextStyle(node);
+  TextAlign get textAlign => configuration.textAlign(node);
 }
 
 EdgeInsets _padding(Node node) {
@@ -84,7 +103,7 @@ EdgeInsets _indentPadding(Node node, TextDirection textDirection) {
   }
 }
 
-TextStyle _textStyle(Node node) {
+TextStyle _textStyle(Node node, {TextSpan? textSpan}) {
   return const TextStyle();
 }
 
@@ -92,7 +111,7 @@ String _placeholderText(Node node) {
   return ' ';
 }
 
-TextStyle _placeholderTextStyle(Node node) {
+TextStyle _placeholderTextStyle(Node node, {TextSpan? textSpan}) {
   return const TextStyle(
     color: Colors.grey,
   );
@@ -100,4 +119,8 @@ TextStyle _placeholderTextStyle(Node node) {
 
 EdgeInsets _blockSelectionAreaPadding(Node node) {
   return const EdgeInsets.symmetric(vertical: 0.0);
+}
+
+TextAlign _textAlign(Node node) {
+  return TextAlign.start;
 }

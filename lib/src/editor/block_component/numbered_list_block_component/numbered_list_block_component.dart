@@ -143,7 +143,7 @@ class _NumberedListBlockComponentWidgetState
                 )
               : _NumberedListIcon(
                   node: node,
-                  textStyle: textStyle,
+                  textStyle: textStyleWithTextSpan(),
                   direction: textDirection,
                 ),
           Flexible(
@@ -152,14 +152,14 @@ class _NumberedListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-                textStyle,
+                textStyleWithTextSpan(textSpan: textSpan),
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyle,
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
               ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,

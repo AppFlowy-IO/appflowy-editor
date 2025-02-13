@@ -169,17 +169,18 @@ class _TodoListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textDirection: textDirection,
-              textSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(textStyle).updateTextStyle(
-                        widget.textStyleBuilder?.call(checked) ??
-                            defaultTextStyle(),
-                      ),
+              textSpanDecorator: (textSpan) => textSpan
+                  .updateTextStyle(textStyleWithTextSpan())
+                  .updateTextStyle(
+                    widget.textStyleBuilder?.call(checked) ??
+                        defaultTextStyle(),
+                  ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyle,
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
               ),
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,

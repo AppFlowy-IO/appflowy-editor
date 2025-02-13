@@ -14,6 +14,17 @@ typedef EditorTransactionValue = (
   ApplyOptions options,
 );
 
+class EditorStateDebugInfo {
+  EditorStateDebugInfo({
+    this.debugPaintSizeEnabled = false,
+  });
+
+  /// Enable the debug paint size for selection handle.
+  ///
+  /// It only available on mobile.
+  bool debugPaintSizeEnabled;
+}
+
 /// the type of this value is bool.
 ///
 /// set true to this key to prevent attaching the text service when selection is changed.
@@ -46,6 +57,7 @@ enum CursorUpdateReason {
 enum SelectionUpdateReason {
   uiEvent, // like mouse click, keyboard event
   transaction, // like insert, delete, format
+  remote, // like remote selection
   selectAll,
   searchHighlight, // Highlighting search results
 }
@@ -105,7 +117,14 @@ class EditorState {
   final Duration minHistoryItemDuration;
 
   /// Whether the editor is editable.
-  bool editable = true;
+  ValueNotifier<bool> editableNotifier = ValueNotifier(true);
+  bool get editable => editableNotifier.value;
+  set editable(bool value) {
+    if (value == editable) {
+      return;
+    }
+    editableNotifier.value = value;
+  }
 
   /// Whether the editor should disable auto scroll.
   bool disableAutoScroll = false;
@@ -165,6 +184,11 @@ class EditorState {
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
+
+  /// Customize the debug info for the editor state.
+  ///
+  /// Refer to [EditorStateDebugInfo] for more details.
+  EditorStateDebugInfo debugInfo = EditorStateDebugInfo();
 
   /// store the auto scroller instance in here temporarily.
   AutoScroller? autoScroller;
@@ -343,6 +367,7 @@ class EditorState {
     final completer = Completer<void>();
 
     if (isRemote) {
+      _selectionUpdateReason = SelectionUpdateReason.remote;
       selection = _applyTransactionFromRemote(transaction);
     } else {
       // broadcast to other users here, before applying the transaction
@@ -360,7 +385,9 @@ class EditorState {
       _recordRedoOrUndo(options, transaction, skipHistoryDebounce);
 
       if (withUpdateSelection) {
-        _selectionUpdateReason = SelectionUpdateReason.transaction;
+        _selectionUpdateReason =
+            transaction.reason ?? SelectionUpdateReason.transaction;
+        _selectionType = transaction.customSelectionType;
         if (transaction.selectionExtraInfo != null) {
           selectionExtraInfo = transaction.selectionExtraInfo;
         }

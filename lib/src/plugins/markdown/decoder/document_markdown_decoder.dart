@@ -16,19 +16,20 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
 
   @override
   Document convert(String input) {
+    final formattedMarkdown = _formatMarkdown(input);
     final List<md.Node> mdNodes = md.Document(
-      extensionSet: md.ExtensionSet.gitHubWeb,
+      extensionSet: md.ExtensionSet.gitHubFlavored,
       inlineSyntaxes: [
         ...inlineSyntaxes,
         UnderlineInlineSyntax(),
       ],
       encodeHtml: false,
-    ).parse(input);
+    ).parse(formattedMarkdown);
 
     final document = Document.blank();
     final nodes = mdNodes
         .map((e) => _parseNode(e))
-        .whereNotNull()
+        .nonNulls
         .flattened
         .toList(growable: false); // avoid lazy evaluation
     if (nodes.isNotEmpty) {
@@ -60,5 +61,28 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     }
 
     return nodes;
+  }
+
+  String _formatMarkdown(String markdown) {
+    // Rule 1: single '\n' between text and image, add double '\n'
+    String result = markdown.replaceAllMapped(
+      RegExp(r'([^\n])\n!\[([^\]]*)\]\(([^)]+)\)', multiLine: true),
+      (match) {
+        final text = match[1] ?? '';
+        final altText = match[2] ?? '';
+        final url = match[3] ?? '';
+        return '$text\n\n![$altText]($url)';
+      },
+    );
+
+    // Rule 2: without '\n' between text and image, add double '\n'
+    result = result.replaceAllMapped(
+      RegExp(r'([^\n])!\[([^\]]*)\]\(([^)]+)\)'),
+      (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
+    );
+
+    // Add another rules here.
+
+    return result;
   }
 }

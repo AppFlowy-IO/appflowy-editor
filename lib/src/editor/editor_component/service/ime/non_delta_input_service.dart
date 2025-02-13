@@ -145,6 +145,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
+  void clearComposingTextRange() {
+    composingTextRange = TextRange.empty;
+  }
+
+  @override
   void connectionClosed() {}
 
   @override
@@ -283,7 +288,14 @@ extension on TextEditingValue {
   TextEditingValue format() {
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
-    final composing = this.composing >> _len;
+
+    TextRange composing = this.composing >> _len;
+    final textLength = text.length;
+
+    // check invalid composing
+    if (composing.start > textLength || composing.end > textLength) {
+      composing = TextRange.empty;
+    }
 
     return TextEditingValue(
       text: text,
@@ -316,14 +328,18 @@ extension on TextEditingDelta {
   }
 }
 
-extension on TextEditingDeltaInsertion {
-  TextEditingDeltaInsertion format() => TextEditingDeltaInsertion(
-        oldText: oldText << _len,
-        textInserted: textInserted,
-        insertionOffset: insertionOffset - _len,
-        selection: selection << _len,
-        composing: composing << _len,
-      );
+extension TextEditingDeltaInsertionExtension on TextEditingDeltaInsertion {
+  TextEditingDeltaInsertion format() {
+    final startWithSpace = oldText.startsWith(_whitespace);
+    return TextEditingDeltaInsertion(
+      oldText: startWithSpace ? oldText << _len : oldText,
+      textInserted: textInserted,
+      insertionOffset:
+          startWithSpace ? insertionOffset - _len : insertionOffset,
+      selection: startWithSpace ? selection << _len : selection,
+      composing: startWithSpace ? composing << _len : composing,
+    );
+  }
 }
 
 extension on TextEditingDeltaDeletion {

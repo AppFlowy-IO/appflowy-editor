@@ -129,7 +129,7 @@ class _BulletedListBlockComponentWidgetState
               ? widget.iconBuilder!(context, node)
               : _BulletedListIcon(
                   node: widget.node,
-                  textStyle: textStyle,
+                  textStyle: textStyleWithTextSpan(),
                 ),
           Flexible(
             child: AppFlowyRichText(
@@ -137,14 +137,14 @@ class _BulletedListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-                textStyle,
+                textStyleWithTextSpan(textSpan: textSpan),
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyle,
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
               ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
