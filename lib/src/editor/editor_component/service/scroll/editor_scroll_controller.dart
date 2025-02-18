@@ -192,10 +192,11 @@ class EditorScrollController {
 
     final index = offset.toInt();
     final (start, end) = visibleRangeNotifier.value;
+
     if (index < start || index > end) {
       itemScrollController.jumpTo(
         index: max(0, index),
-        alignment: 0.5,
+        alignment: 0,
       );
     }
   }
