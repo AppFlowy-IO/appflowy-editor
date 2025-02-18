@@ -258,7 +258,6 @@ class EditorState {
 
   // only used for testing
   bool disableSealTimer = false;
-  bool disableRules = false;
 
   @Deprecated('use editorState.selection instead')
   Selection? _cursorSelection;

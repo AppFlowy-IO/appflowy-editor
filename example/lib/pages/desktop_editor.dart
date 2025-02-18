@@ -105,9 +105,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
               height: 150,
             ),
           ),
-          footer: const SizedBox(
-            height: 100,
-          ),
+          footer: _buildFooter(),
         ),
       ),
     );
@@ -214,6 +212,32 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ),
       ),
     ];
+  }
+
+  Widget _buildFooter() {
+    return SizedBox(
+      height: 100,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () async {
+          // check if the document is empty, if so, add a new paragraph block.
+          if (editorState.document.root.children.isEmpty) {
+            final transaction = editorState.transaction;
+            transaction.insertNode(
+              [0],
+              paragraphNode(),
+            );
+            await editorState.apply(transaction);
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              editorState.selection = Selection.collapsed(
+                Position(path: [0]),
+              );
+            });
+          }
+        },
+      ),
+    );
   }
 
   String? _buildAutoCompleteTextProvider(

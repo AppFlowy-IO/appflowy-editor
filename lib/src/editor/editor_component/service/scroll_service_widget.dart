@@ -121,6 +121,11 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           return;
         }
         if (endTouchPoint == null) {
+          // check if the selection is valid
+          final node = editorState.getNodeAtPath(selection.end.path);
+          if (node == null) {
+            return;
+          }
           jumpTo(selection.end.path.first);
         } else {
           startAutoScroll(
