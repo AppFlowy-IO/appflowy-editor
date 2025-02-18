@@ -23,7 +23,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
