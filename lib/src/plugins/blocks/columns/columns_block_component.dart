@@ -88,16 +88,12 @@ class ColumnsBlockComponentState extends State<ColumnsBlockComponent>
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: node.children
-          .map(
-            (e) => Expanded(
-              child: editorState.renderer.build(context, e),
-            ),
-          )
-          .toList(),
+    Widget child = IntrinsicHeight(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _buildChildren(),
+      ),
     );
 
     child = Padding(
@@ -107,6 +103,38 @@ class ColumnsBlockComponentState extends State<ColumnsBlockComponent>
     );
 
     return child;
+  }
+
+  List<Widget> _buildChildren() {
+    final children = <Widget>[];
+    for (var i = 0; i < node.children.length; i++) {
+      final childNode = node.children[i];
+      final double? width = childNode.attributes[ColumnBlockKeys.width];
+      Widget child = editorState.renderer.build(context, childNode);
+
+      if (width != null) {
+        child = SizedBox(
+          width: width,
+          child: child,
+        );
+      } else {
+        child = Expanded(
+          child: child,
+        );
+      }
+
+      children.add(child);
+
+      if (i != node.children.length - 1) {
+        children.add(
+          Container(
+            width: 2,
+            color: Colors.red,
+          ),
+        );
+      }
+    }
+    return children;
   }
 
   @override

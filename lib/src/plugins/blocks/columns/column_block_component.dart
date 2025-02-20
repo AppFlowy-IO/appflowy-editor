@@ -5,10 +5,14 @@ import 'package:provider/provider.dart';
 
 Node columnNode({
   List<Node>? children,
+  double? width,
 }) {
   return Node(
     type: ColumnBlockKeys.type,
     children: children ?? [paragraphNode()],
+    attributes: {
+      ColumnBlockKeys.width: width,
+    },
   );
 }
 
@@ -16,6 +20,8 @@ class ColumnBlockKeys {
   const ColumnBlockKeys._();
 
   static const String type = 'column';
+
+  static const String width = 'width';
 }
 
 class ColumnBlockComponentBuilder extends BlockComponentBuilder {
