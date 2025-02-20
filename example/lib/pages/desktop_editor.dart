@@ -136,6 +136,10 @@ class _DesktopEditorState extends State<DesktopEditor> {
   Map<String, BlockComponentBuilder> _buildBlockComponentBuilders() {
     final map = {
       ...standardBlockComponentBuilderMap,
+
+      // columns block
+      ColumnBlockKeys.type: ColumnBlockComponentBuilder(),
+      ColumnsBlockKeys.type: ColumnsBlockComponentBuilder(),
     };
     // customize the image block component to show a menu
     map[ImageBlockKeys.type] = ImageBlockComponentBuilder(
