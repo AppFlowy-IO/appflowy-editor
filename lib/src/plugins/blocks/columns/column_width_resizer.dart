@@ -36,14 +36,10 @@ class _ColumnWidthResizerState extends State<ColumnWidthResizer> {
   }
 
   void _onHorizontalDragStart(DragStartDetails details) {
-    print('onHorizontalDragStart');
-
     isDragging = true;
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    print('onHorizontalDragUpdate');
-
     if (!isDragging) {
       return;
     }
@@ -75,7 +71,9 @@ class _ColumnWidthResizerState extends State<ColumnWidthResizer> {
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
-    isDragging = false;
+    if (!isDragging) {
+      return;
+    }
 
     // apply the transaction again to make sure the width is updated
     final transaction = widget.editorState.transaction;
@@ -83,5 +81,7 @@ class _ColumnWidthResizerState extends State<ColumnWidthResizer> {
       ...widget.columnNode.attributes,
     });
     widget.editorState.apply(transaction);
+
+    isDragging = false;
   }
 }

@@ -169,7 +169,13 @@ class _DesktopEditorState extends State<DesktopEditor> {
     // customize the padding
     map.forEach((key, value) {
       value.configuration = value.configuration.copyWith(
-        padding: (_) => const EdgeInsets.symmetric(vertical: 8.0),
+        padding: (node) {
+          if (node.type == ColumnsBlockKeys.type ||
+              node.type == ColumnBlockKeys.type) {
+            return EdgeInsets.zero;
+          }
+          return const EdgeInsets.symmetric(vertical: 8.0);
+        },
         blockSelectionAreaMargin: (_) => const EdgeInsets.symmetric(
           vertical: 1.0,
         ),
