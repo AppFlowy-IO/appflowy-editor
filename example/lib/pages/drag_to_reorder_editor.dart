@@ -287,29 +287,49 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     final (verticalPosition, horizontalPosition, _) = position;
     Path newPath = targetNode.path;
 
-    // Determine the new path based on drop position
-    // For VerticalPosition.top, we keep the target node's path
-    if (verticalPosition == VerticalPosition.bottom) {
-      newPath = horizontalPosition == HorizontalPosition.left
-          ? newPath.next // Insert after target node
-          : newPath.child(0); // Insert as first child of target node
-    }
-
-    // Check if the drop should be ignored
-    if (_shouldIgnoreDrop(node, newPath)) {
-      debugPrint(
-        'Drop ignored: node($node, ${node.path}), path($acceptedPath)',
-      );
-      return;
-    }
-
     final realNode = widget.blockComponentContext.node;
     debugPrint('Moving node($realNode, ${realNode.path}) to path($newPath)');
 
-    // Perform the node move operation
-    final transaction = editorState.transaction;
-    transaction.moveNode(newPath, realNode);
-    await editorState.apply(transaction);
+    // if the horizontal position is right, we need to create a column block
+    if (horizontalPosition == HorizontalPosition.right) {
+      final node = columnsNode(
+        children: [
+          columnNode(
+            children: [targetNode.deepCopy()],
+          ),
+          columnNode(
+            children: [realNode.deepCopy()],
+          ),
+        ],
+      );
+
+      final transaction = editorState.transaction;
+      transaction.insertNode(newPath, node);
+      transaction.deleteNode(targetNode);
+      transaction.deleteNode(realNode);
+      await editorState.apply(transaction);
+    } else {
+      // Determine the new path based on drop position
+      // For VerticalPosition.top, we keep the target node's path
+      if (verticalPosition == VerticalPosition.bottom) {
+        newPath = horizontalPosition == HorizontalPosition.left
+            ? newPath.next // Insert after target node
+            : newPath.child(0); // Insert as first child of target node
+      }
+
+      // Check if the drop should be ignored
+      if (_shouldIgnoreDrop(node, newPath)) {
+        debugPrint(
+          'Drop ignored: node($node, ${node.path}), path($acceptedPath)',
+        );
+        return;
+      }
+
+      // Perform the node move operation
+      final transaction = editorState.transaction;
+      transaction.moveNode(newPath, realNode);
+      await editorState.apply(transaction);
+    }
   }
 
   Widget _buildFeedback() {
@@ -387,7 +407,7 @@ Widget _buildDropArea(
     color: Colors.red,
   );
 
-  if (horizontalPosition == HorizontalPosition.right) {
+  if (horizontalPosition == HorizontalPosition.center) {
     const breakWidth = 22.0;
     const padding = 8.0;
     child = Row(
@@ -405,6 +425,16 @@ Widget _buildDropArea(
           color: Colors.red,
         ),
       ],
+    );
+  } else if (horizontalPosition == HorizontalPosition.right) {
+    return Positioned(
+      top: globalBlockRect.top,
+      height: globalBlockRect.height,
+      left: globalBlockRect.right - 2,
+      child: Container(
+        width: 2,
+        color: Colors.red,
+      ),
     );
   }
 
@@ -452,9 +482,10 @@ Widget _buildDropArea(
   // Horizontal position
   if (dragOffset.dx < globalBlockRect.left + 44) {
     horizontalPosition = HorizontalPosition.left;
-  } else {
-    // ignore the middle here, it's not used in this example
+  } else if (dragOffset.dx > globalBlockRect.right / 3.0 * 2.0) {
     horizontalPosition = HorizontalPosition.right;
+  } else {
+    horizontalPosition = HorizontalPosition.center;
   }
 
   // Vertical position
