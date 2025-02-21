@@ -1,4 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/plugins/blocks/columns/column_width_resizer.dart';
+import 'package:appflowy_editor/src/plugins/blocks/columns/columns_block_constant.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +116,10 @@ class ColumnsBlockComponentState extends State<ColumnsBlockComponent>
 
       if (width != null) {
         child = SizedBox(
-          width: width,
+          width: width.clamp(
+            ColumnsBlockConstants.minimumColumnWidth,
+            double.infinity,
+          ),
           child: child,
         );
       } else {
@@ -127,9 +132,9 @@ class ColumnsBlockComponentState extends State<ColumnsBlockComponent>
 
       if (i != node.children.length - 1) {
         children.add(
-          Container(
-            width: 2,
-            color: Colors.red,
+          ColumnWidthResizer(
+            columnNode: childNode,
+            editorState: editorState,
           ),
         );
       }

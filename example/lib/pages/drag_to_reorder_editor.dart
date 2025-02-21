@@ -292,12 +292,19 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
 
     // if the horizontal position is right, we need to create a column block
     if (horizontalPosition == HorizontalPosition.right) {
-      final columnNode = columnsNode(
-        children: [targetNode.deepCopy(), realNode.deepCopy()],
+      final node = columnsNode(
+        children: [
+          columnNode(
+            children: [targetNode.deepCopy()],
+          ),
+          columnNode(
+            children: [realNode.deepCopy()],
+          ),
+        ],
       );
 
       final transaction = editorState.transaction;
-      transaction.insertNode(newPath, columnNode);
+      transaction.insertNode(newPath, node);
       transaction.deleteNode(targetNode);
       transaction.deleteNode(realNode);
       await editorState.apply(transaction);
