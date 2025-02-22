@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_on_floating_cursor_update.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -216,6 +217,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   void _attachTextInputService(Selection selection) {
     final textEditingValue = _getCurrentTextEditingValue(selection);
+    AppFlowyEditorLog.editor.debug(
+      'keyboard service - attach text input service: $textEditingValue',
+    );
     if (textEditingValue != null) {
       textInputService.attach(
         textEditingValue,
@@ -243,6 +247,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     final editableNodes = editorState
         .getNodesInSelection(selection)
         .where((element) => element.delta != null);
+
+    // if the selection is inline and the selection is updated by ui event,
+    // we should clear the composing range on Android.
+    final shouldClearComposingRange =
+        editorState.selectionType == SelectionType.inline &&
+            editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent;
+
+    if (PlatformExtension.isAndroid && shouldClearComposingRange) {
+      textInputService.clearComposingTextRange();
+    }
 
     // Get the composing text range.
     final composingTextRange =

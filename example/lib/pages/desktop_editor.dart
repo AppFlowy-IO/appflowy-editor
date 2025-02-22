@@ -106,9 +106,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
               height: 150,
             ),
           ),
-          footer: const SizedBox(
-            height: 100,
-          ),
+          footer: _buildFooter(),
         ),
       ),
     );
@@ -139,6 +137,10 @@ class _DesktopEditorState extends State<DesktopEditor> {
   Map<String, BlockComponentBuilder> _buildBlockComponentBuilders() {
     final map = {
       ...standardBlockComponentBuilderMap,
+
+      // columns block
+      ColumnBlockKeys.type: ColumnBlockComponentBuilder(),
+      ColumnsBlockKeys.type: ColumnsBlockComponentBuilder(),
     };
     // customize the image block component to show a menu
     map[ImageBlockKeys.type] = ImageBlockComponentBuilder(
@@ -168,7 +170,13 @@ class _DesktopEditorState extends State<DesktopEditor> {
     // customize the padding
     map.forEach((key, value) {
       value.configuration = value.configuration.copyWith(
-        padding: (_) => const EdgeInsets.symmetric(vertical: 8.0),
+        padding: (node) {
+          if (node.type == ColumnsBlockKeys.type ||
+              node.type == ColumnBlockKeys.type) {
+            return EdgeInsets.zero;
+          }
+          return const EdgeInsets.symmetric(vertical: 8.0);
+        },
         blockSelectionAreaMargin: (_) => const EdgeInsets.symmetric(
           vertical: 1.0,
         ),
@@ -215,6 +223,32 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ),
       ),
     ];
+  }
+
+  Widget _buildFooter() {
+    return SizedBox(
+      height: 100,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () async {
+          // check if the document is empty, if so, add a new paragraph block.
+          if (editorState.document.root.children.isEmpty) {
+            final transaction = editorState.transaction;
+            transaction.insertNode(
+              [0],
+              paragraphNode(),
+            );
+            await editorState.apply(transaction);
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              editorState.selection = Selection.collapsed(
+                Position(path: [0]),
+              );
+            });
+          }
+        },
+      ),
+    );
   }
 
   String? _buildAutoCompleteTextProvider(

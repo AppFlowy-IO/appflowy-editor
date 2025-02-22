@@ -1,8 +1,10 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class MobileCollapsedHandle extends StatelessWidget {
+class MobileCollapsedHandle extends StatefulWidget {
   const MobileCollapsedHandle({
     super.key,
     required this.layerLink,
@@ -11,6 +13,7 @@ class MobileCollapsedHandle extends StatelessWidget {
     this.handleBallWidth = 6.0,
     this.handleWidth = 2.0,
     this.enableHapticFeedbackOnAndroid = true,
+    this.onDragging,
   });
 
   final Rect rect;
@@ -19,23 +22,33 @@ class MobileCollapsedHandle extends StatelessWidget {
   final double handleWidth;
   final double handleBallWidth;
   final bool enableHapticFeedbackOnAndroid;
+  final ValueChanged<bool>? onDragging;
 
   @override
+  State<MobileCollapsedHandle> createState() => _MobileCollapsedHandleState();
+}
+
+class _MobileCollapsedHandleState extends State<MobileCollapsedHandle> {
+  @override
   Widget build(BuildContext context) {
+    final debugInfo = context.read<EditorState>().debugInfo;
     if (PlatformExtension.isIOS) {
       return _IOSCollapsedHandle(
-        layerLink: layerLink,
-        rect: rect,
-        handleWidth: handleWidth,
+        layerLink: widget.layerLink,
+        rect: widget.rect,
+        handleWidth: widget.handleWidth,
+        debugPaintSizeEnabled: debugInfo.debugPaintSizeEnabled,
       );
     } else if (PlatformExtension.isAndroid) {
       return _AndroidCollapsedHandle(
-        layerLink: layerLink,
-        rect: rect,
-        handleColor: handleColor,
-        handleWidth: handleWidth,
-        handleBallWidth: handleBallWidth,
-        enableHapticFeedbackOnAndroid: enableHapticFeedbackOnAndroid,
+        layerLink: widget.layerLink,
+        rect: widget.rect,
+        handleColor: widget.handleColor,
+        handleWidth: widget.handleWidth,
+        handleBallWidth: widget.handleBallWidth,
+        enableHapticFeedbackOnAndroid: widget.enableHapticFeedbackOnAndroid,
+        debugPaintSizeEnabled: debugInfo.debugPaintSizeEnabled,
+        onDragging: widget.onDragging,
       );
     }
     throw UnsupportedError('Unsupported platform');
@@ -47,21 +60,30 @@ class _IOSCollapsedHandle extends StatelessWidget {
     required this.layerLink,
     required this.rect,
     this.handleWidth = 2.0,
+    this.debugPaintSizeEnabled = false,
   });
 
   final Rect rect;
   final LayerLink layerLink;
   final double handleWidth;
+  final bool debugPaintSizeEnabled;
 
   @override
   Widget build(BuildContext context) {
     // Extend the click area to make it easier to click.
-    const extend = 10.0;
+    final editorStyle = context.read<EditorState>().editorStyle;
+    const defaultExtend = 10.0;
+    final topExtend = editorStyle.mobileDragHandleTopExtend ?? defaultExtend;
+    final leftExtend = editorStyle.mobileDragHandleLeftExtend ?? defaultExtend;
+    final widthExtend =
+        editorStyle.mobileDragHandleWidthExtend ?? 2 * defaultExtend;
+    final heightExtend =
+        editorStyle.mobileDragHandleHeightExtend ?? 2 * defaultExtend;
     final adjustedRect = Rect.fromLTWH(
-      rect.left - extend,
-      rect.top - extend,
-      rect.width + 2 * extend,
-      rect.height + 2 * extend,
+      rect.left - leftExtend,
+      rect.top - topExtend,
+      rect.width + widthExtend,
+      rect.height + heightExtend,
     );
     return Positioned.fromRect(
       rect: adjustedRect,
@@ -78,6 +100,7 @@ class _IOSCollapsedHandle extends StatelessWidget {
                 handleType: HandleType.collapsed,
                 handleColor: Colors.transparent,
                 handleWidth: adjustedRect.width,
+                debugPaintSizeEnabled: debugPaintSizeEnabled,
               ),
             ),
           ],
@@ -95,6 +118,8 @@ class _AndroidCollapsedHandle extends StatelessWidget {
     this.handleBallWidth = 6.0,
     this.handleWidth = 2.0,
     this.enableHapticFeedbackOnAndroid = true,
+    this.debugPaintSizeEnabled = false,
+    this.onDragging,
   });
 
   final Rect rect;
@@ -103,17 +128,25 @@ class _AndroidCollapsedHandle extends StatelessWidget {
   final double handleWidth;
   final double handleBallWidth;
   final bool enableHapticFeedbackOnAndroid;
+  final bool debugPaintSizeEnabled;
+  final ValueChanged<bool>? onDragging;
 
   @override
   Widget build(BuildContext context) {
     // Extend the click area to make it easier to click.
+    final editorStyle = context.read<EditorState>().editorStyle;
+    final topExtend = editorStyle.mobileDragHandleTopExtend ?? 0;
+    final leftExtend =
+        editorStyle.mobileDragHandleLeftExtend ?? 2 * handleBallWidth;
+    final widthExtend =
+        editorStyle.mobileDragHandleWidthExtend ?? 4 * handleBallWidth;
+    final heightExtend =
+        editorStyle.mobileDragHandleHeightExtend ?? 2 * handleBallWidth;
     final adjustedRect = Rect.fromLTWH(
-      rect.left - 2 * (handleBallWidth),
-      rect.top,
-      rect.width + 4 * (handleBallWidth),
-      // Enable clicking in the handle area outside the stack.
-      // https://github.com/flutter/flutter/issues/75747
-      rect.height + 2 * handleBallWidth,
+      rect.left - leftExtend,
+      rect.top - topExtend,
+      rect.width + widthExtend,
+      rect.height + heightExtend,
     );
     return Positioned.fromRect(
       rect: adjustedRect,
@@ -132,6 +165,8 @@ class _AndroidCollapsedHandle extends StatelessWidget {
                 handleColor: handleColor,
                 handleWidth: adjustedRect.width,
                 handleBallWidth: handleBallWidth,
+                debugPaintSizeEnabled: debugPaintSizeEnabled,
+                onDragging: onDragging,
               ),
             ),
           ],

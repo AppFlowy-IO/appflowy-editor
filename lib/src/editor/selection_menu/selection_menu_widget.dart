@@ -196,6 +196,15 @@ class SelectionMenuStyle {
     required this.selectionMenuItemSelectedTextColor,
     required this.selectionMenuItemSelectedIconColor,
     required this.selectionMenuItemSelectedColor,
+    required this.selectionMenuUnselectedLabelColor,
+    required this.selectionMenuDividerColor,
+    required this.selectionMenuLinkBorderColor,
+    required this.selectionMenuInvalidLinkColor,
+    required this.selectionMenuButtonColor,
+    required this.selectionMenuButtonTextColor,
+    required this.selectionMenuButtonIconColor,
+    required this.selectionMenuButtonBorderColor,
+    required this.selectionMenuTabIndicatorColor,
   });
 
   static const light = SelectionMenuStyle(
@@ -205,6 +214,15 @@ class SelectionMenuStyle {
     selectionMenuItemSelectedTextColor: Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedIconColor: Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedColor: Color(0xFFE0F8FF),
+    selectionMenuUnselectedLabelColor: Color(0xFF333333),
+    selectionMenuDividerColor: Color(0xFF00BCF0),
+    selectionMenuLinkBorderColor: Color(0xFF00BCF0),
+    selectionMenuInvalidLinkColor: Color(0xFFE53935),
+    selectionMenuButtonColor: Color(0xFF00BCF0),
+    selectionMenuButtonTextColor: Color(0xFF333333),
+    selectionMenuButtonIconColor: Color(0xFF333333),
+    selectionMenuButtonBorderColor: Color(0xFF00BCF0),
+    selectionMenuTabIndicatorColor: Color(0xFF00BCF0),
   );
 
   static const dark = SelectionMenuStyle(
@@ -214,6 +232,15 @@ class SelectionMenuStyle {
     selectionMenuItemSelectedTextColor: Color(0xFF131720),
     selectionMenuItemSelectedIconColor: Color(0xFF131720),
     selectionMenuItemSelectedColor: Color(0xFF00BCF0),
+    selectionMenuUnselectedLabelColor: Color(0xFFBBC3CD),
+    selectionMenuDividerColor: Color(0xFF3A3F44),
+    selectionMenuLinkBorderColor: Color(0xFF3A3F44),
+    selectionMenuInvalidLinkColor: Color(0xFFE53935),
+    selectionMenuButtonColor: Color(0xFF00BCF0),
+    selectionMenuButtonTextColor: Color(0xFFFFFFFF),
+    selectionMenuButtonIconColor: Color(0xFFFFFFFF),
+    selectionMenuButtonBorderColor: Color(0xFF00BCF0),
+    selectionMenuTabIndicatorColor: Color(0xFF00BCF0),
   );
 
   final Color selectionMenuBackgroundColor;
@@ -222,6 +249,15 @@ class SelectionMenuStyle {
   final Color selectionMenuItemSelectedTextColor;
   final Color selectionMenuItemSelectedIconColor;
   final Color selectionMenuItemSelectedColor;
+  final Color selectionMenuUnselectedLabelColor;
+  final Color selectionMenuDividerColor;
+  final Color selectionMenuLinkBorderColor;
+  final Color selectionMenuInvalidLinkColor;
+  final Color selectionMenuButtonColor;
+  final Color selectionMenuButtonTextColor;
+  final Color selectionMenuButtonIconColor;
+  final Color selectionMenuButtonBorderColor;
+  final Color selectionMenuTabIndicatorColor;
 }
 
 class SelectionMenuWidget extends StatefulWidget {
@@ -343,7 +379,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
             BoxShadow(
               blurRadius: 5,
               spreadRadius: 1,
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
             ),
           ],
           borderRadius: BorderRadius.circular(6.0),

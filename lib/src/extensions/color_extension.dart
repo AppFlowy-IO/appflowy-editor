@@ -31,6 +31,11 @@ extension ColorExtension2 on Color {
   }
 
   String toRgbaString() {
+    final alpha = (a * 255).toInt();
+    final red = (r * 255).toInt();
+    final green = (g * 255).toInt();
+    final blue = (b * 255).toInt();
+
     return 'rgba($red, $green, $blue, $alpha)';
   }
 }

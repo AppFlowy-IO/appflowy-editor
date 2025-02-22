@@ -51,6 +51,15 @@ void showImageMenu(
     builder: (context) => UploadImageMenu(
       backgroundColor: menuService.style.selectionMenuBackgroundColor,
       headerColor: menuService.style.selectionMenuItemTextColor,
+      unselectedLabelColor: menuService.style.selectionMenuUnselectedLabelColor,
+      dividerColor: menuService.style.selectionMenuDividerColor,
+      urlInputBorderColor: menuService.style.selectionMenuLinkBorderColor,
+      urlInvalidLinkColor: menuService.style.selectionMenuInvalidLinkColor,
+      uploadButtonColor: menuService.style.selectionMenuButtonColor,
+      uploadButtonBorderColor: menuService.style.selectionMenuButtonBorderColor,
+      uploadButtonTextColor: menuService.style.selectionMenuButtonTextColor,
+      tabIndicatorColor: menuService.style.selectionMenuTabIndicatorColor,
+      uploadIconColor: menuService.style.selectionMenuButtonIconColor,
       width: MediaQuery.of(context).size.width * 0.3,
       onSubmitted: insertImage,
       onUpload: insertImage,
@@ -64,6 +73,15 @@ class UploadImageMenu extends StatefulWidget {
     super.key,
     this.backgroundColor = Colors.white,
     this.headerColor = Colors.black,
+    this.unselectedLabelColor = Colors.grey,
+    this.dividerColor = Colors.transparent,
+    this.urlInputBorderColor = const Color(0xFFBDBDBD),
+    this.urlInvalidLinkColor = Colors.red,
+    this.uploadButtonColor = const Color(0xFF00BCF0),
+    this.uploadButtonTextColor = Colors.white,
+    this.uploadButtonBorderColor = const Color(0xFF00BCF0),
+    this.tabIndicatorColor = const Color(0xFF00BCF0),
+    this.uploadIconColor = const Color(0xFF00BCF0),
     this.width = 300,
     required this.onSubmitted,
     required this.onUpload,
@@ -71,6 +89,15 @@ class UploadImageMenu extends StatefulWidget {
 
   final Color backgroundColor;
   final Color headerColor;
+  final Color unselectedLabelColor;
+  final Color dividerColor;
+  final Color urlInputBorderColor;
+  final Color urlInvalidLinkColor;
+  final Color uploadButtonColor;
+  final Color tabIndicatorColor;
+  final Color uploadButtonBorderColor;
+  final Color uploadIconColor;
+  final Color uploadButtonTextColor;
   final double width;
   final void Function(String text) onSubmitted;
   final void Function(String text) onUpload;
@@ -117,7 +144,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           BoxShadow(
             blurRadius: 5,
             spreadRadius: 1,
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
           ),
         ],
         // borderRadius: BorderRadius.circular(6.0),
@@ -137,9 +164,9 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                     Tab(text: AppFlowyEditorL10n.current.urlImage),
                   ],
                   labelColor: widget.headerColor,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: const Color(0xff00BCF0),
-                  dividerColor: Colors.transparent,
+                  unselectedLabelColor: widget.unselectedLabelColor,
+                  indicatorColor: widget.tabIndicatorColor,
+                  dividerColor: widget.dividerColor,
                   onTap: (value) {
                     if (value == 1) {
                       _focusNode.requestFocus();
@@ -180,23 +207,34 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
           });
         }
       },
+      cursorColor: widget.urlInputBorderColor,
       decoration: InputDecoration(
         hintText: 'URL',
-        hintStyle: const TextStyle(fontSize: 14.0),
+        hintStyle:
+            TextStyle(fontSize: 14.0, color: widget.uploadButtonTextColor),
         contentPadding: const EdgeInsets.all(16.0),
         isDense: true,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          borderSide: BorderSide(color: widget.urlInputBorderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          borderSide: BorderSide(color: widget.urlInputBorderColor),
+        ),
         suffixIcon: IconButton(
           padding: const EdgeInsets.all(4.0),
-          icon: const EditorSvg(
+          icon: EditorSvg(
             name: 'clear',
             width: 24,
             height: 24,
+            color: widget.uploadButtonTextColor,
           ),
           onPressed: _textEditingController.clear,
         ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          borderSide: BorderSide(color: Color(0xFFBDBDBD)),
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          borderSide: BorderSide(color: widget.urlInputBorderColor),
         ),
       ),
     );
@@ -205,7 +243,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
   Widget _buildInvalidLinkText() {
     return Text(
       AppFlowyEditorL10n.current.incorrectLink,
-      style: const TextStyle(color: Colors.red, fontSize: 12),
+      style: TextStyle(color: widget.urlInvalidLinkColor, fontSize: 12),
     );
   }
 
@@ -217,7 +255,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
       height: 36,
       child: TextButton(
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(const Color(0xFF00BCF0)),
+          backgroundColor: WidgetStateProperty.all(widget.uploadButtonColor),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
@@ -314,7 +352,7 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
             height: 60,
             margin: const EdgeInsets.all(10.0),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xff00BCF0)),
+              border: Border.all(color: widget.uploadButtonBorderColor),
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: _imagePathOrContent != null
@@ -334,17 +372,18 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const EditorSvg(
+                        EditorSvg(
                           name: 'upload_image',
                           width: 32,
                           height: 32,
+                          color: widget.uploadIconColor,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
                           AppFlowyEditorL10n.current.chooseImage,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14.0,
-                            color: Color(0xff00BCF0),
+                            color: widget.uploadButtonTextColor,
                           ),
                         ),
                       ],
