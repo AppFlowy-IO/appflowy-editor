@@ -26,8 +26,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       encodeHtml: false,
     ).parse(formattedMarkdown);
 
+    final List<md.Node> processedNodes = _processNodes(mdNodes);
     final document = Document.blank();
-    final nodes = mdNodes
+    final nodes = processedNodes
         .map((e) => _parseNode(e))
         .nonNulls
         .flattened
@@ -37,6 +38,46 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     }
 
     return document;
+  }
+
+  List<md.Node> _processNodes(List<md.Node> nodes) {
+    List<md.Node> result = [];
+
+    for (var node in nodes) {
+      if (node is md.Element && node.children != null && node.children!.length > 1) {
+        // Store image elements that need to be extracted
+        List<int> imageIndices = [];
+
+        // Find all image elements
+        for (var i = 0; i < node.children!.length; i++) {
+          var child = node.children![i];
+          if (child is md.Element && child.tag == 'img') {
+            imageIndices.add(i);
+          }
+        }
+
+        if (imageIndices.isNotEmpty) {
+          // Extract images from back to front to maintain correct indices
+          for (var i = imageIndices.length - 1; i >= 0; i--) {
+            var index = imageIndices[i];
+            var imageElement = node.children!.removeAt(index);
+            // Create a paragraph element containing the image
+            result.add(md.Element('p', [imageElement]));
+          }
+
+          // Add the original node if it still has children
+          if (node.children!.isNotEmpty) {
+            result.add(node);
+          }
+        } else {
+          result.add(node);
+        }
+      } else {
+        result.add(node);
+      }
+    }
+
+    return result;
   }
 
   // handle node itself and its children
@@ -67,7 +108,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // Rule 1: single '\n' between text and image, add double '\n'
     String result = markdown.replaceAllMapped(
       RegExp(r'([^\n])\n!\[([^\]]*)\]\(([^)]+)\)', multiLine: true),
-      (match) {
+          (match) {
         final text = match[1] ?? '';
         final altText = match[2] ?? '';
         final url = match[3] ?? '';
@@ -78,7 +119,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // Rule 2: without '\n' between text and image, add double '\n'
     result = result.replaceAllMapped(
       RegExp(r'([^\n])!\[([^\]]*)\]\(([^)]+)\)'),
-      (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
+          (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
     );
 
     // Add another rules here.
