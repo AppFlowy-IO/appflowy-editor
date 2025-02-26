@@ -881,10 +881,18 @@ class _MobileSelectionServiceWidgetState
   }
 
   @override
-  void renderDropTargetForOffset(Offset offset, {DragAreaBuilder? builder}) {
+  void renderDropTargetForOffset(
+    Offset offset, {
+    DragAreaBuilder? builder,
+    DragTargetNodeInterceptor? interceptor,
+  }) {
     // Do nothing on mobile
   }
 
   @override
-  DropTargetRenderData? getDropTargetRenderData(Offset offset) => null;
+  DropTargetRenderData? getDropTargetRenderData(
+    Offset offset, {
+    DragTargetNodeInterceptor? interceptor,
+  }) =>
+      null;
 }
