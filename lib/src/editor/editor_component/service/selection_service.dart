@@ -19,6 +19,11 @@ typedef DragAreaBuilder = Widget Function(
   DragAreaBuilderData data,
 );
 
+typedef DragTargetNodeInterceptor = Node Function(
+  BuildContext context,
+  Node node,
+);
+
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
 ///
@@ -105,9 +110,12 @@ abstract class AppFlowySelectionService {
   ///
   /// If [builder] is provided, the line will be drawn by [builder].
   /// Otherwise, the line will be drawn by default [DropTargetStyle].
+  ///
+  /// If [interceptor] is provided, the node will be intercepted by [interceptor].
   void renderDropTargetForOffset(
     Offset offset, {
     DragAreaBuilder? builder,
+    DragTargetNodeInterceptor? interceptor,
   });
 
   /// Removes the horizontal line drawn by [renderDropTargetForOffset].
@@ -116,7 +124,10 @@ abstract class AppFlowySelectionService {
 
   /// Returns the [DropTargetRenderData] for the [offset].
   ///
-  DropTargetRenderData? getDropTargetRenderData(Offset offset);
+  DropTargetRenderData? getDropTargetRenderData(
+    Offset offset, {
+    DragTargetNodeInterceptor? interceptor,
+  });
 }
 
 class SelectionGestureInterceptor {
