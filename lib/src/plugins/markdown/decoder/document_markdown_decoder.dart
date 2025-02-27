@@ -44,7 +44,9 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     List<md.Node> result = [];
 
     for (var node in nodes) {
-      if (node is md.Element && node.children != null && node.children!.length > 1) {
+      if (node is md.Element &&
+          node.children != null &&
+          node.children!.length > 1) {
         // Store image elements that need to be extracted
         List<int> imageIndices = [];
 
@@ -108,7 +110,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // Rule 1: single '\n' between text and image, add double '\n'
     String result = markdown.replaceAllMapped(
       RegExp(r'([^\n])\n!\[([^\]]*)\]\(([^)]+)\)', multiLine: true),
-          (match) {
+      (match) {
         final text = match[1] ?? '';
         final altText = match[2] ?? '';
         final url = match[3] ?? '';
@@ -119,7 +121,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     // Rule 2: without '\n' between text and image, add double '\n'
     result = result.replaceAllMapped(
       RegExp(r'([^\n])!\[([^\]]*)\]\(([^)]+)\)'),
-          (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
+      (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
     );
 
     // Add another rules here.
