@@ -108,6 +108,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   AppFlowyAutoCompleteTextProvider? get autoCompleteTextProvider =>
       widget.autoCompleteTextProvider ??
       widget.editorState.autoCompleteTextProvider;
+
   bool get enableAutoComplete =>
       widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
@@ -293,12 +294,28 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         )
         .map((box) => box.toRect())
         .toList(growable: false);
-
     if (rects == null || rects.isEmpty) {
-      // If the rich text widget does not contain any text,
-      // there will be no selection boxes,
-      // so we need to return to the default selection.
-      return [Rect.fromLTWH(0, 0, 0, paragraph?.size.height ?? 0)];
+      /// If the rich text widget does not contain any text,
+      /// there will be no selection boxes,
+      /// so we need to return to the default selection.
+      Offset position = Offset.zero;
+      double height = paragraph?.size.height ?? 0.0;
+      double width = 0;
+      if (!selection.isCollapsed) {
+        /// while selecting for an empty character, return a selection area
+        /// with width of 2
+        final textPosition = TextPosition(offset: textSelection.baseOffset);
+        position = paragraph?.getOffsetForCaret(
+              textPosition,
+              Rect.zero,
+            ) ??
+            position;
+        height = paragraph?.getFullHeightForCaret(textPosition) ?? height;
+        width = 2;
+      }
+      return [
+        Rect.fromLTWH(position.dx, position.dy, width, height),
+      ];
     }
     return rects;
   }
