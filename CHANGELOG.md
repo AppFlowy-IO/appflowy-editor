@@ -1,3 +1,18 @@
+## 5.1.0
+
+- feat: upgrade to Flutter 3.27.0 by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1020
+- fix: the cursor constantly blinking on Android by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1023
+- fix: RTL languages display incorrectly with soft line break(#7153) by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1026
+- fix: find getting focus unexpectedly by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1032
+- feat: disable floating toolbar when editable is false by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1034
+- feat: allow coloring image menu by @saif-ellafi in https://github.com/AppFlowy-IO/appflowy-editor/pull/1014
+- fix: editor will crash if deleting all nodes by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1037
+- feat: add simple columns block in editor by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1038
+- feat: add interceptor into selection service to custom the drag target node by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1044
+- fix: support custom non-standard urls by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1042
+- fix: check for has client before jumping in shrinkwrapped editor by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1045
+- fix: add default selection area for empty character by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1043
+
 ## 5.0.0
 
 - fix: export pdf set font not work by @Linij in https://github.com/AppFlowy-IO/appflowy-editor/pull/923
