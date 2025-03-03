@@ -12,3 +12,5 @@ Future<bool> safeLaunchUrl(String? href) async {
   }
   return Future.value(true);
 }
+
+Future<bool> Function(String? href) editorLaunchUrl = safeLaunchUrl;
