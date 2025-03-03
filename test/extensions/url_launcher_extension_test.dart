@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('safeLaunchUrl without href and scheme', () async {
     const href = null;
-    final result = await safeLaunchUrl(href);
+    final result = await editorLaunchUrl(href);
     expect(result, false);
   });
 }

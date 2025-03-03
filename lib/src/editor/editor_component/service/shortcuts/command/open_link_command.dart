@@ -38,7 +38,7 @@ KeyEventResult _openInlineLink(
   }
 
   if (linkText != null) {
-    safeLaunchUrl(linkText);
+    editorLaunchUrl(linkText);
   }
 
   return KeyEventResult.handled;
