@@ -15,37 +15,6 @@ typedef ToolbarTooltipBuilder = Widget Function(
   Widget child,
 );
 
-class ToolbarHoverController {
-  final Set<ValueChanged<HoverInfo>> _onHoveredListeners = {};
-
-  ToolbarHoverController();
-
-  void addListener(ValueChanged<HoverInfo> listener) =>
-      _onHoveredListeners.add(listener);
-
-  void removeListener(ValueChanged<HoverInfo> listener) =>
-      _onHoveredListeners.remove(listener);
-
-  void _notify(HoverInfo hoverInfo) {
-    for (final listener in _onHoveredListeners) {
-      listener.call(hoverInfo);
-    }
-  }
-
-  void _dispose() {
-    _onHoveredListeners.clear();
-  }
-}
-
-enum HoverType { enter, exit }
-
-class HoverInfo {
-  final String id;
-  final HoverType hoverType;
-
-  HoverInfo(this.id, this.hoverType);
-}
-
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -81,14 +50,6 @@ class FloatingToolbarWidget extends StatefulWidget {
 }
 
 class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
-  final ToolbarHoverController hoverController = ToolbarHoverController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    hoverController._dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     var activeItems = _computeActiveItems();
@@ -116,19 +77,12 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
                   key: Key(
                     '${floatingToolbarItemPrefixKey}_${item.id}_$index',
                   ),
-                  child: MouseRegion(
-                    onEnter: (e) => hoverController
-                        ._notify(HoverInfo(item.id, HoverType.enter)),
-                    onExit: (e) => hoverController
-                        ._notify(HoverInfo(item.id, HoverType.exit)),
-                    child: item.builder!(
-                      context,
-                      widget.editorState,
-                      widget.toolbarActiveColor,
-                      widget.toolbarIconColor,
-                      widget.tooltipBuilder,
-                      hoverController,
-                    ),
+                  child: item.builder!(
+                    context,
+                    widget.editorState,
+                    widget.toolbarActiveColor,
+                    widget.toolbarIconColor,
+                    widget.tooltipBuilder,
                   ),
                 );
               },

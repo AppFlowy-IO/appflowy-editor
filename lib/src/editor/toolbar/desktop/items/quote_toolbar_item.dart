@@ -6,14 +6,7 @@ final ToolbarItem quoteItem = ToolbarItem(
   id: _kQuoteItemId,
   group: 3,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (
-    context,
-    editorState,
-    highlightColor,
-    iconColor,
-    tooltipBuilder,
-    hoverController,
-  ) {
+  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'quote';

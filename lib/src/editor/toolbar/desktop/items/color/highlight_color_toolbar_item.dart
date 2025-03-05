@@ -7,14 +7,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
     id: _kHighlightColorItemId,
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (
-      context,
-      editorState,
-      highlightColor,
-      iconColor,
-      tooltipBuilder,
-      hoverController,
-    ) {
+    builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
       String? highlightColorHex;
 
       final selection = editorState.selection!;

@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 typedef ToolbarItemEventHandler = void Function(
   EditorState editorState,
@@ -32,7 +33,6 @@ class ToolbarItem {
     Color highlightColor,
     Color? iconColor,
     ToolbarTooltipBuilder? tooltipBuilder,
-    ToolbarHoverController hoverController,
   )? builder;
 
   // deprecated
