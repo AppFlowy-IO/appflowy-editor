@@ -7,7 +7,7 @@ final ToolbarItem placeholderItem = ToolbarItem(
   id: placeholderItemId,
   group: -1,
   isActive: (editorState) => true,
-  builder: (_, __, ___, ____, _____) {
+  builder: (_, __, ___, ____, _____, ______) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
       child: Container(

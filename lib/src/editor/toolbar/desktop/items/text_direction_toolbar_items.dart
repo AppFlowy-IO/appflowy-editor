@@ -34,6 +34,7 @@ class _TextDirectionToolbarItem extends ToolbarItem {
             highlightColor,
             iconColor,
             tooltipBuilder,
+            hoverController,
           ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);

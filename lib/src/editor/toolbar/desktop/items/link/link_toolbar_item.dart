@@ -12,7 +12,14 @@ final linkItem = ToolbarItem(
   id: _kLinkItemId,
   group: 4,
   isActive: onlyShowInSingleSelectionAndTextType,
-  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
+  builder: (
+    context,
+    editorState,
+    highlightColor,
+    iconColor,
+    tooltipBuilder,
+    hoverController,
+  ) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
     final isHref = nodes.allSatisfyInSelection(selection, (delta) {

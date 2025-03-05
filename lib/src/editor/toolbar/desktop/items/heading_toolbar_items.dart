@@ -18,6 +18,7 @@ class _HeadingToolbarItem extends ToolbarItem {
             highlightColor,
             iconColor,
             tooltipBuilder,
+            hoverController,
           ) {
             final selection = editorState.selection!;
             final node = editorState.getNodeAtPath(selection.start.path)!;

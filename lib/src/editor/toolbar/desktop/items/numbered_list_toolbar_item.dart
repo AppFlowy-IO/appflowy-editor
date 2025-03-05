@@ -6,7 +6,14 @@ final ToolbarItem numberedListItem = ToolbarItem(
   id: _kNumberedListItemId,
   group: 3,
   isActive: onlyShowInTextType,
-  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
+  builder: (
+    context,
+    editorState,
+    highlightColor,
+    iconColor,
+    tooltipBuilder,
+    hoverController,
+  ) {
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'numbered_list';

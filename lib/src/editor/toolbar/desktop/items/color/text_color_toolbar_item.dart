@@ -9,7 +9,14 @@ ToolbarItem buildTextColorItem({
     id: _kTextColorItemId,
     group: 4,
     isActive: onlyShowInTextType,
-    builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
+    builder: (
+      context,
+      editorState,
+      highlightColor,
+      iconColor,
+      tooltipBuilder,
+      hoverController,
+    ) {
       String? textColorHex;
       final selection = editorState.selection!;
       final nodes = editorState.getNodesInSelection(selection);
