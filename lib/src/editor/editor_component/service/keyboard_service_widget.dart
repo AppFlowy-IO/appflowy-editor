@@ -43,7 +43,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   Selection? previousSelection;
 
   // use for IME only
-  bool enableShortcuts = true;
+  bool enableIMEShortcuts = true;
+
+  // use for hardware keyboard only
+  bool enableKeyboardShortcuts = true;
 
   @override
   void initState() {
@@ -55,7 +58,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     interceptor = SelectionGestureInterceptor(
       key: 'keyboard',
       canTap: (details) {
-        enableShortcuts = true;
+        enableIMEShortcuts = true;
         focusNode.requestFocus();
         textInputService.close();
         return true;
@@ -90,11 +93,24 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void disable({
     bool showCursor = false,
     UnfocusDisposition disposition = UnfocusDisposition.previouslyFocusedChild,
-  }) =>
-      focusNode.unfocus(disposition: disposition);
+  }) {
+    focusNode.unfocus(disposition: disposition);
+  }
 
   @override
-  void enable() => focusNode.requestFocus();
+  void enable() {
+    focusNode.requestFocus();
+  }
+
+  @override
+  void enableShortcuts() {
+    enableKeyboardShortcuts = true;
+  }
+
+  @override
+  void disableShortcuts() {
+    enableKeyboardShortcuts = false;
+  }
 
   // Used in mobile only
   @override
@@ -148,8 +164,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   /// handle hardware keyboard
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (!enableKeyboardShortcuts) {
+      return KeyEventResult.ignored;
+    }
+
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
-        !enableShortcuts) {
+        !enableIMEShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
@@ -193,7 +213,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     //   return;
     // }
 
-    enableShortcuts = true;
+    enableIMEShortcuts = true;
 
     if (selection == null) {
       textInputService.close();
@@ -234,9 +254,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         ),
       );
       // disable shortcuts when the IME active
-      enableShortcuts = textEditingValue.composing == TextRange.empty;
+      enableIMEShortcuts = textEditingValue.composing == TextRange.empty;
     } else {
-      enableShortcuts = true;
+      enableIMEShortcuts = true;
     }
   }
 
