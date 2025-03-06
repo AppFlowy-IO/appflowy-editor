@@ -382,7 +382,9 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     _animationController?.dispose();
     primary.itemPositionsNotifier.itemPositions.dispose();
     secondary.itemPositionsNotifier.itemPositions.dispose();
-    secondary.scrollController.dispose();
+    if (secondary.scrollController.hasClients) {
+      secondary.scrollController.dispose();
+    }
     super.dispose();
   }
 
