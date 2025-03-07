@@ -16,6 +16,7 @@ class BlockSelectionContainer extends StatelessWidget {
       BlockSelectionType.cursor,
       BlockSelectionType.selection,
     ],
+    this.selectionAboveBlock = false,
     required this.child,
   });
 
@@ -42,10 +43,26 @@ class BlockSelectionContainer extends StatelessWidget {
 
   final List<BlockSelectionType> supportTypes;
 
+  // the selection area should above the block component
+  final bool selectionAboveBlock;
+
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final blockSelectionArea = BlockSelectionArea(
+      node: node,
+      delegate: delegate,
+      listenable: listenable,
+      cursorColor: cursorColor,
+      selectionColor: selectionColor,
+      blockColor: blockColor,
+      supportTypes: supportTypes
+          .where(
+            (element) => element != BlockSelectionType.cursor,
+          )
+          .toList(),
+    );
     return Stack(
       clipBehavior: Clip.none,
       // In RTL mode, if the alignment is topStart,
@@ -66,20 +83,10 @@ class BlockSelectionContainer extends StatelessWidget {
                 .toList(),
           ),
         // block selection or selection area
-        BlockSelectionArea(
-          node: node,
-          delegate: delegate,
-          listenable: listenable,
-          cursorColor: cursorColor,
-          selectionColor: selectionColor,
-          blockColor: blockColor,
-          supportTypes: supportTypes
-              .where(
-                (element) => element != BlockSelectionType.cursor,
-              )
-              .toList(),
-        ),
+        if (!selectionAboveBlock) blockSelectionArea,
         child,
+        // block selection or selection area
+        if (selectionAboveBlock) blockSelectionArea,
         // cursor
         // remote cursor
         if (supportTypes.contains(BlockSelectionType.cursor) &&

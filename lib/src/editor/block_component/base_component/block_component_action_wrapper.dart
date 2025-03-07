@@ -7,17 +7,24 @@ typedef BlockComponentActionBuilder = Widget Function(
   BlockComponentActionState state,
 );
 
+typedef BlockComponentActionTrailingBuilder = Widget Function(
+  BuildContext context,
+  BlockComponentActionState state,
+);
+
 class BlockComponentActionWrapper extends StatefulWidget {
   const BlockComponentActionWrapper({
     super.key,
     required this.node,
     required this.child,
     required this.actionBuilder,
+    this.actionTrailingBuilder,
   });
 
   final Node node;
   final Widget child;
   final BlockComponentActionBuilder actionBuilder;
+  final BlockComponentActionTrailingBuilder? actionTrailingBuilder;
 
   @override
   State<BlockComponentActionWrapper> createState() =>
@@ -82,6 +89,11 @@ class _BlockComponentActionWrapperState
               actionBuilder: (context) => widget.actionBuilder(context, this),
             ),
           ),
+          if (widget.actionTrailingBuilder != null)
+            widget.actionTrailingBuilder!(
+              context,
+              this,
+            ),
           Expanded(child: widget.child),
         ],
       ),
