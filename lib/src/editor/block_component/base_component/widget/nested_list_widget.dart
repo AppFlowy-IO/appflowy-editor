@@ -36,7 +36,12 @@ class NestedListWidget extends StatelessWidget {
       NestedListMode.stack => Stack(
           children: [
             child,
-            ...children,
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
           ],
         ),
       NestedListMode.column => Column(
