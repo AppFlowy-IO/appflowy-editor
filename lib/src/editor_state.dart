@@ -118,7 +118,9 @@ class EditorState {
 
   /// Whether the editor is editable.
   ValueNotifier<bool> editableNotifier = ValueNotifier(true);
+
   bool get editable => editableNotifier.value;
+
   set editable(bool value) {
     if (value == editable) {
       return;
@@ -160,6 +162,7 @@ class EditorState {
   }
 
   SelectionType? _selectionType;
+
   set selectionType(SelectionType? value) {
     if (value == _selectionType) {
       return;
@@ -170,6 +173,7 @@ class EditorState {
   SelectionType? get selectionType => _selectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
+
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
   Map? selectionExtraInfo;
@@ -180,7 +184,9 @@ class EditorState {
   AppFlowyScrollService? get scrollService => service.scrollService;
 
   AppFlowySelectionService get selectionService => service.selectionService;
+
   BlockComponentRendererService get renderer => service.rendererService;
+
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
@@ -233,7 +239,9 @@ class EditorState {
   /// If the value is true, the upcoming attributes will be sliced.
   /// If the value is false, the upcoming attributes will be skipped.
   bool _sliceUpcomingAttributes = true;
+
   bool get sliceUpcomingAttributes => _sliceUpcomingAttributes;
+
   set sliceUpcomingAttributes(bool value) {
     if (value == _sliceUpcomingAttributes) {
       return;
@@ -261,9 +269,24 @@ class EditorState {
 
   @Deprecated('use editorState.selection instead')
   Selection? _cursorSelection;
+
   @Deprecated('use editorState.selection instead')
   Selection? get cursorSelection {
     return _cursorSelection;
+  }
+
+  final Set<VoidCallback> _onScrollViewScrolledListeners = {};
+
+  void addScrollViewScrolledListener(VoidCallback callback) =>
+      _onScrollViewScrolledListeners.add(callback);
+
+  void removeScrollViewScrolledListener(VoidCallback callback) =>
+      _onScrollViewScrolledListeners.remove(callback);
+
+  void _notifyScrollViewScrolledListeners() {
+    for (final listener in Set.of(_onScrollViewScrolledListeners)) {
+      listener.call();
+    }
   }
 
   RenderBox? get renderBox {
@@ -336,6 +359,7 @@ class EditorState {
     onDispose.dispose();
     document.dispose();
     selectionNotifier.dispose();
+    _onScrollViewScrolledListeners.clear();
   }
 
   /// Apply the transaction to the state.
@@ -578,7 +602,7 @@ class EditorState {
       autoScroller = AutoScroller(
         scrollableState,
         velocityScalar: PlatformExtension.isDesktopOrWeb ? 50 : 100,
-        onScrollViewScrolled: () {},
+        onScrollViewScrolled: _notifyScrollViewScrolledListeners,
       );
       this.scrollableState = scrollableState;
     }
