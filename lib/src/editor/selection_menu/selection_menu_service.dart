@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 
 abstract class SelectionMenuService {
   Offset get offset;
+
   Alignment get alignment;
+
   SelectionMenuStyle get style;
 
   Future<void> show();
+
   void dismiss();
 
   (double? left, double? top, double? right, double? bottom) getPosition();
@@ -228,7 +231,7 @@ class SelectionMenu extends SelectionMenuService {
 
       _offset = Offset(
         offset.dx,
-        MediaQuery.of(context).size.height - offset.dy,
+        editorHeight + editorOffset.dy - offset.dy,
       );
     }
 
