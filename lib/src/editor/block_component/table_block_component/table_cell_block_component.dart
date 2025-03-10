@@ -64,6 +64,10 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -82,6 +86,7 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
     this.colorBuilder,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 

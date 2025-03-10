@@ -106,6 +106,10 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -183,6 +187,7 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
     this.menuBuilder,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 
@@ -246,6 +251,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

@@ -57,6 +57,7 @@ class ColumnsBlockComponent extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 

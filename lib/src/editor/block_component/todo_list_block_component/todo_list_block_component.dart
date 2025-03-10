@@ -76,6 +76,10 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
       toggleChildrenTriggers: toggleChildrenTriggers,
     );
   }
@@ -90,6 +94,7 @@ class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.iconBuilder,
@@ -216,6 +221,7 @@ class _TodoListBlockComponentWidgetState
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

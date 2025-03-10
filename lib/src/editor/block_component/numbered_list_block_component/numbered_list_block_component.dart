@@ -66,6 +66,10 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -79,6 +83,7 @@ class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.iconBuilder,
   });
@@ -196,6 +201,7 @@ class _NumberedListBlockComponentWidgetState
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }
