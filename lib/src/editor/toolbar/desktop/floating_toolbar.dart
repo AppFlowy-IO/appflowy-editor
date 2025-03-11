@@ -188,20 +188,27 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (top <= floatingToolbarHeight || (left == 0 && right == 0)) {
       return;
     }
+
+    Size screenSize = MediaQuery.of(context).size;
+    double maxWidth = screenSize.width - (left ?? 0) - (right ?? 0) - 20;
+
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         return Positioned(
           top: max(0, top) - floatingToolbarHeight,
           left: left,
           right: right,
-          child: _buildToolbar(context),
+          child: _buildToolbar(context, maxWidth),
         );
       },
     );
     Overlay.of(context, rootOverlay: true).insert(_toolbarContainer!);
   }
 
-  Widget _buildToolbar(BuildContext context) {
+  Widget _buildToolbar(BuildContext context, double maxWidth) {
+    if (_toolbarWidget?.maxWidth != maxWidth) {
+      _toolbarWidget = null;
+    }
     _toolbarWidget ??= FloatingToolbarWidget(
       items: widget.items,
       editorState: editorState,
@@ -211,6 +218,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       toolbarElevation: widget.style.toolbarElevation,
       toolbarShadowColor: widget.style.toolbarShadowColor,
       textDirection: widget.textDirection ?? Directionality.of(context),
+      maxWidth: maxWidth,
       tooltipBuilder: widget.tooltipBuilder,
     );
     return _toolbarWidget!;
