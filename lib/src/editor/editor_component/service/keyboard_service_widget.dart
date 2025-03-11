@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_on_floating_cursor_update.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/vim_shortcut_event.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -166,6 +167,16 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (!enableKeyboardShortcuts) {
       return KeyEventResult.ignored;
+    }
+
+    if (editorState.vimMode) {
+      print('vim mode enabled!');
+      final VimCommandShortcutEvent vimCommandShortcutEvent =
+          VimCommandShortcutEvent();
+      final vimResult = vimCommandShortcutEvent.handleKey(event, editorState);
+      if (vimResult == KeyEventResult.handled) {
+        return KeyEventResult.handled;
+      }
     }
 
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||

@@ -10,10 +10,12 @@ final List<CommandShortcutEvent> vimKeyModes = [
   insertNextInlineCommand,
 
   ///Vim Movements
+  /*
   jumpUpCommand,
   jumpDownCommand,
   jumpLeftCommand,
   jumpRightCommand,
+*/
 
   ///Vim Jump to line
   //BUG: Won't work properly keyboard shortcut fails
@@ -146,6 +148,7 @@ CommandShortcutEventHandler _insertNextInlineCommandHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
+/*
 /// Motion Keys
 final CommandShortcutEvent jumpDownCommand = CommandShortcutEvent(
   key: 'move the cursor downward in normal mode',
@@ -266,6 +269,7 @@ CommandShortcutEventHandler _jumpRightCommandHandler = (editorState) {
   }
   return KeyEventResult.ignored;
 };
+*/
 
 //BUG: Selection does not show up in normal mode
 final CommandShortcutEvent vimSelectLineCommand = CommandShortcutEvent(
@@ -724,10 +728,6 @@ CommandShortcutEventHandler _jumpWordForwardCommandHandler = (editorState) {
 };
 
 final numList = List.generate(10, (i) => i);
-final movements = [
-  jumpDownCommand,
-  jumpUpCommand,
-];
 /*
  * The idea for this is to at least use
  *  a list for the numbers & key movements.
