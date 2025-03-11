@@ -27,7 +27,7 @@ void main() {
           await widgetTester.pumpAndSettle();
 
           // test the method only
-          expect(() => safeLaunchUrl(address), returnsNormally);
+          expect(() => editorLaunchUrl(address), returnsNormally);
         },
       );
       testWidgets(

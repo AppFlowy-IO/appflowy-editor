@@ -92,7 +92,7 @@ void showLinkMenu(
         linkText: linkText,
         editorState: editorState,
         onOpenLink: () async {
-          await safeLaunchUrl(linkText);
+          await editorLaunchUrl(linkText);
         },
         onSubmitted: (text) async {
           if (isUri(text)) {
