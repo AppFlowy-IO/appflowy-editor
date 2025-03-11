@@ -170,12 +170,13 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     }
 
     if (editorState.vimMode) {
-      print('vim mode enabled!');
-      final VimCommandShortcutEvent vimCommandShortcutEvent =
-          VimCommandShortcutEvent();
-      final vimResult = vimCommandShortcutEvent.handleKey(event, editorState);
-      if (vimResult == KeyEventResult.handled) {
-        return KeyEventResult.handled;
+      if (editorState.mode == VimModes.normalMode) {
+        final VimCommandShortcutEvent vimCommandShortcutEvent =
+            VimCommandShortcutEvent();
+        final vimResult = vimCommandShortcutEvent.handleKey(event, editorState);
+        if (vimResult == KeyEventResult.handled) {
+          return KeyEventResult.handled;
+        }
       }
     }
 

@@ -14,7 +14,6 @@ class VimCommandShortcutEvent extends CommandShortcutEvent {
           getDescription: () => 'Handles multi-key vim commands using an FSM',
         );
   KeyEventResult handleKey(KeyEvent event, EditorState editorState) {
-    print(event);
     return vimFSM.processKey(event, editorState);
   }
 

@@ -5,9 +5,9 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 const baseKeys = ['h', 'j', 'k', 'l'];
 
-class VimFSM {
-  String _buffer = '';
+String _buffer = '';
 
+class VimFSM {
   KeyEventResult processKey(KeyEvent event, EditorState editorState) {
     if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
@@ -26,43 +26,74 @@ class VimFSM {
       _buffer = '';
       final selection = editorState.selection;
       if (selection == null) return KeyEventResult.ignored;
+      print('doc children');
+      print(editorState.document.root);
 
       switch (key) {
         case 'j':
-          newPosition = moveVerticalMultiple(
-            editorState,
-            selection.end,
-            upwards: false,
-            count: count,
-          );
-          break;
+          {
+            newPosition = moveVerticalMultiple(
+              editorState,
+              selection.end,
+              upwards: false,
+              count: count,
+            );
+            int tmpPos = count + selection.end.path.first;
+            if (tmpPos < editorState.document.root.children.length) {
+              newPosition = Position(path: [tmpPos], offset: 0);
+            }
+            //newPosition = Position(path: [count+selection.end.path.first]);
+            break;
+          }
 
         case 'k':
-          newPosition = moveVerticalMultiple(
-            editorState,
-            selection.end,
-            upwards: true,
-            count: count,
-          );
-          break;
+          {
+            newPosition = moveVerticalMultiple(
+              editorState,
+              selection.end,
+              upwards: true,
+              count: count,
+            );
+
+            int tmpPos = selection.end.path.first - count;
+            if (tmpPos < editorState.document.root.children.length) {
+              newPosition = Position(path: [tmpPos], offset: 0);
+            }
+            break;
+          }
         case 'h':
-          newPosition = moveHorizontalMultiple(
-            editorState,
-            selection.end,
-            forward: false,
-            count: count,
-          );
-          break;
+          {
+            newPosition = moveHorizontalMultiple(
+              editorState,
+              selection.end,
+              forward: true,
+              count: count,
+            );
+
+            break;
+          }
         case 'l':
-          newPosition = moveHorizontalMultiple(
-            editorState,
-            selection.end,
-            forward: true,
-            count: count,
-          );
-          break;
+          {
+            newPosition = moveHorizontalMultiple(
+              editorState,
+              selection.end,
+              forward: false,
+              count: count,
+            );
+            break;
+          }
       }
       if (newPosition != null) {
+        print(selection);
+        print(newPosition);
+        print(count);
+
+        //NOTE: This works
+        //Position tmp = Position(offset: 0, path: [3]);
+        //BUG:This does not work
+        print(newPosition.path.first);
+        Position tmp =
+            Position(offset: 0, path: [selection.end.path.first + count]);
         editorState.updateSelectionWithReason(
           Selection.collapsed(newPosition),
           reason: SelectionUpdateReason.uiEvent,
@@ -71,6 +102,7 @@ class VimFSM {
       }
     }
     _buffer = '';
+
     return KeyEventResult.ignored;
   }
 
