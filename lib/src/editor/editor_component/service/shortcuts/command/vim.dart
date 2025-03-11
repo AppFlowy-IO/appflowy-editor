@@ -772,6 +772,7 @@ CommandShortcutEventHandler _vimJumpToLineHandler = (editorState) {
 };
 
 //BUG: Transaction to delete word won't apply
+/*
 final CommandShortcutEvent vimDeleteUnderCursorCommand = CommandShortcutEvent(
   key: 'vim delete character under cursor in normal mode',
   command: 'd',
@@ -892,3 +893,4 @@ CommandShortcutEventHandler _deleteInBlockSelection = (editorState) {
 
   return KeyEventResult.handled;
 };
+*/

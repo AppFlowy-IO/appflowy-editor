@@ -6,6 +6,22 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 const baseKeys = ['h', 'j', 'k', 'l'];
 
 String _buffer = '';
+String _deleteBuffer = '';
+
+Position deleteCurrentLine(EditorState editorState, int count) {
+  final selection = editorState.selection;
+  if (selection == null) return Position(path: [0], offset: 0);
+  final node = editorState.getNodeAtPath(selection.end.path);
+  if (node == null || node.delta == null) return Position(path: [0], offset: 0);
+  final transaction = editorState.transaction;
+  final tmpPosition = Position(path: selection.start.path, offset: 0);
+  //transaction.deleteText(node, 0, node.delta!.length);
+  transaction.deleteNodesAtPath(selection.start.path);
+  editorState.apply(transaction).then(
+        (value) => {editorState.selectionType = null},
+      );
+  return tmpPosition;
+}
 
 class VimFSM {
   KeyEventResult processKey(KeyEvent event, EditorState editorState) {
@@ -18,6 +34,24 @@ class VimFSM {
     if (RegExp(r'^\d$').hasMatch(key)) {
       _buffer += key;
       return KeyEventResult.handled;
+    }
+
+    if (key == 'd') {
+      _deleteBuffer += key;
+      final RegExp ddRegExp = RegExp(r'^(\d*)dd$');
+      final match = ddRegExp.firstMatch(_deleteBuffer);
+      if (match != null) {
+        final String? countStr = match.group(1);
+        final int count =
+            (countStr != null && countStr.isNotEmpty) ? int.parse(countStr) : 1;
+        final tmpPosition = deleteCurrentLine(editorState, count);
+        _deleteBuffer = '';
+        editorState.selection = Selection(
+          end: tmpPosition,
+          start: tmpPosition,
+        );
+        return KeyEventResult.handled;
+      }
     }
 
     Position? newPosition;
