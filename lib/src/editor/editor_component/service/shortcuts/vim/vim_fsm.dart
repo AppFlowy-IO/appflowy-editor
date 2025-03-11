@@ -26,9 +26,16 @@ class VimFSM {
       _buffer = '';
       final selection = editorState.selection;
       if (selection == null) return KeyEventResult.ignored;
-      print('doc children');
-      print(editorState.document.root);
+      //NOTE: Figure a way out to perform transactions
+      //final transaction = editorState.transaction;
 
+      /*
+            transaction
+                .deleteNodesAtPath(editorState.prevSelection!.start.path);
+            editorState
+                .apply(transaction)
+                .then((value) => editorState.selectionType = null);
+                */
       switch (key) {
         case 'j':
           {
