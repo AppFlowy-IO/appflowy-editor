@@ -18,10 +18,10 @@ import 'package:flutter/services.dart';
 /// ```
 ///
 abstract class AppFlowyKeyboardService {
-  /// Enables shortcuts service.
+  /// Enables IME shortcuts service.
   void enable();
 
-  /// Disables shortcuts service.
+  /// Disables IME shortcuts service.
   ///
   /// In some cases, if your custom component needs to monitor
   ///   keyboard events separately,
@@ -32,6 +32,12 @@ abstract class AppFlowyKeyboardService {
     bool showCursor = false,
     UnfocusDisposition disposition = UnfocusDisposition.scope,
   });
+
+  /// Enable the keyboard shortcuts
+  void enableShortcuts();
+
+  /// Disable the keyboard shortcuts
+  void disableShortcuts();
 
   /// Closes the keyboard
   ///
