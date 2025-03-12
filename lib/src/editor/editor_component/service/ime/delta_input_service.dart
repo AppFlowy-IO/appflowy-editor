@@ -28,22 +28,23 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   TextInputConnection? _textInputConnection;
 
   @override
-  Future<void> apply(List<TextEditingDelta> deltas) async {
+  Future<bool> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
+    bool willApply = true;
     for (final delta in formattedDeltas) {
       _updateComposing(delta);
-
       switch (delta) {
         case TextEditingDeltaInsertion _:
-          await onInsert(delta);
+          if (!(await onInsert(delta))) willApply = false;
         case TextEditingDeltaDeletion _:
-          await onDelete(delta);
+          if (!(await onDelete(delta))) willApply = false;
         case TextEditingDeltaReplacement _:
-          await onReplace(delta);
+          if (!(await onReplace(delta))) willApply = false;
         case TextEditingDeltaNonTextUpdate _:
-          await onNonTextUpdate(delta);
+          if (!(await onNonTextUpdate(delta))) willApply = false;
       }
     }
+    return willApply;
   }
 
   @override
@@ -154,7 +155,8 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
           deletedRange: deleteRange,
           selection: const TextSelection.collapsed(
             offset: -1,
-          ), // just pass a invalid value, because we don't use this selection inside.
+          ),
+          // just pass a invalid value, because we don't use this selection inside.
           composing: TextRange.empty,
         ),
       );
@@ -253,7 +255,9 @@ extension on TextEditingDeltaNonTextUpdate {
 
 extension on TextSelection {
   TextSelection operator <<(int shiftAmount) => shift(-shiftAmount);
+
   TextSelection operator >>(int shiftAmount) => shift(shiftAmount);
+
   TextSelection shift(int shiftAmount) => TextSelection(
         baseOffset: max(0, baseOffset + shiftAmount),
         extentOffset: max(0, extentOffset + shiftAmount),
@@ -262,7 +266,9 @@ extension on TextSelection {
 
 extension on TextRange {
   TextRange operator <<(int shiftAmount) => shift(-shiftAmount);
+
   TextRange operator >>(int shiftAmount) => shift(shiftAmount);
+
   TextRange shift(int shiftAmount) => !isValid
       ? this
       : TextRange(
@@ -273,6 +279,7 @@ extension on TextRange {
 
 extension on String {
   String operator <<(int shiftAmount) => shift(shiftAmount);
+
   String shift(int shiftAmount) {
     if (shiftAmount > length) {
       return '';

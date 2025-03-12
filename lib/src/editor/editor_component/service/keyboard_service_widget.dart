@@ -375,7 +375,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onInsert - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -384,6 +384,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onDelete: (deletion) async {
         for (final interceptor in interceptors) {
@@ -395,7 +396,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onDelete - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -403,6 +404,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           deletion,
           editorState,
         );
+        return true;
       },
       onReplace: (replacement) async {
         for (final interceptor in interceptors) {
@@ -415,7 +417,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onReplace - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -424,6 +426,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onNonTextUpdate: (nonTextUpdate) async {
         for (final interceptor in interceptors) {
@@ -436,7 +439,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onNonTextUpdate - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -445,6 +448,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onPerformAction: (action) async {
         for (final interceptor in interceptors) {

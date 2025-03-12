@@ -88,10 +88,10 @@ void main() {
         onContentInserted: (value) => completer.complete(true),
       );
       final inputService = NonDeltaTextInputService(
-        onInsert: (_) async {},
-        onDelete: (_) async {},
-        onReplace: (_) async {},
-        onNonTextUpdate: (_) async {},
+        onInsert: (_) async => true,
+        onDelete: (_) async => true,
+        onReplace: (_) async => true,
+        onNonTextUpdate: (_) async => true,
         onPerformAction: (_) async {},
         contentInsertionConfiguration: config,
       );
@@ -154,10 +154,22 @@ void main() {
         const TextEditingValue(selection: TextSelection.collapsed(offset: 0));
     const space = ' ';
     final inputService = NonDeltaTextInputService(
-      onInsert: (v) async => value = v.apply(value),
-      onDelete: (v) async => value = v.apply(value),
-      onReplace: (v) async => value = v.apply(value),
-      onNonTextUpdate: (v) async => value = v.apply(value),
+      onInsert: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onDelete: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onReplace: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onNonTextUpdate: (v) async {
+        value = v.apply(value);
+        return true;
+      },
       onPerformAction: (_) async {},
     );
     inputService.attach(value, const TextInputConfiguration());
