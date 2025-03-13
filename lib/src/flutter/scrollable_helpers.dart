@@ -233,12 +233,6 @@ class EdgeDraggingAutoScroller {
       ),
     );
 
-    if (globalRect.size.width >= _dragTargetRelatedToScrollOrigin.size.width &&
-        globalRect.size.height >=
-            _dragTargetRelatedToScrollOrigin.size.height) {
-      return;
-    }
-
     _scrolling = true;
     double? newOffset;
     const double overDragMax = 20.0;
