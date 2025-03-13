@@ -65,6 +65,7 @@ class _MobileEditorState extends State<MobileEditor> {
             child: MobileFloatingToolbar(
               editorState: editorState,
               editorScrollController: editorScrollController,
+              floatingToolbarHeight: 32,
               toolbarBuilder: (context, anchor, closeToolbar) {
                 return AdaptiveTextSelectionToolbar.editable(
                   clipboardStatus: ClipboardStatus.pasteable,
