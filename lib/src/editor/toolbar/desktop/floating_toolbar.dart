@@ -61,6 +61,8 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   double get floatingToolbarHeight => widget.floatingToolbarHeight;
 
+  late Brightness brightness = Theme.of(context).brightness;
+
   @override
   void initState() {
     super.initState();
@@ -210,20 +212,27 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   Widget _buildToolbar(BuildContext context) {
-    _toolbarWidget ??= FloatingToolbarWidget(
-      items: widget.items,
-      editorState: editorState,
-      backgroundColor: widget.style.backgroundColor,
-      toolbarActiveColor: widget.style.toolbarActiveColor,
-      toolbarIconColor: widget.style.toolbarIconColor,
-      toolbarElevation: widget.style.toolbarElevation,
-      toolbarShadowColor: widget.style.toolbarShadowColor,
-      textDirection: widget.textDirection ?? Directionality.of(context),
-      tooltipBuilder: widget.tooltipBuilder,
-      floatingToolbarHeight: floatingToolbarHeight,
-      padding: widget.padding,
-      decoration: widget.decoration,
-    );
+    final brightness = Theme.of(context).brightness;
+    bool needRefreshToolbar = brightness != this.brightness;
+    if (needRefreshToolbar) {
+      this.brightness = brightness;
+    }
+    if (needRefreshToolbar || _toolbarWidget == null) {
+      _toolbarWidget = FloatingToolbarWidget(
+        items: widget.items,
+        editorState: editorState,
+        backgroundColor: widget.style.backgroundColor,
+        toolbarActiveColor: widget.style.toolbarActiveColor,
+        toolbarIconColor: widget.style.toolbarIconColor,
+        toolbarElevation: widget.style.toolbarElevation,
+        toolbarShadowColor: widget.style.toolbarShadowColor,
+        textDirection: widget.textDirection ?? Directionality.of(context),
+        tooltipBuilder: widget.tooltipBuilder,
+        floatingToolbarHeight: floatingToolbarHeight,
+        padding: widget.padding,
+        decoration: widget.decoration,
+      );
+    }
     return _toolbarWidget!;
   }
 
