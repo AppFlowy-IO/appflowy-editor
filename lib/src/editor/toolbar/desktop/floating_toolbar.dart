@@ -35,6 +35,7 @@ class FloatingToolbar extends StatefulWidget {
     this.floatingToolbarHeight = 32,
     this.padding,
     this.decoration,
+    this.placeHolderBuilder,
   });
 
   final List<ToolbarItem> items;
@@ -47,6 +48,7 @@ class FloatingToolbar extends StatefulWidget {
   final double floatingToolbarHeight;
   final EdgeInsets? padding;
   final Decoration? decoration;
+  final PlaceHolderItemBuilder? placeHolderBuilder;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -231,6 +233,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
         floatingToolbarHeight: floatingToolbarHeight,
         padding: widget.padding,
         decoration: widget.decoration,
+        placeHolderBuilder: widget.placeHolderBuilder,
       );
     }
     return _toolbarWidget!;
