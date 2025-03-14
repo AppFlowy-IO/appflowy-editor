@@ -183,7 +183,7 @@ void _showColorMenu(
         title: AppFlowyEditorL10n.current.highlightColor,
         selectedColorHex: selectedColorHex,
         colorOptions: generateHighlightColorOptions(),
-        onSubmittedColorHex: (color) {
+        onSubmittedColorHex: (color, _) {
           action(color);
           dismissOverlay();
         },
