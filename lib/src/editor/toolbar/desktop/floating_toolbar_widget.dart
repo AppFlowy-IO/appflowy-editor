@@ -15,6 +15,8 @@ typedef ToolbarTooltipBuilder = Widget Function(
   Widget child,
 );
 
+typedef PlaceHolderItemBuilder = ToolbarItem Function(BuildContext context);
+
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -28,6 +30,7 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.textDirection,
     required this.floatingToolbarHeight,
     this.tooltipBuilder,
+    this.placeHolderBuilder,
     this.padding,
     this.decoration,
   });
@@ -41,6 +44,7 @@ class FloatingToolbarWidget extends StatefulWidget {
   final EditorState editorState;
   final TextDirection textDirection;
   final ToolbarTooltipBuilder? tooltipBuilder;
+  final PlaceHolderItemBuilder? placeHolderBuilder;
   final double floatingToolbarHeight;
   final EdgeInsets? padding;
   final Decoration? decoration;
@@ -107,7 +111,12 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     // insert the divider.
     return activeItems
         .splitBetween((first, second) => first.group != second.group)
-        .expand((element) => [...element, placeholderItem])
+        .expand(
+          (element) => [
+            ...element,
+            widget.placeHolderBuilder?.call(context) ?? placeholderItem,
+          ],
+        )
         .toList()
       ..removeLast();
   }
