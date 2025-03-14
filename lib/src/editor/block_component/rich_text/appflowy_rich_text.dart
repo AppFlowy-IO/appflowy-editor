@@ -22,6 +22,12 @@ typedef AppFlowyAutoCompleteTextProvider = String? Function(
   TextSpan? textSpan,
 );
 
+typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
+  BuildContext context,
+  Node node,
+  SelectableMixin delegate,
+);
+
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
@@ -33,6 +39,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.placeholderTextSpanDecorator,
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
+    this.textSpanOverlayBuilder,
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
@@ -81,6 +88,12 @@ class AppFlowyRichText extends StatefulWidget {
   /// You can use this to customize the text span for custom attributes
   ///   or override the existing one.
   final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
+
+  /// customize the text span overlay builder
+  ///
+  /// You can use this to customize the text span overlay, for example, a hover menu in linked text.
+  final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
+
   final TextDirection textDirection;
 
   final Color cursorColor;
@@ -114,6 +127,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   TextStyleConfiguration get textStyleConfiguration =>
       widget.editorState.editorStyle.textStyleConfiguration;
+
+  AppFlowyTextSpanOverlayBuilder? get textSpanOverlayBuilder =>
+      widget.textSpanOverlayBuilder ??
+      widget.editorState.editorStyle.textSpanOverlayBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -412,50 +429,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   List<Widget> _buildRichTextOverlay(BuildContext context) {
-    final widgets = <Widget>[];
-    final textInserts = widget.node.delta!.whereType<TextInsert>();
-    TextSpan textSpan = getTextSpan(textInserts: textInserts);
-    if (widget.textSpanDecorator != null) {
-      textSpan = widget.textSpanDecorator!(textSpan);
-    }
-    textSpan = adjustTextSpan(textSpan);
-    int index = 0;
-    for (final textInsert in textInserts) {
-      final rects = getRectsInSelection(
-        Selection(
-          start: Position(path: widget.node.path, offset: index),
-          end: Position(
-            path: widget.node.path,
-            offset: index + textInsert.length,
-          ),
-        ),
-      );
-      if (rects.isNotEmpty && textInsert.attributes?.href != null) {
-        widgets.add(
-          Positioned(
-            left: rects.first.left,
-            top: rects.first.top,
-            child: HoverMenu(
-              child: Container(
-                color: Colors.red.withValues(alpha: 0.5),
-                width: rects.first.width,
-                height: rects.first.height,
-              ),
-              itemBuilder: (context) => Material(
-                color: Colors.blue,
-                child: SizedBox(
-                  width: 200,
-                  height: 100,
-                  child: Text('This is a hover menu'),
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-      index += textInsert.length;
-    }
-    return widgets;
+    return textSpanOverlayBuilder?.call(
+          context,
+          widget.node,
+          this,
+        ) ??
+        [];
   }
 
   Widget _buildAutoCompleteRichText() {
@@ -752,68 +731,4 @@ extension AppFlowyRichTextAttributes on Attributes {
   bool get autoComplete => this[AppFlowyRichTextKeys.autoComplete] == true;
 
   bool get transparent => this[AppFlowyRichTextKeys.transparent] == true;
-}
-
-class HoverMenu extends StatefulWidget {
-  final Widget child;
-  final WidgetBuilder itemBuilder;
-
-  const HoverMenu({
-    super.key,
-    required this.child,
-    required this.itemBuilder,
-  });
-
-  @override
-  HoverMenuState createState() => HoverMenuState();
-}
-
-class HoverMenuState extends State<HoverMenu> {
-  OverlayEntry? overlayEntry;
-
-  bool canCancelHover = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.text,
-      hitTestBehavior: HitTestBehavior.opaque,
-      onEnter: (details) {
-        overlayEntry = _createOverlayEntry();
-        Overlay.of(context).insert(overlayEntry!);
-      },
-      onExit: (details) {
-        if (canCancelHover) {
-          overlayEntry?.remove();
-          canCancelHover = false;
-        }
-      },
-      child: widget.child,
-    );
-  }
-
-  OverlayEntry _createOverlayEntry() {
-    final renderBox = context.findRenderObject() as RenderBox;
-    final offset = renderBox.localToGlobal(Offset.zero);
-    final size = renderBox.size;
-
-    return OverlayEntry(
-      maintainState: true,
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.text,
-          hitTestBehavior: HitTestBehavior.opaque,
-          onEnter: (details) {
-            canCancelHover = true;
-          },
-          onExit: (details) {
-            canCancelHover = false;
-          },
-          child: widget.itemBuilder(context),
-        ),
-      ),
-    );
-  }
 }
