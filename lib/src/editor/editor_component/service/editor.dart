@@ -142,8 +142,12 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Set the value to false to disable editing.
   ///
-  /// if false, the editor will only render the block components and
-  ///   without the editing, selecting, scrolling features.
+  /// If it's false, the transaction will be ignored in the apply function, and
+  ///   you can still use keyboard shortcuts to navigate the editor or select the text.
+  ///
+  /// If you want to disable the keyboard service, you can set [disableKeyboardService] to true.
+  /// If you want to disable the selection service, you can set [disableSelectionService] to true.
+  /// If you want to disable the scroll service, you can set [disableScrollService] to true.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
