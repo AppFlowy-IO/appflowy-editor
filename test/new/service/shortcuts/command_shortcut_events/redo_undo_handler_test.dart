@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../infra/testable_editor.dart';
 import '../../../util/util.dart';
 
@@ -12,8 +13,6 @@ void main() async {
   });
 
   group('redo_undo_handler_test.dart', () {
-    // TODO: need to test more cases.
-
     testWidgets('Redo should do nothing if Undo is not yet performed',
         (tester) async {
       await _testRedoWithoutUndo(tester);
@@ -42,6 +41,35 @@ void main() async {
     testWidgets('Redo, Undo for backspace key, and selection is forward',
         (tester) async {
       await _testBackspaceUndoRedo(tester, false);
+    });
+
+    testWidgets('Redo, Undo when the selection is null', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(1, initialText: text);
+      await editor.startTesting();
+      final selection = Selection.single(path: [0], startOffset: text.length);
+      await editor.updateSelection(selection);
+
+      expect(editor.documentRootLen, 1);
+
+      final node = editor.nodeAtPath([0])!;
+      final deleteLen = ' Appflowy 😁'.length;
+      final deletion = editor.editorState.transaction
+        ..deleteText(node, text.length - deleteLen, deleteLen);
+      await editor.editorState.apply(deletion);
+
+      expect(editor.documentRootLen, 1);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'Welcome to');
+
+      // clear the selection
+      await editor.updateSelection(null);
+
+      await _pressUndoCommand(editor);
+
+      expect(editor.documentRootLen, 1);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text);
+
+      await editor.dispose();
     });
   });
 }
