@@ -1,7 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command_shortcut_event.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/vim/vim_fsm.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class VimCommandShortcutEvent extends CommandShortcutEvent {
@@ -21,4 +19,3 @@ class VimCommandShortcutEvent extends CommandShortcutEvent {
     return KeyEventResult.ignored;
   }
 }
-
