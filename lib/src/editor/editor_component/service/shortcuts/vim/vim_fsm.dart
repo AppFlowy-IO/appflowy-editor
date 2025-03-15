@@ -114,7 +114,10 @@ class VimFSM {
             );
             int tmpPos = count + selection.end.path.first;
             if (tmpPos < editorState.document.root.children.length) {
-              newPosition = Position(path: [tmpPos], offset: 0);
+              newPosition =
+                  //BUG: This causes editor to say null value on places where offset is empty
+                  // Position(path: [tmpPos], offset: selection.end.offset ?? 0);
+                  Position(path: [tmpPos], offset: 0);
             }
             //newPosition = Position(path: [count+selection.end.path.first]);
             break;
@@ -131,7 +134,11 @@ class VimFSM {
 
             int tmpPos = selection.end.path.first - count;
             if (tmpPos < editorState.document.root.children.length) {
-              newPosition = Position(path: [tmpPos], offset: 0);
+              newPosition =
+
+                  //BUG: This causes editor to say null value on places where offset is empty
+                  // Position(path: [tmpPos], offset: selection.end.offset ?? 0);
+                  Position(path: [tmpPos], offset: 0);
             }
             break;
           }
