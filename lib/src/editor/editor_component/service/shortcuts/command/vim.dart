@@ -34,17 +34,17 @@ final List<CommandShortcutEvent> vimKeyModes = [
   //The undoManager doesnt work in normal mode
   /*
   There is an issue with transactions.
-  When the editor is in Normal mode, transactions are closed. What ever happens 
+  When the editor is in Normal mode, transactions are closed. What ever happens
   then
   well wont work. Problem is undo & redo needs that transaction window open.
-  Unless something is implemented to ignore all other keys unless they match 
+  Unless something is implemented to ignore all other keys unless they match
   a VIM key?
   */
   // vimUndoCommand,
   // vimRedoCommand,
 
   ///Navigate line Commands
-  vimMoveCursorToStartCommand,
+  // vimMoveCursorToStartCommand,
   vimMoveCursorToEndCommand,
   jumpWordBackwardCommand,
   jumpWordForwardCommand,
@@ -543,6 +543,37 @@ CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
   if (!editorState.vimMode) {
     return KeyEventResult.ignored;
   }
+  // final afKeyboard = editorState.service.keyboardServiceKey;
+  if (editorState.mode == VimModes.normalMode) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return KeyEventResult.ignored;
+    }
+    final nodes = editorState.getNodesInSelection(selection);
+    if (nodes.isEmpty) {
+      return KeyEventResult.ignored;
+    }
+    var end = selection.end;
+    final position = isRTL(editorState)
+        ? nodes.last.selectable?.end()
+        : nodes.last.selectable?.start();
+    if (position != null) {
+      end = position;
+    }
+
+    editorState.selection =
+        Selection.collapsed(Position(path: end.path, offset: 0));
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
+/*
+
+CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
   final afKeyboard = editorState.service.keyboardServiceKey;
   if (afKeyboard.currentState != null &&
       afKeyboard.currentState is AppFlowyKeyboardService) {
@@ -560,6 +591,8 @@ CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
   }
   return KeyEventResult.ignored;
 };
+
+*/
 
 final CommandShortcutEvent vimMoveCursorToEndCommand = CommandShortcutEvent(
   key: 'vim move cursor to end of line in normal mode',
@@ -731,7 +764,7 @@ final numList = List.generate(10, (i) => i);
 /*
  * The idea for this is to at least use
  *  a list for the numbers & key movements.
- * Then from there jump accordingly, although 
+ * Then from there jump accordingly, although
  * might need to intercept that raw key event
  * Manually of course
  Basically -> 5j means jump five lines down

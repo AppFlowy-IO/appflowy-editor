@@ -8,6 +8,35 @@ const baseKeys = ['h', 'j', 'k', 'l'];
 String _buffer = '';
 String _deleteBuffer = '';
 
+CommandShortcutEventHandler vimMoveCursorToStartHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
+  // final afKeyboard = editorState.service.keyboardServiceKey;
+  if (editorState.mode == VimModes.normalMode) {
+    final selection = editorState.selection;
+    if (selection == null) {
+      return KeyEventResult.ignored;
+    }
+    final nodes = editorState.getNodesInSelection(selection);
+    if (nodes.isEmpty) {
+      return KeyEventResult.ignored;
+    }
+    var end = selection.end;
+    final position = isRTL(editorState)
+        ? nodes.last.selectable?.end()
+        : nodes.last.selectable?.start();
+    if (position != null) {
+      end = position;
+    }
+
+    editorState.selection =
+        Selection.collapsed(Position(path: end.path, offset: 0));
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
 Position deleteCurrentLine(EditorState editorState, int count) {
   final selection = editorState.selection;
   if (selection == null) return Position(path: [0], offset: 0);
@@ -32,7 +61,11 @@ class VimFSM {
     final key = event.logicalKey.keyLabel.toLowerCase();
 
     if (RegExp(r'^\d$').hasMatch(key)) {
-      _buffer += key;
+      if (_buffer.isEmpty && key == '0') {
+        vimMoveCursorToStartHandler(editorState);
+      } else {
+        _buffer += key;
+      }
       return KeyEventResult.handled;
     }
 
@@ -125,16 +158,6 @@ class VimFSM {
           }
       }
       if (newPosition != null) {
-        print(selection);
-        print(newPosition);
-        print(count);
-
-        //NOTE: This works
-        //Position tmp = Position(offset: 0, path: [3]);
-        //BUG:This does not work
-        print(newPosition.path.first);
-        Position tmp =
-            Position(offset: 0, path: [selection.end.path.first + count]);
         editorState.updateSelectionWithReason(
           Selection.collapsed(newPosition),
           reason: SelectionUpdateReason.uiEvent,
