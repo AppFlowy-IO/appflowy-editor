@@ -19,6 +19,12 @@ class FloatingToolbarStyle {
   final double toolbarElevation;
 }
 
+typedef FloatingToolbarBuilder = Widget Function(
+  BuildContext context,
+  Widget child,
+  VoidCallback onDismiss,
+);
+
 /// A floating toolbar that displays at the top of the editor when the selection
 ///   and will be hidden when the selection is collapsed.
 ///
@@ -50,7 +56,7 @@ class FloatingToolbar extends StatefulWidget {
   final EdgeInsets? padding;
   final Decoration? decoration;
   final PlaceHolderItemBuilder? placeHolderBuilder;
-  final ToolbarBuilder? toolbarBuilder;
+  final FloatingToolbarBuilder? toolbarBuilder;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -206,7 +212,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         final child = _buildToolbar(context);
-        return widget.toolbarBuilder?.call(context, child) ??
+        return widget.toolbarBuilder?.call(context, child, _clear) ??
             Positioned(
               top: max(0, top) - floatingToolbarHeight,
               left: left,
