@@ -36,6 +36,7 @@ class FloatingToolbar extends StatefulWidget {
     this.padding,
     this.decoration,
     this.placeHolderBuilder,
+    this.toolbarBuilder,
   });
 
   final List<ToolbarItem> items;
@@ -49,6 +50,7 @@ class FloatingToolbar extends StatefulWidget {
   final EdgeInsets? padding;
   final Decoration? decoration;
   final PlaceHolderItemBuilder? placeHolderBuilder;
+  final ToolbarBuilder? toolbarBuilder;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -197,17 +199,20 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     final rect = _findSuitableRect(rects);
     final (left, top, right) = calculateToolbarOffset(rect);
     // if the selection is not visible, then don't show the toolbar.
-    if (top <= floatingToolbarHeight || (left == 0 && right == 0)) {
+    if ((top <= floatingToolbarHeight || (left == 0 && right == 0)) &&
+        widget.toolbarBuilder != null) {
       return;
     }
     _toolbarContainer = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          top: max(0, top) - floatingToolbarHeight,
-          left: left,
-          right: right,
-          child: _buildToolbar(context),
-        );
+        final child = _buildToolbar(context);
+        return widget.toolbarBuilder?.call(context, child) ??
+            Positioned(
+              top: max(0, top) - floatingToolbarHeight,
+              left: left,
+              right: right,
+              child: child,
+            );
       },
     );
     Overlay.of(context, rootOverlay: true).insert(_toolbarContainer!);

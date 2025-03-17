@@ -10,13 +10,15 @@ class ColorPicker extends StatefulWidget {
     required this.onSubmittedColorHex,
     required this.colorOptions,
     this.resetText,
+    this.customColorHex,
     this.resetIconName,
     this.showClearButton = false,
   });
 
   final String title;
   final String? selectedColorHex;
-  final void Function(String? color) onSubmittedColorHex;
+  final String? customColorHex;
+  final void Function(String? color, bool isCustomColor) onSubmittedColorHex;
   final String? resetText;
   final String? resetIconName;
   final bool showClearButton;
@@ -34,10 +36,12 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void initState() {
     super.initState();
+    final selectedColorHex = widget.selectedColorHex,
+        customColorHex = widget.customColorHex;
     _colorHexController.text =
-        _extractColorHex(widget.selectedColorHex) ?? 'FFFFFF';
+        _extractColorHex(customColorHex ?? selectedColorHex) ?? 'FFFFFF';
     _colorOpacityController.text =
-        _convertHexToOpacity(widget.selectedColorHex) ?? '100';
+        _convertHexToOpacity(customColorHex ?? selectedColorHex) ?? '100';
   }
 
   @override
@@ -55,13 +59,15 @@ class _ColorPickerState extends State<ColorPicker> {
             ? ResetColorButton(
                 resetText: widget.resetText!,
                 resetIconName: widget.resetIconName!,
-                onPressed: widget.onSubmittedColorHex,
+                onPressed: (color) =>
+                    widget.onSubmittedColorHex.call(color, false),
               )
             : const SizedBox.shrink(),
         CustomColorItem(
           colorController: _colorHexController,
           opacityController: _colorOpacityController,
-          onSubmittedColorHex: widget.onSubmittedColorHex,
+          onSubmittedColorHex: (color) =>
+              widget.onSubmittedColorHex.call(color, true),
         ),
         _buildColorItems(
           widget.colorOptions,
@@ -89,7 +95,7 @@ class _ColorPickerState extends State<ColorPicker> {
       height: 36,
       child: TextButton.icon(
         onPressed: () {
-          widget.onSubmittedColorHex(option.colorHex);
+          widget.onSubmittedColorHex(option.colorHex, false);
         },
         icon: SizedBox.square(
           dimension: 12,

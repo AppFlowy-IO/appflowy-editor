@@ -52,7 +52,7 @@ void showColorMenu(
         colorOptions: isTextColor
             ? textColorOptions ?? generateTextColorOptions()
             : highlightColorOptions ?? generateHighlightColorOptions(),
-        onSubmittedColorHex: (color) {
+        onSubmittedColorHex: (color, _) {
           isTextColor
               ? formatFontColor(
                   editorState,
