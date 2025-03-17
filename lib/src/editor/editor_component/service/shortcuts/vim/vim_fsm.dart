@@ -18,20 +18,30 @@ CommandShortcutEventHandler vimMoveCursorToStartHandler = (editorState) {
     if (selection == null) {
       return KeyEventResult.ignored;
     }
-    final nodes = editorState.getNodesInSelection(selection);
-    if (nodes.isEmpty) {
+    if (isRTL(editorState)) {
+      editorState.moveCursorBackward(SelectionMoveRange.line);
+    } else {
+      editorState.moveCursorForward(SelectionMoveRange.line);
+    }
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+};
+
+CommandShortcutEventHandler vimMoveCursorToEndHandler = (editorState) {
+  if (!editorState.vimMode) {
+    return KeyEventResult.ignored;
+  }
+  if (editorState.mode == VimModes.normalMode) {
+    final selection = editorState.selection;
+    if (selection == null) {
       return KeyEventResult.ignored;
     }
-    var end = selection.end;
-    final position = isRTL(editorState)
-        ? nodes.last.selectable?.end()
-        : nodes.last.selectable?.start();
-    if (position != null) {
-      end = position;
+    if (isRTL(editorState)) {
+      editorState.moveCursorForward(SelectionMoveRange.line);
+    } else {
+      editorState.moveCursorBackward(SelectionMoveRange.line);
     }
-
-    editorState.selection =
-        Selection.collapsed(Position(path: end.path, offset: 0));
     return KeyEventResult.handled;
   }
   return KeyEventResult.ignored;

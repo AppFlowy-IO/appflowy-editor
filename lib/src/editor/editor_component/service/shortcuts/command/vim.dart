@@ -531,69 +531,6 @@ CommandShortcutEventHandler _vimHalfPageUpCommandHandler = (editorState) {
   return KeyEventResult.ignored;
 };
 
-///Navigate on the current line
-final CommandShortcutEvent vimMoveCursorToStartCommand = CommandShortcutEvent(
-  key: 'vim move cursor to start of line in normal mode',
-  command: 'Digit 0',
-  handler: _vimMoveCursorToStartHandler,
-  getDescription: () => AppFlowyEditorL10n.current.cmdVimJumpFirstChar,
-);
-
-CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
-  if (!editorState.vimMode) {
-    return KeyEventResult.ignored;
-  }
-  // final afKeyboard = editorState.service.keyboardServiceKey;
-  if (editorState.mode == VimModes.normalMode) {
-    final selection = editorState.selection;
-    if (selection == null) {
-      return KeyEventResult.ignored;
-    }
-    final nodes = editorState.getNodesInSelection(selection);
-    if (nodes.isEmpty) {
-      return KeyEventResult.ignored;
-    }
-    var end = selection.end;
-    final position = isRTL(editorState)
-        ? nodes.last.selectable?.end()
-        : nodes.last.selectable?.start();
-    if (position != null) {
-      end = position;
-    }
-
-    editorState.selection =
-        Selection.collapsed(Position(path: end.path, offset: 0));
-    return KeyEventResult.handled;
-  }
-  return KeyEventResult.ignored;
-};
-
-/*
-
-CommandShortcutEventHandler _vimMoveCursorToStartHandler = (editorState) {
-  if (!editorState.vimMode) {
-    return KeyEventResult.ignored;
-  }
-  final afKeyboard = editorState.service.keyboardServiceKey;
-  if (afKeyboard.currentState != null &&
-      afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection != null &&
-        editorState.mode == VimModes.normalMode) {
-      if (isRTL(editorState)) {
-        editorState.moveCursorBackward(SelectionMoveRange.line);
-      } else {
-        editorState.moveCursorForward(SelectionMoveRange.line);
-      }
-      return KeyEventResult.handled;
-    } else {
-      return KeyEventResult.ignored;
-    }
-  }
-  return KeyEventResult.ignored;
-};
-
-*/
-
 final CommandShortcutEvent vimMoveCursorToEndCommand = CommandShortcutEvent(
   key: 'vim move cursor to end of line in normal mode',
   //NOTE: Used Digit 4, dollar sign would throw error
@@ -606,20 +543,18 @@ CommandShortcutEventHandler _vimMoveCursorToEndHandler = (editorState) {
   if (!editorState.vimMode) {
     return KeyEventResult.ignored;
   }
-  final afKeyboard = editorState.service.keyboardServiceKey;
-  if (afKeyboard.currentState != null &&
-      afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection != null &&
-        editorState.mode == VimModes.normalMode) {
-      if (isRTL(editorState)) {
-        editorState.moveCursorForward(SelectionMoveRange.line);
-      } else {
-        editorState.moveCursorBackward(SelectionMoveRange.line);
-      }
-      return KeyEventResult.handled;
-    } else {
+  // final afKeyboard = editorState.service.keyboardServiceKey;
+  if (editorState.mode == VimModes.normalMode) {
+    final selection = editorState.selection;
+    if (selection == null) {
       return KeyEventResult.ignored;
     }
+    if (isRTL(editorState)) {
+      editorState.moveCursorForward(SelectionMoveRange.line);
+    } else {
+      editorState.moveCursorBackward(SelectionMoveRange.line);
+    }
+    return KeyEventResult.handled;
   }
   return KeyEventResult.ignored;
 };
@@ -692,7 +627,7 @@ CommandShortcutEventHandler _jumpWordBackwardCommandHandler = (editorState) {
 };
 
 final CommandShortcutEvent jumpWordForwardCommand = CommandShortcutEvent(
-  key: 'move the cursor backward to the next wordl in normal mode',
+  key: 'move the cursor backward to the next word in normal mode',
   command: 'w',
   handler: _jumpWordForwardCommandHandler,
   getDescription: () => AppFlowyEditorL10n.current.cmdVimForwardWordJump,
@@ -752,50 +687,6 @@ CommandShortcutEventHandler _jumpWordForwardCommandHandler = (editorState) {
         }
         editorState.moveCursorBackward(SelectionMoveRange.word);
       }
-      return KeyEventResult.handled;
-    } else {
-      return KeyEventResult.ignored;
-    }
-  }
-  return KeyEventResult.ignored;
-};
-
-final numList = List.generate(10, (i) => i);
-/*
- * The idea for this is to at least use
- *  a list for the numbers & key movements.
- * Then from there jump accordingly, although
- * might need to intercept that raw key event
- * Manually of course
- Basically -> 5j means jump five lines down
- */
-final CommandShortcutEvent vimJumpToLineCommand = CommandShortcutEvent(
-  key: 'vim move cursor to start of line in normal mode',
-  //TODO: Find a way to await & chain shortcuts or key presses
-  //Well modifying the keyevent directly won't end well. Since the focus node only reads one keyevent at a time
-  // command: 'Digit 5',
-  command: 'Digit 5' 'j',
-  handler: _vimJumpToLineHandler,
-  getDescription: () => AppFlowyEditorL10n.current.cmdVimNumJumper,
-);
-
-CommandShortcutEventHandler _vimJumpToLineHandler = (editorState) {
-  if (!editorState.vimMode) {
-    return KeyEventResult.ignored;
-  }
-  final afKeyboard = editorState.service.keyboardServiceKey;
-  if (afKeyboard.currentState != null &&
-      afKeyboard.currentState is AppFlowyKeyboardService) {
-    if (editorState.selection != null &&
-        editorState.mode == VimModes.normalMode) {
-      final selection = editorState.selection;
-      //NOTE: Hard wired for now
-      //Besides this is just for scrolling doesnt move the cursor
-      editorState.scrollService?.jumpTo(5);
-      SelectionMoveRange downRange = SelectionMoveRange.line;
-      //This will be tricky need to modify 'select_commands.dart'
-      //BUG: It throws an error on a blank line
-      editorState.moveCursor(SelectionMoveDirection.backward, downRange);
       return KeyEventResult.handled;
     } else {
       return KeyEventResult.ignored;
