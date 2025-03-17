@@ -32,6 +32,10 @@ class FloatingToolbar extends StatefulWidget {
     required this.child,
     this.style = const FloatingToolbarStyle(),
     this.tooltipBuilder,
+    this.floatingToolbarHeight = 32,
+    this.padding,
+    this.decoration,
+    this.placeHolderBuilder,
   });
 
   final List<ToolbarItem> items;
@@ -41,6 +45,10 @@ class FloatingToolbar extends StatefulWidget {
   final Widget child;
   final FloatingToolbarStyle style;
   final ToolbarTooltipBuilder? tooltipBuilder;
+  final double floatingToolbarHeight;
+  final EdgeInsets? padding;
+  final Decoration? decoration;
+  final PlaceHolderItemBuilder? placeHolderBuilder;
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -52,6 +60,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   FloatingToolbarWidget? _toolbarWidget;
 
   EditorState get editorState => widget.editorState;
+
+  double get floatingToolbarHeight => widget.floatingToolbarHeight;
+
+  late Brightness brightness = Theme.of(context).brightness;
 
   @override
   void initState() {
@@ -202,17 +214,28 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   }
 
   Widget _buildToolbar(BuildContext context) {
-    _toolbarWidget ??= FloatingToolbarWidget(
-      items: widget.items,
-      editorState: editorState,
-      backgroundColor: widget.style.backgroundColor,
-      toolbarActiveColor: widget.style.toolbarActiveColor,
-      toolbarIconColor: widget.style.toolbarIconColor,
-      toolbarElevation: widget.style.toolbarElevation,
-      toolbarShadowColor: widget.style.toolbarShadowColor,
-      textDirection: widget.textDirection ?? Directionality.of(context),
-      tooltipBuilder: widget.tooltipBuilder,
-    );
+    final brightness = Theme.of(context).brightness;
+    bool needRefreshToolbar = brightness != this.brightness;
+    if (needRefreshToolbar) {
+      this.brightness = brightness;
+    }
+    if (needRefreshToolbar || _toolbarWidget == null) {
+      _toolbarWidget = FloatingToolbarWidget(
+        items: widget.items,
+        editorState: editorState,
+        backgroundColor: widget.style.backgroundColor,
+        toolbarActiveColor: widget.style.toolbarActiveColor,
+        toolbarIconColor: widget.style.toolbarIconColor,
+        toolbarElevation: widget.style.toolbarElevation,
+        toolbarShadowColor: widget.style.toolbarShadowColor,
+        textDirection: widget.textDirection ?? Directionality.of(context),
+        tooltipBuilder: widget.tooltipBuilder,
+        floatingToolbarHeight: floatingToolbarHeight,
+        padding: widget.padding,
+        decoration: widget.decoration,
+        placeHolderBuilder: widget.placeHolderBuilder,
+      );
+    }
     return _toolbarWidget!;
   }
 

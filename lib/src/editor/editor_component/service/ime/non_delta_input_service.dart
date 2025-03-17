@@ -30,7 +30,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
   @override
-  @override
   TextEditingValue? get currentTextEditingValue => _currentTextEditingValue;
 
   TextEditingValue? _currentTextEditingValue;
@@ -47,21 +46,22 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   bool _isFloatingCursorVisible = false;
 
   @override
-  Future<void> apply(List<TextEditingDelta> deltas) async {
+  Future<bool> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
+    bool willApply = true;
     for (final delta in formattedDeltas) {
       _updateComposing(delta);
-
       if (delta is TextEditingDeltaInsertion) {
-        await onInsert(delta);
+        if (!(await onInsert(delta))) willApply = false;
       } else if (delta is TextEditingDeltaDeletion) {
-        await onDelete(delta);
+        if (!(await onDelete(delta))) willApply = false;
       } else if (delta is TextEditingDeltaReplacement) {
-        await onReplace(delta);
+        if (!(await onReplace(delta))) willApply = false;
       } else if (delta is TextEditingDeltaNonTextUpdate) {
-        await onNonTextUpdate(delta);
+        if (!(await onNonTextUpdate(delta))) willApply = false;
       }
     }
+    return willApply;
   }
 
   @override
@@ -120,9 +120,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       PlatformExtension.isMobile
           ? const Duration(milliseconds: 10)
           : Duration.zero,
-      () {
+      () async {
+        final oldValue = _currentTextEditingValue?.copyWith();
         currentTextEditingValue = value;
-        apply(deltas);
+        final willApply = await apply(deltas);
+        if (!willApply) {
+          currentTextEditingValue = oldValue;
+          _textInputConnection?.setEditingState(oldValue!);
+        }
       },
     );
   }

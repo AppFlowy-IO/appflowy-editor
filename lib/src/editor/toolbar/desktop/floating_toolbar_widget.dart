@@ -2,8 +2,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-const floatingToolbarHeight = 32.0;
-
 @visibleForTesting
 const floatingToolbarContainerKey =
     Key('appflowy_editor_floating_toolbar_container');
@@ -17,6 +15,8 @@ typedef ToolbarTooltipBuilder = Widget Function(
   Widget child,
 );
 
+typedef PlaceHolderItemBuilder = ToolbarItem Function(BuildContext context);
+
 class FloatingToolbarWidget extends StatefulWidget {
   const FloatingToolbarWidget({
     super.key,
@@ -28,7 +28,11 @@ class FloatingToolbarWidget extends StatefulWidget {
     required this.items,
     required this.editorState,
     required this.textDirection,
+    required this.floatingToolbarHeight,
     this.tooltipBuilder,
+    this.placeHolderBuilder,
+    this.padding,
+    this.decoration,
   });
 
   final List<ToolbarItem> items;
@@ -40,6 +44,10 @@ class FloatingToolbarWidget extends StatefulWidget {
   final EditorState editorState;
   final TextDirection textDirection;
   final ToolbarTooltipBuilder? tooltipBuilder;
+  final PlaceHolderItemBuilder? placeHolderBuilder;
+  final double floatingToolbarHeight;
+  final EdgeInsets? padding;
+  final Decoration? decoration;
 
   @override
   State<FloatingToolbarWidget> createState() => _FloatingToolbarWidgetState();
@@ -57,10 +65,11 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
       color: widget.backgroundColor,
       shadowColor: widget.toolbarShadowColor,
       elevation: widget.toolbarElevation,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: widget.decoration,
         child: SizedBox(
-          height: floatingToolbarHeight,
+          height: widget.floatingToolbarHeight,
           child: Row(
             key: floatingToolbarContainerKey,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +111,12 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
     // insert the divider.
     return activeItems
         .splitBetween((first, second) => first.group != second.group)
-        .expand((element) => [...element, placeholderItem])
+        .expand(
+          (element) => [
+            ...element,
+            widget.placeHolderBuilder?.call(context) ?? placeholderItem,
+          ],
+        )
         .toList()
       ..removeLast();
   }
