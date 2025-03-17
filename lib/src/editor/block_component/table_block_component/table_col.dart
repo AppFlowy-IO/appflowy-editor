@@ -51,8 +51,7 @@ class _TableColState extends State<TableCol> {
     children.addAll([
       SizedBox(
         width: context.select(
-          (Node n) => getCellNode(n, widget.colIdx, 0)
-              ?.attributes[TableCellBlockKeys.width],
+          (Node n) => (getCellNode(n, widget.colIdx, 0)?.attributes[TableCellBlockKeys.width] as num).toDouble(),
         ),
         child: Stack(
           children: [
@@ -125,8 +124,7 @@ class _TableColState extends State<TableCol> {
     node.addListener(listeners[node.id]!);
   }
 
-  void updateRowHeightCallback(int row) =>
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+  void updateRowHeightCallback(int row) => WidgetsBinding.instance.addPostFrameCallback((_) {
         if (row >= widget.tableNode.rowsLen) {
           return;
         }
