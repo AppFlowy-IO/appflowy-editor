@@ -21,10 +21,7 @@ class TableNode {
     final colsLen = attributes[TableBlockKeys.colsLen];
     final rowsLen = attributes[TableBlockKeys.rowsLen];
 
-    if (colsLen == null ||
-        rowsLen == null ||
-        colsLen is! int ||
-        rowsLen is! int) {
+    if (colsLen == null || rowsLen == null || colsLen is! int || rowsLen is! int) {
       AppFlowyEditorLog.editor.debug(
         'TableNode: colsLen or rowsLen is not an integer or null',
       );
@@ -42,8 +39,7 @@ class TableNode {
     for (final child in node.children) {
       if (!child.attributes.containsKey(TableCellBlockKeys.rowPosition) ||
           !child.attributes.containsKey(TableCellBlockKeys.colPosition)) {
-        AppFlowyEditorLog.editor
-            .debug('TableNode: cell has no rowPosition or colPosition');
+        AppFlowyEditorLog.editor.debug('TableNode: cell has no rowPosition or colPosition');
         return;
       }
     }
@@ -53,9 +49,7 @@ class TableNode {
       for (var j = 0; j < rowsLen; j++) {
         final cell = node.children
             .where(
-              (n) =>
-                  n.attributes[TableCellBlockKeys.colPosition] == i &&
-                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+              (n) => n.attributes[TableCellBlockKeys.colPosition] == i && n.attributes[TableCellBlockKeys.rowPosition] == j,
             )
             .firstOrNull;
 
@@ -188,12 +182,9 @@ class TableNode {
     Transaction? transaction,
   }) {
     // The extra 8 is because of paragraph padding
-    double maxHeight = _cells
-        .map<double>((c) => c[row].children.first.rect.height + 8)
-        .reduce(max);
+    double maxHeight = _cells.map<double>((c) => c[row].children.first.rect.height + 8).reduce(max);
 
-    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight &&
-        !maxHeight.isNaN) {
+    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight && !maxHeight.isNaN) {
       for (int i = 0; i < colsLen; i++) {
         final currHeight = _cells[i][row].attributes[TableCellBlockKeys.height];
         if (currHeight == maxHeight) {
@@ -213,15 +204,14 @@ class TableNode {
       }
     }
 
-    if (node.attributes[TableBlockKeys.colsHeight] != colsHeight &&
-        !colsHeight.isNaN) {
+    if (node.attributes[TableBlockKeys.colsHeight] != colsHeight && !colsHeight.isNaN) {
       if (transaction != null) {
-        transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
+        transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight.toDouble()});
         if (editorState != null && editorState.editable != true) {
-          node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
+          node.updateAttributes({TableBlockKeys.colsHeight: colsHeight.toDouble()});
         }
       } else {
-        node.updateAttributes({TableBlockKeys.colsHeight: colsHeight});
+        node.updateAttributes({TableBlockKeys.colsHeight: colsHeight.toDouble()});
       }
     }
   }

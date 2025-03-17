@@ -35,10 +35,10 @@ class TableStyle {
   final Color borderHoverColor;
 
   const TableStyle({
-    this.colWidth = 160,
-    this.rowHeight = 40,
-    this.colMinimumWidth = 40,
-    this.borderWidth = 2,
+    this.colWidth = 160.0,
+    this.rowHeight = 40.0,
+    this.colMinimumWidth = 40.0,
+    this.borderWidth = 2.0,
     this.addIcon = TableDefaults.addIcon,
     this.handlerIcon = TableDefaults.handlerIcon,
     this.borderColor = TableDefaults.borderColor,
@@ -117,14 +117,12 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
   BlockComponentValidate get validate => (node) {
         // check the node is valid
         if (node.attributes.isEmpty) {
-          AppFlowyEditorLog.editor
-              .debug('TableBlockComponentBuilder: node is empty');
+          AppFlowyEditorLog.editor.debug('TableBlockComponentBuilder: node is empty');
           return false;
         }
 
         // check the node has rowPosition and colPosition
-        if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
-            !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
+        if (!node.attributes.containsKey(TableBlockKeys.colsLen) || !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
           AppFlowyEditorLog.editor.debug(
             'TableBlockComponentBuilder: node has no colsLen or rowsLen',
           );
@@ -137,8 +135,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
         // check its children
         final children = node.children;
         if (children.isEmpty) {
-          AppFlowyEditorLog.editor
-              .debug('TableBlockComponentBuilder: children is empty');
+          AppFlowyEditorLog.editor.debug('TableBlockComponentBuilder: children is empty');
           return false;
         }
 
@@ -153,9 +150,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
         for (var i = 0; i < colsLen; i++) {
           for (var j = 0; j < rowsLen; j++) {
             final child = children.where(
-              (n) =>
-                  n.attributes[TableCellBlockKeys.colPosition] == i &&
-                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+              (n) => n.attributes[TableCellBlockKeys.colPosition] == i && n.attributes[TableCellBlockKeys.rowPosition] == j,
             );
             if (child.isEmpty) {
               AppFlowyEditorLog.editor.debug(
@@ -197,12 +192,10 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
   final TableStyle tableStyle;
 
   @override
-  State<TableBlockComponentWidget> createState() =>
-      _TableBlockComponentWidgetState();
+  State<TableBlockComponentWidget> createState() => _TableBlockComponentWidgetState();
 }
 
-class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
-    with SelectableMixin, BlockComponentConfigurable {
+class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget> with SelectableMixin, BlockComponentConfigurable {
   @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
@@ -281,10 +274,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     final tableBox = tableKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && tableBox is RenderBox) {
       return [
-        (shiftWithBaseOffset
-                ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox)
-                : Offset.zero) &
-            tableBox.size,
+        (shiftWithBaseOffset ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox) : Offset.zero) & tableBox.size,
       ];
     }
     return [Offset.zero & _renderBox.size];
