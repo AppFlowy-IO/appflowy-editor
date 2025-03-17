@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -45,6 +42,88 @@ void main() async {
       await editor.dispose();
     });
 
+    testWidgets('vim normal mode horizontal keys left to right [h -> l]',
+        (tester) async {
+      const text1 = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text1);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      for (var i = 0; i < text1.length; i++) {
+        await editor.pressKey(key: LogicalKeyboardKey.keyL);
+
+        if (i == text1.length - 1) {
+          // Wrap to next node if the cursor is at the end of the current node.
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [1],
+              startOffset: 0,
+            ),
+          );
+        } else {
+          final delta = editor.nodeAtPath([0])!.delta!;
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [0],
+              startOffset: delta.nextRunePosition(i),
+            ),
+          );
+        }
+      }
+      await editor.dispose();
+    });
+
+    testWidgets('vim normal mode horizontal keys right to left [l -> h]',
+        (tester) async {
+      const text1 = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text1);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      for (var i = 0; i < text1.length; i++) {
+        await editor.pressKey(key: LogicalKeyboardKey.keyL);
+
+        if (i == text1.length - 1) {
+          // Wrap to next node if the cursor is at the end of the current node.
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [1],
+              startOffset: 0,
+            ),
+          );
+        } else {
+          final delta = editor.nodeAtPath([0])!.delta!;
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [0],
+              startOffset: delta.nextRunePosition(i),
+            ),
+          );
+        }
+      }
+      await editor.dispose();
+    });
+
     testWidgets('vim normal mode move cursor to start', (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraphs(2, initialText: text);
@@ -68,49 +147,5 @@ void main() async {
 
       await editor.dispose();
     });
-/*
-    testWidgets('redefine move cursor end command', (tester) async {
-      const text = 'Welcome to Appflowy 😁';
-      final editor = tester.editor..addParagraphs(2, initialText: text);
-
-      await editor.startTesting();
-
-      final selection = Selection.single(path: [1], startOffset: 0);
-      await editor.updateSelection(selection);
-
-      await editor.pressKey(
-        key: Platform.isMacOS
-            ? LogicalKeyboardKey.arrowRight
-            : LogicalKeyboardKey.end,
-        isMetaPressed: Platform.isMacOS,
-      );
-
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: text.length),
-      );
-
-      await editor.updateSelection(selection);
-
-      const newCommand = 'alt+arrow right';
-      moveCursorToEndCommand.updateCommand(
-        windowsCommand: newCommand,
-        linuxCommand: newCommand,
-        macOSCommand: newCommand,
-      );
-
-      await editor.pressKey(
-        key: LogicalKeyboardKey.arrowRight,
-        isAltPressed: true,
-      );
-
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: text.length),
-      );
-
-      await editor.dispose();
-    });
-    */
   });
 }
