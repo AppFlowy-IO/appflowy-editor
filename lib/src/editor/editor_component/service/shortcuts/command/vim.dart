@@ -45,7 +45,7 @@ final List<CommandShortcutEvent> vimKeyModes = [
 
   ///Navigate line Commands
   // vimMoveCursorToStartCommand,
-  vimMoveCursorToEndCommand,
+  //vimMoveCursorToEndCommand,
   jumpWordBackwardCommand,
   jumpWordForwardCommand,
   //BUG: Selection doesnt show up to user

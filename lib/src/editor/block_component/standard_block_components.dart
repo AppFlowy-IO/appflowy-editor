@@ -3,7 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/heading_block_compone
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command/vim.dart';
+// import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/command/vim.dart';
 
 const standardBlockComponentConfiguration = BlockComponentConfiguration();
 
@@ -155,5 +155,5 @@ final List<CommandShortcutEvent> standardCommandShortcutEvents = [
   copyCommand,
   ...pasteCommands,
   cutCommand,
-  ...vimKeyModes
+  // ...vimKeyModes
 ];
