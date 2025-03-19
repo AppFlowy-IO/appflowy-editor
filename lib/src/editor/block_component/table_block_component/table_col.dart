@@ -51,8 +51,7 @@ class _TableColState extends State<TableCol> {
     children.addAll([
       SizedBox(
         width: context.select(
-          (Node n) => getCellNode(n, widget.colIdx, 0)
-              ?.attributes[TableCellBlockKeys.width],
+          (Node n) => getCellNode(n, widget.colIdx, 0)?.cellWidth,
         ),
         child: Stack(
           children: [
