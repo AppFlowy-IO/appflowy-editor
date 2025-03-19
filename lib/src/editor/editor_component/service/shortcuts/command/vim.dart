@@ -49,7 +49,7 @@ final List<CommandShortcutEvent> vimKeyModes = [
   jumpWordBackwardCommand,
   jumpWordForwardCommand,
   //BUG: Selection doesnt show up to user
-  vimSelectLineCommand,
+  // vimSelectLineCommand,
 
   ///Text operations
   //BUG: Deleting at the end of text will cause the widget tree to panic
