@@ -402,17 +402,6 @@ class EditorState {
     bool withUpdateSelection = true,
     bool skipHistoryDebounce = false,
   }) async {
-    /*/
-    if ((!editable && !vimMode && mode == VimModes.normalMode) || isDisposed) {
-      return;
-    } else if (!editable && vimMode) {
-      print(transaction.operations.toList());
-      //NOTE: This statement blocks editor transactions
-      //So to apply transactions just remove it
-      //return;
-    }
-    */
-
     // it's a time consuming task, only enable it if necessary.
     if (_enableCheckIntegrity) {
       document.root.checkDocumentIntegrity();
@@ -685,9 +674,6 @@ class EditorState {
   void _applyTransactionInLocal(Transaction transaction) {
     for (final op in transaction.operations) {
       AppFlowyEditorLog.editor.debug('apply op (local): ${op.toJson()}');
-      // if (!editable && vimMode && mode == VimModes.normalMode) {
-      //   return;
-      // }
 
       if (op is InsertOperation) {
         document.insert(op.path, op.nodes);
