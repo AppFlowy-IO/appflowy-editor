@@ -133,6 +133,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       widget.editorState.editorStyle.textSpanOverlayBuilder;
 
   @override
+  void initState() {
+    super.initState();
+    confirmContextEnabled();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = Stack(
       children: [
@@ -429,12 +435,23 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   List<Widget> _buildRichTextOverlay(BuildContext context) {
+    if (textKey.currentContext == null) return [];
     return textSpanOverlayBuilder?.call(
           context,
           widget.node,
           this,
         ) ??
         [];
+  }
+
+  void confirmContextEnabled() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && textKey.currentContext == null) {
+        confirmContextEnabled();
+      } else if (mounted && textKey.currentContext != null) {
+        setState(() {});
+      }
+    });
   }
 
   Widget _buildAutoCompleteRichText() {
