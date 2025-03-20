@@ -14,6 +14,7 @@ class EditorStyle {
     required this.selectionColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
+    this.textSpanOverlayBuilder,
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
@@ -64,6 +65,9 @@ class EditorStyle {
   //   or override the built-in text span.
   final TextSpanDecoratorForAttribute? textSpanDecorator;
 
+  /// Customize the text span overlay builder.
+  final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
+
   final String? defaultTextDirection;
 
   // The size of the magnifier.
@@ -107,6 +111,7 @@ class EditorStyle {
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
+    this.textSpanOverlayBuilder,
     this.defaultTextDirection,
     this.cursorWidth = 2.0,
     this.textScaleFactor = 1.0,
@@ -139,6 +144,7 @@ class EditorStyle {
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
+    this.textSpanOverlayBuilder,
     this.defaultTextDirection,
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
@@ -171,6 +177,7 @@ class EditorStyle {
     Color? selectionColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
+    AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder,
     String? defaultTextDirection,
     Size? magnifierSize,
     Size? mobileDragHandleBallSize,
@@ -193,6 +200,8 @@ class EditorStyle {
       textStyleConfiguration:
           textStyleConfiguration ?? this.textStyleConfiguration,
       textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
+      textSpanOverlayBuilder:
+          textSpanOverlayBuilder ?? this.textSpanOverlayBuilder,
       defaultTextDirection: defaultTextDirection,
       magnifierSize: magnifierSize ?? this.magnifierSize,
       mobileDragHandleBallSize:
