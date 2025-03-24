@@ -22,6 +22,12 @@ typedef AppFlowyAutoCompleteTextProvider = String? Function(
   TextSpan? textSpan,
 );
 
+typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
+  BuildContext context,
+  Node node,
+  SelectableMixin delegate,
+);
+
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
@@ -33,6 +39,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.placeholderTextSpanDecorator,
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
+    this.textSpanOverlayBuilder,
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
@@ -81,6 +88,12 @@ class AppFlowyRichText extends StatefulWidget {
   /// You can use this to customize the text span for custom attributes
   ///   or override the existing one.
   final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
+
+  /// customize the text span overlay builder
+  ///
+  /// You can use this to customize the text span overlay, for example, a hover menu in linked text.
+  final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
+
   final TextDirection textDirection;
 
   final Color cursorColor;
@@ -115,12 +128,23 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   TextStyleConfiguration get textStyleConfiguration =>
       widget.editorState.editorStyle.textStyleConfiguration;
 
+  AppFlowyTextSpanOverlayBuilder? get textSpanOverlayBuilder =>
+      widget.textSpanOverlayBuilder ??
+      widget.editorState.editorStyle.textSpanOverlayBuilder;
+
+  @override
+  void initState() {
+    super.initState();
+    confirmContextEnabled();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget child = Stack(
       children: [
         _buildPlaceholderText(context),
         _buildRichText(context),
+        ..._buildRichTextOverlay(context),
       ],
     );
 
@@ -408,6 +432,26 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
+  }
+
+  List<Widget> _buildRichTextOverlay(BuildContext context) {
+    if (textKey.currentContext == null) return [];
+    return textSpanOverlayBuilder?.call(
+          context,
+          widget.node,
+          this,
+        ) ??
+        [];
+  }
+
+  void confirmContextEnabled() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && textKey.currentContext == null) {
+        confirmContextEnabled();
+      } else if (mounted && textKey.currentContext != null) {
+        setState(() {});
+      }
+    });
   }
 
   Widget _buildAutoCompleteRichText() {
