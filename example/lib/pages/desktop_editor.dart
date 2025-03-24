@@ -129,7 +129,61 @@ class _DesktopEditorState extends State<DesktopEditor> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 40),
       maxWidth: 640,
+      textSpanOverlayBuilder: _buildTextSpanOverlay,
     );
+  }
+
+  List<Widget> _buildTextSpanOverlay(
+    BuildContext context,
+    Node node,
+    SelectableMixin delegate,
+  ) {
+    final delta = node.delta;
+    if (delta == null) {
+      return [];
+    }
+    final widgets = <Widget>[];
+    final textInserts = delta.whereType<TextInsert>();
+    int index = 0;
+    for (final textInsert in textInserts) {
+      final rects = delegate.getRectsInSelection(
+        Selection(
+          start: Position(path: node.path, offset: index),
+          end: Position(
+            path: node.path,
+            offset: index + textInsert.length,
+          ),
+        ),
+      );
+      // Add a hover menu to the linked text.
+      if (rects.isNotEmpty && textInsert.attributes?.href != null) {
+        widgets.add(
+          Positioned(
+            left: rects.first.left,
+            top: rects.first.top,
+            child: HoverMenu(
+              child: Container(
+                color: Colors.red.withValues(alpha: 0.5),
+                width: rects.first.width,
+                height: rects.first.height,
+              ),
+              itemBuilder: (context) => Material(
+                color: Colors.blue,
+                child: SizedBox(
+                  width: 200,
+                  height: 48,
+                  child: Text(
+                    'This is a hover menu:\n${textInsert.attributes?.href}',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      index += textInsert.length;
+    }
+    return widgets;
   }
 
   // showcase 2: customize the block style
@@ -271,5 +325,71 @@ class _DesktopEditorState extends State<DesktopEditor> {
       return ' world';
     }
     return null;
+  }
+}
+
+class HoverMenu extends StatefulWidget {
+  final Widget child;
+  final WidgetBuilder itemBuilder;
+
+  const HoverMenu({
+    super.key,
+    required this.child,
+    required this.itemBuilder,
+  });
+
+  @override
+  HoverMenuState createState() => HoverMenuState();
+}
+
+class HoverMenuState extends State<HoverMenu> {
+  OverlayEntry? overlayEntry;
+
+  bool canCancelHover = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.text,
+      hitTestBehavior: HitTestBehavior.opaque,
+      onEnter: (details) {
+        overlayEntry = _createOverlayEntry();
+        Overlay.of(context).insert(overlayEntry!);
+      },
+      onExit: (details) {
+        // delay the removal of the overlay entry to avoid flickering.
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (canCancelHover) {
+            overlayEntry?.remove();
+          }
+        });
+      },
+      child: widget.child,
+    );
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    final renderBox = context.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    return OverlayEntry(
+      maintainState: true,
+      builder: (context) => Positioned(
+        left: offset.dx,
+        top: offset.dy + size.height,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.text,
+          hitTestBehavior: HitTestBehavior.opaque,
+          onEnter: (details) {
+            canCancelHover = false;
+          },
+          onExit: (details) {
+            canCancelHover = true;
+          },
+          child: widget.itemBuilder(context),
+        ),
+      ),
+    );
   }
 }
