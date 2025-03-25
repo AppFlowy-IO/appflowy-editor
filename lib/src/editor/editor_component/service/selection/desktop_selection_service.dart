@@ -218,24 +218,18 @@ class _DesktopSelectionServiceWidgetState
       return clearSelection();
     }
 
-    Selection? selection;
-    if (HardwareKeyboard.instance.isShiftPressed && _panStartOffset != null) {
-      final first = getNodeInOffset(_panStartOffset!)?.selectable;
+    final position = selectable.getPositionInOffset(offset);
+    final Selection? selection;
 
-      if (first != null) {
-        final start = first.getSelectionInRange(_panStartOffset!, offset).start;
-        final end =
-            selectable.getSelectionInRange(_panStartOffset!, offset).end;
-
-        selection = Selection(start: start, end: end);
-      }
+    if (HardwareKeyboard.instance.isShiftPressed && _panStartPosition != null) {
+      selection = Selection(start: _panStartPosition!, end: position);
     } else {
       selection = selectable.cursorStyle == CursorStyle.verticalLine
-          ? Selection.collapsed(selectable.getPositionInOffset(offset))
+          ? Selection.collapsed(position)
           : Selection(start: selectable.start(), end: selectable.end());
 
       // Reset old start offset
-      _panStartOffset = offset;
+      _panStartPosition = position;
     }
 
     updateSelection(selection);
