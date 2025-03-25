@@ -19,7 +19,7 @@ final List<CommandShortcutEvent> toggleHeadingCommands = [
 ///   - web
 ///
 final CommandShortcutEvent toggleH1 = CommandShortcutEvent(
-  key: 'toggle H1',
+  key: 'toggle into Heading 1',
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH1,
   command: 'ctrl+shift+t',
   macOSCommand: 'cmd+shift+t',
@@ -30,7 +30,7 @@ final CommandShortcutEvent toggleH1 = CommandShortcutEvent(
 );
 
 final CommandShortcutEvent toggleH2 = CommandShortcutEvent(
-  key: 'toggle H2',
+  key: 'toggle into Heading 2',
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH2,
   command: 'ctrl+shift+g',
   macOSCommand: 'cmd+shift+g',
@@ -41,7 +41,7 @@ final CommandShortcutEvent toggleH2 = CommandShortcutEvent(
 );
 
 final CommandShortcutEvent toggleH3 = CommandShortcutEvent(
-  key: 'toggle H3',
+  key: 'toggle into Heading 3',
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH3,
   command: 'ctrl+shift+j',
   macOSCommand: 'cmd+shift+j',

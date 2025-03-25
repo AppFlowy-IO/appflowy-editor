@@ -1844,7 +1844,7 @@ class AppFlowyEditorLocalizations {
   /// `toggle H1`
   String get cmdToggleH1 {
     return Intl.message(
-      'toggle H1',
+      'toggle into Heading 1',
       name: 'cmdToggleH1',
       desc: '',
       args: [],
@@ -1854,7 +1854,7 @@ class AppFlowyEditorLocalizations {
   /// `toggle H2`
   String get cmdToggleH2 {
     return Intl.message(
-      'toggle H2',
+      'toggle into Heading 2',
       name: 'cmdToggleH2',
       desc: '',
       args: [],
@@ -1864,7 +1864,7 @@ class AppFlowyEditorLocalizations {
   /// `toggle H3`
   String get cmdToggleH3 {
     return Intl.message(
-      'toggle H3',
+      'toggle into Heading 3',
       name: 'cmdToggleH3',
       desc: '',
       args: [],
