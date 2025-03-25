@@ -64,8 +64,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         return true;
       },
     );
-    editorState.service.selectionService
-        .registerGestureInterceptor(interceptor);
+    if (editorState.editable) {
+      editorState.service.selectionService
+          .registerGestureInterceptor(interceptor);
+    }
 
     textInputService = buildTextInputService();
 
@@ -78,9 +80,11 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
-    editorState.service.selectionService.unregisterGestureInterceptor(
-      'keyboard',
-    );
+    if (editorState.editable) {
+      editorState.service.selectionService.unregisterGestureInterceptor(
+        'keyboard',
+      );
+    }
     focusNode.removeListener(_onFocusChanged);
     if (widget.focusNode == null) {
       focusNode.dispose();
