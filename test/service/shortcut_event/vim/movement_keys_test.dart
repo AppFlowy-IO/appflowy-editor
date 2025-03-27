@@ -147,5 +147,175 @@ void main() async {
 
       await editor.dispose();
     });
+
+    testWidgets('vim normal mode move cursor to end', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [1], startOffset: text.length);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(
+          key: LogicalKeyboardKey.digit4, isShiftPressed: true);
+
+      expect(
+        editor.selection,
+        Selection.single(path: [1], startOffset: text.length),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('vim normal mode jump 400 lines down out of bounds',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(60, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      print(editor.selection);
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit4);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyJ);
+      print(editor.selection);
+      expect(
+        editor.selection,
+        Selection.single(path: [59], startOffset: 0),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('vim normal mode jump 40 lines down', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(100, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      print(editor.selection);
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit4);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyJ);
+      print(editor.selection);
+      expect(
+        editor.selection,
+        Selection.single(path: [40], startOffset: 0),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('vim normal mode jump 40 lines up', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(60, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [60], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit4);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyK);
+      expect(
+        editor.selection,
+        Selection.single(path: [20], startOffset: 0),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets(
+        'vim normal mode jump 10 characters to the right on current line',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit1);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyL);
+      expect(
+        editor.selection,
+        Selection.single(path: [0], startOffset: 10),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets(
+        'vim normal mode jump 10 characters to the left on current line',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: text.length);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit1);
+
+      await editor.pressKey(key: LogicalKeyboardKey.digit0);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyH);
+      expect(
+        editor.selection,
+        Selection.single(path: [0], startOffset: 11),
+      );
+
+      await editor.dispose();
+    });
   });
 }
