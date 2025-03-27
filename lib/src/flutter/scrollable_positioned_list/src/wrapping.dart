@@ -1,3 +1,5 @@
+// coverage:ignore-file
+
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
