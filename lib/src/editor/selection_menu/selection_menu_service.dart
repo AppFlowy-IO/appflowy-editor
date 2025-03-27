@@ -27,6 +27,8 @@ class SelectionMenu extends SelectionMenuService {
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
     this.singleColumn = false,
+    this.menuHeight = 300,
+    this.menuWidth = 300,
   });
 
   final BuildContext context;
@@ -35,6 +37,8 @@ class SelectionMenu extends SelectionMenuService {
   final bool deleteSlashByDefault;
   final bool deleteKeywordsByDefault;
   final bool singleColumn;
+  final double menuHeight;
+  final double menuWidth;
 
   @override
   final SelectionMenuStyle style;
@@ -207,7 +211,6 @@ class SelectionMenu extends SelectionMenuService {
     // Workaround: We can customize the padding through the [EditorStyle],
     // but the coordinates of overlay are not properly converted currently.
     // Just subtract the padding here as a result.
-    const menuHeight = 300.0;
     const menuOffset = Offset(0, 10);
     final editorOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
@@ -235,8 +238,14 @@ class SelectionMenu extends SelectionMenuService {
       );
     }
 
-    // show on left
-    if (_offset.dx - editorOffset.dx > editorWidth / 2) {
+    // show on right
+    if (_offset.dx + menuWidth < editorOffset.dx + editorWidth) {
+      _offset = Offset(
+        _offset.dx,
+        _offset.dy,
+      );
+    } else if (offset.dx - editorOffset.dx > menuWidth) {
+      // show on left
       _alignment = _alignment == Alignment.topLeft
           ? Alignment.topRight
           : Alignment.bottomRight;
