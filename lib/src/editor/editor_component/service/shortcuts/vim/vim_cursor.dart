@@ -8,10 +8,14 @@ const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o'];
 class VimCursor {
   static Position? processMotionKeys(
       String key, EditorState editorState, Selection selection, int count) {
+    //final int docLength = editorState.document.root.children.length;
     switch (key) {
       case 'j':
         {
+          //print('Here is the doc length!, $docLength');
           int tmpPos = count + selection.end.path.first;
+          //print('counter: $count');
+
           Selection bottomLevel = Selection(
             start: Position(
               path: editorState.document.root.children.last.path,
@@ -22,6 +26,7 @@ class VimCursor {
               offset: 0,
             ),
           );
+
           if (editorState.selection == bottomLevel) {
             return Position(
               path: editorState.document.root.children.last.path,
@@ -29,6 +34,10 @@ class VimCursor {
             );
           }
           if (count > editorState.document.root.children.length) {
+            //print('Found a value out of range!, $count');
+            /*print(
+                'Here is the doc length!, ${editorState.document.root.children.length}');
+                */
             return Position(
               path: editorState.document.root.children.last.path,
               offset: 0,
