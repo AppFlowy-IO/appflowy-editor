@@ -1,10 +1,5 @@
-import 'dart:async';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/command/selection_commands.dart';
 import 'package:appflowy_editor/src/extensions/vim_shortcut_extensions.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // import 'package:appflowy_editor/src/editor_state.dart';
 
 const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o'];
@@ -17,6 +12,28 @@ class VimCursor {
       case 'j':
         {
           int tmpPos = count + selection.end.path.first;
+          Selection bottomLevel = Selection(
+            start: Position(
+              path: editorState.document.root.children.last.path,
+              offset: 0,
+            ),
+            end: Position(
+              path: editorState.document.root.children.last.path,
+              offset: 0,
+            ),
+          );
+          if (editorState.selection == bottomLevel) {
+            return Position(
+              path: editorState.document.root.children.last.path,
+              offset: 0,
+            );
+          }
+          if (count > editorState.document.root.children.length) {
+            return Position(
+              path: editorState.document.root.children.last.path,
+              offset: 0,
+            );
+          }
           if (tmpPos < editorState.document.root.children.length) {
             //BUG: This causes editor to say null value on places where offset is empty
             // Position(path: [tmpPos], offset: selection.end.offset ?? 0);
@@ -28,6 +45,21 @@ class VimCursor {
       case 'k':
         {
           int tmpPos = selection.end.path.first - count;
+          Selection topLevel = Selection(
+            start: Position(path: [0], offset: 0),
+            end: Position(
+              path: [0],
+              offset: 0,
+            ),
+          );
+
+          if (editorState.selection == topLevel) {
+            return Position(path: [0], offset: 0);
+          }
+
+          if (count > editorState.document.root.children.length) {
+            return Position(path: [0], offset: 0);
+          }
           if (tmpPos < editorState.document.root.children.length) {
             //BUG: This causes editor to say null value on places where offset is empty
             // Position(path: [tmpPos], offset: selection.end.offset ?? 0);
