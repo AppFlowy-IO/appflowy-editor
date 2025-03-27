@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:appflowy_editor/src/editor/command/selection_commands.dart';
 import './vim_cursor.dart';
 
-const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o'];
+const baseKeys = ['h', 'j', 'k', 'l', 'i'];
 
 String _buffer = '';
 String _deleteBuffer = '';
@@ -57,7 +57,9 @@ Position deleteCurrentLine(EditorState editorState, int count) {
   final node = editorState.getNodeAtPath(selection.start.path);
   if (node == null || node.delta == null) return Position(path: [0], offset: 0);
   final startPath = selection.start.path.first;
+  //print('start delete point: $startPath');
   final endPath = startPath + count - 1;
+  //print('final end point: $endPath');
   final tmpPosition = Position(path: [startPath], offset: 0);
   final delta = node.delta;
   for (int i = startPath; i <= endPath; i++) {
@@ -86,6 +88,8 @@ Position deleteCurrentLine(EditorState editorState, int count) {
 String keyBuffer = '';
 Timer? resetTimer;
 
+String deleteBuffer = '';
+
 class VimFSM {
   KeyEventResult processKey(KeyEvent event, EditorState editorState) {
     if (event is! KeyDownEvent) {
@@ -95,11 +99,13 @@ class VimFSM {
     resetTimer?.cancel();
     resetTimer = Timer(Duration(milliseconds: 500), () {
       keyBuffer = "";
+      _buffer = "";
     });
-
     final key = event.logicalKey.keyLabel.toLowerCase();
     if (baseKeys.contains(key)) {
+      //print('buffer key readout: $_buffer');
       final count = _buffer.isNotEmpty ? int.parse(_buffer) : 1;
+      //print('counter for debugger: $count');
       resetBuffer();
       final selection = editorState.selection;
       if (selection == null) return KeyEventResult.ignored;
@@ -112,32 +118,42 @@ class VimFSM {
           Selection.collapsed(newPosition),
           reason: SelectionUpdateReason.uiEvent,
         );
+        resetBuffer();
         return KeyEventResult.handled;
       }
     } else {
-      resetBuffer();
+      //BUG: _buffer is causing double keys like 440 instead of 40
+      _buffer += key;
+      deleteBuffer += key;
+      //NOTE: Resetting the _buffer here will break line jumping
+      // resetBuffer();
+      resetSequenceBuffer();
 
       keyBuffer += key;
+      /*print(
+          'After appending, keyBuffer="$keyBuffer", _buffer="$_buffer", deleteBuffer="$deleteBuffer"');
+          */
       if (RegExp(r'^\d$').hasMatch(key)) {
-        if (keyBuffer == 'shift left4' ||
-            keyBuffer == 'shift right4' ||
+        if (_buffer == 'shift left4' ||
+            _buffer == 'shift right4' ||
             event.character == '\$') {
           vimMoveCursorToEndHandler(editorState);
           resetSequenceBuffer();
+          resetBuffer();
         }
-        if (_buffer.isEmpty && key == '0') {
+
+        if (keyBuffer == '0' && _buffer == '0') {
           vimMoveCursorToStartHandler(editorState);
           resetBuffer();
-        } else {
-          _buffer += key;
-          keyBuffer += key;
+          resetSequenceBuffer();
         }
         return KeyEventResult.handled;
       }
 
-      if (keyBuffer.endsWith('dd')) {
+      if (deleteBuffer.endsWith('dd')) {
+        // final tmpString = deleteBuffer + keyBuffer;
         final RegExp ddRegExp = RegExp(r'^(\d+)?dd$');
-        final match = ddRegExp.firstMatch(keyBuffer);
+        final match = ddRegExp.firstMatch(deleteBuffer);
         if (match != null) {
           final String? countStr = match.group(1);
           final int count = (countStr != null && countStr.isNotEmpty)
@@ -148,16 +164,22 @@ class VimFSM {
             end: tmpPosition,
             start: tmpPosition,
           );
-          resetSequenceBuffer();
+          deleteBuffer = '';
+          keyBuffer = '';
+          // _buffer = '';
           return KeyEventResult.handled;
         }
       }
 
+      deleteBuffer = '';
+      resetBuffer();
+
       return KeyEventResult.handled;
     }
 
+    resetSequenceBuffer();
     resetBuffer();
-
+    deleteBuffer = '';
     return KeyEventResult.ignored;
   }
 
