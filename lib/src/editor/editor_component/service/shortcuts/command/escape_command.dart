@@ -16,12 +16,12 @@ final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _exitEditingCommandHandler = (editorState) {
+  if (editorState.mode == VimModes.normalMode) {
+    return KeyEventResult.handled;
+  }
   if (editorState.vimMode == true &&
       editorState.editable == true &&
       editorState.mode == VimModes.insertMode) {
-    if (editorState.mode == VimModes.normalMode) {
-      return KeyEventResult.ignored;
-    }
     editorState.prevSelection = editorState.selection;
     editorState.selection = null;
     editorState.mode = VimModes.normalMode;
