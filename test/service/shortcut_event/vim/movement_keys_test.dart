@@ -184,7 +184,6 @@ void main() async {
       final selection = Selection.single(path: [0], startOffset: 0);
       await editor.updateSelection(selection);
 
-      print(editor.selection);
       await editor.pressKey(key: LogicalKeyboardKey.escape);
 
       expect(editor.editorState.mode, VimModes.normalMode);
@@ -195,7 +194,6 @@ void main() async {
       await editor.pressKey(key: LogicalKeyboardKey.digit0);
 
       await editor.pressKey(key: LogicalKeyboardKey.keyJ);
-      print(editor.selection);
       expect(
         editor.selection,
         Selection.single(path: [59], startOffset: 0),
@@ -214,7 +212,6 @@ void main() async {
       final selection = Selection.single(path: [0], startOffset: 0);
       await editor.updateSelection(selection);
 
-      print(editor.selection);
       await editor.pressKey(key: LogicalKeyboardKey.escape);
 
       expect(editor.editorState.mode, VimModes.normalMode);
@@ -224,7 +221,6 @@ void main() async {
       await editor.pressKey(key: LogicalKeyboardKey.digit0);
 
       await editor.pressKey(key: LogicalKeyboardKey.keyJ);
-      print(editor.selection);
       expect(
         editor.selection,
         Selection.single(path: [40], startOffset: 0),
@@ -284,6 +280,29 @@ void main() async {
       expect(
         editor.selection,
         Selection.single(path: [0], startOffset: 10),
+      );
+
+      await editor.dispose();
+    });
+    testWidgets('vim normal mode navigate by word', (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(2, initialText: text);
+
+      await editor.startTesting();
+      editor.editorState.vimMode = true;
+
+      final selection = Selection.single(path: [0], startOffset: 0);
+      await editor.updateSelection(selection);
+
+      await editor.pressKey(key: LogicalKeyboardKey.escape);
+
+      expect(editor.editorState.mode, VimModes.normalMode);
+
+      await editor.pressKey(key: LogicalKeyboardKey.keyW);
+
+      expect(
+        editor.selection,
+        Selection.single(path: [0], startOffset: 7),
       );
 
       await editor.dispose();
