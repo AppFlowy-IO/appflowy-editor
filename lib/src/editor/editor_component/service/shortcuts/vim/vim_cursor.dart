@@ -2,7 +2,101 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/extensions/vim_shortcut_extensions.dart';
 // import 'package:appflowy_editor/src/editor_state.dart';
 
-const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o'];
+void moveCursor(
+  EditorState editorState,
+  SelectionMoveDirection direction, [
+  SelectionMoveRange range = SelectionMoveRange.character,
+]) {
+  final selection = editorState.selection?.normalized;
+  if (selection == null) {
+    return;
+  }
+
+  // If the selection is not collapsed, then we want to collapse the selection
+  if (!selection.isCollapsed && range != SelectionMoveRange.line) {
+    // move the cursor to the start or end of the selection
+    editorState.selection = selection.collapse(
+      atStart: direction == SelectionMoveDirection.forward,
+    );
+    return;
+  }
+
+  final node = editorState.getNodeAtPath(selection.start.path);
+  if (node == null) {
+    return;
+  }
+
+  // Originally, I want to make this function as pure as possible,
+  //  but I have to import the selectable here to compute the selection.
+  final start = node.selectable?.start();
+  final end = node.selectable?.end();
+  final offset = direction == SelectionMoveDirection.forward
+      ? selection.startIndex
+      : selection.endIndex;
+  {
+    // the cursor is at the start of the node
+    // move the cursor to the end of the previous node
+    if (direction == SelectionMoveDirection.forward &&
+        start != null &&
+        start.offset >= offset) {
+      final previousEnd = node
+          .previousNodeWhere((element) => element.selectable != null)
+          ?.selectable
+          ?.end();
+      if (previousEnd != null) {
+        editorState.updateSelectionWithReason(
+          Selection.collapsed(previousEnd),
+          reason: SelectionUpdateReason.uiEvent,
+        );
+      }
+      return;
+    }
+    // the cursor is at the end of the node
+    // move the cursor to the start of the next node
+    else if (direction == SelectionMoveDirection.backward &&
+        end != null &&
+        end.offset <= offset) {
+      //Would have to handle if text has reached document end
+      if (end.offset == offset) {
+        editorState.insertText(end.offset, ' ', node: node);
+        final pos = Position(path: node.path, offset: end.offset + 1);
+        if (node.selectable?.end() != null) {
+          editorState.updateSelectionWithReason(
+            Selection.collapsed(pos),
+            reason: SelectionUpdateReason.uiEvent,
+          );
+        }
+      }
+
+      return;
+    }
+  }
+
+  final delta = node.delta;
+  switch (range) {
+    case SelectionMoveRange.character:
+      if (delta != null) {
+        // move the cursor to the left or right by one character
+        editorState.updateSelectionWithReason(
+          Selection.collapsed(
+            selection.start.copyWith(
+              offset: direction == SelectionMoveDirection.forward
+                  ? delta.prevRunePosition(offset)
+                  : delta.nextRunePosition(offset),
+            ),
+          ),
+          reason: SelectionUpdateReason.uiEvent,
+        );
+      } else {
+        throw UnimplementedError();
+      }
+      break;
+    default:
+      throw UnimplementedError();
+  }
+}
+
+const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o', 'w'];
 // String buffer = '';
 
 class VimCursor {
@@ -97,6 +191,68 @@ class VimCursor {
           editorState.selection = editorState.selection;
           editorState.selectionService.updateSelection(editorState.selection);
           editorState.prevSelection = null;
+          return Position(
+            path: editorState.selection!.end.path,
+            offset: editorState.selection!.end.offset,
+          );
+        }
+
+      case 'a':
+        {
+          editorState.editable = true;
+          editorState.mode = VimModes.insertMode;
+          editorState.selection = editorState.selection;
+
+          moveCursor(editorState, SelectionMoveDirection.backward);
+
+          editorState.selectionService.updateSelection(editorState.selection);
+          editorState.prevSelection = null;
+          return Position(
+            path: editorState.selection!.end.path,
+            offset: editorState.selection!.end.offset,
+          );
+        }
+
+      case 'o':
+        {
+          editorState.editable = true;
+          editorState.mode = VimModes.insertMode;
+          editorState.selection = editorState.selection;
+
+//insertNewLine selects the old text and carries it over to the new line?
+//NOTE: Manually build node and perform transaction
+          final transaction = editorState.transaction;
+          final nextPosition = Position(
+            path: [editorState.selection!.end.path.first + 1],
+            offset: 0,
+          );
+          final Node blankLine = paragraphNode(text: '');
+          transaction.insertNode(nextPosition.path, blankLine);
+          transaction.afterSelection = Selection.collapsed(nextPosition);
+          transaction.customSelectionType = SelectionType.inline;
+          editorState.apply(transaction).then((value) => {});
+
+          editorState.selection = editorState.selection;
+          editorState.selectionService.updateSelection(editorState.selection);
+          editorState.prevSelection = null;
+          //manually insert whitespace if next node is not present?
+
+          return Position(
+            path: editorState.selection!.end.path,
+            offset: editorState.selection!.end.offset,
+          );
+        }
+      case 'w':
+        {
+          editorState.selection = editorState.selection;
+
+          editorState.moveCursor(
+              SelectionMoveDirection.backward, SelectionMoveRange.word);
+
+          editorState.selection = editorState.selection;
+          editorState.selectionService.updateSelection(editorState.selection);
+          //manually insert whitespace if next node is not present?
+
           return Position(
             path: editorState.selection!.end.path,
             offset: editorState.selection!.end.offset,
