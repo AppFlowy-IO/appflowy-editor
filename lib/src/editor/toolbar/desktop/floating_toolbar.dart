@@ -75,6 +75,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   late Brightness brightness = Theme.of(context).brightness;
 
   bool hasMetricsChanged = false;
+  Selection? lastSelection;
 
   @override
   void initState() {
@@ -82,6 +83,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
+    lastSelection = editorState.selection;
     widget.editorScrollController.offsetNotifier.addListener(
       _onScrollPositionChanged,
     );
@@ -133,6 +135,8 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onSelectionChanged() {
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
+    if (lastSelection == selection) return;
+    lastSelection = selection;
 
     if (selection == null ||
         selection.isCollapsed ||
