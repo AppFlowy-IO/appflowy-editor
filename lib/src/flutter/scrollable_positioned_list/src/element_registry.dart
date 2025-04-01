@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// coverage:ignore-file
+
 import 'package:flutter/widgets.dart';
 
 /// A registry to track some [Element]s in the tree.

@@ -173,6 +173,32 @@ void main() async {
           blockComponentTextDirectionRTL,
         );
       });
+
+      test("backspace when all is selected", () async {
+        final document = Document.blank().addParagraphs(
+          5,
+          initialText: text,
+        );
+        final editorState = EditorState(document: document);
+
+        final selection = Selection(
+          start: Position(path: [0], offset: 0),
+          end: Position(path: [4], offset: text.length),
+        );
+        editorState.updateSelectionWithReason(
+          selection,
+          reason: SelectionUpdateReason.selectAll,
+        );
+
+        final result = backspaceCommand.execute(editorState);
+        expect(result, KeyEventResult.handled);
+
+        expect(editorState.selection, Selection.collapsed(Position(path: [0])));
+        expect(editorState.document.root.children.length, 1);
+
+        final node = editorState.getNodeAtPath([0])!;
+        expect(node.delta!.toPlainText(), ''); // empty
+      });
     });
 
     group('backspaceCommand - not collapsed selection', () {
