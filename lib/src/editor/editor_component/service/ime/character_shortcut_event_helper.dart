@@ -15,7 +15,19 @@ Future<bool> executeCharacterShortcutEvent(
   }
 
   for (final shortcutEvent in characterShortcutEvents) {
-    if (shortcutEvent.character == character &&
+    bool hasMatchRegExp = false;
+    if (shortcutEvent.regExp != null && character != null) {
+      hasMatchRegExp = shortcutEvent.regExp!.hasMatch(character);
+    }
+    if (hasMatchRegExp &&
+        shortcutEvent.handlerWithCharacter != null &&
+        await shortcutEvent.executeWithCharacter(editorState, character!)) {
+      AppFlowyEditorLog.input.debug(
+        'keyboard service - handled by character shortcut event: $shortcutEvent',
+      );
+      return true;
+    }
+    if ((shortcutEvent.character == character || hasMatchRegExp) &&
         await shortcutEvent.handler(editorState)) {
       AppFlowyEditorLog.input.debug(
         'keyboard service - handled by character shortcut event: $shortcutEvent',
