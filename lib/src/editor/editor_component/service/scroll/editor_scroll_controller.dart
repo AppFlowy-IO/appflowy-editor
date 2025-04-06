@@ -182,12 +182,16 @@ class EditorScrollController {
     required double offset,
   }) async {
     if (shrinkWrap) {
-      return scrollController.jumpTo(
-        offset.clamp(
-          scrollController.position.minScrollExtent,
-          scrollController.position.maxScrollExtent,
-        ),
-      );
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(
+          offset.clamp(
+            scrollController.position.minScrollExtent,
+            scrollController.position.maxScrollExtent,
+          ),
+        );
+      }
+
+      return;
     }
 
     final index = offset.toInt();

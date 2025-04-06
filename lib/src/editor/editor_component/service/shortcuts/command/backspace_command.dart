@@ -177,6 +177,14 @@ CommandShortcutEventHandler _backspaceInSelectAll = (editorState) {
   final transaction = editorState.transaction;
   final nodes = editorState.getNodesInSelection(selection);
   transaction.deleteNodes(nodes);
+
+  // Insert a new paragraph node to avoid locking the editor
+  transaction.insertNode(
+    editorState.document.root.children.first.path,
+    paragraphNode(),
+  );
+  transaction.afterSelection = Selection.collapsed(Position(path: [0]));
+
   editorState.apply(transaction);
 
   return KeyEventResult.handled;

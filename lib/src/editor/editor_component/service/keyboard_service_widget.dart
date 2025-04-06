@@ -43,7 +43,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   Selection? previousSelection;
 
   // use for IME only
-  bool enableShortcuts = true;
+  bool enableIMEShortcuts = true;
+
+  // use for hardware keyboard only
+  bool enableKeyboardShortcuts = true;
 
   @override
   void initState() {
@@ -55,7 +58,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     interceptor = SelectionGestureInterceptor(
       key: 'keyboard',
       canTap: (details) {
-        enableShortcuts = true;
+        enableIMEShortcuts = true;
         focusNode.requestFocus();
         textInputService.close();
         return true;
@@ -90,11 +93,24 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void disable({
     bool showCursor = false,
     UnfocusDisposition disposition = UnfocusDisposition.previouslyFocusedChild,
-  }) =>
-      focusNode.unfocus(disposition: disposition);
+  }) {
+    focusNode.unfocus(disposition: disposition);
+  }
 
   @override
-  void enable() => focusNode.requestFocus();
+  void enable() {
+    focusNode.requestFocus();
+  }
+
+  @override
+  void enableShortcuts() {
+    enableKeyboardShortcuts = true;
+  }
+
+  @override
+  void disableShortcuts() {
+    enableKeyboardShortcuts = false;
+  }
 
   // Used in mobile only
   @override
@@ -148,8 +164,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   /// handle hardware keyboard
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (!enableKeyboardShortcuts) {
+      return KeyEventResult.ignored;
+    }
+
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
-        !enableShortcuts) {
+        !enableIMEShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
@@ -188,12 +208,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // attach the delta text input service if needed
     final selection = editorState.selection;
 
-    // if (PlatformExtension.isMobile && previousSelection == selection) {
-    //   // no need to attach the text input service if the selection is not changed.
-    //   return;
-    // }
-
-    enableShortcuts = true;
+    enableIMEShortcuts = true;
 
     if (selection == null) {
       textInputService.close();
@@ -234,9 +249,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         ),
       );
       // disable shortcuts when the IME active
-      enableShortcuts = textEditingValue.composing == TextRange.empty;
+      enableIMEShortcuts = textEditingValue.composing == TextRange.empty;
     } else {
-      enableShortcuts = true;
+      enableIMEShortcuts = true;
     }
   }
 
@@ -355,7 +370,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onInsert - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -364,6 +379,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onDelete: (deletion) async {
         for (final interceptor in interceptors) {
@@ -375,7 +391,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onDelete - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -383,6 +399,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           deletion,
           editorState,
         );
+        return true;
       },
       onReplace: (replacement) async {
         for (final interceptor in interceptors) {
@@ -395,7 +412,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onReplace - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -404,6 +421,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onNonTextUpdate: (nonTextUpdate) async {
         for (final interceptor in interceptors) {
@@ -416,7 +434,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onNonTextUpdate - intercepted by interceptor: $interceptor',
             );
-            return;
+            return false;
           }
         }
 
@@ -425,6 +443,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+        return true;
       },
       onPerformAction: (action) async {
         for (final interceptor in interceptors) {

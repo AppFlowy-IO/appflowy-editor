@@ -130,6 +130,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         } else {
           startAutoScroll(
             endTouchPoint,
+            edgeOffset: editorState.autoScrollEdgeOffset,
             duration: Duration.zero,
           );
         }

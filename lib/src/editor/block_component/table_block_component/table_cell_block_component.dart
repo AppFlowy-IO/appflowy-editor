@@ -64,6 +64,10 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
@@ -82,6 +86,7 @@ class TableCelBlockWidget extends BlockComponentStatefulWidget {
     this.colorBuilder,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 
@@ -105,8 +110,7 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
           onExit: (_) => setState(() => _rowActionVisibility = false),
           child: Container(
             constraints: BoxConstraints(
-              minHeight: context
-                  .select((Node n) => n.attributes[TableCellBlockKeys.height]),
+              minHeight: context.select((Node n) => n.cellHeight),
             ),
             color: context.select(
               (Node n) =>
@@ -141,8 +145,8 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             final int col = n.attributes[TableCellBlockKeys.colPosition];
             double left = -12;
             for (var i = 0; i < col; i++) {
-              left -= getCellNode(n.parent!, i, 0)
-                  ?.attributes[TableCellBlockKeys.width] as double;
+              left -= getCellNode(n.parent!, i, 0)?.cellWidth ??
+                  TableDefaults.colWidth;
               left -= n.parent!.attributes['borderWidth'] ??
                   TableDefaults.borderWidth;
             }
@@ -150,8 +154,7 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             return Matrix4.translationValues(left, 0.0, 0.0);
           }),
           alignment: Alignment.centerLeft,
-          height: context
-              .select((Node n) => n.attributes[TableCellBlockKeys.height]),
+          height: context.select((Node n) => n.cellHeight),
           menuBuilder: widget.menuBuilder,
           dir: TableDirection.row,
         ),

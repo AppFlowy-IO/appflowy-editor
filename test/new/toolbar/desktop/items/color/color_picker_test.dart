@@ -18,7 +18,7 @@ void main() {
         key: key,
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {},
+        onSubmittedColorHex: (String? color, _) {},
         selectedColorHex: '0xFFFFFFFF',
       );
 
@@ -48,7 +48,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {},
+        onSubmittedColorHex: (String? color, _) {},
         selectedColorHex: '0xFAFFFF08',
       );
 
@@ -85,7 +85,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {},
+        onSubmittedColorHex: (String? color, _) {},
         selectedColorHex: null,
       );
 
@@ -122,7 +122,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {},
+        onSubmittedColorHex: (String? color, _) {},
         selectedColorHex: '0xFBFFFF08',
       );
 
@@ -160,7 +160,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {},
+        onSubmittedColorHex: (String? color, _) {},
         selectedColorHex: null,
       );
 
@@ -198,7 +198,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {
+        onSubmittedColorHex: (String? color, _) {
           fontColorHex = color;
         },
         selectedColorHex: fontColorHex,
@@ -236,7 +236,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {
+        onSubmittedColorHex: (String? color, _) {
           fontColorHex = color;
         },
         selectedColorHex: fontColorHex,
@@ -275,7 +275,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {
+        onSubmittedColorHex: (String? color, _) {
           backgroundColorHex = color;
         },
         selectedColorHex: backgroundColorHex,
@@ -313,7 +313,7 @@ void main() {
       final widget = ColorPicker(
         title: 'test',
         colorOptions: const [],
-        onSubmittedColorHex: (String? color) {
+        onSubmittedColorHex: (String? color, _) {
           backgroundColorHex = color;
         },
         selectedColorHex: backgroundColorHex,

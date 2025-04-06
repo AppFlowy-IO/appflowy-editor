@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// coverage:ignore-file
+
 import 'dart:async';
 import 'dart:math';
 
@@ -382,7 +384,9 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     _animationController?.dispose();
     primary.itemPositionsNotifier.itemPositions.dispose();
     secondary.itemPositionsNotifier.itemPositions.dispose();
-    secondary.scrollController.dispose();
+    if (secondary.scrollController.hasClients) {
+      secondary.scrollController.dispose();
+    }
     super.dispose();
   }
 

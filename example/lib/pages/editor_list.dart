@@ -53,14 +53,19 @@ class _EditorListState extends State<EditorList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: documents
               .map(
-                (e) => [
-                  AppFlowyEditor(
-                    editorState: EditorState(document: e),
-                    shrinkWrap: true,
-                    editable: false,
-                  ),
-                  const Divider(),
-                ],
+                (e) {
+                  final editorState = EditorState(document: e);
+                  return [
+                    IntrinsicHeight(
+                      child: AppFlowyEditor(
+                        editorState: editorState,
+                        shrinkWrap: true,
+                        editable: false,
+                      ),
+                    ),
+                    const Divider(),
+                  ];
+                },
               )
               .expand((element) => element)
               .toList(),
