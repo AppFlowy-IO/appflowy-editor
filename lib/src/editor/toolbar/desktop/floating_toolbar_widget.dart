@@ -54,6 +54,32 @@ class FloatingToolbarWidget extends StatefulWidget {
 }
 
 class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
+  EditorState get editorState => widget.editorState;
+  PropertyValueNotifier<Selection?> get selectionNotifier =>
+      editorState.selectionNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    selectionNotifier.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void didUpdateWidget(FloatingToolbarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.editorState != oldWidget.editorState) {
+      oldWidget.editorState.selectionNotifier
+          .removeListener(_onSelectionChanged);
+      selectionNotifier.addListener(_onSelectionChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    selectionNotifier.removeListener(_onSelectionChanged);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var activeItems = _computeActiveItems();
@@ -95,6 +121,10 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
         ),
       ),
     );
+  }
+
+  void _onSelectionChanged() {
+    if (mounted) setState(() {});
   }
 
   Iterable<ToolbarItem> _computeActiveItems() {

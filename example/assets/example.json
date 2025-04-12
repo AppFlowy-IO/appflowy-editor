@@ -41,7 +41,7 @@
           "delta": [
             {
               "insert": "Customizable",
-              "attributes": { "bg_color": "0x4d00BCF0" }
+              "attributes": { "href": "https://appflowy.io" }
             }
           ]
         }
