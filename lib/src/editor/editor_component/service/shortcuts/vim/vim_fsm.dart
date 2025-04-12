@@ -7,7 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:appflowy_editor/src/editor/command/selection_commands.dart';
 import './vim_cursor.dart';
 
-const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o', 'w'];
+/* List of keys to implement
+- 'ctrl+f' scroll one page down
+- 'ctrl+d' scroll half page down
+- 'ctrl+u' scroll one page up
+*/
+
+const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o', 'w', 'b', 'u'];
 
 void vimMoveCursorToStartHandler(EditorState editorState) {
   if (!editorState.vimMode) {}
@@ -65,6 +71,7 @@ Position deleteCurrentLine(EditorState editorState, int count) {
   return tmpPosition;
 }
 
+/// Vim state to manage the buffers in between key events
 class VimState {
   String commandBuffer = '';
   String deleteBuffer = '';
@@ -81,6 +88,7 @@ class VimState {
   }
 }
 
+/// Vim State Machine, this class holds all the vim logic
 class VimFSM {
   static final VimFSM _instance = VimFSM._internal();
   factory VimFSM() => _instance;
@@ -106,6 +114,10 @@ class VimFSM {
         editorState.updateSelectionWithReason(
           Selection.collapsed(newPosition),
           reason: SelectionUpdateReason.uiEvent,
+        );
+
+        AppFlowyEditorLog.keyboard.debug(
+          'keyboard service - handled by vim command: $key',
         );
         return KeyEventResult.handled;
       }
@@ -140,19 +152,45 @@ class VimFSM {
     final buffer = _state.commandBuffer;
     if (buffer == 'shift left4' || buffer == 'shift right4') {
       vimMoveCursorToEndHandler(editorState);
+      AppFlowyEditorLog.keyboard.debug(
+        'keyboard service - handled by vim command shortcut: ${_state.commandBuffer}',
+      );
       _state.reset();
       return true;
     }
 
     if (buffer == '0') {
       vimMoveCursorToStartHandler(editorState);
+
+      AppFlowyEditorLog.keyboard.debug(
+        'keyboard service - handled by vim command shortcut: ${_state.commandBuffer}',
+      );
       _state.reset();
       return true;
     }
+    //NOTE: Does not handle blocks other than text yet.
+    //BUG: Breaks tables
     if (buffer.endsWith('dd')) {
       final count = _parseCount(buffer.substring(0, buffer.length - 2));
       final position = deleteCurrentLine(editorState, count);
       editorState.selection = Selection(start: position, end: position);
+
+      AppFlowyEditorLog.keyboard.debug(
+        'keyboard service - handled by vim command shortcut: ${_state.commandBuffer}',
+      );
+      _state.reset();
+      return true;
+    }
+    if (buffer == 'control leftr' || buffer == 'control rightr') {
+      final prevSelection = editorState.selection;
+      //NOTE: Currently the redo stack can only go one level. undo_manager.dart
+      editorState.undoManager.redo();
+      editorState.selection = prevSelection;
+      editorState.selectionService.updateSelection(prevSelection);
+
+      AppFlowyEditorLog.keyboard.debug(
+        'keyboard service - handled by vim command shortcut: ${_state.commandBuffer}',
+      );
       _state.reset();
       return true;
     }

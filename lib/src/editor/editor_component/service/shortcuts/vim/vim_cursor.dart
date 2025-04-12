@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/extensions/vim_shortcut_extensions.dart';
 // import 'package:appflowy_editor/src/editor_state.dart';
 
-void moveCursor(
+void customMoveCursor(
   EditorState editorState,
   SelectionMoveDirection direction, [
   SelectionMoveRange range = SelectionMoveRange.character,
@@ -72,6 +72,7 @@ void moveCursor(
     }
   }
 
+  //NOTE: Possibly support jumping to the next whitespace with "Shift+W"
   final delta = node.delta;
   switch (range) {
     case SelectionMoveRange.character:
@@ -96,12 +97,13 @@ void moveCursor(
   }
 }
 
-const baseKeys = ['h', 'j', 'k', 'l', 'i', 'a', 'o', 'w'];
-// String buffer = '';
-
 class VimCursor {
   static Position? processMotionKeys(
-      String key, EditorState editorState, Selection selection, int count) {
+    String key,
+    EditorState editorState,
+    Selection selection,
+    int count,
+  ) {
     //final int docLength = editorState.document.root.children.length;
     switch (key) {
       case 'j':
@@ -203,7 +205,7 @@ class VimCursor {
           editorState.mode = VimModes.insertMode;
           editorState.selection = editorState.selection;
 
-          moveCursor(editorState, SelectionMoveDirection.backward);
+          customMoveCursor(editorState, SelectionMoveDirection.backward);
 
           editorState.selectionService.updateSelection(editorState.selection);
           editorState.prevSelection = null;
@@ -218,9 +220,6 @@ class VimCursor {
           editorState.editable = true;
           editorState.mode = VimModes.insertMode;
           editorState.selection = editorState.selection;
-
-//insertNewLine selects the old text and carries it over to the new line?
-//NOTE: Manually build node and perform transaction
           final transaction = editorState.transaction;
           final nextPosition = Position(
             path: [editorState.selection!.end.path.first + 1],
@@ -235,7 +234,6 @@ class VimCursor {
           editorState.selection = editorState.selection;
           editorState.selectionService.updateSelection(editorState.selection);
           editorState.prevSelection = null;
-          //manually insert whitespace if next node is not present?
 
           return Position(
             path: editorState.selection!.end.path,
@@ -247,11 +245,42 @@ class VimCursor {
           editorState.selection = editorState.selection;
 
           editorState.moveCursor(
-              SelectionMoveDirection.backward, SelectionMoveRange.word);
+            SelectionMoveDirection.backward,
+            SelectionMoveRange.word,
+          );
 
           editorState.selection = editorState.selection;
           editorState.selectionService.updateSelection(editorState.selection);
-          //manually insert whitespace if next node is not present?
+
+          return Position(
+            path: editorState.selection!.end.path,
+            offset: editorState.selection!.end.offset,
+          );
+        }
+
+      case 'b':
+        {
+          editorState.selection = editorState.selection;
+
+          editorState.moveCursor(
+            SelectionMoveDirection.forward,
+            SelectionMoveRange.word,
+          );
+
+          editorState.selection = editorState.selection;
+          editorState.selectionService.updateSelection(editorState.selection);
+
+          return Position(
+            path: editorState.selection!.end.path,
+            offset: editorState.selection!.end.offset,
+          );
+        }
+
+      case 'u':
+        {
+          editorState.undoManager.undo();
+          editorState.selection = editorState.selection;
+          editorState.selectionService.updateSelection(editorState.selection);
 
           return Position(
             path: editorState.selection!.end.path,
