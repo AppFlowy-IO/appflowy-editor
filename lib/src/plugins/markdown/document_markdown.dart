@@ -38,7 +38,7 @@ Document markdownToDocument(
 String documentToMarkdown(
   Document document, {
   List<NodeParser> customParsers = const [],
-  String lineBreak = '\n',
+  String lineBreak = '',
 }) {
   return AppFlowyEditorMarkdownCodec(
     encodeParsers: [
@@ -63,7 +63,7 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
     this.markdownInlineSyntaxes = const [],
     this.markdownParsers = const [],
     this.encodeParsers = const [],
-    this.lineBreak = '\n',
+    this.lineBreak = '',
   });
 
   final List<NodeParser> encodeParsers;
