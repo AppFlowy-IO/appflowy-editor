@@ -38,6 +38,7 @@ Document markdownToDocument(
 String documentToMarkdown(
   Document document, {
   List<NodeParser> customParsers = const [],
+  String lineBreak = '',
 }) {
   return AppFlowyEditorMarkdownCodec(
     encodeParsers: [
@@ -53,6 +54,7 @@ String documentToMarkdown(
       const TableNodeParser(),
       const DividerNodeParser(),
     ],
+    lineBreak: lineBreak,
   ).encode(document);
 }
 
@@ -61,11 +63,13 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
     this.markdownInlineSyntaxes = const [],
     this.markdownParsers = const [],
     this.encodeParsers = const [],
+    this.lineBreak = '',
   });
 
   final List<NodeParser> encodeParsers;
   final List<CustomMarkdownParser> markdownParsers;
   final List<md.InlineSyntax> markdownInlineSyntaxes;
+  final String lineBreak;
 
   @override
   Converter<String, Document> get decoder => DocumentMarkdownDecoder(
@@ -76,5 +80,6 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
   @override
   Converter<Document, String> get encoder => DocumentMarkdownEncoder(
         parsers: encodeParsers,
+        lineBreak: lineBreak,
       );
 }
