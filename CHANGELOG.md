@@ -1,3 +1,34 @@
+## 5.2.0
+* feat: support customizing link button by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1048
+* feat: add flag to disable keyboard shortcuts by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1049
+* fix: scrollController disposed twice by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1050
+* feat: add trailing builder in block menu by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1052
+* chore: add ScrollViewScrolledListener to EditorState by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1053
+* feat: support customizing scroll edge offset by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1055
+* fix: menu position error by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1054
+* chore: remove assertion in scrollable helper by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1056
+* fix: interceptor not working with continuous deleting by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1057
+* feat: enable set floatingToolbarHeight outside by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1058
+* fix: auto scroll issue by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1062
+* fix: recreate FloatingToolbarWidget after Brightness was changed by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1063
+* fix: assertion in editor list example by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1064
+* fix: unable to undo/redo when the selection is null by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1067
+* chore: enable pass custom color from outside by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1066
+* chore: mark node id as non final by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1070
+* fix: parse table width/height error if the value is int by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1072
+* feat: add document rules by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1071
+* fix: enable dismiss floating toolbar from outside by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1073
+* fix: prevent lock after backspacing on select all by @saif-ellafi in https://github.com/AppFlowy-IO/appflowy-editor/pull/1076
+* fix: rename the descroption of turning into heading shortcuts by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1075
+* fix: shift+click not working if beginning is out of the window by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1079
+* fix: add isMetricsChanged to FloatingToolbarBuilder by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1081
+* fix: slash menu sometimes incorrectly show on left side by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1082
+* fix: backspace select all by @Xazin in https://github.com/AppFlowy-IO/appflowy-editor/pull/1077
+* fix: do not recreate the toolbar when the selection not changed by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1086
+* feat: add RegExp to CharacterShortcutEvent by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1088
+* feat: add linkbreak in markdown decoder by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1090
+* fix: slash not recogized on mobile by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1096
+
 ## 5.1.0
 
 - feat: upgrade to Flutter 3.27.0 by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1020
