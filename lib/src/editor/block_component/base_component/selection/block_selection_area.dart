@@ -92,17 +92,18 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
       builder: ((context, value, child) {
         final sizedBox = child ?? const SizedBox.shrink();
         final selection = value?.normalized;
-
+        final editorState = context.watch<EditorState>();
         if (selection == null) {
           return sizedBox;
         }
 
         final path = widget.node.path;
+
         if (!path.inSelection(selection)) {
           return sizedBox;
         }
 
-        final editorState = context.read<EditorState>();
+        //final editorState = context.read<EditorState>();
         if (editorState.selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.inSelection(selection, isSameDepth: true) ||
@@ -125,8 +126,10 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             ),
           );
         }
+
         // show the cursor when the selection is collapsed
-        else if (selection.isCollapsed) {
+        else if (selection.isCollapsed &&
+            (editorState.mode == VimModes.insertMode || !editorState.vimMode)) {
           if (!widget.supportTypes.contains(BlockSelectionType.cursor) ||
               prevCursorRect == null) {
             return sizedBox;
@@ -144,6 +147,25 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             color: widget.cursorColor,
           );
           // force to show the cursor
+          cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
+          return cursor;
+        } else if (selection.isCollapsed &&
+            editorState.mode == VimModes.normalMode &&
+            editorState.vimMode) {
+          if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
+              prevSelectionRects == null) {
+            return sizedBox;
+          }
+
+          final rect = widget.delegate.getCursorRectInPosition(selection.start);
+          //NOTE: Hard coded cursor style
+          final cursor = Cursor(
+            key: cursorKey,
+            rect: rect ?? prevCursorRect!,
+            shouldBlink: false,
+            cursorStyle: CursorStyle.block,
+            color: Colors.blue,
+          );
           cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
           return cursor;
         } else {

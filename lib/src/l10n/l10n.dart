@@ -1880,6 +1880,116 @@ class AppFlowyEditorLocalizations {
       args: [],
     );
   }
+  /// `vim insert below`
+  String get cmdInsertBelow {
+    return Intl.message('insert below',
+        name: 'cmdInsertBelow', desc: '', args: []);
+  }
+
+  /// `vim insert at current position`
+  String get cmdInsertCurrentPos {
+    return Intl.message('insert at current position',
+        name: 'cmdInsertCurrentPos', desc: '', args: []);
+  }
+
+  /// `vim insert after current position`
+  String get cmdInsertNextPos {
+    return Intl.message('insert at next position',
+        name: 'cmdInsertNextPos', desc: '', args: []);
+  }
+
+  /// `vim jump down`
+  String get cmdJumpDown {
+    return Intl.message('navigate down',
+        name: 'cmdJumpDown', desc: '', args: []);
+  }
+
+  /// `vim jump up`
+  String get cmdJumpUp {
+    return Intl.message('navigate up', name: 'cmdJumpUp', desc: '', args: []);
+  }
+
+  /// `vim jump left`
+  String get cmdJumpLeft {
+    return Intl.message('navigate left',
+        name: 'cmdJumpLeft', desc: '', args: []);
+  }
+
+  /// `vim jump right`
+  String get cmdJumpRight {
+    return Intl.message('navigate right',
+        name: 'cmdJumpRight', desc: '', args: []);
+  }
+
+  /// `vim line select`
+  String get cmdLineSelect {
+    return Intl.message('line select',
+        name: 'cmdLineSelect', desc: '', args: []);
+  }
+
+  /// `vim undo command`
+  String get cmdVimUndo {
+    return Intl.message('undo', name: 'cmdVimUndo', desc: '', args: []);
+  }
+
+  /// `vim redo command`
+  String get cmdVimRedo {
+    return Intl.message('redo', name: 'cmdVimRedo', desc: '', args: []);
+  }
+
+  /// `vim jump down one page command`
+  String get cmdVimJumpPageDown {
+    return Intl.message('jump one page down',
+        name: 'cmdVimJumpPageDown', desc: '', args: []);
+  }
+
+  /// `vim jump down half page command`
+  String get cmdVimJumpHalfPageDown {
+    return Intl.message('jump half a page down',
+        name: 'cmdVimJumpHalfPageDown', desc: '', args: []);
+  }
+
+  /// `vim jump up page command`
+  String get cmdVimJumpPageUp {
+    return Intl.message('jump a page up',
+        name: 'cmdVimJumpPageUp', desc: '', args: []);
+  }
+
+  /// `vim jump to start of line command`
+  String get cmdVimJumpFirstChar {
+    return Intl.message('jump to beginning of the line',
+        name: 'cmdVimJumpFirstChar', desc: '', args: []);
+  }
+
+  /// `vim jump to end of line command`
+  String get cmdVimJumpEndChar {
+    return Intl.message('jump to end of the line',
+        name: 'cmdVimJumpEndChar', desc: '', args: []);
+  }
+
+  /// `vim move left by word command`
+  String get cmdVimBackWordJump {
+    return Intl.message('jump to start of each word but backwards',
+        name: 'cmdVimBackWordJump', desc: '', args: []);
+  }
+
+  /// `vim move right by word command`
+  String get cmdVimForwardWordJump {
+    return Intl.message('jump to start of each word but forwards',
+        name: 'cmdVimForwardWordJump', desc: '', args: []);
+  }
+
+  /// `vim delete character under cursor command`
+  String get cmdVimDeleteCharCursor {
+    return Intl.message('delete character under cursor',
+        name: 'cmdVimDeleteCharCursor', desc: '', args: []);
+  }
+
+  /// `vim jump around number command`
+  String get cmdVimNumJumper {
+    return Intl.message('jump around with numbers',
+        name: 'cmdVimNumJumper', desc: '', args: []);
+}
 }
 
 class AppLocalizationDelegate
