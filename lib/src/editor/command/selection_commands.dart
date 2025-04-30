@@ -47,7 +47,12 @@ extension SelectionTransform on EditorState {
   ///   and deletes the nodes expect for the first node.
   ///
   /// For the other cases, this function just deletes all the nodes.
-  Future<bool> deleteSelection(Selection selection) async {
+  Future<bool> deleteSelection(
+    Selection selection, {
+    List<String> ignoreNodeTypes = const [
+      TableCellBlockKeys.type,
+    ],
+  }) async {
     // Nothing to do if the selection is collapsed.
     if (selection.isCollapsed) {
       return false;
@@ -66,7 +71,7 @@ extension SelectionTransform on EditorState {
     // or node.
     if (nodes.length == 1) {
       // If table cell is selected, clear the cell node child.
-      final node = nodes.first.type == TableCellBlockKeys.type
+      final node = ignoreNodeTypes.contains(nodes.first.type)
           ? nodes.first.children.first
           : nodes.first;
       if (node.delta != null) {
@@ -75,7 +80,7 @@ extension SelectionTransform on EditorState {
           selection.startIndex,
           selection.length,
         );
-      } else if (node.parent?.type != TableCellBlockKeys.type) {
+      } else if (!ignoreNodeTypes.contains(node.parent?.type)) {
         transaction.deleteNode(node);
       }
     }
@@ -92,7 +97,7 @@ extension SelectionTransform on EditorState {
         // All other nodes can be deleted.
         if (i != 0) {
           // Never delete a table cell node child
-          if (node.parent?.type == TableCellBlockKeys.type) {
+          if (ignoreNodeTypes.contains(node.parent?.type)) {
             if (!nodes.any((n) => n.id == node.parent?.parent?.id)) {
               transaction.deleteText(
                 node,
@@ -105,13 +110,13 @@ extension SelectionTransform on EditorState {
           // node, So we should not delete the last node. Just delete part of
           // the text inside selection
           else if (node.id == nodes.last.id &&
-              nodes.first.parent?.type == TableCellBlockKeys.type) {
+              ignoreNodeTypes.contains(nodes.first.parent?.type)) {
             transaction.deleteText(
               node,
               0,
               selection.end.offset,
             );
-          } else if (node.type != TableCellBlockKeys.type) {
+          } else if (!ignoreNodeTypes.contains(node.type)) {
             transaction.deleteNode(node);
           }
           continue;
@@ -122,7 +127,7 @@ extension SelectionTransform on EditorState {
         // the text between the two nodes.
         if (nodes.last.delta != null &&
             ![node.parent?.type, nodes.last.parent?.type]
-                .contains(TableCellBlockKeys.type)) {
+                .any((type) => ignoreNodeTypes.contains(type))) {
           transaction.mergeText(
             node,
             nodes.last,
@@ -154,8 +159,8 @@ extension SelectionTransform on EditorState {
         else {
           // If the last or first node is inside table we will only delete
           // selection part of first node.
-          if (nodes.last.parent?.type == TableCellBlockKeys.type ||
-              node.parent?.type == TableCellBlockKeys.type) {
+          if (ignoreNodeTypes.contains(nodes.last.parent?.type) ||
+              ignoreNodeTypes.contains(node.parent?.type)) {
             transaction.deleteText(
               node,
               selection.startIndex,
