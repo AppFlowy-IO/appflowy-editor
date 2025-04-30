@@ -92,8 +92,10 @@ enum TransactionTime {
 class EditorState {
   EditorState({
     required this.document,
-    this.minHistoryItemDuration = const Duration(milliseconds: 200),
+    this.minHistoryItemDuration = const Duration(milliseconds: 50),
+    int? maxHistoryItemSize,
   }) {
+    undoManager = UndoManager(maxHistoryItemSize ?? 200);
     undoManager.state = this;
   }
 
@@ -252,7 +254,7 @@ class EditorState {
     _sliceUpcomingAttributes = value;
   }
 
-  final UndoManager undoManager = UndoManager();
+  late final UndoManager undoManager;
 
   Transaction get transaction {
     final transaction = Transaction(document: document);
