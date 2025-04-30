@@ -14,7 +14,6 @@ final class HistoryItem extends LinkedListEntry<HistoryItem> {
   Selection? beforeSelection;
   Selection? afterSelection;
   bool _sealed = false;
-  DateTime _timestamp = DateTime.now();
 
   HistoryItem();
 
@@ -24,28 +23,18 @@ final class HistoryItem extends LinkedListEntry<HistoryItem> {
   ///
   /// The caller should create a new [HistoryItem].
   void seal() {
-    if (!_sealed) {
-      _sealed = true;
-      _timestamp = DateTime.now();
-    }
+    _sealed = true;
   }
 
   bool get sealed => _sealed;
-  DateTime get timestamp => _timestamp;
 
   void add(Operation op) {
-    if (!_sealed) {
-      operations.add(op);
-    }
+    operations.add(op);
   }
 
   void addAll(Iterable<Operation> iterable) {
-    if (!_sealed) {
-      operations.addAll(iterable);
-    }
+    operations.addAll(iterable);
   }
-
-  bool get isEmpty => operations.isEmpty;
 
   /// Create a new [Transaction] by inverting the operations.
   Transaction toTransaction(EditorState state) {
@@ -68,10 +57,6 @@ class FixedSizeStack {
   FixedSizeStack(this.maxSize);
 
   void push(HistoryItem stackItem) {
-    if (stackItem.isEmpty) {
-      return;
-    }
-
     if (_list.length >= maxSize) {
       _list.remove(_list.first);
     }
@@ -83,7 +68,9 @@ class FixedSizeStack {
       return null;
     }
     final last = _list.last;
+
     _list.remove(last);
+
     return last;
   }
 
@@ -91,13 +78,11 @@ class FixedSizeStack {
     _list.clear();
   }
 
-  HistoryItem? get last => _list.isNotEmpty ? _list.last : null;
+  HistoryItem get last => _list.last;
 
   bool get isEmpty => _list.isEmpty;
 
-  bool get isNotEmpty => _list.isNotEmpty;
-
-  int get length => _list.length;
+  bool get isNonEmpty => _list.isNotEmpty;
 }
 
 class UndoManager {
@@ -105,15 +90,9 @@ class UndoManager {
   final FixedSizeStack redoStack;
   EditorState? state;
 
-  // Time threshold for merging operations (in milliseconds)
-  static const _mergeThreshold = 1000;
-
   UndoManager([int stackSize = 20])
       : undoStack = FixedSizeStack(stackSize),
         redoStack = FixedSizeStack(stackSize);
-
-  bool get canUndo => undoStack.isNotEmpty;
-  bool get canRedo => redoStack.isNotEmpty;
 
   HistoryItem getUndoHistoryItem() {
     if (undoStack.isEmpty) {
@@ -121,18 +100,10 @@ class UndoManager {
       undoStack.push(item);
       return item;
     }
-
     final last = undoStack.last;
-    if (last == null || last.sealed) {
+    if (last.sealed) {
+      redoStack.clear();
       final item = HistoryItem();
-
-      // Only clear redo stack when actually adding new operations
-      if (last != null &&
-          DateTime.now().difference(last.timestamp).inMilliseconds >
-              _mergeThreshold) {
-        redoStack.clear();
-      }
-
       undoStack.push(item);
       return item;
     }
@@ -142,23 +113,19 @@ class UndoManager {
   void undo() {
     AppFlowyEditorLog.editor.debug('undo');
     final s = state;
-    if (s == null || !canUndo) {
+    if (s == null) {
       return;
     }
-
     final historyItem = undoStack.pop();
-    if (historyItem == null || historyItem.isEmpty) {
+    if (historyItem == null) {
       return;
     }
-
     final transaction = historyItem.toTransaction(s);
-    redoStack.push(historyItem);
-
     s.apply(
       transaction,
       options: const ApplyOptions(
         recordUndo: false,
-        recordRedo: false,
+        recordRedo: true,
       ),
     );
   }
@@ -166,22 +133,18 @@ class UndoManager {
   void redo() {
     AppFlowyEditorLog.editor.debug('redo');
     final s = state;
-    if (s == null || !canRedo) {
+    if (s == null) {
       return;
     }
-
     final historyItem = redoStack.pop();
-    if (historyItem == null || historyItem.isEmpty) {
+    if (historyItem == null) {
       return;
     }
-
     final transaction = historyItem.toTransaction(s);
-    undoStack.push(historyItem);
-
     s.apply(
       transaction,
       options: const ApplyOptions(
-        recordUndo: false,
+        recordUndo: true,
         recordRedo: false,
       ),
     );
@@ -189,14 +152,8 @@ class UndoManager {
 
   void forgetRecentUndo() {
     AppFlowyEditorLog.editor.debug('forgetRecentUndo');
-    if (state != null && canUndo) {
+    if (state != null) {
       undoStack.pop();
     }
-  }
-
-  /// Clear both undo and redo stacks
-  void clear() {
-    undoStack.clear();
-    redoStack.clear();
   }
 }

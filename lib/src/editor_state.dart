@@ -653,10 +653,10 @@ class EditorState {
         undoItem.beforeSelection = transaction.beforeSelection;
       }
       undoItem.afterSelection = transaction.afterSelection;
-      if (skipDebounce && undoManager.canUndo) {
+      if (skipDebounce && undoManager.undoStack.isNonEmpty) {
         AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
-        last?.seal();
+        last.seal();
       } else {
         _debouncedSealHistoryItem();
       }
@@ -675,10 +675,10 @@ class EditorState {
     }
     _debouncedSealHistoryItemTimer?.cancel();
     _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
-      if (undoManager.canUndo) {
+      if (undoManager.undoStack.isNonEmpty) {
         AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
-        last?.seal();
+        last.seal();
       }
     });
   }
