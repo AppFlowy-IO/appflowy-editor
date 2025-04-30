@@ -21,17 +21,18 @@ extension EditorCopyPaste on EditorState {
     final insertedDelta = insertedNode.delta;
     // if the node is empty paragraph (default), replace it with the inserted node.
     if (delta.isEmpty && node.type == ParagraphBlockKeys.type) {
-      transaction.insertNode(
-        selection.end.path.next,
-        insertedNode,
-      );
+      final List<Node> combinedChildren = [
+        ...insertedNode.children.map((e) => e.deepCopy()),
+        // if the original node has children, copy them to the inserted node.
+        ...node.children.map((e) => e.deepCopy()),
+      ];
+      insertedNode = insertedNode.copyWith(children: combinedChildren);
+      transaction.insertNode(selection.end.path, insertedNode);
       transaction.deleteNode(node);
-      final path = calculatePath(selection.end.path, [insertedNode]);
-      final offset = calculateLength([insertedNode]);
       transaction.afterSelection = Selection.collapsed(
         Position(
-          path: path,
-          offset: offset,
+          path: selection.end.path,
+          offset: insertedDelta?.length ?? 0,
         ),
       );
     } else if (insertedDelta != null) {
