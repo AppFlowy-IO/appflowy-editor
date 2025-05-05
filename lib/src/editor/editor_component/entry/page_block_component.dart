@@ -27,6 +27,7 @@ class PageBlockComponentBuilder extends BlockComponentBuilder {
       node: blockComponentContext.node,
       header: blockComponentContext.header,
       footer: blockComponentContext.footer,
+      wrapper: blockComponentContext.wrapper,
     );
   }
 }
@@ -41,10 +42,12 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
     super.configuration = const BlockComponentConfiguration(),
     this.header,
     this.footer,
+    this.wrapper,
   });
 
   final Widget? header;
   final Widget? footer;
+  final BlockComponentWrapper? wrapper;
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +67,20 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               children: [
                 if (header != null) header!,
                 ...items.map(
-                  (e) => Container(
-                    constraints: BoxConstraints(
-                      maxWidth:
-                          editorState.editorStyle.maxWidth ?? double.infinity,
-                    ),
-                    padding: editorState.editorStyle.padding,
-                    child: editorState.renderer.build(context, e),
-                  ),
+                  (e) {
+                    Widget child = editorState.renderer.build(context, e);
+                    if (wrapper != null) {
+                      child = wrapper!(context, node: e, child: child);
+                    }
+                    return Container(
+                      constraints: BoxConstraints(
+                        maxWidth:
+                            editorState.editorStyle.maxWidth ?? double.infinity,
+                      ),
+                      padding: editorState.editorStyle.padding,
+                      child: child,
+                    );
+                  },
                 ),
                 if (footer != null) footer!,
               ],
@@ -102,16 +111,22 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
             );
           }
 
+          final node = items[index - (header != null ? 1 : 0)];
+          Widget child = editorState.renderer.build(
+            context,
+            node,
+          );
+          if (wrapper != null) {
+            child = wrapper!(context, node: node, child: child);
+          }
+
           return Center(
             child: Container(
               constraints: BoxConstraints(
                 maxWidth: editorState.editorStyle.maxWidth ?? double.infinity,
               ),
               padding: editorState.editorStyle.padding,
-              child: editorState.renderer.build(
-                context,
-                items[index - (header != null ? 1 : 0)],
-              ),
+              child: child,
             ),
           );
         },
