@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:example/pages/animated_markdown_page.dart';
 import 'package:example/pages/auto_complete_editor.dart';
 import 'package:example/pages/auto_expand_editor.dart';
 import 'package:example/pages/collab_editor.dart';
@@ -182,6 +183,14 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const MarkdownEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Animated Markdown Editor', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AnimatedMarkdownPage(),
               ),
             );
           }),

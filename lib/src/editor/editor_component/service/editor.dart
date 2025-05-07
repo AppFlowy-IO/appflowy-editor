@@ -47,6 +47,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.disableAutoScroll = false,
     this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
     this.documentRules = const [],
+    this.blockWrapper,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -230,6 +231,11 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   final List<DocumentRule> documentRules;
 
+  /// Block wrapper
+  ///
+  /// Wrap the block component with a widget.
+  final BlockComponentWrapper? blockWrapper;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -316,6 +322,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       editorState.document.root,
       header: widget.header,
       footer: widget.footer,
+      wrapper: widget.blockWrapper,
     );
 
     if (!widget.disableKeyboardService) {
