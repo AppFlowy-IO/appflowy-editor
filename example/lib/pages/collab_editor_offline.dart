@@ -7,6 +7,7 @@ import 'package:appflowy_editor_sync_plugin/editor_state_sync_wrapper.dart';
 import 'package:appflowy_editor_sync_plugin/types/sync_db_attributes.dart';
 import 'package:appflowy_editor_sync_plugin/types/update_types.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 /// Manages changes and updates for an editor in a collaborative setting
 class EditorChanges {
@@ -106,8 +107,9 @@ class _CollabEditorState extends State<CollabEditorOffline> {
   Future<void> _initEditors() async {
     // Add initial updates to both editors
     for (final update in initialUpdates) {
-      changesA.addUpdate(DbUpdate(update: update));
-      changesB.addUpdate(DbUpdate(update: update));
+      final id = const Uuid().v4();
+      changesA.addUpdate(DbUpdate(update: update, id: id));
+      changesB.addUpdate(DbUpdate(update: update, id: id));
     }
 
     // Initialize editor A
@@ -119,12 +121,13 @@ class _CollabEditorState extends State<CollabEditorOffline> {
         },
         getUpdatesStream: changesA.updatesStream,
         saveUpdate: (Uint8List update) async {
+          final id = const Uuid().v4();
           if (isOnline) {
-            changesA.addUpdate(DbUpdate(update: update));
-            changesB.addUpdate(DbUpdate(update: update));
+            changesA.addUpdate(DbUpdate(update: update, id: id));
+            changesB.addUpdate(DbUpdate(update: update, id: id));
           } else {
-            changesA.addUpdate(DbUpdate(update: update));
-            changesB.addPending(DbUpdate(update: update));
+            changesA.addUpdate(DbUpdate(update: update, id: id));
+            changesB.addPending(DbUpdate(update: update, id: id));
           }
         },
       ),
@@ -139,12 +142,13 @@ class _CollabEditorState extends State<CollabEditorOffline> {
         },
         getUpdatesStream: changesB.updatesStream,
         saveUpdate: (Uint8List update) async {
+          final id = const Uuid().v4();
           if (isOnline) {
-            changesA.addUpdate(DbUpdate(update: update));
-            changesB.addUpdate(DbUpdate(update: update));
+            changesA.addUpdate(DbUpdate(update: update, id: id));
+            changesB.addUpdate(DbUpdate(update: update, id: id));
           } else {
-            changesB.addUpdate(DbUpdate(update: update));
-            changesA.addPending(DbUpdate(update: update));
+            changesB.addUpdate(DbUpdate(update: update, id: id));
+            changesA.addPending(DbUpdate(update: update, id: id));
           }
         },
       ),
@@ -189,7 +193,8 @@ class _CollabEditorState extends State<CollabEditorOffline> {
             Text('Collaborative Offline Editor'),
             SizedBox(height: 8),
             Text(
-              'Best tested on desktop',
+              // Look at the plugin settings for more details
+              'Best tested on desktop. For web needs special setup.',
               style: TextStyle(fontSize: 12),
             ),
           ],
