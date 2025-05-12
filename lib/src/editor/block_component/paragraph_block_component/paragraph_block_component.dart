@@ -161,6 +161,13 @@ class _ParagraphBlockComponentWidgetState
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
+          /*
+          NOTE:
+        One can combine AppFlowyRichText
+        With a row then stick in the line number.
+        Only problem is the container doesnt maintain
+        its size
+         */
           AppFlowyRichText(
             key: forwardKey,
             delegate: this,

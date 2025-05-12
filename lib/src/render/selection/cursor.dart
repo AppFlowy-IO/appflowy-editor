@@ -82,6 +82,12 @@ class CursorState extends State<Cursor> {
             border: Border.all(color: color, width: 2),
           ),
         );
+      case CursorStyle.block:
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: color, width: 4),
+          ),
+        );
       case CursorStyle.cover:
         final size = widget.rect.size;
         return Container(

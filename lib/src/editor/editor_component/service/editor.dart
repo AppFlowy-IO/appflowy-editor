@@ -29,6 +29,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<List<ContextMenuItem>>? contextMenuItems,
     this.contentInsertionConfiguration,
     this.editable = true,
+    this.vimMode = false,
     this.autoFocus = false,
     this.focusedSelection,
     this.shrinkWrap = false,
@@ -152,6 +153,12 @@ class AppFlowyEditor extends StatefulWidget {
   /// If you want to disable the scroll service, you can set [disableScrollService] to true.
   final bool editable;
 
+  /// Set the value to false to disable Vim Mode.
+  ///
+  /// if false, the editor will work normally like any other
+  ///   without the vim motion features and keybindings.
+  final bool vimMode;
+
   /// Set the value to true to focus the editor on the start of the document.
   final bool autoFocus;
 
@@ -259,6 +266,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
     _updateValues();
     editorState.renderer = _renderer;
+    editorState.editable = widget.editable;
+    editorState.vimMode = widget.vimMode;
 
     // auto focus
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -280,6 +289,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void didUpdateWidget(covariant AppFlowyEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    editorState.editorStyle = widget.editorStyle;
+    editorState.editable = widget.editable;
+    editorState.vimMode = widget.vimMode;
     _updateValues();
 
     if (editorState.service != oldWidget.editorState.service) {
