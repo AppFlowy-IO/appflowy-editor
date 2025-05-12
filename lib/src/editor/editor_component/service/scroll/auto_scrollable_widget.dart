@@ -27,6 +27,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
 
   @override
   void dispose() {
+    // ignore: invalid_use_of_protected_member
     _scrollableState.dispose();
     super.dispose();
   }
