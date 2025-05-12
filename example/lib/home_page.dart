@@ -8,6 +8,7 @@ import 'package:example/pages/animated_markdown_page.dart';
 import 'package:example/pages/auto_complete_editor.dart';
 import 'package:example/pages/auto_expand_editor.dart';
 import 'package:example/pages/collab_editor.dart';
+import 'package:example/pages/collab_editor_offline.dart';
 import 'package:example/pages/collab_selection_editor.dart';
 import 'package:example/pages/customize_theme_for_editor.dart';
 import 'package:example/pages/drag_to_reorder_editor.dart';
@@ -215,6 +216,14 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const CollabSelectionEditor(),
+              ),
+            );
+          }),
+          _buildListTile(context, 'Collab Offline', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CollabEditorOffline(),
               ),
             );
           }),
