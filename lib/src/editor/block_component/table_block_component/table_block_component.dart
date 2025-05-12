@@ -202,7 +202,7 @@ class TableBlockComponentWidget extends BlockComponentStatefulWidget {
 }
 
 class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
-    with SelectableMixin, BlockComponentConfigurable {
+    with SelectableMixin, BlockComponentConfigurable, BlockComponentAlignMixin {
   @override
   BlockComponentConfiguration get configuration => widget.configuration;
 
@@ -256,7 +256,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       );
     }
 
-    return child;
+    return Align(
+      alignment: alignment ?? Alignment.center,
+      child: child
+    );
   }
 
   final tableKey = GlobalKey();
