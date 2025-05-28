@@ -234,6 +234,7 @@ class TestableEditor {
     LogicalKeyboardKey.asterisk: '*',
     LogicalKeyboardKey.underscore: '_',
   };
+
   Future<void> pressKey({
     String? character,
     LogicalKeyboardKey? key,

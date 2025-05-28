@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/base_component/block_icon_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:numerus/roman/roman.dart';
 import 'package:provider/provider.dart';
@@ -40,13 +39,19 @@ Node numberedListNode({
   );
 }
 
+typedef NumberedListIconBuilder = Widget Function(
+  BuildContext context,
+  Node node,
+  TextDirection direction,
+);
+
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({
     super.configuration,
     this.iconBuilder,
   });
 
-  final BlockIconBuilder? iconBuilder;
+  final NumberedListIconBuilder? iconBuilder;
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -78,7 +83,7 @@ class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
     this.iconBuilder,
   });
 
-  final BlockIconBuilder? iconBuilder;
+  final NumberedListIconBuilder? iconBuilder;
 
   @override
   State<NumberedListBlockComponentWidget> createState() =>
@@ -131,7 +136,11 @@ class _NumberedListBlockComponentWidgetState
         textDirection: textDirection,
         children: [
           widget.iconBuilder != null
-              ? widget.iconBuilder!(context, node)
+              ? widget.iconBuilder!(
+                  context,
+                  node,
+                  textDirection,
+                )
               : _NumberedListIcon(
                   node: node,
                   textStyle: textStyle,

@@ -35,7 +35,7 @@ void main() async {
       await editor.updateSelection(selection);
 
       for (final LogicalKeyboardKey key in keys) {
-        await simulateKeyDownEvent(key);
+        await editor.pressKey(key: key);
         await tester.pumpAndSettle();
       }
 
@@ -84,7 +84,7 @@ void main() async {
       await editor.updateSelection(selection);
 
       for (final LogicalKeyboardKey key in keys) {
-        await simulateKeyDownEvent(key);
+        await editor.pressKey(key: key);
         await tester.pumpAndSettle();
       }
 
@@ -136,7 +136,7 @@ void main() async {
       await editor.updateSelection(selection);
 
       for (final LogicalKeyboardKey key in keys) {
-        await simulateKeyDownEvent(key);
+        await editor.pressKey(key: key);
         await tester.pumpAndSettle();
       }
 
@@ -175,7 +175,7 @@ void main() async {
       await editor.updateSelection(selection);
 
       for (final LogicalKeyboardKey key in keys) {
-        await simulateKeyDownEvent(key);
+        await editor.pressKey(key: key);
         await tester.pumpAndSettle();
       }
 
@@ -219,7 +219,7 @@ void main() async {
       await editor.updateSelection(selection);
 
       for (final LogicalKeyboardKey key in keys) {
-        await simulateKeyDownEvent(key);
+        await editor.pressKey(key: key);
         await tester.pumpAndSettle();
       }
 

@@ -258,7 +258,10 @@ class EditorState {
   // the value of the notifier is meaningless, just for triggering the callbacks.
   final ValueNotifier<int> onDispose = ValueNotifier(0);
 
+  bool isDisposed = false;
+
   void dispose() {
+    isDisposed = true;
     _observer.close();
     _debouncedSealHistoryItemTimer?.cancel();
     onDispose.value += 1;
@@ -282,7 +285,7 @@ class EditorState {
     ApplyOptions options = const ApplyOptions(recordUndo: true),
     bool withUpdateSelection = true,
   }) async {
-    if (!editable) {
+    if (!editable || isDisposed) {
       return;
     }
 

@@ -4,7 +4,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/parser/custom_node_parser.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/table_markdown_decoder.dart';
 import 'package:markdown/markdown.dart' as md;
-import 'package:path/path.dart' as p;
 
 class DocumentMarkdownDecoder extends Converter<String, Document> {
   DocumentMarkdownDecoder({
@@ -207,9 +206,11 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       return codeBlockNodeFromMarkdown(line, decoder);
     } else if (imageRegex.hasMatch(line.trim())) {
       final filePath = extractImagePath(line.trim());
-      // checking if filepath is present or if the filepath is an image or not
-      if (filePath == null ||
-          !['.png', '.jpg', 'jpeg'].contains(p.extension(filePath))) {
+      final regex = RegExp(
+        r'\.(png|jpg|jpeg|gif|bmp|svg|webp|tiff|ico)(\?.*)?$',
+        caseSensitive: false,
+      );
+      if (filePath == null || !regex.hasMatch(filePath)) {
         return paragraphNode(text: line.trim());
       }
       return imageNode(url: filePath);

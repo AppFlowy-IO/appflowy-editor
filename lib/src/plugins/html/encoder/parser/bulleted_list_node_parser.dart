@@ -14,9 +14,22 @@ class HTMLBulletedListNodeParser extends HTMLNodeParser {
   }) {
     assert(node.type == BulletedListBlockKeys.type);
 
-    return toHTMLString(
+    final html = toHTMLString(
       transformNodeToDomNodes(node, encodeParsers: encodeParsers),
     );
+
+    const start = '<ul>';
+    const end = '</ul>';
+    if (node.previous?.type != BulletedListBlockKeys.type &&
+        node.next?.type != BulletedListBlockKeys.type) {
+      return '$start$html$end';
+    } else if (node.previous?.type != BulletedListBlockKeys.type) {
+      return '$start$html';
+    } else if (node.next?.type != BulletedListBlockKeys.type) {
+      return '$html$end';
+    } else {
+      return html;
+    }
   }
 
   @override
@@ -32,11 +45,10 @@ class HTMLBulletedListNodeParser extends HTMLNodeParser {
         encodeParsers: encodeParsers,
       ),
     );
-
-    final element =
-        wrapChildrenNodesWithTagName(HTMLTags.list, childNodes: domNodes);
-    return [
-      dom.Element.tag(HTMLTags.unorderedList)..append(element),
-    ];
+    final element = wrapChildrenNodesWithTagName(
+      HTMLTags.list,
+      childNodes: domNodes,
+    );
+    return [element];
   }
 }
