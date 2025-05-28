@@ -1,7 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_action_handler.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_col_border.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,8 +51,7 @@ class _TableColState extends State<TableCol> {
     children.addAll([
       SizedBox(
         width: context.select(
-          (Node n) => getCellNode(n, widget.colIdx, 0)
-              ?.attributes[TableCellBlockKeys.width],
+          (Node n) => getCellNode(n, widget.colIdx, 0)?.cellWidth,
         ),
         child: Stack(
           children: [
@@ -133,7 +131,11 @@ class _TableColState extends State<TableCol> {
         }
 
         final transaction = widget.editorState.transaction;
-        widget.tableNode.updateRowHeight(row, transaction: transaction);
+        widget.tableNode.updateRowHeight(
+          row,
+          editorState: widget.editorState,
+          transaction: transaction,
+        );
         if (transaction.operations.isNotEmpty) {
           transaction.afterSelection = transaction.beforeSelection;
           widget.editorState.apply(transaction);

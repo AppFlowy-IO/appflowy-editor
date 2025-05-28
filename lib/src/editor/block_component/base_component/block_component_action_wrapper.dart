@@ -7,17 +7,24 @@ typedef BlockComponentActionBuilder = Widget Function(
   BlockComponentActionState state,
 );
 
+typedef BlockComponentActionTrailingBuilder = Widget Function(
+  BuildContext context,
+  BlockComponentActionState state,
+);
+
 class BlockComponentActionWrapper extends StatefulWidget {
   const BlockComponentActionWrapper({
     super.key,
     required this.node,
     required this.child,
     required this.actionBuilder,
+    this.actionTrailingBuilder,
   });
 
   final Node node;
   final Widget child;
   final BlockComponentActionBuilder actionBuilder;
+  final BlockComponentActionTrailingBuilder? actionTrailingBuilder;
 
   @override
   State<BlockComponentActionWrapper> createState() =>
@@ -29,14 +36,37 @@ class _BlockComponentActionWrapperState
     implements BlockComponentActionState {
   final showActionsNotifier = ValueNotifier<bool>(false);
 
+  bool isDisposed = false;
+
   bool _alwaysShowActions = false;
   bool get alwaysShowActions => _alwaysShowActions;
   @override
   set alwaysShowActions(bool alwaysShowActions) {
+    if (isDisposed) {
+      return;
+    }
     _alwaysShowActions = alwaysShowActions;
     if (_alwaysShowActions == false && showActionsNotifier.value == true) {
       showActionsNotifier.value = false;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (forceShowBlockAction) {
+      alwaysShowActions = true;
+      showActionsNotifier.value = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    isDisposed = true;
+    showActionsNotifier.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -59,6 +89,11 @@ class _BlockComponentActionWrapperState
               actionBuilder: (context) => widget.actionBuilder(context, this),
             ),
           ),
+          if (widget.actionTrailingBuilder != null)
+            widget.actionTrailingBuilder!(
+              context,
+              this,
+            ),
           Expanded(child: widget.child),
         ],
       ),

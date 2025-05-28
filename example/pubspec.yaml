@@ -31,7 +31,11 @@ dependencies:
     sdk: flutter
 
   appflowy_editor:
-    path: ../
+  appflowy_editor_sync_plugin:
+    git:
+      url: https://github.com/Musta-Pollo/appflowy_editor_sync_plugin.git
+      ref: main
+
   provider: ^6.0.3
   url_launcher: ^6.1.5
   path_provider: ^2.0.15
@@ -43,6 +47,20 @@ dependencies:
   highlight: ^0.7.0
   http: ^1.1.0
   show_fps: ^1.0.6
+  printing: ^5.11.1
+  appflowy_editor_plugins: ^0.0.6
+  markdown:
+  universal_platform: ^1.1.0
+
+dependency_overrides:
+  appflowy_editor:
+    path: ../
+
+  appflowy_editor_plugins:
+    git:
+      url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
+      path: "packages/appflowy_editor_plugins"
+      ref: "ca82890"
 
 dev_dependencies:
   flutter_test:

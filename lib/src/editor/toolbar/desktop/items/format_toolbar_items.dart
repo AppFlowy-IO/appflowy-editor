@@ -32,22 +32,40 @@ class _FormatToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 2,
           isActive: onlyShowInTextType,
-          builder: (context, editorState, highlightColor, iconColor) {
+          builder: (
+            context,
+            editorState,
+            highlightColor,
+            iconColor,
+            tooltipBuilder,
+          ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
-            final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-              return delta.everyAttributes(
-                (attributes) => attributes[name] == true,
-              );
-            });
-            return SVGIconItemWidget(
+            final isHighlight = nodes.allSatisfyInSelection(
+              selection,
+              (delta) =>
+                  delta.isNotEmpty &&
+                  delta.everyAttributes((attr) => attr[name] == true),
+            );
+
+            final child = SVGIconItemWidget(
               iconName: 'toolbar/$name',
               isHighlight: isHighlight,
               highlightColor: highlightColor,
               iconColor: iconColor,
-              tooltip: getTooltipText(id),
               onPressed: () => editorState.toggleAttribute(name),
             );
+
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(
+                context,
+                id,
+                getTooltipText(id),
+                child,
+              );
+            }
+
+            return child;
           },
         );
 }

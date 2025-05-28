@@ -6,7 +6,7 @@ Future<void> onDelete(
   TextEditingDeltaDeletion deletion,
   EditorState editorState,
 ) async {
-  Log.input.debug('onDelete: $deletion');
+  AppFlowyEditorLog.input.debug('onDelete: $deletion');
 
   final selection = editorState.selection;
   if (selection == null) {

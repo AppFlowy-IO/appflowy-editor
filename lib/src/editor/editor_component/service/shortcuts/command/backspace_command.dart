@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 /// Backspace key event.
 ///
@@ -23,10 +24,14 @@ CommandShortcutEventHandler _backspaceCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  final reason = editorState.selectionUpdateReason;
+
   if (selectionType == SelectionType.block) {
     return _backspaceInBlockSelection(editorState);
   } else if (selection.isCollapsed) {
     return _backspaceInCollapsedSelection(editorState);
+  } else if (reason == SelectionUpdateReason.selectAll) {
+    return _backspaceInSelectAll(editorState);
   } else {
     return _backspaceInNotCollapsedSelection(editorState);
   }
@@ -83,6 +88,14 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
           ),
         );
     } else {
+      // If the deletion crosses columns and starts from the beginning position
+      // skip the node deletion process
+      // otherwise it will cause an error in table rendering.
+      if (node.parent?.type == TableCellBlockKeys.type &&
+          position.offset == 0) {
+        return KeyEventResult.handled;
+      }
+
       Node? tableParent =
           node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
@@ -151,6 +164,28 @@ CommandShortcutEventHandler _backspaceInBlockSelection = (editorState) {
   editorState
       .apply(transaction)
       .then((value) => editorState.selectionType = null);
+
+  return KeyEventResult.handled;
+};
+
+CommandShortcutEventHandler _backspaceInSelectAll = (editorState) {
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
+
+  final transaction = editorState.transaction;
+  final nodes = editorState.getNodesInSelection(selection);
+  transaction.deleteNodes(nodes);
+
+  // Insert a new paragraph node to avoid locking the editor
+  transaction.insertNode(
+    editorState.document.root.children.first.path,
+    paragraphNode(),
+  );
+  transaction.afterSelection = Selection.collapsed(Position(path: [0]));
+
+  editorState.apply(transaction);
 
   return KeyEventResult.handled;
 };

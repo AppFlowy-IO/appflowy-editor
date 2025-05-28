@@ -42,7 +42,14 @@ extension EditorStateSelection on EditorState {
       sortedNodes,
       start,
       end,
-      (rect) => rect.bottom <= offset.dy,
+      match: (index, rect) {
+        final isMatch = rect.contains(offset);
+        AppFlowyEditorLog.selection.debug(
+          'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
+        );
+        return isMatch;
+      },
+      compare: (index, rect) => rect.bottom <= offset.dy,
     );
 
     final filteredNodes = List.of(sortedNodes)
@@ -53,7 +60,14 @@ extension EditorStateSelection on EditorState {
         sortedNodes,
         0,
         filteredNodes.length - 1,
-        (rect) => rect.right <= offset.dx,
+        match: (index, rect) {
+          final isMatch = rect.contains(offset);
+          AppFlowyEditorLog.selection.debug(
+            'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
+          );
+          return isMatch;
+        },
+        compare: (index, rect) => rect.right <= offset.dx,
       );
     }
 
@@ -81,20 +95,29 @@ extension EditorStateSelection on EditorState {
   int _findCloseNode(
     List<Node> sortedNodes,
     int start,
-    int end,
-    bool Function(Rect rect) compare,
-  ) {
+    int end, {
+    bool Function(int index, Rect rect)? match,
+    required bool Function(int index, Rect rect) compare,
+  }) {
+    for (var i = start; i <= end; i++) {
+      final rect = sortedNodes[i].rect;
+      if (match != null && match(i, rect)) {
+        return i;
+      }
+    }
+
     var min = start;
     var max = end;
     while (min <= max) {
       final mid = min + ((max - min) >> 1);
       final rect = sortedNodes[mid].rect;
-      if (compare(rect)) {
+      if (compare(mid, rect)) {
         min = mid + 1;
       } else {
         max = mid - 1;
       }
     }
+
     return min.clamp(start, end);
   }
 }

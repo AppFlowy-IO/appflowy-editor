@@ -22,6 +22,12 @@ typedef AppFlowyAutoCompleteTextProvider = String? Function(
   TextSpan? textSpan,
 );
 
+typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
+  BuildContext context,
+  Node node,
+  SelectableMixin delegate,
+);
+
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
@@ -33,6 +39,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.placeholderTextSpanDecorator,
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
+    this.textSpanOverlayBuilder,
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
@@ -81,6 +88,12 @@ class AppFlowyRichText extends StatefulWidget {
   /// You can use this to customize the text span for custom attributes
   ///   or override the existing one.
   final TextSpanDecoratorForAttribute? textSpanDecoratorForCustomAttributes;
+
+  /// customize the text span overlay builder
+  ///
+  /// You can use this to customize the text span overlay, for example, a hover menu in linked text.
+  final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
+
   final TextDirection textDirection;
 
   final Color cursorColor;
@@ -108,25 +121,32 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   AppFlowyAutoCompleteTextProvider? get autoCompleteTextProvider =>
       widget.autoCompleteTextProvider ??
       widget.editorState.autoCompleteTextProvider;
+
   bool get enableAutoComplete =>
       widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
   TextStyleConfiguration get textStyleConfiguration =>
       widget.editorState.editorStyle.textStyleConfiguration;
 
+  AppFlowyTextSpanOverlayBuilder? get textSpanOverlayBuilder =>
+      widget.textSpanOverlayBuilder ??
+      widget.editorState.editorStyle.textSpanOverlayBuilder;
+
+  @override
+  void initState() {
+    super.initState();
+    confirmContextEnabled();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget child = _buildRichText(context);
-
-    final delta = widget.node.delta;
-    if (delta == null || delta.isEmpty) {
-      child = Stack(
-        children: [
-          _buildPlaceholderText(context),
-          _buildRichText(context),
-        ],
-      );
-    }
+    Widget child = Stack(
+      children: [
+        _buildPlaceholderText(context),
+        _buildRichText(context),
+        ..._buildRichTextOverlay(context),
+      ],
+    );
 
     if (enableAutoComplete) {
       final autoCompleteText = _buildAutoCompleteRichText();
@@ -183,61 +203,52 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       return null;
     }
 
-    final selection = Selection(
-      start: position.copyWith(
-        offset: position.offset == 0 ? 0 : position.offset - 1,
-      ),
-      end: position.copyWith(
-        offset: position.offset == 0 ? 1 : position.offset,
-      ),
-    );
-
-    final rects = getRectsInSelection(selection);
-    var selectionRect = rects.firstOrNull;
-    var cursorHeight = selectionRect?.height;
-    var cursorOffset = _getCursorOffset(position, selectionRect);
-    if (cursorOffset == null ||
-        cursorHeight == null ||
-        selectionRect?.width == 0) {
-      selectionRect =
-          getRectsInSelection(selection, paragraph: _placeholderRenderParagraph)
-              .firstOrNull;
-      cursorHeight = selectionRect?.height;
-      cursorOffset = _getCursorOffset(position, selectionRect);
+    final textPosition = TextPosition(offset: position.offset);
+    double? placeholderCursorHeight =
+        _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? placeholderCursorOffset =
+        _placeholderRenderParagraph?.getOffsetForCaret(
+              textPosition,
+              Rect.zero,
+            ) ??
+            Offset.zero;
+    if (textDirection() == TextDirection.rtl) {
+      if (widget.placeholderText.trim().isNotEmpty) {
+        placeholderCursorOffset = placeholderCursorOffset.translate(
+          _placeholderRenderParagraph?.size.width ?? 0,
+          0,
+        );
+      }
     }
-    if (cursorOffset != null &&
-        cursorHeight != null &&
-        widget.cursorHeight != null) {
-      cursorOffset = _adjustCursorOffset(cursorOffset, cursorHeight);
+
+    double? cursorHeight =
+        _renderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? cursorOffset =
+        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
+            Offset.zero;
+
+    if (placeholderCursorHeight != null) {
+      cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight);
+    }
+
+    if (delta?.isEmpty == true) {
+      cursorOffset = placeholderCursorOffset;
+    }
+
+    if (widget.cursorHeight != null && cursorHeight != null) {
+      cursorOffset = Offset(
+        cursorOffset.dx,
+        cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
+      );
       cursorHeight = widget.cursorHeight;
     }
-
-    return _getCursorRect(cursorOffset, cursorHeight);
-  }
-
-  Offset? _getCursorOffset(Position position, Rect? selectionRect) {
-    return position.offset == 0
-        ? selectionRect?.topLeft
-        : selectionRect?.topRight;
-  }
-
-  Offset _adjustCursorOffset(Offset cursorOffset, double cursorHeight) {
-    return Offset(
-      cursorOffset.dx,
-      cursorOffset.dy + (cursorHeight - widget.cursorHeight!) / 2,
-    );
-  }
-
-  Rect _getCursorRect(Offset? cursorOffset, double? cursorHeight) {
-    if (cursorOffset == null || cursorHeight == null) {
-      return Rect.zero;
-    }
-    return Rect.fromLTWH(
+    final rect = Rect.fromLTWH(
       max(0, cursorOffset.dx - (widget.cursorWidth / 2.0)),
       cursorOffset.dy,
       widget.cursorWidth,
-      cursorHeight,
+      cursorHeight ?? 16.0,
     );
+    return rect;
   }
 
   @override
@@ -307,12 +318,28 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         )
         .map((box) => box.toRect())
         .toList(growable: false);
-
     if (rects == null || rects.isEmpty) {
-      // If the rich text widget does not contain any text,
-      // there will be no selection boxes,
-      // so we need to return to the default selection.
-      return [Rect.fromLTWH(0, 0, 0, paragraph?.size.height ?? 0)];
+      /// If the rich text widget does not contain any text,
+      /// there will be no selection boxes,
+      /// so we need to return to the default selection.
+      Offset position = Offset.zero;
+      double height = paragraph?.size.height ?? 0.0;
+      double width = 0;
+      if (!selection.isCollapsed) {
+        /// while selecting for an empty character, return a selection area
+        /// with width of 2
+        final textPosition = TextPosition(offset: textSelection.baseOffset);
+        position = paragraph?.getOffsetForCaret(
+              textPosition,
+              Rect.zero,
+            ) ??
+            position;
+        height = paragraph?.getFullHeightForCaret(textPosition) ?? height;
+        width = 2;
+      }
+      return [
+        Rect.fromLTWH(position.dx, position.dy, width, height),
+      ];
     }
     return rects;
   }
@@ -354,7 +381,17 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   Widget _buildPlaceholderText(BuildContext context) {
-    final textSpan = getPlaceholderTextSpan();
+    var textSpan = getPlaceholderTextSpan();
+    if (widget.placeholderTextSpanDecorator != null) {
+      textSpan = widget.placeholderTextSpanDecorator!(textSpan);
+    }
+    textSpan = adjustTextSpan(textSpan);
+    final delta = widget.node.delta;
+    if (delta != null && delta.isNotEmpty) {
+      textSpan = textSpan.updateTextStyle(
+        const TextStyle(color: Colors.transparent),
+      );
+    }
     return RichText(
       key: placeholderTextKey,
       textHeightBehavior: TextHeightBehavior(
@@ -364,18 +401,22 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             textStyleConfiguration.applyHeightToLastDescent,
         leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
-      text: widget.placeholderTextSpanDecorator != null
-          ? widget.placeholderTextSpanDecorator!(textSpan)
-          : textSpan,
+      text: textSpan,
       textDirection: textDirection(),
-      textScaler:
-          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      textScaler: TextScaler.linear(
+        widget.editorState.editorStyle.textScaleFactor,
+      ),
+      overflow: TextOverflow.ellipsis,
     );
   }
 
   Widget _buildRichText(BuildContext context) {
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     TextSpan textSpan = getTextSpan(textInserts: textInserts);
+    if (widget.textSpanDecorator != null) {
+      textSpan = widget.textSpanDecorator!(textSpan);
+    }
+    textSpan = adjustTextSpan(textSpan);
     return RichText(
       key: textKey,
       textAlign: widget.textAlign ?? TextAlign.start,
@@ -386,18 +427,40 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             textStyleConfiguration.applyHeightToLastDescent,
         leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
-      text: widget.textSpanDecorator != null
-          ? widget.textSpanDecorator!(textSpan)
-          : textSpan,
+      text: textSpan,
       textDirection: textDirection(),
       textScaler:
           TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
+  List<Widget> _buildRichTextOverlay(BuildContext context) {
+    if (textKey.currentContext == null) return [];
+    return textSpanOverlayBuilder?.call(
+          context,
+          widget.node,
+          this,
+        ) ??
+        [];
+  }
+
+  void confirmContextEnabled() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && textKey.currentContext == null) {
+        confirmContextEnabled();
+      } else if (mounted && textKey.currentContext != null) {
+        setState(() {});
+      }
+    });
+  }
+
   Widget _buildAutoCompleteRichText() {
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     TextSpan textSpan = getTextSpan(textInserts: textInserts);
+    if (widget.textSpanDecorator != null) {
+      textSpan = widget.textSpanDecorator!(textSpan);
+    }
+    textSpan = adjustTextSpan(textSpan);
     return ValueListenableBuilder(
       valueListenable: widget.editorState.selectionNotifier,
       builder: (_, __, ___) {
@@ -436,9 +499,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
                 textStyleConfiguration.applyHeightToLastDescent,
             leadingDistribution: textStyleConfiguration.leadingDistribution,
           ),
-          text: widget.textSpanDecorator != null
-              ? widget.textSpanDecorator!(textSpan)
-              : textSpan,
+          text: textSpan,
           textDirection: textDirection(),
           textScaler:
               TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
@@ -447,13 +508,46 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     );
   }
 
+  // https://github.com/flutter/flutter/pull/143954
+  // https://github.com/AppFlowy-IO/appflowy-editor/issues/819#issuecomment-2177833413
+  // This is a workaround for the issue that
+  //  the caret height of the text is not calculated correctly if the parent style is null.
+  TextSpan adjustTextSpan(TextSpan textSpan) {
+    if (textSpan.style == null && textSpan.children != null) {
+      double height = 0.0;
+      double fontSize = 0.0;
+      textSpan.visitChildren((span) {
+        final style = span.style;
+        if (style != null) {
+          if (style.height != null) {
+            height = max(height, style.height!);
+          }
+          if (style.fontSize != null) {
+            fontSize = max(fontSize, style.fontSize!);
+          }
+        }
+        return true;
+      });
+      if (height == 0.0 || fontSize == 0.0) {
+        return textSpan;
+      }
+      textSpan = textSpan.copyWith(
+        style: textStyleConfiguration.text.copyWith(
+          height: height,
+          fontSize: fontSize,
+        ),
+      );
+    }
+    return textSpan;
+  }
+
   TextSpan getPlaceholderTextSpan() {
     return TextSpan(
       children: [
         TextSpan(
           text: widget.placeholderText,
           style: textStyleConfiguration.text.copyWith(
-            height: widget.lineHeight,
+            height: textStyleConfiguration.lineHeight,
           ),
         ),
       ],

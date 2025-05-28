@@ -1,4 +1,4 @@
-library delta_markdown;
+library;
 
 import 'dart:convert';
 
@@ -46,6 +46,7 @@ class AppFlowyEditorHTMLCodec extends Codec<Document, String> {
   Converter<String, Document> get decoder => DocumentHTMLDecoder();
 
   @override
-  Converter<Document, String> get encoder =>
-      DocumentHTMLEncoder(encodeParsers: encodeParsers);
+  Converter<Document, String> get encoder => DocumentHTMLEncoder(
+        encodeParsers: encodeParsers,
+      );
 }

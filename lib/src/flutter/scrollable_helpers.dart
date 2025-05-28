@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// coverage:ignore-file
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -141,7 +143,7 @@ class ScrollableDetails {
 ///
 /// The scroll velocity is controlled by the [velocityScalar]:
 ///
-/// velocity = <distance of overscroll> * [velocityScalar].
+/// velocity = &lt;distance of overscroll&gt; * [velocityScalar].
 class EdgeDraggingAutoScroller {
   /// Creates a auto scroller that scrolls the [scrollable].
   EdgeDraggingAutoScroller(
@@ -166,7 +168,7 @@ class EdgeDraggingAutoScroller {
   /// The velocity scalar per pixel over scroll.
   ///
   /// It represents how the velocity scale with the over scroll distance. The
-  /// auto-scroll velocity = <distance of overscroll> * velocityScalar.
+  /// auto-scroll velocity = &lt;distance of overscroll&gt; * velocityScalar.
   final double velocityScalar;
 
   late Rect _dragTargetRelatedToScrollOrigin;
@@ -232,12 +234,7 @@ class EdgeDraggingAutoScroller {
         scrollRenderBox.size.height,
       ),
     );
-    assert(
-      globalRect.size.width >= _dragTargetRelatedToScrollOrigin.size.width &&
-          globalRect.size.height >=
-              _dragTargetRelatedToScrollOrigin.size.height,
-      'Drag target size is larger than scrollable size, which may cause bouncing',
-    );
+
     _scrolling = true;
     double? newOffset;
     const double overDragMax = 20.0;

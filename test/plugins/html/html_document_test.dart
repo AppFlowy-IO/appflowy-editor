@@ -304,4 +304,68 @@ void main() {
       ],
     );
   });
+
+  test('sample 11', () {
+    const html = '''
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+''';
+    final document = htmlToDocument(html);
+    for (var i = 1; i <= 6; i++) {
+      final node = document.nodeAtPath([i - 1]);
+      expect(node!.type, HeadingBlockKeys.type);
+      expect(node.delta!.toPlainText(), 'Heading $i');
+      expect(node.attributes[HeadingBlockKeys.level], i);
+    }
+  });
+
+  test('sample 12', () {
+    // Checkout conversion is too low: only 18% of users who click on “Book” checkout.
+    // Comparable funnels for hotel booking sites achieve ~30% (source).
+    const html =
+        '''<meta charset='utf-8'><meta charset="utf-8"><b style="font-weight:normal;" id="docs-internal-guid-30b67c3b-7fff-e5ec-0b19-376448d34980"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Checkout conversion is too low: only 18% of users who click on &ldquo;Book&rdquo; checkout.</span></p><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Comparable funnels for hotel booking sites achieve ~30% (</span><a href="https://docs.google.com/document/d/147-eAtY305IGAghvmQzn0NXUFlh2zQs50GbmBNlgnaA/edit?tab=t.0" style="text-decoration:none;"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#1155cc;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">source</span></a><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">).</span></p></b><br class="Apple-interchange-newline">''';
+    final document = htmlToDocument(html);
+
+    final node = document.nodeAtPath([0])!;
+    expect(node.type, ParagraphBlockKeys.type);
+    expect(
+      node.delta!.toPlainText(),
+      'Checkout conversion is too low: only 18% of users who click on “Book” checkout.',
+    );
+
+    final node2 = document.nodeAtPath([1])!;
+    expect(node2.type, ParagraphBlockKeys.type);
+    final jsonList = node2.delta!.toJson();
+    final cleanJson = jsonList.map((e) {
+      final map = e as Map;
+      map.removeWhere((k, v) => k != 'insert' && k != 'attributes');
+      return map;
+    }).toList();
+    expect(
+      cleanJson,
+      [
+        {
+          'insert': 'Comparable funnels for hotel booking sites achieve ~30% (',
+          'attributes': {'font_color': '0xff000000'},
+        },
+        {
+          'insert': 'source',
+          'attributes': {
+            'href':
+                'https://docs.google.com/document/d/147-eAtY305IGAghvmQzn0NXUFlh2zQs50GbmBNlgnaA/edit?tab=t.0',
+            'underline': true,
+            'font_color': '0xff1155cc',
+          },
+        },
+        {
+          'insert': ').',
+          'attributes': {'font_color': '0xff000000'},
+        }
+      ],
+    );
+  });
 }

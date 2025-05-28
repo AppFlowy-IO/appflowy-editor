@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('NonDeltaTextInputService', () {
     test('actions', () {
       bool onInsert = false,
@@ -86,10 +88,10 @@ void main() {
         onContentInserted: (value) => completer.complete(true),
       );
       final inputService = NonDeltaTextInputService(
-        onInsert: (_) async {},
-        onDelete: (_) async {},
-        onReplace: (_) async {},
-        onNonTextUpdate: (_) async {},
+        onInsert: (_) async => true,
+        onDelete: (_) async => true,
+        onReplace: (_) async => true,
+        onNonTextUpdate: (_) async => true,
         onPerformAction: (_) async {},
         contentInsertionConfiguration: config,
       );
@@ -103,5 +105,111 @@ void main() {
 
       expect(completer.future, completion(true));
     });
+
+    test('Delta insertion format', () {
+      const insertion = TextEditingDeltaInsertion(
+        oldText: '',
+        textInserted: 'A',
+        insertionOffset: 0,
+        selection: TextSelection.collapsed(offset: 1),
+        composing: TextRange(start: 0, end: 1),
+      );
+      final formatInsertion = insertion.format();
+      assert(formatInsertion.selection == insertion.selection);
+      assert(formatInsertion.composing == insertion.composing);
+
+      const insertion2 = TextEditingDeltaInsertion(
+        oldText: ' ',
+        textInserted: 'A',
+        insertionOffset: 1,
+        selection: TextSelection.collapsed(offset: 2),
+        composing: TextRange.empty,
+      );
+
+      final formatInsertion2 = insertion2.format();
+      assert(formatInsertion2.insertionOffset == 0);
+      assert(
+        formatInsertion2.selection == const TextSelection.collapsed(offset: 1),
+      );
+
+      const insertion3 = TextEditingDeltaInsertion(
+        oldText: ' A',
+        textInserted: 'B',
+        insertionOffset: 2,
+        selection: TextSelection.collapsed(offset: 3),
+        composing: TextRange.empty,
+      );
+
+      final formatInsertion3 = insertion3.format();
+      assert(formatInsertion3.insertionOffset == 1);
+
+      assert(
+        formatInsertion3.selection == const TextSelection.collapsed(offset: 2),
+      );
+    });
+  });
+
+  testWidgets('Delta insertion format with deletion', (tester) async {
+    TextEditingValue value =
+        const TextEditingValue(selection: TextSelection.collapsed(offset: 0));
+    const space = ' ';
+    final inputService = NonDeltaTextInputService(
+      onInsert: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onDelete: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onReplace: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onNonTextUpdate: (v) async {
+        value = v.apply(value);
+        return true;
+      },
+      onPerformAction: (_) async {},
+    );
+    inputService.attach(value, const TextInputConfiguration());
+    await inputService.apply(
+      const [
+        TextEditingDeltaInsertion(
+          oldText: '',
+          textInserted: space,
+          insertionOffset: 0,
+          selection: TextSelection.collapsed(offset: 1),
+          composing: TextRange.empty,
+        ),
+      ],
+    );
+    assert(value.text == space);
+    await inputService.apply(
+      [
+        TextEditingDeltaDeletion(
+          oldText: value.text,
+          deletedRange: const TextRange(start: 0, end: 1),
+          selection: const TextSelection.collapsed(offset: 0),
+          composing: TextRange.empty,
+        ),
+      ],
+    );
+    assert(value.text == '');
+    await inputService.apply(
+      [
+        TextEditingDeltaInsertion(
+          oldText: value.text,
+          textInserted: 'A' * 100,
+          insertionOffset: 0,
+          selection: const TextSelection.collapsed(offset: 100),
+          composing: TextRange.empty,
+        ),
+      ],
+    );
+    assert(value.text == 'A' * 100);
+    inputService.currentTextEditingValue = value;
+    final currentSelection = inputService.currentTextEditingValue?.selection;
+    assert(currentSelection?.baseOffset == 100);
   });
 }

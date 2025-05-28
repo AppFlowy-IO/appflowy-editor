@@ -61,11 +61,12 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
-
-  @override
-  bool validate(Node node) => true;
 }
 
 class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -74,6 +75,7 @@ class HeadingBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
   });
@@ -140,9 +142,11 @@ class _HeadingBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               textSpanDecorator: (textSpan) {
-                var result = textSpan.updateTextStyle(textStyle);
+                var result = textSpan.updateTextStyle(
+                  textStyleWithTextSpan(textSpan: textSpan),
+                );
                 result = result.updateTextStyle(
                   widget.textStyleBuilder?.call(level) ??
                       defaultTextStyle(level),
@@ -156,7 +160,7 @@ class _HeadingBlockComponentWidgetState
                         defaultTextStyle(level),
                   )
                   .updateTextStyle(
-                    placeholderTextStyle,
+                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
                   ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
@@ -168,17 +172,9 @@ class _HeadingBlockComponentWidgetState
       ),
     );
 
-    child = Container(
-      color: backgroundColor,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
-    );
-
     child = BlockSelectionContainer(
       node: node,
+      key: blockComponentKey,
       delegate: this,
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
@@ -189,10 +185,19 @@ class _HeadingBlockComponentWidgetState
       child: child,
     );
 
+    child = Padding(
+      padding: padding,
+      child: Container(
+        color: backgroundColor,
+        child: child,
+      ),
+    );
+
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

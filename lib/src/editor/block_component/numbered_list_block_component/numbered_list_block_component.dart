@@ -66,11 +66,15 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
   @override
-  bool validate(Node node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -79,6 +83,7 @@ class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.iconBuilder,
   });
@@ -143,7 +148,7 @@ class _NumberedListBlockComponentWidgetState
                 )
               : _NumberedListIcon(
                   node: node,
-                  textStyle: textStyle,
+                  textStyle: textStyleWithTextSpan(),
                   direction: textDirection,
                 ),
           Flexible(
@@ -152,14 +157,14 @@ class _NumberedListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-                textStyle,
+                textStyleWithTextSpan(textSpan: textSpan),
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyle,
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
               ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
@@ -196,6 +201,7 @@ class _NumberedListBlockComponentWidgetState
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

@@ -26,6 +26,7 @@ TextSpan defaultTextSpanDecoratorForAttribute(
     // add a tap gesture recognizer to the text span
     Timer? timer;
     int tapCount = 0;
+
     final tapGestureRecognizer = TapGestureRecognizer()
       ..onTap = () async {
         // implement a simple double tap logic
@@ -37,7 +38,7 @@ TextSpan defaultTextSpanDecoratorForAttribute(
             HardwareKeyboard.instance.isControlPressed ||
             HardwareKeyboard.instance.isMetaPressed) {
           tapCount = 0;
-          safeLaunchUrl(href);
+          editorLaunchUrl(href);
           return;
         }
         timer = Timer(const Duration(milliseconds: 200), () {
@@ -56,10 +57,12 @@ TextSpan defaultTextSpanDecoratorForAttribute(
           });
         });
       };
+
     return TextSpan(
       style: before.style,
       text: text.text,
       recognizer: tapGestureRecognizer,
+      mouseCursor: SystemMouseCursors.click,
     );
   }
   return before;

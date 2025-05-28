@@ -64,12 +64,21 @@ bool handleFormatByWrappingWithDoubleCharacter({
     return false;
   }
 
+  // Before deletion we need to insert the character in question so that undo manager
+  // will undo only the style applied and keep the character.
+  final insertion = editorState.transaction
+    ..insertText(node, lastCharIndex, character)
+    ..afterSelection = Selection.collapsed(
+      selection.end.copyWith(offset: selection.end.offset + 1),
+    );
+  editorState.apply(insertion, skipHistoryDebounce: true);
+
   // if all the conditions are met, we should format the text.
   // 1. delete all the *[char]
   // 2. update the style of the text surrounded by the double *[char] to [formatStyle]
   // 3. update the cursor position.
   final deletion = editorState.transaction
-    ..deleteText(node, lastCharIndex, 1)
+    ..deleteText(node, lastCharIndex, 2)
     ..deleteText(node, thirdLastCharIndex, 2);
   editorState.apply(deletion);
 
@@ -83,9 +92,6 @@ bool handleFormatByWrappingWithDoubleCharacter({
     case DoubleCharacterFormatStyle.strikethrough:
       style = 'strikethrough';
       break;
-    default:
-      style = '';
-      assert(false, 'Invalid format style');
   }
 
   // if the text is already formatted, we should remove the format.

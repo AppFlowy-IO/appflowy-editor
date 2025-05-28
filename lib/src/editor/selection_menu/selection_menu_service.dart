@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/default_text_operations/format_rich_text_style.dart';
 import 'package:flutter/material.dart';
 
 abstract class SelectionMenuService {
   Offset get offset;
+
   Alignment get alignment;
+
   SelectionMenuStyle get style;
 
-  void show();
+  Future<void> show();
+
   void dismiss();
 
   (double? left, double? top, double? right, double? bottom) getPosition();
@@ -19,14 +23,23 @@ class SelectionMenu extends SelectionMenuService {
     required this.editorState,
     required this.selectionMenuItems,
     this.deleteSlashByDefault = true,
+    this.deleteKeywordsByDefault = false,
     this.style = SelectionMenuStyle.light,
     this.itemCountFilter = 0,
+    this.singleColumn = false,
+    this.menuHeight = 300,
+    this.menuWidth = 300,
   });
 
   final BuildContext context;
   final EditorState editorState;
   final List<SelectionMenuItem> selectionMenuItems;
   final bool deleteSlashByDefault;
+  final bool deleteKeywordsByDefault;
+  final bool singleColumn;
+  final double menuHeight;
+  final double menuWidth;
+
   @override
   final SelectionMenuStyle style;
 
@@ -58,10 +71,13 @@ class SelectionMenu extends SelectionMenuService {
   }
 
   @override
-  void show() {
+  Future<void> show() async {
+    final completer = Completer<void>();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _show();
+      completer.complete();
     });
+    return completer.future;
   }
 
   void _show() {
@@ -100,9 +116,11 @@ class SelectionMenu extends SelectionMenuService {
                     scrollDirection: Axis.horizontal,
                     child: SelectionMenuWidget(
                       selectionMenuStyle: style,
+                      singleColumn: singleColumn,
                       items: selectionMenuItems
                         ..forEach((element) {
                           element.deleteSlash = deleteSlashByDefault;
+                          element.deleteKeywords = deleteKeywordsByDefault;
                           element.onSelected = () {
                             dismiss();
                           };
@@ -193,7 +211,6 @@ class SelectionMenu extends SelectionMenuService {
     // Workaround: We can customize the padding through the [EditorStyle],
     // but the coordinates of overlay are not properly converted currently.
     // Just subtract the padding here as a result.
-    const menuHeight = 200.0;
     const menuOffset = Offset(0, 10);
     final editorOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
@@ -217,12 +234,18 @@ class SelectionMenu extends SelectionMenuService {
 
       _offset = Offset(
         offset.dx,
-        MediaQuery.of(context).size.height - offset.dy,
+        editorHeight + editorOffset.dy - offset.dy,
       );
     }
 
-    // show on left
-    if (_offset.dx - editorOffset.dx > editorWidth / 2) {
+    // show on right
+    if (_offset.dx + menuWidth < editorOffset.dx + editorWidth) {
+      _offset = Offset(
+        _offset.dx,
+        _offset.dy,
+      );
+    } else if (offset.dx - editorOffset.dx > menuWidth) {
+      // show on left
       _alignment = _alignment == Alignment.topLeft
           ? Alignment.topRight
           : Alignment.bottomRight;
@@ -347,4 +370,43 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
   ),
   dividerMenuItem,
   tableMenuItem,
+];
+
+final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.text,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'text',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['text'],
+    handler: (editorState, _, __) {
+      insertNodeAfterSelection(editorState, paragraphNode());
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading1,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h1',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 1, h1'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 1);
+    },
+  ),
+  SelectionMenuItem(
+    getName: () => AppFlowyEditorL10n.current.heading2,
+    icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
+      name: 'h2',
+      isSelected: isSelected,
+      style: style,
+    ),
+    keywords: ['heading 2, h2'],
+    handler: (editorState, _, __) {
+      insertHeadingAfterSelection(editorState, 2);
+    },
+  ),
 ];

@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -19,11 +18,20 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     if (body == null) {
       return Document.blank(withInitialText: false);
     }
-    final nodes = _parseElement(body.nodes);
+
+    ///This is used for temporarily handling documents copied from Google Docs,
+    /// see [#6808](https://github.com/AppFlowy-IO/AppFlowy/issues/6808).
+    /// It can prevent parsing exceptions caused by having a single,
+    /// all-encompassing tag under the body. However,
+    /// this method needs to be removed in the future as it is not stable
+    final parseForSingleChild = body.children.length == 1 &&
+        HTMLTags.formattingElements.contains(body.children.first.localName);
     return Document.blank(withInitialText: false)
       ..insert(
         [0],
-        nodes,
+        parseForSingleChild
+            ? _parseElement(body.children.first.children)
+            : _parseElement(body.nodes),
       );
   }
 
@@ -37,8 +45,18 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       if (domNode is dom.Element) {
         final localName = domNode.localName;
         if (HTMLTags.formattingElements.contains(localName)) {
-          final attributes = _parserFormattingElementAttributes(domNode);
-          delta.insert(domNode.text, attributes: attributes);
+          final style = domNode.attributes['style'];
+
+          ///This is used for temporarily handling documents copied from Google Docs,
+          /// see [#6808](https://github.com/AppFlowy-IO/AppFlowy/issues/6808).
+          final isMeaninglessTag =
+              style == 'font-weight:normal;' && localName == HTMLTags.bold;
+          if (isMeaninglessTag && domNode.children.isNotEmpty) {
+            nodes.addAll(_parseElement(domNode.children));
+          } else {
+            final attributes = _parserFormattingElementAttributes(domNode);
+            delta.insert(domNode.text, attributes: attributes);
+          }
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (delta.isNotEmpty) {
             nodes.add(paragraphNode(delta: delta));
@@ -57,7 +75,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         }
         delta.insert(domNode.text);
       } else {
-        Log.editor.debug('Unknown node type: $domNode');
+        AppFlowyEditorLog.editor.debug('Unknown node type: $domNode');
       }
     }
     if (delta.isNotEmpty) {
@@ -78,6 +96,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseHeadingElement(element, level: 2);
       case HTMLTags.h3:
         return _parseHeadingElement(element, level: 3);
+      case HTMLTags.h4:
+        return _parseHeadingElement(element, level: 4);
+      case HTMLTags.h5:
+        return _parseHeadingElement(element, level: 5);
+      case HTMLTags.h6:
+        return _parseHeadingElement(element, level: 6);
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
       case HTMLTags.orderedList:
@@ -319,7 +343,12 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     dom.Element element, {
     required String type,
   }) {
-    final (delta, node) = _parseDeltaElement(element, type: type);
+    var (delta, node) = _parseDeltaElement(element, type: type);
+    if (delta.isEmpty &&
+        element.children.length == 1 &&
+        element.children.first.localName == HTMLTags.paragraph) {
+      (delta, node) = _parseDeltaElement(element.children.first, type: type);
+    }
     return Node(
       type: type,
       children: node,
@@ -476,7 +505,9 @@ class HTMLTags {
   static const h1 = 'h1';
   static const h2 = 'h2';
   static const h3 = 'h3';
-  static const br = 'br';
+  static const h4 = 'h4';
+  static const h5 = 'h5';
+  static const h6 = 'h6';
   static const orderedList = 'ol';
   static const unorderedList = 'ul';
   static const list = 'li';
@@ -491,6 +522,7 @@ class HTMLTags {
   static const del = 'del';
   static const strong = 'strong';
   static const checkbox = 'input';
+  static const br = 'br';
   static const span = 'span';
   static const code = 'code';
   static const blockQuote = 'blockquote';
@@ -523,6 +555,9 @@ class HTMLTags {
     HTMLTags.h1,
     HTMLTags.h2,
     HTMLTags.h3,
+    HTMLTags.h4,
+    HTMLTags.h5,
+    HTMLTags.h6,
     HTMLTags.unorderedList,
     HTMLTags.orderedList,
     HTMLTags.div,

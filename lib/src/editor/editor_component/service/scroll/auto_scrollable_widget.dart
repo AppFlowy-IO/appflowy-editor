@@ -1,5 +1,5 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 class AutoScrollableWidget extends StatefulWidget {
@@ -27,6 +27,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
 
   @override
   void dispose() {
+    // ignore: invalid_use_of_protected_member
     _scrollableState.dispose();
     super.dispose();
   }

@@ -1,7 +1,8 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-/// Backspace key event.
+import 'package:appflowy_editor/appflowy_editor.dart';
+
+/// Delete key event.
 ///
 /// - support
 ///   - desktop
@@ -35,8 +36,16 @@ CommandShortcutEventHandler _deleteLeftWordCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  // If the selection is not collapsed, we should just delete the selected text.
+  // If the selection is collapsed and at the beginning of the line, we should delete
+  // the newline.
+  if (!selection.isCollapsed ||
+      (selection.isCollapsed && selection.start.offset == 0)) {
+    return backspaceCommand.execute(editorState);
+  }
+
   // we store the position where the current word starts.
-  var startOfWord = selection.end.moveHorizontal(
+  Position? startOfWord = selection.end.moveHorizontal(
     editorState,
     selectionRange: SelectionRange.word,
   );
@@ -96,8 +105,12 @@ CommandShortcutEventHandler _deleteRightWordCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
+  if (selection.isCollapsed && selection.start.offset == delta.length) {
+    return deleteCommand.execute(editorState);
+  }
+
   // we store the position where the current word ends.
-  var endOfWord = selection.end.moveHorizontal(
+  Position? endOfWord = selection.end.moveHorizontal(
     editorState,
     forward: false,
     selectionRange: SelectionRange.word,

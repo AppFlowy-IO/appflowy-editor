@@ -12,10 +12,10 @@ abstract class TextInputService {
     this.contentInsertionConfiguration,
   });
 
-  Future<void> Function(TextEditingDeltaInsertion insertion) onInsert;
-  Future<void> Function(TextEditingDeltaDeletion deletion) onDelete;
-  Future<void> Function(TextEditingDeltaReplacement replacement) onReplace;
-  Future<void> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
+  Future<bool> Function(TextEditingDeltaInsertion insertion) onInsert;
+  Future<bool> Function(TextEditingDeltaDeletion deletion) onDelete;
+  Future<bool> Function(TextEditingDeltaReplacement replacement) onReplace;
+  Future<bool> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
       onNonTextUpdate;
   Future<void> Function(TextInputAction action) onPerformAction;
   Future<void> Function(RawFloatingCursorPoint point)? onFloatingCursor;
@@ -24,6 +24,8 @@ abstract class TextInputService {
 
   TextRange? get composingTextRange;
   bool get attached;
+
+  void clearComposingTextRange();
 
   void updateCaretPosition(Size size, Matrix4 transform, Rect rect);
 
@@ -40,9 +42,10 @@ abstract class TextInputService {
 
   /// Applies insertion, deletion and replacement
   ///   to the text currently being edited.
+  ///   return false means will not apply
   ///
   /// For more information, please check [TextEditingDelta].
-  Future<void> apply(List<TextEditingDelta> deltas);
+  Future<bool> apply(List<TextEditingDelta> deltas);
 
   /// Closes the editing state of the text currently being edited.
   void close();

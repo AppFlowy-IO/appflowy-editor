@@ -3,11 +3,18 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 typedef SelectionMenuItemHandler = void Function(
   EditorState editorState,
   SelectionMenuService menuService,
   BuildContext context,
+);
+
+typedef SelectionMenuItemNameBuilder = Widget Function(
+  String name,
+  SelectionMenuStyle style,
+  bool isSelected,
 );
 
 /// Selection Menu Item
@@ -17,15 +24,17 @@ class SelectionMenuItem {
     required this.icon,
     required this.keywords,
     required SelectionMenuItemHandler handler,
+    this.nameBuilder,
+    this.deleteKeywords = false,
+    this.deleteSlash = true,
   }) : _getName = getName {
     this.handler = (editorState, menuService, context) {
-      if (deleteSlash) {
+      if (deleteSlash || deleteKeywords) {
         _deleteSlash(editorState);
       }
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
       handler(editorState, menuService, context);
       onSelected?.call();
-      // });
     };
   }
 
@@ -35,6 +44,7 @@ class SelectionMenuItem {
     bool onSelected,
     SelectionMenuStyle style,
   ) icon;
+  final SelectionMenuItemNameBuilder? nameBuilder;
 
   String get name => _getName();
 
@@ -42,11 +52,13 @@ class SelectionMenuItem {
   ///
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
+  List<String> get allKeywords => keywords + [name.toLowerCase()];
   late final SelectionMenuItemHandler handler;
 
   VoidCallback? onSelected;
 
-  bool deleteSlash = true;
+  bool deleteSlash;
+  bool deleteKeywords;
 
   void _deleteSlash(EditorState editorState) {
     final selection = editorState.selection;
@@ -59,14 +71,20 @@ class SelectionMenuItem {
       return;
     }
     final end = selection.start.offset;
-    final lastSlashIndex =
-        delta.toPlainText().substring(0, end).lastIndexOf('/');
+    int deletedIndex = 0;
+
+    if (deleteKeywords) {
+      deletedIndex = 0;
+    } else if (deleteSlash) {
+      deletedIndex = delta.toPlainText().substring(0, end).lastIndexOf('/');
+    }
+
     // delete all the texts after '/' along with '/'
     final transaction = editorState.transaction
       ..deleteText(
         node,
-        lastSlashIndex,
-        end - lastSlashIndex,
+        deletedIndex,
+        end - deletedIndex,
       );
 
     editorState.apply(transaction);
@@ -85,10 +103,16 @@ class SelectionMenuItem {
   /// has been inserted.
   factory SelectionMenuItem.node({
     required String Function() getName,
-    required IconData iconData,
     required List<String> keywords,
     required Node Function(EditorState editorState, BuildContext context)
         nodeBuilder,
+    IconData? iconData,
+    Widget Function(
+      EditorState editorState,
+      bool onSelected,
+      SelectionMenuStyle style,
+    )? iconBuilder,
+    SelectionMenuItemNameBuilder? nameBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
@@ -98,15 +122,28 @@ class SelectionMenuItem {
       bool insertedBefore,
     )? updateSelection,
   }) {
+    // the iconData and iconBuilder are mutually exclusive
+    assert(iconData == null || iconBuilder == null);
+    assert(iconData != null || iconBuilder != null);
+
     return SelectionMenuItem(
       getName: getName,
-      icon: (editorState, onSelected, style) => Icon(
-        iconData,
-        color: onSelected
-            ? style.selectionMenuItemSelectedIconColor
-            : style.selectionMenuItemIconColor,
-        size: 18.0,
-      ),
+      nameBuilder: nameBuilder,
+      icon: (editorState, onSelected, style) {
+        if (iconData != null) {
+          return Icon(
+            iconData,
+            color: onSelected
+                ? style.selectionMenuItemSelectedIconColor
+                : style.selectionMenuItemIconColor,
+            size: 18.0,
+          );
+        } else if (iconBuilder != null) {
+          return iconBuilder.call(editorState, onSelected, style);
+        }
+
+        return const SizedBox.shrink();
+      },
       keywords: keywords,
       handler: (editorState, _, context) {
         final selection = editorState.selection;
@@ -159,6 +196,15 @@ class SelectionMenuStyle {
     required this.selectionMenuItemSelectedTextColor,
     required this.selectionMenuItemSelectedIconColor,
     required this.selectionMenuItemSelectedColor,
+    required this.selectionMenuUnselectedLabelColor,
+    required this.selectionMenuDividerColor,
+    required this.selectionMenuLinkBorderColor,
+    required this.selectionMenuInvalidLinkColor,
+    required this.selectionMenuButtonColor,
+    required this.selectionMenuButtonTextColor,
+    required this.selectionMenuButtonIconColor,
+    required this.selectionMenuButtonBorderColor,
+    required this.selectionMenuTabIndicatorColor,
   });
 
   static const light = SelectionMenuStyle(
@@ -168,6 +214,15 @@ class SelectionMenuStyle {
     selectionMenuItemSelectedTextColor: Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedIconColor: Color.fromARGB(255, 56, 91, 247),
     selectionMenuItemSelectedColor: Color(0xFFE0F8FF),
+    selectionMenuUnselectedLabelColor: Color(0xFF333333),
+    selectionMenuDividerColor: Color(0xFF00BCF0),
+    selectionMenuLinkBorderColor: Color(0xFF00BCF0),
+    selectionMenuInvalidLinkColor: Color(0xFFE53935),
+    selectionMenuButtonColor: Color(0xFF00BCF0),
+    selectionMenuButtonTextColor: Color(0xFF333333),
+    selectionMenuButtonIconColor: Color(0xFF333333),
+    selectionMenuButtonBorderColor: Color(0xFF00BCF0),
+    selectionMenuTabIndicatorColor: Color(0xFF00BCF0),
   );
 
   static const dark = SelectionMenuStyle(
@@ -177,6 +232,15 @@ class SelectionMenuStyle {
     selectionMenuItemSelectedTextColor: Color(0xFF131720),
     selectionMenuItemSelectedIconColor: Color(0xFF131720),
     selectionMenuItemSelectedColor: Color(0xFF00BCF0),
+    selectionMenuUnselectedLabelColor: Color(0xFFBBC3CD),
+    selectionMenuDividerColor: Color(0xFF3A3F44),
+    selectionMenuLinkBorderColor: Color(0xFF3A3F44),
+    selectionMenuInvalidLinkColor: Color(0xFFE53935),
+    selectionMenuButtonColor: Color(0xFF00BCF0),
+    selectionMenuButtonTextColor: Color(0xFFFFFFFF),
+    selectionMenuButtonIconColor: Color(0xFFFFFFFF),
+    selectionMenuButtonBorderColor: Color(0xFF00BCF0),
+    selectionMenuTabIndicatorColor: Color(0xFF00BCF0),
   );
 
   final Color selectionMenuBackgroundColor;
@@ -185,6 +249,15 @@ class SelectionMenuStyle {
   final Color selectionMenuItemSelectedTextColor;
   final Color selectionMenuItemSelectedIconColor;
   final Color selectionMenuItemSelectedColor;
+  final Color selectionMenuUnselectedLabelColor;
+  final Color selectionMenuDividerColor;
+  final Color selectionMenuLinkBorderColor;
+  final Color selectionMenuInvalidLinkColor;
+  final Color selectionMenuButtonColor;
+  final Color selectionMenuButtonTextColor;
+  final Color selectionMenuButtonIconColor;
+  final Color selectionMenuButtonBorderColor;
+  final Color selectionMenuTabIndicatorColor;
 }
 
 class SelectionMenuWidget extends StatefulWidget {
@@ -199,6 +272,8 @@ class SelectionMenuWidget extends StatefulWidget {
     required this.selectionMenuStyle,
     required this.itemCountFilter,
     required this.deleteSlashByDefault,
+    this.singleColumn = false,
+    this.nameBuilder,
   });
 
   final List<SelectionMenuItem> items;
@@ -214,6 +289,9 @@ class SelectionMenuWidget extends StatefulWidget {
   final SelectionMenuStyle selectionMenuStyle;
 
   final bool deleteSlashByDefault;
+  final bool singleColumn;
+
+  final SelectionMenuItemNameBuilder? nameBuilder;
 
   @override
   State<SelectionMenuWidget> createState() => _SelectionMenuWidgetState();
@@ -224,6 +302,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
   int _selectedIndex = 0;
   List<SelectionMenuItem> _showingItems = [];
+  AutoScrollController? _scrollController;
 
   int _searchCounter = 0;
 
@@ -237,7 +316,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     var maxKeywordLength = 0;
     final items = widget.items
         .where(
-          (item) => item.keywords.any((keyword) {
+          (item) => item.allKeywords.any((keyword) {
             final value = keyword.contains(newKeyword.toLowerCase());
             if (value) {
               maxKeywordLength = max(maxKeywordLength, keyword.length);
@@ -247,7 +326,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         )
         .toList(growable: false);
 
-    Log.ui.debug('$items');
+    AppFlowyEditorLog.ui.debug('$items');
 
     if (keyword.length >= maxKeywordLength + 2 &&
         !(widget.deleteSlashByDefault && _searchCounter < 2)) {
@@ -269,6 +348,9 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     super.initState();
 
     _showingItems = widget.items;
+    if (widget.singleColumn) {
+      _scrollController = AutoScrollController();
+    }
 
     keepEditorFocusNotifier.increase();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -280,6 +362,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   void dispose() {
     _focusNode.dispose();
     keepEditorFocusNotifier.decrease();
+    _scrollController?.dispose();
 
     super.dispose();
   }
@@ -296,7 +379,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
             BoxShadow(
               blurRadius: 5,
               spreadRadius: 1,
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
             ),
           ],
           borderRadius: BorderRadius.circular(6.0),
@@ -313,23 +396,82 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     );
   }
 
+  void _scrollToSelectedIndex() {
+    if (_scrollController == null) {
+      return;
+    }
+
+    _scrollController?.scrollToIndex(
+      _selectedIndex,
+      preferPosition: AutoScrollPosition.middle,
+    );
+  }
+
   Widget _buildResultsWidget(
     BuildContext buildContext,
     List<SelectionMenuItem> items,
     int itemCountFilter,
     int selectedIndex,
   ) {
-    List<Widget> columns = [];
-    List<Widget> itemWidgets = [];
+    if (widget.singleColumn) {
+      List<Widget> itemWidgets = [];
+      for (var i = 0; i < items.length; i++) {
+        itemWidgets.add(
+          AutoScrollTag(
+            key: ValueKey(i),
+            index: i,
+            controller: _scrollController!,
+            child: SelectionMenuItemWidget(
+              item: items[i],
+              isSelected: selectedIndex == i,
+              editorState: widget.editorState,
+              menuService: widget.menuService,
+              selectionMenuStyle: widget.selectionMenuStyle,
+            ),
+          ),
+        );
+      }
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 300,
+          minWidth: 300,
+          maxWidth: 300,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          controller: _scrollController,
+          children: itemWidgets,
+        ),
+      );
+    } else {
+      List<Widget> columns = [];
+      List<Widget> itemWidgets = [];
+      // apply item count filter
+      if (itemCountFilter > 0) {
+        items = items.take(itemCountFilter).toList();
+      }
 
-    // apply item count filter
-
-    if (itemCountFilter > 0) {
-      items = items.take(itemCountFilter).toList();
-    }
-
-    for (var i = 0; i < items.length; i++) {
-      if (i != 0 && i % (widget.maxItemInRow) == 0) {
+      for (var i = 0; i < items.length; i++) {
+        if (i != 0 && i % (widget.maxItemInRow) == 0) {
+          columns.add(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: itemWidgets,
+            ),
+          );
+          itemWidgets = [];
+        }
+        itemWidgets.add(
+          SelectionMenuItemWidget(
+            item: items[i],
+            isSelected: selectedIndex == i,
+            editorState: widget.editorState,
+            menuService: widget.menuService,
+            selectionMenuStyle: widget.selectionMenuStyle,
+          ),
+        );
+      }
+      if (itemWidgets.isNotEmpty) {
         columns.add(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,29 +480,11 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         );
         itemWidgets = [];
       }
-      itemWidgets.add(
-        SelectionMenuItemWidget(
-          item: items[i],
-          isSelected: selectedIndex == i,
-          editorState: widget.editorState,
-          menuService: widget.menuService,
-          selectionMenuStyle: widget.selectionMenuStyle,
-        ),
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: columns,
       );
     }
-    if (itemWidgets.isNotEmpty) {
-      columns.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: itemWidgets,
-        ),
-      );
-      itemWidgets = [];
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: columns,
-    );
   }
 
   Widget _buildNoResultsWidget(BuildContext context) {
@@ -383,7 +507,11 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
   /// Handles keyword searches
   /// Handles enter to select item and esc to exit
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    Log.keyboard.debug('slash command, on key $event');
+    AppFlowyEditorLog.keyboard.debug('slash command, on key $event');
+
+    if (event is KeyRepeatEvent) {
+      return KeyEventResult.skipRemainingHandlers;
+    }
 
     if (event is! KeyDownEvent) {
       return KeyEventResult.ignored;
@@ -426,24 +554,53 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
 
     var newSelectedIndex = _selectedIndex;
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      // When going left, wrap to the end of the previous row
       newSelectedIndex -= widget.maxItemInRow;
+      if (newSelectedIndex < 0) {
+        // Calculate the last row's starting position
+        final lastRowStart = (_showingItems.length - 1) -
+            ((_showingItems.length - 1) % widget.maxItemInRow);
+        // Move to the same column in the last row
+        newSelectedIndex =
+            lastRowStart + (_selectedIndex % widget.maxItemInRow);
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
     } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      // When going right, wrap to the start of the next row
       newSelectedIndex += widget.maxItemInRow;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      newSelectedIndex -= 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      newSelectedIndex += 1;
-    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
-      newSelectedIndex += widget.maxItemInRow;
-      var currRow = (newSelectedIndex) % widget.maxItemInRow;
       if (newSelectedIndex >= _showingItems.length) {
-        newSelectedIndex = (currRow + 1) % widget.maxItemInRow;
+        newSelectedIndex = _selectedIndex % widget.maxItemInRow;
+        if (newSelectedIndex >= _showingItems.length) {
+          newSelectedIndex = _showingItems.length - 1;
+        }
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      if (newSelectedIndex > 0) {
+        newSelectedIndex -= 1;
+      } else {
+        // Wrap to the last item
+        newSelectedIndex = _showingItems.length - 1;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (newSelectedIndex < _showingItems.length - 1) {
+        newSelectedIndex += 1;
+      } else {
+        // Wrap to the first item
+        newSelectedIndex = 0;
+      }
+    } else if (event.logicalKey == LogicalKeyboardKey.tab) {
+      newSelectedIndex += 1;
+      if (newSelectedIndex >= _showingItems.length) {
+        newSelectedIndex = 0;
       }
     }
 
     if (newSelectedIndex != _selectedIndex) {
       setState(() {
         _selectedIndex = newSelectedIndex.clamp(0, _showingItems.length - 1);
+        _scrollToSelectedIndex();
       });
       return KeyEventResult.handled;
     }
@@ -481,12 +638,12 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       return;
     }
     widget.onSelectionUpdate();
-    final transaction = widget.editorState.transaction
-      ..insertText(
-        node,
-        selection.end.offset,
-        text,
-      );
+    final transaction = widget.editorState.transaction;
+    transaction.insertText(
+      node,
+      selection.end.offset,
+      text,
+    );
     widget.editorState.apply(transaction);
   }
 }

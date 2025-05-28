@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
+import 'package:appflowy_editor/src/editor/util/link_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:string_validator/string_validator.dart';
 
 class LinkMenu extends StatefulWidget {
   const LinkMenu({
@@ -116,7 +116,7 @@ class _LinkMenuState extends State<LinkMenu> {
           ),
         ),
         validator: (value) {
-          if (value == null || value.isEmpty || !isURL(value)) {
+          if (value == null || value.isEmpty || !isUri(value)) {
             return AppFlowyEditorL10n.current.incorrectLink;
           }
           return null;

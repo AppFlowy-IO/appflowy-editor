@@ -76,15 +76,16 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
       toggleChildrenTriggers: toggleChildrenTriggers,
     );
   }
 
   @override
-  bool validate(Node node) {
-    return node.delta != null &&
-        node.attributes[TodoListBlockKeys.checked] is bool;
-  }
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -93,6 +94,7 @@ class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.textStyleBuilder,
     this.iconBuilder,
@@ -135,7 +137,8 @@ class _TodoListBlockComponentWidgetState
   @override
   Node get node => widget.node;
 
-  bool get checked => widget.node.attributes[TodoListBlockKeys.checked];
+  bool get checked =>
+      widget.node.attributes[TodoListBlockKeys.checked] ?? false;
 
   @override
   Widget buildComponent(
@@ -171,17 +174,18 @@ class _TodoListBlockComponentWidgetState
               delegate: this,
               node: widget.node,
               editorState: editorState,
-              textAlign: alignment?.toTextAlign,
+              textAlign: alignment?.toTextAlign ?? textAlign,
               placeholderText: placeholderText,
               textDirection: textDirection,
-              textSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(textStyle).updateTextStyle(
-                        widget.textStyleBuilder?.call(checked) ??
-                            defaultTextStyle(),
-                      ),
+              textSpanDecorator: (textSpan) => textSpan
+                  .updateTextStyle(textStyleWithTextSpan())
+                  .updateTextStyle(
+                    widget.textStyleBuilder?.call(checked) ??
+                        defaultTextStyle(),
+                  ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyle,
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
               ),
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
@@ -217,6 +221,7 @@ class _TodoListBlockComponentWidgetState
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

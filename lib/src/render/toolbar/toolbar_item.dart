@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 typedef ToolbarItemEventHandler = void Function(
   EditorState editorState,
@@ -31,6 +32,7 @@ class ToolbarItem {
     EditorState editorState,
     Color highlightColor,
     Color? iconColor,
+    ToolbarTooltipBuilder? tooltipBuilder,
   )? builder;
 
   // deprecated
@@ -101,7 +103,6 @@ bool onlyShowInTextType(EditorState editorState) {
   }
   final nodes = editorState.getNodesInSelection(selection);
   return nodes.every(
-    (element) =>
-        element.delta != null && toolbarItemWhiteList.contains(element.type),
+    (node) => node.delta != null && toolbarItemWhiteList.contains(node.type),
   );
 }

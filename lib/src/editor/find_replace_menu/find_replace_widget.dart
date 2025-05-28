@@ -47,10 +47,6 @@ class FindAndReplaceMenuWidget extends StatefulWidget {
 }
 
 class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
-  final focusNode = FocusNode();
-  final replaceFocusNode = FocusNode();
-  final findController = TextEditingController();
-  final replaceController = TextEditingController();
   String queriedPattern = '';
   bool showRegexButton = true;
   bool showCaseSensitiveButton = true;
@@ -234,9 +230,11 @@ class _FindMenuState extends State<FindMenu> {
               //  will request focus, here's a workaround to request the
               //  focus back to the findTextField
               Future.delayed(const Duration(milliseconds: 50), () {
-                FocusScope.of(context).requestFocus(
-                  findTextFieldFocusNode,
-                );
+                if (context.mounted) {
+                  FocusScope.of(context).requestFocus(
+                    findTextFieldFocusNode,
+                  );
+                }
               });
             },
             decoration: _buildInputDecoration(
@@ -256,7 +254,17 @@ class _FindMenuState extends State<FindMenu> {
         // previous match button
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('previousMatchButton'),
-          onPressed: () => widget.searchService.navigateToMatch(moveUp: true),
+          onPressed: () {
+            // work around to request focus back to the input field
+            Future.delayed(const Duration(milliseconds: 10), () {
+              if (context.mounted) {
+                FocusScope.of(context).requestFocus(
+                  findTextFieldFocusNode,
+                );
+              }
+            });
+            widget.searchService.navigateToMatch(moveUp: true);
+          },
           icon: const Icon(Icons.arrow_upward),
           tooltip: widget.localizations?.previousMatch ??
               AppFlowyEditorL10n.current.previousMatch,
@@ -264,7 +272,16 @@ class _FindMenuState extends State<FindMenu> {
         // next match button
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('nextMatchButton'),
-          onPressed: () => widget.searchService.navigateToMatch(),
+          onPressed: () {
+            Future.delayed(const Duration(milliseconds: 10), () {
+              if (context.mounted) {
+                FocusScope.of(context).requestFocus(
+                  findTextFieldFocusNode,
+                );
+              }
+            });
+            widget.searchService.navigateToMatch();
+          },
           icon: const Icon(Icons.arrow_downward),
           tooltip: widget.localizations?.nextMatch ??
               AppFlowyEditorL10n.current.nextMatch,
@@ -389,9 +406,11 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
               _replaceSelectedWord();
 
               Future.delayed(const Duration(milliseconds: 50), () {
-                FocusScope.of(context).requestFocus(
-                  replaceTextFieldFocusNode,
-                );
+                if (context.mounted) {
+                  FocusScope.of(context).requestFocus(
+                    replaceTextFieldFocusNode,
+                  );
+                }
               });
             },
             decoration: _buildInputDecoration(

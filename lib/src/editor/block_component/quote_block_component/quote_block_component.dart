@@ -53,11 +53,15 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
   @override
-  bool validate(Node node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -66,6 +70,7 @@ class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.iconBuilder,
   });
@@ -130,14 +135,14 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 delegate: this,
                 node: widget.node,
                 editorState: editorState,
-                textAlign: alignment?.toTextAlign,
+                textAlign: alignment?.toTextAlign ?? textAlign,
                 placeholderText: placeholderText,
                 textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-                  textStyle,
+                  textStyleWithTextSpan(textSpan: textSpan),
                 ),
                 placeholderTextSpanDecorator: (textSpan) =>
                     textSpan.updateTextStyle(
-                  placeholderTextStyle,
+                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
                 ),
                 textDirection: textDirection,
                 cursorColor: editorState.editorStyle.cursorColor,
@@ -175,6 +180,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

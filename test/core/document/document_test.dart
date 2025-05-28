@@ -220,4 +220,14 @@ void main() async {
     final last = document.last!;
     expect(last.delta!.toPlainText(), secondChild);
   });
+
+  test('Document.blank().first is null', () {
+    final document = Document.blank();
+    expect(document.first, isNull);
+  });
+
+  test('Document.blank().last is null', () {
+    final document = Document.blank();
+    expect(document.last, isNull);
+  });
 }

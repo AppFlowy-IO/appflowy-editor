@@ -17,7 +17,7 @@ KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 
 /// The default value of the auto scroll edge offset on mobile
 /// The editor will scroll when the cursor is close to the edge of the screen
-double appFlowyEditorAutoScrollEdgeOffset = 220.0;
+const double appFlowyEditorAutoScrollEdgeOffset = 220.0;
 
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
@@ -40,6 +40,14 @@ class AppFlowyEditor extends StatefulWidget {
     this.focusNode,
     this.enableAutoComplete = false,
     this.autoCompleteTextProvider,
+    this.dropTargetStyle,
+    this.disableSelectionService = false,
+    this.disableKeyboardService = false,
+    this.disableScrollService = false,
+    this.disableAutoScroll = false,
+    this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
+    this.documentRules = const [],
+    this.blockWrapper,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -136,8 +144,12 @@ class AppFlowyEditor extends StatefulWidget {
 
   /// Set the value to false to disable editing.
   ///
-  /// if false, the editor will only render the block components and
-  ///   without the editing, selecting, scrolling features.
+  /// If it's false, the transaction will be ignored in the apply function, and
+  ///   you can still use keyboard shortcuts to navigate the editor or select the text.
+  ///
+  /// If you want to disable the keyboard service, you can set [disableKeyboardService] to true.
+  /// If you want to disable the selection service, you can set [disableSelectionService] to true.
+  /// If you want to disable the scroll service, you can set [disableScrollService] to true.
   final bool editable;
 
   /// Set the value to true to focus the editor on the start of the document.
@@ -177,6 +189,53 @@ class AppFlowyEditor extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.contentInsertionConfiguration}
   final ContentInsertionConfiguration? contentInsertionConfiguration;
 
+  /// The style of the drop target.
+  ///
+  /// Defaults to [AppFlowyDropTargetStyle].
+  ///
+  /// The drop target is rendered in the [AppFlowyEditor] using the [DesktopSelectionService]
+  /// specifically the [renderDropTargetForOffset] method.
+  ///
+  /// The drop target is a horizontal line that is drawn between the nearest nodes to the [offset].
+  ///
+  /// Should call [removeDropTarget] to remove the line once the drop action is done.
+  ///
+  /// only works on desktop.
+  ///
+  final AppFlowyDropTargetStyle? dropTargetStyle;
+
+  /// Disable the selection gesture
+  ///
+  /// It will disable the selection service and the context menu.
+  final bool disableSelectionService;
+
+  /// Disable the keyboard service
+  ///
+  /// It will disable all the keyboard shortcuts and the text input.
+  final bool disableKeyboardService;
+
+  /// Disable the scroll service
+  ///
+  /// It will disable the auto scroll feature.
+  final bool disableScrollService;
+
+  /// Disable auto scroll
+  ///
+  final bool disableAutoScroll;
+
+  /// The edge offset of the auto scroll.
+  ///
+  final double autoScrollEdgeOffset;
+
+  /// The rules to apply to the document.
+  ///
+  final List<DocumentRule> documentRules;
+
+  /// Block wrapper
+  ///
+  /// Wrap the block component with a widget.
+  final BlockComponentWrapper? blockWrapper;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -186,7 +245,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
 
   EditorState get editorState => widget.editorState;
 
-  late final EditorScrollController editorScrollController;
+  late EditorScrollController editorScrollController;
 
   @override
   void initState() {
@@ -227,6 +286,14 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       editorState.renderer = _renderer;
     }
 
+    if (widget.editorScrollController != oldWidget.editorScrollController) {
+      editorScrollController = widget.editorScrollController ??
+          EditorScrollController(
+            editorState: editorState,
+            shrinkWrap: widget.shrinkWrap,
+          );
+    }
+
     services = null;
   }
 
@@ -234,17 +301,11 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget build(BuildContext context) {
     services ??= _buildServices(context);
 
-    if (!widget.editable) {
-      return Provider.value(
-        value: editorState,
-        child: services!,
-      );
-    }
-
     return Provider.value(
       value: editorState,
       child: FocusScope(
         child: Overlay(
+          clipBehavior: Clip.none,
           initialEntries: [
             OverlayEntry(
               builder: (context) => services!,
@@ -261,33 +322,44 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       editorState.document.root,
       header: widget.header,
       footer: widget.footer,
+      wrapper: widget.blockWrapper,
     );
 
-    if (!widget.editable) {
-      return child;
-    }
-
-    child = SelectionServiceWidget(
-      key: editorState.service.selectionServiceKey,
-      cursorColor: widget.editorStyle.cursorColor,
-      selectionColor: widget.editorStyle.selectionColor,
-      showMagnifier: widget.showMagnifier,
-      contextMenuItems: widget.contextMenuItems,
-      child: KeyboardServiceWidget(
+    if (!widget.disableKeyboardService) {
+      child = KeyboardServiceWidget(
         key: editorState.service.keyboardServiceKey,
-        characterShortcutEvents: widget.characterShortcutEvents,
+        // disable all the shortcuts when the editor is not editable
+        characterShortcutEvents:
+            widget.editable ? widget.characterShortcutEvents : [],
+        // only allow copy and select all when the editor is not editable
         commandShortcutEvents: widget.commandShortcutEvents,
         focusNode: widget.focusNode,
         contentInsertionConfiguration: widget.contentInsertionConfiguration,
         child: child,
-      ),
-    );
+      );
+    }
 
-    return ScrollServiceWidget(
-      key: editorState.service.scrollServiceKey,
-      editorScrollController: editorScrollController,
-      child: child,
-    );
+    if (!widget.disableSelectionService) {
+      child = SelectionServiceWidget(
+        key: editorState.service.selectionServiceKey,
+        cursorColor: widget.editorStyle.cursorColor,
+        selectionColor: widget.editorStyle.selectionColor,
+        showMagnifier: widget.showMagnifier,
+        contextMenuItems: widget.contextMenuItems,
+        dropTargetStyle: widget.dropTargetStyle,
+        child: child,
+      );
+    }
+
+    if (!widget.disableScrollService) {
+      child = ScrollServiceWidget(
+        key: editorState.service.scrollServiceKey,
+        editorScrollController: editorScrollController,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   void _autoFocusIfNeeded() {
@@ -310,6 +382,9 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.showFooter = widget.footer != null;
     editorState.enableAutoComplete = widget.enableAutoComplete;
     editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
+    editorState.disableAutoScroll = widget.disableAutoScroll;
+    editorState.autoScrollEdgeOffset = widget.autoScrollEdgeOffset;
+    editorState.documentRules = widget.documentRules;
   }
 
   BlockComponentRendererService get _renderer => BlockComponentRenderer(

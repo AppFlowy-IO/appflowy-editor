@@ -6,6 +6,7 @@ mixin BlockComponentWidget on Widget {
   Node get node;
   BlockComponentConfiguration get configuration;
   BlockComponentActionBuilder? get actionBuilder;
+  BlockComponentActionTrailingBuilder? get actionTrailingBuilder;
   bool get showActions;
 }
 
@@ -17,6 +18,7 @@ class BlockComponentStatelessWidget extends StatelessWidget
     required this.configuration,
     this.showActions = false,
     this.actionBuilder,
+    this.actionTrailingBuilder,
   });
 
   @override
@@ -32,6 +34,9 @@ class BlockComponentStatelessWidget extends StatelessWidget
   final BlockComponentConfiguration configuration;
 
   @override
+  final BlockComponentActionTrailingBuilder? actionTrailingBuilder;
+
+  @override
   Widget build(BuildContext context) {
     throw UnimplementedError();
   }
@@ -45,6 +50,7 @@ class BlockComponentStatefulWidget extends StatefulWidget
     required this.configuration,
     this.showActions = false,
     this.actionBuilder,
+    this.actionTrailingBuilder,
   });
 
   @override
@@ -52,6 +58,9 @@ class BlockComponentStatefulWidget extends StatefulWidget
 
   @override
   final BlockComponentActionBuilder? actionBuilder;
+
+  @override
+  final BlockComponentActionTrailingBuilder? actionTrailingBuilder;
 
   @override
   final bool showActions;
@@ -84,9 +93,11 @@ mixin NestedBlockComponentStatefulWidgetMixin<
         Directionality.maybeOf(context) ?? TextDirection.ltr;
     if (node.children.isNotEmpty) {
       final firstChild = node.children.first;
-      final currentState =
-          firstChild.key.currentState as BlockComponentTextDirectionMixin?;
-      if (currentState != null) {
+
+      if (firstChild.key.currentState is BlockComponentTextDirectionMixin) {
+        final currentState =
+            firstChild.key.currentState as BlockComponentTextDirectionMixin;
+
         final lastDirection = currentState.lastDirection;
         direction = calculateNodeDirection(
           node: firstChild,

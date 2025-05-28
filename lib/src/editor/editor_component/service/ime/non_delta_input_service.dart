@@ -3,7 +3,11 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_diff.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
+
+// string from flutter callback
+const String _deleteBackwardSelectorName = 'deleteBackward:';
 
 class NonDeltaTextInputService extends TextInputService with TextInputClient {
   NonDeltaTextInputService({
@@ -26,7 +30,6 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
   @override
-  @override
   TextEditingValue? get currentTextEditingValue => _currentTextEditingValue;
 
   TextEditingValue? _currentTextEditingValue;
@@ -39,22 +42,26 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   final String debounceKey = 'updateEditingValue';
 
+  // when using gesture to move cursor on mobile, the floating cursor will be visible
+  bool _isFloatingCursorVisible = false;
+
   @override
-  Future<void> apply(List<TextEditingDelta> deltas) async {
+  Future<bool> apply(List<TextEditingDelta> deltas) async {
     final formattedDeltas = deltas.map((e) => e.format()).toList();
+    bool willApply = true;
     for (final delta in formattedDeltas) {
       _updateComposing(delta);
-
       if (delta is TextEditingDeltaInsertion) {
-        await onInsert(delta);
+        if (!(await onInsert(delta))) willApply = false;
       } else if (delta is TextEditingDeltaDeletion) {
-        await onDelete(delta);
+        if (!(await onDelete(delta))) willApply = false;
       } else if (delta is TextEditingDeltaReplacement) {
-        await onReplace(delta);
+        if (!(await onReplace(delta))) willApply = false;
       } else if (delta is TextEditingDeltaNonTextUpdate) {
-        await onNonTextUpdate(delta);
+        if (!(await onNonTextUpdate(delta))) willApply = false;
       }
     }
+    return willApply;
   }
 
   @override
@@ -84,7 +91,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     currentTextEditingValue = formattedValue;
 
-    Log.input.debug(
+    AppFlowyEditorLog.input.debug(
       'attach text editing value: $textEditingValue',
     );
   }
@@ -92,6 +99,16 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void updateEditingValue(TextEditingValue value) {
     if (currentTextEditingValue == value) {
+      return;
+    }
+
+    if (PlatformExtension.isIOS && _isFloatingCursorVisible) {
+      // on iOS, when using gesture to move cursor, this function will be called
+      // which may cause the unneeded delta being applied
+      // so we ignore the updateEditingValue event when the floating cursor is visible
+      AppFlowyEditorLog.editor.debug(
+        'ignore updateEditingValue event when the floating cursor is visible',
+      );
       return;
     }
 
@@ -103,9 +120,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       PlatformExtension.isMobile
           ? const Duration(milliseconds: 10)
           : Duration.zero,
-      () {
+      () async {
+        final oldValue = _currentTextEditingValue?.copyWith();
         currentTextEditingValue = value;
-        apply(deltas);
+        final willApply = await apply(deltas);
+        if (!willApply) {
+          currentTextEditingValue = oldValue;
+          _textInputConnection?.setEditingState(oldValue!);
+        }
       },
     );
   }
@@ -128,6 +150,11 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   @override
+  void clearComposingTextRange() {
+    composingTextRange = TextRange.empty;
+  }
+
+  @override
   void connectionClosed() {}
 
   @override
@@ -135,13 +162,13 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   Future<void> performAction(TextInputAction action) async {
-    Log.editor.debug('performAction: $action');
+    AppFlowyEditorLog.editor.debug('performAction: $action');
     return onPerformAction(action);
   }
 
   @override
   void performPrivateCommand(String action, Map<String, dynamic> data) {
-    Log.editor.debug('performPrivateCommand: $action, $data');
+    AppFlowyEditorLog.editor.debug('performPrivateCommand: $action, $data');
   }
 
   @override
@@ -155,6 +182,18 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
+    switch (point.state) {
+      case FloatingCursorDragState.Start:
+        _isFloatingCursorVisible = true;
+        break;
+      case FloatingCursorDragState.Update:
+        _isFloatingCursorVisible = true;
+        break;
+      case FloatingCursorDragState.End:
+        _isFloatingCursorVisible = false;
+        break;
+    }
+
     onFloatingCursor?.call(point);
   }
 
@@ -166,7 +205,41 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void performSelector(String selectorName) {
-    Log.editor.debug('performSelector: $selectorName');
+    AppFlowyEditorLog.editor.debug('performSelector: $selectorName');
+
+    final currentTextEditingValue = this.currentTextEditingValue?.unformat();
+    if (currentTextEditingValue == null) {
+      return;
+    }
+
+    if (selectorName == _deleteBackwardSelectorName) {
+      final oldText = currentTextEditingValue.text;
+      final selection = currentTextEditingValue.selection;
+      final deleteRange = selection.isCollapsed
+          ? TextRange(
+              start: selection.start - 1,
+              end: selection.end,
+            )
+          : selection;
+      final deleteSelection = TextSelection(
+        baseOffset: selection.baseOffset - 1,
+        extentOffset: selection.extentOffset - 1,
+      );
+
+      if (!deleteRange.isValid) {
+        return;
+      }
+
+      // valid the result
+      onDelete(
+        TextEditingDeltaDeletion(
+          oldText: oldText,
+          deletedRange: deleteRange,
+          selection: deleteSelection,
+          composing: TextRange.empty,
+        ),
+      );
+    }
   }
 
   @override
@@ -180,28 +253,22 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   }
 
   void _updateComposing(TextEditingDelta delta) {
-    if (delta is! TextEditingDeltaNonTextUpdate) {
-      if (composingTextRange != null &&
-          composingTextRange!.start != -1 &&
-          delta.composing.end != -1) {
-        composingTextRange = TextRange(
-          start: composingTextRange!.start,
-          end: delta.composing.end,
-        );
-      } else {
-        composingTextRange = delta.composing;
-      }
-    }
-
-    if ((PlatformExtension.isWindows ||
-            PlatformExtension.isLinux ||
-            PlatformExtension.isMacOS) &&
-        delta is TextEditingDeltaNonTextUpdate) {
+    if (delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
+    } else {
+      composingTextRange = composingTextRange != null &&
+              composingTextRange!.start != -1 &&
+              delta.composing.end != -1
+          ? TextRange(
+              start: composingTextRange!.start,
+              end: delta.composing.end,
+            )
+          : delta.composing;
     }
 
     // solve the issue where the Chinese IME doesn't continue deleting after the input content has been deleted.
-    if (composingTextRange?.isCollapsed ?? false) {
+    if (PlatformExtension.isMacOS &&
+        (composingTextRange?.isCollapsed ?? false)) {
       composingTextRange = TextRange.empty;
     }
   }
@@ -226,12 +293,27 @@ extension on TextEditingValue {
   TextEditingValue format() {
     final text = _whitespace + this.text;
     final selection = this.selection >> _len;
-    final composing = this.composing >> _len;
+
+    TextRange composing = this.composing >> _len;
+    final textLength = text.length;
+
+    // check invalid composing
+    if (composing.start > textLength || composing.end > textLength) {
+      composing = TextRange.empty;
+    }
 
     return TextEditingValue(
       text: text,
       selection: selection,
       composing: composing,
+    );
+  }
+
+  TextEditingValue unformat() {
+    return TextEditingValue(
+      text: text << _len,
+      selection: selection << _len,
+      composing: composing << _len,
     );
   }
 }
@@ -251,14 +333,18 @@ extension on TextEditingDelta {
   }
 }
 
-extension on TextEditingDeltaInsertion {
-  TextEditingDeltaInsertion format() => TextEditingDeltaInsertion(
-        oldText: oldText << _len,
-        textInserted: textInserted,
-        insertionOffset: insertionOffset - _len,
-        selection: selection << _len,
-        composing: composing << _len,
-      );
+extension TextEditingDeltaInsertionExtension on TextEditingDeltaInsertion {
+  TextEditingDeltaInsertion format() {
+    final startWithSpace = oldText.startsWith(_whitespace);
+    return TextEditingDeltaInsertion(
+      oldText: startWithSpace ? oldText << _len : oldText,
+      textInserted: textInserted,
+      insertionOffset:
+          startWithSpace ? insertionOffset - _len : insertionOffset,
+      selection: startWithSpace ? selection << _len : selection,
+      composing: startWithSpace ? composing << _len : composing,
+    );
+  }
 }
 
 extension on TextEditingDeltaDeletion {

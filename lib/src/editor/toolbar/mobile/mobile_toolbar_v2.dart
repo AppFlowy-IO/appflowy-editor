@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const String selectionExtraInfoDisableMobileToolbarKey = 'disableMobileToolbar';
@@ -120,7 +123,6 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
                 true) {
           return const SizedBox.shrink();
         }
-
         return RepaintBoundary(
           child: MobileToolbarTheme(
             backgroundColor: widget.backgroundColor,
@@ -267,12 +269,19 @@ class _MobileToolbarState extends State<_MobileToolbar>
     // if the keyboard is not closed initiative, we need to close the menu at same time
     if (!closeKeyboardInitiative &&
         cachedKeyboardHeight.value != 0 &&
+        !showMenuNotifier.value &&
         height == 0) {
       widget.editorState.selection = null;
     }
 
     if (canUpdateCachedKeyboardHeight) {
       cachedKeyboardHeight.value = height;
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        if (cachedKeyboardHeight.value != 0) {
+          cachedKeyboardHeight.value +=
+              MediaQuery.of(context).viewPadding.bottom;
+        }
+      }
     }
 
     if (height == 0) {
@@ -331,8 +340,8 @@ class _MobileToolbarState extends State<_MobileToolbar>
                 } else {
                   canUpdateCachedKeyboardHeight = false;
                   selectedMenuIndex = index;
-                  showItemMenu();
                   closeKeyboardInitiative = true;
+                  showItemMenu();
                   _closeKeyboard();
                 }
               },
@@ -384,20 +393,30 @@ class _MobileToolbarState extends State<_MobileToolbar>
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
           builder: (_, showingMenu, __) {
+            var keyboardHeight = height;
+            if (defaultTargetPlatform == TargetPlatform.android) {
+              if (!showingMenu) {
+                keyboardHeight = max(
+                  keyboardHeight,
+                  MediaQuery.of(context).viewInsets.bottom,
+                );
+              }
+            }
             return SizedBox(
-              height: height,
+              height: keyboardHeight,
               child: (showingMenu && selectedMenuIndex != null)
                   ? MobileToolbarItemMenu(
                       editorState: widget.editorState,
-                      itemMenuBuilder: () =>
-                          widget
-                              .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
-                              .call(
-                            context,
-                            widget.editorState,
-                            this,
-                          ) ??
-                          const SizedBox.shrink(),
+                      itemMenuBuilder: () {
+                        final menu = widget
+                            .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
+                            .call(
+                          context,
+                          widget.editorState,
+                          this,
+                        );
+                        return menu ?? const SizedBox.shrink();
+                      },
                     )
                   : const SizedBox.shrink(),
             );

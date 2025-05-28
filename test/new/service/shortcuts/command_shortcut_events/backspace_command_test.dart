@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -171,6 +172,32 @@ void main() async {
           node.attributes[ParagraphBlockKeys.textDirection],
           blockComponentTextDirectionRTL,
         );
+      });
+
+      test("backspace when all is selected", () async {
+        final document = Document.blank().addParagraphs(
+          5,
+          initialText: text,
+        );
+        final editorState = EditorState(document: document);
+
+        final selection = Selection(
+          start: Position(path: [0], offset: 0),
+          end: Position(path: [4], offset: text.length),
+        );
+        editorState.updateSelectionWithReason(
+          selection,
+          reason: SelectionUpdateReason.selectAll,
+        );
+
+        final result = backspaceCommand.execute(editorState);
+        expect(result, KeyEventResult.handled);
+
+        expect(editorState.selection, Selection.collapsed(Position(path: [0])));
+        expect(editorState.document.root.children.length, 1);
+
+        final node = editorState.getNodeAtPath([0])!;
+        expect(node.delta!.toPlainText(), ''); // empty
       });
     });
 
@@ -510,5 +537,144 @@ void main() async {
 
       await editor.dispose();
     });
+  });
+
+  group('backspaceCommand - table tests', () {
+    // Before
+    // |Cell in row 1|
+    // 🔽 delete from here
+    // |Cell in row 2|
+    // |Cell in row 3|
+    // After
+    // |Cell in row 1|
+    // |Cell in row 2|
+    // |Cell in row 3|
+    testWidgets('Delete across multiple table rows,', (tester) async {
+      const textRow1 = 'Cell in row 1';
+      const textRow2 = 'Cell in row 2';
+      const textRow3 = 'Cell in row 3';
+
+      final tableNode = TableNode.fromList([
+        [textRow1, textRow2, textRow3],
+      ]);
+
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+
+      final selection = Selection.single(
+        path: getCellNode(tableNode.node, 0, 1)!.childAtIndexOrNull(0)!.path,
+        startOffset: 0,
+        endOffset: 0,
+      );
+
+      await editor.updateSelection(selection);
+
+      // Test press ALT + Backspace, while skip in-table backspace command.
+      await editor.pressKey(
+        key: LogicalKeyboardKey.backspace,
+        isAltPressed: true,
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        getCellNode(tableNode.node, 0, 0)!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
+        textRow1,
+      );
+
+      expect(
+        getCellNode(tableNode.node, 0, 1)!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
+        textRow2,
+      );
+
+      expect(
+        getCellNode(tableNode.node, 0, 2)!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
+        textRow3,
+      );
+
+      // Ensure the cursor is at the start of the new second row
+      expect(
+        editor.selection,
+        Selection.collapsed(Position(path: [0, 1, 0], offset: 0)),
+      );
+
+      await editor.dispose();
+    });
+  });
+
+  // Before
+  //               🔽 delete from here
+  // |Cell in col 1|Cell in col 2|Cell in col 3|
+  // After
+  // |Cell in col 1|Cell in col 2|Cell in col 3|
+  testWidgets('Delete across multiple table columns', (tester) async {
+    const textCol1 = 'Cell in col 1';
+    const textCol2 = 'Cell in col 2';
+    const textCol3 = 'Cell in col 3';
+
+    final tableNode = TableNode.fromList([
+      [textCol1],
+      [textCol2],
+      [textCol3],
+    ]);
+
+    final editor = tester.editor..addNode(tableNode.node);
+
+    await editor.startTesting();
+
+    final selection = Selection.single(
+      path: getCellNode(tableNode.node, 1, 0)!.childAtIndexOrNull(0)!.path,
+      startOffset: 0,
+      endOffset: 0,
+    );
+
+    await editor.updateSelection(selection);
+
+    // Test press ALT + Backspace, while skip in-table backspace command.
+    await editor.pressKey(
+      key: LogicalKeyboardKey.backspace,
+      isAltPressed: true,
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      getCellNode(tableNode.node, 0, 0)!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
+      textCol1,
+    );
+
+    expect(
+      getCellNode(tableNode.node, 1, 0)!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
+      textCol2,
+    );
+
+    expect(
+      getCellNode(tableNode.node, 2, 0)!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
+      textCol3,
+    );
+
+    expect(
+      editor.selection,
+      Selection.collapsed(Position(path: [0, 1, 0], offset: 0)),
+    );
+
+    await editor.dispose();
   });
 }

@@ -14,12 +14,12 @@ void main() async {
 
       final editor = tester.editor;
       editor.editorState.logConfiguration
-        ..level = LogLevel.all
+        ..level = AppFlowyEditorLogLevel.all
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
+      AppFlowyEditorLog.editor.debug(text);
       expect(logs.last.contains('DEBUG'), true);
       expect(logs.length, 1);
     });
@@ -28,19 +28,19 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.all
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.all
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
+      AppFlowyEditorLog.editor.debug(text);
       expect(logs.last.contains('DEBUG'), true);
-      Log.editor.info(text);
+      AppFlowyEditorLog.editor.info(text);
       expect(logs.last.contains('INFO'), true);
-      Log.editor.warn(text);
+      AppFlowyEditorLog.editor.warn(text);
       expect(logs.last.contains('WARN'), true);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.error(text);
       expect(logs.last.contains('ERROR'), true);
 
       expect(logs.length, 4);
@@ -50,16 +50,16 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.off
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.off
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
-      Log.editor.info(text);
-      Log.editor.warn(text);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.debug(text);
+      AppFlowyEditorLog.editor.info(text);
+      AppFlowyEditorLog.editor.warn(text);
+      AppFlowyEditorLog.editor.error(text);
 
       expect(logs.length, 0);
     });
@@ -68,16 +68,16 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.error
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.error
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
-      Log.editor.info(text);
-      Log.editor.warn(text);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.debug(text);
+      AppFlowyEditorLog.editor.info(text);
+      AppFlowyEditorLog.editor.warn(text);
+      AppFlowyEditorLog.editor.error(text);
 
       expect(logs.length, 1);
     });
@@ -86,16 +86,16 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.warn
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.warn
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
-      Log.editor.info(text);
-      Log.editor.warn(text);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.debug(text);
+      AppFlowyEditorLog.editor.info(text);
+      AppFlowyEditorLog.editor.warn(text);
+      AppFlowyEditorLog.editor.error(text);
 
       expect(logs.length, 2);
     });
@@ -104,16 +104,16 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.info
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.info
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
-      Log.editor.info(text);
-      Log.editor.warn(text);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.debug(text);
+      AppFlowyEditorLog.editor.info(text);
+      AppFlowyEditorLog.editor.warn(text);
+      AppFlowyEditorLog.editor.error(text);
 
       expect(logs.length, 3);
     });
@@ -122,16 +122,16 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.debug
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.debug
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
-      Log.editor.info(text);
-      Log.editor.warn(text);
-      Log.editor.error(text);
+      AppFlowyEditorLog.editor.debug(text);
+      AppFlowyEditorLog.editor.info(text);
+      AppFlowyEditorLog.editor.warn(text);
+      AppFlowyEditorLog.editor.error(text);
 
       expect(logs.length, 4);
     });
@@ -140,28 +140,28 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
 
       final List<String> logs = [];
-      LogConfiguration()
-        ..level = LogLevel.all
+      AppFlowyLogConfiguration()
+        ..level = AppFlowyEditorLogLevel.all
         ..handler = (message) {
           logs.add(message);
         };
 
-      Log.editor.debug(text);
+      AppFlowyEditorLog.editor.debug(text);
       expect(logs.last.contains('editor'), true);
 
-      Log.selection.debug(text);
+      AppFlowyEditorLog.selection.debug(text);
       expect(logs.last.contains('selection'), true);
 
-      Log.keyboard.debug(text);
+      AppFlowyEditorLog.keyboard.debug(text);
       expect(logs.last.contains('keyboard'), true);
 
-      Log.input.debug(text);
+      AppFlowyEditorLog.input.debug(text);
       expect(logs.last.contains('input'), true);
 
-      Log.scroll.debug(text);
+      AppFlowyEditorLog.scroll.debug(text);
       expect(logs.last.contains('scroll'), true);
 
-      Log.ui.debug(text);
+      AppFlowyEditorLog.ui.debug(text);
       expect(logs.last.contains('ui'), true);
 
       expect(logs.length, 6);

@@ -4,6 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/desktop_editor.dart';
 import 'package:example/pages/mobile_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class Editor extends StatefulWidget {
   const Editor({
@@ -95,7 +96,7 @@ class _EditorState extends State<Editor> {
 
                   editorState.logConfiguration
                     ..handler = debugPrint
-                    ..level = LogLevel.off;
+                    ..level = AppFlowyEditorLogLevel.all;
 
                   editorState.transactionStream.listen((event) {
                     if (event.$1 == TransactionTime.after) {
@@ -109,12 +110,12 @@ class _EditorState extends State<Editor> {
                   registerWordCounter();
                 }
 
-                if (PlatformExtension.isDesktopOrWeb) {
+                if (UniversalPlatform.isDesktopOrWeb) {
                   return DesktopEditor(
                     editorState: editorState!,
                     textDirection: widget.textDirection,
                   );
-                } else if (PlatformExtension.isMobile) {
+                } else if (UniversalPlatform.isMobile) {
                   return MobileEditor(editorState: editorState!);
                 }
               }
@@ -129,10 +130,10 @@ class _EditorState extends State<Editor> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(8),
-                bottomLeft: PlatformExtension.isMobile
+                bottomLeft: UniversalPlatform.isMobile
                     ? const Radius.circular(8)
                     : Radius.zero,
               ),

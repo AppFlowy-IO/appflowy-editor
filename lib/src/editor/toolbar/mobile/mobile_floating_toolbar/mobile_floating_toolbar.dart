@@ -25,11 +25,13 @@ class MobileFloatingToolbar extends StatefulWidget {
     required this.editorScrollController,
     required this.child,
     required this.toolbarBuilder,
+    required this.floatingToolbarHeight,
   });
 
   final EditorState editorState;
   final EditorScrollController editorScrollController;
   final Widget child;
+  final double floatingToolbarHeight;
   final Widget Function(
     BuildContext context,
     Offset anchor,
@@ -159,6 +161,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
   }
 
   final String _debounceKey = 'show the toolbar';
+
   void _clear() {
     Debounce.cancel(_debounceKey);
 
@@ -185,9 +188,9 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     if (rects.isEmpty) {
       return;
     }
-
     final rect = _findSuitableRect(rects);
-    if (rect.isEmpty) {
+    // Empty is determined only if there is only one selection area
+    if (rects.length <= 1 && rect.isEmpty) {
       return;
     }
     _toolbarContainer = OverlayEntry(
@@ -250,8 +253,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     final right = (rect.right - editorOffset.dx).abs();
     final width = editorSize.width;
     final threshold = width / 3.0;
-    final top = rect.top < floatingToolbarHeight
-        ? rect.bottom + floatingToolbarHeight
+    final top = rect.top < widget.floatingToolbarHeight
+        ? rect.bottom + widget.floatingToolbarHeight
         : rect.top;
     if (left <= threshold) {
       // show in left

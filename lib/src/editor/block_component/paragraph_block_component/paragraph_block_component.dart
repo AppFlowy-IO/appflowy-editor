@@ -56,13 +56,15 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
   @override
-  bool validate(Node node) {
-    return node.delta != null;
-  }
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -71,6 +73,7 @@ class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
     this.showPlaceholder,
   });
@@ -163,12 +166,17 @@ class _ParagraphBlockComponentWidgetState
             delegate: this,
             node: widget.node,
             editorState: editorState,
-            textAlign: alignment?.toTextAlign,
+            textAlign: alignment?.toTextAlign ?? textAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
-            textSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(textStyle),
+            textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
+              textStyleWithTextSpan(
+                textSpan: textSpan,
+              ),
+            ),
             placeholderTextSpanDecorator: (textSpan) =>
-                textSpan.updateTextStyle(placeholderTextStyle),
+                textSpan.updateTextStyle(
+              placeholderTextStyleWithTextSpan(textSpan: textSpan),
+            ),
             textDirection: textDirection,
             cursorColor: editorState.editorStyle.cursorColor,
             selectionColor: editorState.editorStyle.selectionColor,
@@ -203,6 +211,7 @@ class _ParagraphBlockComponentWidgetState
       child = BlockComponentActionWrapper(
         node: node,
         actionBuilder: widget.actionBuilder!,
+        actionTrailingBuilder: widget.actionTrailingBuilder,
         child: child,
       );
     }

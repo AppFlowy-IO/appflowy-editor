@@ -87,11 +87,12 @@ class ErrorBlockComponentBuilder extends BlockComponentBuilder {
         blockComponentContext,
         state,
       ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
-
-  @override
-  bool validate(Node node) => true;
 }
 
 class ErrorBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -100,6 +101,7 @@ class ErrorBlockComponentWidget extends BlockComponentStatefulWidget {
     required super.node,
     super.showActions,
     super.actionBuilder,
+    super.actionTrailingBuilder,
     super.configuration = const BlockComponentConfiguration(),
   });
 

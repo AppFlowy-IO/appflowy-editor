@@ -329,7 +329,7 @@ class MockIMEInput {
     }
     await imeInput.apply([
       TextEditingDeltaInsertion(
-        oldText: ' ${delta.toPlainText()}', // TODO: fix this workaround
+        oldText: ' ${delta.toPlainText()}',
         textInserted: text,
         insertionOffset: selection.startIndex + 1,
         selection: TextSelection.collapsed(

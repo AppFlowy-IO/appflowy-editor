@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../util/util.dart';
 
 void main() async {
@@ -209,6 +210,39 @@ void main() async {
         isItalic,
         false,
       );
+    });
+
+    // skip the italic when the text is wrapped with code
+    // Before
+    // `App_Flowy|`
+    // After
+    // `App_Flowy_`
+    test('skip the italic when the text is wrapped with code', () async {
+      const text = 'App_Flowy';
+      final document = Document.blank().addParagraphs(
+        1,
+        builder: (index) => Delta()
+          ..insert(
+            text,
+            attributes: {
+              AppFlowyRichTextKeys.code: true,
+            },
+          ),
+      );
+      final editorState = EditorState(document: document);
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: text.length),
+      );
+      editorState.selection = selection;
+
+      final result = await formatUnderscoreToItalic.execute(editorState);
+      expect(result, false);
+      final after = editorState.getNodeAtPath([0])!;
+      expect(after.delta!.toPlainText(), text);
+      final isItalic = after.delta!.any(
+        (element) => element.attributes?[AppFlowyRichTextKeys.italic] == true,
+      );
+      expect(isItalic, false);
     });
   });
 }

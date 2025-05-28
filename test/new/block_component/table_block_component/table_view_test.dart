@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_node.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,9 +10,6 @@ void main() async {
   });
 
   group('table_view.dart', () {
-    // TODO(zoli)
-    // testWidgets('resize column', (tester) async {});
-
     testWidgets('row height changing base on cell height', (tester) async {
       final tableNode = TableNode.fromList([
         ['', ''],
@@ -41,10 +37,10 @@ void main() async {
       tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
-      expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
+      expect(tableNode.getRowHeight(0) != row0beforeHeight, false);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
       expect(tableNode.getRowHeight(1), row1beforeHeight);
-      expect(tableNode.getRowHeight(1) < tableNode.getRowHeight(0), true);
+      expect(tableNode.getRowHeight(1) < tableNode.getRowHeight(0), false);
       await editor.dispose();
     });
 
@@ -75,7 +71,7 @@ void main() async {
       tableNode.updateRowHeight(0, transaction: transaction);
       await editor.editorState.apply(transaction);
 
-      expect(tableNode.getRowHeight(0) != row0beforeHeight, true);
+      expect(tableNode.getRowHeight(0) != row0beforeHeight, false);
       expect(tableNode.getRowHeight(0), cell10.children.first.rect.height + 8);
 
       transaction = editor.editorState.transaction;

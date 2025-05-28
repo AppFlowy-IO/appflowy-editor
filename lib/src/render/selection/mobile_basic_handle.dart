@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
+import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,6 +66,7 @@ abstract class _IDragHandle extends StatelessWidget {
     this.handleWidth = 2.0,
     this.handleBallWidth = 6.0,
     this.debugPaintSizeEnabled = false,
+    this.onDragging,
     required this.handleType,
   });
 
@@ -75,6 +76,7 @@ abstract class _IDragHandle extends StatelessWidget {
   final double handleBallWidth;
   final HandleType handleType;
   final bool debugPaintSizeEnabled;
+  final ValueChanged<bool>? onDragging;
 }
 
 class DragHandle extends _IDragHandle {
@@ -86,13 +88,14 @@ class DragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   @override
   Widget build(BuildContext context) {
     Widget child;
 
-    if (Platform.isIOS) {
+    if (PlatformExtension.isIOS) {
       child = _IOSDragHandle(
         handleHeight: handleHeight,
         handleColor: handleColor,
@@ -100,8 +103,9 @@ class DragHandle extends _IDragHandle {
         handleBallWidth: handleBallWidth,
         handleType: handleType,
         debugPaintSizeEnabled: debugPaintSizeEnabled,
+        onDragging: onDragging,
       );
-    } else if (Platform.isAndroid) {
+    } else if (PlatformExtension.isAndroid) {
       child = _AndroidDragHandle(
         handleHeight: handleHeight,
         handleColor: handleColor,
@@ -109,6 +113,7 @@ class DragHandle extends _IDragHandle {
         handleBallWidth: handleBallWidth,
         handleType: handleType,
         debugPaintSizeEnabled: debugPaintSizeEnabled,
+        onDragging: onDragging,
       );
     } else {
       throw UnsupportedError('Unsupported platform');
@@ -116,13 +121,13 @@ class DragHandle extends _IDragHandle {
 
     if (debugPaintSizeEnabled) {
       child = ColoredBox(
-        color: Colors.red.withOpacity(0.5),
+        color: Colors.red.withValues(alpha: 0.5),
         child: child,
       );
     }
 
     if (handleType != HandleType.none && handleType != HandleType.collapsed) {
-      final offset = Platform.isIOS ? -handleWidth : 0.0;
+      final offset = PlatformExtension.isIOS ? -handleWidth : 0.0;
       child = Stack(
         clipBehavior: Clip.none,
         children: [
@@ -152,6 +157,7 @@ class _IOSDragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   @override
@@ -222,18 +228,21 @@ class _IOSDragHandle extends _IDragHandle {
           details.translate(0, offset),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanUpdate: (details) {
         editorState.service.selectionService.onPanUpdate(
           details.translate(0, offset),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanEnd: (details) {
         editorState.service.selectionService.onPanEnd(
           details,
           handleType.dragMode,
         );
+        onDragging?.call(false);
       },
       child: child,
     );
@@ -251,6 +260,7 @@ class _AndroidDragHandle extends _IDragHandle {
     super.handleBallWidth,
     required super.handleType,
     super.debugPaintSizeEnabled,
+    super.onDragging,
   });
 
   Selection? selection;
@@ -327,6 +337,7 @@ class _AndroidDragHandle extends _IDragHandle {
           details.translate(0, -ballWidth),
           handleType.dragMode,
         );
+        onDragging?.call(true);
       },
       onPanUpdate: (details) {
         final selection = editorState.service.selectionService.onPanUpdate(
@@ -337,12 +348,14 @@ class _AndroidDragHandle extends _IDragHandle {
           HapticFeedback.selectionClick();
         }
         this.selection = selection;
+        onDragging?.call(true);
       },
       onPanEnd: (details) {
         editorState.service.selectionService.onPanEnd(
           details,
           handleType.dragMode,
         );
+        onDragging?.call(false);
       },
       child: child,
     );
