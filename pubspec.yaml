@@ -18,8 +18,8 @@ platforms:
   web:
 
 environment:
-  sdk: ">=3.1.5 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:
@@ -28,12 +28,12 @@ dependencies:
   collection: ^1.18.0
   device_info_plus: ^10.1.0
   diff_match_patch: ^0.4.1
-  file_picker: ^8.0.2
+  file_picker: ^10.1.9
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.0.6
   html: ^0.15.0
-  intl: ^0.19.0
+  intl: 0.20.2
   intl_utils: ^2.8.2
   keyboard_height_plugin: ^0.0.4
   logging: ^1.2.0
@@ -52,7 +52,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   network_image_mock: ^2.1.1
   mockito: ^5.4.1
   leak_tracker: ^10.0.0
