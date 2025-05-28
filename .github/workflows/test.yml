@@ -30,10 +30,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.19.0
         with:
           channel: "stable"
-          flutter-version: "3.29.3"
+          flutter-version-file: pubspec.yaml
           cache: true
 
       - name: Run tests
