@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final quoteMobileToolbarItem = MobileToolbarItem.action(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.quote,
     color: MobileToolbarTheme.of(context).iconColor,
   ),

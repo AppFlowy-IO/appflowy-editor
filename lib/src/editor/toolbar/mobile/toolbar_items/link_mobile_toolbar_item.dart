@@ -2,7 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final linkMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.link,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
@@ -92,23 +92,16 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                   horizontal: 8,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: style.itemOutlineColor,
-                  ),
+                  borderSide: BorderSide(color: style.itemOutlineColor),
                   borderRadius: BorderRadius.circular(style.borderRadius),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: style.itemOutlineColor,
-                  ),
+                  borderSide: BorderSide(color: style.itemOutlineColor),
                   borderRadius: BorderRadius.circular(style.borderRadius),
                 ),
                 suffixIcon: IconButton(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  icon: Icon(
-                    Icons.clear_rounded,
-                    color: style.foregroundColor,
-                  ),
+                  icon: Icon(Icons.clear_rounded, color: style.foregroundColor),
                   onPressed: _textEditingController.clear,
                   splashRadius: 5,
                 ),
@@ -132,17 +125,16 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                       elevation: WidgetStateProperty.all(0),
                       shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(style.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            style.borderRadius,
+                          ),
                         ),
                       ),
                       side: WidgetStateBorderSide.resolveWith(
                         (states) => BorderSide(color: style.outlineColor),
                       ),
                     ),
-                    child: Text(
-                      AppFlowyEditorL10n.current.cancel,
-                    ),
+                    child: Text(AppFlowyEditorL10n.current.cancel),
                   ),
                 ),
                 SizedBox(width: style.buttonSpacing),
@@ -163,14 +155,13 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
                       elevation: WidgetStateProperty.all(0),
                       shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(style.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            style.borderRadius,
+                          ),
                         ),
                       ),
                     ),
-                    child: Text(
-                      AppFlowyEditorL10n.current.done,
-                    ),
+                    child: Text(AppFlowyEditorL10n.current.done),
                   ),
                 ),
               ],

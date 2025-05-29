@@ -7,15 +7,17 @@ const errorBlockComponentBuilderKey = 'errorBlockComponentBuilderKey';
 // it is only for test now.
 bool forceShowBlockAction = false;
 
-typedef BlockActionBuilder = Widget Function(
-  BlockComponentContext blockComponentContext,
-  BlockComponentActionState state,
-);
+typedef BlockActionBuilder =
+    Widget Function(
+      BlockComponentContext blockComponentContext,
+      BlockComponentActionState state,
+    );
 
-typedef BlockActionTrailingBuilder = Widget Function(
-  BlockComponentContext blockComponentContext,
-  BlockComponentActionState state,
-);
+typedef BlockActionTrailingBuilder =
+    Widget Function(
+      BlockComponentContext blockComponentContext,
+      BlockComponentActionState state,
+    );
 
 typedef BlockComponentValidate = bool Function(Node node);
 
@@ -40,10 +42,10 @@ abstract class BlockComponentBuilder with BlockComponentSelectable {
 
   bool Function(Node node) showActions = (_) => false;
 
-  BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
+  BlockActionBuilder actionBuilder = (_, _) => const SizedBox.shrink();
 
-  BlockActionTrailingBuilder actionTrailingBuilder =
-      (_, __) => const SizedBox.shrink();
+  BlockActionTrailingBuilder actionTrailingBuilder = (_, _) =>
+      const SizedBox.shrink();
 
   BlockComponentConfiguration configuration =
       const BlockComponentConfiguration();
@@ -58,10 +60,8 @@ mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
   /// the end position of the block component.
   ///
   /// For the text block component, the end position is always the length of the text.
-  Position end(Node node) => Position(
-        path: node.path,
-        offset: node.delta?.length ?? 0,
-      );
+  Position end(Node node) =>
+      Position(path: node.path, offset: node.delta?.length ?? 0);
 }
 
 abstract class BlockComponentRendererService {
@@ -106,10 +106,7 @@ abstract class BlockComponentRendererService {
     BlockComponentWrapper? wrapper,
   });
 
-  List<Widget> buildList(
-    BuildContext buildContext,
-    Iterable<Node> nodes,
-  ) {
+  List<Widget> buildList(BuildContext buildContext, Iterable<Node> nodes) {
     return nodes
         .map((node) => build(buildContext, node))
         .toList(growable: false);
@@ -168,8 +165,9 @@ class BlockComponentRenderer extends BlockComponentRendererService {
 
   @override
   void register(String type, BlockComponentBuilder builder) {
-    AppFlowyEditorLog.editor
-        .info('register block component builder for type($type)');
+    AppFlowyEditorLog.editor.info(
+      'register block component builder for type($type)',
+    );
     if (type.isEmpty) {
       throw ArgumentError('type should not be empty');
     }

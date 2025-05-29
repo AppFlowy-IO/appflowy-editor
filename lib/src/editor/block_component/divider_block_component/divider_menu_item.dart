@@ -9,7 +9,7 @@ SelectionMenuItem dividerMenuItem = SelectionMenuItem(
     style: style,
   ),
   keywords: ['horizontal rule', 'divider'],
-  handler: (editorState, _, __) {
+  handler: (editorState, _, _) {
     final selection = editorState.selection;
     if (selection == null || !selection.isCollapsed) {
       return;

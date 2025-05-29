@@ -55,16 +55,16 @@ class CustomBlockIcon extends StatelessWidget {
     final customBlockComponentBuilders = {
       ...standardBlockComponentBuilderMap,
       BulletedListBlockKeys.type: BulletedListBlockComponentBuilder(
-        iconBuilder: (_, __) => Icon(iconMap[BulletedListBlockKeys.type]),
+        iconBuilder: (_, _) => Icon(iconMap[BulletedListBlockKeys.type]),
       ),
       NumberedListBlockKeys.type: NumberedListBlockComponentBuilder(
-        iconBuilder: (_, __, ___) => Icon(iconMap[NumberedListBlockKeys.type]),
+        iconBuilder: (_, _, _) => Icon(iconMap[NumberedListBlockKeys.type]),
       ),
       TodoListBlockKeys.type: TodoListBlockComponentBuilder(
-        iconBuilder: (_, __, ___) => Icon(iconMap[TodoListBlockKeys.type]),
+        iconBuilder: (_, _, _) => Icon(iconMap[TodoListBlockKeys.type]),
       ),
       QuoteBlockKeys.type: QuoteBlockComponentBuilder(
-        iconBuilder: (_, __) => Icon(iconMap[QuoteBlockKeys.type]),
+        iconBuilder: (_, _) => Icon(iconMap[QuoteBlockKeys.type]),
       ),
     };
 

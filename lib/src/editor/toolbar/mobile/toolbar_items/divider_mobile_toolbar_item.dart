@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final dividerMobileToolbarItem = MobileToolbarItem.action(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.divider,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
@@ -28,8 +28,9 @@ final dividerMobileToolbarItem = MobileToolbarItem.action(
         next.delta?.isNotEmpty == true) {
       transaction.insertNode(insertedPath, paragraphNode());
     }
-    transaction.afterSelection =
-        Selection.collapsed(Position(path: insertedPath.next));
+    transaction.afterSelection = Selection.collapsed(
+      Position(path: insertedPath.next),
+    );
     editorState.apply(transaction);
   },
 );

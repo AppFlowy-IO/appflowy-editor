@@ -6,11 +6,11 @@ MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
   List<ColorOption>? backgroundColorOptions,
 }) {
   return MobileToolbarItem.withMenu(
-    itemIconBuilder: (context, __, ___) => AFMobileIcon(
+    itemIconBuilder: (context, _, _) => AFMobileIcon(
       afMobileIcons: AFMobileIcons.color,
       color: MobileToolbarTheme.of(context).iconColor,
     ),
-    itemMenuBuilder: (_, editorState, ___) {
+    itemMenuBuilder: (_, editorState, _) {
       final selection = editorState.selection;
       if (selection == null) {
         return const SizedBox.shrink();
@@ -49,9 +49,7 @@ class _TextAndBackgroundColorMenuState
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
     List<Tab> myTabs = <Tab>[
-      Tab(
-        text: AppFlowyEditorL10n.current.textColor,
-      ),
+      Tab(text: AppFlowyEditorL10n.current.textColor),
       Tab(text: AppFlowyEditorL10n.current.backgroundColor),
     ];
 

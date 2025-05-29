@@ -84,16 +84,12 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: widget.child,
-        ),
+        Expanded(child: widget.child),
         // add a bottom offset to make sure the toolbar is above the keyboard
         ValueListenableBuilder(
           valueListenable: isKeyboardShow,
-          builder: (context, isKeyboardShow, __) {
-            return SizedBox(
-              height: isKeyboardShow ? widget.toolbarHeight : 0,
-            );
+          builder: (context, isKeyboardShow, _) {
+            return SizedBox(height: isKeyboardShow ? widget.toolbarHeight : 0);
           },
         ),
       ],
@@ -115,11 +111,12 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
 
     Widget child = ValueListenableBuilder<Selection?>(
       valueListenable: widget.editorState.selectionNotifier,
-      builder: (_, Selection? selection, __) {
+      builder: (_, Selection? selection, _) {
         // if the selection is null, hide the toolbar
         if (selection == null ||
-            widget.editorState.selectionExtraInfo?[
-                    selectionExtraInfoDisableMobileToolbarKey] ==
+            widget
+                    .editorState
+                    .selectionExtraInfo?[selectionExtraInfoDisableMobileToolbarKey] ==
                 true) {
           return const SizedBox.shrink();
         }
@@ -153,14 +150,7 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
 
     child = Stack(
       children: [
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: Material(
-            child: child,
-          ),
-        ),
+        Positioned(left: 0, right: 0, bottom: 0, child: Material(child: child)),
       ],
     );
 
@@ -177,10 +167,7 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
 }
 
 class _MobileToolbar extends StatefulWidget {
-  const _MobileToolbar({
-    required this.editorState,
-    required this.toolbarItems,
-  });
+  const _MobileToolbar({required this.editorState, required this.toolbarItems});
 
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
@@ -249,10 +236,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
     //  - if the menu is shown, the toolbar will be pushed up by the height of the menu
     //  - otherwise, add a spacer to push the toolbar up when the keyboard is shown
     return Column(
-      children: [
-        _buildToolbar(context),
-        _buildMenuOrSpacer(context),
-      ],
+      children: [_buildToolbar(context), _buildMenuOrSpacer(context)],
     );
   }
 
@@ -278,8 +262,9 @@ class _MobileToolbarState extends State<_MobileToolbar>
       cachedKeyboardHeight.value = height;
       if (defaultTargetPlatform == TargetPlatform.android) {
         if (cachedKeyboardHeight.value != 0) {
-          cachedKeyboardHeight.value +=
-              MediaQuery.of(context).viewPadding.bottom;
+          cachedKeyboardHeight.value += MediaQuery.of(
+            context,
+          ).viewPadding.bottom;
         }
       }
     }
@@ -299,9 +284,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
       height: style.toolbarHeight,
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            color: style.itemOutlineColor,
-          ),
+          top: BorderSide(color: style.itemOutlineColor),
           bottom: BorderSide(color: style.itemOutlineColor),
         ),
         color: style.backgroundColor,
@@ -320,10 +303,13 @@ class _MobileToolbarState extends State<_MobileToolbar>
                   closeItemMenu();
                   _showKeyboard();
                   // update the cached keyboard height after the keyboard is shown
-                  Debounce.debounce('canUpdateCachedKeyboardHeight',
-                      const Duration(milliseconds: 500), () {
-                    canUpdateCachedKeyboardHeight = true;
-                  });
+                  Debounce.debounce(
+                    'canUpdateCachedKeyboardHeight',
+                    const Duration(milliseconds: 500),
+                    () {
+                      canUpdateCachedKeyboardHeight = true;
+                    },
+                  );
                 }
               },
               itemWithMenuOnPressed: (index) {
@@ -333,10 +319,13 @@ class _MobileToolbarState extends State<_MobileToolbar>
                   closeItemMenu();
                   _showKeyboard();
                   // update the cached keyboard height after the keyboard is shown
-                  Debounce.debounce('canUpdateCachedKeyboardHeight',
-                      const Duration(milliseconds: 500), () {
-                    canUpdateCachedKeyboardHeight = true;
-                  });
+                  Debounce.debounce(
+                    'canUpdateCachedKeyboardHeight',
+                    const Duration(milliseconds: 500),
+                    () {
+                      canUpdateCachedKeyboardHeight = true;
+                    },
+                  );
                 } else {
                   canUpdateCachedKeyboardHeight = false;
                   selectedMenuIndex = index;
@@ -349,17 +338,13 @@ class _MobileToolbarState extends State<_MobileToolbar>
           ),
           // divider
           const Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 8,
-            ),
-            child: VerticalDivider(
-              width: 1,
-            ),
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: VerticalDivider(width: 1),
           ),
           // close menu or close keyboard button
           ValueListenableBuilder(
             valueListenable: showMenuNotifier,
-            builder: (_, showingMenu, __) {
+            builder: (_, showingMenu, _) {
               return _CloseKeyboardOrMenuButton(
                 showingMenu: showingMenu,
                 onPressed: () {
@@ -377,9 +362,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
               );
             },
           ),
-          const SizedBox(
-            width: 4.0,
-          ),
+          const SizedBox(width: 4.0),
         ],
       ),
     );
@@ -389,10 +372,10 @@ class _MobileToolbarState extends State<_MobileToolbar>
   Widget _buildMenuOrSpacer(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: cachedKeyboardHeight,
-      builder: (_, height, ___) {
+      builder: (_, height, _) {
         return ValueListenableBuilder(
           valueListenable: showMenuNotifier,
-          builder: (_, showingMenu, __) {
+          builder: (_, showingMenu, _) {
             var keyboardHeight = height;
             if (defaultTargetPlatform == TargetPlatform.android) {
               if (!showingMenu) {
@@ -409,12 +392,9 @@ class _MobileToolbarState extends State<_MobileToolbar>
                       editorState: widget.editorState,
                       itemMenuBuilder: () {
                         final menu = widget
-                            .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
-                            .call(
-                          context,
-                          widget.editorState,
-                          this,
-                        );
+                            .toolbarItems[selectedMenuIndex!]
+                            .itemMenuBuilder!
+                            .call(context, widget.editorState, this);
                         return menu ?? const SizedBox.shrink();
                       },
                     )
@@ -476,10 +456,7 @@ class _ToolbarItemListView extends StatelessWidget {
               itemWithActionOnPressed(index);
               // close menu if other item's menu is still on the screen
               toolbarWidgetService.closeItemMenu();
-              toolbarItems[index].actionHandler?.call(
-                    context,
-                    editorState,
-                  );
+              toolbarItems[index].actionHandler?.call(context, editorState);
             }
           },
         );

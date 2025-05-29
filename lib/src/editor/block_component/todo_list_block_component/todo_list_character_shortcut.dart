@@ -9,15 +9,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 ///
 CharacterShortcutEvent formatEmptyBracketsToUncheckedBox =
     CharacterShortcutEvent(
-  key: 'format empty square brackets to unchecked todo list',
-  character: ' ',
-  handler: (editorState) async {
-    return _formatSymbolToUncheckedBox(
-      editorState: editorState,
-      symbol: '[]',
+      key: 'format empty square brackets to unchecked todo list',
+      character: ' ',
+      handler: (editorState) async {
+        return _formatSymbolToUncheckedBox(
+          editorState: editorState,
+          symbol: '[]',
+        );
+      },
     );
-  },
-);
 
 /// Convert '-[] ' to unchecked todo list
 ///
@@ -28,15 +28,15 @@ CharacterShortcutEvent formatEmptyBracketsToUncheckedBox =
 ///
 CharacterShortcutEvent formatHyphenEmptyBracketsToUncheckedBox =
     CharacterShortcutEvent(
-  key: 'format hyphen and empty square brackets to unchecked todo list',
-  character: ' ',
-  handler: (editorState) async {
-    return _formatSymbolToUncheckedBox(
-      editorState: editorState,
-      symbol: '-[]',
+      key: 'format hyphen and empty square brackets to unchecked todo list',
+      character: ' ',
+      handler: (editorState) async {
+        return _formatSymbolToUncheckedBox(
+          editorState: editorState,
+          symbol: '-[]',
+        );
+      },
     );
-  },
-);
 
 /// Convert '[x] ' to checked todo list
 ///
@@ -47,15 +47,15 @@ CharacterShortcutEvent formatHyphenEmptyBracketsToUncheckedBox =
 ///
 CharacterShortcutEvent formatFilledBracketsToCheckedBox =
     CharacterShortcutEvent(
-  key: 'format filled square brackets to checked todo list',
-  character: ' ',
-  handler: (editorState) async {
-    return _formatSymbolToCheckedBox(
-      editorState: editorState,
-      symbol: '[x]',
+      key: 'format filled square brackets to checked todo list',
+      character: ' ',
+      handler: (editorState) async {
+        return _formatSymbolToCheckedBox(
+          editorState: editorState,
+          symbol: '[x]',
+        );
+      },
     );
-  },
-);
 
 /// Convert '-[x] ' to checked todo list
 ///
@@ -66,15 +66,15 @@ CharacterShortcutEvent formatFilledBracketsToCheckedBox =
 ///
 CharacterShortcutEvent formatHyphenFilledBracketsToCheckedBox =
     CharacterShortcutEvent(
-  key: 'format hyphen and filled square brackets to checked todo list',
-  character: ' ',
-  handler: (editorState) async {
-    return _formatSymbolToCheckedBox(
-      editorState: editorState,
-      symbol: '-[x]',
+      key: 'format hyphen and filled square brackets to checked todo list',
+      character: ' ',
+      handler: (editorState) async {
+        return _formatSymbolToCheckedBox(
+          editorState: editorState,
+          symbol: '-[x]',
+        );
+      },
     );
-  },
-);
 
 /// Insert a new block after the todo list block.
 ///
@@ -89,9 +89,7 @@ CharacterShortcutEvent insertNewLineAfterTodoList = CharacterShortcutEvent(
   handler: (editorState) async => await insertNewLineInType(
     editorState,
     'todo_list',
-    attributes: {
-      TodoListBlockKeys.checked: false,
-    },
+    attributes: {TodoListBlockKeys.checked: false},
   ),
 );
 
@@ -104,14 +102,15 @@ Future<bool> _formatSymbolToUncheckedBox({
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'todo_list',
-    (_, text, __) => text == symbol,
+    (_, text, _) => text == symbol,
     (_, node, delta) => [
       node.copyWith(
         type: TodoListBlockKeys.type,
         attributes: {
           TodoListBlockKeys.checked: false,
-          TodoListBlockKeys.delta:
-              delta.compose(Delta()..delete(symbol.length)).toJson(),
+          TodoListBlockKeys.delta: delta
+              .compose(Delta()..delete(symbol.length))
+              .toJson(),
         },
       ),
     ],
@@ -127,14 +126,15 @@ Future<bool> _formatSymbolToCheckedBox({
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != 'todo_list',
-    (_, text, __) => text == symbol,
+    (_, text, _) => text == symbol,
     (_, node, delta) => [
       node.copyWith(
         type: TodoListBlockKeys.type,
         attributes: {
           TodoListBlockKeys.checked: true,
-          TodoListBlockKeys.delta:
-              delta.compose(Delta()..delete(symbol.length)).toJson(),
+          TodoListBlockKeys.delta: delta
+              .compose(Delta()..delete(symbol.length))
+              .toJson(),
         },
       ),
     ],

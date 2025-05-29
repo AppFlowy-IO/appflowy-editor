@@ -22,14 +22,10 @@ enum MobileSelectionDragMode {
   none,
   leftSelectionHandle,
   rightSelectionHandle,
-  cursor;
+  cursor,
 }
 
-enum MobileSelectionHandlerType {
-  leftHandle,
-  rightHandle,
-  cursorHandle,
-}
+enum MobileSelectionHandlerType { leftHandle, rightHandle, cursorHandle }
 
 // the value type is MobileSelectionDragMode
 const String selectionDragModeKey = 'selection_drag_mode';
@@ -164,16 +160,13 @@ class _MobileSelectionServiceWidgetState
   Widget _buildMagnifier() {
     return ValueListenableBuilder(
       valueListenable: _lastPanOffset,
-      builder: (_, offset, __) {
+      builder: (_, offset, _) {
         if (offset == null || disableMagnifier) {
           return const SizedBox.shrink();
         }
         final renderBox = context.findRenderObject() as RenderBox;
         final local = renderBox.globalToLocal(offset);
-        return MobileMagnifier(
-          size: widget.magnifierSize,
-          offset: local,
-        );
+        return MobileMagnifier(size: widget.magnifierSize, offset: local);
       },
     );
   }
@@ -272,7 +265,8 @@ class _MobileSelectionServiceWidgetState
           return const SizedBox.shrink();
         }
 
-        final isCollapsedWhenDraggingHandle = selection.isCollapsed &&
+        final isCollapsedWhenDraggingHandle =
+            selection.isCollapsed &&
             [
               MobileSelectionDragMode.leftSelectionHandle,
               MobileSelectionDragMode.rightSelectionHandle,
@@ -491,10 +485,9 @@ class _MobileSelectionServiceWidgetState
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-    final end = getNodeInOffset(panEndOffset)
-        ?.selectable
-        ?.getSelectionInRange(panStartOffset, panEndOffset)
-        .end;
+    final end = getNodeInOffset(
+      panEndOffset,
+    )?.selectable?.getSelectionInRange(panStartOffset, panEndOffset).end;
 
     Selection? newSelection;
 
@@ -530,9 +523,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
     );
   }
 
@@ -641,9 +632,7 @@ class _MobileSelectionServiceWidgetState
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
     );
   }
 
@@ -689,9 +678,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDisableFloatingToolbar: true,
-      },
+      extraInfo: {selectionExtraInfoDisableFloatingToolbar: true},
     );
   }
 
@@ -707,8 +694,9 @@ class _MobileSelectionServiceWidgetState
     final offset = details.globalPosition;
     _lastPanOffset.value = offset;
 
-    final wordBoundary =
-        getNodeInOffset(offset)?.selectable?.getWordBoundaryInOffset(offset);
+    final wordBoundary = getNodeInOffset(
+      offset,
+    )?.selectable?.getWordBoundaryInOffset(offset);
 
     Selection? newSelection;
 
@@ -737,9 +725,7 @@ class _MobileSelectionServiceWidgetState
       editorState.updateSelectionWithReason(
         newSelection,
         reason: SelectionUpdateReason.uiEvent,
-        extraInfo: {
-          selectionExtraInfoDisableFloatingToolbar: true,
-        },
+        extraInfo: {selectionExtraInfoDisableFloatingToolbar: true},
       );
     }
   }
@@ -751,9 +737,7 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
     );
   }
 
@@ -813,13 +797,15 @@ class _MobileSelectionServiceWidgetState
 
     currentSelectedNodes = nodes;
 
-    final backwardNodes =
-        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
+    final backwardNodes = selection.isBackward
+        ? nodes
+        : nodes.reversed.toList(growable: false);
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
-    AppFlowyEditorLog.selection
-        .debug('update selection areas, $normalizedSelection');
+    AppFlowyEditorLog.selection.debug(
+      'update selection areas, $normalizedSelection',
+    );
 
     for (var i = 0; i < backwardNodes.length; i++) {
       final node = backwardNodes[i];
@@ -893,6 +879,5 @@ class _MobileSelectionServiceWidgetState
   DropTargetRenderData? getDropTargetRenderData(
     Offset offset, {
     DragTargetNodeInterceptor? interceptor,
-  }) =>
-      null;
+  }) => null;
 }

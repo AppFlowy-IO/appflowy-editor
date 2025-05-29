@@ -6,27 +6,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-typedef TextSpanDecoratorForAttribute = InlineSpan Function(
-  BuildContext context,
-  Node node,
-  int index,
-  TextInsert text,
-  TextSpan before,
-  TextSpan after,
-);
+typedef TextSpanDecoratorForAttribute =
+    InlineSpan Function(
+      BuildContext context,
+      Node node,
+      int index,
+      TextInsert text,
+      TextSpan before,
+      TextSpan after,
+    );
 
 typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
-typedef AppFlowyAutoCompleteTextProvider = String? Function(
-  BuildContext context,
-  Node node,
-  TextSpan? textSpan,
-);
+typedef AppFlowyAutoCompleteTextProvider =
+    String? Function(BuildContext context, Node node, TextSpan? textSpan);
 
-typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
-  BuildContext context,
-  Node node,
-  SelectableMixin delegate,
-);
+typedef AppFlowyTextSpanOverlayBuilder =
+    List<Widget> Function(
+      BuildContext context,
+      Node node,
+      SelectableMixin delegate,
+    );
 
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
@@ -150,12 +149,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
     if (enableAutoComplete) {
       final autoCompleteText = _buildAutoCompleteRichText();
-      child = Stack(
-        children: [
-          autoCompleteText,
-          child,
-        ],
-      );
+      child = Stack(children: [autoCompleteText, child]);
     }
 
     return BlockSelectionContainer(
@@ -165,10 +159,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       node: widget.node,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.text,
-        child: child,
-      ),
+      child: MouseRegion(cursor: SystemMouseCursors.text, child: child),
     );
   }
 
@@ -177,14 +168,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Position end() => Position(
-        path: widget.node.path,
-        offset: widget.node.delta?.toPlainText().length ?? 0,
-      );
+    path: widget.node.path,
+    offset: widget.node.delta?.toPlainText().length ?? 0,
+  );
 
   @override
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
     throw UnimplementedError();
   }
 
@@ -204,14 +193,14 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    double? placeholderCursorHeight =
-        _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
+    double? placeholderCursorHeight = _placeholderRenderParagraph
+        ?.getFullHeightForCaret(textPosition);
     Offset? placeholderCursorOffset =
         _placeholderRenderParagraph?.getOffsetForCaret(
-              textPosition,
-              Rect.zero,
-            ) ??
-            Offset.zero;
+          textPosition,
+          Rect.zero,
+        ) ??
+        Offset.zero;
     if (textDirection() == TextDirection.rtl) {
       if (widget.placeholderText.trim().isNotEmpty) {
         placeholderCursorOffset = placeholderCursorOffset.translate(
@@ -221,11 +210,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       }
     }
 
-    double? cursorHeight =
-        _renderParagraph?.getFullHeightForCaret(textPosition);
+    double? cursorHeight = _renderParagraph?.getFullHeightForCaret(
+      textPosition,
+    );
     Offset? cursorOffset =
         _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
-            Offset.zero;
+        Offset.zero;
 
     if (placeholderCursorHeight != null) {
       cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight);
@@ -262,7 +252,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Selection? getWordEdgeInOffset(Offset offset) {
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
-    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
+    final textPosition =
+        _renderParagraph?.getPositionForOffset(localOffset) ??
         const TextPosition(offset: 0);
     final textRange =
         _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
@@ -278,7 +269,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Selection? getWordBoundaryInOffset(Offset offset) {
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
-    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
+    final textPosition =
+        _renderParagraph?.getPositionForOffset(localOffset) ??
         const TextPosition(offset: 0);
     final textRange =
         _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
@@ -329,17 +321,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         /// while selecting for an empty character, return a selection area
         /// with width of 2
         final textPosition = TextPosition(offset: textSelection.baseOffset);
-        position = paragraph?.getOffsetForCaret(
-              textPosition,
-              Rect.zero,
-            ) ??
-            position;
+        position =
+            paragraph?.getOffsetForCaret(textPosition, Rect.zero) ?? position;
         height = paragraph?.getFullHeightForCaret(textPosition) ?? height;
         width = 2;
       }
-      return [
-        Rect.fromLTWH(position.dx, position.dy, width, height),
-      ];
+      return [Rect.fromLTWH(position.dx, position.dy, width, height)];
     }
     return rects;
   }
@@ -368,10 +355,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  Offset localToGlobal(
-    Offset offset, {
-    bool shiftWithBaseOffset = false,
-  }) {
+  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false}) {
     return _renderParagraph?.localToGlobal(offset) ?? Offset.zero;
   }
 
@@ -429,19 +413,15 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       ),
       text: textSpan,
       textDirection: textDirection(),
-      textScaler:
-          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      textScaler: TextScaler.linear(
+        widget.editorState.editorStyle.textScaleFactor,
+      ),
     );
   }
 
   List<Widget> _buildRichTextOverlay(BuildContext context) {
     if (textKey.currentContext == null) return [];
-    return textSpanOverlayBuilder?.call(
-          context,
-          widget.node,
-          this,
-        ) ??
-        [];
+    return textSpanOverlayBuilder?.call(context, widget.node, this) ?? [];
   }
 
   void confirmContextEnabled() {
@@ -463,7 +443,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     textSpan = adjustTextSpan(textSpan);
     return ValueListenableBuilder(
       valueListenable: widget.editorState.selectionNotifier,
-      builder: (_, __, ___) {
+      builder: (_, _, _) {
         final autoCompleteText = autoCompleteTextProvider?.call(
           context,
           widget.node,
@@ -477,16 +457,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             ...textInserts.map(
               (e) => TextInsert(
                 e.text,
-                attributes: {
-                  AppFlowyRichTextKeys.transparent: true,
-                },
+                attributes: {AppFlowyRichTextKeys.transparent: true},
               ),
             ),
             TextInsert(
               autoCompleteText,
-              attributes: {
-                AppFlowyRichTextKeys.autoComplete: true,
-              },
+              attributes: {AppFlowyRichTextKeys.autoComplete: true},
             ),
           ],
         );
@@ -501,8 +477,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           ),
           text: textSpan,
           textDirection: textDirection(),
-          textScaler:
-              TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+          textScaler: TextScaler.linear(
+            widget.editorState.editorStyle.textScaleFactor,
+          ),
         );
       },
     );
@@ -554,9 +531,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     );
   }
 
-  TextSpan getTextSpan({
-    required Iterable<TextInsert> textInserts,
-  }) {
+  TextSpan getTextSpan({required Iterable<TextInsert> textInserts}) {
     int offset = 0;
     List<InlineSpan> textSpans = [];
     for (final textInsert in textInserts) {
@@ -594,9 +569,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           );
         }
         if (attributes.color != null) {
-          textStyle = textStyle.combine(
-            TextStyle(color: attributes.color),
-          );
+          textStyle = textStyle.combine(TextStyle(color: attributes.color));
         }
         if (attributes.fontFamily != null) {
           textStyle = textStyle.combine(
@@ -617,10 +590,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           );
         }
       }
-      final textSpan = TextSpan(
-        text: textInsert.text,
-        style: textStyle,
-      );
+      final textSpan = TextSpan(text: textInsert.text, style: textStyle);
       textSpans.add(
         textSpanDecoratorForAttribute != null
             ? textSpanDecoratorForAttribute!(
@@ -635,9 +605,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       );
       offset += textInsert.length;
     }
-    return TextSpan(
-      children: textSpans,
-    );
+    return TextSpan(children: textSpans);
   }
 
   TextSelection? textSelectionFromEditorSelection(Selection? selection) {
@@ -683,10 +651,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           extentOffset: normalized.endIndex,
         );
       } else {
-        textSelection = TextSelection(
-          baseOffset: 0,
-          extentOffset: length,
-        );
+        textSelection = TextSelection(baseOffset: 0, extentOffset: length);
       }
     }
     return textSelection;

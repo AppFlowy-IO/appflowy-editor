@@ -26,7 +26,6 @@ class FilePicker implements FilePickerService {
       type: type,
       allowedExtensions: allowedExtensions,
       onFileLoading: onFileLoading,
-      allowCompression: allowCompression,
       allowMultiple: allowMultiple,
       withData: withData,
       withReadStream: withReadStream,

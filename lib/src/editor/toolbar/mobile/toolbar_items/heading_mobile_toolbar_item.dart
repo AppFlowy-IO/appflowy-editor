@@ -2,27 +2,21 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final headingMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.heading,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
-  itemMenuBuilder: (_, editorState, __) {
+  itemMenuBuilder: (_, editorState, _) {
     final selection = editorState.selection;
     if (selection == null) {
       return const SizedBox.shrink();
     }
-    return _HeadingMenu(
-      selection,
-      editorState,
-    );
+    return _HeadingMenu(selection, editorState);
   },
 );
 
 class _HeadingMenu extends StatefulWidget {
-  const _HeadingMenu(
-    this.selection,
-    this.editorState,
-  );
+  const _HeadingMenu(this.selection, this.editorState);
 
   final Selection selection;
   final EditorState editorState;
@@ -56,9 +50,11 @@ class _HeadingMenuState extends State<_HeadingMenu> {
     final size = MediaQuery.sizeOf(context);
     final btnList = headings.map((currentHeading) {
       // Check if current node is heading and its level
-      final node =
-          widget.editorState.getNodeAtPath(widget.selection.start.path)!;
-      final isSelected = node.type == HeadingBlockKeys.type &&
+      final node = widget.editorState.getNodeAtPath(
+        widget.selection.start.path,
+      )!;
+      final isSelected =
+          node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == currentHeading.level;
 
       return ConstrainedBox(
@@ -72,10 +68,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
             size: 20,
             color: MobileToolbarTheme.of(context).iconColor,
           ),
-          label: Text(
-            currentHeading.label,
-            maxLines: 2,
-          ),
+          label: Text(currentHeading.label, maxLines: 2),
           isSelected: isSelected,
           onPressed: () {
             setState(() {
@@ -117,9 +110,5 @@ class HeadingUnit {
   final String label;
   final int level;
 
-  HeadingUnit({
-    required this.icon,
-    required this.label,
-    required this.level,
-  });
+  HeadingUnit({required this.icon, required this.label, required this.level});
 }

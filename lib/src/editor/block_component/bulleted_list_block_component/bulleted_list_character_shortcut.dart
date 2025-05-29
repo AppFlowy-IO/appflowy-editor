@@ -38,10 +38,8 @@ CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
 CharacterShortcutEvent insertNewLineAfterBulletedList = CharacterShortcutEvent(
   key: 'insert new block after bulleted list',
   character: '\n',
-  handler: (editorState) async => await insertNewLineInType(
-    editorState,
-    'bulleted_list',
-  ),
+  handler: (editorState) async =>
+      await insertNewLineInType(editorState, 'bulleted_list'),
 );
 
 // This function formats a symbol in the selection to a bulleted list.
@@ -57,13 +55,14 @@ Future<bool> _formatSymbolToBulletedList(
   return formatMarkdownSymbol(
     editorState,
     (node) => node.type != BulletedListBlockKeys.type,
-    (_, text, __) => text == symbol,
+    (_, text, _) => text == symbol,
     (_, node, delta) => [
       node.copyWith(
         type: BulletedListBlockKeys.type,
         attributes: {
-          BulletedListBlockKeys.delta:
-              delta.compose(Delta()..delete(symbol.length)).toJson(),
+          BulletedListBlockKeys.delta: delta
+              .compose(Delta()..delete(symbol.length))
+              .toJson(),
         },
       ),
     ],

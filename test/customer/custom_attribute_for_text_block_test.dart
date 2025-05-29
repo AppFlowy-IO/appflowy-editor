@@ -32,7 +32,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final editorStyle = EditorStyle.desktop(
       // Example for customizing a new attribute key.
-      textSpanDecorator: (_, __, ___, textInsert, textSpan, ____) {
+      textSpanDecorator: (_, _, _, textInsert, textSpan, _) {
         final attributes = textInsert.attributes;
         if (attributes == null) {
           return textSpan;
@@ -61,13 +61,12 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
     final document = Document.blank()
       ..addParagraph(
         builder: (index) {
-          return Delta()
-            ..insert(
-              '\$',
-              attributes: {
-                'mention': {'id': 'PAGE_ID'},
-              },
-            );
+          return Delta()..insert(
+            '\$',
+            attributes: {
+              'mention': {'id': 'PAGE_ID'},
+            },
+          );
         },
       );
     final editorState = EditorState(document: document);
@@ -76,9 +75,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: editorStyle,

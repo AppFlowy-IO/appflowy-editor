@@ -48,7 +48,7 @@ class MobileToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Selection?>(
       valueListenable: editorState.selectionNotifier,
-      builder: (_, Selection? selection, __) {
+      builder: (_, Selection? selection, _) {
         if (selection == null) {
           return const SizedBox.shrink();
         }
@@ -141,9 +141,7 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
           height: style.toolbarHeight,
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(
-                color: style.itemOutlineColor,
-              ),
+              top: BorderSide(color: style.itemOutlineColor),
               bottom: BorderSide(color: style.itemOutlineColor),
             ),
             color: style.backgroundColor,
@@ -212,22 +210,22 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
         // only for MobileToolbarItem.withMenu
         (_showItemMenu && _selectedToolbarItemIndex != null)
             ? Container(
-                constraints: BoxConstraints(
-                  minHeight: previousKeyboardHeight,
-                ),
+                constraints: BoxConstraints(minHeight: previousKeyboardHeight),
                 child: MobileToolbarItemMenu(
                   editorState: widget.editorState,
                   itemMenuBuilder: () =>
                       widget
                           .toolbarItems[_selectedToolbarItemIndex!]
                           // pass current [MobileToolbarWidgetState] to be used to closeItemMenu
-                          .itemMenuBuilder!(context, widget.editorState, this) ??
+                          .itemMenuBuilder!(
+                        context,
+                        widget.editorState,
+                        this,
+                      ) ??
                       const SizedBox.shrink(),
                 ),
               )
-            : SizedBox(
-                height: previousKeyboardHeight,
-              ),
+            : SizedBox(height: previousKeyboardHeight),
       ],
     );
   }
@@ -289,10 +287,7 @@ class _ToolbarItemListView extends StatelessWidget {
             } else {
               // close menu if other item's menu is still on the screen
               toolbarWidgetService.closeItemMenu();
-              toolbarItems[index].actionHandler?.call(
-                    context,
-                    editorState,
-                  );
+              toolbarItems[index].actionHandler?.call(context, editorState);
             }
           },
         );

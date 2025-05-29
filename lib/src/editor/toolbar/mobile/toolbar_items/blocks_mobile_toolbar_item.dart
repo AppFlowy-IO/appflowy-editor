@@ -2,11 +2,11 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final blocksMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.list,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
-  itemMenuBuilder: (_, editorState, __) {
+  itemMenuBuilder: (_, editorState, _) {
     final selection = editorState.selection;
     if (selection == null) {
       return const SizedBox.shrink();
@@ -16,10 +16,7 @@ final blocksMobileToolbarItem = MobileToolbarItem.withMenu(
 );
 
 class _BlocksMenu extends StatefulWidget {
-  const _BlocksMenu(
-    this.editorState,
-    this.selection,
-  );
+  const _BlocksMenu(this.editorState, this.selection);
 
   final Selection selection;
   final EditorState editorState;
@@ -82,7 +79,8 @@ class _BlocksMenuState extends State<_BlocksMenu> {
         widget.selection.start.path,
       )!;
 
-      final isSelected = node.type == list.name &&
+      final isSelected =
+          node.type == list.name &&
           (list.level == null ||
               node.attributes[HeadingBlockKeys.level] == list.level);
 

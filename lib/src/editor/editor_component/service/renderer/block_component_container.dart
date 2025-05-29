@@ -24,9 +24,10 @@ class BlockComponentContainer extends StatelessWidget {
     final child = ChangeNotifierProvider<Node>.value(
       value: node,
       child: Consumer<Node>(
-        builder: (_, __, ___) {
-          AppFlowyEditorLog.editor
-              .debug('node is rebuilding...: type: ${node.type} ');
+        builder: (_, _, _) {
+          AppFlowyEditorLog.editor.debug(
+            'node is rebuilding...: type: ${node.type} ',
+          );
           return CompositedTransformTarget(
             link: node.layerLink,
             child: builder(context),

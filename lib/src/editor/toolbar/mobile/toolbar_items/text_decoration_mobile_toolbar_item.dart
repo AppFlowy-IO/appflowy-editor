@@ -2,11 +2,11 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
-  itemIconBuilder: (context, __, ___) => AFMobileIcon(
+  itemIconBuilder: (context, _, _) => AFMobileIcon(
     afMobileIcons: AFMobileIcons.textDecoration,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
-  itemMenuBuilder: (_, editorState, __) {
+  itemMenuBuilder: (_, editorState, _) {
     final selection = editorState.selection;
     if (selection == null) {
       return const SizedBox.shrink();
@@ -16,10 +16,7 @@ final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
 );
 
 class _TextDecorationMenu extends StatefulWidget {
-  const _TextDecorationMenu(
-    this.editorState,
-    this.selection,
-  );
+  const _TextDecorationMenu(this.editorState, this.selection);
 
   final EditorState editorState;
   final Selection selection;
