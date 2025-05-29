@@ -7,9 +7,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 /// 1. Apply to the state to update the UI.
 /// 2. Send to the backend to store and do operation transforming.
 class Transaction {
-  Transaction({
-    required this.document,
-  });
+  Transaction({required this.document});
 
   final Document document;
 
@@ -48,20 +46,12 @@ class Transaction {
   bool markNeedsComposing = false;
 
   /// Inserts the [Node] at the given [Path].
-  void insertNode(
-    Path path,
-    Node node, {
-    bool deepCopy = true,
-  }) {
+  void insertNode(Path path, Node node, {bool deepCopy = true}) {
     insertNodes(path, [node], deepCopy: deepCopy);
   }
 
   /// Inserts a sequence of [Node]s at the given [Path].
-  void insertNodes(
-    Path path,
-    Iterable<Node> nodes, {
-    bool deepCopy = true,
-  }) {
+  void insertNodes(Path path, Iterable<Node> nodes, {bool deepCopy = true}) {
     if (nodes.isEmpty) {
       return;
     }
@@ -69,12 +59,7 @@ class Transaction {
       // add `toList()` to prevent the redundant copy of the nodes when looping
       nodes = nodes.map((e) => e.copyWith()).toList();
     }
-    add(
-      InsertOperation(
-        path,
-        nodes,
-      ),
-    );
+    add(InsertOperation(path, nodes));
   }
 
   /// Updates the attributes of the [Node].
@@ -82,13 +67,7 @@ class Transaction {
   /// The [attributes] will be merged into the existing attributes.
   void updateNode(Node node, Attributes attributes) {
     final inverted = invertAttributes(node.attributes, attributes);
-    add(
-      UpdateOperation(
-        node.path,
-        {...attributes},
-        inverted,
-      ),
-    );
+    add(UpdateOperation(node.path, {...attributes}, inverted));
   }
 
   /// Deletes the [Node] in the document.
@@ -212,12 +191,14 @@ extension TextTransaction on Transaction {
     }
 
     if (index < 0 || index > delta.length) {
-      AppFlowyEditorLog.editor
-          .info('The index($index) is out of range or negative.');
+      AppFlowyEditorLog.editor.info(
+        'The index($index) is out of range or negative.',
+      );
       return;
     }
 
-    final newAttributes = attributes ??
+    final newAttributes =
+        attributes ??
         (sliceAttributes ? delta.sliceAttributes(index) : {}) ??
         {};
 
@@ -236,11 +217,7 @@ extension TextTransaction on Transaction {
     );
   }
 
-  void insertTextDelta(
-    Node node,
-    int index,
-    Delta insertedDelta,
-  ) {
+  void insertTextDelta(Node node, int index, Delta insertedDelta) {
     final delta = node.delta;
     if (delta == null) {
       assert(false, 'The node must have a delta.');
@@ -264,11 +241,7 @@ extension TextTransaction on Transaction {
   }
 
   /// Deletes the [length] characters at the given [index].
-  void deleteText(
-    Node node,
-    int index,
-    int length,
-  ) {
+  void deleteText(Node node, int index, int length) {
     final delta = node.delta;
     if (delta == null) {
       assert(false, 'The node must have a delta.');
@@ -314,19 +287,11 @@ extension TextTransaction on Transaction {
     addDeltaToComposeMap(left, merge);
 
     afterSelection = Selection.collapsed(
-      Position(
-        path: left.path,
-        offset: leftOffset,
-      ),
+      Position(path: left.path, offset: leftOffset),
     );
   }
 
-  void formatText(
-    Node node,
-    int index,
-    int length,
-    Attributes attributes,
-  ) {
+  void formatText(Node node, int index, int length, Attributes attributes) {
     final delta = node.delta;
     if (delta == null) {
       return;
@@ -371,44 +336,25 @@ extension TextTransaction on Transaction {
     addDeltaToComposeMap(node, replace);
 
     afterSelection = Selection.collapsed(
-      Position(
-        path: node.path,
-        offset: index + text.length,
-      ),
+      Position(path: node.path, offset: index + text.length),
     );
   }
 
-  void replaceTexts(
-    List<Node> nodes,
-    Selection selection,
-    List<String> texts,
-  ) {
+  void replaceTexts(List<Node> nodes, Selection selection, List<String> texts) {
     if (nodes.isEmpty || texts.isEmpty) {
       return;
     }
 
     if (nodes.length == texts.length) {
-      return replaceTextsWithEqualNodes(
-        nodes,
-        selection,
-        texts,
-      );
+      return replaceTextsWithEqualNodes(nodes, selection, texts);
     }
 
     if (nodes.length > texts.length) {
-      return replaceTextsWithMoreNodes(
-        nodes,
-        selection,
-        texts,
-      );
+      return replaceTextsWithMoreNodes(nodes, selection, texts);
     }
 
     if (nodes.length < texts.length) {
-      return replaceTextsWithLessNodes(
-        nodes,
-        selection,
-        texts,
-      );
+      return replaceTextsWithLessNodes(nodes, selection, texts);
     }
   }
 
@@ -429,9 +375,7 @@ extension TextTransaction on Transaction {
         (p, e) => p.compose(e),
       );
       assert(composed.every((element) => element is TextInsert));
-      updateNode(node, {
-        blockComponentDelta: composed.toJson(),
-      });
+      updateNode(node, {blockComponentDelta: composed.toJson()});
     }
     markNeedsComposing = false;
     _composeMap.clear();
@@ -477,19 +421,9 @@ extension TextTransaction on Transaction {
           texts.first,
         );
       } else if (i == length - 1) {
-        replaceText(
-          node,
-          0,
-          selection.endIndex,
-          texts.last,
-        );
+        replaceText(node, 0, selection.endIndex, texts.last);
       } else {
-        replaceText(
-          node,
-          0,
-          delta.toPlainText().length,
-          texts[i],
-        );
+        replaceText(node, 0, delta.toPlainText().length, texts[i]);
       }
     }
 
@@ -526,19 +460,9 @@ extension TextTransaction on Transaction {
           texts.first,
         );
       } else if (i == length - 1 && texts.length >= 2) {
-        replaceText(
-          node,
-          0,
-          selection.endIndex,
-          texts.last,
-        );
+        replaceText(node, 0, selection.endIndex, texts.last);
       } else if (i < texts.length - 1) {
-        replaceText(
-          node,
-          0,
-          delta.length,
-          texts[i],
-        );
+        replaceText(node, 0, delta.length, texts[i]);
       } else {
         deleteNode(node);
         if (i == nodes.length - 1) {
@@ -599,12 +523,7 @@ extension TextTransaction on Transaction {
         );
         path = path.next;
       } else if (i == length - 1 && nodes.length >= 2) {
-        replaceText(
-          nodes.last,
-          0,
-          selection.endIndex,
-          text,
-        );
+        replaceText(nodes.last, 0, selection.endIndex, text);
         path = path.next;
       } else {
         if (i < nodes.length - 1) {
@@ -613,12 +532,7 @@ extension TextTransaction on Transaction {
           if (delta == null) {
             continue;
           }
-          replaceText(
-            node,
-            0,
-            delta.length,
-            text,
-          );
+          replaceText(node, 0, delta.length, text);
           path = path.next;
         } else {
           if (i == texts.length - 1) {
@@ -628,22 +542,10 @@ extension TextTransaction on Transaction {
             }
             final mewDelta = Delta()
               ..insert(text)
-              ..addAll(
-                delta.slice(selection.end.offset),
-              );
-            insertNode(
-              path,
-              paragraphNode(
-                delta: mewDelta,
-              ),
-            );
+              ..addAll(delta.slice(selection.end.offset));
+            insertNode(path, paragraphNode(delta: mewDelta));
           } else {
-            insertNode(
-              path,
-              paragraphNode(
-                delta: Delta()..insert(text),
-              ),
-            );
+            insertNode(path, paragraphNode(delta: Delta()..insert(text)));
           }
         }
       }

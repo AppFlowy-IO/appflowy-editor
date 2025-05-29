@@ -84,41 +84,39 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // Welcome to AppFlowy Editor 🔥!
     testWidgets(
-        'press the left arrow key until it reaches the beginning of the document',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+      'press the left arrow key until it reaches the beginning of the document',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(
+          Position(path: [1], offset: text.length),
         );
-      await editor.startTesting();
+        await editor.updateSelection(selection);
 
-      final selection =
-          Selection.collapsed(Position(path: [1], offset: text.length));
-      await editor.updateSelection(selection);
+        // move the cursor to the beginning of node 1
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
+          await tester.pumpAndSettle();
+        }
+        expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
-      // move the cursor to the beginning of node 1
-      for (var i = 1; i < text.length; i++) {
+        // move the cursor to the ending of node 0
         await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-        await tester.pumpAndSettle();
-      }
-      expect(editor.selection, Selection.collapsed(Position(path: [1])));
+        expect(
+          editor.selection,
+          Selection.collapsed(Position(path: [0], offset: text.length)),
+        );
 
-      // move the cursor to the ending of node 0
-      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-      expect(
-        editor.selection,
-        Selection.collapsed(Position(path: [0], offset: text.length)),
-      );
+        // move the cursor to the beginning of node 0
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
+          await tester.pumpAndSettle();
+        }
+        expect(editor.selection, Selection.collapsed(Position(path: [0])));
 
-      // move the cursor to the beginning of node 0
-      for (var i = 1; i < text.length; i++) {
-        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-        await tester.pumpAndSettle();
-      }
-      expect(editor.selection, Selection.collapsed(Position(path: [0])));
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
   });
 }

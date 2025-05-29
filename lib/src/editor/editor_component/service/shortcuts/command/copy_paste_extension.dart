@@ -30,10 +30,7 @@ extension EditorCopyPaste on EditorState {
       transaction.insertNode(selection.end.path, insertedNode);
       transaction.deleteNode(node);
       transaction.afterSelection = Selection.collapsed(
-        Position(
-          path: selection.end.path,
-          offset: insertedDelta?.length ?? 0,
-        ),
+        Position(path: selection.end.path, offset: insertedDelta?.length ?? 0),
       );
     } else if (insertedDelta != null) {
       // if the node is not empty, insert the delta from inserted node after the selection.
@@ -92,10 +89,7 @@ extension EditorCopyPaste on EditorState {
     if (delta.isEmpty && node.type != ParagraphBlockKeys.type) {
       nodes[0] = nodes.first.copyWith(
         type: node.type,
-        attributes: {
-          ...node.attributes,
-          ...nodes.first.attributes,
-        },
+        attributes: {...node.attributes, ...nodes.first.attributes},
       );
     }
 
@@ -110,10 +104,7 @@ extension EditorCopyPaste on EditorState {
 
     final path = calculatePath(selection.start.path, nodes);
     transaction.afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: lastNodeLength,
-      ),
+      Position(path: path, offset: lastNodeLength),
     );
 
     await apply(transaction);
@@ -163,34 +154,27 @@ extension on Node {
   void insertDelta(Delta delta, {bool insertAfter = true}) {
     assert(delta.every((element) => element is TextInsert));
     if (this.delta == null) {
-      updateAttributes({
-        blockComponentDelta: delta.toJson(),
-      });
+      updateAttributes({blockComponentDelta: delta.toJson()});
     } else if (insertAfter) {
-      updateAttributes(
-        {
-          blockComponentDelta: this
-              .delta!
-              .compose(
-                Delta()
-                  ..retain(this.delta!.length)
-                  ..addAll(delta),
-              )
-              .toJson(),
-        },
-      );
+      updateAttributes({
+        blockComponentDelta: this.delta!
+            .compose(
+              Delta()
+                ..retain(this.delta!.length)
+                ..addAll(delta),
+            )
+            .toJson(),
+      });
     } else {
-      updateAttributes(
-        {
-          blockComponentDelta: delta
-              .compose(
-                Delta()
-                  ..retain(delta.length)
-                  ..addAll(this.delta!),
-              )
-              .toJson(),
-        },
-      );
+      updateAttributes({
+        blockComponentDelta: delta
+            .compose(
+              Delta()
+                ..retain(delta.length)
+                ..addAll(this.delta!),
+            )
+            .toJson(),
+      });
     }
   }
 }

@@ -32,22 +32,17 @@ class EditorSvg extends StatelessWidget {
     final width = (this.width ?? _defaultWidth) * scaleFactor;
     return Padding(
       padding: padding ?? const EdgeInsets.all(0),
-      child: _buildSvg(
-        height,
-        width,
-      ),
+      child: _buildSvg(height, width),
     );
   }
 
-  Widget _buildSvg(
-    double height,
-    double width,
-  ) {
+  Widget _buildSvg(double height, double width) {
     if (name != null) {
       return SvgPicture.asset(
         'assets/images/$name.svg',
-        colorFilter:
-            color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+        colorFilter: color != null
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
+            : null,
         fit: BoxFit.fill,
         height: height,
         width: width,
@@ -56,11 +51,7 @@ class EditorSvg extends StatelessWidget {
     } else if (number != null) {
       final numberText =
           '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><text x="30" y="150" fill="black" font-size="160">$number.</text></svg>';
-      return SvgPicture.string(
-        numberText,
-        width: width,
-        height: height,
-      );
+      return SvgPicture.string(numberText, width: width, height: height);
     }
     return Container();
   }

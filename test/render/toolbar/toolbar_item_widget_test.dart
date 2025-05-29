@@ -39,13 +39,7 @@ void main() async {
         }),
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       expect(find.byKey(key), findsOneWidget);
       expect(find.byKey(iconKey), findsOneWidget);

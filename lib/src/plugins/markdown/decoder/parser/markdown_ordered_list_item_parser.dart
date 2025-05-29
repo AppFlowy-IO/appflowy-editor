@@ -44,9 +44,7 @@ class MarkdownOrderedListItemParserV2 extends CustomMarkdownParser {
     return [
       numberedListNode(
         number: startNumber,
-        delta: deltaDecoder.convertNodes(
-          deltaNodes,
-        ),
+        delta: deltaDecoder.convertNodes(deltaNodes),
         children: parseElementChildren(
           ec.reversed.toList(),
           parsers,

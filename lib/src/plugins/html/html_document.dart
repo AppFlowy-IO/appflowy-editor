@@ -36,9 +36,7 @@ String documentToHTML(
 }
 
 class AppFlowyEditorHTMLCodec extends Codec<Document, String> {
-  const AppFlowyEditorHTMLCodec({
-    this.encodeParsers = const [],
-  });
+  const AppFlowyEditorHTMLCodec({this.encodeParsers = const []});
 
   final List<HTMLNodeParser> encodeParsers;
 
@@ -46,7 +44,6 @@ class AppFlowyEditorHTMLCodec extends Codec<Document, String> {
   Converter<String, Document> get decoder => DocumentHTMLDecoder();
 
   @override
-  Converter<Document, String> get encoder => DocumentHTMLEncoder(
-        encodeParsers: encodeParsers,
-      );
+  Converter<Document, String> get encoder =>
+      DocumentHTMLEncoder(encodeParsers: encodeParsers);
 }

@@ -16,13 +16,13 @@ void main() async {
     test('parser image node', () {
       final node = Node(
         type: 'image',
-        attributes: {
-          'url': 'https://appflowy.io',
-        },
+        attributes: {'url': 'https://appflowy.io'},
       );
 
-      final result = const HTMLImageNodeParser()
-          .transformNodeToHTMLString(node, encodeParsers: parser);
+      final result = const HTMLImageNodeParser().transformNodeToHTMLString(
+        node,
+        encodeParsers: parser,
+      );
 
       expect(result, '<img src="https://appflowy.io">');
     });

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('MobileToolbarStyle should have correct values',
-      (WidgetTester tester) async {
+  testWidgets('MobileToolbarStyle should have correct values', (
+    WidgetTester tester,
+  ) async {
     const backgroundColor = Colors.white;
     const foregroundColor = Colors.black;
     const clearDiagonalLineColor = Color(0xffB3261E);
@@ -44,8 +45,9 @@ void main() {
       ),
     );
 
-    final mobileToolbarStyle =
-        MobileToolbarTheme.of(tester.element(find.byType(MobileToolbarTheme)));
+    final mobileToolbarStyle = MobileToolbarTheme.of(
+      tester.element(find.byType(MobileToolbarTheme)),
+    );
 
     expect(mobileToolbarStyle.backgroundColor, equals(backgroundColor));
     expect(mobileToolbarStyle.foregroundColor, equals(foregroundColor));

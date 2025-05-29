@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MobileMagnifier extends StatelessWidget {
-  const MobileMagnifier({
-    super.key,
-    required this.size,
-    required this.offset,
-  });
+  const MobileMagnifier({super.key, required this.size, required this.offset});
 
   final Size size;
   final Offset offset;
@@ -58,9 +54,7 @@ class _CustomMagnifier extends StatelessWidget {
       magnificationScale: 1.25,
       focalPointOffset: additionalFocalPointOffset,
       size: size,
-      child: const ColoredBox(
-        color: Color.fromARGB(8, 158, 158, 158),
-      ),
+      child: const ColoredBox(color: Color.fromARGB(8, 158, 158, 158)),
     );
   }
 }

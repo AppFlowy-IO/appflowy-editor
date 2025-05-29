@@ -51,25 +51,25 @@ CommandShortcutEvent moveCursorBottomSelectCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _moveCursorBottomSelectCommandHandler =
     (editorState) {
-  final selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.ignored;
-  }
+      final selection = editorState.selection;
+      if (selection == null) {
+        return KeyEventResult.ignored;
+      }
 
-  final result = editorState.getLastSelectable();
-  if (result == null) {
-    return KeyEventResult.ignored;
-  }
+      final result = editorState.getLastSelectable();
+      if (result == null) {
+        return KeyEventResult.ignored;
+      }
 
-  final position = result.$2.end(result.$1);
-  editorState.scrollService?.jumpToBottom();
-  editorState.updateSelectionWithReason(
-    selection.copyWith(end: position),
-    reason: SelectionUpdateReason.uiEvent,
-  );
+      final position = result.$2.end(result.$1);
+      editorState.scrollService?.jumpToBottom();
+      editorState.updateSelectionWithReason(
+        selection.copyWith(end: position),
+        reason: SelectionUpdateReason.uiEvent,
+      );
 
-  return KeyEventResult.handled;
-};
+      return KeyEventResult.handled;
+    };
 
 /// arrow down + ctrl or cmd
 /// move the cursor to the bottommost position of the document
@@ -114,17 +114,17 @@ CommandShortcutEvent moveCursorDownSelectCommand = CommandShortcutEvent(
 
 CommandShortcutEventHandler _moveCursorDownSelectCommandHandler =
     (editorState) {
-  final selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.ignored;
-  }
-  final end = selection.end.moveVertical(editorState, upwards: false);
-  if (end == null) {
-    return KeyEventResult.ignored;
-  }
-  editorState.updateSelectionWithReason(
-    selection.copyWith(end: end),
-    reason: SelectionUpdateReason.uiEvent,
-  );
-  return KeyEventResult.handled;
-};
+      final selection = editorState.selection;
+      if (selection == null) {
+        return KeyEventResult.ignored;
+      }
+      final end = selection.end.moveVertical(editorState, upwards: false);
+      if (end == null) {
+        return KeyEventResult.ignored;
+      }
+      editorState.updateSelectionWithReason(
+        selection.copyWith(end: end),
+        reason: SelectionUpdateReason.uiEvent,
+      );
+      return KeyEventResult.handled;
+    };

@@ -5,9 +5,7 @@ import 'package:flutter/foundation.dart';
 const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
 
 class SearchServiceV2 {
-  SearchServiceV2({
-    required this.editorState,
-  });
+  SearchServiceV2({required this.editorState});
 
   final EditorState editorState;
 
@@ -44,10 +42,7 @@ class SearchServiceV2 {
     currentSelectedIndex.dispose();
   }
 
-  void findAndHighlight(
-    String pattern, {
-    bool unHighlight = false,
-  }) {
+  void findAndHighlight(String pattern, {bool unHighlight = false}) {
     if (queriedPattern != pattern) {
       matchedPositions.value.clear();
       queriedPattern = pattern;
@@ -62,9 +57,7 @@ class SearchServiceV2 {
 
     if (matchedPositions.value.isNotEmpty) {
       selectedIndex = selectedIndex;
-      _highlightCurrentMatch(
-        pattern,
-      );
+      _highlightCurrentMatch(pattern);
     } else {
       editorState.updateSelectionWithReason(null);
     }
@@ -88,9 +81,7 @@ class SearchServiceV2 {
         // we will store this list of offsets along with their path,
         // in a list of positions.
         for (int matchedOffset in matches) {
-          result.add(
-            Position(path: node.path, offset: matchedOffset),
-          );
+          result.add(Position(path: node.path, offset: matchedOffset));
         }
       }
       result.addAll(
@@ -100,9 +91,7 @@ class SearchServiceV2 {
     return result;
   }
 
-  void _highlightCurrentMatch(
-    String pattern,
-  ) {
+  void _highlightCurrentMatch(String pattern) {
     final start = matchedPositions.value[selectedIndex];
     final end = Position(
       path: start.path,
@@ -122,9 +111,7 @@ class SearchServiceV2 {
 
     editorState.updateSelectionWithReason(
       Selection(start: start, end: end),
-      extraInfo: {
-        selectionExtraInfoDisableToolbar: true,
-      },
+      extraInfo: {selectionExtraInfoDisableToolbar: true},
     );
   }
 
@@ -160,12 +147,7 @@ class SearchServiceV2 {
     final start = matchedPositions.value[selectedIndex];
     final node = editorState.getNodeAtPath(start.path)!;
     final transaction = editorState.transaction
-      ..replaceText(
-        node,
-        start.offset,
-        queriedPattern.length,
-        replaceText,
-      );
+      ..replaceText(node, start.offset, queriedPattern.length, replaceText);
     await editorState.apply(transaction);
 
     matchedPositions.value.clear();
@@ -185,12 +167,7 @@ class SearchServiceV2 {
       final node = editorState.getNodeAtPath(match.path)!;
 
       final transaction = editorState.transaction
-        ..replaceText(
-          node,
-          match.offset,
-          queriedPattern.length,
-          replaceText,
-        );
+        ..replaceText(node, match.offset, queriedPattern.length, replaceText);
 
       editorState.apply(transaction);
     }

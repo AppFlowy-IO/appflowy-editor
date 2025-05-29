@@ -32,10 +32,7 @@ void main() async {
       // After
       // |Welcome to AppFlowy Editor 🔥!
       testWidgets('at the start of line', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         final selection = Selection.collapsed(Position(path: [0]));
@@ -49,10 +46,7 @@ void main() async {
         await tester.pumpAndSettle();
 
         // the left word should be deleted.
-        expect(
-          editor.nodeAtPath([0])?.delta?.toPlainText(),
-          text,
-        );
+        expect(editor.nodeAtPath([0])?.delta?.toPlainText(), text);
 
         await editor.dispose();
       });
@@ -62,16 +56,14 @@ void main() async {
       // After
       // | to AppFlowy Editor 🔥!
       testWidgets('at the end of a word', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         // Welcome| to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection =
-            Selection.collapsed(Position(path: [0], offset: welcome.length));
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: welcome.length),
+        );
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -95,10 +87,7 @@ void main() async {
       // After
       // |to AppFlowy Editor 🔥!
       testWidgets('at the end of a word and whitespace', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         // Welcome |to AppFlowy Editor 🔥!
@@ -258,14 +247,12 @@ void main() async {
       // After
       // Welcome to AppFlowy Editor 🔥!|
       testWidgets('at the end of line', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
-        final selection =
-            Selection.collapsed(Position(path: [0], offset: text.length));
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: text.length),
+        );
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -276,10 +263,7 @@ void main() async {
         await tester.pumpAndSettle();
 
         // nothing happens
-        expect(
-          editor.nodeAtPath([0])?.delta?.toPlainText(),
-          text,
-        );
+        expect(editor.nodeAtPath([0])?.delta?.toPlainText(), text);
 
         await editor.dispose();
       });
@@ -289,10 +273,7 @@ void main() async {
       // After
       // | to AppFlowy Editor 🔥!
       testWidgets('at the start of a word', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         // |Welcome to AppFlowy Editor 🔥!
@@ -321,16 +302,14 @@ void main() async {
       // After
       // Welcome| AppFlowy Editor 🔥!
       testWidgets('at the end of a word and whitespace', (tester) async {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         // Welcome| to AppFlowy Editor 🔥!
         const welcome = 'Welcome';
-        final selection =
-            Selection.collapsed(Position(path: [0], offset: welcome.length));
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: welcome.length),
+        );
         await editor.updateSelection(selection);
 
         await editor.pressKey(
@@ -342,10 +321,7 @@ void main() async {
 
         // the right word should be deleted.
         const expectedString = "Welcome AppFlowy Editor 🔥!";
-        expect(
-          editor.nodeAtPath([0])?.delta?.toPlainText(),
-          expectedString,
-        );
+        expect(editor.nodeAtPath([0])?.delta?.toPlainText(), expectedString);
 
         await editor.dispose();
       });

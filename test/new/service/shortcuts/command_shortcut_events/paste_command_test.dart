@@ -16,97 +16,89 @@ void main() async {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
-      return null;
-    });
+          switch (message.method) {
+            case "Clipboard.getData":
+              return mockClipboard.getData;
+            case "Clipboard.setData":
+              final args = message.arguments as Map<String, dynamic>;
+              mockClipboard = mockClipboard.copyWith(text: args['text']);
+          }
+          return null;
+        });
   });
 
   group('Copy + paste', () {
-    testWidgets(
-      'Paste link',
-      (tester) async {
-        final editor = tester.editor..addParagraph(initialText: '');
-        await editor.startTesting();
-        await editor.updateSelection(
-          Selection.collapsed(Position(path: [0], offset: 0)),
-        );
-
-        const link = 'https://appflowy.io/';
-        AppFlowyClipboard.mockSetData(
-          const AppFlowyClipboardData(text: link),
-        );
-
-        pasteCommand.execute(editor.editorState);
-        await tester.pumpAndSettle();
-
-        final delta = editor.nodeAtPath([0])!.delta!;
-        expect(delta.toPlainText(), link);
-        expect(
-          delta.everyAttributes(
-            (element) => element[AppFlowyRichTextKeys.href] == link,
-          ),
-          true,
-        );
-
-        AppFlowyClipboard.mockSetData(null);
-        await editor.dispose();
-      },
-    );
-
-    testWidgets(
-      'Copy text contains link',
-      (tester) async {
-        final editor = tester.editor..addParagraph(initialText: '');
-        await editor.startTesting();
-        await editor.updateSelection(
-          Selection.collapsed(Position(path: [0], offset: 0)),
-        );
-
-        const textWithLink = 'click https://appflowy.io/ jump to appflowy';
-        AppFlowyClipboard.mockSetData(
-          const AppFlowyClipboardData(text: textWithLink),
-        );
-
-        pasteCommand.execute(editor.editorState);
-        await tester.pumpAndSettle();
-
-        final delta = editor.nodeAtPath([0])!.delta!;
-        expect(delta.toPlainText(), textWithLink);
-        expect(
-          delta.everyAttributes(
-            (element) =>
-                element[AppFlowyRichTextKeys.href] == 'https://appflowy.io/',
-          ),
-          false,
-        );
-
-        AppFlowyClipboard.mockSetData(null);
-        await editor.dispose();
-      },
-    );
-
-    testWidgets(
-        'Presses Command + A in small document and copy text and paste text',
-        (tester) async {
-      await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
-    });
-
-    testWidgets(
-        'Presses Command + A in small document and copy text and paste text multiple times',
-        (tester) async {
-      await _testHandleCopyMultiplePaste(
-        tester,
-        Document.fromJson(paragraphData),
+    testWidgets('Paste link', (tester) async {
+      final editor = tester.editor..addParagraph(initialText: '');
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [0], offset: 0)),
       );
+
+      const link = 'https://appflowy.io/';
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: link));
+
+      pasteCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      final delta = editor.nodeAtPath([0])!.delta!;
+      expect(delta.toPlainText(), link);
+      expect(
+        delta.everyAttributes(
+          (element) => element[AppFlowyRichTextKeys.href] == link,
+        ),
+        true,
+      );
+
+      AppFlowyClipboard.mockSetData(null);
+      await editor.dispose();
     });
+
+    testWidgets('Copy text contains link', (tester) async {
+      final editor = tester.editor..addParagraph(initialText: '');
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [0], offset: 0)),
+      );
+
+      const textWithLink = 'click https://appflowy.io/ jump to appflowy';
+      AppFlowyClipboard.mockSetData(
+        const AppFlowyClipboardData(text: textWithLink),
+      );
+
+      pasteCommand.execute(editor.editorState);
+      await tester.pumpAndSettle();
+
+      final delta = editor.nodeAtPath([0])!.delta!;
+      expect(delta.toPlainText(), textWithLink);
+      expect(
+        delta.everyAttributes(
+          (element) =>
+              element[AppFlowyRichTextKeys.href] == 'https://appflowy.io/',
+        ),
+        false,
+      );
+
+      AppFlowyClipboard.mockSetData(null);
+      await editor.dispose();
+    });
+
+    testWidgets(
+      'Presses Command + A in small document and copy text and paste text',
+      (tester) async {
+        await _testHandleCopyPaste(tester, Document.fromJson(paragraphData));
+      },
+    );
+
+    testWidgets(
+      'Presses Command + A in small document and copy text and paste text multiple times',
+      (tester) async {
+        await _testHandleCopyMultiplePaste(
+          tester,
+          Document.fromJson(paragraphData),
+        );
+      },
+    );
   });
 
   group('paste text without formatting', () {
@@ -124,16 +116,15 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('Returns event handled if there is a selection',
-        (tester) async {
+    testWidgets('Returns event handled if there is a selection', (
+      tester,
+    ) async {
       final editor = tester.editor;
 
       await editor.startTesting();
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: 'text'),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: 'text'));
       final result = pasteTextWithoutFormattingCommand.execute(
         editor.editorState,
       );
@@ -149,9 +140,7 @@ void main() async {
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = 'Hello World!';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: text),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: text));
       pasteTextWithoutFormattingCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
@@ -181,8 +170,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('paste single line of text ignoring formatting',
-        (tester) async {
+    testWidgets('paste single line of text ignoring formatting', (
+      tester,
+    ) async {
       final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
@@ -212,8 +202,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('paste replacing content with destination format',
-        (tester) async {
+    testWidgets('paste replacing content with destination format', (
+      tester,
+    ) async {
       final document = Document.fromJson(paragraphData);
       final editor = tester.editor..initializeWithDocument(document);
 
@@ -252,17 +243,17 @@ void main() async {
         {BuiltInAttributeKey.bold: true},
         reason: 'should merge with destination format',
       );
-      expect(
-        afterPasteDelta.elementAt(2).attributes,
-        {BuiltInAttributeKey.italic: true},
-      );
+      expect(afterPasteDelta.elementAt(2).attributes, {
+        BuiltInAttributeKey.italic: true,
+      });
 
       await editor.dispose();
     });
 
     for (var position in ['start', 'end']) {
-      testWidgets('paste without format if at $position of formatted text',
-          (tester) async {
+      testWidgets('paste without format if at $position of formatted text', (
+        tester,
+      ) async {
         const pasteText = 'text';
         const formattedText = 'Formatted text';
         final node = paragraphNode(
@@ -330,17 +321,20 @@ void main() async {
   });
 
   group('copy_paste_extension.dart', () {
-    testWidgets('Keep current node if current node is empty but not paragraph',
-        (tester) async {
-      final initialNode = quoteNode();
-      final pasteNode = paragraphNode(text: 'hello');
+    testWidgets(
+      'Keep current node if current node is empty but not paragraph',
+      (tester) async {
+        final initialNode = quoteNode();
+        final pasteNode = paragraphNode(text: 'hello');
 
-      final nodeType = await _testPasteNode(tester, initialNode, pasteNode);
-      expect(nodeType, initialNode.type);
-    });
+        final nodeType = await _testPasteNode(tester, initialNode, pasteNode);
+        expect(nodeType, initialNode.type);
+      },
+    );
 
-    testWidgets('Replace node with pasted node if current is empty paragraph',
-        (tester) async {
+    testWidgets('Replace node with pasted node if current is empty paragraph', (
+      tester,
+    ) async {
       final initialNode = paragraphNode();
       final pasteNode = headingNode(level: 2, delta: Delta()..insert('hello'));
 
@@ -358,9 +352,7 @@ Future<String> _testPasteNode(
   final editor = tester.editor..addNode(initialNode);
 
   await editor.startTesting();
-  await editor.updateSelection(
-    Selection.collapsed(Position(path: [0])),
-  );
+  await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
   AppFlowyClipboard.mockSetData(
     AppFlowyClipboardData(
@@ -402,27 +394,18 @@ Future<void> _testHandleCopyMultiplePaste(
     editor.editorState,
     documentToHTML(Document.fromJson(paragraphData)),
   );
-  expect(
-    editor.editorState.document.toJson(),
-    paragraphData,
-  );
+  expect(editor.editorState.document.toJson(), paragraphData);
   await editor.updateSelection(Selection.single(path: [0], startOffset: 10));
   pasteHTML(
     editor.editorState,
     documentToHTML(Document.fromJson(paragraphData)),
   );
-  expect(
-    editor.document.toJson(),
-    secondParagraph,
-  );
+  expect(editor.document.toJson(), secondParagraph);
   pasteHTML(
     editor.editorState,
     documentToHTML(Document.fromJson(paragraphData)),
   );
-  expect(
-    editor.document.toJson(),
-    thirdParagraph,
-  );
+  expect(editor.document.toJson(), thirdParagraph);
   await editor.dispose();
 }
 
@@ -471,10 +454,10 @@ const paragraphData = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -505,10 +488,10 @@ const secondParagraph = {
             {
               "insert": "rich-text editor",
               "attributes": {"italic": true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -523,10 +506,10 @@ const plainTextJson = {
             {
               "insert":
                   "AppFlowy Editor is a highly customizable   rich-text editor",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -567,10 +550,10 @@ const thirdParagraph = {
             {
               "insert": "rich-text editor",
               "attributes": {"italic": true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

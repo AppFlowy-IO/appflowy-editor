@@ -21,9 +21,7 @@ void main() {
       Material(
         child: MobileAppWithToolbarWidget(
           editorState: editor.editorState,
-          toolbarItems: [
-            codeMobileToolbarItem,
-          ],
+          toolbarItems: [codeMobileToolbarItem],
         ),
       ),
     );
@@ -37,9 +35,8 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.code] == true,
-            );
+          (element) => element.attributes?[AppFlowyRichTextKeys.code] == true,
+        );
       }),
       true,
     );

@@ -47,20 +47,12 @@ class BlockComponentActionList extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         BlockComponentActionButton(
-          icon: const Icon(
-            Icons.add,
-            size: 18,
-          ),
+          icon: const Icon(Icons.add, size: 18),
           onTap: onTapAdd,
         ),
-        const SizedBox(
-          width: 5,
-        ),
+        const SizedBox(width: 5),
         BlockComponentActionButton(
-          icon: const Icon(
-            Icons.apps,
-            size: 18,
-          ),
+          icon: const Icon(Icons.apps, size: 18),
           onTap: onTapOption,
         ),
       ],

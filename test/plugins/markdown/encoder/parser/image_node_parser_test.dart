@@ -6,9 +6,7 @@ void main() async {
     test('parser image node', () {
       final node = Node(
         type: 'image',
-        attributes: {
-          'url': 'https://appflowy.io',
-        },
+        attributes: {'url': 'https://appflowy.io'},
       );
 
       final result = const ImageNodeParser().transform(node, null);

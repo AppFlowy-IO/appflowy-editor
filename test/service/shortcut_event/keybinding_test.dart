@@ -59,8 +59,9 @@ void main() async {
 
     test('keybinding copyWith', () {
       const command = 'shift+alt+ctrl+a';
-      final keybinding =
-          Keybinding.parse(command).copyWith(isMetaPressed: true);
+      final keybinding = Keybinding.parse(
+        command,
+      ).copyWith(isMetaPressed: true);
       expect(keybinding.isAltPressed, true);
       expect(keybinding.isShiftPressed, true);
       expect(keybinding.isMetaPressed, true);

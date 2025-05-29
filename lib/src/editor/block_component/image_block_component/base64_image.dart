@@ -4,10 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 
 Image imageFromBase64String(String base64String, {double? width}) {
-  return Image.memory(
-    base64Decode(base64String),
-    width: width,
-  );
+  return Image.memory(base64Decode(base64String), width: width);
 }
 
 Uint8List dataFromBase64String(String base64String) {

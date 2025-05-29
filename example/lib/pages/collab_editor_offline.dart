@@ -174,11 +174,7 @@ class _CollabEditorState extends State<CollabEditorOffline> {
   @override
   Widget build(BuildContext context) {
     if (!isInitialized) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -188,10 +184,7 @@ class _CollabEditorState extends State<CollabEditorOffline> {
           children: [
             Text('Collaborative Offline Editor'),
             SizedBox(height: 8),
-            Text(
-              'Best tested on desktop',
-              style: TextStyle(fontSize: 12),
-            ),
+            Text('Best tested on desktop', style: TextStyle(fontSize: 12)),
           ],
         ),
         centerTitle: true,
@@ -266,9 +259,7 @@ class _CollabEditorState extends State<CollabEditorOffline> {
                         width: 2,
                       ),
                     ),
-                    child: AppFlowyEditor(
-                      editorState: editorStateA,
-                    ),
+                    child: AppFlowyEditor(editorState: editorStateA),
                   ),
                 ),
                 const Divider(),
@@ -281,9 +272,7 @@ class _CollabEditorState extends State<CollabEditorOffline> {
                         width: 2,
                       ),
                     ),
-                    child: AppFlowyEditor(
-                      editorState: editorStateB,
-                    ),
+                    child: AppFlowyEditor(editorState: editorStateB),
                   ),
                 ),
               ],

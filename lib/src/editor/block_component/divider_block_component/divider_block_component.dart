@@ -10,16 +10,11 @@ class DividerBlockKeys {
 
 // creating a new callout node
 Node dividerNode() {
-  return Node(
-    type: DividerBlockKeys.type,
-  );
+  return Node(type: DividerBlockKeys.type);
 }
 
-typedef DividerBlockWrapper = Widget Function(
-  BuildContext context,
-  Node node,
-  Widget child,
-);
+typedef DividerBlockWrapper =
+    Widget Function(BuildContext context, Node node, Widget child);
 
 class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({
@@ -44,19 +39,16 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
       height: height,
       wrapper: wrapper,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.children.isEmpty;
+  BlockComponentValidate get validate =>
+      (node) => node.children.isEmpty;
 }
 
 class DividerBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -98,17 +90,10 @@ class _DividerBlockComponentWidgetState
     Widget child = Container(
       height: widget.height,
       alignment: Alignment.center,
-      child: Divider(
-        color: widget.lineColor,
-        thickness: 1,
-      ),
+      child: Divider(color: widget.lineColor, thickness: 1),
     );
 
-    child = Padding(
-      key: dividerKey,
-      padding: padding,
-      child: child,
-    );
+    child = Padding(key: dividerKey, padding: padding, child: child);
 
     final editorState = context.read<EditorState>();
 
@@ -160,9 +145,7 @@ class _DividerBlockComponentWidgetState
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
     return getRectsInSelection(Selection.invalid()).first;
   }
 
@@ -202,17 +185,11 @@ class _DividerBlockComponentWidgetState
   }
 
   @override
-  Selection getSelectionInRange(Offset start, Offset end) => Selection.single(
-        path: widget.node.path,
-        startOffset: 0,
-        endOffset: 1,
-      );
+  Selection getSelectionInRange(Offset start, Offset end) =>
+      Selection.single(path: widget.node.path, startOffset: 0, endOffset: 1);
 
   @override
-  Offset localToGlobal(
-    Offset offset, {
-    bool shiftWithBaseOffset = false,
-  }) =>
+  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false}) =>
       _renderBox!.localToGlobal(offset);
 
   @override

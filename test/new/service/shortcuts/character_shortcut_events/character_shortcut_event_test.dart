@@ -38,8 +38,11 @@ void main() async {
         return true;
       }
 
-      final myEvent =
-          CharacterShortcutEvent(key: "test", character: "a", handler: handler);
+      final myEvent = CharacterShortcutEvent(
+        key: "test",
+        character: "a",
+        handler: handler,
+      );
 
       await myEvent.execute(EditorState.blank());
 
@@ -51,17 +54,24 @@ void main() async {
         return true;
       }
 
-      final shortcutOne =
-          CharacterShortcutEvent(key: "test", character: "a", handler: handler);
+      final shortcutOne = CharacterShortcutEvent(
+        key: "test",
+        character: "a",
+        handler: handler,
+      );
 
-      final shortcutTwo =
-          CharacterShortcutEvent(key: 'test', character: 'a', handler: handler);
+      final shortcutTwo = CharacterShortcutEvent(
+        key: 'test',
+        character: 'a',
+        handler: handler,
+      );
 
       expect(true, shortcutOne == shortcutTwo);
     });
 
     test('hashCode should return the correct hash code', () {
-      final hashCode = shortcutEvent.key.hashCode ^
+      final hashCode =
+          shortcutEvent.key.hashCode ^
           shortcutEvent.character.hashCode ^
           shortcutEvent.handler.hashCode ^
           shortcutEvent.handlerWithCharacter.hashCode;

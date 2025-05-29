@@ -21,9 +21,7 @@ final floatingToolbarItems = [
 ];
 
 class TestableEditor {
-  TestableEditor({
-    required this.tester,
-  });
+  TestableEditor({required this.tester});
 
   final WidgetTester tester;
 
@@ -37,10 +35,7 @@ class TestableEditor {
 
   MockIMEInput? _ime;
   MockIMEInput get ime {
-    return _ime ??= MockIMEInput(
-      editorState: editorState,
-      tester: tester,
-    );
+    return _ime ??= MockIMEInput(editorState: editorState, tester: tester);
   }
 
   Future<TestableEditor> startTesting({
@@ -78,20 +73,17 @@ class TestableEditor {
           editorScrollController: editorScrollController,
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
-            ...TestableFindAndReplaceCommands(context: context)
-                .testableFindAndReplaceCommands,
+            ...TestableFindAndReplaceCommands(
+              context: context,
+            ).testableFindAndReplaceCommands,
           ],
           characterShortcutEvents: [
             ...standardCharacterShortcutEvents,
             formatGreaterHyphen,
           ],
           editorStyle: inMobile
-              ? EditorStyle.mobile(
-                  defaultTextDirection: defaultTextDirection,
-                )
-              : EditorStyle.desktop(
-                  defaultTextDirection: defaultTextDirection,
-                ),
+              ? EditorStyle.mobile(defaultTextDirection: defaultTextDirection)
+              : EditorStyle.desktop(defaultTextDirection: defaultTextDirection),
         );
       },
     );
@@ -115,10 +107,7 @@ class TestableEditor {
                 editorState: editorState,
               ),
             ),
-            MobileToolbar(
-              editorState: editorState,
-              toolbarItems: items,
-            ),
+            MobileToolbar(editorState: editorState, toolbarItems: items),
           ],
         );
       } else {
@@ -132,10 +121,7 @@ class TestableEditor {
       }
     }
 
-    editor = Directionality(
-      textDirection: textDirection,
-      child: editor,
-    );
+    editor = Directionality(textDirection: textDirection, child: editor);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -148,13 +134,7 @@ class TestableEditor {
         ],
         supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
         locale: locale,
-        home: Scaffold(
-          body: wrapper == null
-              ? editor
-              : wrapper(
-                  editor,
-                ),
-        ),
+        home: Scaffold(body: wrapper == null ? editor : wrapper(editor)),
       ),
     );
     await tester.pump();
@@ -162,15 +142,11 @@ class TestableEditor {
   }
 
   void initialize() {
-    _editorState = EditorState(
-      document: Document.blank(),
-    );
+    _editorState = EditorState(document: Document.blank());
   }
 
   void initializeWithDocument(Document document) {
-    _editorState = EditorState(
-      document: document,
-    );
+    _editorState = EditorState(document: document);
   }
 
   Future<void> dispose() async {
@@ -289,17 +265,15 @@ extension TestableEditorExtension on WidgetTester {
 }
 
 class MockIMEInput {
-  MockIMEInput({
-    required this.editorState,
-    required this.tester,
-  });
+  MockIMEInput({required this.editorState, required this.tester});
 
   final EditorState editorState;
   final WidgetTester tester;
 
   TextInputService get imeInput {
-    final keyboardService = tester.state(find.byType(KeyboardServiceWidget))
-        as KeyboardServiceWidgetState;
+    final keyboardService =
+        tester.state(find.byType(KeyboardServiceWidget))
+            as KeyboardServiceWidgetState;
     return keyboardService.textInputService;
   }
 
@@ -354,8 +328,10 @@ class MockIMEInput {
       return;
     }
 
-    final oldText =
-        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
+    final oldText = editorState
+        .getNodeAtPath(selection.start.path)!
+        .delta!
+        .toPlainText();
 
     await imeInput.apply([
       TextEditingDeltaReplacement(

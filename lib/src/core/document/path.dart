@@ -134,12 +134,10 @@ extension PathExtensions on Path {
   }
 
   // if isSameDepth is true, the path must be the same depth as the selection
-  bool inSelection(
-    Selection? selection, {
-    bool isSameDepth = false,
-  }) {
+  bool inSelection(Selection? selection, {bool isSameDepth = false}) {
     selection = selection?.normalized;
-    bool result = selection != null &&
+    bool result =
+        selection != null &&
         selection.start.path <= this &&
         this <= selection.end.path;
     if (isSameDepth) {

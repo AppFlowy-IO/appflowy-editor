@@ -5,9 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('markdown_heading_parser.dart', () {
     final parser = DocumentMarkdownDecoder(
-      markdownElementParsers: [
-        const MarkdownHeadingParserV2(),
-      ],
+      markdownElementParsers: [const MarkdownHeadingParserV2()],
     );
 
     test('convert # to heading', () {
@@ -75,7 +73,7 @@ void main() async {
                 'bold': true,
                 'href': 'appflowy.io',
               },
-            }
+            },
           ],
         },
       });

@@ -2,10 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 class ColorOption {
-  const ColorOption({
-    required this.colorHex,
-    required this.name,
-  });
+  const ColorOption({required this.colorHex, required this.name});
 
   final String colorHex;
   final String name;
@@ -112,10 +109,7 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget _buildHeader(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        color: Colors.grey,
-        fontWeight: FontWeight.bold,
-      ),
+      style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
     );
   }
 
@@ -171,8 +165,10 @@ class _ColorPickerState extends State<ColorPicker> {
             Expanded(
               child: Text(
                 option.name,
-                style:
-                    TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: widget.pickerItemTextColor,
+                ),
               ),
             ),
             // checkbox
@@ -215,8 +211,10 @@ class _ColorPickerState extends State<ColorPicker> {
             Expanded(
               child: Text(
                 'Custom Color',
-                style:
-                    TextStyle(fontSize: 12, color: widget.pickerItemTextColor),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: widget.pickerItemTextColor,
+                ),
               ),
             ),
           ],
@@ -249,9 +247,7 @@ class _ColorPickerState extends State<ColorPicker> {
       decoration: InputDecoration(
         labelText: labeText,
         border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.outline,
-          ),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
         ),
       ),
       style: Theme.of(context).textTheme.bodyMedium,

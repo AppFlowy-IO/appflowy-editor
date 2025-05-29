@@ -22,9 +22,7 @@ void main() {
       Material(
         child: MobileAppWithToolbarWidget(
           editorState: editor.editorState,
-          toolbarItems: [
-            listMobileToolbarItem,
-          ],
+          toolbarItems: [listMobileToolbarItem],
         ),
       ),
     );
@@ -35,14 +33,8 @@ void main() {
 
     // Show its menu and it has 2 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(
-      find.text(AppFlowyEditorL10n.current.bulletedList),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppFlowyEditorL10n.current.numberedList),
-      findsOneWidget,
-    );
+    expect(find.text(AppFlowyEditorL10n.current.bulletedList), findsOneWidget);
+    expect(find.text(AppFlowyEditorL10n.current.numberedList), findsOneWidget);
 
     // Test Bulleted List button
     await tester.tap(
@@ -53,10 +45,7 @@ void main() {
     );
     var node = editor.editorState.getNodeAtPath([1]);
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
-    expect(
-      node?.type == BulletedListBlockKeys.type,
-      true,
-    );
+    expect(node?.type == BulletedListBlockKeys.type, true);
 
     // Test Numbered List button
     await tester.tap(
@@ -68,9 +57,6 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
     //Get updated node
     node = editor.editorState.getNodeAtPath([1]);
-    expect(
-      node?.type == NumberedListBlockKeys.type,
-      true,
-    );
+    expect(node?.type == NumberedListBlockKeys.type, true);
   });
 }

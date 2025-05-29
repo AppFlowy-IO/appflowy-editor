@@ -43,9 +43,7 @@ class MarkdownUnorderedListItemParserV2 extends CustomMarkdownParser {
 
     return [
       bulletedListNode(
-        delta: deltaDecoder.convertNodes(
-          deltaNodes,
-        ),
+        delta: deltaDecoder.convertNodes(deltaNodes),
         children: parseElementChildren(
           ec.reversed.toList(),
           parsers,

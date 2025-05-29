@@ -46,10 +46,9 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
             onPressed: () {
               if (hasTextColor) {
                 setState(() {
-                  widget.editorState.formatDelta(
-                    selection,
-                    {AppFlowyRichTextKeys.textColor: null},
-                  );
+                  widget.editorState.formatDelta(selection, {
+                    AppFlowyRichTextKeys.textColor: null,
+                  });
                 });
               }
             },

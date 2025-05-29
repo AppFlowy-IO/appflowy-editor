@@ -18,8 +18,10 @@ class AppFlowyEditorLocalizations {
   static AppFlowyEditorLocalizations? _current;
 
   static AppFlowyEditorLocalizations get current {
-    assert(_current != null,
-        'No instance of AppFlowyEditorLocalizations was loaded. Try to initialize the AppFlowyEditorLocalizations delegate before accessing AppFlowyEditorLocalizations.current.');
+    assert(
+      _current != null,
+      'No instance of AppFlowyEditorLocalizations was loaded. Try to initialize the AppFlowyEditorLocalizations delegate before accessing AppFlowyEditorLocalizations.current.',
+    );
     return _current!;
   }
 
@@ -41,24 +43,23 @@ class AppFlowyEditorLocalizations {
 
   static AppFlowyEditorLocalizations of(BuildContext context) {
     final instance = AppFlowyEditorLocalizations.maybeOf(context);
-    assert(instance != null,
-        'No instance of AppFlowyEditorLocalizations present in the widget tree. Did you add AppFlowyEditorLocalizations.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of AppFlowyEditorLocalizations present in the widget tree. Did you add AppFlowyEditorLocalizations.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
   static AppFlowyEditorLocalizations? maybeOf(BuildContext context) {
     return Localizations.of<AppFlowyEditorLocalizations>(
-        context, AppFlowyEditorLocalizations);
+      context,
+      AppFlowyEditorLocalizations,
+    );
   }
 
   /// `Bold`
   String get bold {
-    return Intl.message(
-      'Bold',
-      name: 'bold',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Bold', name: 'bold', desc: '', args: []);
   }
 
   /// `Bulleted List`
@@ -73,102 +74,52 @@ class AppFlowyEditorLocalizations {
 
   /// `Checkbox`
   String get checkbox {
-    return Intl.message(
-      'Checkbox',
-      name: 'checkbox',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Checkbox', name: 'checkbox', desc: '', args: []);
   }
 
   /// `Embed Code`
   String get embedCode {
-    return Intl.message(
-      'Embed Code',
-      name: 'embedCode',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Embed Code', name: 'embedCode', desc: '', args: []);
   }
 
   /// `H1`
   String get heading1 {
-    return Intl.message(
-      'H1',
-      name: 'heading1',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('H1', name: 'heading1', desc: '', args: []);
   }
 
   /// `H2`
   String get heading2 {
-    return Intl.message(
-      'H2',
-      name: 'heading2',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('H2', name: 'heading2', desc: '', args: []);
   }
 
   /// `H3`
   String get heading3 {
-    return Intl.message(
-      'H3',
-      name: 'heading3',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('H3', name: 'heading3', desc: '', args: []);
   }
 
   /// `Highlight`
   String get highlight {
-    return Intl.message(
-      'Highlight',
-      name: 'highlight',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Highlight', name: 'highlight', desc: '', args: []);
   }
 
   /// `Color`
   String get color {
-    return Intl.message(
-      'Color',
-      name: 'color',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Color', name: 'color', desc: '', args: []);
   }
 
   /// `Image`
   String get image {
-    return Intl.message(
-      'Image',
-      name: 'image',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Image', name: 'image', desc: '', args: []);
   }
 
   /// `Italic`
   String get italic {
-    return Intl.message(
-      'Italic',
-      name: 'italic',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Italic', name: 'italic', desc: '', args: []);
   }
 
   /// `Link`
   String get link {
-    return Intl.message(
-      'Link',
-      name: 'link',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Link', name: 'link', desc: '', args: []);
   }
 
   /// `Numbered List`
@@ -183,12 +134,7 @@ class AppFlowyEditorLocalizations {
 
   /// `Quote`
   String get quote {
-    return Intl.message(
-      'Quote',
-      name: 'quote',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Quote', name: 'quote', desc: '', args: []);
   }
 
   /// `Strikethrough`
@@ -203,22 +149,12 @@ class AppFlowyEditorLocalizations {
 
   /// `Text`
   String get text {
-    return Intl.message(
-      'Text',
-      name: 'text',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Text', name: 'text', desc: '', args: []);
   }
 
   /// `Underline`
   String get underline {
-    return Intl.message(
-      'Underline',
-      name: 'underline',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Underline', name: 'underline', desc: '', args: []);
   }
 
   /// `Default`
@@ -233,92 +169,47 @@ class AppFlowyEditorLocalizations {
 
   /// `Gray`
   String get fontColorGray {
-    return Intl.message(
-      'Gray',
-      name: 'fontColorGray',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Gray', name: 'fontColorGray', desc: '', args: []);
   }
 
   /// `Brown`
   String get fontColorBrown {
-    return Intl.message(
-      'Brown',
-      name: 'fontColorBrown',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Brown', name: 'fontColorBrown', desc: '', args: []);
   }
 
   /// `Orange`
   String get fontColorOrange {
-    return Intl.message(
-      'Orange',
-      name: 'fontColorOrange',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Orange', name: 'fontColorOrange', desc: '', args: []);
   }
 
   /// `Yellow`
   String get fontColorYellow {
-    return Intl.message(
-      'Yellow',
-      name: 'fontColorYellow',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Yellow', name: 'fontColorYellow', desc: '', args: []);
   }
 
   /// `Green`
   String get fontColorGreen {
-    return Intl.message(
-      'Green',
-      name: 'fontColorGreen',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Green', name: 'fontColorGreen', desc: '', args: []);
   }
 
   /// `Blue`
   String get fontColorBlue {
-    return Intl.message(
-      'Blue',
-      name: 'fontColorBlue',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Blue', name: 'fontColorBlue', desc: '', args: []);
   }
 
   /// `Purple`
   String get fontColorPurple {
-    return Intl.message(
-      'Purple',
-      name: 'fontColorPurple',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Purple', name: 'fontColorPurple', desc: '', args: []);
   }
 
   /// `Pink`
   String get fontColorPink {
-    return Intl.message(
-      'Pink',
-      name: 'fontColorPink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Pink', name: 'fontColorPink', desc: '', args: []);
   }
 
   /// `Red`
   String get fontColorRed {
-    return Intl.message(
-      'Red',
-      name: 'fontColorRed',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Red', name: 'fontColorRed', desc: '', args: []);
   }
 
   /// `Default background`
@@ -423,132 +314,67 @@ class AppFlowyEditorLocalizations {
 
   /// `Done`
   String get done {
-    return Intl.message(
-      'Done',
-      name: 'done',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Done', name: 'done', desc: '', args: []);
   }
 
   /// `Cancel`
   String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
   }
 
   /// `Tint 1`
   String get tint1 {
-    return Intl.message(
-      'Tint 1',
-      name: 'tint1',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 1', name: 'tint1', desc: '', args: []);
   }
 
   /// `Tint 2`
   String get tint2 {
-    return Intl.message(
-      'Tint 2',
-      name: 'tint2',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 2', name: 'tint2', desc: '', args: []);
   }
 
   /// `Tint 3`
   String get tint3 {
-    return Intl.message(
-      'Tint 3',
-      name: 'tint3',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 3', name: 'tint3', desc: '', args: []);
   }
 
   /// `Tint 4`
   String get tint4 {
-    return Intl.message(
-      'Tint 4',
-      name: 'tint4',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 4', name: 'tint4', desc: '', args: []);
   }
 
   /// `Tint 5`
   String get tint5 {
-    return Intl.message(
-      'Tint 5',
-      name: 'tint5',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 5', name: 'tint5', desc: '', args: []);
   }
 
   /// `Tint 6`
   String get tint6 {
-    return Intl.message(
-      'Tint 6',
-      name: 'tint6',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 6', name: 'tint6', desc: '', args: []);
   }
 
   /// `Tint 7`
   String get tint7 {
-    return Intl.message(
-      'Tint 7',
-      name: 'tint7',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 7', name: 'tint7', desc: '', args: []);
   }
 
   /// `Tint 8`
   String get tint8 {
-    return Intl.message(
-      'Tint 8',
-      name: 'tint8',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 8', name: 'tint8', desc: '', args: []);
   }
 
   /// `Tint 9`
   String get tint9 {
-    return Intl.message(
-      'Tint 9',
-      name: 'tint9',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tint 9', name: 'tint9', desc: '', args: []);
   }
 
   /// `Purple`
   String get lightLightTint1 {
-    return Intl.message(
-      'Purple',
-      name: 'lightLightTint1',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Purple', name: 'lightLightTint1', desc: '', args: []);
   }
 
   /// `Pink`
   String get lightLightTint2 {
-    return Intl.message(
-      'Pink',
-      name: 'lightLightTint2',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Pink', name: 'lightLightTint2', desc: '', args: []);
   }
 
   /// `Light Pink`
@@ -563,62 +389,32 @@ class AppFlowyEditorLocalizations {
 
   /// `Orange`
   String get lightLightTint4 {
-    return Intl.message(
-      'Orange',
-      name: 'lightLightTint4',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Orange', name: 'lightLightTint4', desc: '', args: []);
   }
 
   /// `Yellow`
   String get lightLightTint5 {
-    return Intl.message(
-      'Yellow',
-      name: 'lightLightTint5',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Yellow', name: 'lightLightTint5', desc: '', args: []);
   }
 
   /// `Lime`
   String get lightLightTint6 {
-    return Intl.message(
-      'Lime',
-      name: 'lightLightTint6',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Lime', name: 'lightLightTint6', desc: '', args: []);
   }
 
   /// `Green`
   String get lightLightTint7 {
-    return Intl.message(
-      'Green',
-      name: 'lightLightTint7',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Green', name: 'lightLightTint7', desc: '', args: []);
   }
 
   /// `Aqua`
   String get lightLightTint8 {
-    return Intl.message(
-      'Aqua',
-      name: 'lightLightTint8',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Aqua', name: 'lightLightTint8', desc: '', args: []);
   }
 
   /// `Blue`
   String get lightLightTint9 {
-    return Intl.message(
-      'Blue',
-      name: 'lightLightTint9',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Blue', name: 'lightLightTint9', desc: '', args: []);
   }
 
   /// `List item`
@@ -633,22 +429,12 @@ class AppFlowyEditorLocalizations {
 
   /// `To-do`
   String get toDoPlaceholder {
-    return Intl.message(
-      'To-do',
-      name: 'toDoPlaceholder',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('To-do', name: 'toDoPlaceholder', desc: '', args: []);
   }
 
   /// `URL`
   String get urlHint {
-    return Intl.message(
-      'URL',
-      name: 'urlHint',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('URL', name: 'urlHint', desc: '', args: []);
   }
 
   /// `Heading 1`
@@ -683,12 +469,7 @@ class AppFlowyEditorLocalizations {
 
   /// `Text Color`
   String get textColor {
-    return Intl.message(
-      'Text Color',
-      name: 'textColor',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Text Color', name: 'textColor', desc: '', args: []);
   }
 
   /// `Background Color`
@@ -713,52 +494,27 @@ class AppFlowyEditorLocalizations {
 
   /// `Open link`
   String get openLink {
-    return Intl.message(
-      'Open link',
-      name: 'openLink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Open link', name: 'openLink', desc: '', args: []);
   }
 
   /// `Copy link`
   String get copyLink {
-    return Intl.message(
-      'Copy link',
-      name: 'copyLink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Copy link', name: 'copyLink', desc: '', args: []);
   }
 
   /// `Remove link`
   String get removeLink {
-    return Intl.message(
-      'Remove link',
-      name: 'removeLink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Remove link', name: 'removeLink', desc: '', args: []);
   }
 
   /// `Edit link`
   String get editLink {
-    return Intl.message(
-      'Edit link',
-      name: 'editLink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Edit link', name: 'editLink', desc: '', args: []);
   }
 
   /// `Text`
   String get linkText {
-    return Intl.message(
-      'Text',
-      name: 'linkText',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Text', name: 'linkText', desc: '', args: []);
   }
 
   /// `Please enter text`
@@ -813,22 +569,12 @@ class AppFlowyEditorLocalizations {
 
   /// `Hex value`
   String get hexValue {
-    return Intl.message(
-      'Hex value',
-      name: 'hexValue',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Hex value', name: 'hexValue', desc: '', args: []);
   }
 
   /// `Opacity`
   String get opacity {
-    return Intl.message(
-      'Opacity',
-      name: 'opacity',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Opacity', name: 'opacity', desc: '', args: []);
   }
 
   /// `Reset to default color`
@@ -843,72 +589,37 @@ class AppFlowyEditorLocalizations {
 
   /// `LTR`
   String get ltr {
-    return Intl.message(
-      'LTR',
-      name: 'ltr',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('LTR', name: 'ltr', desc: '', args: []);
   }
 
   /// `RTL`
   String get rtl {
-    return Intl.message(
-      'RTL',
-      name: 'rtl',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('RTL', name: 'rtl', desc: '', args: []);
   }
 
   /// `Auto`
   String get auto {
-    return Intl.message(
-      'Auto',
-      name: 'auto',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Auto', name: 'auto', desc: '', args: []);
   }
 
   /// `Cut`
   String get cut {
-    return Intl.message(
-      'Cut',
-      name: 'cut',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cut', name: 'cut', desc: '', args: []);
   }
 
   /// `Copy`
   String get copy {
-    return Intl.message(
-      'Copy',
-      name: 'copy',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Copy', name: 'copy', desc: '', args: []);
   }
 
   /// `Paste`
   String get paste {
-    return Intl.message(
-      'Paste',
-      name: 'paste',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Paste', name: 'paste', desc: '', args: []);
   }
 
   /// `Find`
   String get find {
-    return Intl.message(
-      'Find',
-      name: 'find',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Find', name: 'find', desc: '', args: []);
   }
 
   /// `Previous match`
@@ -923,52 +634,27 @@ class AppFlowyEditorLocalizations {
 
   /// `Next match`
   String get nextMatch {
-    return Intl.message(
-      'Next match',
-      name: 'nextMatch',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Next match', name: 'nextMatch', desc: '', args: []);
   }
 
   /// `Close`
   String get closeFind {
-    return Intl.message(
-      'Close',
-      name: 'closeFind',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Close', name: 'closeFind', desc: '', args: []);
   }
 
   /// `Replace`
   String get replace {
-    return Intl.message(
-      'Replace',
-      name: 'replace',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Replace', name: 'replace', desc: '', args: []);
   }
 
   /// `Replace all`
   String get replaceAll {
-    return Intl.message(
-      'Replace all',
-      name: 'replaceAll',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Replace all', name: 'replaceAll', desc: '', args: []);
   }
 
   /// `Regex`
   String get regex {
-    return Intl.message(
-      'Regex',
-      name: 'regex',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Regex', name: 'regex', desc: '', args: []);
   }
 
   /// `Case sensitive`
@@ -983,22 +669,12 @@ class AppFlowyEditorLocalizations {
 
   /// `Regex Error`
   String get regexError {
-    return Intl.message(
-      'Regex Error',
-      name: 'regexError',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Regex Error', name: 'regexError', desc: '', args: []);
   }
 
   /// `No result`
   String get noFindResult {
-    return Intl.message(
-      'No result',
-      name: 'noFindResult',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('No result', name: 'noFindResult', desc: '', args: []);
   }
 
   /// `Enter a pattern`
@@ -1013,22 +689,12 @@ class AppFlowyEditorLocalizations {
 
   /// `Upload`
   String get uploadImage {
-    return Intl.message(
-      'Upload',
-      name: 'uploadImage',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Upload', name: 'uploadImage', desc: '', args: []);
   }
 
   /// `URL`
   String get urlImage {
-    return Intl.message(
-      'URL',
-      name: 'urlImage',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('URL', name: 'urlImage', desc: '', args: []);
   }
 
   /// `Incorrect Link`
@@ -1043,12 +709,7 @@ class AppFlowyEditorLocalizations {
 
   /// `Upload`
   String get upload {
-    return Intl.message(
-      'Upload',
-      name: 'upload',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Upload', name: 'upload', desc: '', args: []);
   }
 
   /// `Choose an image`
@@ -1063,12 +724,7 @@ class AppFlowyEditorLocalizations {
 
   /// `Loading`
   String get loading {
-    return Intl.message(
-      'Loading',
-      name: 'loading',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Loading', name: 'loading', desc: '', args: []);
   }
 
   /// `Could not load the image`
@@ -1083,122 +739,62 @@ class AppFlowyEditorLocalizations {
 
   /// `Divider`
   String get divider {
-    return Intl.message(
-      'Divider',
-      name: 'divider',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Divider', name: 'divider', desc: '', args: []);
   }
 
   /// `Table`
   String get table {
-    return Intl.message(
-      'Table',
-      name: 'table',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Table', name: 'table', desc: '', args: []);
   }
 
   /// `Add before`
   String get colAddBefore {
-    return Intl.message(
-      'Add before',
-      name: 'colAddBefore',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add before', name: 'colAddBefore', desc: '', args: []);
   }
 
   /// `Add before`
   String get rowAddBefore {
-    return Intl.message(
-      'Add before',
-      name: 'rowAddBefore',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add before', name: 'rowAddBefore', desc: '', args: []);
   }
 
   /// `Add after`
   String get colAddAfter {
-    return Intl.message(
-      'Add after',
-      name: 'colAddAfter',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add after', name: 'colAddAfter', desc: '', args: []);
   }
 
   /// `Add after`
   String get rowAddAfter {
-    return Intl.message(
-      'Add after',
-      name: 'rowAddAfter',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add after', name: 'rowAddAfter', desc: '', args: []);
   }
 
   /// `Remove`
   String get colRemove {
-    return Intl.message(
-      'Remove',
-      name: 'colRemove',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Remove', name: 'colRemove', desc: '', args: []);
   }
 
   /// `Remove`
   String get rowRemove {
-    return Intl.message(
-      'Remove',
-      name: 'rowRemove',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Remove', name: 'rowRemove', desc: '', args: []);
   }
 
   /// `Duplicate`
   String get colDuplicate {
-    return Intl.message(
-      'Duplicate',
-      name: 'colDuplicate',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Duplicate', name: 'colDuplicate', desc: '', args: []);
   }
 
   /// `Duplicate`
   String get rowDuplicate {
-    return Intl.message(
-      'Duplicate',
-      name: 'rowDuplicate',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Duplicate', name: 'rowDuplicate', desc: '', args: []);
   }
 
   /// `Clear Content`
   String get colClear {
-    return Intl.message(
-      'Clear Content',
-      name: 'colClear',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Clear Content', name: 'colClear', desc: '', args: []);
   }
 
   /// `Clear Content`
   String get rowClear {
-    return Intl.message(
-      'Clear Content',
-      name: 'rowClear',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Clear Content', name: 'rowClear', desc: '', args: []);
   }
 
   /// `Enter a / to insert a block, or start typing`
@@ -1343,12 +939,7 @@ class AppFlowyEditorLocalizations {
 
   /// `indent`
   String get cmdIndent {
-    return Intl.message(
-      'indent',
-      name: 'cmdIndent',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('indent', name: 'cmdIndent', desc: '', args: []);
   }
 
   /// `move cursor to the bottom`
@@ -1553,12 +1144,7 @@ class AppFlowyEditorLocalizations {
 
   /// `Open Find`
   String get cmdOpenFind {
-    return Intl.message(
-      'Open Find',
-      name: 'cmdOpenFind',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Open Find', name: 'cmdOpenFind', desc: '', args: []);
   }
 
   /// `Open Find and Replace`
@@ -1573,32 +1159,17 @@ class AppFlowyEditorLocalizations {
 
   /// `open link`
   String get cmdOpenLink {
-    return Intl.message(
-      'open link',
-      name: 'cmdOpenLink',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('open link', name: 'cmdOpenLink', desc: '', args: []);
   }
 
   /// `open links`
   String get cmdOpenLinks {
-    return Intl.message(
-      'open links',
-      name: 'cmdOpenLinks',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('open links', name: 'cmdOpenLinks', desc: '', args: []);
   }
 
   /// `outdent`
   String get cmdOutdent {
-    return Intl.message(
-      'outdent',
-      name: 'cmdOutdent',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('outdent', name: 'cmdOutdent', desc: '', args: []);
   }
 
   /// `paste content`
@@ -1623,12 +1194,7 @@ class AppFlowyEditorLocalizations {
 
   /// `redo`
   String get cmdRedo {
-    return Intl.message(
-      'redo',
-      name: 'cmdRedo',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('redo', name: 'cmdRedo', desc: '', args: []);
   }
 
   /// `scroll page down`
@@ -1673,12 +1239,7 @@ class AppFlowyEditorLocalizations {
 
   /// `select all`
   String get cmdSelectAll {
-    return Intl.message(
-      'select all',
-      name: 'cmdSelectAll',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('select all', name: 'cmdSelectAll', desc: '', args: []);
   }
 
   /// `Table: add line break`
@@ -1833,12 +1394,7 @@ class AppFlowyEditorLocalizations {
 
   /// `undo`
   String get cmdUndo {
-    return Intl.message(
-      'undo',
-      name: 'cmdUndo',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('undo', name: 'cmdUndo', desc: '', args: []);
   }
 
   /// `toggle H1`

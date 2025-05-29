@@ -20,10 +20,7 @@ void main() async {
       final rect = tester.getRect(finder);
       // tap at the beginning
       await tester.tapAt(rect.centerLeft);
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [1], startOffset: 0));
 
       await tester.pumpAndSettle(const Duration(seconds: 1));
       // tap at the ending
@@ -174,10 +171,7 @@ void main() async {
 
       // tap at the beginning
       await tester.tapAt(rect.centerLeft);
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0], startOffset: 0));
 
       expect(editor.editorState.selectionType, SelectionType.inline);
 

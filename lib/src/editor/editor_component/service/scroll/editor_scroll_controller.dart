@@ -38,8 +38,8 @@ class EditorScrollController {
       this.scrollController = scrollController ?? ScrollController();
       // listen to the scroll offset
       this.scrollController.addListener(
-            () => offsetNotifier.value = this.scrollController.offset,
-          );
+        () => offsetNotifier.value = this.scrollController.offset,
+      );
     } else {
       // listen to the scroll offset
       _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
@@ -70,8 +70,10 @@ class EditorScrollController {
   // 10. text10
   //
   // So the visible range is (2-1, 9-1) = (1, 8), index start from 0.
-  final ValueNotifier<(int, int)> visibleRangeNotifier =
-      ValueNotifier((-1, -1));
+  final ValueNotifier<(int, int)> visibleRangeNotifier = ValueNotifier((
+    -1,
+    -1,
+  ));
 
   // these value is required by SingleChildScrollView
   // notes: don't use them if shrinkWrap is false
@@ -146,8 +148,7 @@ class EditorScrollController {
     if (!shrinkWrap) {
       _scrollOffsetSubscription.cancel();
       _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
-      (_itemPositionsListener as ItemPositionsNotifier?)
-          ?.itemPositions
+      (_itemPositionsListener as ItemPositionsNotifier?)?.itemPositions
           .dispose();
     }
 
@@ -178,9 +179,7 @@ class EditorScrollController {
     }
   }
 
-  void jumpTo({
-    required double offset,
-  }) async {
+  void jumpTo({required double offset}) async {
     if (shrinkWrap) {
       if (scrollController.hasClients) {
         scrollController.jumpTo(
@@ -198,10 +197,7 @@ class EditorScrollController {
     final (start, end) = visibleRangeNotifier.value;
 
     if (index < start || index > end) {
-      itemScrollController.jumpTo(
-        index: max(0, index),
-        alignment: 0,
-      );
+      itemScrollController.jumpTo(index: max(0, index), alignment: 0);
     }
   }
 

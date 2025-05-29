@@ -23,31 +23,21 @@ void main() {
     });
 
     testWidgets('with shrinkWrap false', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          1000,
-          initialText: 'Hello',
-        );
+      final editor = tester.editor..addParagraphs(1000, initialText: 'Hello');
       await editor.startTesting(shrinkWrap: false);
       final size = tester.getSize(find.byType(AppFlowyEditor));
       expect(size, const Size(800, 600));
       await editor.dispose();
     });
 
-    testWidgets('with shrinkWrap true and wrapper with scroll view',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          1000,
-          initialText: 'Hello',
-        );
+    testWidgets('with shrinkWrap true and wrapper with scroll view', (
+      tester,
+    ) async {
+      final editor = tester.editor..addParagraphs(1000, initialText: 'Hello');
       await editor.startTesting(
         shrinkWrap: true,
-        wrapper: (child) => SingleChildScrollView(
-          child: IntrinsicHeight(
-            child: child,
-          ),
-        ),
+        wrapper: (child) =>
+            SingleChildScrollView(child: IntrinsicHeight(child: child)),
       );
       final size = tester.getSize(find.byType(AppFlowyEditor));
       expect(size.height > 1000, true);

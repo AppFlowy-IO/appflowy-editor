@@ -66,22 +66,20 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
             return Column(
               children: [
                 if (header != null) header!,
-                ...items.map(
-                  (e) {
-                    Widget child = editorState.renderer.build(context, e);
-                    if (wrapper != null) {
-                      child = wrapper!(context, node: e, child: child);
-                    }
-                    return Container(
-                      constraints: BoxConstraints(
-                        maxWidth:
-                            editorState.editorStyle.maxWidth ?? double.infinity,
-                      ),
-                      padding: editorState.editorStyle.padding,
-                      child: child,
-                    );
-                  },
-                ),
+                ...items.map((e) {
+                  Widget child = editorState.renderer.build(context, e);
+                  if (wrapper != null) {
+                    child = wrapper!(context, node: e, child: child);
+                  }
+                  return Container(
+                    constraints: BoxConstraints(
+                      maxWidth:
+                          editorState.editorStyle.maxWidth ?? double.infinity,
+                    ),
+                    padding: editorState.editorStyle.padding,
+                    child: child,
+                  );
+                }),
                 if (footer != null) footer!,
               ],
             );
@@ -100,22 +98,15 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
         itemBuilder: (context, index) {
           editorState.updateAutoScroller(Scrollable.of(context));
           if (header != null && index == 0) {
-            return IgnoreEditorSelectionGesture(
-              child: header!,
-            );
+            return IgnoreEditorSelectionGesture(child: header!);
           }
 
           if (footer != null && index == (items.length - 1) + extentCount) {
-            return IgnoreEditorSelectionGesture(
-              child: footer!,
-            );
+            return IgnoreEditorSelectionGesture(child: footer!);
           }
 
           final node = items[index - (header != null ? 1 : 0)];
-          Widget child = editorState.renderer.build(
-            context,
-            node,
-          );
+          Widget child = editorState.renderer.build(context, node);
           if (wrapper != null) {
             child = wrapper!(context, node: node, child: child);
           }

@@ -19,10 +19,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     final formattedMarkdown = _formatMarkdown(input);
     final List<md.Node> mdNodes = md.Document(
       extensionSet: md.ExtensionSet.gitHubFlavored,
-      inlineSyntaxes: [
-        ...inlineSyntaxes,
-        UnderlineInlineSyntax(),
-      ],
+      inlineSyntaxes: [...inlineSyntaxes, UnderlineInlineSyntax()],
       encodeHtml: false,
     ).parse(formattedMarkdown);
 
@@ -44,10 +41,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     List<Node> nodes = [];
 
     for (final parser in markdownElementParsers) {
-      nodes = parser.transform(
-        mdNode,
-        markdownElementParsers,
-      );
+      nodes = parser.transform(mdNode, markdownElementParsers);
 
       if (nodes.isNotEmpty) {
         break;

@@ -48,10 +48,6 @@ class SVGIconItemWidget extends StatelessWidget {
       );
     }
 
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: child,
-    );
+    return SizedBox(width: size.width, height: size.height, child: child);
   }
 }

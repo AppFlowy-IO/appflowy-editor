@@ -33,10 +33,7 @@ void main() {
       expect(oldStyle.padding, isNot(padding));
       expect(oldStyle.cursorColor, isNot(cursorColor));
       expect(oldStyle.selectionColor, isNot(selectionColor));
-      expect(
-        oldStyle.textStyleConfiguration,
-        isNot(textStyleConfiguration),
-      );
+      expect(oldStyle.textStyleConfiguration, isNot(textStyleConfiguration));
 
       final newStyle = desktopStyle.copyWith(
         padding: padding,
@@ -47,10 +44,7 @@ void main() {
       expect(newStyle.padding, padding);
       expect(newStyle.cursorColor, cursorColor);
       expect(newStyle.selectionColor, selectionColor);
-      expect(
-        newStyle.textStyleConfiguration,
-        textStyleConfiguration,
-      );
+      expect(newStyle.textStyleConfiguration, textStyleConfiguration);
     });
   });
 }

@@ -30,11 +30,7 @@ CommandShortcutEventHandler _deleteLeftSentenceCommandHandler = (editorState) {
   }
 
   final transaction = editorState.transaction;
-  transaction.deleteText(
-    node,
-    0,
-    selection.endIndex,
-  );
+  transaction.deleteText(node, 0, selection.endIndex);
   editorState.apply(transaction);
   return KeyEventResult.handled;
 };

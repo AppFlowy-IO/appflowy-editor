@@ -1,11 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:markdown/markdown.dart' as md;
 
-enum MarkdownListType {
-  ordered,
-  unordered,
-  unknown,
-}
+enum MarkdownListType { ordered, unordered, unknown }
 
 List<Node> parseElementChildren(
   List<md.Node>? elementChildren,

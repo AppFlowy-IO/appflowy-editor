@@ -105,10 +105,12 @@ class _LinkEditFormState extends State<LinkEditForm> {
 
   @override
   Widget build(BuildContext context) {
-    var hrefAddressTextEditingController =
-        TextEditingController(text: widget.hrefAddress);
-    var hrefTextTextEditingController =
-        TextEditingController(text: widget.hrefText);
+    var hrefAddressTextEditingController = TextEditingController(
+      text: widget.hrefAddress,
+    );
+    var hrefTextTextEditingController = TextEditingController(
+      text: widget.hrefText,
+    );
 
     return Form(
       key: _formKey,
@@ -129,10 +131,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
             decoration: InputDecoration(
               hintText: AppFlowyEditorL10n.current.linkText,
               suffixIcon: IconButton(
-                icon: const Icon(
-                  Icons.clear_rounded,
-                  size: 16,
-                ),
+                icon: const Icon(Icons.clear_rounded, size: 16),
                 onPressed: hrefTextTextEditingController.clear,
               ),
             ),
@@ -150,10 +149,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
             decoration: InputDecoration(
               hintText: AppFlowyEditorL10n.current.urlHint,
               suffixIcon: IconButton(
-                icon: const Icon(
-                  Icons.clear_rounded,
-                  size: 16,
-                ),
+                icon: const Icon(Icons.clear_rounded, size: 16),
                 onPressed: hrefAddressTextEditingController.clear,
               ),
             ),
@@ -193,7 +189,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                         hrefTextTextEditingController.text != widget.hrefText;
                     final bool addressChanged =
                         hrefAddressTextEditingController.text !=
-                            widget.hrefAddress;
+                        widget.hrefAddress;
 
                     if (textChanged && addressChanged) {
                       final transaction = widget.editorState.transaction
@@ -230,14 +226,16 @@ class _LinkEditFormState extends State<LinkEditForm> {
                         },
                       );
                     } else if (!textChanged && addressChanged) {
-                      await widget.editorState.formatDelta(widget.selection, {
-                        AppFlowyRichTextKeys.href:
-                            hrefAddressTextEditingController.value.text,
-                      }).whenComplete(() {
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      });
+                      await widget.editorState
+                          .formatDelta(widget.selection, {
+                            AppFlowyRichTextKeys.href:
+                                hrefAddressTextEditingController.value.text,
+                          })
+                          .whenComplete(() {
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          });
                     } else {
                       Navigator.of(context).pop();
                     }

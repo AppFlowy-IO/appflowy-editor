@@ -35,17 +35,13 @@ void main() async {
       expect(
         nodes.allSatisfyInSelection(selection, (delta) {
           return delta.whereType<TextInsert>().every(
-                (element) =>
-                    element.attributes?[BuiltInAttributeKey.href] != null,
-              );
+            (element) => element.attributes?[BuiltInAttributeKey.href] != null,
+          );
         }),
         true,
       );
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-        isAltPressed: true,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter, isAltPressed: true);
 
       //no newline character is inserted
       expect(node.delta!.toPlainText(), text);
@@ -72,10 +68,10 @@ const exampleJson = {
             {
               "insert": "AppFlowy",
               "attributes": {"href": "appflowy.io"},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

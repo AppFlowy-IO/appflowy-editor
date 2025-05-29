@@ -28,10 +28,12 @@ class ScrollableDetails {
     required this.direction,
     this.controller,
     this.physics,
-    @Deprecated('Migrate to decorationClipBehavior. '
-        'This property was deprecated so that its application is clearer. This clip '
-        'applies to decorators, and does not directly clip a scroll view. '
-        'This feature was deprecated after v3.9.0-1.0.pre.')
+    @Deprecated(
+      'Migrate to decorationClipBehavior. '
+      'This property was deprecated so that its application is clearer. This clip '
+      'applies to decorators, and does not directly clip a scroll view. '
+      'This feature was deprecated after v3.9.0-1.0.pre.',
+    )
     Clip? clipBehavior,
     Clip? decorationClipBehavior,
   }) : decorationClipBehavior = clipBehavior ?? decorationClipBehavior;
@@ -74,10 +76,12 @@ class ScrollableDetails {
   final Clip? decorationClipBehavior;
 
   /// Deprecated getter for [decorationClipBehavior].
-  @Deprecated('Migrate to decorationClipBehavior. '
-      'This property was deprecated so that its application is clearer. This clip '
-      'applies to decorators, and does not directly clip a scroll view. '
-      'This feature was deprecated after v3.9.0-1.0.pre.')
+  @Deprecated(
+    'Migrate to decorationClipBehavior. '
+    'This property was deprecated so that its application is clearer. This clip '
+    'applies to decorators, and does not directly clip a scroll view. '
+    'This feature was deprecated after v3.9.0-1.0.pre.',
+  )
   Clip? get clipBehavior => decorationClipBehavior;
 
   /// Copy the current [ScrollableDetails] with the given values replacing the
@@ -115,12 +119,8 @@ class ScrollableDetails {
   }
 
   @override
-  int get hashCode => Object.hash(
-        direction,
-        controller,
-        physics,
-        decorationClipBehavior,
-      );
+  int get hashCode =>
+      Object.hash(direction, controller, physics, decorationClipBehavior);
 
   @override
   bool operator ==(Object other) {
@@ -207,8 +207,10 @@ class EdgeDraggingAutoScroller {
   /// previous dragTarget to the new value and continues scrolling if necessary.
   void startAutoScrollIfNecessary(Rect dragTarget, {Duration? duration}) {
     final Offset deltaToOrigin = scrollable.deltaToScrollOrigin;
-    _dragTargetRelatedToScrollOrigin =
-        dragTarget.translate(deltaToOrigin.dx, deltaToOrigin.dy);
+    _dragTargetRelatedToScrollOrigin = dragTarget.translate(
+      deltaToOrigin.dx,
+      deltaToOrigin.dy,
+    );
     if (_scrolling) {
       // The change will be picked up in the next scroll.
       return;
@@ -240,10 +242,14 @@ class EdgeDraggingAutoScroller {
     const double overDragMax = 20.0;
 
     final Offset deltaToOrigin = scrollable.deltaToScrollOrigin;
-    final Offset viewportOrigin =
-        globalRect.topLeft.translate(deltaToOrigin.dx, deltaToOrigin.dy);
-    final double viewportStart =
-        _offsetExtent(viewportOrigin, _scrollDirection);
+    final Offset viewportOrigin = globalRect.topLeft.translate(
+      deltaToOrigin.dx,
+      deltaToOrigin.dy,
+    );
+    final double viewportStart = _offsetExtent(
+      viewportOrigin,
+      _scrollDirection,
+    );
     final double viewportEnd =
         viewportStart + _sizeExtent(globalRect.size, _scrollDirection);
 
@@ -267,8 +273,10 @@ class EdgeDraggingAutoScroller {
           );
         } else if (proxyStart < viewportStart &&
             scrollable.position.pixels < scrollable.position.maxScrollExtent) {
-          final double overDrag =
-              math.min(viewportStart - proxyStart, overDragMax);
+          final double overDrag = math.min(
+            viewportStart - proxyStart,
+            overDragMax,
+          );
           newOffset = math.min(
             scrollable.position.maxScrollExtent,
             scrollable.position.pixels + overDrag,
@@ -278,8 +286,10 @@ class EdgeDraggingAutoScroller {
       case AxisDirection.down:
         if (proxyStart < viewportStart &&
             scrollable.position.pixels > scrollable.position.minScrollExtent) {
-          final double overDrag =
-              math.min(viewportStart - proxyStart, overDragMax);
+          final double overDrag = math.min(
+            viewportStart - proxyStart,
+            overDragMax,
+          );
           newOffset = math.max(
             scrollable.position.minScrollExtent,
             scrollable.position.pixels - overDrag,
@@ -325,9 +335,8 @@ class EdgeDraggingAutoScroller {
 ///
 /// This function is used as the type for [Scrollable.incrementCalculator],
 /// which is called from a [ScrollAction].
-typedef ScrollIncrementCalculator = double Function(
-  ScrollIncrementDetails details,
-);
+typedef ScrollIncrementCalculator =
+    double Function(ScrollIncrementDetails details);
 
 /// An [Action] that scrolls the [Scrollable] that encloses the current
 /// [primaryFocus] by the amount configured in the [ScrollIntent] given to it.
@@ -377,10 +386,7 @@ class ScrollAction extends Action<ScrollIntent> {
     );
     if (state.widget.incrementCalculator != null) {
       return state.widget.incrementCalculator!(
-        ScrollIncrementDetails(
-          type: type,
-          metrics: state.position,
-        ),
+        ScrollIncrementDetails(type: type, metrics: state.position),
       );
     }
     switch (type) {
@@ -397,8 +403,10 @@ class ScrollAction extends Action<ScrollIntent> {
     ScrollableState state,
     ScrollIntent intent,
   ) {
-    final double increment =
-        _calculateScrollIncrement(state, type: intent.type);
+    final double increment = _calculateScrollIncrement(
+      state,
+      type: intent.type,
+    );
     switch (intent.direction) {
       case AxisDirection.down:
         switch (state.axisDirection) {

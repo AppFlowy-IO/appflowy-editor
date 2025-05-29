@@ -6,10 +6,11 @@ RegExp _linkRegex = RegExp(
   r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
 );
 
-RegExp _phoneRegex = RegExp(r'^\+?' // Optional '+' at start
-    r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
-    r'[0-9]$' // Ensure it ends with a digit
-    );
+RegExp _phoneRegex = RegExp(
+  r'^\+?' // Optional '+' at start
+  r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
+  r'[0-9]$', // Ensure it ends with a digit
+);
 
 void _pasteSingleLine(
   EditorState editorState,
@@ -20,14 +21,10 @@ void _pasteSingleLine(
 
   // handle link
   final Attributes attributes = _linkRegex.hasMatch(line)
-      ? {
-          AppFlowyRichTextKeys.href: line,
-        }
+      ? {AppFlowyRichTextKeys.href: line}
       : _phoneRegex.hasMatch(line)
-          ? {
-              AppFlowyRichTextKeys.href: line,
-            }
-          : {};
+      ? {AppFlowyRichTextKeys.href: line}
+      : {};
 
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction
@@ -69,8 +66,9 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
   final offset = document.root.children.lastOrNull?.delta?.length ?? 0;
   transaction
     ..insertNodes(path, document.root.children)
-    ..afterSelection =
-        Selection.collapsed(Position(path: afterPath, offset: offset));
+    ..afterSelection = Selection.collapsed(
+      Position(path: afterPath, offset: offset),
+    );
   editorState.apply(transaction);
 }
 
@@ -158,9 +156,7 @@ void handleCopy(EditorState editorState) async {
     }
     text = node.delta?.toPlainText() ?? '';
     html = documentToHTML(
-      Document(
-        root: pageNode(children: [node.copyWith()]),
-      ),
+      Document(root: pageNode(children: [node.copyWith()])),
     );
   } else {
     text = editorState.getTextInSelection(selection).join('\n');
@@ -169,11 +165,7 @@ void handleCopy(EditorState editorState) async {
       return;
     }
     html = documentToHTML(
-      Document(
-        root: pageNode(
-          children: nodes.map((node) => node.copyWith()),
-        ),
-      ),
+      Document(root: pageNode(children: nodes.map((node) => node.copyWith()))),
     );
   }
 
@@ -203,15 +195,12 @@ void _pasteSingleLineInText(
     transaction.insertNode(selection.end.path.next, insertedNode);
     transaction.deleteNode(node);
     final length = insertedNode.delta?.length ?? 0;
-    transaction.afterSelection =
-        Selection.collapsed(Position(path: selection.end.path, offset: length));
+    transaction.afterSelection = Selection.collapsed(
+      Position(path: selection.end.path, offset: length),
+    );
     editorState.apply(transaction);
   } else {
-    transaction.insertTextDelta(
-      node,
-      offset,
-      insertedDelta,
-    );
+    transaction.insertTextDelta(node, offset, insertedDelta);
     editorState.apply(transaction);
   }
 }
@@ -223,8 +212,10 @@ void _pasteMultipleLinesInText(
 ) {
   final transaction = editorState.transaction;
   final selection = editorState.selection;
-  final afterSelection =
-      _computeSelectionAfterPasteMultipleNodes(editorState, nodes);
+  final afterSelection = _computeSelectionAfterPasteMultipleNodes(
+    editorState,
+    nodes,
+  );
 
   final selectionNode = editorState.getNodesInSelection(selection!);
   if (selectionNode.length == 1) {
@@ -263,9 +254,9 @@ void _pasteMultipleLinesInText(
           children: children,
           attributes: firstNode.attributes
             ..remove(ParagraphBlockKeys.delta)
-            ..addAll(
-              {ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson()},
-            ),
+            ..addAll({
+              ParagraphBlockKeys.delta: Delta.fromJson(newDelta).toJson(),
+            }),
         ),
       ]);
       transaction.afterSelection = afterSelection;
@@ -274,16 +265,17 @@ void _pasteMultipleLinesInText(
     }
     final path = node.path;
     transaction.deleteNode(node);
-    transaction.insertNodes([
-      path.first + 1,
-    ], [
-      firstNode,
-      ...nodes,
-      if (afterNode != null &&
-          afterNode.delta != null &&
-          afterNode.delta!.isNotEmpty)
-        afterNode,
-    ]);
+    transaction.insertNodes(
+      [path.first + 1],
+      [
+        firstNode,
+        ...nodes,
+        if (afterNode != null &&
+            afterNode.delta != null &&
+            afterNode.delta!.isNotEmpty)
+          afterNode,
+      ],
+    );
     transaction.afterSelection = afterSelection;
     editorState.apply(transaction);
     return;
@@ -308,10 +300,7 @@ void handlePaste(EditorState editorState) async {
   });
 }
 
-(Node previousDelta, Node? nextDelta) sliceNode(
-  Node node,
-  int selectionIndex,
-) {
+(Node previousDelta, Node? nextDelta) sliceNode(Node node, int selectionIndex) {
   final delta = node.delta;
   if (delta == null) {
     return (node, null); // // Node doesn't have a delta
@@ -336,7 +325,7 @@ void handlePaste(EditorState editorState) async {
       attributes: node.attributes
         ..remove(ParagraphBlockKeys.delta)
         ..addAll({ParagraphBlockKeys.delta: nextDelta.toJson()}),
-    )
+    ),
   );
 }
 

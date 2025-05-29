@@ -13,9 +13,7 @@ final CommandShortcutEvent openLinksCommand = CommandShortcutEvent(
   handler: _openLinksHandler,
 );
 
-KeyEventResult _openLinksHandler(
-  EditorState editorState,
-) {
+KeyEventResult _openLinksHandler(EditorState editorState) {
   final selection = editorState.selection;
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;

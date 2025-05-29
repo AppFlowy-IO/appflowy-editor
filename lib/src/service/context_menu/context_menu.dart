@@ -61,9 +61,7 @@ class ContextMenu extends StatelessWidget {
                     child: Text(
                       items[i][j].name,
                       textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                 ),
@@ -79,9 +77,7 @@ class ContextMenu extends StatelessWidget {
       left: position.dx,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        constraints: const BoxConstraints(
-          minWidth: 140,
-        ),
+        constraints: const BoxConstraints(minWidth: 140),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(

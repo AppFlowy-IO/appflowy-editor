@@ -13,19 +13,14 @@ void main() async {
       );
       final editorState = EditorState(document: document);
 
-      final selection = Selection.collapsed(
-        Position(path: [1], offset: 10),
-      );
+      final selection = Selection.collapsed(Position(path: [1], offset: 10));
       final before = editorState.getNodesInSelection(selection).first;
       final result = await editorState.deleteSelection(selection);
 
       // nothing happens
       expect(result, false);
       final after = editorState.getNodesInSelection(selection).first;
-      expect(
-        before.toJson(),
-        after.toJson(),
-      );
+      expect(before.toJson(), after.toJson());
     });
 
     test('the selection is single', () async {
@@ -63,14 +58,8 @@ void main() async {
       // ...
       // Welcome|
       final selection = Selection(
-        start: Position(
-          path: [0],
-          offset: 3,
-        ),
-        end: Position(
-          path: [2],
-          offset: 10,
-        ),
+        start: Position(path: [0], offset: 3),
+        end: Position(path: [2], offset: 10),
       );
       final result = await editorState.deleteSelection(selection);
 
@@ -101,8 +90,9 @@ void main() async {
         decorator: (index, node) {
           node.addParagraphs(
             2,
-            builder: (index2) => Delta()
-              ..insert('$index.$index2. Welcome to AppFlowy Editor 🔥!'),
+            builder: (index2) =>
+                Delta()
+                  ..insert('$index.$index2. Welcome to AppFlowy Editor 🔥!'),
             decorator: (index2, node2) {
               if (index2 == 0) {
                 node2.addParagraph(
@@ -123,14 +113,8 @@ void main() async {
       //     0.0.0 Welcome to AppFlowy Editor 🔥!
       //   0.1 Welcome to AppFlowy Editor 🔥!
       final selection = Selection(
-        start: Position(
-          path: [0],
-          offset: '0. Welcome '.length,
-        ),
-        end: Position(
-          path: [0, 0],
-          offset: '0.0. Welcome '.length,
-        ),
+        start: Position(path: [0], offset: '0. Welcome '.length),
+        end: Position(path: [0, 0], offset: '0.0. Welcome '.length),
       );
       final result = await editorState.deleteSelection(selection);
 

@@ -32,13 +32,11 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
           bool showClearButton = false;
           nodes.allSatisfyInSelection(selection, (delta) {
             if (!showClearButton) {
-              showClearButton = delta.whereType<TextInsert>().any(
-                (element) {
-                  return element
-                          .attributes?[AppFlowyRichTextKeys.backgroundColor] !=
-                      null;
-                },
-              );
+              showClearButton = delta.whereType<TextInsert>().any((element) {
+                return element.attributes?[AppFlowyRichTextKeys
+                        .backgroundColor] !=
+                    null;
+              });
             }
             return true;
           });

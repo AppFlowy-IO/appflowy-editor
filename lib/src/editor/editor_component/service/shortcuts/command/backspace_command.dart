@@ -56,10 +56,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
   if (node.delta == null) {
     transaction.deleteNode(node);
     transaction.afterSelection = Selection.collapsed(
-      Position(
-        path: position.path,
-        offset: 0,
-      ),
+      Position(path: position.path, offset: 0),
     );
     editorState.apply(transaction);
     return KeyEventResult.handled;
@@ -81,12 +78,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
       transaction
         ..deleteNode(node)
         ..insertNode(path, node)
-        ..afterSelection = Selection.collapsed(
-          Position(
-            path: path,
-            offset: 0,
-          ),
-        );
+        ..afterSelection = Selection.collapsed(Position(path: path, offset: 0));
     } else {
       // If the deletion crosses columns and starts from the beginning position
       // skip the node deletion process
@@ -96,12 +88,14 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
         return KeyEventResult.handled;
       }
 
-      Node? tableParent =
-          node.findParent((element) => element.type == TableBlockKeys.type);
+      Node? tableParent = node.findParent(
+        (element) => element.type == TableBlockKeys.type,
+      );
       Node? prevTableParent;
       final prev = node.previousNodeWhere((element) {
-        prevTableParent = element
-            .findParent((element) => element.type == TableBlockKeys.type);
+        prevTableParent = element.findParent(
+          (element) => element.type == TableBlockKeys.type,
+        );
         // break if only one is in a table or they're in different tables
         return tableParent != prevTableParent ||
             // merge with the previous node contains delta.
@@ -120,10 +114,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
           )
           ..deleteNode(node)
           ..afterSelection = Selection.collapsed(
-            Position(
-              path: prev.path,
-              offset: prev.delta!.length,
-            ),
+            Position(path: prev.path, offset: prev.delta!.length),
           );
       } else {
         // do nothing if there is no previous node contains delta.
@@ -133,11 +124,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
   } else {
     // Although the selection may be collapsed,
     //  its length may not always be equal to 1 because some characters have a length greater than 1.
-    transaction.deleteText(
-      node,
-      index,
-      position.offset - index,
-    );
+    transaction.deleteText(node, index, position.offset - index);
   }
 
   editorState.apply(transaction);

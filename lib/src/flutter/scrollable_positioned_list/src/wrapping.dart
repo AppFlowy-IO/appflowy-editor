@@ -61,7 +61,8 @@ class CustomShrinkWrappingViewport extends CustomViewport {
   CustomRenderShrinkWrappingViewport createRenderObject(BuildContext context) {
     return CustomRenderShrinkWrappingViewport(
       axisDirection: axisDirection,
-      crossAxisDirection: crossAxisDirection ??
+      crossAxisDirection:
+          crossAxisDirection ??
           Viewport.getDefaultCrossAxisDirection(context, axisDirection),
       offset: offset,
       anchor: anchor,
@@ -76,7 +77,8 @@ class CustomShrinkWrappingViewport extends CustomViewport {
   ) {
     renderObject
       ..axisDirection = axisDirection
-      ..crossAxisDirection = crossAxisDirection ??
+      ..crossAxisDirection =
+          crossAxisDirection ??
           Viewport.getDefaultCrossAxisDirection(context, axisDirection)
       ..anchor = anchor
       ..offset = offset
@@ -237,10 +239,13 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
         final maxScrollOffset = math.max(math.min(0.0, top), bottom);
         final minScrollOffset = math.min(top, maxScrollOffset);
 
-        final bool didAcceptViewportDimension =
-            offset.applyViewportDimension(effectiveExtent);
-        final bool didAcceptContentDimension =
-            offset.applyContentDimensions(minScrollOffset, maxScrollOffset);
+        final bool didAcceptViewportDimension = offset.applyViewportDimension(
+          effectiveExtent,
+        );
+        final bool didAcceptContentDimension = offset.applyContentDimensions(
+          minScrollOffset,
+          maxScrollOffset,
+        );
         if (didAcceptViewportDimension && didAcceptContentDimension) {
           break;
         }
@@ -248,12 +253,16 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
     } while (true);
     switch (axis) {
       case Axis.vertical:
-        size =
-            constraints.constrainDimensions(crossAxisExtent, effectiveExtent);
+        size = constraints.constrainDimensions(
+          crossAxisExtent,
+          effectiveExtent,
+        );
         break;
       case Axis.horizontal:
-        size =
-            constraints.constrainDimensions(effectiveExtent, crossAxisExtent);
+        size = constraints.constrainDimensions(
+          effectiveExtent,
+          crossAxisExtent,
+        );
         break;
     }
   }
@@ -277,10 +286,12 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
     // to the zero scroll offset (the line between the forward slivers and the
     // reverse slivers).
     final centerOffset = mainAxisExtent * anchor - correctedOffset;
-    final reverseDirectionRemainingPaintExtent =
-        centerOffset.clamp(0.0, mainAxisExtent);
-    final forwardDirectionRemainingPaintExtent =
-        (mainAxisExtent - centerOffset).clamp(0.0, mainAxisExtent);
+    final reverseDirectionRemainingPaintExtent = centerOffset.clamp(
+      0.0,
+      mainAxisExtent,
+    );
+    final forwardDirectionRemainingPaintExtent = (mainAxisExtent - centerOffset)
+        .clamp(0.0, mainAxisExtent);
 
     switch (cacheExtentStyle) {
       case CacheExtentStyle.pixel:
@@ -293,8 +304,10 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
 
     final fullCacheExtent = mainAxisExtent + 2 * _calculatedCacheExtent!;
     final centerCacheOffset = centerOffset + _calculatedCacheExtent!;
-    final reverseDirectionRemainingCacheExtent =
-        centerCacheOffset.clamp(0.0, fullCacheExtent);
+    final reverseDirectionRemainingCacheExtent = centerCacheOffset.clamp(
+      0.0,
+      fullCacheExtent,
+    );
     final forwardDirectionRemainingCacheExtent =
         (fullCacheExtent - centerCacheOffset).clamp(0.0, fullCacheExtent);
 
@@ -313,8 +326,10 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
         growthDirection: GrowthDirection.reverse,
         advance: childBefore,
         remainingCacheExtent: reverseDirectionRemainingCacheExtent,
-        cacheOrigin: (mainAxisExtent - centerOffset)
-            .clamp(-_calculatedCacheExtent!, 0.0),
+        cacheOrigin: (mainAxisExtent - centerOffset).clamp(
+          -_calculatedCacheExtent!,
+          0.0,
+        ),
       );
       if (result != 0.0) return -result;
     }
@@ -323,8 +338,9 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
     return layoutChildSequence(
       child: center,
       scrollOffset: math.max(0.0, -centerOffset),
-      overlap:
-          leadingNegativeChild == null ? math.min(0.0, -centerOffset) : 0.0,
+      overlap: leadingNegativeChild == null
+          ? math.min(0.0, -centerOffset)
+          : 0.0,
       layoutOffset: centerOffset >= mainAxisExtent
           ? centerOffset
           : reverseDirectionRemainingPaintExtent,
@@ -415,14 +431,14 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
     this.cacheExtentStyle = CacheExtentStyle.pixel,
     this.clipBehavior = Clip.hardEdge,
     List<Widget> slivers = const <Widget>[],
-  })  : assert(
-          center == null ||
-              slivers.where((Widget child) => child.key == center).length == 1,
-        ),
-        assert(
-          cacheExtentStyle != CacheExtentStyle.viewport || cacheExtent != null,
-        ),
-        super(children: slivers);
+  }) : assert(
+         center == null ||
+             slivers.where((Widget child) => child.key == center).length == 1,
+       ),
+       assert(
+         cacheExtentStyle != CacheExtentStyle.viewport || cacheExtent != null,
+       ),
+       super(children: slivers);
 
   /// The direction in which the [offset]'s [ViewportOffset.pixels] increases.
   ///
@@ -589,9 +605,13 @@ class ViewportElement extends MultiChildRenderObjectElement {
 
   void _updateCenter() {
     if (widget.center != null) {
-      renderObject.center = children
-          .singleWhere((Element element) => element.widget.key == widget.center)
-          .renderObject as RenderSliver?;
+      renderObject.center =
+          children
+                  .singleWhere(
+                    (Element element) => element.widget.key == widget.center,
+                  )
+                  .renderObject
+              as RenderSliver?;
     } else if (children.isNotEmpty) {
       renderObject.center = children.first.renderObject as RenderSliver?;
     } else {
@@ -601,10 +621,12 @@ class ViewportElement extends MultiChildRenderObjectElement {
 
   @override
   void debugVisitOnstageChildren(ElementVisitor visitor) {
-    children.where((Element e) {
-      final RenderSliver renderSliver = e.renderObject! as RenderSliver;
-      return renderSliver.geometry!.visible;
-    }).forEach(visitor);
+    children
+        .where((Element e) {
+          final RenderSliver renderSliver = e.renderObject! as RenderSliver;
+          return renderSliver.geometry!.visible;
+        })
+        .forEach(visitor);
   }
 }
 
@@ -675,11 +697,11 @@ abstract class CustomRenderViewport
     super.cacheExtent,
     super.cacheExtentStyle,
     super.clipBehavior,
-  })  : assert(anchor >= 0.0 && anchor <= 1.0),
-        assert(
-          cacheExtentStyle != CacheExtentStyle.viewport || cacheExtent != null,
-        ),
-        _center = center {
+  }) : assert(anchor >= 0.0 && anchor <= 1.0),
+       assert(
+         cacheExtentStyle != CacheExtentStyle.viewport || cacheExtent != null,
+       ),
+       _center = center {
     addAll(children);
     if (center == null && firstChild != null) _center = firstChild;
   }
@@ -702,8 +724,9 @@ abstract class CustomRenderViewport
   ///
   /// * [RenderViewportBase.describeSemanticsConfiguration], which adds this
   ///   tag to its [SemanticsConfiguration].
-  static const SemanticsTag useTwoPaneSemantics =
-      SemanticsTag('RenderViewport.twoPane');
+  static const SemanticsTag useTwoPaneSemantics = SemanticsTag(
+    'RenderViewport.twoPane',
+  );
 
   /// When a top-level [SemanticsNode] below a [RenderAbstractViewport] is
   /// tagged with [excludeFromScrolling] it will not be part of the scrolling
@@ -718,8 +741,9 @@ abstract class CustomRenderViewport
   /// bar) can tag its [SemanticsNode] with [excludeFromScrolling] to indicate
   /// that it should no longer be considered for semantic actions related to
   /// scrolling.
-  static const SemanticsTag excludeFromScrolling =
-      SemanticsTag('RenderViewport.excludeFromScrolling');
+  static const SemanticsTag excludeFromScrolling = SemanticsTag(
+    'RenderViewport.excludeFromScrolling',
+  );
 
   @override
   void setupParentData(RenderObject child) {
@@ -771,26 +795,29 @@ abstract class CustomRenderViewport
               throw FlutterError.fromParts(<DiagnosticsNode>[
                 ErrorSummary('Vertical viewport was given unbounded height.'),
                 ErrorDescription(
-                    'Viewports expand in the scrolling direction to fill their container. '
-                    'In this case, a vertical viewport was given an unlimited amount of '
-                    'vertical space in which to expand. This situation typically happens '
-                    'when a scrollable widget is nested inside another scrollable widget.'),
+                  'Viewports expand in the scrolling direction to fill their container. '
+                  'In this case, a vertical viewport was given an unlimited amount of '
+                  'vertical space in which to expand. This situation typically happens '
+                  'when a scrollable widget is nested inside another scrollable widget.',
+                ),
                 ErrorHint(
-                    'If this widget is always nested in a scrollable widget there '
-                    'is no need to use a viewport because there will always be enough '
-                    'vertical space for the children. In this case, consider using a '
-                    'Column instead. Otherwise, consider using the "shrinkWrap" property '
-                    '(or a ShrinkWrappingViewport) to size the height of the viewport '
-                    'to the sum of the heights of its children.'),
+                  'If this widget is always nested in a scrollable widget there '
+                  'is no need to use a viewport because there will always be enough '
+                  'vertical space for the children. In this case, consider using a '
+                  'Column instead. Otherwise, consider using the "shrinkWrap" property '
+                  '(or a ShrinkWrappingViewport) to size the height of the viewport '
+                  'to the sum of the heights of its children.',
+                ),
               ]);
             }
             if (!constraints.hasBoundedWidth) {
               throw FlutterError(
-                  'Vertical viewport was given unbounded width.\n'
-                  'Viewports expand in the cross axis to fill their container and '
-                  'constrain their children to match their extent in the cross axis. '
-                  'In this case, a vertical viewport was given an unlimited amount of '
-                  'horizontal space in which to expand.');
+                'Vertical viewport was given unbounded width.\n'
+                'Viewports expand in the cross axis to fill their container and '
+                'constrain their children to match their extent in the cross axis. '
+                'In this case, a vertical viewport was given an unlimited amount of '
+                'horizontal space in which to expand.',
+              );
             }
             break;
           case Axis.horizontal:
@@ -798,26 +825,29 @@ abstract class CustomRenderViewport
               throw FlutterError.fromParts(<DiagnosticsNode>[
                 ErrorSummary('Horizontal viewport was given unbounded width.'),
                 ErrorDescription(
-                    'Viewports expand in the scrolling direction to fill their container. '
-                    'In this case, a horizontal viewport was given an unlimited amount of '
-                    'horizontal space in which to expand. This situation typically happens '
-                    'when a scrollable widget is nested inside another scrollable widget.'),
+                  'Viewports expand in the scrolling direction to fill their container. '
+                  'In this case, a horizontal viewport was given an unlimited amount of '
+                  'horizontal space in which to expand. This situation typically happens '
+                  'when a scrollable widget is nested inside another scrollable widget.',
+                ),
                 ErrorHint(
-                    'If this widget is always nested in a scrollable widget there '
-                    'is no need to use a viewport because there will always be enough '
-                    'horizontal space for the children. In this case, consider using a '
-                    'Row instead. Otherwise, consider using the "shrinkWrap" property '
-                    '(or a ShrinkWrappingViewport) to size the width of the viewport '
-                    'to the sum of the widths of its children.'),
+                  'If this widget is always nested in a scrollable widget there '
+                  'is no need to use a viewport because there will always be enough '
+                  'horizontal space for the children. In this case, consider using a '
+                  'Row instead. Otherwise, consider using the "shrinkWrap" property '
+                  '(or a ShrinkWrappingViewport) to size the width of the viewport '
+                  'to the sum of the widths of its children.',
+                ),
               ]);
             }
             if (!constraints.hasBoundedHeight) {
               throw FlutterError(
-                  'Horizontal viewport was given unbounded height.\n'
-                  'Viewports expand in the cross axis to fill their container and '
-                  'constrain their children to match their extent in the cross axis. '
-                  'In this case, a horizontal viewport was given an unlimited amount of '
-                  'vertical space in which to expand.');
+                'Horizontal viewport was given unbounded height.\n'
+                'Viewports expand in the cross axis to fill their container and '
+                'constrain their children to match their extent in the cross axis. '
+                'In this case, a horizontal viewport was given an unlimited amount of '
+                'vertical space in which to expand.',
+              );
             }
             break;
         }

@@ -32,8 +32,8 @@ Node todoListNode({
     type: TodoListBlockKeys.type,
     attributes: {
       TodoListBlockKeys.checked: checked,
-      TodoListBlockKeys.delta:
-          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      TodoListBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
+          .toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
@@ -41,11 +41,8 @@ Node todoListNode({
   );
 }
 
-typedef TodoListIconBuilder = Widget Function(
-  BuildContext context,
-  Node node,
-  VoidCallback onCheck,
-);
+typedef TodoListIconBuilder =
+    Widget Function(BuildContext context, Node node, VoidCallback onCheck);
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
@@ -72,20 +69,17 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
       textStyleBuilder: textStyleBuilder,
       iconBuilder: iconBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
       toggleChildrenTriggers: toggleChildrenTriggers,
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.delta != null;
+  BlockComponentValidate get validate =>
+      (node) => node.delta != null;
 }
 
 class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -159,15 +153,8 @@ class _TodoListBlockComponentWidgetState
         textDirection: textDirection,
         children: [
           widget.iconBuilder != null
-              ? widget.iconBuilder!(
-                  context,
-                  node,
-                  checkOrUncheck,
-                )
-              : _TodoListIcon(
-                  checked: checked,
-                  onTap: checkOrUncheck,
-                ),
+              ? widget.iconBuilder!(context, node, checkOrUncheck)
+              : _TodoListIcon(checked: checked, onTap: checkOrUncheck),
           Flexible(
             child: AppFlowyRichText(
               key: forwardKey,
@@ -185,8 +172,8 @@ class _TodoListBlockComponentWidgetState
                   ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyleWithTextSpan(textSpan: textSpan),
-              ),
+                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                  ),
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
@@ -198,11 +185,7 @@ class _TodoListBlockComponentWidgetState
 
     child = Container(
       color: withBackgroundColor ? backgroundColor : null,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
+      child: Padding(key: blockComponentKey, padding: padding, child: child),
     );
 
     child = BlockSelectionContainer(
@@ -211,9 +194,7 @@ class _TodoListBlockComponentWidgetState
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
@@ -231,9 +212,7 @@ class _TodoListBlockComponentWidgetState
 
   void checkOrUncheck() {
     final transaction = editorState.transaction
-      ..updateNode(widget.node, {
-        TodoListBlockKeys.checked: !checked,
-      });
+      ..updateNode(widget.node, {TodoListBlockKeys.checked: !checked});
 
     if (widget.toggleChildrenTriggers != null &&
         HardwareKeyboard.instance.logicalKeysPressed.any(
@@ -245,10 +224,7 @@ class _TodoListBlockComponentWidgetState
     editorState.apply(transaction, withUpdateSelection: false);
   }
 
-  void checkOrUncheckChildren(
-    bool checked,
-    Node node,
-  ) {
+  void checkOrUncheckChildren(bool checked, Node node) {
     for (final child in node.children) {
       if (child.children.isNotEmpty) {
         checkOrUncheckChildren(checked, child);
@@ -256,9 +232,7 @@ class _TodoListBlockComponentWidgetState
 
       if (child.type == TodoListBlockKeys.type) {
         final transaction = editorState.transaction
-          ..updateNode(child, {
-            TodoListBlockKeys.checked: checked,
-          });
+          ..updateNode(child, {TodoListBlockKeys.checked: checked});
 
         editorState.apply(transaction);
       }
@@ -277,25 +251,25 @@ class _TodoListBlockComponentWidgetState
 }
 
 class _TodoListIcon extends StatelessWidget {
-  const _TodoListIcon({
-    required this.onTap,
-    required this.checked,
-  });
+  const _TodoListIcon({required this.onTap, required this.checked});
 
   final VoidCallback onTap;
   final bool checked;
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor =
-        context.read<EditorState>().editorStyle.textScaleFactor;
+    final textScaleFactor = context
+        .read<EditorState>()
+        .editorStyle
+        .textScaleFactor;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 26, minHeight: 22) *
+          constraints:
+              const BoxConstraints(minWidth: 26, minHeight: 22) *
               textScaleFactor,
           padding: const EdgeInsets.only(right: 4.0),
           child: EditorSvg(

@@ -25,13 +25,7 @@ void main() async {
       );
       final editor = tester.editor;
       await editor.startTesting();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: linkMenu,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: linkMenu)));
       await tester.pumpAndSettle();
       expect(find.byType(TextButton), findsNothing);
       expect(find.byType(TextField), findsOneWidget);
@@ -51,13 +45,9 @@ void main() async {
       final editor = tester.editor;
       // create a link [appflowy.io](appflowy.io)
       editor.addParagraph(
-        builder: (index) => Delta()
-          ..insert(
-            link,
-            attributes: {
-              AppFlowyRichTextKeys.href: link,
-            },
-          ),
+        builder: (index) =>
+            Delta()
+              ..insert(link, attributes: {AppFlowyRichTextKeys.href: link}),
       );
       await editor.startTesting();
 
@@ -75,8 +65,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('test tap linked text when editor not editable',
-        (tester) async {
+    testWidgets('test tap linked text when editor not editable', (
+      tester,
+    ) async {
       const link = 'appflowy.io';
 
       final editor = tester.editor;
@@ -114,13 +105,7 @@ void main() async {
         },
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: linkMenu,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: linkMenu)));
 
       expect(find.byType(TextButton), findsNothing);
       expect(find.byType(TextField), findsOneWidget);

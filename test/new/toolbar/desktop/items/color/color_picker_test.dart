@@ -22,13 +22,7 @@ void main() {
         selectedColorHex: '0xFFFFFFFF',
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       expect(find.byKey(key), findsOneWidget);
       final expansionTile = find.byType(ExpansionTile);
@@ -41,155 +35,139 @@ void main() {
     });
 
     testWidgets(
-        'test if custom font color selector text field are initialised correctly when selectedFontColorhex is provided',
-        (tester) async {
-      final editor = tester.editor;
-      await editor.startTesting();
-      final widget = ColorPicker(
-        title: 'test',
-        colorOptions: const [],
-        onSubmittedColorHex: (String? color, _) {},
-        selectedColorHex: '0xFAFFFF08',
-      );
+      'test if custom font color selector text field are initialised correctly when selectedFontColorhex is provided',
+      (tester) async {
+        final editor = tester.editor;
+        await editor.startTesting();
+        final widget = ColorPicker(
+          title: 'test',
+          colorOptions: const [],
+          onSubmittedColorHex: (String? color, _) {},
+          selectedColorHex: '0xFAFFFF08',
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
-      final fontColorExpansionTile = find.byType(ExpansionTile);
+        final fontColorExpansionTile = find.byType(ExpansionTile);
 
-      await tester.tap(fontColorExpansionTile);
-      await tester.pumpAndSettle();
+        await tester.tap(fontColorExpansionTile);
+        await tester.pumpAndSettle();
 
-      final fontColorTextField = find.byType(TextField).at(0);
-      final fontOpacityTexField = find.byType(TextField).at(1);
+        final fontColorTextField = find.byType(TextField).at(0);
+        final fontOpacityTexField = find.byType(TextField).at(1);
 
-      expect(
-        (tester.widget(fontColorTextField) as TextField).controller!.text,
-        'FFFF08',
-      );
-      expect(
-        (tester.widget(fontOpacityTexField) as TextField).controller!.text,
-        '98',
-      );
-    });
+        expect(
+          (tester.widget(fontColorTextField) as TextField).controller!.text,
+          'FFFF08',
+        );
+        expect(
+          (tester.widget(fontOpacityTexField) as TextField).controller!.text,
+          '98',
+        );
+      },
+    );
     testWidgets(
-        'test if custom font color selector text field are initialised correctly when selectedFontColorhex is null',
-        (tester) async {
-      final editor = tester.editor;
-      await editor.startTesting();
-      final widget = ColorPicker(
-        title: 'test',
-        colorOptions: const [],
-        onSubmittedColorHex: (String? color, _) {},
-        selectedColorHex: null,
-      );
+      'test if custom font color selector text field are initialised correctly when selectedFontColorhex is null',
+      (tester) async {
+        final editor = tester.editor;
+        await editor.startTesting();
+        final widget = ColorPicker(
+          title: 'test',
+          colorOptions: const [],
+          onSubmittedColorHex: (String? color, _) {},
+          selectedColorHex: null,
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
-      final fontColorExpansionTile = find.byType(ExpansionTile);
+        final fontColorExpansionTile = find.byType(ExpansionTile);
 
-      await tester.tap(fontColorExpansionTile);
-      await tester.pumpAndSettle();
+        await tester.tap(fontColorExpansionTile);
+        await tester.pumpAndSettle();
 
-      final fontColorTextField = find.byType(TextField).at(0);
-      final fontOpacityTexField = find.byType(TextField).at(1);
+        final fontColorTextField = find.byType(TextField).at(0);
+        final fontOpacityTexField = find.byType(TextField).at(1);
 
-      expect(
-        (tester.widget(fontColorTextField) as TextField).controller!.text,
-        'FFFFFF',
-      );
-      expect(
-        (tester.widget(fontOpacityTexField) as TextField).controller!.text,
-        '100',
-      );
-    });
+        expect(
+          (tester.widget(fontColorTextField) as TextField).controller!.text,
+          'FFFFFF',
+        );
+        expect(
+          (tester.widget(fontOpacityTexField) as TextField).controller!.text,
+          '100',
+        );
+      },
+    );
     testWidgets(
-        'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is provided',
-        (tester) async {
-      final editor = tester.editor;
-      await editor.startTesting();
-      final widget = ColorPicker(
-        title: 'test',
-        colorOptions: const [],
-        onSubmittedColorHex: (String? color, _) {},
-        selectedColorHex: '0xFBFFFF08',
-      );
+      'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is provided',
+      (tester) async {
+        final editor = tester.editor;
+        await editor.startTesting();
+        final widget = ColorPicker(
+          title: 'test',
+          colorOptions: const [],
+          onSubmittedColorHex: (String? color, _) {},
+          selectedColorHex: '0xFBFFFF08',
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile);
+        final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
-      await tester.tap(backgroundColorExpansionTile);
-      await tester.pumpAndSettle();
+        await tester.tap(backgroundColorExpansionTile);
+        await tester.pumpAndSettle();
 
-      final backgroundColorTextField = find.byType(TextField).at(0);
-      final backgroundOpacityTextField = find.byType(TextField).at(1);
-      expect(
-        (tester.widget(backgroundColorTextField) as TextField).controller!.text,
-        'FFFF08',
-      );
-      expect(
-        (tester.widget(backgroundOpacityTextField) as TextField)
-            .controller!
-            .text,
-        '98',
-      );
-    });
+        final backgroundColorTextField = find.byType(TextField).at(0);
+        final backgroundOpacityTextField = find.byType(TextField).at(1);
+        expect(
+          (tester.widget(backgroundColorTextField) as TextField)
+              .controller!
+              .text,
+          'FFFF08',
+        );
+        expect(
+          (tester.widget(backgroundOpacityTextField) as TextField)
+              .controller!
+              .text,
+          '98',
+        );
+      },
+    );
     testWidgets(
-        'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is null',
-        (tester) async {
-      final editor = tester.editor;
-      await editor.startTesting();
-      final widget = ColorPicker(
-        title: 'test',
-        colorOptions: const [],
-        onSubmittedColorHex: (String? color, _) {},
-        selectedColorHex: null,
-      );
+      'test if custom background color selector text field are initialised correctly when selectedBackgroundColorHex is null',
+      (tester) async {
+        final editor = tester.editor;
+        await editor.startTesting();
+        final widget = ColorPicker(
+          title: 'test',
+          colorOptions: const [],
+          onSubmittedColorHex: (String? color, _) {},
+          selectedColorHex: null,
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+        await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
-      final backgroundColorExpansionTile = find.byType(ExpansionTile);
+        final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
-      await tester.tap(backgroundColorExpansionTile);
-      await tester.pumpAndSettle();
+        await tester.tap(backgroundColorExpansionTile);
+        await tester.pumpAndSettle();
 
-      final backgroundColorTextField = find.byType(TextField).at(0);
-      final backgroundOpacityTextField = find.byType(TextField).at(1);
-      expect(
-        (tester.widget(backgroundColorTextField) as TextField).controller!.text,
-        'FFFFFF',
-      );
-      expect(
-        (tester.widget(backgroundOpacityTextField) as TextField)
-            .controller!
-            .text,
-        '100',
-      );
-    });
+        final backgroundColorTextField = find.byType(TextField).at(0);
+        final backgroundOpacityTextField = find.byType(TextField).at(1);
+        expect(
+          (tester.widget(backgroundColorTextField) as TextField)
+              .controller!
+              .text,
+          'FFFFFF',
+        );
+        expect(
+          (tester.widget(backgroundOpacityTextField) as TextField)
+              .controller!
+              .text,
+          '100',
+        );
+      },
+    );
 
     testWidgets('test submitting font color and opacity', (tester) async {
       String? fontColorHex = '0xFAFFFF08';
@@ -204,13 +182,7 @@ void main() {
         selectedColorHex: fontColorHex,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       final fontColorExpansionTile = find.byType(ExpansionTile);
 
@@ -242,13 +214,7 @@ void main() {
         selectedColorHex: fontColorHex,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       final fontColorExpansionTile = find.byType(ExpansionTile);
 
@@ -266,8 +232,9 @@ void main() {
       expect(fontColorHex, '0xffffffff');
     });
 
-    testWidgets('test submitting  background color and opacity',
-        (tester) async {
+    testWidgets('test submitting  background color and opacity', (
+      tester,
+    ) async {
       String? backgroundColorHex = '0xFAFFFFAD';
 
       final editor = tester.editor;
@@ -281,13 +248,7 @@ void main() {
         selectedColorHex: backgroundColorHex,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       final backgroundColorExpansionTile = find.byType(ExpansionTile);
 
@@ -305,8 +266,9 @@ void main() {
       expect(backgroundColorHex, '0xff000000');
     });
 
-    testWidgets('test submitting wrong background color and opacity',
-        (tester) async {
+    testWidgets('test submitting wrong background color and opacity', (
+      tester,
+    ) async {
       String? backgroundColorHex = '0xFAFFFF08';
       final editor = tester.editor;
       await editor.startTesting();
@@ -319,13 +281,7 @@ void main() {
         selectedColorHex: backgroundColorHex,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Material(
-            child: widget,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Material(child: widget)));
 
       final backgroundColorExpansionTile = find.byType(ExpansionTile);
 

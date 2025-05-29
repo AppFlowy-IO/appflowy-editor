@@ -47,10 +47,9 @@ class _BackgroundColorOptionsWidgetsState
             onPressed: () {
               if (hasTextColor) {
                 setState(() {
-                  widget.editorState.formatDelta(
-                    selection,
-                    {AppFlowyRichTextKeys.backgroundColor: null},
-                  );
+                  widget.editorState.formatDelta(selection, {
+                    AppFlowyRichTextKeys.backgroundColor: null,
+                  });
                 });
               }
             },

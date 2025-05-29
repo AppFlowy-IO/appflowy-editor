@@ -4,10 +4,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 
 class DocumentMarkdownEncoder extends Converter<Document, String> {
-  DocumentMarkdownEncoder({
-    this.parsers = const [],
-    this.lineBreak = '',
-  });
+  DocumentMarkdownEncoder({this.parsers = const [], this.lineBreak = ''});
 
   final List<NodeParser> parsers;
   final String lineBreak;
@@ -29,10 +26,7 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
     return buffer.toString();
   }
 
-  String convertNodes(
-    List<Node> nodes, {
-    bool withIndent = false,
-  }) {
+  String convertNodes(List<Node> nodes, {bool withIndent = false}) {
     final result = convert(Document(root: pageNode(children: nodes)));
     if (result.isNotEmpty && withIndent) {
       return result

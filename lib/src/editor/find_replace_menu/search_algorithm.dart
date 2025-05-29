@@ -9,11 +9,8 @@ abstract class SearchAlgorithm {
 }
 
 final class BoyerMooreMatch implements Match {
-  const BoyerMooreMatch(
-    this.pattern,
-    this.input,
-    this.start,
-  ) : end = start + pattern.length;
+  const BoyerMooreMatch(this.pattern, this.input, this.start)
+    : end = start + pattern.length;
 
   @override
   final int start;

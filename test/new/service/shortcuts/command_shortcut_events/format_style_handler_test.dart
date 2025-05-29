@@ -39,8 +39,9 @@ void main() async {
       );
     });
 
-    testWidgets('Presses Command + Shift + S to update text style',
-        (tester) async {
+    testWidgets('Presses Command + Shift + S to update text style', (
+      tester,
+    ) async {
       await _testUpdateTextStyleByCommandX(
         tester,
         BuiltInAttributeKey.strikethrough,
@@ -72,8 +73,11 @@ Future<void> _testUpdateTextStyleByCommandX(
   final editor = tester.editor..addParagraphs(3, initialText: text);
   await editor.startTesting();
 
-  var selection =
-      Selection.single(path: [1], startOffset: 2, endOffset: text.length - 2);
+  var selection = Selection.single(
+    path: [1],
+    startOffset: 2,
+    endOffset: text.length - 2,
+  );
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressKey(
@@ -91,14 +95,18 @@ Future<void> _testUpdateTextStyleByCommandX(
   Node? node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .everyAttributes((element) => element[matchStyle] == matchValue);
+      return delta.everyAttributes(
+        (element) => element[matchStyle] == matchValue,
+      );
     }),
     true,
   );
 
-  selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  selection = Selection.single(
+    path: [1],
+    startOffset: 0,
+    endOffset: text.length,
+  );
   await editor.updateSelection(selection);
   if (Platform.isWindows || Platform.isLinux) {
     await editor.pressKey(
@@ -116,8 +124,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .everyAttributes((element) => element[matchStyle] == matchValue);
+      return delta.everyAttributes(
+        (element) => element[matchStyle] == matchValue,
+      );
     }),
     true,
   );
@@ -139,8 +148,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .everyAttributes((element) => element[matchStyle] == matchValue);
+      return delta.everyAttributes(
+        (element) => element[matchStyle] == matchValue,
+      );
     }),
     false,
   );
@@ -168,14 +178,17 @@ Future<void> _testUpdateTextStyleByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(
-          Selection.single(
-            path: node.path,
-            startOffset: 0,
-            endOffset: text.length,
-          ), (delta) {
-        return delta
-            .everyAttributes((element) => element[matchStyle] == matchValue);
-      }),
+        Selection.single(
+          path: node.path,
+          startOffset: 0,
+          endOffset: text.length,
+        ),
+        (delta) {
+          return delta.everyAttributes(
+            (element) => element[matchStyle] == matchValue,
+          );
+        },
+      ),
       true,
     );
   }
@@ -200,14 +213,17 @@ Future<void> _testUpdateTextStyleByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(
-          Selection.single(
-            path: node.path,
-            startOffset: 0,
-            endOffset: text.length,
-          ), (delta) {
-        return delta
-            .everyAttributes((element) => element[matchStyle] == matchValue);
-      }),
+        Selection.single(
+          path: node.path,
+          startOffset: 0,
+          endOffset: text.length,
+        ),
+        (delta) {
+          return delta.everyAttributes(
+            (element) => element[matchStyle] == matchValue,
+          );
+        },
+      ),
       false,
     );
   }

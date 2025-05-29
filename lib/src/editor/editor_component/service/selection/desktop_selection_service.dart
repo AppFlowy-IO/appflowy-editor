@@ -192,10 +192,7 @@ class _DesktopSelectionServiceWidgetState
   }
 
   @override
-  void onPanEnd(
-    DragEndDetails details,
-    MobileSelectionDragMode mode,
-  ) {
+  void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode) {
     throw UnimplementedError();
   }
 
@@ -297,9 +294,9 @@ class _DesktopSelectionServiceWidgetState
     _panStartOffset = details.globalPosition;
     _panStartScrollDy = editorState.service.scrollService?.dy;
 
-    _panStartPosition = getNodeInOffset(_panStartOffset!)
-        ?.selectable
-        ?.getPositionInOffset(_panStartOffset!);
+    _panStartPosition = getNodeInOffset(
+      _panStartOffset!,
+    )?.selectable?.getPositionInOffset(_panStartOffset!);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -344,8 +341,9 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onPanEnd(DragEndDetails details) {
-    final canPanEnd = _interceptors
-        .every((interceptor) => interceptor.canPanEnd?.call(details) ?? true);
+    final canPanEnd = _interceptors.every(
+      (interceptor) => interceptor.canPanEnd?.call(details) ?? true,
+    );
 
     if (!canPanEnd) {
       return;
@@ -376,7 +374,8 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
+    final isHitSelectionAreas =
+        currentSelection.value?.isCollapsed == true ||
         selectionRects.any((element) {
           const threshold = 20;
           final scaledArea = Rect.fromCenter(
@@ -467,10 +466,7 @@ class _DesktopSelectionServiceWidgetState
         if (builder != null && node != null) {
           return builder(
             context,
-            DragAreaBuilderData(
-              targetNode: node,
-              dragOffset: offset,
-            ),
+            DragAreaBuilderData(targetNode: node, dragOffset: offset),
           );
         }
 
@@ -497,8 +493,9 @@ class _DesktopSelectionServiceWidgetState
             margin: widget.dropTargetStyle.margin,
             constraints: widget.dropTargetStyle.constraints,
             decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular(widget.dropTargetStyle.borderRadius),
+              borderRadius: BorderRadius.circular(
+                widget.dropTargetStyle.borderRadius,
+              ),
               color: widget.dropTargetStyle.color,
             ),
           ),
@@ -544,9 +541,6 @@ class _DesktopSelectionServiceWidgetState
 
     final dropPath = isCloserToStart ? node.path : node.path.next;
 
-    return DropTargetRenderData(
-      dropPath: dropPath,
-      cursorNode: node,
-    );
+    return DropTargetRenderData(dropPath: dropPath, cursorNode: node);
   }
 }

@@ -82,12 +82,7 @@ extension EditorStateSelection on EditorState {
               : a.rect.left.compareTo(b.rect.left),
         );
 
-      return getNodeInOffset(
-        children,
-        offset,
-        0,
-        children.length - 1,
-      );
+      return getNodeInOffset(children, offset, 0, children.length - 1);
     }
     return node;
   }

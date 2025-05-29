@@ -59,9 +59,9 @@ class ScrollablePositionedList extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.minCacheExtent,
-  })  : itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
-        scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?,
-        separatorBuilder = null;
+  }) : itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
+       scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?,
+       separatorBuilder = null;
 
   /// Create a [ScrollablePositionedList] whose items are provided by
   /// [itemBuilder] and separators provided by [separatorBuilder].
@@ -86,9 +86,9 @@ class ScrollablePositionedList extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.minCacheExtent,
-  })  : assert(separatorBuilder != null),
-        itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
-        scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?;
+  }) : assert(separatorBuilder != null),
+       itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
+       scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?;
 
   /// Number of items the [itemBuilder] can produce.
   final int itemCount;
@@ -338,8 +338,9 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   @override
   void initState() {
     super.initState();
-    ItemPosition? initialPosition =
-        PageStorage.maybeOf(context)?.readState(context);
+    ItemPosition? initialPosition = PageStorage.maybeOf(
+      context,
+    )?.readState(context);
     primary.target = initialPosition?.index ?? widget.initialScrollIndex;
     primary.alignment =
         initialPosition?.itemLeadingEdge ?? widget.initialAlignment;
@@ -377,10 +378,12 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
 
   @override
   void dispose() {
-    primary.itemPositionsNotifier.itemPositions
-        .removeListener(_updatePositions);
-    secondary.itemPositionsNotifier.itemPositions
-        .removeListener(_updatePositions);
+    primary.itemPositionsNotifier.itemPositions.removeListener(
+      _updatePositions,
+    );
+    secondary.itemPositionsNotifier.itemPositions.removeListener(
+      _updatePositions,
+    );
     _animationController?.dispose();
     primary.itemPositionsNotifier.itemPositions.dispose();
     secondary.itemPositionsNotifier.itemPositions.dispose();
@@ -497,12 +500,12 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   }
 
   double _cacheExtent(BoxConstraints constraints) => max(
-        (widget.scrollDirection == Axis.vertical
-                ? constraints.maxHeight
-                : constraints.maxWidth) *
-            _screenScrollCount,
-        widget.minCacheExtent ?? 0,
-      );
+    (widget.scrollDirection == Axis.vertical
+            ? constraints.maxHeight
+            : constraints.maxWidth) *
+        _screenScrollCount,
+    widget.minCacheExtent ?? 0,
+  );
 
   void _jumpTo({required int index, required double alignment}) {
     _stopScroll(canceled: true);
@@ -559,13 +562,14 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     required List<double> opacityAnimationWeights,
   }) async {
     final direction = index > primary.target ? 1 : -1;
-    final itemPosition =
-        primary.itemPositionsNotifier.itemPositions.value.firstWhereOrNull(
-      (ItemPosition itemPosition) => itemPosition.index == index,
-    );
+    final itemPosition = primary.itemPositionsNotifier.itemPositions.value
+        .firstWhereOrNull(
+          (ItemPosition itemPosition) => itemPosition.index == index,
+        );
     if (itemPosition != null) {
       // Scroll directly.
-      final localScrollAmount = itemPosition.itemLeadingEdge *
+      final localScrollAmount =
+          itemPosition.itemLeadingEdge *
           primary.scrollController.position.viewportDimension;
       await primary.scrollController.animateTo(
         primary.scrollController.offset +
@@ -575,7 +579,8 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         curve: curve,
       );
     } else {
-      final scrollAmount = _screenScrollCount *
+      final scrollAmount =
+          _screenScrollCount *
           primary.scrollController.position.viewportDimension;
       final startCompleter = Completer<void>();
       final endCompleter = Completer<void>();
@@ -583,10 +588,13 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         SchedulerBinding.instance.addPostFrameCallback((_) {
           startAnimationCallback = () {};
           _animationController?.dispose();
-          _animationController =
-              AnimationController(vsync: this, duration: duration)..forward();
-          opacity.parent = _opacityAnimation(opacityAnimationWeights)
-              .animate(_animationController!);
+          _animationController = AnimationController(
+            vsync: this,
+            duration: duration,
+          )..forward();
+          opacity.parent = _opacityAnimation(
+            opacityAnimationWeights,
+          ).animate(_animationController!);
           secondary.scrollController.jumpTo(
             -direction *
                 (_screenScrollCount *
@@ -603,8 +611,11 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
             ),
           );
           endCompleter.complete(
-            secondary.scrollController
-                .animateTo(0, duration: duration, curve: curve),
+            secondary.scrollController.animateTo(
+              0,
+              duration: duration,
+              curve: curve,
+            ),
           );
         });
       };
@@ -669,11 +680,11 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   }
 
   void _updatePositions() {
-    final itemPositions =
-        primary.itemPositionsNotifier.itemPositions.value.where(
-      (ItemPosition position) =>
-          position.itemLeadingEdge < 1 && position.itemTrailingEdge > 0,
-    );
+    final itemPositions = primary.itemPositionsNotifier.itemPositions.value
+        .where(
+          (ItemPosition position) =>
+              position.itemLeadingEdge < 1 && position.itemTrailingEdge > 0,
+        );
     if (itemPositions.isNotEmpty) {
       PageStorage.maybeOf(context)?.writeState(
         context,

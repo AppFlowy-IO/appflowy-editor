@@ -15,9 +15,7 @@ void main() {
       await tester.buildAndPump(
         Provider(
           create: (context) => editorState,
-          child: const MobileSelectionServiceWidget(
-            child: SizedBox.shrink(),
-          ),
+          child: const MobileSelectionServiceWidget(child: SizedBox.shrink()),
         ),
       );
       await tester.pumpAndSettle();

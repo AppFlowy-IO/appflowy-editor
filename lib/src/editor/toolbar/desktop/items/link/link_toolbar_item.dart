@@ -108,12 +108,7 @@ void showLinkMenu(
         },
         onRemoveLink: () {
           final transaction = editorState.transaction
-            ..formatText(
-              node,
-              index,
-              length,
-              {BuiltInAttributeKey.href: null},
-            );
+            ..formatText(node, index, length, {BuiltInAttributeKey.href: null});
           editorState.apply(transaction);
           dismissOverlay();
         },

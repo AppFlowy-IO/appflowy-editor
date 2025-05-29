@@ -47,12 +47,14 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
   final transaction = editorState.transaction;
 
   if (position.offset == delta.length) {
-    Node? tableParent =
-        node.findParent((element) => element.type == TableBlockKeys.type);
+    Node? tableParent = node.findParent(
+      (element) => element.type == TableBlockKeys.type,
+    );
     Node? nextTableParent;
     final next = node.findDownward((element) {
-      nextTableParent =
-          element.findParent((element) => element.type == TableBlockKeys.type);
+      nextTableParent = element.findParent(
+        (element) => element.type == TableBlockKeys.type,
+      );
       // break if only one is in a table or they're in different tables
       return tableParent != nextTableParent ||
           // merge the next node with delta
@@ -67,10 +69,7 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
       }
       transaction
         ..deleteNode(next)
-        ..mergeText(
-          node,
-          next,
-        );
+        ..mergeText(node, next);
       editorState.apply(transaction);
       return KeyEventResult.handled;
     }

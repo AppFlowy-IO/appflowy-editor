@@ -23,14 +23,8 @@ Future<void> onDelete(
       final length = deletion.deletedRange.end - start;
       final transaction = editorState.transaction;
       final afterSelection = Selection(
-        start: Position(
-          path: node.path,
-          offset: deletion.selection.baseOffset,
-        ),
-        end: Position(
-          path: node.path,
-          offset: deletion.selection.extentOffset,
-        ),
+        start: Position(path: node.path, offset: deletion.selection.baseOffset),
+        end: Position(path: node.path, offset: deletion.selection.extentOffset),
       );
       transaction
         ..deleteText(node, start, length)

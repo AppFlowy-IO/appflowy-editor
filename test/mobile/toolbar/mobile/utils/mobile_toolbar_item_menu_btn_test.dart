@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test_helpers/mobile_toolbar_style_test_widget.dart';
 
 void main() {
-  testWidgets('MobileToolbarItemMenuBtn should display label and icon',
-      (WidgetTester tester) async {
+  testWidgets('MobileToolbarItemMenuBtn should display label and icon', (
+    WidgetTester tester,
+  ) async {
     const icon = Icon(Icons.add);
     const label = 'Add';
 

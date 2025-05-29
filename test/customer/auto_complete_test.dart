@@ -8,15 +8,10 @@ import '../new/util/util.dart';
 void main() async {
   testWidgets('auto complete', (tester) async {
     const input = 'Hello';
-    final document = Document.blank()
-      ..addParagraph(
-        initialText: input,
-      );
+    final document = Document.blank()..addParagraph(initialText: input);
     final editorState = EditorState(document: document);
 
-    final widget = AutoCompleteEditor(
-      editorState: editorState,
-    );
+    final widget = AutoCompleteEditor(editorState: editorState);
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -25,10 +20,7 @@ void main() async {
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.textContaining('world', findRichText: true),
-      findsOneWidget,
-    );
+    expect(find.textContaining('world', findRichText: true), findsOneWidget);
 
     editorState.selection = Selection(
       start: Position(path: [0], offset: 0),
@@ -36,18 +28,12 @@ void main() async {
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.textContaining('world', findRichText: true),
-      findsNothing,
-    );
+    expect(find.textContaining('world', findRichText: true), findsNothing);
   });
 }
 
 class AutoCompleteEditor extends StatelessWidget {
-  const AutoCompleteEditor({
-    super.key,
-    required this.editorState,
-  });
+  const AutoCompleteEditor({super.key, required this.editorState});
 
   final EditorState editorState;
 
@@ -58,9 +44,7 @@ class AutoCompleteEditor extends StatelessWidget {
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: AppFlowyEditor(
               editorState: editorState,
               enableAutoComplete: true,

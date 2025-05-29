@@ -2,10 +2,8 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-typedef ToolbarItemEventHandler = void Function(
-  EditorState editorState,
-  BuildContext context,
-);
+typedef ToolbarItemEventHandler =
+    void Function(EditorState editorState, BuildContext context);
 typedef ToolbarItemValidator = bool Function(EditorState editorState);
 typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 
@@ -33,7 +31,8 @@ class ToolbarItem {
     Color highlightColor,
     Color? iconColor,
     ToolbarTooltipBuilder? tooltipBuilder,
-  )? builder;
+  )?
+  builder;
 
   // deprecated
   final int type;
@@ -46,7 +45,7 @@ class ToolbarItem {
   final ToolbarItemHighlightCallback? highlightCallback;
 
   final Widget Function(BuildContext context, EditorState editorState)?
-      itemBuilder;
+  itemBuilder;
 
   factory ToolbarItem.divider() {
     return ToolbarItem(

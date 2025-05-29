@@ -36,9 +36,9 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
   }
 
   // Identify deletions
-  oldChildrenById.keys
-      .where((id) => !newChildrenById.containsKey(id))
-      .forEach((id) {
+  oldChildrenById.keys.where((id) => !newChildrenById.containsKey(id)).forEach((
+    id,
+  ) {
     final oldChild = oldChildrenById[id]!;
     operations.add(DeleteOperation(oldChild.path, [oldChild]));
   });
@@ -58,13 +58,10 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
         if (op.path.equals(operations[i - 1].path.next)) {
           final lastOp = combinedOperations.removeLast();
           combinedOperations.add(
-            InsertOperation(
-              lastOp.path,
-              [
-                ...(lastOp as InsertOperation).nodes,
-                ...(op as InsertOperation).nodes,
-              ],
-            ),
+            InsertOperation(lastOp.path, [
+              ...(lastOp as InsertOperation).nodes,
+              ...(op as InsertOperation).nodes,
+            ]),
           );
         } else {
           combinedOperations.add(op);
@@ -86,13 +83,10 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
         if (op.path.equals(operations[i - 1].path.next)) {
           final lastOp = combinedOperations.removeLast();
           combinedOperations.add(
-            DeleteOperation(
-              lastOp.path,
-              [
-                ...(lastOp as DeleteOperation).nodes,
-                ...(op as DeleteOperation).nodes,
-              ],
-            ),
+            DeleteOperation(lastOp.path, [
+              ...(lastOp as DeleteOperation).nodes,
+              ...(op as DeleteOperation).nodes,
+            ]),
           );
         } else {
           combinedOperations.add(op);

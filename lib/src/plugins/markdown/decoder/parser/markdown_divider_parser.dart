@@ -19,8 +19,6 @@ class MarkdownDividerParserV2 extends CustomMarkdownParser {
       return [];
     }
 
-    return [
-      dividerNode(),
-    ];
+    return [dividerNode()];
   }
 }

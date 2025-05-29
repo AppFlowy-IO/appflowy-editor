@@ -13,8 +13,10 @@ void main() async {
       await editor.startTesting();
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-      final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+      final inserted = insertNodeAfterSelection(
+        editor.editorState,
+        paragraphNode(),
+      );
       await tester.pumpAndSettle();
 
       expect(inserted, true);
@@ -29,8 +31,10 @@ void main() async {
       await editor.startTesting();
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-      final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+      final inserted = insertNodeAfterSelection(
+        editor.editorState,
+        paragraphNode(),
+      );
       await tester.pumpAndSettle();
 
       expect(inserted, true);
@@ -40,8 +44,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('insertNodeAfterSelection on node with text direction',
-        (tester) async {
+    testWidgets('insertNodeAfterSelection on node with text direction', (
+      tester,
+    ) async {
       final editor = tester.editor
         ..addNode(
           paragraphNode(
@@ -52,8 +57,10 @@ void main() async {
       await editor.startTesting();
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-      final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+      final inserted = insertNodeAfterSelection(
+        editor.editorState,
+        paragraphNode(),
+      );
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([1])!;
@@ -66,17 +73,18 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('insertNodeAfterSelection on empty node with text direction',
-        (tester) async {
+    testWidgets('insertNodeAfterSelection on empty node with text direction', (
+      tester,
+    ) async {
       final editor = tester.editor
-        ..addNode(
-          paragraphNode(textDirection: blockComponentTextDirectionLTR),
-        );
+        ..addNode(paragraphNode(textDirection: blockComponentTextDirectionLTR));
       await editor.startTesting();
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-      final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+      final inserted = insertNodeAfterSelection(
+        editor.editorState,
+        paragraphNode(),
+      );
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0])!;

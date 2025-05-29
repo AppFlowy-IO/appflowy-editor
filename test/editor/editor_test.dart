@@ -8,9 +8,7 @@ void main() {
   group("AppFlowyEditor tests", () {
     testWidgets('can render', (tester) async {
       await tester.buildAndPump(
-        AppFlowyEditor(
-          editorState: EditorState.blank(),
-        ),
+        AppFlowyEditor(editorState: EditorState.blank()),
       );
       await tester.pumpAndSettle();
 

@@ -13,9 +13,7 @@ import 'package:appflowy_editor/src/core/document/text_delta.dart';
 /// ONLY USE FOR MIGRATION.
 ///
 class DocumentV0 {
-  DocumentV0({
-    required this.root,
-  });
+  DocumentV0({required this.root});
 
   factory DocumentV0.fromJson(Map<String, dynamic> json) {
     assert(json['document'] is Map);
@@ -31,9 +29,7 @@ class DocumentV0 {
       type: 'editor',
       children: LinkedList<NodeV0>()..add(TextNodeV0.empty()),
     );
-    return DocumentV0(
-      root: root,
-    );
+    return DocumentV0(root: root);
   }
 
   final NodeV0 root;
@@ -131,8 +127,6 @@ class DocumentV0 {
   }
 
   Map<String, Object> toJson() {
-    return {
-      'document': root.toJson(),
-    };
+    return {'document': root.toJson()};
   }
 }

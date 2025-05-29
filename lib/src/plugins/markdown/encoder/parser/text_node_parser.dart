@@ -14,8 +14,9 @@ class TextNodeParser extends NodeParser {
     String markdown = DeltaMarkdownEncoder().convert(delta);
     if (markdown.isEmpty && children == null) {
       return '';
-    } else if (node
-            .findParent((element) => element.type == TableBlockKeys.type) ==
+    } else if (node.findParent(
+          (element) => element.type == TableBlockKeys.type,
+        ) ==
         null) {
       markdown += '\n';
     }

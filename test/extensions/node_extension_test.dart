@@ -20,33 +20,17 @@ void main() {
         Node(type: 'type'),
       ];
 
-      final nodes = [
-        Node(
-          type: 'type',
-          children: subNodes,
-        ),
-      ];
+      final nodes = [Node(type: 'type', children: subNodes)];
 
-      final node = Node(
-        type: 'type',
-        children: nodes,
-        attributes: {},
-      );
+      final node = Node(type: 'type', children: nodes, attributes: {});
       final result = node.inSelection(selection);
       expect(result, false);
     });
 
     test('inSelection w/ Reverse selection', () {
-      final subNodes = [
-        Node(
-          type: 'type',
-        ),
-      ];
+      final subNodes = [Node(type: 'type')];
 
-      final node = Node(
-        type: 'type',
-        children: subNodes,
-      );
+      final node = Node(type: 'type', children: subNodes);
 
       final reverseSelection = Selection(
         start: Position(path: [1]),

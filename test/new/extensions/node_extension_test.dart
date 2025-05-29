@@ -14,12 +14,7 @@ void main() async {
       final document = Document.blank().addParagraph(
         builder: (index) => Delta()
           ..insert(welcome)
-          ..insert(
-            toAppFlowy,
-            attributes: {
-              'bold': true,
-            },
-          )
+          ..insert(toAppFlowy, attributes: {'bold': true})
           ..insert(editor),
       );
       final editorState = EditorState(document: document);
@@ -32,8 +27,9 @@ void main() async {
       final node = editorState.getNodeAtPath([0]);
       final result = node!.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, false);
     });
@@ -43,12 +39,7 @@ void main() async {
       final document = Document.blank().addParagraph(
         builder: (index) => Delta()
           ..insert(welcome)
-          ..insert(
-            toAppFlowy,
-            attributes: {
-              'bold': true,
-            },
-          )
+          ..insert(toAppFlowy, attributes: {'bold': true})
           ..insert(editor),
       );
       final editorState = EditorState(document: document);
@@ -63,8 +54,9 @@ void main() async {
       final node = editorState.getNodeAtPath([0]);
       final result = node!.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
 
       expect(result, true);
@@ -75,12 +67,7 @@ void main() async {
       final document = Document.blank().addParagraph(
         builder: (index) => Delta()
           ..insert(welcome)
-          ..insert(
-            toAppFlowy,
-            attributes: {
-              'bold': true,
-            },
-          )
+          ..insert(toAppFlowy, attributes: {'bold': true})
           ..insert(editor),
       );
       final editorState = EditorState(document: document);
@@ -95,8 +82,9 @@ void main() async {
       final node = editorState.getNodeAtPath([0]);
       final result = node!.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, false);
     });
@@ -110,27 +98,16 @@ void main() async {
     // Welcome <b>|to AppFlowy Editor 🔥!</b>
     // <b>Welcome to AppFlowy|</b> Editor 🔥!
     test('the selection is not collapsed and not single - 1', () async {
-      final document = Document.blank().addParagraph(
-        builder: (index) => Delta()
-          ..insert(welcome)
-          ..insert(
-            toAppFlowy + editor,
-            attributes: {
-              'bold': true,
-            },
-          ),
-      )..addParagraph(
-          builder: (index) => Delta()
-            ..insert(
-              welcome + toAppFlowy,
-              attributes: {
-                'bold': true,
-              },
-            )
-            ..insert(
-              editor,
-            ),
-        );
+      final document =
+          Document.blank().addParagraph(
+            builder: (index) => Delta()
+              ..insert(welcome)
+              ..insert(toAppFlowy + editor, attributes: {'bold': true}),
+          )..addParagraph(
+            builder: (index) => Delta()
+              ..insert(welcome + toAppFlowy, attributes: {'bold': true})
+              ..insert(editor),
+          );
       final editorState = EditorState(document: document);
 
       // Welcome <b>|to AppFlowy Editor 🔥!</b>
@@ -143,8 +120,9 @@ void main() async {
       final nodes = editorState.getNodesInSelection(selection);
       final result = nodes.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, true);
     });
@@ -152,27 +130,16 @@ void main() async {
     // |Welcome <b>to AppFlowy Editor 🔥!</b>
     // <b>Welcome to AppFlowy</b> Editor 🔥!|
     test('the selection is not collapsed and not single - 2', () async {
-      final document = Document.blank().addParagraph(
-        builder: (index) => Delta()
-          ..insert(welcome)
-          ..insert(
-            toAppFlowy + editor,
-            attributes: {
-              'bold': true,
-            },
-          ),
-      )..addParagraph(
-          builder: (index) => Delta()
-            ..insert(
-              welcome + toAppFlowy,
-              attributes: {
-                'bold': true,
-              },
-            )
-            ..insert(
-              editor,
-            ),
-        );
+      final document =
+          Document.blank().addParagraph(
+            builder: (index) => Delta()
+              ..insert(welcome)
+              ..insert(toAppFlowy + editor, attributes: {'bold': true}),
+          )..addParagraph(
+            builder: (index) => Delta()
+              ..insert(welcome + toAppFlowy, attributes: {'bold': true})
+              ..insert(editor),
+          );
       final editorState = EditorState(document: document);
 
       // |Welcome <b>to AppFlowy Editor 🔥!</b>
@@ -188,8 +155,9 @@ void main() async {
       final nodes = editorState.getNodesInSelection(selection);
       final result = nodes.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, false);
     });
@@ -198,22 +166,12 @@ void main() async {
       final document = Document.blank()
         ..addParagraph(
           builder: (index) => Delta()
-            ..insert(
-              'Hello',
-              attributes: {AppFlowyRichTextKeys.bold: true},
-            ),
+            ..insert('Hello', attributes: {AppFlowyRichTextKeys.bold: true}),
         )
-        ..addParagraph(
-          builder: (index) => Delta(),
-        )
+        ..addParagraph(builder: (index) => Delta())
         ..addParagraph(
           builder: (index) => Delta()
-            ..insert(
-              'World',
-              attributes: {
-                AppFlowyRichTextKeys.bold: true,
-              },
-            ),
+            ..insert('World', attributes: {AppFlowyRichTextKeys.bold: true}),
         );
       final editorState = EditorState(document: document);
       final selection = Selection(

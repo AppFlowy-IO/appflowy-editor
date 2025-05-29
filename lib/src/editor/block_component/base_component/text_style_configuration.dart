@@ -6,9 +6,7 @@ class TextStyleConfiguration {
     this.text = const TextStyle(fontSize: 16.0),
     this.bold = const TextStyle(fontWeight: FontWeight.bold),
     this.italic = const TextStyle(fontStyle: FontStyle.italic),
-    this.underline = const TextStyle(
-      decoration: TextDecoration.underline,
-    ),
+    this.underline = const TextStyle(decoration: TextDecoration.underline),
     this.strikethrough = const TextStyle(
       decoration: TextDecoration.lineThrough,
     ),
@@ -20,9 +18,7 @@ class TextStyleConfiguration {
       color: Colors.red,
       backgroundColor: Color.fromARGB(98, 0, 195, 255),
     ),
-    this.autoComplete = const TextStyle(
-      color: Colors.grey,
-    ),
+    this.autoComplete = const TextStyle(color: Colors.grey),
     this.applyHeightToFirstAscent = false,
     this.applyHeightToLastDescent = false,
     this.lineHeight = 1.5,

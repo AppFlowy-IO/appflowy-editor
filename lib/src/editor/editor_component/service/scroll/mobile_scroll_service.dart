@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MobileScrollService extends StatefulWidget {
-  const MobileScrollService({
-    super.key,
-    required this.child,
-  });
+  const MobileScrollService({super.key, required this.child});
 
   final Widget child;
 
@@ -54,14 +51,9 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   @override
   void scrollTo(
     double dy, {
-    Duration duration = const Duration(
-      milliseconds: 150,
-    ),
+    Duration duration = const Duration(milliseconds: 150),
   }) {
-    dy = dy.clamp(
-      minScrollExtent,
-      maxScrollExtent,
-    );
+    dy = dy.clamp(minScrollExtent, maxScrollExtent);
     editorScrollController.scrollOffsetController.animateScroll(
       offset: dy,
       duration: duration,

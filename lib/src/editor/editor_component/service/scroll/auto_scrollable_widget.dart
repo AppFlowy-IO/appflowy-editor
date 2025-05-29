@@ -12,10 +12,8 @@ class AutoScrollableWidget extends StatefulWidget {
 
   final bool shrinkWrap;
   final ScrollController scrollController;
-  final Widget Function(
-    BuildContext context,
-    AutoScroller autoScroller,
-  ) builder;
+  final Widget Function(BuildContext context, AutoScroller autoScroller)
+  builder;
 
   @override
   State<AutoScrollableWidget> createState() => _AutoScrollableWidgetState();
@@ -44,9 +42,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
     if (widget.shrinkWrap) {
       return widget.builder(context, _autoScroller);
     } else {
-      return Builder(
-        builder: builder,
-      );
+      return Builder(builder: builder);
     }
   }
 

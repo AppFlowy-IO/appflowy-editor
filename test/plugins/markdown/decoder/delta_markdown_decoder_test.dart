@@ -7,12 +7,7 @@ void main() async {
       final delta = Delta(
         operations: [
           TextInsert('Welcome to '),
-          TextInsert(
-            'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.bold: true,
-            },
-          ),
+          TextInsert('AppFlowy', attributes: {BuiltInAttributeKey.bold: true}),
         ],
       );
       final result = DeltaMarkdownDecoder().convert('Welcome to **AppFlowy**');
@@ -25,9 +20,7 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.italic: true,
-            },
+            attributes: {BuiltInAttributeKey.italic: true},
           ),
         ],
       );
@@ -41,9 +34,7 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.strikethrough: true,
-            },
+            attributes: {BuiltInAttributeKey.strikethrough: true},
           ),
         ],
       );
@@ -57,14 +48,13 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.href: 'https://appflowy.io',
-            },
+            attributes: {BuiltInAttributeKey.href: 'https://appflowy.io'},
           ),
         ],
       );
-      final result = DeltaMarkdownDecoder()
-          .convert('Welcome to [AppFlowy](https://appflowy.io)');
+      final result = DeltaMarkdownDecoder().convert(
+        'Welcome to [AppFlowy](https://appflowy.io)',
+      );
       expect(result, delta);
     });
 
@@ -72,12 +62,7 @@ void main() async {
       final delta = Delta(
         operations: [
           TextInsert('Welcome to '),
-          TextInsert(
-            'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.code: true,
-            },
-          ),
+          TextInsert('AppFlowy', attributes: {BuiltInAttributeKey.code: true}),
         ],
       );
       final result = DeltaMarkdownDecoder().convert('Welcome to `AppFlowy`');

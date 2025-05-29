@@ -23,10 +23,8 @@ const Set<String> _defaultSupportSlashMenuNodeTypes = {
 final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   key: 'show the slash menu',
   character: '/',
-  handler: (editorState) async => await _showSlashMenu(
-    editorState,
-    standardSelectionMenuItems,
-  ),
+  handler: (editorState) async =>
+      await _showSlashMenu(editorState, standardSelectionMenuItems),
 );
 
 CharacterShortcutEvent customSlashCommand(
@@ -136,10 +134,7 @@ bool _isSupportSlashMenuNode(
 
   // If node has a parent and level > 1, recursively check parent nodes
   if (node.level > 1 && node.parent != null) {
-    return _isSupportSlashMenuNode(
-      node.parent!,
-      supportSlashMenuNodeWhiteList,
-    );
+    return _isSupportSlashMenuNode(node.parent!, supportSlashMenuNodeWhiteList);
   }
 
   return true;

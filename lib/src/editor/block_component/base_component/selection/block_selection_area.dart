@@ -9,11 +9,7 @@ import 'package:provider/provider.dart';
 
 final _deepEqual = const DeepCollectionEquality().equals;
 
-enum BlockSelectionType {
-  cursor,
-  selection,
-  block,
-}
+enum BlockSelectionType { cursor, selection, block }
 
 /// [BlockSelectionArea] is a widget that renders the selection area or the cursor of a block.
 class BlockSelectionArea extends StatefulWidget {
@@ -134,7 +130,8 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           final editorState = context.read<EditorState>();
           final dragMode =
               editorState.selectionExtraInfo?[selectionDragModeKey];
-          final shouldBlink = widget.delegate.shouldCursorBlink &&
+          final shouldBlink =
+              widget.delegate.shouldCursorBlink &&
               dragMode != MobileSelectionDragMode.cursor;
           final cursor = Cursor(
             key: cursorKey,

@@ -48,10 +48,7 @@ void main() async {
         isMetaPressed: Platform.isMacOS,
       );
 
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [1], startOffset: 0));
 
       await editor.updateSelection(selection);
 
@@ -67,10 +64,7 @@ void main() async {
         isAltPressed: true,
       );
 
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [1], startOffset: 0));
 
       await editor.dispose();
     });

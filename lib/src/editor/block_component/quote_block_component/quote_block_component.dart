@@ -33,10 +33,7 @@ Node quoteNode({
 }
 
 class QuoteBlockComponentBuilder extends BlockComponentBuilder {
-  QuoteBlockComponentBuilder({
-    super.configuration,
-    this.iconBuilder,
-  });
+  QuoteBlockComponentBuilder({super.configuration, this.iconBuilder});
 
   final BlockIconBuilder? iconBuilder;
 
@@ -49,19 +46,16 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       iconBuilder: iconBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.delta != null;
+  BlockComponentValidate get validate =>
+      (node) => node.delta != null;
 }
 
 class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -142,8 +136,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 ),
                 placeholderTextSpanDecorator: (textSpan) =>
                     textSpan.updateTextStyle(
-                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                ),
+                      placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                    ),
                 textDirection: textDirection,
                 cursorColor: editorState.editorStyle.cursorColor,
                 selectionColor: editorState.editorStyle.selectionColor,
@@ -157,11 +151,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
 
     child = Container(
       color: backgroundColor,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
+      child: Padding(key: blockComponentKey, padding: padding, child: child),
     );
 
     child = BlockSelectionContainer(
@@ -170,9 +160,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
@@ -194,8 +182,10 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor =
-        context.read<EditorState>().editorStyle.textScaleFactor;
+    final textScaleFactor = context
+        .read<EditorState>()
+        .editorStyle
+        .textScaleFactor;
     return Container(
       alignment: Alignment.center,
       constraints:

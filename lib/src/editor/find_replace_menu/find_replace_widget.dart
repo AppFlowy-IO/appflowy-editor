@@ -90,9 +90,7 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
         ),
         showReplaceMenu
             ? Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 8.0,
-                ),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: ReplaceMenu(
                   editorState: widget.editorState,
                   searchService: searchService,
@@ -205,9 +203,7 @@ class _FindMenuState extends State<FindMenu> {
       children: [
         // expand/collapse button
         FindAndReplaceMenuIconButton(
-          icon: Icon(
-            showReplaceMenu ? Icons.expand_less : Icons.expand_more,
-          ),
+          icon: Icon(showReplaceMenu ? Icons.expand_less : Icons.expand_more),
           onPressed: () {
             widget.onShowReplace(!showReplaceMenu);
             setState(() {
@@ -231,9 +227,7 @@ class _FindMenuState extends State<FindMenu> {
               //  focus back to the findTextField
               Future.delayed(const Duration(milliseconds: 50), () {
                 if (context.mounted) {
-                  FocusScope.of(context).requestFocus(
-                    findTextFieldFocusNode,
-                  );
+                  FocusScope.of(context).requestFocus(findTextFieldFocusNode);
                 }
               });
             },
@@ -258,15 +252,14 @@ class _FindMenuState extends State<FindMenu> {
             // work around to request focus back to the input field
             Future.delayed(const Duration(milliseconds: 10), () {
               if (context.mounted) {
-                FocusScope.of(context).requestFocus(
-                  findTextFieldFocusNode,
-                );
+                FocusScope.of(context).requestFocus(findTextFieldFocusNode);
               }
             });
             widget.searchService.navigateToMatch(moveUp: true);
           },
           icon: const Icon(Icons.arrow_upward),
-          tooltip: widget.localizations?.previousMatch ??
+          tooltip:
+              widget.localizations?.previousMatch ??
               AppFlowyEditorL10n.current.previousMatch,
         ),
         // next match button
@@ -275,22 +268,22 @@ class _FindMenuState extends State<FindMenu> {
           onPressed: () {
             Future.delayed(const Duration(milliseconds: 10), () {
               if (context.mounted) {
-                FocusScope.of(context).requestFocus(
-                  findTextFieldFocusNode,
-                );
+                FocusScope.of(context).requestFocus(findTextFieldFocusNode);
               }
             });
             widget.searchService.navigateToMatch();
           },
           icon: const Icon(Icons.arrow_downward),
-          tooltip: widget.localizations?.nextMatch ??
+          tooltip:
+              widget.localizations?.nextMatch ??
               AppFlowyEditorL10n.current.nextMatch,
         ),
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('closeButton'),
           onPressed: widget.onDismiss,
           icon: const Icon(Icons.close),
-          tooltip: widget.localizations?.close ??
+          tooltip:
+              widget.localizations?.close ??
               AppFlowyEditorL10n.current.closeFind,
         ),
         // regex button
@@ -342,8 +335,9 @@ class _FindMenuState extends State<FindMenu> {
     // the following line needs to be executed even if
     // findTextEditingController.text.isEmpty, otherwise the previous
     // matches will persist
-    error =
-        widget.searchService.findAndHighlight(findTextEditingController.text);
+    error = widget.searchService.findAndHighlight(
+      findTextEditingController.text,
+    );
 
     switch (error) {
       case 'Regex':
@@ -351,7 +345,8 @@ class _FindMenuState extends State<FindMenu> {
       case 'Empty':
         message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
       default:
-        message = widget.localizations?.noResult ??
+        message =
+            widget.localizations?.noResult ??
             AppFlowyEditorLocalizations.current.noFindResult;
     }
 
@@ -391,9 +386,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
     return Row(
       children: [
         // placeholder for aligning the replace menu
-        const SizedBox(
-          width: _iconButtonSize,
-        ),
+        const SizedBox(width: _iconButtonSize),
         SizedBox(
           width: 200,
           height: 30,
@@ -407,9 +400,9 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
 
               Future.delayed(const Duration(milliseconds: 50), () {
                 if (context.mounted) {
-                  FocusScope.of(context).requestFocus(
-                    replaceTextFieldFocusNode,
-                  );
+                  FocusScope.of(
+                    context,
+                  ).requestFocus(replaceTextFieldFocusNode);
                 }
               });
             },
@@ -423,7 +416,8 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
           iconButtonKey: const Key('replaceSelectedButton'),
           onPressed: _replaceSelectedWord,
           icon: const Icon(Icons.find_replace),
-          tooltip: widget.localizations?.replace ??
+          tooltip:
+              widget.localizations?.replace ??
               AppFlowyEditorL10n.current.replace,
         ),
         FindAndReplaceMenuIconButton(
@@ -432,7 +426,8 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
             replaceTextEditingController.text,
           ),
           icon: const Icon(Icons.change_circle_outlined),
-          tooltip: widget.localizations?.replaceAll ??
+          tooltip:
+              widget.localizations?.replaceAll ??
               AppFlowyEditorL10n.current.replaceAll,
         ),
       ],

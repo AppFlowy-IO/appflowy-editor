@@ -2,9 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 
 const _kTextColorItemId = 'editor.textColor';
 
-ToolbarItem buildTextColorItem({
-  List<ColorOption>? colorOptions,
-}) {
+ToolbarItem buildTextColorItem({List<ColorOption>? colorOptions}) {
   return ToolbarItem(
     id: _kTextColorItemId,
     group: 4,
@@ -31,21 +29,15 @@ ToolbarItem buildTextColorItem({
         iconColor: iconColor,
         onPressed: () {
           bool showClearButton = false;
-          nodes.allSatisfyInSelection(
-            selection,
-            (delta) {
-              if (!showClearButton) {
-                showClearButton = delta.whereType<TextInsert>().any(
-                  (element) {
-                    return element
-                            .attributes?[AppFlowyRichTextKeys.textColor] !=
-                        null;
-                  },
-                );
-              }
-              return true;
-            },
-          );
+          nodes.allSatisfyInSelection(selection, (delta) {
+            if (!showClearButton) {
+              showClearButton = delta.whereType<TextInsert>().any((element) {
+                return element.attributes?[AppFlowyRichTextKeys.textColor] !=
+                    null;
+              });
+            }
+            return true;
+          });
           showColorMenu(
             context,
             editorState,

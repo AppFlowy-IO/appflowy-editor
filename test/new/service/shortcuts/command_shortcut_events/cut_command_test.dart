@@ -44,10 +44,7 @@ void main() async {
   });
 }
 
-Future<void> _testCutHandle(
-  WidgetTester tester,
-  Document document,
-) async {
+Future<void> _testCutHandle(WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocument(document);
   await editor.startTesting();
   await editor.updateSelection(
@@ -92,7 +89,7 @@ const paragraphdata = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -119,7 +116,7 @@ const paragraphdata = {
             {
               "insert": "Flutter",
               "attributes": {"underline": true},
-            }
+            },
           ],
         },
       },
@@ -203,7 +200,7 @@ const paragraphdata = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -218,10 +215,10 @@ const paragraphdata = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -248,7 +245,7 @@ const afterCut = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -340,7 +337,7 @@ const afterCut = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -355,10 +352,10 @@ const afterCut = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

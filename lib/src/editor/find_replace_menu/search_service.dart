@@ -15,10 +15,7 @@ class SearchStyle {
 }
 
 class SearchService {
-  SearchService({
-    required this.editorState,
-    required this.style,
-  });
+  SearchService({required this.editorState, required this.style});
 
   final EditorState editorState;
   final SearchStyle style;
@@ -70,13 +67,9 @@ class SearchService {
 
     if (contents.isEmpty) return [];
 
-    final firstNode = contents.firstWhere(
-      (el) => el.delta != null,
-    );
+    final firstNode = contents.firstWhere((el) => el.delta != null);
 
-    final lastNode = contents.lastWhere(
-      (el) => el.delta != null,
-    );
+    final lastNode = contents.lastWhere((el) => el.delta != null);
 
     //iterate within all the text nodes of the document.
     final nodes = NodeIterator(
@@ -90,10 +83,7 @@ class SearchService {
     return nodes;
   }
 
-  void _highlightAllMatches(
-    int patternLength, {
-    bool unHighlight = false,
-  }) {
+  void _highlightAllMatches(int patternLength, {bool unHighlight = false}) {
     for (final match in matchedPositions) {
       final start = Position(path: match.path, offset: match.offset);
       final end = Position(
@@ -141,11 +131,13 @@ class SearchService {
     }
 
     if (moveUp) {
-      selectedIndex =
-          selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
+      selectedIndex = selectedIndex - 1 < 0
+          ? matchedPositions.length - 1
+          : --selectedIndex;
     } else {
-      selectedIndex =
-          (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
+      selectedIndex = (selectedIndex + 1) < matchedPositions.length
+          ? ++selectedIndex
+          : 0;
     }
     final match = matchedPositions[selectedIndex];
     _selectWordAtPosition(match, true);
@@ -170,10 +162,9 @@ class SearchService {
 
     //unHighlight the selected word before it is replaced
     final selection = editorState.selection!;
-    editorState.formatDelta(
-      selection,
-      {AppFlowyRichTextKeys.findBackgroundColor: null},
-    );
+    editorState.formatDelta(selection, {
+      AppFlowyRichTextKeys.findBackgroundColor: null,
+    });
     editorState.undoManager.forgetRecentUndo();
 
     final textNode = editorState.getNodeAtPath(position.path)!;
@@ -204,12 +195,7 @@ class SearchService {
       final node = editorState.getNodeAtPath(match.path)!;
 
       final transaction = editorState.transaction
-        ..replaceText(
-          node,
-          match.offset,
-          queriedPattern.length,
-          replaceText,
-        );
+        ..replaceText(node, match.offset, queriedPattern.length, replaceText);
 
       editorState.apply(transaction);
     }
@@ -223,10 +209,8 @@ class SearchService {
     final color = isSelected
         ? style.selectedHighlightColor.toHex()
         : style.unselectedHighlightColor.toHex();
-    editorState.formatDelta(
-      selection,
-      {AppFlowyRichTextKeys.findBackgroundColor: color},
-      withUpdateSelection: false,
-    );
+    editorState.formatDelta(selection, {
+      AppFlowyRichTextKeys.findBackgroundColor: color,
+    }, withUpdateSelection: false);
   }
 }

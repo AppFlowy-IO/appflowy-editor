@@ -24,12 +24,14 @@ extension TextSpanExtensions on TextSpan {
     }
     return copyWith(
       style: style?.combine(other),
-      children: children?.map((child) {
-        if (child is TextSpan) {
-          return child.updateTextStyle(other);
-        }
-        return child;
-      }).toList(growable: false),
+      children: children
+          ?.map((child) {
+            if (child is TextSpan) {
+              return child.updateTextStyle(other);
+            }
+            return child;
+          })
+          .toList(growable: false),
     );
   }
 }

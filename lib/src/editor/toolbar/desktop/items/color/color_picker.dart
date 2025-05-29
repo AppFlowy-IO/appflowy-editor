@@ -69,18 +69,12 @@ class _ColorPickerState extends State<ColorPicker> {
           onSubmittedColorHex: (color) =>
               widget.onSubmittedColorHex.call(color, true),
         ),
-        _buildColorItems(
-          widget.colorOptions,
-          widget.selectedColorHex,
-        ),
+        _buildColorItems(widget.colorOptions, widget.selectedColorHex),
       ],
     );
   }
 
-  Widget _buildColorItems(
-    List<ColorOption> options,
-    String? selectedColor,
-  ) {
+  Widget _buildColorItems(List<ColorOption> options, String? selectedColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -169,20 +163,18 @@ class ResetColorButton extends StatelessWidget {
         ),
         label: Text(
           resetText,
-          style: TextStyle(
-            color: Theme.of(context).hintColor,
-          ),
+          style: TextStyle(color: Theme.of(context).hintColor),
           textAlign: TextAlign.left,
         ),
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.resolveWith<Color>(
-            (Set<WidgetState> states) {
-              if (states.contains(WidgetState.hovered)) {
-                return Theme.of(context).hoverColor;
-              }
-              return Colors.transparent;
-            },
-          ),
+          backgroundColor: WidgetStateProperty.resolveWith<Color>((
+            Set<WidgetState> states,
+          ) {
+            if (states.contains(WidgetState.hovered)) {
+              return Theme.of(context).hoverColor;
+            }
+            return Colors.transparent;
+          }),
           alignment: Alignment.centerLeft,
         ),
       ),

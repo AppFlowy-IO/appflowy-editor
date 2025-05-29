@@ -33,12 +33,10 @@ class _AnimatedSelectionAreaPaintState extends State<AnimatedSelectionAreaPaint>
         duration: const Duration(seconds: 4),
         vsync: this,
       );
-      animation = Tween<double>(begin: 0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: controller,
-          curve: Curves.bounceInOut,
-        ),
-      );
+      animation = Tween<double>(
+        begin: 0,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.bounceInOut));
       controller.repeat();
     }
   }
@@ -103,10 +101,7 @@ class SelectionAreaPaint extends StatelessWidget {
 }
 
 class SelectionAreaPainter extends CustomPainter {
-  SelectionAreaPainter({
-    required this.rects,
-    required this.selectionColor,
-  });
+  SelectionAreaPainter({required this.rects, required this.selectionColor});
 
   final List<Rect> rects;
   final Color selectionColor;
@@ -122,10 +117,7 @@ class SelectionAreaPainter extends CustomPainter {
       if (rect.width <= 0) {
         rect = Rect.fromLTWH(rect.left, rect.top, 8.0, rect.height);
       }
-      canvas.drawRect(
-        rect,
-        paint,
-      );
+      canvas.drawRect(rect, paint);
     }
   }
 

@@ -65,10 +65,7 @@ Future<void> onNonTextUpdate(
       if (nonTextUpdateStart != selectionStart) {
         editorState.updateSelectionWithReason(
           Selection.collapsed(
-            Position(
-              path: selection.start.path,
-              offset: nonTextUpdateStart,
-            ),
+            Position(path: selection.start.path, offset: nonTextUpdateStart),
           ),
           reason: SelectionUpdateReason.uiEvent,
         );

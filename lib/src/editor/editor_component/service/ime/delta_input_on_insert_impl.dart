@@ -67,14 +67,8 @@ Future<void> onInsert(
   }
 
   final afterSelection = Selection(
-    start: Position(
-      path: node.path,
-      offset: insertion.selection.baseOffset,
-    ),
-    end: Position(
-      path: node.path,
-      offset: insertion.selection.extentOffset,
-    ),
+    start: Position(path: node.path, offset: insertion.selection.baseOffset),
+    end: Position(path: node.path, offset: insertion.selection.extentOffset),
   );
 
   final transaction = editorState.transaction

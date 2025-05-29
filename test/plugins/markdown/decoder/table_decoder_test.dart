@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('ordered list decoder', () {
     final parser = DocumentMarkdownDecoder(
-      markdownElementParsers: [
-        const MarkdownTableListParserV2(),
-      ],
+      markdownElementParsers: [const MarkdownTableListParserV2()],
     );
 
     test('convert table', () {
@@ -30,7 +28,7 @@ void main() async {
                     {'insert': 'Month'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 0,
@@ -49,7 +47,7 @@ void main() async {
                     {'insert': 'January'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 0,
@@ -68,7 +66,7 @@ void main() async {
                     {'insert': 'February'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 0,
@@ -87,7 +85,7 @@ void main() async {
                     {'insert': 'March'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 0,
@@ -106,7 +104,7 @@ void main() async {
                     {'insert': 'Savings'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 1,
@@ -125,7 +123,7 @@ void main() async {
                     {'insert': '\$250'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 1,
@@ -144,7 +142,7 @@ void main() async {
                     {'insert': '\$80'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 1,
@@ -163,7 +161,7 @@ void main() async {
                     {'insert': '\$420'},
                   ],
                 },
-              }
+              },
             ],
             'data': {
               'colPosition': 1,
@@ -171,7 +169,7 @@ void main() async {
               'height': 40.0,
               'width': 160.0,
             },
-          }
+          },
         ],
         'data': {
           'colsLen': 2,

@@ -5,9 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('markdown_heading_parser.dart', () {
     final parser = DocumentMarkdownDecoder(
-      markdownElementParsers: [
-        const MarkdownCodeBlockParserV2(),
-      ],
+      markdownElementParsers: [const MarkdownCodeBlockParserV2()],
     );
 
     test('contains quote syntax', () {

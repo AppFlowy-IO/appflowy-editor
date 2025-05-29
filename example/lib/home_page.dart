@@ -26,12 +26,7 @@ import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:universal_platform/universal_platform.dart';
 
-enum ExportFileType {
-  documentJson,
-  markdown,
-  pdf,
-  delta,
-}
+enum ExportFileType { documentJson, markdown, pdf, delta }
 
 extension on ExportFileType {
   String get extension {
@@ -70,11 +65,11 @@ class _HomePageState extends State<HomePage> {
         : rootBundle.loadString('assets/mobile_example.json');
 
     _widgetBuilder = (context) => Editor(
-          jsonString: _jsonString,
-          onEditorStateChange: (editorState) {
-            _editorState = editorState;
-          },
-        );
+      jsonString: _jsonString,
+      onEditorStateChange: (editorState) {
+        _editorState = editorState;
+      },
+    );
   }
 
   @override
@@ -82,14 +77,12 @@ class _HomePageState extends State<HomePage> {
     super.reassemble();
 
     _widgetBuilder = (context) => Editor(
-          jsonString: _jsonString,
-          onEditorStateChange: (editorState) {
-            _editorState = editorState;
-            _jsonString = Future.value(
-              jsonEncode(_editorState.document.toJson()),
-            );
-          },
-        );
+      jsonString: _jsonString,
+      onEditorStateChange: (editorState) {
+        _editorState = editorState;
+        _jsonString = Future.value(jsonEncode(_editorState.document.toJson()));
+      },
+    );
   }
 
   @override
@@ -119,10 +112,7 @@ class _HomePageState extends State<HomePage> {
           DrawerHeader(
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
-            child: Image.asset(
-              'assets/images/icon.jpeg',
-              fit: BoxFit.fill,
-            ),
+            child: Image.asset('assets/images/icon.jpeg', fit: BoxFit.fill),
           ),
 
           // AppFlowy Editor Demo
@@ -148,13 +138,12 @@ class _HomePageState extends State<HomePage> {
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Example.html', () async {
-            final htmlString =
-                await rootBundle.loadString('assets/example.html');
+            final htmlString = await rootBundle.loadString(
+              'assets/example.html',
+            );
             final html = htmlToDocument(htmlString);
             final jsonString = Future<String>.value(
-              jsonEncode(
-                html.toJson(),
-              ).toString(),
+              jsonEncode(html.toJson()).toString(),
             );
             if (context.mounted) {
               _loadEditor(context, jsonString);
@@ -182,9 +171,7 @@ class _HomePageState extends State<HomePage> {
           _buildListTile(context, 'Markdown Editor', () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const MarkdownEditor(),
-              ),
+              MaterialPageRoute(builder: (context) => const MarkdownEditor()),
             );
           }),
           _buildListTile(context, 'Animated Markdown Editor', () {
@@ -206,9 +193,7 @@ class _HomePageState extends State<HomePage> {
           _buildListTile(context, 'Collab Editor', () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const CollabEditor(),
-              ),
+              MaterialPageRoute(builder: (context) => const CollabEditor()),
             );
           }),
           _buildListTile(context, 'Collab Selection', () {
@@ -239,11 +224,7 @@ class _HomePageState extends State<HomePage> {
             final jsonString = rootBundle.loadString(
               'assets/arabic_example.json',
             );
-            _loadEditor(
-              context,
-              jsonString,
-              textDirection: TextDirection.rtl,
-            );
+            _loadEditor(context, jsonString, textDirection: TextDirection.rtl);
           }),
           _buildListTile(context, 'Focus Example', () {
             Navigator.push(
@@ -256,9 +237,7 @@ class _HomePageState extends State<HomePage> {
           _buildListTile(context, 'Editor List', () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const EditorList(),
-              ),
+              MaterialPageRoute(builder: (context) => const EditorList()),
             );
           }),
           _buildListTile(context, 'Fixed Toolbar', () {
@@ -274,9 +253,8 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AutoExpandEditor(
-                  editorState: EditorState.blank(),
-                ),
+                builder: (context) =>
+                    AutoExpandEditor(editorState: EditorState.blank()),
               ),
             );
           }),
@@ -320,10 +298,7 @@ class _HomePageState extends State<HomePage> {
       contentPadding: const EdgeInsets.only(left: 16),
       title: Text(
         text,
-        style: const TextStyle(
-          color: Colors.blue,
-          fontSize: 14,
-        ),
+        style: const TextStyle(color: Colors.blue, fontSize: 14),
       ),
       onTap: () {
         Navigator.pop(context);
@@ -353,27 +328,22 @@ class _HomePageState extends State<HomePage> {
   }) async {
     final completer = Completer<void>();
     _jsonString = jsonString;
-    setState(
-      () {
-        _widgetBuilder = (context) => Editor(
-              jsonString: _jsonString,
-              onEditorStateChange: (editorState) {
-                _editorState = editorState;
-              },
-              textDirection: textDirection,
-            );
-      },
-    );
+    setState(() {
+      _widgetBuilder = (context) => Editor(
+        jsonString: _jsonString,
+        onEditorStateChange: (editorState) {
+          _editorState = editorState;
+        },
+        textDirection: textDirection,
+      );
+    });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       completer.complete();
     });
     return completer.future;
   }
 
-  void _exportFile(
-    EditorState editorState,
-    ExportFileType fileType,
-  ) async {
+  void _exportFile(EditorState editorState, ExportFileType fileType) async {
     var result = '';
 
     switch (fileType) {
@@ -394,8 +364,8 @@ class _HomePageState extends State<HomePage> {
     if (kIsWeb) {
       final blob = html.Blob([result], 'text/plain', 'native');
       html.AnchorElement(
-        href: html.Url.createObjectUrlFromBlob(blob).toString(),
-      )
+          href: html.Url.createObjectUrlFromBlob(blob).toString(),
+        )
         ..setAttribute('download', 'document.${fileType.extension}')
         ..click();
     } else if (UniversalPlatform.isMobile) {
@@ -434,9 +404,7 @@ class _HomePageState extends State<HomePage> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('This document is saved to the $path'),
-            ),
+            SnackBar(content: Text('This document is saved to the $path')),
           );
         }
       }

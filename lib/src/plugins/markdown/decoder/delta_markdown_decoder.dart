@@ -12,16 +12,11 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
   final Attributes _attributes = {};
   final List<md.InlineSyntax> customInlineSyntaxes;
 
-  DeltaMarkdownDecoder({
-    this.customInlineSyntaxes = const [],
-  });
+  DeltaMarkdownDecoder({this.customInlineSyntaxes = const []});
 
   @override
   Delta convert(String input) {
-    final inlineSyntaxes = [
-      UnderlineInlineSyntax(),
-      ...customInlineSyntaxes,
-    ];
+    final inlineSyntaxes = [UnderlineInlineSyntax(), ...customInlineSyntaxes];
     final document = md.Document(
       extensionSet: md.ExtensionSet.gitHubWeb,
       inlineSyntaxes: inlineSyntaxes,

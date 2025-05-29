@@ -15,9 +15,7 @@ void main() async {
       // to
       // <ol><li>A1</li><li>A2</li><li>A3</li><li>A4</li></ol>
       final encoder = DocumentHTMLEncoder(
-        encodeParsers: [
-          const HTMLNumberedListNodeParser(),
-        ],
+        encodeParsers: [const HTMLNumberedListNodeParser()],
       );
       final result = encoder.convert(Document.fromJson(_json1));
 
@@ -32,9 +30,7 @@ void main() async {
       // to
       // <ol start="100"><li>A1</li><li>A2</li><li>A3</li><li>A4</li></ol>
       final encoder = DocumentHTMLEncoder(
-        encodeParsers: [
-          const HTMLNumberedListNodeParser(),
-        ],
+        encodeParsers: [const HTMLNumberedListNodeParser()],
       );
       final result = encoder.convert(Document.fromJson(_json2));
 

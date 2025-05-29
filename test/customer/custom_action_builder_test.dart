@@ -51,12 +51,7 @@ class CustomActionBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const text = 'Hello AppFlowy!';
-    final document = Document.blank()
-      ..insert([
-        0,
-      ], [
-        paragraphNode(text: text),
-      ]);
+    final document = Document.blank()..insert([0], [paragraphNode(text: text)]);
 
     final editorState = EditorState(document: document);
 
@@ -94,9 +89,7 @@ class CustomActionBuilder extends StatelessWidget {
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: AppFlowyEditor(
               editorState: editorState,
               blockComponentBuilders: customBlockComponentBuilders,

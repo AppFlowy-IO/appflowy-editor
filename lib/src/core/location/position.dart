@@ -4,23 +4,15 @@ class Position {
   final Path path;
   final int offset;
 
-  Position({
-    required this.path,
-    this.offset = 0,
-  });
+  Position({required this.path, this.offset = 0});
 
-  Position.invalid()
-      : path = [-1],
-        offset = -1;
+  Position.invalid() : path = [-1], offset = -1;
 
   factory Position.fromJson(Map<String, dynamic> json) {
     final path = Path.from(json['path'] as List);
     final offset = json['offset'];
 
-    return Position(
-      path: path,
-      offset: offset ?? 0,
-    );
+    return Position(path: path, offset: offset ?? 0);
   }
 
   @override
@@ -39,16 +31,10 @@ class Position {
   String toString() => 'path = $path, offset = $offset';
 
   Position copyWith({Path? path, int? offset}) {
-    return Position(
-      path: path ?? this.path,
-      offset: offset ?? this.offset,
-    );
+    return Position(path: path ?? this.path, offset: offset ?? this.offset);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'path': path,
-      'offset': offset,
-    };
+    return {'path': path, 'offset': offset};
   }
 }

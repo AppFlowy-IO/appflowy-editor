@@ -9,9 +9,7 @@ mixin DefaultSelectableMixin {
   SelectableMixin<StatefulWidget> get forward =>
       forwardKey.currentState as SelectableMixin;
 
-  Offset baseOffset({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Offset baseOffset({bool shiftWithBaseOffset = false}) {
     if (shiftWithBaseOffset) {
       final parentBox = containerKey.currentContext?.findRenderObject();
       final childBox = forwardKey.currentContext?.findRenderObject();
@@ -22,9 +20,7 @@ mixin DefaultSelectableMixin {
     return Offset.zero;
   }
 
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
     final parentBox = containerKey.currentContext?.findRenderObject();
     final childBox = blockComponentKey.currentContext?.findRenderObject();
     if (parentBox is RenderBox && childBox is RenderBox) {
@@ -44,39 +40,27 @@ mixin DefaultSelectableMixin {
   Rect? getCursorRectInPosition(
     Position position, {
     bool shiftWithBaseOffset = false,
-  }) =>
-      forward.getCursorRectInPosition(position)?.shift(
-            baseOffset(
-              shiftWithBaseOffset: shiftWithBaseOffset,
-            ),
-          );
+  }) => forward
+      .getCursorRectInPosition(position)
+      ?.shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset));
 
   List<Rect> getRectsInSelection(
     Selection selection, {
     bool shiftWithBaseOffset = false,
-  }) =>
-      forward
-          .getRectsInSelection(selection)
-          .map(
-            (rect) => rect.shift(
-              baseOffset(
-                shiftWithBaseOffset: shiftWithBaseOffset,
-              ),
-            ),
-          )
-          .toList(growable: false);
+  }) => forward
+      .getRectsInSelection(selection)
+      .map(
+        (rect) =>
+            rect.shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset)),
+      )
+      .toList(growable: false);
 
   Selection getSelectionInRange(Offset start, Offset end) =>
       forward.getSelectionInRange(start, end);
 
-  Offset localToGlobal(
-    Offset offset, {
-    bool shiftWithBaseOffset = false,
-  }) =>
+  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false}) =>
       forward.localToGlobal(offset) -
-      baseOffset(
-        shiftWithBaseOffset: shiftWithBaseOffset,
-      );
+      baseOffset(shiftWithBaseOffset: shiftWithBaseOffset);
 
   Selection? getWordEdgeInOffset(Offset offset) =>
       forward.getWordEdgeInOffset(offset);

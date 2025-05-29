@@ -36,10 +36,7 @@ void main() async {
   });
 }
 
-Future<void> _testSelection(
-  TestableEditor editor,
-  Selection selection,
-) async {
+Future<void> _testSelection(TestableEditor editor, Selection selection) async {
   await editor.updateSelection(selection);
   expect(editor.selection, selection);
   await editor.pressKey(key: LogicalKeyboardKey.escape);

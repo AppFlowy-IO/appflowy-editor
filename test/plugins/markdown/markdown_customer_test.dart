@@ -10,48 +10,39 @@ void main() async {
 - [Today Online](https://www.todayonline.com/)
 ''';
       final result = markdownToDocument(markdown);
-      expect(
-        result.nodeAtPath([0])!.toJson(),
-        {
-          'type': 'bulleted_list',
-          'data': {
-            'delta': [
-              {
-                'insert': 'The Straits Times',
-                'attributes': {'href': 'https://www.straitstimes.com/'},
-              },
-            ],
-          },
+      expect(result.nodeAtPath([0])!.toJson(), {
+        'type': 'bulleted_list',
+        'data': {
+          'delta': [
+            {
+              'insert': 'The Straits Times',
+              'attributes': {'href': 'https://www.straitstimes.com/'},
+            },
+          ],
         },
-      );
-      expect(
-        result.nodeAtPath([1])!.toJson(),
-        {
-          'type': 'bulleted_list',
-          'data': {
-            'delta': [
-              {
-                'insert': 'Channel News Asia',
-                'attributes': {'href': 'https://www.channelnewsasia.com/'},
-              },
-            ],
-          },
+      });
+      expect(result.nodeAtPath([1])!.toJson(), {
+        'type': 'bulleted_list',
+        'data': {
+          'delta': [
+            {
+              'insert': 'Channel News Asia',
+              'attributes': {'href': 'https://www.channelnewsasia.com/'},
+            },
+          ],
         },
-      );
-      expect(
-        result.nodeAtPath([2])!.toJson(),
-        {
-          'type': 'bulleted_list',
-          'data': {
-            'delta': [
-              {
-                'insert': 'Today Online',
-                'attributes': {'href': 'https://www.todayonline.com/'},
-              },
-            ],
-          },
+      });
+      expect(result.nodeAtPath([2])!.toJson(), {
+        'type': 'bulleted_list',
+        'data': {
+          'delta': [
+            {
+              'insert': 'Today Online',
+              'attributes': {'href': 'https://www.todayonline.com/'},
+            },
+          ],
         },
-      );
+      });
     });
 
     test('customer issue - ordered list with numbers', () {
@@ -69,50 +60,41 @@ Add the necessary import statements at the top of your Dart file.
 Here is the complete Dart file with the above steps:
 ''';
       final result = markdownToDocument(markdown);
-      expect(
-        result.nodeAtPath([0])!.toJson(),
-        {
-          'type': 'numbered_list',
-          'data': {
-            'delta': [
-              {
-                'insert': 'Ensure Dependencies',
-                'attributes': {'bold': true},
-              },
-            ],
-          },
+      expect(result.nodeAtPath([0])!.toJson(), {
+        'type': 'numbered_list',
+        'data': {
+          'delta': [
+            {
+              'insert': 'Ensure Dependencies',
+              'attributes': {'bold': true},
+            },
+          ],
         },
-      );
-      expect(
-        result.nodeAtPath([2])!.toJson(),
-        {
-          'type': 'numbered_list',
-          'data': {
-            'number': 2,
-            'delta': [
-              {
-                'insert': 'Import Statements',
-                'attributes': {'bold': true},
-              },
-            ],
-          },
+      });
+      expect(result.nodeAtPath([2])!.toJson(), {
+        'type': 'numbered_list',
+        'data': {
+          'number': 2,
+          'delta': [
+            {
+              'insert': 'Import Statements',
+              'attributes': {'bold': true},
+            },
+          ],
         },
-      );
-      expect(
-        result.nodeAtPath([4])!.toJson(),
-        {
-          'type': 'numbered_list',
-          'data': {
-            'number': 3,
-            'delta': [
-              {
-                'insert': 'Class Definition',
-                'attributes': {'bold': true},
-              },
-            ],
-          },
+      });
+      expect(result.nodeAtPath([4])!.toJson(), {
+        'type': 'numbered_list',
+        'data': {
+          'number': 3,
+          'delta': [
+            {
+              'insert': 'Class Definition',
+              'attributes': {'bold': true},
+            },
+          ],
         },
-      );
+      });
     });
   });
 }

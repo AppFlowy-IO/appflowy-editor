@@ -26,9 +26,7 @@ class AtLeastOneEditableNodeRule extends DocumentRule {
     final transaction = editorState.transaction;
     transaction
       ..insertNode([0], paragraphNode())
-      ..afterSelection = Selection.collapsed(
-        Position(path: [0]),
-      );
+      ..afterSelection = Selection.collapsed(Position(path: [0]));
     editorState.apply(transaction);
   }
 }

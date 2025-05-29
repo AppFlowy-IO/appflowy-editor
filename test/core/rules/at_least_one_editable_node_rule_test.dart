@@ -7,15 +7,7 @@ void main() {
     final node1 = paragraphNode(text: 'Hello World!');
     final node2 = paragraphNode(text: 'Hello World!');
     final node3 = paragraphNode(text: 'Hello World!');
-    final document = Document(
-      root: pageNode(
-        children: [
-          node1,
-          node2,
-          node3,
-        ],
-      ),
-    );
+    final document = Document(root: pageNode(children: [node1, node2, node3]));
     final editorState = EditorState(document: document)..documentRules = [rule];
     // delete all the nodes
     final transaction = editorState.transaction;

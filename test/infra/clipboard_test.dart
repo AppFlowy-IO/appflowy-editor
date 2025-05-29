@@ -10,14 +10,8 @@ class MockClipboard {
 
   const MockClipboard({required this.text, required this.html});
 
-  MockClipboard copyWith({
-    String? text,
-    String? html,
-  }) =>
-      MockClipboard(
-        text: text,
-        html: html,
-      );
+  MockClipboard copyWith({String? text, String? html}) =>
+      MockClipboard(text: text, html: html);
 
   Map<String, String?> get getData => {"html": html, "text": text};
 }
@@ -29,17 +23,15 @@ void main() {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
-      return null;
-    });
+          switch (message.method) {
+            case "Clipboard.getData":
+              return mockClipboard.getData;
+            case "Clipboard.setData":
+              final args = message.arguments as Map<String, dynamic>;
+              mockClipboard = mockClipboard.copyWith(text: args['text']);
+          }
+          return null;
+        });
   });
 
   group('Clipboard tests', () {

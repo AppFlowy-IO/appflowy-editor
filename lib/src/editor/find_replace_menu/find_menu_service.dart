@@ -72,7 +72,8 @@ class FindReplaceMenu implements FindReplaceService {
         return Positioned(
           top: topOffset,
           right: rightOffset,
-          child: style.findMenuBuilder?.call(
+          child:
+              style.findMenuBuilder?.call(
                 context,
                 editorState,
                 localizations,

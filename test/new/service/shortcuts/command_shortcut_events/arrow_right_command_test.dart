@@ -17,16 +17,15 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!|
     // After
     // Welcome to AppFlowy Editor 🔥!|
-    testWidgets('press the right arrow key at the ending of the document',
-        (tester) async {
+    testWidgets('press the right arrow key at the ending of the document', (
+      tester,
+    ) async {
       final arrowLeftTest = ArrowTest(
         text: text,
         initialSel: Selection.collapsed(
           Position(path: [0], offset: text.length),
         ),
-        expSel: Selection.collapsed(
-          Position(path: [0], offset: text.length),
-        ),
+        expSel: Selection.collapsed(Position(path: [0], offset: text.length)),
       );
 
       await runArrowRightTest(tester, arrowLeftTest);
@@ -36,8 +35,9 @@ void main() async {
     // |Welcome| to AppFlowy Editor 🔥!
     // After
     // Welcome| to AppFlowy Editor 🔥!
-    testWidgets('press the right arrow key at the collapsed selection',
-        (tester) async {
+    testWidgets('press the right arrow key at the collapsed selection', (
+      tester,
+    ) async {
       final selection = Selection.single(
         path: [0],
         startOffset: 0,
@@ -59,44 +59,41 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // Welcome to AppFlowy Editor 🔥!
     testWidgets(
-        'press the right arrow key until it reaches the ending of the document',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+      'press the right arrow key until it reaches the ending of the document',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(Position(path: [0]));
+        await editor.updateSelection(selection);
+
+        // move the cursor to the ending of node 0
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+        }
+        expect(
+          editor.selection,
+          Selection.collapsed(Position(path: [0], offset: text.length)),
         );
-      await editor.startTesting();
 
-      final selection = Selection.collapsed(Position(path: [0]));
-      await editor.updateSelection(selection);
-
-      // move the cursor to the ending of node 0
-      for (var i = 1; i < text.length; i++) {
+        // move the cursor to the beginning of node 1
         await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
-        await tester.pumpAndSettle();
-      }
-      expect(
-        editor.selection,
-        Selection.collapsed(Position(path: [0], offset: text.length)),
-      );
+        expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
-      // move the cursor to the beginning of node 1
-      await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
-      expect(editor.selection, Selection.collapsed(Position(path: [1])));
+        // move the cursor to the ending of node 1
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+        }
+        expect(
+          editor.selection,
+          Selection.collapsed(Position(path: [1], offset: text.length)),
+        );
 
-      // move the cursor to the ending of node 1
-      for (var i = 1; i < text.length; i++) {
-        await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
-        await tester.pumpAndSettle();
-      }
-      expect(
-        editor.selection,
-        Selection.collapsed(Position(path: [1], offset: text.length)),
-      );
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
     testWidgets('rtl text', (tester) async {
       final List<ArrowTest> tests = [
@@ -135,17 +132,16 @@ void main() async {
     // Welcom|e to AppFlowy Editor 🔥!
     // After
     // Welcom|e| to AppFlowy Editor 🔥!
-    testWidgets('press shift + arrow right to select right character',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+    testWidgets('press shift + arrow right to select right character', (
+      tester,
+    ) async {
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       const initialOffset = 'Welcom'.length;
-      final selection =
-          Selection.collapsed(Position(path: [0], offset: initialOffset));
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: initialOffset),
+      );
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -171,39 +167,35 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!|
     // After on Windows & Linux
     // Welcome| to AppFlowy Editor 🔥!
-    testWidgets('''press the ctrl+arrow right key,
+    testWidgets(
+      '''press the ctrl+arrow right key,
          on windows & linux it should move to the end of a word,
          on mac it should move the cursor to the end of the line
-         ''', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+         ''',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(Position(path: [1]));
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.arrowRight,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
         );
-      await editor.startTesting();
 
-      final selection = Selection.collapsed(Position(path: [1]));
-      await editor.updateSelection(selection);
+        const expectedOffset = 'Welcome'.length;
+        final expectedPosition = Position(
+          path: [1],
+          offset: Platform.isMacOS ? text.length : expectedOffset,
+        );
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.arrowRight,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-      );
+        expect(editor.selection, Selection.collapsed(expectedPosition));
 
-      const expectedOffset = 'Welcome'.length;
-      final expectedPosition = Position(
-        path: [1],
-        offset: Platform.isMacOS ? text.length : expectedOffset,
-      );
-
-      expect(
-        editor.selection,
-        Selection.collapsed(expectedPosition),
-      );
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
     // Before
     // |Welcome to AppFlowy Editor 🔥!
@@ -211,49 +203,44 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!|
     // After on Windows & Linux
     // |Welcome| to AppFlowy Editor 🔥!
-    testWidgets('''press the ctrl+shift+arrow right key,
+    testWidgets(
+      '''press the ctrl+shift+arrow right key,
          on windows & linux it should move to the end of a word and select it,
          on mac it should move the cursor to the end of the line and select it
-         ''', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+         ''',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(Position(path: [1]));
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.arrowRight,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
+          isShiftPressed: true,
         );
-      await editor.startTesting();
 
-      final selection = Selection.collapsed(Position(path: [1]));
-      await editor.updateSelection(selection);
+        const expectedOffset = 'Welcome'.length;
+        if (Platform.isMacOS) {
+          expect(
+            editor.selection,
+            Selection.single(path: [1], startOffset: 0, endOffset: text.length),
+          );
+        } else {
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [1],
+              startOffset: 0,
+              endOffset: expectedOffset,
+            ),
+          );
+        }
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.arrowRight,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-        isShiftPressed: true,
-      );
-
-      const expectedOffset = 'Welcome'.length;
-      if (Platform.isMacOS) {
-        expect(
-          editor.selection,
-          Selection.single(
-            path: [1],
-            startOffset: 0,
-            endOffset: text.length,
-          ),
-        );
-      } else {
-        expect(
-          editor.selection,
-          Selection.single(
-            path: [1],
-            startOffset: 0,
-            endOffset: expectedOffset,
-          ),
-        );
-      }
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
   });
 }

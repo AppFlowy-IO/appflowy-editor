@@ -36,11 +36,7 @@ void main() async {
       service.addListener(setCounters);
 
       final transaction = editor.editorState.transaction
-        ..insertText(
-          editor.editorState.getNodeAtPath([0])!,
-          text.length,
-          text,
-        );
+        ..insertText(editor.editorState.getNodeAtPath([0])!, text.length, text);
 
       await editor.editorState.apply(transaction);
 

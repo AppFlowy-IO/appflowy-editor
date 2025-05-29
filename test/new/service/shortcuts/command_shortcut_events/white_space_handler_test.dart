@@ -99,8 +99,9 @@ void main() async {
     // After
     // [h1 ~ h6]##Welcome to Appflowy 😁
     //
-    testWidgets('Presses whitespace key in heading styled text',
-        (tester) async {
+    testWidgets('Presses whitespace key in heading styled text', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraph(initialText: text);
 
@@ -125,8 +126,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('Presses whitespace key after (un)checkbox symbols',
-        (tester) async {
+    testWidgets('Presses whitespace key after (un)checkbox symbols', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
@@ -145,8 +147,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('Presses whitespace key after checkbox symbols',
-        (tester) async {
+    testWidgets('Presses whitespace key after checkbox symbols', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
@@ -187,9 +190,7 @@ void main() async {
       await editor.startTesting();
 
       var node = editor.nodeAtPath([0])!;
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 0),
-      );
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
 
       await editor.editorState.insertText(0, '"', node: node);
       await editor.pressKey(key: LogicalKeyboardKey.space);

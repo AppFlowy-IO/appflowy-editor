@@ -35,8 +35,9 @@ void main() async {
       expect(find.byType(IconButton), findsNothing);
     });
 
-    testWidgets('replace menu does not work when find is not called',
-        (tester) async {
+    testWidgets('replace menu does not work when find is not called', (
+      tester,
+    ) async {
       const pattern = 'Flutter';
       final editor = tester.editor;
       editor.addParagraphs(1, initialText: text);
@@ -52,9 +53,7 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern, isReplaceField: true);
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
 
       //if nothing is replaced then the original text will remain as it is
       final node = editor.nodeAtPath([0]);
@@ -63,8 +62,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('replace does not change text when no match is found',
-        (tester) async {
+    testWidgets('replace does not change text when no match is found', (
+      tester,
+    ) async {
       const pattern = 'Flutter';
 
       final editor = tester.editor;
@@ -80,16 +80,12 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, pattern);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       //now we input some text into the replace text field and try to replace
       await enterInputIntoFindDialog(tester, pattern, isReplaceField: true);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0]);
@@ -122,8 +118,11 @@ void main() async {
 
       //we expect the found pattern to be highlighted
       final node = editor.nodeAtPath([0]);
-      final selection =
-          Selection.single(path: [0], startOffset: 0, endOffset: text.length);
+      final selection = Selection.single(
+        path: [0],
+        startOffset: 0,
+        endOffset: text.length,
+      );
 
       checkIfNotHighlighted(node!, selection, expectedResult: false);
 
@@ -133,9 +132,7 @@ void main() async {
         replacePattern,
         isReplaceField: true,
       );
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       expect(node.delta!.toPlainText(), expectedText);
@@ -143,57 +140,61 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('''within multiple matched patterns replace
-      should only replace the currently selected match''', (tester) async {
-      const patternToBeFound = 'Welcome';
-      const replacePattern = 'Salute';
-      final expectedText = '$replacePattern${text.substring(7)}';
+    testWidgets(
+      '''within multiple matched patterns replace
+      should only replace the currently selected match''',
+      (tester) async {
+        const patternToBeFound = 'Welcome';
+        const replacePattern = 'Salute';
+        final expectedText = '$replacePattern${text.substring(7)}';
 
-      final editor = tester.editor;
-      editor.addParagraphs(3, initialText: text);
+        final editor = tester.editor;
+        editor.addParagraphs(3, initialText: text);
 
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.startTesting();
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
 
-      await pressFindAndReplaceCommand(editor, openReplace: true);
+        await pressFindAndReplaceCommand(editor, openReplace: true);
 
-      await tester.pumpAndSettle();
-      expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(find.byType(FindAndReplaceMenuWidget), findsOneWidget);
 
-      // we put the pattern in the find dialog and press enter
-      await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(key: LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
+        // we put the pattern in the find dialog and press enter
+        await enterInputIntoFindDialog(tester, patternToBeFound);
+        await editor.pressKey(key: LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
 
-      // lets check after find operation, the first match is selected.
-      checkCurrentSelection(editor, [0], 0, patternToBeFound.length);
+        // lets check after find operation, the first match is selected.
+        checkCurrentSelection(editor, [0], 0, patternToBeFound.length);
 
-      // now we input some text into the replace text field and try to replace
-      await enterInputIntoFindDialog(
-        tester,
-        replacePattern,
-        isReplaceField: true,
-      );
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
-      await tester.pumpAndSettle();
+        // now we input some text into the replace text field and try to replace
+        await enterInputIntoFindDialog(
+          tester,
+          replacePattern,
+          isReplaceField: true,
+        );
+        await editor.pressKey(key: LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
 
-      //only the node at path 0 should get replaced, all other nodes should stay as before.
-      final lastNode = editor.nodeAtPath([0]);
-      expect(lastNode!.delta!.toPlainText(), expectedText);
+        //only the node at path 0 should get replaced, all other nodes should stay as before.
+        final lastNode = editor.nodeAtPath([0]);
+        expect(lastNode!.delta!.toPlainText(), expectedText);
 
-      final middleNode = editor.nodeAtPath([1]);
-      expect(middleNode!.delta!.toPlainText(), text);
+        final middleNode = editor.nodeAtPath([1]);
+        expect(middleNode!.delta!.toPlainText(), text);
 
-      final firstNode = editor.nodeAtPath([2]);
-      expect(firstNode!.delta!.toPlainText(), text);
+        final firstNode = editor.nodeAtPath([2]);
+        expect(firstNode!.delta!.toPlainText(), text);
 
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
-    testWidgets('replace match on multiple matches in same path',
-        (tester) async {
+    testWidgets('replace match on multiple matches in same path', (
+      tester,
+    ) async {
       const patternToBeFound = 'a';
       const replacePattern = 'test';
       const replaceSelectedBtn = Key('replaceSelectedButton');
@@ -214,10 +215,7 @@ void main() async {
       await enterInputIntoFindDialog(tester, patternToBeFound);
 
       //now we input some text into the replace text field and try replace all
-      await enterInputIntoReplaceDialog(
-        tester,
-        replacePattern,
-      );
+      await enterInputIntoReplaceDialog(tester, replacePattern);
 
       for (int i = 0; i < multiplier; i++) {
         await tester.tap(find.byKey(replaceSelectedBtn));
@@ -250,9 +248,7 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       //now we input some text into the replace text field and try replace all
@@ -293,10 +289,7 @@ void main() async {
       await enterInputIntoFindDialog(tester, patternToBeFound);
 
       //now we input some text into the replace text field and try replace all
-      await enterInputIntoReplaceDialog(
-        tester,
-        replacePattern,
-      );
+      await enterInputIntoReplaceDialog(tester, replacePattern);
 
       await tester.tap(find.byKey(replaceAllBtn));
       await tester.pumpAndSettle();
@@ -329,9 +322,7 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(regexButton));
@@ -355,8 +346,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('replace all regex matches with case insensitive',
-        (tester) async {
+    testWidgets('replace all regex matches with case insensitive', (
+      tester,
+    ) async {
       const patternToBeFound = 'a[a-z]p';
       const replacePattern = 'axp';
       const expectedText =
@@ -377,9 +369,7 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(regexButton));
@@ -423,9 +413,7 @@ void main() async {
 
       //we put the pattern in the find dialog and press enter
       await enterInputIntoFindDialog(tester, patternToBeFound);
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(regexButton));

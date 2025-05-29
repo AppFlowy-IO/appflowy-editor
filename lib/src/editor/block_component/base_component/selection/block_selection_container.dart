@@ -58,9 +58,7 @@ class BlockSelectionContainer extends StatelessWidget {
       selectionColor: selectionColor,
       blockColor: blockColor,
       supportTypes: supportTypes
-          .where(
-            (element) => element != BlockSelectionType.cursor,
-          )
+          .where((element) => element != BlockSelectionType.cursor)
           .toList(),
     );
     return Stack(
@@ -77,9 +75,7 @@ class BlockSelectionContainer extends StatelessWidget {
             delegate: delegate,
             remoteSelections: remoteSelection!,
             supportTypes: supportTypes
-                .where(
-                  (element) => element != BlockSelectionType.cursor,
-                )
+                .where((element) => element != BlockSelectionType.cursor)
                 .toList(),
           ),
         // block selection or selection area

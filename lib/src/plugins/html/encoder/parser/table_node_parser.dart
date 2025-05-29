@@ -54,16 +54,18 @@ class HtmlTableNodeParser extends HTMLNodeParser {
           }
         }
       }
-      final rowelement =
-          wrapChildrenNodesWithTagName(HTMLTags.tableRow, childNodes: nodes);
+      final rowelement = wrapChildrenNodesWithTagName(
+        HTMLTags.tableRow,
+        childNodes: nodes,
+      );
 
       domNodes.add(rowelement);
     }
 
-    final element =
-        wrapChildrenNodesWithTagName(HTMLTags.table, childNodes: domNodes);
-    return [
-      element,
-    ];
+    final element = wrapChildrenNodesWithTagName(
+      HTMLTags.table,
+      childNodes: domNodes,
+    );
+    return [element];
   }
 }

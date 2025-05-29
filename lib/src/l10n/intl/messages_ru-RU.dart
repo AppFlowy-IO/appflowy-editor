@@ -22,23 +22,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("смелый"),
-        "bulletedList":
-            MessageLookupByLibrary.simpleMessage("маркированный список"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("флажок"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("код для вставки"),
-        "heading1": MessageLookupByLibrary.simpleMessage("заголовок1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("заголовок2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("заголовок3"),
-        "highlight": MessageLookupByLibrary.simpleMessage("выделять"),
-        "image": MessageLookupByLibrary.simpleMessage("изображение"),
-        "italic": MessageLookupByLibrary.simpleMessage("курсив"),
-        "link": MessageLookupByLibrary.simpleMessage("ссылка на сайт"),
-        "numberedList":
-            MessageLookupByLibrary.simpleMessage("нумерованный список"),
-        "quote": MessageLookupByLibrary.simpleMessage("цитировать"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("зачеркнутый"),
-        "text": MessageLookupByLibrary.simpleMessage("текст"),
-        "underline": MessageLookupByLibrary.simpleMessage("подчеркнуть")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("смелый"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage(
+      "маркированный список",
+    ),
+    "checkbox": MessageLookupByLibrary.simpleMessage("флажок"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("код для вставки"),
+    "heading1": MessageLookupByLibrary.simpleMessage("заголовок1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("заголовок2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("заголовок3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("выделять"),
+    "image": MessageLookupByLibrary.simpleMessage("изображение"),
+    "italic": MessageLookupByLibrary.simpleMessage("курсив"),
+    "link": MessageLookupByLibrary.simpleMessage("ссылка на сайт"),
+    "numberedList": MessageLookupByLibrary.simpleMessage("нумерованный список"),
+    "quote": MessageLookupByLibrary.simpleMessage("цитировать"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("зачеркнутый"),
+    "text": MessageLookupByLibrary.simpleMessage("текст"),
+    "underline": MessageLookupByLibrary.simpleMessage("подчеркнуть"),
+  };
 }

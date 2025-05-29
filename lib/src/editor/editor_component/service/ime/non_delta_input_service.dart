@@ -77,10 +77,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
     if (_textInputConnection == null ||
         _textInputConnection!.attached == false) {
-      _textInputConnection = TextInput.attach(
-        this,
-        configuration,
-      );
+      _textInputConnection = TextInput.attach(this, configuration);
     }
 
     Debounce.cancel(debounceKey);
@@ -216,10 +213,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
       final oldText = currentTextEditingValue.text;
       final selection = currentTextEditingValue.selection;
       final deleteRange = selection.isCollapsed
-          ? TextRange(
-              start: selection.start - 1,
-              end: selection.end,
-            )
+          ? TextRange(start: selection.start - 1, end: selection.end)
           : selection;
       final deleteSelection = TextSelection(
         baseOffset: selection.baseOffset - 1,
@@ -245,8 +239,9 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   @override
   void insertContent(KeyboardInsertedContent content) {
     assert(
-      contentInsertionConfiguration?.allowedMimeTypes
-              .contains(content.mimeType) ??
+      contentInsertionConfiguration?.allowedMimeTypes.contains(
+            content.mimeType,
+          ) ??
           false,
     );
     contentInsertionConfiguration?.onContentInserted.call(content);
@@ -256,7 +251,8 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     if (delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
     } else {
-      composingTextRange = composingTextRange != null &&
+      composingTextRange =
+          composingTextRange != null &&
               composingTextRange!.start != -1 &&
               delta.composing.end != -1
           ? TextRange(
@@ -339,8 +335,9 @@ extension TextEditingDeltaInsertionExtension on TextEditingDeltaInsertion {
     return TextEditingDeltaInsertion(
       oldText: startWithSpace ? oldText << _len : oldText,
       textInserted: textInserted,
-      insertionOffset:
-          startWithSpace ? insertionOffset - _len : insertionOffset,
+      insertionOffset: startWithSpace
+          ? insertionOffset - _len
+          : insertionOffset,
       selection: startWithSpace ? selection << _len : selection,
       composing: startWithSpace ? composing << _len : composing,
     );
@@ -349,29 +346,29 @@ extension TextEditingDeltaInsertionExtension on TextEditingDeltaInsertion {
 
 extension on TextEditingDeltaDeletion {
   TextEditingDeltaDeletion format() => TextEditingDeltaDeletion(
-        oldText: oldText << _len,
-        deletedRange: deletedRange << _len,
-        selection: selection << _len,
-        composing: composing << _len,
-      );
+    oldText: oldText << _len,
+    deletedRange: deletedRange << _len,
+    selection: selection << _len,
+    composing: composing << _len,
+  );
 }
 
 extension on TextEditingDeltaReplacement {
   TextEditingDeltaReplacement format() => TextEditingDeltaReplacement(
-        oldText: oldText << _len,
-        replacementText: replacementText,
-        replacedRange: replacedRange << _len,
-        selection: selection << _len,
-        composing: composing << _len,
-      );
+    oldText: oldText << _len,
+    replacementText: replacementText,
+    replacedRange: replacedRange << _len,
+    selection: selection << _len,
+    composing: composing << _len,
+  );
 }
 
 extension on TextEditingDeltaNonTextUpdate {
   TextEditingDeltaNonTextUpdate format() => TextEditingDeltaNonTextUpdate(
-        oldText: oldText << _len,
-        selection: selection << _len,
-        composing: composing << _len,
-      );
+    oldText: oldText << _len,
+    selection: selection << _len,
+    composing: composing << _len,
+  );
 }
 
 extension on TextSelection {
@@ -380,9 +377,9 @@ extension on TextSelection {
   TextSelection operator >>(int shiftAmount) => shift(shiftAmount);
 
   TextSelection shift(int shiftAmount) => TextSelection(
-        baseOffset: max(0, baseOffset + shiftAmount),
-        extentOffset: max(0, extentOffset + shiftAmount),
-      );
+    baseOffset: max(0, baseOffset + shiftAmount),
+    extentOffset: max(0, extentOffset + shiftAmount),
+  );
 }
 
 extension on TextRange {

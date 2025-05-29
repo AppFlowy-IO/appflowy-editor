@@ -25,19 +25,15 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('= + > to ⇒ in non-empty paragraph, undo, redo',
-        (tester) async {
+    testWidgets('= + > to ⇒ in non-empty paragraph, undo, redo', (
+      tester,
+    ) async {
       const text = 'Hello World';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       await editor.updateSelection(
-        Selection.collapsed(
-          Position(
-            path: [0],
-            offset: text.length,
-          ),
-        ),
+        Selection.collapsed(Position(path: [0], offset: text.length)),
       );
 
       await editor.ime.typeText(_equals);

@@ -4,16 +4,13 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 final CharacterShortcutEvent formatMarkdownLinkToLink = CharacterShortcutEvent(
   key: 'format the text surrounded by double asterisks to bold',
   character: ')',
-  handler: (editorState) async => handleFormatMarkdownLinkToLink(
-    editorState: editorState,
-  ),
+  handler: (editorState) async =>
+      handleFormatMarkdownLinkToLink(editorState: editorState),
 );
 
 final _linkRegex = RegExp(r'\[([^\]]*)\]\((.*?)\)');
 
-bool handleFormatMarkdownLinkToLink({
-  required EditorState editorState,
-}) {
+bool handleFormatMarkdownLinkToLink({required EditorState editorState}) {
   final selection = editorState.selection;
   // if the selection is not collapsed or the cursor is at the first 5 index range, we don't need to format it.
   // we should return false to let the IME handle it.
@@ -45,18 +42,12 @@ bool handleFormatMarkdownLinkToLink({
 
   // if all the conditions are met, we should format the text to a link.
   final transaction = editorState.transaction
-    ..deleteText(
-      node,
-      lastMatch.start,
-      lastMatch.end - lastMatch.start - 1,
-    )
+    ..deleteText(node, lastMatch.start, lastMatch.end - lastMatch.start - 1)
     ..insertText(
       node,
       lastMatch.start,
       title!,
-      attributes: {
-        AppFlowyRichTextKeys.href: link,
-      },
+      attributes: {AppFlowyRichTextKeys.href: link},
     );
   editorState.apply(transaction);
 

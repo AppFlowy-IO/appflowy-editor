@@ -25,8 +25,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('hyphen + greater to single arrow with selection',
-        (tester) async {
+    testWidgets('hyphen + greater to single arrow with selection', (
+      tester,
+    ) async {
       const welcome = 'Welcome';
       const initialText = '$_hyphen$welcome';
 

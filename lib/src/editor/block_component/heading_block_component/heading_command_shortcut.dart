@@ -23,10 +23,7 @@ final CommandShortcutEvent toggleH1 = CommandShortcutEvent(
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH1,
   command: 'ctrl+shift+t',
   macOSCommand: 'cmd+shift+t',
-  handler: (editorState) => _toggleAttribute(
-    editorState,
-    1,
-  ),
+  handler: (editorState) => _toggleAttribute(editorState, 1),
 );
 
 final CommandShortcutEvent toggleH2 = CommandShortcutEvent(
@@ -34,10 +31,7 @@ final CommandShortcutEvent toggleH2 = CommandShortcutEvent(
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH2,
   command: 'ctrl+shift+g',
   macOSCommand: 'cmd+shift+g',
-  handler: (editorState) => _toggleAttribute(
-    editorState,
-    2,
-  ),
+  handler: (editorState) => _toggleAttribute(editorState, 2),
 );
 
 final CommandShortcutEvent toggleH3 = CommandShortcutEvent(
@@ -45,10 +39,7 @@ final CommandShortcutEvent toggleH3 = CommandShortcutEvent(
   getDescription: () => AppFlowyEditorL10n.current.cmdToggleH3,
   command: 'ctrl+shift+j',
   macOSCommand: 'cmd+shift+j',
-  handler: (editorState) => _toggleAttribute(
-    editorState,
-    3,
-  ),
+  handler: (editorState) => _toggleAttribute(editorState, 3),
 );
 
 final CommandShortcutEvent toggleBody = CommandShortcutEvent(
@@ -70,7 +61,8 @@ KeyEventResult _toggleAttribute(
   }
 
   final node = editorState.getNodeAtPath(selection.start.path)!;
-  bool isHeading = isBody ??
+  bool isHeading =
+      isBody ??
       node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == level;
 

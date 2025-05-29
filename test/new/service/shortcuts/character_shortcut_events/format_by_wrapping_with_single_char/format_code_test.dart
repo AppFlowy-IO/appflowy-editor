@@ -93,13 +93,7 @@ void main() async {
       const text = '`AppFlowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()
-          ..insert(
-            text,
-            attributes: {
-              'code': true,
-            },
-          ),
+        builder: (index) => Delta()..insert(text, attributes: {'code': true}),
       );
 
       final editorState = EditorState(document: document);
@@ -117,12 +111,10 @@ void main() async {
         after.delta!.toPlainText(),
         text.substring(1),
       ); // remove the first backquote
-      final isCode =
-          after.delta!.everyAttributes((element) => element['code'] == true);
-      expect(
-        isCode,
-        false,
+      final isCode = after.delta!.everyAttributes(
+        (element) => element['code'] == true,
       );
+      expect(isCode, false);
     });
   });
 }

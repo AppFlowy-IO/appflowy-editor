@@ -8,7 +8,7 @@ Future<void> testFormatCharacterShortcut(
   String prefix,
   int index,
   void Function(bool result, Node before, Node after, EditorState editorState)
-      test, {
+  test, {
   String text = 'Welcome to AppFlowy Editor 🔥!',
   Node? node,
 }) async {
@@ -16,15 +16,11 @@ Future<void> testFormatCharacterShortcut(
   if (node != null) {
     document.insert([0], [node]);
   } else {
-    document.addParagraph(
-      builder: (index) => Delta()..insert('$prefix$text'),
-    );
+    document.addParagraph(builder: (index) => Delta()..insert('$prefix$text'));
   }
   final editorState = EditorState(document: document);
 
-  final selection = Selection.collapsed(
-    Position(path: [0], offset: index),
-  );
+  final selection = Selection.collapsed(Position(path: [0], offset: index));
   editorState.selection = selection;
   final before = editorState.getNodesInSelection(selection).first;
   final result = await event.execute(editorState);

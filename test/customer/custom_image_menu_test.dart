@@ -41,25 +41,13 @@ class CustomImageMenu extends StatelessWidget {
     const url =
         'https://images.unsplash.com/photo-1682961941145-e73336a53bc6?dl=katsuma-tanaka-cWpkMDSQbWQ-unsplash.jpg';
     final document = Document.blank()
-      ..insert(
-        [0],
-        [
-          imageNode(
-            url: url,
-            width: 400,
-            height: 400,
-          ),
-        ],
-      );
+      ..insert([0], [imageNode(url: url, width: 400, height: 400)]);
     final customBlockComponentBuilders = {
       ...standardBlockComponentBuilderMap,
       ImageBlockKeys.type: ImageBlockComponentBuilder(
         showMenu: true,
         menuBuilder: (node, _) {
-          return const Positioned(
-            right: 10,
-            child: Text(menu),
-          );
+          return const Positioned(right: 10, child: Text(menu));
         },
       ),
     };
@@ -70,9 +58,7 @@ class CustomImageMenu extends StatelessWidget {
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: AppFlowyEditor(
               editorState: editorState,
               blockComponentBuilders: customBlockComponentBuilders,

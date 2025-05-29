@@ -91,35 +91,29 @@ void main() {
           '''<meta charset='utf-8'>There&#x27;s a line with different formats, such as <span style="font-weight:600" data-token-index="1" class="notion-enable-hover">bold</span>, <span style="font-style:italic" data-token-index="3" class="notion-enable-hover">italic</span>, <span style="color:inherit;border-bottom:0.05em solid;word-wrap:break-word" data-token-index="5" class="notion-enable-hover">underline</span>, <span style="text-decoration:line-through" data-token-index="7" class="notion-enable-hover">strikethrough</span>, and <span style="font-family:&quot;SFMono-Regular&quot;, Menlo, Consolas, &quot;PT Mono&quot;, &quot;Liberation Mono&quot;, Courier, monospace;line-height:normal;background:rgba(135,131,120,0.15);color:#EB5757;border-radius:3px;font-size:85%;padding:0.2em 0.4em" data-token-index="9" spellcheck="false" class="notion-enable-hover">inline code</span>.''';
       final document = htmlToDocument(html);
       final delta = document.nodeAtPath([0])!.delta!;
-      expect(
-        delta.toJson(),
-        [
-          {"insert": "There's a line with different formats, such as "},
-          {
-            "insert": "bold",
-            "attributes": {"bold": true},
-          },
-          {"insert": ", "},
-          {
-            "insert": "italic",
-            "attributes": {"italic": true},
-          },
-          {"insert": ", underline, "},
-          {
-            "insert": "strikethrough",
-            "attributes": {"strikethrough": true},
-          },
-          {"insert": ", and "},
-          {
-            "insert": "inline code",
-            "attributes": {
-              "bg_color": "0x26878378",
-              "font_color": "0xffeb5757",
-            },
-          },
-          {"insert": "."},
-        ],
-      );
+      expect(delta.toJson(), [
+        {"insert": "There's a line with different formats, such as "},
+        {
+          "insert": "bold",
+          "attributes": {"bold": true},
+        },
+        {"insert": ", "},
+        {
+          "insert": "italic",
+          "attributes": {"italic": true},
+        },
+        {"insert": ", underline, "},
+        {
+          "insert": "strikethrough",
+          "attributes": {"strikethrough": true},
+        },
+        {"insert": ", and "},
+        {
+          "insert": "inline code",
+          "attributes": {"bg_color": "0x26878378", "font_color": "0xffeb5757"},
+        },
+        {"insert": "."},
+      ]);
     });
 
     // sample 6
@@ -210,32 +204,29 @@ void main() {
     final document = htmlToDocument(html);
     expect(document.root.children.length, 2);
     final delta = document.nodeAtPath([1])!.delta!;
-    expect(
-      delta.toJson(),
-      [
-        {"insert": "There's a line with different formats, such as "},
-        {
-          "insert": "bold",
-          "attributes": {"bold": true},
-        },
-        {"insert": ", "},
-        {
-          "insert": "italic",
-          "attributes": {"italic": true},
-        },
-        {"insert": ", underline, "},
-        {
-          "insert": "strikethrough",
-          "attributes": {"strikethrough": true},
-        },
-        {"insert": ", and "},
-        {
-          "insert": "inline code",
-          "attributes": {"code": true},
-        },
-        {"insert": "."},
-      ],
-    );
+    expect(delta.toJson(), [
+      {"insert": "There's a line with different formats, such as "},
+      {
+        "insert": "bold",
+        "attributes": {"bold": true},
+      },
+      {"insert": ", "},
+      {
+        "insert": "italic",
+        "attributes": {"italic": true},
+      },
+      {"insert": ", underline, "},
+      {
+        "insert": "strikethrough",
+        "attributes": {"strikethrough": true},
+      },
+      {"insert": ", and "},
+      {
+        "insert": "inline code",
+        "attributes": {"code": true},
+      },
+      {"insert": "."},
+    ]);
   });
 
   test('sample 10', () {
@@ -244,65 +235,58 @@ void main() {
     final document = htmlToDocument(html);
     expect(document.root.children.length, 1);
     final delta = document.nodeAtPath([0])!.delta!;
-    expect(
-      delta.toJson(),
-      [
-        {
-          "insert": "DTrace is a ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        },
-        {
-          "insert": "dynamic tracing",
-          "attributes": {
-            "bg_color": "0xffbbdbba",
-            "bold": true,
-            "italic": true,
-          },
-        },
-        {
-          "insert": " technology",
-          "attributes": {"bg_color": "0xffbbdbba"},
-        },
-        {
-          "insert": " that can be used to locate ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        },
-        {
-          "insert": "system performance issues",
-          "attributes": {"bg_color": "0xffe8f3e8"},
-        },
-        {
-          "insert": ", obtain information about ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        },
-        {
-          "insert": "system function calls",
-          "attributes": {"bg_color": "0xffe8f3e8"},
-        },
-        {
-          "insert":
-              ", or monitor system runtime information. And worth noting is that DTrace is ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        },
-        {
-          "insert": "non-intrusive",
-          "attributes": {"bg_color": "0xffe8f3e8", "bold": true},
-        },
-        {
-          "insert":
-              " to existing code. Also, there is no need to modify the existing code or use ",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        },
-        {
-          "insert": "instrumentation technology",
-          "attributes": {"bg_color": "0xffe8f3e8"},
-        },
-        {
-          "insert": " to obtain more system information.",
-          "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
-        }
-      ],
-    );
+    expect(delta.toJson(), [
+      {
+        "insert": "DTrace is a ",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+      {
+        "insert": "dynamic tracing",
+        "attributes": {"bg_color": "0xffbbdbba", "bold": true, "italic": true},
+      },
+      {
+        "insert": " technology",
+        "attributes": {"bg_color": "0xffbbdbba"},
+      },
+      {
+        "insert": " that can be used to locate ",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+      {
+        "insert": "system performance issues",
+        "attributes": {"bg_color": "0xffe8f3e8"},
+      },
+      {
+        "insert": ", obtain information about ",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+      {
+        "insert": "system function calls",
+        "attributes": {"bg_color": "0xffe8f3e8"},
+      },
+      {
+        "insert":
+            ", or monitor system runtime information. And worth noting is that DTrace is ",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+      {
+        "insert": "non-intrusive",
+        "attributes": {"bg_color": "0xffe8f3e8", "bold": true},
+      },
+      {
+        "insert":
+            " to existing code. Also, there is no need to modify the existing code or use ",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+      {
+        "insert": "instrumentation technology",
+        "attributes": {"bg_color": "0xffe8f3e8"},
+      },
+      {
+        "insert": " to obtain more system information.",
+        "attributes": {"bg_color": "0xffffffff", "font_color": "0xff242424"},
+      },
+    ]);
   });
 
   test('sample 11', () {
@@ -345,27 +329,24 @@ void main() {
       map.removeWhere((k, v) => k != 'insert' && k != 'attributes');
       return map;
     }).toList();
-    expect(
-      cleanJson,
-      [
-        {
-          'insert': 'Comparable funnels for hotel booking sites achieve ~30% (',
-          'attributes': {'font_color': '0xff000000'},
+    expect(cleanJson, [
+      {
+        'insert': 'Comparable funnels for hotel booking sites achieve ~30% (',
+        'attributes': {'font_color': '0xff000000'},
+      },
+      {
+        'insert': 'source',
+        'attributes': {
+          'href':
+              'https://docs.google.com/document/d/147-eAtY305IGAghvmQzn0NXUFlh2zQs50GbmBNlgnaA/edit?tab=t.0',
+          'underline': true,
+          'font_color': '0xff1155cc',
         },
-        {
-          'insert': 'source',
-          'attributes': {
-            'href':
-                'https://docs.google.com/document/d/147-eAtY305IGAghvmQzn0NXUFlh2zQs50GbmBNlgnaA/edit?tab=t.0',
-            'underline': true,
-            'font_color': '0xff1155cc',
-          },
-        },
-        {
-          'insert': ').',
-          'attributes': {'font_color': '0xff000000'},
-        }
-      ],
-    );
+      },
+      {
+        'insert': ').',
+        'attributes': {'font_color': '0xff000000'},
+      },
+    ]);
   });
 }

@@ -1,10 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-typedef BlockComponentTextStyleBuilder = TextStyle Function(
-  Node node, {
-  TextSpan? textSpan,
-});
+typedef BlockComponentTextStyleBuilder =
+    TextStyle Function(Node node, {TextSpan? textSpan});
 
 /// only for the common config of block component
 class BlockComponentConfiguration {
@@ -26,10 +24,8 @@ class BlockComponentConfiguration {
   /// The padding of a block component.
   ///
   /// It works only for the block that needs to be indented.
-  final EdgeInsets Function(
-    Node node,
-    TextDirection textDirection,
-  ) indentPadding;
+  final EdgeInsets Function(Node node, TextDirection textDirection)
+  indentPadding;
 
   /// The text style of a block component.
   final BlockComponentTextStyleBuilder textStyle;
@@ -112,9 +108,7 @@ String _placeholderText(Node node) {
 }
 
 TextStyle _placeholderTextStyle(Node node, {TextSpan? textSpan}) {
-  return const TextStyle(
-    color: Colors.grey,
-  );
+  return const TextStyle(color: Colors.grey);
 }
 
 EdgeInsets _blockSelectionAreaPadding(Node node) {

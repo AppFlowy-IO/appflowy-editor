@@ -48,9 +48,7 @@ void main() async {
         'op': 'insert',
         'path': [0],
         'nodes': [
-          {
-            'type': 'example',
-          }
+          {'type': 'example'},
         ],
       });
       expect(InsertOperation.fromJson(json), op);
@@ -80,9 +78,7 @@ void main() async {
         'op': 'delete',
         'path': [0],
         'nodes': [
-          {
-            'type': 'example',
-          }
+          {'type': 'example'},
         ],
       });
       expect(DeleteOperation.fromJson(json), op);

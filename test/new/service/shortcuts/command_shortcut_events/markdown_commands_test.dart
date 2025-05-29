@@ -39,8 +39,9 @@ void main() async {
       );
     });
 
-    testWidgets('Presses Command + Shift + S to update text style',
-        (tester) async {
+    testWidgets('Presses Command + Shift + S to update text style', (
+      tester,
+    ) async {
       await _testUpdateTextStyleByCommandX(
         tester,
         BuiltInAttributeKey.strikethrough,
@@ -88,9 +89,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   var node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] == matchValue);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] == matchValue,
+      );
     }),
     true,
   );
@@ -110,9 +111,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] == matchValue);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] == matchValue,
+      );
     }),
     true,
   );
@@ -128,9 +129,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] != matchValue);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] != matchValue,
+      );
     }),
     true,
   );
@@ -150,9 +151,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(selection, (delta) {
-        return delta
-            .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] == matchValue);
+        return delta.whereType<TextInsert>().every(
+          (element) => element.attributes?[matchStyle] == matchValue,
+        );
       }),
       true,
     );
@@ -170,9 +171,9 @@ Future<void> _testUpdateTextStyleByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(selection, (delta) {
-        return delta
-            .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] != matchValue);
+        return delta.whereType<TextInsert>().every(
+          (element) => element.attributes?[matchStyle] != matchValue,
+        );
       }),
       true,
     );

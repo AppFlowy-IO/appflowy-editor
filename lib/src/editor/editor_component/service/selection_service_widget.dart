@@ -103,21 +103,16 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   Selection? onPanStart(
     DragStartDetails details,
     MobileSelectionDragMode mode,
-  ) =>
-      forward.onPanStart(details, mode);
+  ) => forward.onPanStart(details, mode);
 
   @override
   Selection? onPanUpdate(
     DragUpdateDetails details,
     MobileSelectionDragMode mode,
-  ) =>
-      forward.onPanUpdate(details, mode);
+  ) => forward.onPanUpdate(details, mode);
 
   @override
-  void onPanEnd(
-    DragEndDetails details,
-    MobileSelectionDragMode mode,
-  ) =>
+  void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode) =>
       forward.onPanEnd(details, mode);
 
   @override
@@ -128,20 +123,15 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
     Offset offset, {
     DragAreaBuilder? builder,
     DragTargetNodeInterceptor? interceptor,
-  }) =>
-      forward.renderDropTargetForOffset(
-        offset,
-        builder: builder,
-        interceptor: interceptor,
-      );
+  }) => forward.renderDropTargetForOffset(
+    offset,
+    builder: builder,
+    interceptor: interceptor,
+  );
 
   @override
   DropTargetRenderData? getDropTargetRenderData(
     Offset offset, {
     DragTargetNodeInterceptor? interceptor,
-  }) =>
-      forward.getDropTargetRenderData(
-        offset,
-        interceptor: interceptor,
-      );
+  }) => forward.getDropTargetRenderData(offset, interceptor: interceptor);
 }

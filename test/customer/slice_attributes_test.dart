@@ -65,8 +65,9 @@ void main() async {
     ]);
   });
 
-  testWidgets('slice attributes from next position if index is 0',
-      (tester) async {
+  testWidgets('slice attributes from next position if index is 0', (
+    tester,
+  ) async {
     final editor = tester.editor..addEmptyParagraph();
     await editor.startTesting();
     await tester.pumpAndSettle();
@@ -92,8 +93,9 @@ void main() async {
     ]);
   });
 
-  testWidgets('don\'t slice attributes from next position if index is not 0',
-      (tester) async {
+  testWidgets('don\'t slice attributes from next position if index is not 0', (
+    tester,
+  ) async {
     final editor = tester.editor..addEmptyParagraph();
     await editor.startTesting();
     await tester.pumpAndSettle();
@@ -114,9 +116,7 @@ void main() async {
     final node = editor.editorState.getNodeAtPath([0]);
     final delta = node?.delta;
     expect(delta?.toJson(), [
-      {
-        'insert': 'Hello Hello',
-      },
+      {'insert': 'Hello Hello'},
       {
         'insert': 'World',
         'attributes': {'bold': true},

@@ -82,25 +82,13 @@ void main() async {
     });
 
     test('if no space after -[] or - []', () {
-      expect(
-        parser.convert('-[]Item1').root.children.isEmpty,
-        true,
-      );
-      expect(
-        parser.convert('- []Item1').root.children.isEmpty,
-        true,
-      );
+      expect(parser.convert('-[]Item1').root.children.isEmpty, true);
+      expect(parser.convert('- []Item1').root.children.isEmpty, true);
     });
 
     test('if no space after -[x] or - x]', () {
-      expect(
-        parser.convert('-[x]Item1').root.children.isEmpty,
-        true,
-      );
-      expect(
-        parser.convert('- [x]Item1').root.children.isEmpty,
-        true,
-      );
+      expect(parser.convert('-[x]Item1').root.children.isEmpty, true);
+      expect(parser.convert('- [x]Item1').root.children.isEmpty, true);
     });
   });
 }

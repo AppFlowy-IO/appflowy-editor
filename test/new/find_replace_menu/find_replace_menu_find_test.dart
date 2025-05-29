@@ -39,8 +39,9 @@ void main() async {
       await tester.editor.dispose();
     });
 
-    testWidgets('does not highlight anything when empty string searched',
-        (tester) async {
+    testWidgets('does not highlight anything when empty string searched', (
+      tester,
+    ) async {
       // We expect nothing to be highlighted
       await _prepareFindAndInputPattern(tester, '', true);
     });
@@ -78,18 +79,15 @@ void main() async {
       // event during submitting our text input, thus the second match is selected.
       expect(
         editor.editorState.selection,
-        Selection.single(
-          path: [0],
-          startOffset: 0,
-          endOffset: pattern.length,
-        ),
+        Selection.single(path: [0], startOffset: 0, endOffset: pattern.length),
       );
 
       await editor.dispose();
     });
 
-    testWidgets('navigating to previous and next matches works',
-        (tester) async {
+    testWidgets('navigating to previous and next matches works', (
+      tester,
+    ) async {
       const pattern = 'Welcome';
       const previousBtnKey = Key('previousMatchButton');
       const nextBtnKey = Key('nextMatchButton');
@@ -109,9 +107,7 @@ void main() async {
       await enterInputIntoFindDialog(tester, pattern);
 
       // This will call naviateToMatch and select the first match
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
 
       // Checking if current selection consists an occurance of matched pattern.
       // we expect the first occurance of the pattern to be found and selected
@@ -142,54 +138,68 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('''navigating - selected match is highlighted uniquely
-     than unselected matches''', (tester) async {
-      const pattern = 'Welcome';
-      const previousBtnKey = Key('previousMatchButton');
+    testWidgets(
+      '''navigating - selected match is highlighted uniquely
+     than unselected matches''',
+      (tester) async {
+        const pattern = 'Welcome';
+        const previousBtnKey = Key('previousMatchButton');
 
-      final editor = tester.editor;
-      editor.addParagraphs(3, initialText: text);
+        final editor = tester.editor;
+        editor.addParagraphs(3, initialText: text);
 
-      await editor.startTesting();
+        await editor.startTesting();
 
-      final node0 = editor.nodeAtPath([0]);
-      final selection0 = getSelectionAtPath([0], 0, pattern.length);
-      final node1 = editor.nodeAtPath([1]);
-      final selection1 = getSelectionAtPath([1], 0, pattern.length);
-      final node2 = editor.nodeAtPath([2]);
-      final selection2 = getSelectionAtPath([2], 0, pattern.length);
+        final node0 = editor.nodeAtPath([0]);
+        final selection0 = getSelectionAtPath([0], 0, pattern.length);
+        final node1 = editor.nodeAtPath([1]);
+        final selection1 = getSelectionAtPath([1], 0, pattern.length);
+        final node2 = editor.nodeAtPath([2]);
+        final selection2 = getSelectionAtPath([2], 0, pattern.length);
 
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.updateSelection(
+          Selection.single(path: [0], startOffset: 0),
+        );
 
-      await pressFindAndReplaceCommand(editor);
+        await pressFindAndReplaceCommand(editor);
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      await enterInputIntoFindDialog(tester, pattern);
+        await enterInputIntoFindDialog(tester, pattern);
 
-      // We expect the first occurance of the pattern to be found and selected
-      checkCurrentSelection(editor, [0], 0, pattern.length);
+        // We expect the first occurance of the pattern to be found and selected
+        checkCurrentSelection(editor, [0], 0, pattern.length);
 
-      // Check if the current selected match is highlighted properly
-      checkIfHighlightedWithProperColors(node0!, selection1, kSelectedHCHex);
+        // Check if the current selected match is highlighted properly
+        checkIfHighlightedWithProperColors(node0!, selection1, kSelectedHCHex);
 
-      // Unselected matches are highlighted with different color
-      checkIfHighlightedWithProperColors(node1!, selection2, kUnselectedHCHex);
-      checkIfHighlightedWithProperColors(node2!, selection0, kUnselectedHCHex);
+        // Unselected matches are highlighted with different color
+        checkIfHighlightedWithProperColors(
+          node1!,
+          selection2,
+          kUnselectedHCHex,
+        );
+        checkIfHighlightedWithProperColors(
+          node2!,
+          selection0,
+          kUnselectedHCHex,
+        );
 
-      // Press the icon button for previous match should select node at path [2] (last match)
-      await tester.tap(find.byKey(previousBtnKey));
+        // Press the icon button for previous match should select node at path [2] (last match)
+        await tester.tap(find.byKey(previousBtnKey));
 
-      checkCurrentSelection(editor, [2], 0, pattern.length);
-      checkIfHighlightedWithProperColors(node2, selection0, kSelectedHCHex);
-      checkIfHighlightedWithProperColors(node0, selection1, kUnselectedHCHex);
-      checkIfHighlightedWithProperColors(node1, selection2, kUnselectedHCHex);
+        checkCurrentSelection(editor, [2], 0, pattern.length);
+        checkIfHighlightedWithProperColors(node2, selection0, kSelectedHCHex);
+        checkIfHighlightedWithProperColors(node0, selection1, kUnselectedHCHex);
+        checkIfHighlightedWithProperColors(node1, selection2, kUnselectedHCHex);
 
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
-    testWidgets('found matches are unHighlighted when findMenu closed',
-        (tester) async {
+    testWidgets('found matches are unHighlighted when findMenu closed', (
+      tester,
+    ) async {
       const pattern = 'Welcome';
       const closeBtnKey = Key('closeButton');
 
@@ -207,9 +217,7 @@ void main() async {
 
       await enterInputIntoFindDialog(tester, pattern);
 
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-      );
+      await editor.pressKey(key: LogicalKeyboardKey.enter);
 
       final selection = editor.editorState.selection;
       expect(selection, isNotNull);
@@ -233,8 +241,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('old matches are unHighlighted when new pattern is searched',
-        (tester) async {
+    testWidgets('old matches are unHighlighted when new pattern is searched', (
+      tester,
+    ) async {
       const textLine1 = 'Welcome to Appflowy 😁';
       const textLine2 = 'Appflowy is made with Flutter, Rust and ❤️';
       var pattern = 'Welcome';
@@ -311,14 +320,15 @@ Future<void> _prepareFindAndInputPattern(
 
   // Pressing enter should trigger the findAndHighlight method, which
   // will find the pattern inside the editor.
-  await editor.pressKey(
-    key: LogicalKeyboardKey.enter,
-  );
+  await editor.pressKey(key: LogicalKeyboardKey.enter);
 
   // Since the method will not select anything as searched pattern is
   // empty, the current selection should be equal to previous selection.
-  final selection =
-      Selection.single(path: [0], startOffset: 0, endOffset: text.length);
+  final selection = Selection.single(
+    path: [0],
+    startOffset: 0,
+    endOffset: text.length,
+  );
 
   final node = editor.nodeAtPath([0]);
   expect(node, isNotNull);

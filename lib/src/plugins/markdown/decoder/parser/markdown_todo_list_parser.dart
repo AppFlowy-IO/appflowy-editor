@@ -42,10 +42,7 @@ class MarkdownTodoListParserV2 extends CustomMarkdownParser {
       todoListNode(
         checked: checked,
         delta: deltaDecoder.convertNodes(
-          element.children?.sublist(
-            1,
-            ec.length - (last != null ? 1 : 0),
-          ),
+          element.children?.sublist(1, ec.length - (last != null ? 1 : 0)),
         ),
         children: last == null
             ? null

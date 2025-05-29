@@ -88,9 +88,7 @@ class _EditorState extends State<Editor> {
                   isInitialized = true;
                   EditorState editorState = EditorState(
                     document: Document.fromJson(
-                      Map<String, Object>.from(
-                        json.decode(snapshot.data!),
-                      ),
+                      Map<String, Object>.from(json.decode(snapshot.data!)),
                     ),
                   );
 

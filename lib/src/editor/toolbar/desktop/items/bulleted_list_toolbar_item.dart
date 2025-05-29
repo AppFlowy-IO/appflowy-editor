@@ -17,9 +17,8 @@ final ToolbarItem bulletedListItem = ToolbarItem(
       iconColor: iconColor,
       onPressed: () => editorState.formatNode(
         selection,
-        (node) => node.copyWith(
-          type: isHighlight ? 'paragraph' : 'bulleted_list',
-        ),
+        (node) =>
+            node.copyWith(type: isHighlight ? 'paragraph' : 'bulleted_list'),
       ),
     );
 

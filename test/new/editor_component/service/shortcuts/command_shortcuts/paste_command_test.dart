@@ -14,9 +14,7 @@ void main() async {
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = 'Hello World!';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: text),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: text));
       pasteCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
@@ -26,8 +24,9 @@ void main() async {
     });
 
     // Test case: Paste multiple nodes that start with non-delta node
-    testWidgets('paste multiple nodes that start with non-delta node',
-        (tester) async {
+    testWidgets('paste multiple nodes that start with non-delta node', (
+      tester,
+    ) async {
       const text = 'Hello World';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
@@ -49,8 +48,9 @@ void main() async {
     });
 
     // Test case: Paste multiple nodes that start with delta node
-    testWidgets('paste multiple nodes that start with delta node',
-        (tester) async {
+    testWidgets('paste multiple nodes that start with delta node', (
+      tester,
+    ) async {
       const text = 'Hello World';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
@@ -77,16 +77,11 @@ void main() async {
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = 'Visit https://example.com for details';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: text),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: text));
       pasteCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
-      expect(
-        editor.nodeAtPath([0])!.delta!.toPlainText(),
-        text,
-      );
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text);
 
       final delta = editor.nodeAtPath([0])!.delta!;
       expect(delta.toJson()[0]['insert'], 'Visit ');
@@ -102,9 +97,7 @@ void main() async {
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const text = '+1234567890';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: text),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: text));
       pasteCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
@@ -122,9 +115,7 @@ void main() async {
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
 
       const html = '<p>Hello <strong>World!</strong></p>';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(html: html),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(html: html));
       pasteCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 
@@ -144,9 +135,7 @@ void main() async {
       );
 
       const text = ' Plain text';
-      AppFlowyClipboard.mockSetData(
-        const AppFlowyClipboardData(text: text),
-      );
+      AppFlowyClipboard.mockSetData(const AppFlowyClipboardData(text: text));
       pasteTextWithoutFormattingCommand.execute(editor.editorState);
       await tester.pumpAndSettle();
 

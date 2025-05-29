@@ -16,9 +16,7 @@ class MarkdownImageParserV2 extends CustomMarkdownParser {
     }
 
     if (element.attributes['src'] != null) {
-      return [
-        imageNode(url: element.attributes['src']!),
-      ];
+      return [imageNode(url: element.attributes['src']!)];
     }
 
     if (element.children?.length != 1 ||
@@ -31,8 +29,6 @@ class MarkdownImageParserV2 extends CustomMarkdownParser {
       return [];
     }
 
-    return [
-      imageNode(url: ec.attributes['src']!),
-    ];
+    return [imageNode(url: ec.attributes['src']!)];
   }
 }

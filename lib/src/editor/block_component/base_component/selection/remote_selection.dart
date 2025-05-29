@@ -18,5 +18,6 @@ class RemoteSelection {
     BuildContext context,
     RemoteSelection selection,
     Rect rect,
-  )? builder;
+  )?
+  builder;
 }

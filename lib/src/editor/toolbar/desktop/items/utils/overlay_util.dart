@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 ButtonStyle buildOverlayButtonStyle(BuildContext context) {
   return ButtonStyle(
-    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.hovered)) {
-          return Theme.of(context).hoverColor;
-        }
-        return Colors.transparent;
-      },
-    ),
+    backgroundColor: WidgetStateProperty.resolveWith<Color>((
+      Set<WidgetState> states,
+    ) {
+      if (states.contains(WidgetState.hovered)) {
+        return Theme.of(context).hoverColor;
+      }
+      return Colors.transparent;
+    }),
   );
 }
 
@@ -36,12 +36,7 @@ class EditorOverlayTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 }

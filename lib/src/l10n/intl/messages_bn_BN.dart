@@ -22,22 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("বল্ড ফন্ট"),
-        "bulletedList": MessageLookupByLibrary.simpleMessage("বুলেট তালিকা"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("চেকবক্স"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("এম্বেড কোড"),
-        "heading1": MessageLookupByLibrary.simpleMessage("শিরোনাম 1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("শিরোনাম 2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("শিরোনাম 3"),
-        "highlight": MessageLookupByLibrary.simpleMessage("হাইলাইট"),
-        "image": MessageLookupByLibrary.simpleMessage("ইমেজ"),
-        "italic": MessageLookupByLibrary.simpleMessage("ইটালিক ফন্ট"),
-        "link": MessageLookupByLibrary.simpleMessage("লিঙ্ক"),
-        "numberedList":
-            MessageLookupByLibrary.simpleMessage("সংখ্যাযুক্ত তালিকা"),
-        "quote": MessageLookupByLibrary.simpleMessage("উদ্ধৃতি"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("স্ট্রাইকথ্রু"),
-        "text": MessageLookupByLibrary.simpleMessage("পাঠ্য"),
-        "underline": MessageLookupByLibrary.simpleMessage("আন্ডারলাইন")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("বল্ড ফন্ট"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage("বুলেট তালিকা"),
+    "checkbox": MessageLookupByLibrary.simpleMessage("চেকবক্স"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("এম্বেড কোড"),
+    "heading1": MessageLookupByLibrary.simpleMessage("শিরোনাম 1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("শিরোনাম 2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("শিরোনাম 3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("হাইলাইট"),
+    "image": MessageLookupByLibrary.simpleMessage("ইমেজ"),
+    "italic": MessageLookupByLibrary.simpleMessage("ইটালিক ফন্ট"),
+    "link": MessageLookupByLibrary.simpleMessage("লিঙ্ক"),
+    "numberedList": MessageLookupByLibrary.simpleMessage("সংখ্যাযুক্ত তালিকা"),
+    "quote": MessageLookupByLibrary.simpleMessage("উদ্ধৃতি"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("স্ট্রাইকথ্রু"),
+    "text": MessageLookupByLibrary.simpleMessage("পাঠ্য"),
+    "underline": MessageLookupByLibrary.simpleMessage("আন্ডারলাইন"),
+  };
 }

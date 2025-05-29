@@ -5,20 +5,21 @@ import '../../infra/testable_editor.dart';
 
 void main() async {
   group('text block component', () {
-    testWidgets('insert rtl text in paragraph with auto direction',
-        (tester) async {
+    testWidgets('insert rtl text in paragraph with auto direction', (
+      tester,
+    ) async {
       final editor = tester.editor
         ..addParagraph(
           initialText: 'س',
-          decorator: (i, n) => n.updateAttributes(
-            {blockComponentTextDirection: blockComponentTextDirectionAuto},
-          ),
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionAuto,
+          }),
         );
       await editor.startTesting();
 
       final editorOffset =
           editor.editorState.renderBox?.localToGlobal(Offset.zero) ??
-              Offset.zero;
+          Offset.zero;
       final editorSize = editor.editorState.renderBox?.size ?? Size.zero;
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;
@@ -33,20 +34,21 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('insert ltr text in paragraph with auto direction',
-        (tester) async {
+    testWidgets('insert ltr text in paragraph with auto direction', (
+      tester,
+    ) async {
       final editor = tester.editor
         ..addParagraph(
           initialText: 'a',
-          decorator: (i, n) => n.updateAttributes(
-            {blockComponentTextDirection: blockComponentTextDirectionAuto},
-          ),
+          decorator: (i, n) => n.updateAttributes({
+            blockComponentTextDirection: blockComponentTextDirectionAuto,
+          }),
         );
       await editor.startTesting();
 
       final editorOffset =
           editor.editorState.renderBox?.localToGlobal(Offset.zero) ??
-              Offset.zero;
+          Offset.zero;
       final editorSize = editor.editorState.renderBox?.size ?? Size.zero;
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;

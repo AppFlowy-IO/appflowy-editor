@@ -13,14 +13,9 @@ void main() async {
   testWidgets('customize highlight color', (tester) async {
     const text = 'Hello World';
     final document = Document.blank()
-      ..insert(
-        [0],
-        [bulletedListNode(text: text)],
-      );
+      ..insert([0], [bulletedListNode(text: text)]);
     final editorState = EditorState(document: document);
-    final widget = CustomToolbarItemColor(
-      editorState: editorState,
-    );
+    final widget = CustomToolbarItemColor(editorState: editorState);
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -38,10 +33,7 @@ void main() async {
 }
 
 class CustomToolbarItemColor extends StatelessWidget {
-  CustomToolbarItemColor({
-    super.key,
-    required this.editorState,
-  });
+  CustomToolbarItemColor({super.key, required this.editorState});
 
   final EditorState editorState;
   final scrollController = ScrollController();
@@ -49,17 +41,13 @@ class CustomToolbarItemColor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: const [
-        AppFlowyEditorLocalizations.delegate,
-      ],
+      localizationsDelegates: const [AppFlowyEditorLocalizations.delegate],
       supportedLocales: const [Locale('en', 'US')],
       home: Scaffold(
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: FloatingToolbar(
               textDirection: TextDirection.ltr,
               items: [bulletedListItem],
@@ -72,9 +60,7 @@ class CustomToolbarItemColor extends StatelessWidget {
                 editorState: editorState,
                 scrollController: scrollController,
               ),
-              child: AppFlowyEditor(
-                editorState: editorState,
-              ),
+              child: AppFlowyEditor(editorState: editorState),
             ),
           ),
         ),

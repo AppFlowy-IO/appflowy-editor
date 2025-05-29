@@ -62,9 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _insertEditorOnOverlay() {
     final overlayEntry = OverlayEntry(
       builder: (_) {
-        return AppFlowyEditor(
-          editorState: EditorState.blank(),
-        );
+        return AppFlowyEditor(editorState: EditorState.blank());
       },
     );
 

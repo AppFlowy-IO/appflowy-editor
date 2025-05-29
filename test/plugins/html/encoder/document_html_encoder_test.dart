@@ -68,7 +68,7 @@ const delta = {
             {
               'insert': 'AppFlowy Editor',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -85,7 +85,7 @@ const delta = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -115,7 +115,7 @@ const delta = {
             {
               'insert': 'Span element',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -127,7 +127,7 @@ const delta = {
             {
               'insert': 'Span element two',
               'attributes': {'underline': true},
-            }
+            },
           ],
         },
       },
@@ -139,7 +139,7 @@ const delta = {
             {
               'insert': 'Span element three',
               'attributes': {'bold': true, 'strikethrough': true},
-            }
+            },
           ],
         },
       },
@@ -151,7 +151,7 @@ const delta = {
             {
               'insert': 'This is an anchor tag!',
               'attributes': {'href': 'https://appflowy.io'},
-            }
+            },
           ],
         },
       },
@@ -227,7 +227,7 @@ const delta = {
             {
               'insert': ' Code block',
               'attributes': {'code': true},
-            }
+            },
           ],
         },
       },
@@ -239,7 +239,7 @@ const delta = {
             {
               'insert': 'Italic one',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -251,7 +251,7 @@ const delta = {
             {
               'insert': 'Italic two',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -263,7 +263,7 @@ const delta = {
             {
               'insert': 'Bold tag',
               'attributes': {'bold': true},
-            }
+            },
           ],
         },
       },
@@ -297,7 +297,7 @@ const delta = {
             {
               'insert':
                   'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!',
-            }
+            },
           ],
         },
       },
@@ -308,7 +308,7 @@ const delta = {
       {
         'type': 'paragraph',
         'data': {'delta': []},
-      }
+      },
     ],
   },
 };
@@ -371,7 +371,7 @@ const nestedDelta = {
             {
               'insert':
                   'Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!',
-            }
+            },
           ],
         },
       },
@@ -386,7 +386,7 @@ const nestedDelta = {
             {
               'insert':
                   'If you\'d like to find out more about Lexical, you can:',
-            }
+            },
           ],
         },
       },
@@ -412,7 +412,7 @@ const nestedDelta = {
               'url': 'https://richtexteditor.com/images/editor-image.png',
               'align': 'center',
             },
-          }
+          },
         ],
         'data': {'delta': []},
       },
@@ -481,14 +481,14 @@ const nestedDelta = {
             {
               'insert':
                   'Lastly, we\'re constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.',
-            }
+            },
           ],
         },
       },
       {
         'type': 'paragraph',
         'data': {'delta': []},
-      }
+      },
     ],
   },
 };
