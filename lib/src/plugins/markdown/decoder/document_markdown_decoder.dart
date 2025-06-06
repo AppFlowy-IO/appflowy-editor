@@ -81,6 +81,21 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
       (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
     );
 
+    // Rule 3: single '\n' between two images, add double '\n'
+    result = result.replaceAllMapped(
+      RegExp(
+        r'(!\[[^\]]*\]\([^)]+\))\n(?=!?\[[^\]]*\]\([^)]+\))',
+        multiLine: true,
+      ),
+      (match) => '${match[1]}\n\n',
+    );
+
+    // Rule 4:without '\n' between two images, add double '\n'
+    result = result.replaceAllMapped(
+      RegExp(r'(!\[[^\]]*\]\([^)]+\))(?=!?\[[^\]]*\]\([^)]+\))'),
+      (match) => '${match[1]}\n\n',
+    );
+
     // Add another rules here.
 
     return result;

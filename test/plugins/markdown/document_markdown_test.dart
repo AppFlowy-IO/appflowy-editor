@@ -57,6 +57,30 @@ void main() {
       expect(nodes[0].delta?.toPlainText(), 'This is the first line');
       expect(nodes[1].attributes['url'], 'https://example.com/image.png');
     });
+    test('multiple images on separate lines without blank lines', () {
+      const markdown = '''![image1](https://example.com/image.png)
+![image2](https://example.com/image.png)
+![image3](https://example.com/image.png)
+''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 3);
+      expect(nodes[0].attributes['url'], 'https://example.com/image.png');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+      expect(nodes[2].attributes['url'], 'https://example.com/image.png');
+    });
+
+    test('multiple images on same line (inline)', () {
+      const markdown = '''
+![inline1](https://example.com/image.png) ![inline2](https://example.com/image.png) ![inline3](https://example.com/image.png)
+''';
+      final document = markdownToDocument(markdown);
+      final nodes = document.root.children;
+      expect(nodes.length, 3);
+      expect(nodes[0].attributes['url'], 'https://example.com/image.png');
+      expect(nodes[1].attributes['url'], 'https://example.com/image.png');
+      expect(nodes[2].attributes['url'], 'https://example.com/image.png');
+    });
   });
 }
 
