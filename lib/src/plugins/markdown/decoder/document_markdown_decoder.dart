@@ -63,41 +63,48 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     return nodes;
   }
 
-  String _formatMarkdown(String markdown) {
-    // Rule 1: single '\n' between text and image, add double '\n'
-    String result = markdown.replaceAllMapped(
-      RegExp(r'([^\n])\n!\[([^\]]*)\]\(([^)]+)\)', multiLine: true),
+String _formatMarkdown(String markdown) {
+    String result = markdown;
+
+    // 1. Ensure every image is *preceded* by two newlines
+    //    Handles:
+    //    - Inline images after text (e.g., "text ![img](url)")
+    //    - List items before images
+    //    - Consecutive images
+    //    - Images directly at line start
+    //
+    //    We apply two separate rules:
+    //    a) Images directly after non-newline characters
+    result = result.replaceAllMapped(
+      RegExp(r'([^\n])\s*!\[([^\]]*)\]\(([^)]+)\)'),
       (match) {
-        final text = match[1] ?? '';
-        final altText = match[2] ?? '';
-        final url = match[3] ?? '';
-        return '$text\n\n![$altText]($url)';
+        final before = match[1];
+        final alt = match[2];
+        final url = match[3];
+        return '$before\n\n![$alt]($url)';
       },
     );
 
-    // Rule 2: without '\n' between text and image, add double '\n'
+    //    b) Images not preceded by a blank line
     result = result.replaceAllMapped(
-      RegExp(r'([^\n])!\[([^\]]*)\]\(([^)]+)\)'),
-      (match) => '${match[1]}\n\n![${match[2]}](${match[3]})',
+      RegExp(r'(?<!\n)\s*!\[([^\]]*)\]\(([^)]+)\)'),
+      (match) {
+        final alt = match[1];
+        final url = match[2];
+        return '\n\n![$alt]($url)';
+      },
+    );
+ 
+    // 2. Ensure every image is *followed* by two newlines
+    //    So that next content is not inline with the image
+    result = result.replaceAllMapped(
+      RegExp(r'!\[[^\]]*\]\([^)]+\)(?!\n\n)'),
+      (match) => '${match[0]}\n\n',
     );
 
-    // Rule 3: single '\n' between two images, add double '\n'
-    result = result.replaceAllMapped(
-      RegExp(
-        r'(!\[[^\]]*\]\([^)]+\))\n(?=!?\[[^\]]*\]\([^)]+\))',
-        multiLine: true,
-      ),
-      (match) => '${match[1]}\n\n',
-    );
+    // 3. Clean up excessive newlines (e.g., \n\n\n)
+    result = result.replaceAll(RegExp(r'\n{3,}'), '\n\n');
 
-    // Rule 4:without '\n' between two images, add double '\n'
-    result = result.replaceAllMapped(
-      RegExp(r'(!\[[^\]]*\]\([^)]+\))(?=!?\[[^\]]*\]\([^)]+\))'),
-      (match) => '${match[1]}\n\n',
-    );
-
-    // Add another rules here.
-
-    return result;
+    return result.trim();
   }
 }
