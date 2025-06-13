@@ -30,26 +30,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  appflowy_editor:
+  appflowy_editor: ^5.2.0
   appflowy_editor_sync_plugin:
     git:
       url: https://github.com/Musta-Pollo/appflowy_editor_sync_plugin.git
       ref: main
 
-  provider: ^6.0.3
-  url_launcher: ^6.1.5
-  path_provider: ^2.0.15
-  google_fonts: ^6.1.0
+  provider: ^6.1.5
+  url_launcher: ^6.3.1
+  path_provider: ^2.1.5
+  google_fonts: ^6.2.1
   flutter_localizations:
     sdk: flutter
-  file_picker: ^8.0.2
-  universal_html: ^2.0.8
+  file_picker: ^10.2.0
+  universal_html: ^2.2.4
   highlight: ^0.7.0
-  http: ^1.1.0
+  http: ^1.4.0
   show_fps: ^1.0.6
-  printing: ^5.11.1
+  printing: ^5.14.2
   appflowy_editor_plugins: ^0.0.6
-  markdown:
+  markdown: ^7.3.0
   universal_platform: ^1.1.0
 
 dependency_overrides:
@@ -71,7 +71,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
