@@ -1,5 +1,6 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:appflowy_editor/appflowy_editor.dart';
 
 class MobileToolbar extends StatelessWidget {
   const MobileToolbar({
@@ -7,6 +8,7 @@ class MobileToolbar extends StatelessWidget {
     required this.editorState,
     required this.toolbarItems,
     // default MobileToolbarStyle parameters
+    this.iconColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.foregroundColor = const Color(0xff676666),
     this.clearDiagonalLineColor = const Color(0xffB3261E),
@@ -27,6 +29,7 @@ class MobileToolbar extends StatelessWidget {
   final EditorState editorState;
   final List<MobileToolbarItem> toolbarItems;
   // MobileToolbarStyle parameters
+  final Color iconColor;
   final Color backgroundColor;
   final Color foregroundColor;
   final Color clearDiagonalLineColor;
@@ -54,6 +57,7 @@ class MobileToolbar extends StatelessWidget {
         }
         return RepaintBoundary(
           child: MobileToolbarTheme(
+            iconColor: iconColor,
             backgroundColor: backgroundColor,
             foregroundColor: foregroundColor,
             clearDiagonalLineColor: clearDiagonalLineColor,
@@ -178,8 +182,7 @@ class MobileToolbarWidgetState extends State<MobileToolbarWidget>
                         _showItemMenu = true;
                         // close keyboard when menu pop up
 
-                        widget.editorState.service.keyboardService
-                            ?.closeKeyboard();
+                        widget.editorState.service.keyboardService?.closeKeyboard();
                       }
                     });
                   },
