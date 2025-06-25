@@ -20,7 +20,6 @@ abstract class FilePickerService {
     FileType type = FileType.any,
     List<String>? allowedExtensions,
     Function(FilePickerStatus)? onFileLoading,
-    bool allowCompression = true,
     bool allowMultiple = false,
     bool withData = false,
     bool withReadStream = false,
