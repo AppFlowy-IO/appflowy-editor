@@ -64,6 +64,8 @@ class _TextAndBackgroundColorMenuState
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               tabs: myTabs,
+              isScrollable: false,
+              tabAlignment: TabAlignment.fill,
               labelColor: style.tabBarSelectedBackgroundColor,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(style.borderRadius),
