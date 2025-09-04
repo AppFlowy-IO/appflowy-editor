@@ -75,7 +75,7 @@ class _DesktopSelectionServiceWidgetState
       Debounce.debounce(
         'didChangeMetrics - update selection ',
         const Duration(milliseconds: 100),
-        () => updateSelection(currentSelection.value!),
+        () => updateSelection(currentSelection.value),
       );
     }
   }
