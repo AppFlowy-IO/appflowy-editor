@@ -237,10 +237,7 @@ class EdgeDraggingAutoScroller {
               transformedDragTarget.size.width &&
           (globalRect.size.height + precisionErrorTolerance) >=
               transformedDragTarget.size.height) {
-        debugPrint(
-          'Drag target size is larger than scrollable size, which may cause bouncing',
-        );
-        // return;
+        // do nothing.
       }
 
       _scrolling = true;

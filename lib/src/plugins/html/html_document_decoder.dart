@@ -348,6 +348,19 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         element.children.length == 1 &&
         element.children.first.localName == HTMLTags.paragraph) {
       (delta, node) = _parseDeltaElement(element.children.first, type: type);
+    } else if (delta.isEmpty &&
+        element.children.isNotEmpty &&
+        element.children.first.localName == HTMLTags.paragraph) {
+      final paragraphElement = element.children.first;
+      (delta, _) = _parseDeltaElement(paragraphElement, type: type);
+
+      final remainingChildren = element.children.skip(1);
+      node = remainingChildren.expand((child) {
+        if (HTMLTags.specialElements.contains(child.localName)) {
+          return _parseSpecialElements(child, type: type);
+        }
+        return <Node>[];
+      }).toList();
     }
     return Node(
       type: type,
@@ -383,7 +396,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     for (final child in children) {
       if (child is dom.Element) {
         if (child.children.isNotEmpty &&
-            HTMLTags.formattingElements.contains(child.localName) == false) {
+            HTMLTags.formattingElements.contains(child.localName) == false &&
+            HTMLTags.specialElements.contains(child.localName) == false) {
           //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
 
           nodes.addAll(_parseElement(child.children, type: type));
