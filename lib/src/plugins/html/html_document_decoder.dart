@@ -5,9 +5,20 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
-class DocumentHTMLDecoder extends Converter<String, Document> {
-  DocumentHTMLDecoder();
+typedef ElementParser = Iterable<Node> Function(
+  dom.Element element,
+  (Delta, Iterable<Node>) Function(
+    dom.Element element, {
+    String? type,
+  }) parseDeltaElement,
+);
 
+class DocumentHTMLDecoder extends Converter<String, Document> {
+  DocumentHTMLDecoder({
+    this.customDecoders = const {},
+  });
+
+  final Map<String, ElementParser> customDecoders;
   // Set to true to enable parsing color from HTML
   static bool enableColorParse = true;
 
@@ -66,6 +77,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
               domNode,
               type: type ?? ParagraphBlockKeys.type,
             ),
+          );
+        } else if (customDecoders.containsKey(localName)) {
+          if (delta.isNotEmpty) {
+            nodes.add(paragraphNode(delta: delta));
+          }
+          nodes.addAll(
+            customDecoders[localName]!(domNode, _parseDeltaElement),
           );
         }
       } else if (domNode is dom.Text) {
@@ -394,6 +412,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
                 child,
                 type: ParagraphBlockKeys.type,
               ),
+            );
+          } else if (customDecoders.containsKey(child.localName)) {
+            nodes.addAll(
+              customDecoders[child.localName]!(child, _parseDeltaElement),
             );
           } else {
             final attributes = _parserFormattingElementAttributes(child);
