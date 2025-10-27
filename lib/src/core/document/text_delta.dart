@@ -408,7 +408,8 @@ class Delta extends Iterable<TextOperation> {
         if (op is TextInsert) {
           return op.text;
         }
-        throw Exception('diff() called $e');
+        assert(false, 'diff() called with non-insert operations');
+        return '';
       }).join();
       return text;
     }).toList();

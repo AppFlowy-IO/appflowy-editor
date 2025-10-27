@@ -5,9 +5,20 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
-class DocumentHTMLDecoder extends Converter<String, Document> {
-  DocumentHTMLDecoder();
+typedef ElementParser = Iterable<Node> Function(
+  dom.Element element,
+  (Delta, Iterable<Node>) Function(
+    dom.Element element, {
+    String? type,
+  }) parseDeltaElement,
+);
 
+class DocumentHTMLDecoder extends Converter<String, Document> {
+  DocumentHTMLDecoder({
+    this.customDecoders = const {},
+  });
+
+  final Map<String, ElementParser> customDecoders;
   // Set to true to enable parsing color from HTML
   static bool enableColorParse = true;
 
@@ -66,6 +77,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
               domNode,
               type: type ?? ParagraphBlockKeys.type,
             ),
+          );
+        } else if (customDecoders.containsKey(localName)) {
+          if (delta.isNotEmpty) {
+            nodes.add(paragraphNode(delta: delta));
+          }
+          nodes.addAll(
+            customDecoders[localName]!(domNode, _parseDeltaElement),
           );
         }
       } else if (domNode is dom.Text) {
@@ -348,6 +366,19 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         element.children.length == 1 &&
         element.children.first.localName == HTMLTags.paragraph) {
       (delta, node) = _parseDeltaElement(element.children.first, type: type);
+    } else if (delta.isEmpty &&
+        element.children.isNotEmpty &&
+        element.children.first.localName == HTMLTags.paragraph) {
+      final paragraphElement = element.children.first;
+      (delta, _) = _parseDeltaElement(paragraphElement, type: type);
+
+      final remainingChildren = element.children.skip(1);
+      node = remainingChildren.expand((child) {
+        if (HTMLTags.specialElements.contains(child.localName)) {
+          return _parseSpecialElements(child, type: type);
+        }
+        return <Node>[];
+      }).toList();
     }
     return Node(
       type: type,
@@ -383,7 +414,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     for (final child in children) {
       if (child is dom.Element) {
         if (child.children.isNotEmpty &&
-            HTMLTags.formattingElements.contains(child.localName) == false) {
+            HTMLTags.formattingElements.contains(child.localName) == false &&
+            HTMLTags.specialElements.contains(child.localName) == false) {
           //rich editor for webs do this so handling that case for href  <a href="https://www.google.com" rel="noopener noreferrer" target="_blank"><strong><em><u>demo</u></em></strong></a>
 
           nodes.addAll(_parseElement(child.children, type: type));
@@ -394,6 +426,10 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
                 child,
                 type: ParagraphBlockKeys.type,
               ),
+            );
+          } else if (customDecoders.containsKey(child.localName)) {
+            nodes.addAll(
+              customDecoders[child.localName]!(child, _parseDeltaElement),
             );
           } else {
             final attributes = _parserFormattingElementAttributes(child);
