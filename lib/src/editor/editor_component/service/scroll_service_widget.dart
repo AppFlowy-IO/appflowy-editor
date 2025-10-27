@@ -33,7 +33,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   @override
   late ScrollController scrollController = ScrollController();
 
-  double offset = 0;
+  Selection? lastSelection;
 
   @override
   void initState() {
@@ -105,12 +105,24 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         case 'MobileSelectionDragMode.leftSelectionHandle':
           targetRect = selectionRects.first;
           direction = AxisDirection.up;
+          break;
         case 'MobileSelectionDragMode.rightSelectionHandle':
           targetRect = selectionRects.last;
           direction = AxisDirection.down;
+          break;
         default:
           targetRect = selectionRects.last;
+
+          /// sometimes moving up in a long single node may be not working
+          /// so we need to special handle this case.
+          final isInSingleNode = (lastSelection?.isSingle ?? false) &&
+              lastSelection?.start.path == selection.start.path;
+          if (selection.isForward && isInSingleNode) {
+            targetRect = selectionRects.first;
+          }
       }
+
+      lastSelection = selection;
 
       final endTouchPoint = targetRect.centerRight;
 
