@@ -15,18 +15,12 @@ abstract class AutoScrollerService {
 class AutoScroller extends EdgeDraggingAutoScroller
     implements AutoScrollerService {
   AutoScroller(
-    ScrollableState scrollable, {
-    VoidCallback? onScrollViewScrolled,
-    double velocityScalar = _kDefaultAutoScrollVelocityScalar,
-    double minAutoScrollDelta = _kDefaultMinAutoScrollDelta,
-    double maxAutoScrollDelta = _kDefaultMaxAutoScrollDelta,
-  }) : super(
-          scrollable,
-          onScrollViewScrolled: onScrollViewScrolled,
-          velocityScalar: velocityScalar,
-          minimumAutoScrollDelta: minAutoScrollDelta,
-          maxAutoScrollDelta: maxAutoScrollDelta,
-        );
+    super.scrollable, {
+    super.onScrollViewScrolled,
+    super.velocityScalar = _kDefaultAutoScrollVelocityScalar,
+    super.minimumAutoScrollDelta = _kDefaultMinAutoScrollDelta,
+    super.maxAutoScrollDelta = _kDefaultMaxAutoScrollDelta,
+  });
 
   static const double _kDefaultAutoScrollVelocityScalar = 7;
   static const double _kDefaultMinAutoScrollDelta = 1.0;

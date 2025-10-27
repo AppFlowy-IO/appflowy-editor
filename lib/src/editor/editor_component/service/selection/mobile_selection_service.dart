@@ -447,7 +447,7 @@ class _MobileSelectionServiceWidgetState
       return;
     }
 
-    Selection? newSelection;
+    late final Selection newSelection;
     switch (dragMode) {
       case MobileSelectionDragMode.leftSelectionHandle:
         newSelection = Selection(
@@ -468,9 +468,7 @@ class _MobileSelectionServiceWidgetState
         return;
     }
 
-    if (newSelection != null) {
-      updateSelection(newSelection);
-    }
+    updateSelection(newSelection);
   }
 
   @override

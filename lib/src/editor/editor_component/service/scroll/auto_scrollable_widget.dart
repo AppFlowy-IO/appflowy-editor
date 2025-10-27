@@ -59,7 +59,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
     _autoScroller = AutoScroller(
       _scrollableState,
       velocityScalar: isDesktopOrWeb ? 0.125 : 0.02,
-      minAutoScrollDelta: isDesktopOrWeb ? 0.07 : 0.004,
+      minimumAutoScrollDelta: isDesktopOrWeb ? 0.07 : 0.004,
       maxAutoScrollDelta: isDesktopOrWeb ? 2.75 : 0.053,
       onScrollViewScrolled: () {
         if (!isDesktopOrWeb) {

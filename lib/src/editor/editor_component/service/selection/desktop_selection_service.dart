@@ -383,10 +383,12 @@ class _DesktopSelectionServiceWidgetState
 
     final Selection selection = Selection(
       start: _panStartPosition!,
-      end: selectable.getSelectionInRange(
-        panStartOffset,
-        panEndOffset,
-      ).end,
+      end: selectable
+          .getSelectionInRange(
+            panStartOffset,
+            panEndOffset,
+          )
+          .end,
     );
 
     if (selection != currentSelection.value) {
