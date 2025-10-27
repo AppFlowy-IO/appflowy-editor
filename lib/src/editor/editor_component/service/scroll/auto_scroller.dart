@@ -15,14 +15,25 @@ abstract class AutoScrollerService {
 class AutoScroller extends EdgeDraggingAutoScroller
     implements AutoScrollerService {
   AutoScroller(
-    super.scrollable, {
-    super.onScrollViewScrolled,
-    super.velocityScalar = _kDefaultAutoScrollVelocityScalar,
-  });
+    ScrollableState scrollable, {
+    VoidCallback? onScrollViewScrolled,
+    double velocityScalar = _kDefaultAutoScrollVelocityScalar,
+    double minAutoScrollDelta = _kDefaultMinAutoScrollDelta,
+    double maxAutoScrollDelta = _kDefaultMaxAutoScrollDelta,
+  }) : super(
+          scrollable,
+          onScrollViewScrolled: onScrollViewScrolled,
+          velocityScalar: velocityScalar,
+          minimumAutoScrollDelta: minAutoScrollDelta,
+          maxAutoScrollDelta: maxAutoScrollDelta,
+        );
 
   static const double _kDefaultAutoScrollVelocityScalar = 7;
+  static const double _kDefaultMinAutoScrollDelta = 1.0;
+  static const double _kDefaultMaxAutoScrollDelta = 20.0;
 
   Offset? lastOffset;
+  Duration? lastDuration;
 
   @override
   void startAutoScroll(
@@ -31,13 +42,14 @@ class AutoScroller extends EdgeDraggingAutoScroller
     AxisDirection? direction,
     Duration? duration,
   }) {
+    lastOffset = offset;
+    lastDuration = duration;
     if (direction != null && direction == AxisDirection.up) {
       return startAutoScrollIfNecessary(
         offset & Size(1, edgeOffset),
       );
     }
 
-    lastOffset = offset;
     final dragTarget = Rect.fromCenter(
       center: offset,
       width: edgeOffset,
@@ -52,12 +64,16 @@ class AutoScroller extends EdgeDraggingAutoScroller
   @override
   void stopAutoScroll() {
     lastOffset = null;
+    lastDuration = null;
     super.stopAutoScroll();
   }
 
   void continueToAutoScroll() {
     if (lastOffset != null) {
-      startAutoScroll(lastOffset!);
+      startAutoScroll(
+        lastOffset!,
+        duration: lastDuration,
+      );
     }
   }
 }

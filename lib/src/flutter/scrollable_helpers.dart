@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,12 @@ class EdgeDraggingAutoScroller {
     this.scrollable, {
     this.onScrollViewScrolled,
     required this.velocityScalar,
-  });
+    double minimumAutoScrollDelta = 1.0,
+    double maxAutoScrollDelta = 20.0,
+  })  : assert(minimumAutoScrollDelta >= 0),
+        assert(maxAutoScrollDelta >= minimumAutoScrollDelta),
+        _minimumAutoScrollDelta = minimumAutoScrollDelta,
+        _maxAutoScrollDelta = maxAutoScrollDelta;
 
   /// The [Scrollable] this auto scroller is scrolling.
   final ScrollableState scrollable;
@@ -166,6 +172,15 @@ class EdgeDraggingAutoScroller {
   /// auto-scroll velocity = (distance of overscroll) * velocityScalar.
   /// {@endtemplate}
   final double velocityScalar;
+
+  /// The least amount of scroll delta applied per auto scroll tick.
+  ///
+  /// When the calculated scroll distance is smaller than this value (but still
+  /// non-zero), the auto scroller will nudge by this minimum to keep the view
+  /// moving rather than treat it as too small to scroll.
+  final double _minimumAutoScrollDelta;
+  final double _maxAutoScrollDelta;
+  double? _previousScrollDelta;
 
   late Rect _dragTargetRelatedToScrollOrigin;
 
@@ -212,9 +227,10 @@ class EdgeDraggingAutoScroller {
   /// Stop any ongoing auto scrolling.
   void stopAutoScroll() {
     _scrolling = false;
+    _previousScrollDelta = null;
   }
 
-  Future<void> _scroll() async {
+  Future<void> _scroll({Duration? duration}) async {
     try {
       final RenderBox scrollRenderBox =
           scrollable.context.findRenderObject()! as RenderBox;
@@ -268,18 +284,20 @@ class EdgeDraggingAutoScroller {
                   scrollable.position.minScrollExtent) {
             final double overDrag =
                 math.min(proxyEnd - viewportEnd, overDragMax);
+            final double delta = _smoothScrollDelta(overDrag);
             newOffset = math.max(
               scrollable.position.minScrollExtent,
-              scrollable.position.pixels - overDrag,
+              scrollable.position.pixels - delta,
             );
           } else if (proxyStart < viewportStart &&
               scrollable.position.pixels <
                   scrollable.position.maxScrollExtent) {
             final double overDrag =
                 math.min(viewportStart - proxyStart, overDragMax);
+            final double delta = _smoothScrollDelta(overDrag);
             newOffset = math.min(
               scrollable.position.maxScrollExtent,
-              scrollable.position.pixels + overDrag,
+              scrollable.position.pixels + delta,
             );
           }
         case AxisDirection.right:
@@ -289,41 +307,83 @@ class EdgeDraggingAutoScroller {
                   scrollable.position.minScrollExtent) {
             final double overDrag =
                 math.min(viewportStart - proxyStart, overDragMax);
+            final double delta = _smoothScrollDelta(overDrag);
             newOffset = math.max(
               scrollable.position.minScrollExtent,
-              scrollable.position.pixels - overDrag,
+              scrollable.position.pixels - delta,
             );
           } else if (proxyEnd > viewportEnd &&
               scrollable.position.pixels <
                   scrollable.position.maxScrollExtent) {
             final double overDrag =
                 math.min(proxyEnd - viewportEnd, overDragMax);
+            final double delta = _smoothScrollDelta(overDrag);
             newOffset = math.min(
               scrollable.position.maxScrollExtent,
-              scrollable.position.pixels + overDrag,
+              scrollable.position.pixels + delta,
             );
           }
       }
 
-      if (newOffset == null ||
-          (newOffset - scrollable.position.pixels).abs() < 1.0) {
+      final double currentPixels = scrollable.position.pixels;
+      if (newOffset == null) {
         // Drag should not trigger scroll.
         _scrolling = false;
         return;
       }
-      final Duration duration =
-          Duration(milliseconds: (1000 / velocityScalar).round());
-      await scrollable.position
-          .animateTo(newOffset, duration: duration, curve: Curves.linear);
+      double delta = newOffset - currentPixels;
+      if (delta.abs() < _minimumAutoScrollDelta) {
+        if (delta.abs() <= precisionErrorTolerance) {
+          _scrolling = false;
+          return;
+        }
+        final double direction = delta.sign;
+        final double target =
+            (currentPixels + direction * _minimumAutoScrollDelta).clamp(
+          scrollable.position.minScrollExtent,
+          scrollable.position.maxScrollExtent,
+        );
+        newOffset = target.toDouble();
+        delta = newOffset - currentPixels;
+        if (delta.abs() <= precisionErrorTolerance) {
+          _scrolling = false;
+          return;
+        }
+      }
+      await scrollable.position.moveTo(
+        newOffset,
+        duration: duration,
+        curve: Curves.linear,
+        clamp: true,
+      );
       onScrollViewScrolled?.call();
       if (_scrolling) {
-        await _scroll();
+        await _scroll(duration: duration);
       }
     } catch (e) {
       debugPrint(e.toString());
     } finally {
       _scrolling = false;
     }
+  }
+
+  double _smoothScrollDelta(double overDrag) {
+    if (overDrag <= precisionErrorTolerance) {
+      return 0;
+    }
+    final double desiredDelta = overDrag * velocityScalar;
+    final double clampedDelta = desiredDelta.clamp(
+      _minimumAutoScrollDelta,
+      _maxAutoScrollDelta,
+    );
+    if (_previousScrollDelta == null) {
+      _previousScrollDelta = clampedDelta;
+      return clampedDelta;
+    }
+    final double smoothed =
+        lerpDouble(_previousScrollDelta!, clampedDelta, 0.35)!;
+    _previousScrollDelta = smoothed;
+    return smoothed;
   }
 }
 

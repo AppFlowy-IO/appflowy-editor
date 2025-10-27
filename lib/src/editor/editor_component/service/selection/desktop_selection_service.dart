@@ -51,6 +51,9 @@ class _DesktopSelectionServiceWidgetState
 
   Position? _panStartPosition;
 
+  bool _isDraggingSelection = false;
+  Offset? _lastPanOffset;
+
   OverlayEntry? _dropTargetEntry;
 
   late EditorState editorState = Provider.of<EditorState>(
@@ -64,6 +67,7 @@ class _DesktopSelectionServiceWidgetState
 
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_updateSelection);
+    editorState.addScrollViewScrolledListener(_handleAutoScrollWhileDragging);
   }
 
   @override
@@ -85,6 +89,9 @@ class _DesktopSelectionServiceWidgetState
     clearSelection();
     WidgetsBinding.instance.removeObserver(this);
     editorState.selectionNotifier.removeListener(_updateSelection);
+    editorState.removeScrollViewScrolledListener(
+      _handleAutoScrollWhileDragging,
+    );
     currentSelection.dispose();
     removeDropTarget();
     super.dispose();
@@ -116,6 +123,7 @@ class _DesktopSelectionServiceWidgetState
   @override
   void clearSelection() {
     // currentSelectedNodes = [];
+    _resetPanState();
     currentSelection.value = null;
 
     _clearSelection();
@@ -138,6 +146,14 @@ class _DesktopSelectionServiceWidgetState
     _cursorAreas
       ..forEach((overlay) => overlay.remove())
       ..clear();
+  }
+
+  void _resetPanState() {
+    _isDraggingSelection = false;
+    _panStartOffset = null;
+    _panStartScrollDy = null;
+    _panStartPosition = null;
+    _lastPanOffset = null;
   }
 
   void _clearContextMenu() {
@@ -300,6 +316,13 @@ class _DesktopSelectionServiceWidgetState
     _panStartPosition = getNodeInOffset(_panStartOffset!)
         ?.selectable
         ?.getPositionInOffset(_panStartOffset!);
+    if (_panStartPosition == null) {
+      _resetPanState();
+      return;
+    }
+
+    _lastPanOffset = _panStartOffset;
+    _isDraggingSelection = true;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -311,35 +334,18 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    if (_panStartOffset == null ||
-        _panStartScrollDy == null ||
+    if (!_isDraggingSelection ||
+        _panStartOffset == null ||
         _panStartPosition == null) {
       return;
     }
 
-    final panEndOffset = details.globalPosition;
-    final dy = editorState.service.scrollService?.dy;
-    final panStartOffset = dy == null
-        ? _panStartOffset!
-        : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-
-    // this one maybe redundant.
-    final last = getNodeInOffset(panEndOffset)?.selectable;
-
-    // compute the selection in range.
-    if (last != null) {
-      final start = _panStartPosition!;
-      final end = last.getSelectionInRange(panStartOffset, panEndOffset).end;
-      final selection = Selection(start: start, end: end);
-
-      if (selection != currentSelection.value) {
-        updateSelection(selection);
-      }
-    }
+    _lastPanOffset = details.globalPosition;
+    _updateSelectionDuringDrag(_lastPanOffset!);
 
     editorState.service.scrollService?.startAutoScroll(
-      panEndOffset,
-      edgeOffset: 100,
+      _lastPanOffset!,
+      edgeOffset: 80,
     );
   }
 
@@ -351,9 +357,60 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    _panStartPosition = null;
-
     editorState.service.scrollService?.stopAutoScroll();
+    _resetPanState();
+  }
+
+  void _updateSelectionDuringDrag(Offset panEndOffset) {
+    if (!_isDraggingSelection ||
+        _panStartPosition == null ||
+        _panStartOffset == null) {
+      return;
+    }
+
+    final double? currentDy = editorState.service.scrollService?.dy;
+    final Offset panStartOffset = currentDy == null || _panStartScrollDy == null
+        ? _panStartOffset!
+        : _panStartOffset!.translate(
+            0,
+            _panStartScrollDy! - currentDy,
+          );
+
+    final selectable = getNodeInOffset(panEndOffset)?.selectable;
+    if (selectable == null) {
+      return;
+    }
+
+    final Selection selection = Selection(
+      start: _panStartPosition!,
+      end: selectable.getSelectionInRange(
+        panStartOffset,
+        panEndOffset,
+      ).end,
+    );
+
+    if (selection != currentSelection.value) {
+      updateSelection(selection);
+    }
+  }
+
+  void _handleAutoScrollWhileDragging() {
+    if (!mounted || !_isDraggingSelection || _lastPanOffset == null) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          !_isDraggingSelection ||
+          _lastPanOffset == null ||
+          _panStartOffset == null ||
+          _panStartPosition == null) {
+        return;
+      }
+
+      _updateSelectionDuringDrag(_lastPanOffset!);
+      editorState.autoScroller?.continueToAutoScroll();
+    });
   }
 
   void _updateSelection() {

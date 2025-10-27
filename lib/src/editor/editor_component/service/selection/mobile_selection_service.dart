@@ -109,6 +109,7 @@ class _MobileSelectionServiceWidgetState
 
     WidgetsBinding.instance.addObserver(this);
     editorState.selectionNotifier.addListener(_updateSelection);
+    editorState.addScrollViewScrolledListener(_handleAutoScrollWhileDragging);
   }
 
   @override
@@ -117,6 +118,9 @@ class _MobileSelectionServiceWidgetState
     WidgetsBinding.instance.removeObserver(this);
     selectionNotifierAfterLayout.dispose();
     editorState.selectionNotifier.removeListener(_updateSelection);
+    editorState.removeScrollViewScrolledListener(
+      _handleAutoScrollWhileDragging,
+    );
     collapsedHandleTimer?.cancel();
 
     super.dispose();
@@ -392,6 +396,81 @@ class _MobileSelectionServiceWidgetState
 
   void _clearSelection() {
     selectionRects.clear();
+  }
+
+  void _handleAutoScrollWhileDragging() {
+    if (!mounted || dragMode == MobileSelectionDragMode.none) {
+      return;
+    }
+    if (_panStartOffset == null ||
+        _panStartSelection == null ||
+        _lastPanOffset.value == null) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          dragMode == MobileSelectionDragMode.none ||
+          _panStartOffset == null ||
+          _panStartSelection == null) {
+        return;
+      }
+      final offset = _lastPanOffset.value;
+      if (offset == null) {
+        return;
+      }
+      _updateSelectionDuringDrag(offset);
+    });
+  }
+
+  void _updateSelectionDuringDrag(Offset panEndOffset) {
+    if (_panStartOffset == null || _panStartSelection == null) {
+      return;
+    }
+
+    final double? dy = editorState.service.scrollService?.dy;
+    final Offset panStartOffset;
+    if (dy == null || _panStartScrollDy == null) {
+      panStartOffset = _panStartOffset!;
+    } else {
+      panStartOffset = _panStartOffset!.translate(
+        0,
+        _panStartScrollDy! - dy,
+      );
+    }
+
+    final selectionInRange = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getSelectionInRange(panStartOffset, panEndOffset);
+    final end = selectionInRange?.end;
+    if (end == null) {
+      return;
+    }
+
+    Selection? newSelection;
+    switch (dragMode) {
+      case MobileSelectionDragMode.leftSelectionHandle:
+        newSelection = Selection(
+          start: _panStartSelection!.normalized.end,
+          end: end,
+        ).normalized;
+        break;
+      case MobileSelectionDragMode.rightSelectionHandle:
+        newSelection = Selection(
+          start: _panStartSelection!.normalized.start,
+          end: end,
+        ).normalized;
+        break;
+      case MobileSelectionDragMode.cursor:
+        newSelection = Selection.collapsed(end);
+        break;
+      case MobileSelectionDragMode.none:
+        return;
+    }
+
+    if (newSelection != null) {
+      updateSelection(newSelection);
+    }
   }
 
   @override
