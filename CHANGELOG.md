@@ -1,3 +1,9 @@
+## 6.0.0
+* fix: paste single line text will remove the children block by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1100
+* feat: support block wrapper by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1101
+* Adding offline collaboration example using appflowy_editor_sync_plugin by @Musta-Pollo in https://github.com/AppFlowy-IO/appflowy-editor/pull/1103
+* chore: upgrade to flutter 3.32.4 by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1123
+
 ## 5.2.0
 * feat: support customizing link button by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1048
 * feat: add flag to disable keyboard shortcuts by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1049

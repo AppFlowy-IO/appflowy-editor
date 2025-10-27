@@ -96,7 +96,7 @@ class _EditorState extends State<Editor> {
 
                   editorState.logConfiguration
                     ..handler = debugPrint
-                    ..level = AppFlowyEditorLogLevel.all;
+                    ..level = AppFlowyEditorLogLevel.off;
 
                   editorState.transactionStream.listen((event) {
                     if (event.$1 == TransactionTime.after) {
