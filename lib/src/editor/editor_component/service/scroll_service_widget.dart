@@ -92,8 +92,27 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final selectionRect = editorState.selectionRects();
-      final endTouchPoint = selectionRect.lastOrNull?.centerRight;
+      final selectionRects = editorState.selectionRects();
+      if (selectionRects.isEmpty) {
+        return;
+      }
+
+      Rect targetRect;
+      AxisDirection? direction;
+      final dynamic dragMode =
+          editorState.selectionExtraInfo?['selection_drag_mode'];
+      switch (dragMode?.toString()) {
+        case 'MobileSelectionDragMode.leftSelectionHandle':
+          targetRect = selectionRects.first;
+          direction = AxisDirection.up;
+        case 'MobileSelectionDragMode.rightSelectionHandle':
+          targetRect = selectionRects.last;
+          direction = AxisDirection.down;
+        default:
+          targetRect = selectionRects.last;
+      }
+
+      final endTouchPoint = targetRect.centerRight;
 
       if (PlatformExtension.isMobile) {
         // soft keyboard
@@ -106,34 +125,23 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           if (_forwardKey.currentContext == null) {
             return;
           }
-          if (endTouchPoint == null) {
-            jumpTo(selection.end.path.first);
-          } else {
-            startAutoScroll(
-              endTouchPoint,
-              edgeOffset: editorState.autoScrollEdgeOffset,
-              duration: Duration.zero,
-            );
-          }
+          startAutoScroll(
+            endTouchPoint,
+            edgeOffset: editorState.autoScrollEdgeOffset,
+            direction: direction,
+            duration: Duration.zero,
+          );
         });
       } else {
         if (_forwardKey.currentContext == null) {
           return;
         }
-        if (endTouchPoint == null) {
-          // check if the selection is valid
-          final node = editorState.getNodeAtPath(selection.end.path);
-          if (node == null) {
-            return;
-          }
-          jumpTo(selection.end.path.first);
-        } else {
-          startAutoScroll(
-            endTouchPoint,
-            edgeOffset: editorState.autoScrollEdgeOffset,
-            duration: Duration.zero,
-          );
-        }
+        startAutoScroll(
+          endTouchPoint,
+          edgeOffset: editorState.autoScrollEdgeOffset,
+          direction: direction,
+          duration: Duration.zero,
+        );
       }
     });
   }

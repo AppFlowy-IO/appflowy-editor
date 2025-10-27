@@ -1,6 +1,10 @@
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
+import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+const _selectionDragModeKey = 'selection_drag_mode';
 
 class AutoScrollableWidget extends StatefulWidget {
   const AutoScrollableWidget({
@@ -51,11 +55,28 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
   }
 
   void _initAutoScroller() {
+    final bool isDesktopOrWeb = PlatformExtension.isDesktopOrWeb;
     _autoScroller = AutoScroller(
       _scrollableState,
-      velocityScalar: PlatformExtension.isDesktopOrWeb ? 25 : 100,
+      velocityScalar: isDesktopOrWeb ? 0.125 : 0.02,
+      minimumAutoScrollDelta: isDesktopOrWeb ? 0.07 : 0.004,
+      maxAutoScrollDelta: isDesktopOrWeb ? 2.75 : 0.053,
       onScrollViewScrolled: () {
-        // _autoScroller.continueToAutoScroll();
+        if (!isDesktopOrWeb) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              final editorState = context.read<EditorState?>();
+              final dynamic dragMode =
+                  editorState?.selectionExtraInfo?[_selectionDragModeKey];
+              final bool isDraggingSelection = dragMode != null &&
+                  dragMode.toString() != 'MobileSelectionDragMode.none';
+              if (!isDraggingSelection) {
+                return;
+              }
+              _autoScroller.continueToAutoScroll();
+            }
+          });
+        }
       },
     );
   }
