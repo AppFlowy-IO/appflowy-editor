@@ -300,6 +300,7 @@ class EdgeDraggingAutoScroller {
               scrollable.position.pixels + delta,
             );
           }
+          break;
         case AxisDirection.right:
         case AxisDirection.down:
           if (proxyStart < viewportStart &&
@@ -323,6 +324,7 @@ class EdgeDraggingAutoScroller {
               scrollable.position.pixels + delta,
             );
           }
+          break;
       }
 
       final double currentPixels = scrollable.position.pixels;
