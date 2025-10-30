@@ -30,6 +30,7 @@ class EditorStateDebugInfo {
 /// set true to this key to prevent attaching the text service when selection is changed.
 const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
+const _selectionDragModeKey = 'selection_drag_mode';
 
 class ApplyOptions {
   const ApplyOptions({
@@ -92,8 +93,10 @@ enum TransactionTime {
 class EditorState {
   EditorState({
     required this.document,
-    this.minHistoryItemDuration = const Duration(milliseconds: 200),
+    this.minHistoryItemDuration = const Duration(milliseconds: 50),
+    int? maxHistoryItemSize,
   }) {
+    undoManager = UndoManager(maxHistoryItemSize ?? 200);
     undoManager.state = this;
   }
 
@@ -252,7 +255,7 @@ class EditorState {
     _sliceUpcomingAttributes = value;
   }
 
-  final UndoManager undoManager = UndoManager();
+  late final UndoManager undoManager;
 
   Transaction get transaction {
     final transaction = Transaction(document: document);
@@ -629,11 +632,31 @@ class EditorState {
   ) {
     if (this.scrollableState != scrollableState) {
       autoScroller?.stopAutoScroll();
-      autoScroller = AutoScroller(
+      final bool isDesktopOrWeb = PlatformExtension.isDesktopOrWeb;
+      late AutoScroller scroller;
+      scroller = AutoScroller(
         scrollableState,
-        velocityScalar: PlatformExtension.isDesktopOrWeb ? 50 : 100,
-        onScrollViewScrolled: _notifyScrollViewScrolledListeners,
+        velocityScalar: isDesktopOrWeb ? 0.125 : 0.02,
+        minimumAutoScrollDelta: isDesktopOrWeb ? 0.07 : 0.004,
+        maxAutoScrollDelta: isDesktopOrWeb ? 2.75 : 0.053,
+        onScrollViewScrolled: () {
+          _notifyScrollViewScrolledListeners();
+          if (!isDesktopOrWeb) {
+            final dynamic dragMode = selectionExtraInfo?[_selectionDragModeKey];
+            final bool isDraggingSelection = dragMode != null &&
+                dragMode.toString() != 'MobileSelectionDragMode.none';
+            if (!isDraggingSelection) {
+              return;
+            }
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (autoScroller == scroller) {
+                scroller.continueToAutoScroll();
+              }
+            });
+          }
+        },
       );
+      autoScroller = scroller;
       this.scrollableState = scrollableState;
     }
   }

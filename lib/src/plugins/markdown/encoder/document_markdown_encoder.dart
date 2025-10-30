@@ -6,9 +6,11 @@ import 'package:collection/collection.dart';
 class DocumentMarkdownEncoder extends Converter<Document, String> {
   DocumentMarkdownEncoder({
     this.parsers = const [],
+    this.lineBreak = '',
   });
 
   final List<NodeParser> parsers;
+  final String lineBreak;
 
   @override
   String convert(Document input) {
@@ -19,6 +21,9 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
       );
       if (parser != null) {
         buffer.write(parser.transform(node, this));
+        if (lineBreak.isNotEmpty && node.id != input.root.children.last.id) {
+          buffer.write(lineBreak);
+        }
       }
     }
     return buffer.toString();

@@ -33,7 +33,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.27.4"
+          flutter-version: "3.32.4"
           cache: true
 
       - name: Run tests
