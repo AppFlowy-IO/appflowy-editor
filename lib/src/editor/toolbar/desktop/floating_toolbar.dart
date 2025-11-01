@@ -136,22 +136,23 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
     if (lastSelection == selection) return;
-    lastSelection = selection;
-
-    if (selection == null ||
-        selection.isCollapsed ||
-        selectionType == SelectionType.block ||
-        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-            true) {
-      _clear();
-    } else {
-      // uses debounce to avoid the computing the rects too frequently.
-      _showAfterDelay(
-        duration: const Duration(milliseconds: 200),
-        isMetricsChanged: hasMetricsChanged,
-      );
-      if (hasMetricsChanged) hasMetricsChanged = false;
+    if (lastSelection == null || selection == null) {
+      if (selection == null ||
+          selection.isCollapsed ||
+          selectionType == SelectionType.block ||
+          editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+              true) {
+        _clear();
+      } else {
+        // uses debounce to avoid the computing the rects too frequently.
+        _showAfterDelay(
+          duration: const Duration(milliseconds: 200),
+          isMetricsChanged: hasMetricsChanged,
+        );
+        if (hasMetricsChanged) hasMetricsChanged = false;
+      }
     }
+    lastSelection = selection;
   }
 
   void _onScrollPositionChanged() {
