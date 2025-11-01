@@ -240,12 +240,25 @@ class _DesktopSelectionServiceWidgetState
     if (HardwareKeyboard.instance.isShiftPressed && _panStartPosition != null) {
       selection = Selection(start: _panStartPosition!, end: position);
     } else {
+
+if (editorState.mode == VimModes.normalMode && editorState.vimMode){
+        //NOTE: It throws a transaction error when I mimic the else statement for selection
+        //NOTE: So settled for a single selection
+        selection = Selection.collapsed(position);
+        editorState.prevSelection = selection;
+
+        // Reset old start offset
+        _panStartOffset = offset;
+} else {
       selection = selectable.cursorStyle == CursorStyle.verticalLine
           ? Selection.collapsed(position)
           : Selection(start: selectable.start(), end: selectable.end());
 
       // Reset old start offset
-      _panStartPosition = position;
+      _panStartOffset = offset;
+
+}
+
     }
 
     updateSelection(selection);

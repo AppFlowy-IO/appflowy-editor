@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 ///   - desktop
 ///   - web
 ///
+//TODO: Allow custom escape key
 final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
   key: 'exit the editing mode',
   getDescription: () => AppFlowyEditorL10n.current.cmdExitEditing,
@@ -15,6 +16,20 @@ final CommandShortcutEvent exitEditingCommand = CommandShortcutEvent(
 );
 
 CommandShortcutEventHandler _exitEditingCommandHandler = (editorState) {
+  if (editorState.mode == VimModes.normalMode) {
+    return KeyEventResult.handled;
+  }
+  if (editorState.vimMode == true &&
+      editorState.editable == true &&
+      editorState.mode == VimModes.insertMode) {
+    editorState.prevSelection = editorState.selection;
+    editorState.selection = null;
+    editorState.mode = VimModes.normalMode;
+    editorState.editable = false;
+    editorState.selection = editorState.prevSelection;
+    editorState.service.keyboardService?.closeKeyboard();
+    return KeyEventResult.handled;
+  }
   editorState.selection = null;
   editorState.service.keyboardService?.closeKeyboard();
   return KeyEventResult.handled;

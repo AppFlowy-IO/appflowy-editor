@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_on_floating_cursor_update.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/shortcuts/vim_shortcut_event.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -168,6 +169,17 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       return KeyEventResult.ignored;
     }
 
+    if (editorState.vimMode) {
+      if (editorState.mode == VimModes.normalMode) {
+        final VimCommandShortcutEvent vimCommandShortcutEvent =
+            VimCommandShortcutEvent();
+        final vimResult = vimCommandShortcutEvent.handleKey(event, editorState);
+        if (vimResult == KeyEventResult.handled) {
+          return KeyEventResult.handled;
+        }
+      }
+    }
+
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
         !enableIMEShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
@@ -235,6 +247,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     AppFlowyEditorLog.editor.debug(
       'keyboard service - attach text input service: $textEditingValue',
     );
+
     if (textEditingValue != null) {
       textInputService.attach(
         textEditingValue,
@@ -259,6 +272,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   // This function is used to get the current text editing value of the editor
   // based on the given selection.
   TextEditingValue? _getCurrentTextEditingValue(Selection selection) {
+    // This is to avoid the attachment service from capturing some input
+    if (editorState.vimMode && editorState.mode != VimModes.insertMode) {
+      return null;
+    }
     // Get all the editable nodes in the selection.
     final editableNodes = editorState
         .getNodesInSelection(selection)

@@ -63,6 +63,12 @@ enum SelectionUpdateReason {
   searchHighlight, // Highlighting search results
 }
 
+//Enum for VIM Mode
+enum VimModes {
+  insertMode,
+  normalMode,
+}
+
 enum SelectionType {
   inline,
   block,
@@ -144,8 +150,20 @@ class EditorState {
   final PropertyValueNotifier<Selection?> selectionNotifier =
       PropertyValueNotifier<Selection?>(null);
 
+  /// The previous selection notifier of the editor.
+  final PropertyValueNotifier<Selection?> prevSelectionNotifier =
+      PropertyValueNotifier<Selection?>(null);
+
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
+
+  /// The previous selection of the editor.
+  Selection? get prevSelection => prevSelectionNotifier.value;
+
+  var mode = VimModes.insertMode;
+
+  /// Whether Vim mode is enabled or not
+  bool vimMode = false;
 
   /// Remote selection is the selection from other users.
   final PropertyValueNotifier<List<RemoteSelection>> remoteSelections =
@@ -164,6 +182,12 @@ class EditorState {
     selectionNotifier.value = value;
   }
 
+  /// Sets the previous selection of the editor.
+  set prevSelection(Selection? value) {
+    prevSelectionNotifier.value = value;
+  }
+
+  //SelectionType? selectionType;
   SelectionType? _selectionType;
 
   set selectionType(SelectionType? value) {
@@ -403,10 +427,6 @@ class EditorState {
     bool withUpdateSelection = true,
     bool skipHistoryDebounce = false,
   }) async {
-    if (!editable || isDisposed) {
-      return;
-    }
-
     // it's a time consuming task, only enable it if necessary.
     if (_enableCheckIntegrity) {
       document.root.checkDocumentIntegrity();
