@@ -197,12 +197,10 @@ class _TodoListBlockComponentWidgetState
     );
 
     child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
+      decoration: withBackgroundColor ? decoration : null,
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
     );
 
     child = BlockSelectionContainer(
