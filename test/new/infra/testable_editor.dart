@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
+import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -85,6 +86,14 @@ class TestableEditor {
             ...standardCharacterShortcutEvents,
             formatGreaterHyphen,
           ],
+          contextMenuBuilder: (context, position, editorState, onPressed) {
+            return ContextMenu(
+              position: position,
+              editorState: editorState,
+              items: standardContextMenuItems,
+              onPressed: onPressed,
+            );
+          },
           editorStyle: inMobile
               ? EditorStyle.mobile(
                   defaultTextDirection: defaultTextDirection,

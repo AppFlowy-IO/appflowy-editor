@@ -26,7 +26,7 @@ class AppFlowyEditor extends StatefulWidget {
     Map<String, BlockComponentBuilder>? blockComponentBuilders,
     List<CharacterShortcutEvent>? characterShortcutEvents,
     List<CommandShortcutEvent>? commandShortcutEvents,
-    List<List<ContextMenuItem>>? contextMenuItems,
+    this.contextMenuBuilder,
     this.contentInsertionConfiguration,
     this.editable = true,
     this.autoFocus = false,
@@ -53,8 +53,7 @@ class AppFlowyEditor extends StatefulWidget {
         characterShortcutEvents =
             characterShortcutEvents ?? standardCharacterShortcutEvents,
         commandShortcutEvents =
-            commandShortcutEvents ?? standardCommandShortcutEvents,
-        contextMenuItems = contextMenuItems ?? standardContextMenuItems;
+            commandShortcutEvents ?? standardCommandShortcutEvents;
 
   final EditorState editorState;
 
@@ -122,16 +121,14 @@ class AppFlowyEditor extends StatefulWidget {
   /// ```
   final List<CommandShortcutEvent> commandShortcutEvents;
 
-  /// The context menu items.
+  /// The context menu builder.
   ///
-  /// They will be shown when the user right click on the editor.
-  /// Each item will be separated by a divider.
+  /// It will be shown when the user right click on the editor.
   ///
-  /// Defaults to [standardContextMenuItems].
+  /// Defaults to a standard implementation containing
+  /// [standardContextMenuItems].
   ///
-  /// If empty the context menu won't appear.
-  ///
-  final List<List<ContextMenuItem>>? contextMenuItems;
+  final ContextMenuWidgetBuilder? contextMenuBuilder;
 
   /// Provide a editorScrollController to control the scroll behavior
   ///
@@ -345,7 +342,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         cursorColor: widget.editorStyle.cursorColor,
         selectionColor: widget.editorStyle.selectionColor,
         showMagnifier: widget.showMagnifier,
-        contextMenuItems: widget.contextMenuItems,
+        contextMenuBuilder: widget.contextMenuBuilder,
         dropTargetStyle: widget.dropTargetStyle,
         child: child,
       );
