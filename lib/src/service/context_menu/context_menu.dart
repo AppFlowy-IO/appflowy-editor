@@ -1,6 +1,13 @@
 import 'package:appflowy_editor/src/editor_state.dart';
 import 'package:flutter/material.dart';
 
+typedef ContextMenuWidgetBuilder = Widget Function(
+  BuildContext context,
+  Offset position,
+  EditorState editorState,
+  VoidCallback onPressed,
+);
+
 class ContextMenuItem {
   ContextMenuItem({
     required String Function() getName,

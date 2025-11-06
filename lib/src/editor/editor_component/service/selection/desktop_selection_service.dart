@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
+import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,7 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
     super.key,
     this.cursorColor = const Color(0xFF00BCF0),
     this.selectionColor = const Color(0xFF00BCF0),
-    this.contextMenuItems,
+    this.contextMenuBuilder,
     required this.child,
     this.dropTargetStyle = const AppFlowyDropTargetStyle(),
   });
@@ -19,7 +20,7 @@ class DesktopSelectionServiceWidget extends StatefulWidget {
   final Widget child;
   final Color cursorColor;
   final Color selectionColor;
-  final List<List<ContextMenuItem>>? contextMenuItems;
+  final ContextMenuWidgetBuilder? contextMenuBuilder;
   final AppFlowyDropTargetStyle dropTargetStyle;
 
   @override
@@ -425,8 +426,8 @@ class _DesktopSelectionServiceWidgetState
   void _showContextMenu(TapDownDetails details) {
     _clearContextMenu();
 
-    // Don't trigger the context menu if there are no items
-    if (widget.contextMenuItems == null || widget.contextMenuItems!.isEmpty) {
+    // Don't trigger the context menu if the builder is null
+    if (widget.contextMenuBuilder == null) {
       return;
     }
 
@@ -458,12 +459,19 @@ class _DesktopSelectionServiceWidgetState
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final offset = details.localPosition + const Offset(10, 10) + baseOffset;
     final contextMenu = OverlayEntry(
-      builder: (context) => ContextMenu(
-        position: offset,
-        editorState: editorState,
-        items: widget.contextMenuItems!,
-        onPressed: () => _clearContextMenu(),
-      ),
+      builder: (_) =>
+          widget.contextMenuBuilder?.call(
+            context,
+            offset,
+            editorState,
+            () => _clearContextMenu(),
+          ) ??
+          ContextMenu(
+            position: offset,
+            editorState: editorState,
+            items: standardContextMenuItems,
+            onPressed: () => _clearContextMenu(),
+          ),
     );
 
     _contextMenuAreas.add(contextMenu);
