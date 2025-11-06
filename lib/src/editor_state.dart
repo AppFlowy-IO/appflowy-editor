@@ -636,9 +636,10 @@ class EditorState {
       late AutoScroller scroller;
       scroller = AutoScroller(
         scrollableState,
-        velocityScalar: isDesktopOrWeb ? 0.125 : 0.02,
+        velocityScalar: isDesktopOrWeb ? 0.15 : 0.02,
         minimumAutoScrollDelta: isDesktopOrWeb ? 0.07 : 0.004,
-        maxAutoScrollDelta: isDesktopOrWeb ? 2.75 : 0.053,
+        maxAutoScrollDelta: isDesktopOrWeb ? 3.5 : 0.053,
+        animationDuration: Duration.zero,
         onScrollViewScrolled: () {
           _notifyScrollViewScrolledListeners();
           if (!isDesktopOrWeb) {
