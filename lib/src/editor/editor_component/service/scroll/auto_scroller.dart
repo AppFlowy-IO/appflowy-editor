@@ -20,6 +20,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
     super.velocityScalar = _kDefaultAutoScrollVelocityScalar,
     super.minimumAutoScrollDelta = _kDefaultMinAutoScrollDelta,
     super.maxAutoScrollDelta = _kDefaultMaxAutoScrollDelta,
+    super.animationDuration,
   });
 
   static const double _kDefaultAutoScrollVelocityScalar = 7;
@@ -28,6 +29,8 @@ class AutoScroller extends EdgeDraggingAutoScroller
 
   Offset? lastOffset;
   Duration? lastDuration;
+  double? lastEdgeOffset;
+  AxisDirection? lastDirection;
 
   @override
   void startAutoScroll(
@@ -38,9 +41,12 @@ class AutoScroller extends EdgeDraggingAutoScroller
   }) {
     lastOffset = offset;
     lastDuration = duration;
+    lastEdgeOffset = edgeOffset;
+    lastDirection = direction;
     if (direction != null && direction == AxisDirection.up) {
       return startAutoScrollIfNecessary(
         offset & Size(1, edgeOffset),
+        duration: duration,
       );
     }
 
@@ -52,6 +58,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
 
     startAutoScrollIfNecessary(
       dragTarget,
+      duration: duration,
     );
   }
 
@@ -59,6 +66,8 @@ class AutoScroller extends EdgeDraggingAutoScroller
   void stopAutoScroll() {
     lastOffset = null;
     lastDuration = null;
+    lastEdgeOffset = null;
+    lastDirection = null;
     super.stopAutoScroll();
   }
 
@@ -66,6 +75,8 @@ class AutoScroller extends EdgeDraggingAutoScroller
     if (lastOffset != null) {
       startAutoScroll(
         lastOffset!,
+        edgeOffset: lastEdgeOffset ?? 200,
+        direction: lastDirection,
         duration: lastDuration,
       );
     }

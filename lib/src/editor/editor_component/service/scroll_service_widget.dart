@@ -101,6 +101,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       AxisDirection? direction;
       final dynamic dragMode =
           editorState.selectionExtraInfo?['selection_drag_mode'];
+
+      // For desktop: if auto-scroller is already scrolling (from drag-to-select),
+      // don't override it here. The desktop_selection_service handles drag scrolling.
+      if (PlatformExtension.isDesktopOrWeb &&
+          (editorState.autoScroller?.scrolling ?? false)) {
+        return;
+      }
+
       switch (dragMode?.toString()) {
         case 'MobileSelectionDragMode.leftSelectionHandle':
           targetRect = selectionRects.first;

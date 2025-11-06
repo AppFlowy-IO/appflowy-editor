@@ -150,10 +150,13 @@ class EdgeDraggingAutoScroller {
     required this.velocityScalar,
     double minimumAutoScrollDelta = 1.0,
     double maxAutoScrollDelta = 20.0,
+    Duration? animationDuration,
   })  : assert(minimumAutoScrollDelta >= 0),
         assert(maxAutoScrollDelta >= minimumAutoScrollDelta),
         _minimumAutoScrollDelta = minimumAutoScrollDelta,
-        _maxAutoScrollDelta = maxAutoScrollDelta;
+        _maxAutoScrollDelta = maxAutoScrollDelta,
+        _animationDuration =
+            animationDuration ?? const Duration(milliseconds: 5);
 
   /// The [Scrollable] this auto scroller is scrolling.
   final ScrollableState scrollable;
@@ -180,6 +183,8 @@ class EdgeDraggingAutoScroller {
   /// moving rather than treat it as too small to scroll.
   final double _minimumAutoScrollDelta;
   final double _maxAutoScrollDelta;
+  final Duration _animationDuration;
+  Duration? _currentDuration;
   double? _previousScrollDelta;
 
   late Rect _dragTargetRelatedToScrollOrigin;
@@ -212,10 +217,11 @@ class EdgeDraggingAutoScroller {
   ///
   /// If the scrollable is already scrolling, calling this method updates the
   /// previous dragTarget to the new value and continues scrolling if necessary.
-  void startAutoScrollIfNecessary(Rect dragTarget) {
+  void startAutoScrollIfNecessary(Rect dragTarget, {Duration? duration}) {
     final Offset deltaToOrigin = scrollable.deltaToScrollOrigin;
     _dragTargetRelatedToScrollOrigin =
         dragTarget.translate(deltaToOrigin.dx, deltaToOrigin.dy);
+    _currentDuration = duration;
     if (_scrolling) {
       // The change will be picked up in the next scroll.
       return;
@@ -228,9 +234,10 @@ class EdgeDraggingAutoScroller {
   void stopAutoScroll() {
     _scrolling = false;
     _previousScrollDelta = null;
+    _currentDuration = null;
   }
 
-  Future<void> _scroll({Duration? duration}) async {
+  Future<void> _scroll() async {
     try {
       final RenderBox scrollRenderBox =
           scrollable.context.findRenderObject()! as RenderBox;
@@ -354,13 +361,13 @@ class EdgeDraggingAutoScroller {
       }
       await scrollable.position.moveTo(
         newOffset,
-        duration: duration,
+        duration: _currentDuration ?? _animationDuration,
         curve: Curves.linear,
-        clamp: true,
+        // clamp: true,
       );
       onScrollViewScrolled?.call();
       if (_scrolling) {
-        await _scroll(duration: duration);
+        await _scroll();
       }
     } catch (e) {
       debugPrint(e.toString());
