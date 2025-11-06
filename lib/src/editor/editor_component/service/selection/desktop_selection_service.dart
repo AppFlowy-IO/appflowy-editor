@@ -466,12 +466,7 @@ class _DesktopSelectionServiceWidgetState
             editorState,
             () => _clearContextMenu(),
           ) ??
-          ContextMenu(
-            position: offset,
-            editorState: editorState,
-            items: standardContextMenuItems,
-            onPressed: () => _clearContextMenu(),
-          ),
+          SizedBox.shrink(),
     );
 
     _contextMenuAreas.add(contextMenu);
