@@ -3,7 +3,7 @@
 ///   bold, italic,
 ///   underline, strikethrough,
 ///   textColor, highlightColor,
-///   href
+///   href, formula
 ///
 /// Supported global rendering types:
 ///   heading: h1, h2, h3, h4, h5, h6, ...
@@ -20,6 +20,7 @@ class BuiltInAttributeKey {
   static String highlightColor = 'highlightColor';
   static String code = 'code';
   static String href = 'href';
+  static String formula = 'formula';
 
   static String subtype = 'subtype';
   static String heading = 'heading';
