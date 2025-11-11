@@ -298,15 +298,10 @@ class _DesktopSelectionServiceWidgetState
     final Selection? newSelection;
 
     final isSelectionCollapsed = selection == null || selection.isCollapsed;
-
     final isWordBoundaryWithinSelection = !isSelectionCollapsed &&
         wordBoundary != null &&
-        (wordBoundary.start.path > selection.start.path ||
-            wordBoundary.start.path == selection.start.path &&
-                wordBoundary.start.offset >= selection.start.offset) &&
-        (wordBoundary.end.path < selection.end.path ||
-            wordBoundary.end.path == selection.end.path &&
-                wordBoundary.end.offset <= selection.end.offset);
+        selection.start.isAtOrBefore(wordBoundary.start) &&
+        wordBoundary.end.isAtOrBefore(selection.end);
 
     if (isWordBoundaryWithinSelection) {
       newSelection = selection;
@@ -637,5 +632,28 @@ class _DesktopSelectionServiceWidgetState
       dropPath: dropPath,
       cursorNode: node,
     );
+  }
+}
+
+extension _PositionComparisonExtension on Position {
+  bool isAtOrBefore(Position other) {
+    final minLength =
+        path.length < other.path.length ? path.length : other.path.length;
+
+    for (int i = 0; i < minLength; i++) {
+      if (path[i] < other.path[i]) {
+        return true;
+      } else if (path[i] > other.path[i]) {
+        return false;
+      }
+    }
+
+    if (path.length < other.path.length) {
+      return true;
+    } else if (path.length > other.path.length) {
+      return false;
+    }
+
+    return offset <= other.offset;
   }
 }
