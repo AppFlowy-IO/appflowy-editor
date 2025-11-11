@@ -260,7 +260,10 @@ extension SelectionTransform on EditorState {
       else if (direction == SelectionMoveDirection.backward &&
           end != null &&
           end.offset <= offset) {
-        final nextStart = node.next?.selectable?.start();
+        final nextStart = node
+            .nextNodeWhere((element) => element.selectable != null)
+            ?.selectable
+            ?.start();
         if (nextStart != null) {
           updateSelectionWithReason(
             Selection.collapsed(nextStart),

@@ -38,6 +38,40 @@ extension NodeExtensions on Node {
     return Rect.zero;
   }
 
+  Node? nextNodeWhere(bool Function(Node element) test) {
+    for (final child in children) {
+      final matchingNode = child._thisOrDescendantMatching(test);
+      if (matchingNode != null) {
+        return matchingNode;
+      }
+    }
+
+    var next = this.next;
+    while (next != null) {
+      final nextDescendentMatch = next._thisOrDescendantMatching(test);
+      if (nextDescendentMatch != null) {
+        return nextDescendentMatch;
+      }
+      next = next.next;
+    }
+
+    return parent?.next?._thisOrDescendantMatching(test);
+  }
+
+  Node? _thisOrDescendantMatching(bool Function(Node element) test) {
+    if (test(this)) {
+      return this;
+    }
+    for (final child in children) {
+      final matchingNode = child._thisOrDescendantMatching(test);
+      if (matchingNode != null) {
+        return matchingNode;
+      }
+    }
+
+    return null;
+  }
+
   /// Returns the first previous node in the subtree that satisfies the given predicate
   Node? previousNodeWhere(bool Function(Node element) test) {
     var previous = this.previous;
