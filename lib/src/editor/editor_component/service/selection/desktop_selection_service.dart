@@ -157,9 +157,29 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _clearContextMenu() {
+    if (_contextMenuAreas.isEmpty) {
+      return;
+    }
+
     _contextMenuAreas
       ..forEach((overlay) => overlay.remove())
       ..clear();
+
+    // Re-enable the toolbar when context menu is dismissed
+    // We need to temporarily clear and restore the selection to force the toolbar to re-evaluate
+    // This is necessary because the floating toolbar checks if lastSelection == selection
+    // and returns early if they're equal, even if the disableToolbar flag changed
+    final selection = editorState.selectionNotifier.value;
+    if (selection != null) {
+      editorState.updateSelectionWithReason(
+        null,
+        reason: SelectionUpdateReason.uiEvent,
+      );
+      editorState.updateSelectionWithReason(
+        selection,
+        reason: SelectionUpdateReason.uiEvent,
+      );
+    }
   }
 
   @override
@@ -288,35 +308,37 @@ class _DesktopSelectionServiceWidgetState
   void _onSecondaryTapDown(TapDownDetails details) {
     final offset = details.globalPosition;
     final selection = editorState.selectionNotifier.value;
-    final selectable = getNodeInOffset(offset)?.selectable;
+    final node = getNodeInOffset(offset);
+    final selectable = node?.selectable;
+
     if (selectable == null) {
       clearSelection();
       return;
     }
-    final wordBoundary = selectable.getWordBoundaryInOffset(offset);
 
+    final position = selectable.getPositionInOffset(offset);
     final Selection? newSelection;
 
-    final isSelectionCollapsed = selection == null || selection.isCollapsed;
+    // cases
+    // 1. if the selection is null, then select the current position as a collapsed selection
+    // 2. if the selection is collapsed, then keep it without changes
+    // 3. if the selection is not collapsed, then check if tap is within a selected node
+    // 4. if tap is within the selected nodes, then keep current selection
+    // 5. if tap is outside the selected nodes, then create a collapsed selection at tap point
 
-    final isWordBoundaryWithinSelection = !isSelectionCollapsed &&
-        wordBoundary != null &&
-        (wordBoundary.start.path > selection.start.path ||
-            wordBoundary.start.path == selection.start.path &&
-                wordBoundary.start.offset >= selection.start.offset) &&
-        (wordBoundary.end.path < selection.end.path ||
-            wordBoundary.end.path == selection.end.path &&
-                wordBoundary.end.offset <= selection.end.offset);
-
-    if (isWordBoundaryWithinSelection) {
+    if (selection == null) {
+      newSelection = Selection.collapsed(position);
+    } else if (selection.isCollapsed) {
       newSelection = selection;
-    } else if (selectable.cursorStyle == CursorStyle.verticalLine) {
-      newSelection = wordBoundary;
     } else {
-      newSelection = Selection(
-        start: selectable.start(),
-        end: selectable.end(),
-      );
+      final selectedNodes = editorState.getNodesInSelection(selection);
+      final isTapInSelectedNode = selectedNodes.any((n) => n == node);
+
+      if (isTapInSelectedNode) {
+        newSelection = selection;
+      } else {
+        newSelection = Selection.collapsed(position);
+      }
     }
 
     editorState.updateSelectionWithReason(
