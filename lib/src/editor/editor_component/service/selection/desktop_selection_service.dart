@@ -298,12 +298,15 @@ class _DesktopSelectionServiceWidgetState
     final Selection? newSelection;
 
     final isSelectionCollapsed = selection == null || selection.isCollapsed;
+
     final isWordBoundaryWithinSelection = !isSelectionCollapsed &&
         wordBoundary != null &&
-        wordBoundary.start.path >= selection.start.path &&
-        wordBoundary.start.offset >= selection.start.offset &&
-        wordBoundary.end.path <= selection.end.path &&
-        wordBoundary.end.offset <= selection.end.offset;
+        (wordBoundary.start.path > selection.start.path ||
+            wordBoundary.start.path == selection.start.path &&
+                wordBoundary.start.offset >= selection.start.offset) &&
+        (wordBoundary.end.path < selection.end.path ||
+            wordBoundary.end.path == selection.end.path &&
+                wordBoundary.end.offset <= selection.end.offset);
 
     if (isWordBoundaryWithinSelection) {
       newSelection = selection;
@@ -467,6 +470,17 @@ class _DesktopSelectionServiceWidgetState
     if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
     }
+
+    final mask = OverlayEntry(
+      builder: (_) => Listener(
+        onPointerDown: (_) => _clearContextMenu(),
+        child: Container(
+          color: Colors.transparent,
+        ),
+      ),
+    );
+    _contextMenuAreas.add(mask);
+    Overlay.of(context, rootOverlay: true).insert(mask);
 
     final baseOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
