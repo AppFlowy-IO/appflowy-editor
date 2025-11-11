@@ -61,6 +61,8 @@ class _DesktopSelectionServiceWidgetState
     listen: false,
   );
 
+  _ContextMenuKeyboardInterceptor? _keyboardInterceptor;
+
   @override
   void initState() {
     super.initState();
@@ -165,10 +167,15 @@ class _DesktopSelectionServiceWidgetState
       ..forEach((overlay) => overlay.remove())
       ..clear();
 
-    // Re-enable the toolbar when context menu is dismissed
-    // We need to temporarily clear and restore the selection to force the toolbar to re-evaluate
-    // This is necessary because the floating toolbar checks if lastSelection == selection
-    // and returns early if they're equal, even if the disableToolbar flag changed
+    if (_keyboardInterceptor != null) {
+      editorState.service.keyboardService
+          ?.unregisterInterceptor(_keyboardInterceptor!);
+      _keyboardInterceptor = null;
+    }
+
+    editorState.service.keyboardService?.enableShortcuts();
+    editorState.service.keyboardService?.enable();
+
     final selection = editorState.selectionNotifier.value;
     if (selection != null) {
       editorState.updateSelectionWithReason(
@@ -520,6 +527,13 @@ class _DesktopSelectionServiceWidgetState
 
     _contextMenuAreas.add(contextMenu);
     Overlay.of(context, rootOverlay: true).insert(contextMenu);
+
+    _keyboardInterceptor = _ContextMenuKeyboardInterceptor();
+    editorState.service.keyboardService
+        ?.registerInterceptor(_keyboardInterceptor!);
+
+    editorState.service.keyboardService?.disableShortcuts();
+    editorState.service.keyboardService?.disable();
   }
 
   @override
@@ -659,5 +673,51 @@ class _DesktopSelectionServiceWidgetState
       dropPath: dropPath,
       cursorNode: node,
     );
+  }
+}
+
+class _ContextMenuKeyboardInterceptor
+    extends AppFlowyKeyboardServiceInterceptor {
+  @override
+  Future<bool> interceptInsert(
+    TextEditingDeltaInsertion insertion,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return true;
+  }
+
+  @override
+  Future<bool> interceptDelete(
+    TextEditingDeltaDeletion deletion,
+    EditorState editorState,
+  ) async {
+    return true;
+  }
+
+  @override
+  Future<bool> interceptReplace(
+    TextEditingDeltaReplacement replacement,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return true;
+  }
+
+  @override
+  Future<bool> interceptNonTextUpdate(
+    TextEditingDeltaNonTextUpdate nonTextUpdate,
+    EditorState editorState,
+    List<CharacterShortcutEvent> characterShortcutEvents,
+  ) async {
+    return true;
+  }
+
+  @override
+  Future<bool> interceptPerformAction(
+    TextInputAction action,
+    EditorState editorState,
+  ) async {
+    return true;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import '../new/infra/testable_editor.dart';
@@ -305,6 +306,88 @@ void main() async {
 
         expect(editor.selection, equals(originalSelection));
         expect(editor.selection, isNotNull);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - context menu and toolbar behavior',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await tester.tapAt(const Offset(10.0, 10.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ContextMenu), findsNothing);
+        expect(editor.selection, isNotNull);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - shortcuts blocked when context menu shows',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+
+        expect(editor.selection, equals(originalSelection));
+
+        await tester.tapAt(const Offset(10.0, 10.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ContextMenu), findsNothing);
 
         await editor.dispose();
       },
