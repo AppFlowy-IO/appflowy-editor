@@ -286,15 +286,45 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onSecondaryTapDown(TapDownDetails details) {
-    // if selection is null, or
-    // selection.isCollapsed and the selected node is TextNode.
-    // try to select the word.
+    final offset = details.globalPosition;
     final selection = editorState.selectionNotifier.value;
-    if (selection == null ||
-        (selection.isCollapsed == true &&
-            currentSelectedNodes.first.delta != null)) {
-      _onDoubleTapDown(details);
+    final selectable = getNodeInOffset(offset)?.selectable;
+    if (selectable == null) {
+      clearSelection();
+      return;
     }
+    final wordBoundary = selectable.getWordBoundaryInOffset(offset);
+
+    final Selection? newSelection;
+
+    final isSelectionCollapsed = selection == null || selection.isCollapsed;
+
+    final isWordBoundaryWithinSelection = !isSelectionCollapsed &&
+        wordBoundary != null &&
+        (wordBoundary.start.path > selection.start.path ||
+            wordBoundary.start.path == selection.start.path &&
+                wordBoundary.start.offset >= selection.start.offset) &&
+        (wordBoundary.end.path < selection.end.path ||
+            wordBoundary.end.path == selection.end.path &&
+                wordBoundary.end.offset <= selection.end.offset);
+
+    if (isWordBoundaryWithinSelection) {
+      newSelection = selection;
+    } else if (selectable.cursorStyle == CursorStyle.verticalLine) {
+      newSelection = wordBoundary;
+    } else {
+      newSelection = Selection(
+        start: selectable.start(),
+        end: selectable.end(),
+      );
+    }
+
+    editorState.updateSelectionWithReason(
+      newSelection,
+      extraInfo: {
+        selectionExtraInfoDisableToolbar: true,
+      },
+    );
 
     _showContextMenu(details);
   }
@@ -436,24 +466,21 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
-    final isHitSelectionAreas = currentSelection.value?.isCollapsed == true ||
-        selectionRects.any((element) {
-          const threshold = 20;
-          final scaledArea = Rect.fromCenter(
-            center: element.center,
-            width: element.width + threshold,
-            height: element.height + threshold,
-          );
-          return scaledArea.contains(details.globalPosition);
-        });
-    if (!isHitSelectionAreas) {
-      return;
-    }
-
     // For now, only support the text node.
     if (!currentSelectedNodes.every((element) => element.delta != null)) {
       return;
     }
+
+    final mask = OverlayEntry(
+      builder: (_) => Listener(
+        onPointerDown: (_) => _clearContextMenu(),
+        child: Container(
+          color: Colors.transparent,
+        ),
+      ),
+    );
+    _contextMenuAreas.add(mask);
+    Overlay.of(context, rootOverlay: true).insert(mask);
 
     final baseOffset =
         editorState.renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;

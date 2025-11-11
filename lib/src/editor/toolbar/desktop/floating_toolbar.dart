@@ -135,16 +135,23 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onSelectionChanged() {
     final selection = editorState.selection;
     final selectionType = editorState.selectionType;
+
+    final disableToolbar =
+        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
+            true;
+
+    if (disableToolbar) {
+      _clear();
+    }
+
     if (lastSelection == selection) return;
     lastSelection = selection;
 
     if (selection == null ||
         selection.isCollapsed ||
-        selectionType == SelectionType.block ||
-        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-            true) {
+        selectionType == SelectionType.block) {
       _clear();
-    } else {
+    } else if (!disableToolbar) {
       // uses debounce to avoid the computing the rects too frequently.
       _showAfterDelay(
         duration: const Duration(milliseconds: 200),
