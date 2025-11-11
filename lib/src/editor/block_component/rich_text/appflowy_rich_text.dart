@@ -277,11 +277,13 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Selection? getWordBoundaryInOffset(Offset offset) {
+    final renderParagraph = _renderParagraph;
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
     final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
         const TextPosition(offset: 0);
-    final textRange =
-        _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
+    final textRange = renderParagraph == null
+        ? TextRange.empty
+        : _getNonSpaceWordBoundary(renderParagraph, textPosition);
     final start = Position(path: widget.node.path, offset: textRange.start);
     final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
@@ -295,6 +297,56 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     final start = Position(path: widget.node.path, offset: textRange.start);
     final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
+  }
+
+  TextRange _getNonSpaceWordBoundary(
+    RenderParagraph renderParagraph,
+    TextPosition textPosition,
+  ) {
+    bool isSpace(String string) => string.trim().isEmpty;
+
+    final text = renderParagraph.text.toPlainText();
+    final boundary = renderParagraph.getWordBoundary(textPosition);
+
+    if (!boundary.isValid) {
+      return TextRange.empty;
+    }
+
+    final wordText = text.substring(boundary.start, boundary.end);
+
+    if (!isSpace(wordText)) {
+      return boundary;
+    }
+
+    int currentOffset = boundary.start - 1;
+    while (currentOffset >= 0 && isSpace(text[currentOffset])) {
+      currentOffset--;
+    }
+    if (currentOffset >= 0) {
+      final prevWordBoundary =
+          renderParagraph.getWordBoundary(TextPosition(offset: currentOffset));
+      if (!isSpace(
+        text.substring(prevWordBoundary.start, prevWordBoundary.end),
+      )) {
+        return prevWordBoundary;
+      }
+    }
+
+    currentOffset = boundary.end;
+    while (currentOffset < text.length && isSpace(text[currentOffset])) {
+      currentOffset++;
+    }
+    if (currentOffset < text.length) {
+      final nextWordBoundary =
+          renderParagraph.getWordBoundary(TextPosition(offset: currentOffset));
+      if (!isSpace(
+        text.substring(nextWordBoundary.start, nextWordBoundary.end),
+      )) {
+        return nextWordBoundary;
+      }
+    }
+
+    return TextRange.empty;
   }
 
   @override
