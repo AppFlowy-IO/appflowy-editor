@@ -137,5 +137,22 @@ void main() async {
         '***<u>`Welcome`</u>*** ***~~to~~*** ***[AppFlowy](https://appflowy.io)***',
       );
     });
+
+    test('formula', () {
+      final delta = Delta(
+        operations: [
+          TextInsert('This is a formula:'),
+          TextInsert(
+            '\$',
+            attributes: {
+              BuiltInAttributeKey.formula: 'E = MC ^ 2',
+            },
+          ),
+          TextInsert('.'),
+        ],
+      );
+      final result = DeltaMarkdownEncoder().convert(delta);
+      expect(result, 'This is a formula:\$E = MC ^ 2\$.');
+    });
   });
 }
