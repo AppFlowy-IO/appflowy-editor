@@ -1,4 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/util.dart';
 import '../new/infra/testable_editor.dart';
@@ -79,54 +81,317 @@ void main() async {
       await editor.dispose();
     });
 
-    // TODO: lucas.xu support context menu
-    // testWidgets('Test secondary tap', (tester) async {
-    //   const text = 'Welcome to Appflowy 😁';
-    //   final editor = tester.editor..addParagraphs(3, initialText: text);
-    //   await editor.startTesting();
+    testWidgets(
+      'Test secondary tap (right-click) - no selection creates collapsed selection',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
 
-    //   final secondNode = editor.nodeAtPath([1]) as Node;
-    //   final finder = find.byKey(secondNode.key);
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
 
-    //   final rect = tester.getRect(finder);
-    //   // secondary tap
-    //   await tester.tapAt(
-    //     rect.centerLeft + const Offset(10.0, 0.0),
-    //     buttons: kSecondaryButton,
-    //   );
-    //   await tester.pump();
+        final rect = tester.getRect(finder);
+        expect(editor.selection, isNull);
 
-    //   const welcome = 'Welcome';
-    //   expect(
-    //     editor.selection,
-    //     Selection.single(
-    //       path: [1],
-    //       startOffset: 0,
-    //       endOffset: welcome.length,
-    //     ), // Welcome
-    //   );
+        await tester.tapAt(
+          rect.centerLeft + const Offset(50.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pump();
 
-    //   final contextMenu = find.byType(ContextMenu);
-    //   expect(contextMenu, findsOneWidget);
+        expect(editor.selection, isNotNull);
+        expect(editor.selection!.isCollapsed, isTrue);
+        expect(editor.selection!.start.path, [1]);
 
-    //   // test built in context menu items
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
 
-    //   // Skip the Windows platform because the rich_clipboard package doesn't support it perfectly.
-    //   if (Platform.isWindows) {
-    //     return;
-    //   }
+        await editor.dispose();
+      },
+    );
 
-    //   // cut
-    //   await tester.tap(find.text('Cut'));
-    //   await tester.pump();
-    //   expect(
-    //     secondNode.delta!.toPlainText(),
-    //     text.replaceAll(welcome, ''),
-    //   );
-    //
-    //   await editor.dispose();
-    //   // TODO: the copy and paste test is not working during test env.
-    // });
+    testWidgets(
+      'Test secondary tap - collapsed selection remains unchanged',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(30.0, 0.0));
+        await tester.pump();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isTrue);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(80.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pump();
+
+        expect(editor.selection, equals(originalSelection));
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - non-collapsed selection remains when tapping within selected node',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+        expect(originalSelection.start.path, [1]);
+        expect(originalSelection.end.path, [1]);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        expect(editor.selection, equals(originalSelection));
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - multi-node selection remains when tapping within selected nodes',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final firstNode = editor.nodeAtPath([0]);
+        final secondNode = editor.nodeAtPath([1]);
+        final firstFinder = find.byKey(firstNode!.key);
+        final secondFinder = find.byKey(secondNode!.key);
+
+        final firstRect = tester.getRect(firstFinder);
+        final secondRect = tester.getRect(secondFinder);
+
+        await tester.timedDragFrom(
+          firstRect.centerLeft + const Offset(10.0, 0.0),
+          secondRect.center - firstRect.centerLeft - const Offset(10.0, 0.0),
+          const Duration(milliseconds: 500),
+        );
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          secondRect.centerLeft + const Offset(30.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pump();
+
+        expect(editor.selection, equals(originalSelection));
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - selection changes when tapping outside selected nodes',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final firstNode = editor.nodeAtPath([0]);
+        final secondNode = editor.nodeAtPath([1]);
+        final thirdNode = editor.nodeAtPath([2]);
+        final firstFinder = find.byKey(firstNode!.key);
+        final secondFinder = find.byKey(secondNode!.key);
+        final thirdFinder = find.byKey(thirdNode!.key);
+
+        final firstRect = tester.getRect(firstFinder);
+        final secondRect = tester.getRect(secondFinder);
+        final thirdRect = tester.getRect(thirdFinder);
+
+        await tester.timedDragFrom(
+          firstRect.centerLeft + const Offset(10.0, 0.0),
+          secondRect.center - firstRect.centerLeft - const Offset(10.0, 0.0),
+          const Duration(milliseconds: 500),
+        );
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          thirdRect.centerLeft + const Offset(30.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pump();
+
+        expect(editor.selection, isNotNull);
+        expect(editor.selection!.isCollapsed, isTrue);
+        expect(editor.selection!.start.path, [2]);
+        expect(editor.selection, isNot(equals(originalSelection)));
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - toolbar re-enabled when context menu is dismissed by clicking mask',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await tester.tapAt(const Offset(10.0, 10.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ContextMenu), findsNothing);
+
+        expect(editor.selection, equals(originalSelection));
+        expect(editor.selection, isNotNull);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - context menu and toolbar behavior',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await tester.tapAt(const Offset(10.0, 10.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ContextMenu), findsNothing);
+        expect(editor.selection, isNotNull);
+
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      'Test secondary tap - shortcuts blocked when context menu shows',
+      (tester) async {
+        const text = 'Welcome to Appflowy 😁';
+        final editor = tester.editor..addParagraphs(3, initialText: text);
+        await editor.startTesting();
+
+        final secondNode = editor.nodeAtPath([1]);
+        final finder = find.byKey(secondNode!.key);
+
+        final rect = tester.getRect(finder);
+
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+        await tester.pumpAndSettle();
+
+        final originalSelection = editor.selection;
+        expect(originalSelection, isNotNull);
+        expect(originalSelection!.isCollapsed, isFalse);
+
+        await tester.tapAt(
+          rect.centerLeft + const Offset(20.0, 0.0),
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+
+        final contextMenu = find.byType(ContextMenu);
+        expect(contextMenu, findsOneWidget);
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+
+        expect(editor.selection, equals(originalSelection));
+
+        await tester.tapAt(const Offset(10.0, 10.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ContextMenu), findsNothing);
+
+        await editor.dispose();
+      },
+    );
 
     testWidgets('single tap with horizontal nodes', (tester) async {
       var tableNode = TableNode.fromList([
