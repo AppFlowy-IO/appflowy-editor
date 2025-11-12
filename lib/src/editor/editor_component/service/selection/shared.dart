@@ -72,9 +72,7 @@ extension EditorStateSelection on EditorState {
     }
 
     final node = filteredNodes[min];
-    if (node.children.isNotEmpty &&
-        node.children.first.renderBox != null &&
-        node.children.first.rect.top <= offset.dy) {
+    if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
       final children = node.children.toList(growable: false)
         ..sort(
           (a, b) => a.rect.bottom != b.rect.bottom
