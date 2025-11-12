@@ -15,8 +15,13 @@ class DeltaMarkdownEncoder extends Converter<Delta, String> {
       if (op is TextInsert) {
         final attributes = op.attributes;
         if (attributes != null) {
+          final formula = attributes[BuiltInAttributeKey.formula] ?? '';
           buffer.write(_prefixSyntax(attributes));
-          buffer.write(op.text);
+          if (formula.isNotEmpty) {
+            buffer.write(formula);
+          } else {
+            buffer.write(op.text);
+          }
           buffer.write(_suffixSyntax(attributes));
         } else {
           buffer.write(op.text);
@@ -52,6 +57,10 @@ class DeltaMarkdownEncoder extends Converter<Delta, String> {
       syntax += '[';
     }
 
+    if (attributes[BuiltInAttributeKey.formula] != null) {
+      syntax += r'$';
+    }
+
     return syntax;
   }
 
@@ -81,6 +90,10 @@ class DeltaMarkdownEncoder extends Converter<Delta, String> {
       syntax += '**';
     } else if (attributes[BuiltInAttributeKey.italic] == true) {
       syntax += '_';
+    }
+
+    if (attributes[BuiltInAttributeKey.formula] != null) {
+      syntax += r'$';
     }
 
     return syntax;
