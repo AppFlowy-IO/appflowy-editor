@@ -72,15 +72,34 @@ extension EditorStateSelection on EditorState {
     }
 
     final node = filteredNodes[min];
-    if (node.children.isNotEmpty &&
-        node.children.first.renderBox != null &&
-        node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false)
+    if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
+      final skipSortingChildren =
+          node.selectable?.skipSortingChildrenWhenSelecting ?? false;
+
+      List<Node> children = skipSortingChildren
+          ? node.children
+          : node.children.toList(growable: false)
         ..sort(
           (a, b) => a.rect.bottom != b.rect.bottom
               ? a.rect.bottom.compareTo(b.rect.bottom)
               : a.rect.left.compareTo(b.rect.left),
         );
+
+      // if the nodes are in the same tab view, their rect are overlaid,
+      //  we need to filter out the invisible nodes
+      children = children.where((e) {
+        final context = e.key.currentContext;
+        bool isVisible = true;
+        context?.visitAncestorElements((element) {
+          final widget = element.widget;
+          if (widget is Opacity && widget.opacity == 0) {
+            isVisible = false;
+            return false;
+          }
+          return true;
+        });
+        return isVisible;
+      }).toList();
 
       return getNodeInOffset(
         children,
