@@ -102,4 +102,7 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   }
 
   TextDirection textDirection() => TextDirection.ltr;
+
+  /// If true, the children will not be sorted when selecting.
+  bool get skipSortingChildrenWhenSelecting => false;
 }

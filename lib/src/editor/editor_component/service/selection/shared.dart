@@ -73,7 +73,12 @@ extension EditorStateSelection on EditorState {
 
     final node = filteredNodes[min];
     if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false)
+      final skipSortingChildren =
+          node.selectable?.skipSortingChildrenWhenSelecting ?? false;
+
+      final children = skipSortingChildren
+          ? node.children
+          : node.children.toList(growable: false)
         ..sort(
           (a, b) => a.rect.bottom != b.rect.bottom
               ? a.rect.bottom.compareTo(b.rect.bottom)
