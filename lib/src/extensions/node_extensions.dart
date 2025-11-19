@@ -1,12 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-// Simple cache for storing node rects indexed by node id
-// Cache is cleared periodically to avoid stale data
-final Map<String, Rect> _rectCache = {};
-int _cacheAccessCount = 0;
-const int _cacheInvalidationThreshold = 1000; // Clear cache after 1000 accesses
-
 extension NodeExtensions on Node {
   RenderBox? get renderBox =>
       key.currentContext?.findRenderObject()?.unwrapOrNull<RenderBox>();
@@ -37,29 +31,11 @@ extension NodeExtensions on Node {
   }
 
   Rect get rect {
-    // Periodically clear cache to avoid stale data
-    _cacheAccessCount++;
-    if (_cacheAccessCount > _cacheInvalidationThreshold) {
-      _rectCache.clear();
-      _cacheAccessCount = 0;
-    }
-
-    // Return cached rect if available
-    if (_rectCache.containsKey(id)) {
-      return _rectCache[id]!;
-    }
-
-    // Calculate and cache the rect
-    final Rect calculatedRect;
     if (renderBox != null) {
       final boxOffset = renderBox!.localToGlobal(Offset.zero);
-      calculatedRect = boxOffset & renderBox!.size;
-    } else {
-      calculatedRect = Rect.zero;
+      return boxOffset & renderBox!.size;
     }
-
-    _rectCache[id] = calculatedRect;
-    return calculatedRect;
+    return Rect.zero;
   }
 
   Node? nextNodeWhere(bool Function(Node element) test) {
