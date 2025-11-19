@@ -77,26 +77,50 @@ extension EditorStateSelection on EditorState {
     }
 
     final node = filteredNodes[min];
-    if (node.children.isNotEmpty &&
-        node.children.first.renderBox != null &&
-        node.children.first.rect.top <= offset.dy) {
-      // Periodically clear cache
-      _sortCacheAccessCount++;
-      if (_sortCacheAccessCount > _sortCacheInvalidationThreshold) {
-        _sortedChildrenCache.clear();
-        _sortCacheAccessCount = 0;
+    if (node.children.isNotEmpty && node.children.first.rect.top <= offset.dy) {
+      final skipSortingChildren =
+          node.selectable?.skipSortingChildrenWhenSelecting ?? false;
+
+      List<Node> children;
+
+      if (skipSortingChildren) {
+        // Don't sort or cache if skipping is requested
+        children = node.children;
+      } else {
+        // Periodically clear cache
+        _sortCacheAccessCount++;
+        if (_sortCacheAccessCount > _sortCacheInvalidationThreshold) {
+          _sortedChildrenCache.clear();
+          _sortCacheAccessCount = 0;
+        }
+
+        // Get or compute sorted children
+        children = _sortedChildrenCache.putIfAbsent(node.id, () {
+          final childList = node.children.toList(growable: false);
+          childList.sort(
+            (a, b) => a.rect.bottom != b.rect.bottom
+                ? a.rect.bottom.compareTo(b.rect.bottom)
+                : a.rect.left.compareTo(b.rect.left),
+          );
+          return childList;
+        });
       }
 
-      // Get or compute sorted children
-      final children = _sortedChildrenCache.putIfAbsent(node.id, () {
-        final childList = node.children.toList(growable: false);
-        childList.sort(
-          (a, b) => a.rect.bottom != b.rect.bottom
-              ? a.rect.bottom.compareTo(b.rect.bottom)
-              : a.rect.left.compareTo(b.rect.left),
-        );
-        return childList;
-      });
+      // if the nodes are in the same tab view, their rect are overlaid,
+      //  we need to filter out the invisible nodes
+      children = children.where((e) {
+        final context = e.key.currentContext;
+        bool isVisible = true;
+        context?.visitAncestorElements((element) {
+          final widget = element.widget;
+          if (widget is Opacity && widget.opacity == 0) {
+            isVisible = false;
+            return false;
+          }
+          return true;
+        });
+        return isVisible;
+      }).toList();
 
       return getNodeInOffset(
         children,
