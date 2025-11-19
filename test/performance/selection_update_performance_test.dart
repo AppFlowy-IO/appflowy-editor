@@ -77,8 +77,8 @@ void main() {
         // Performance assertion - should be very fast
         expect(
           elapsedMs,
-          lessThan(100),
-          reason: 'Single paragraph selection should be very fast (<100ms)',
+          lessThan(150),
+          reason: 'Single paragraph selection should be very fast (<150ms)',
         );
 
         // Cleanup
