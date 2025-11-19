@@ -57,12 +57,13 @@ extension EditorStateSelection on EditorState {
       compare: (index, rect) => rect.bottom <= offset.dy,
     );
 
-    final filteredNodes = List.of(sortedNodes)
-      ..retainWhere(
-        (n) =>
-            _getCachedRect(n, rectCache!).bottom ==
-            _getCachedRect(sortedNodes[min], rectCache).bottom,
-      );
+    final rowBottom = _getCachedRect(sortedNodes[min], rectCache!).bottom;
+    final filteredNodes = <Node>[];
+    for (final node in sortedNodes) {
+      if (_getCachedRect(node, rectCache).bottom == rowBottom) {
+        filteredNodes.add(node);
+      }
+    }
     min = 0;
     if (filteredNodes.length > 1) {
       min = _findCloseNode(
@@ -106,9 +107,11 @@ extension EditorStateSelection on EditorState {
 
       // if the nodes are in the same tab view, their rect are overlaid,
       //  we need to filter out the invisible nodes
-      children = children.where((e) {
-        final context = e.key.currentContext;
-        bool isVisible = true;
+      bool hasInvisibleChildren = false;
+      final visibleChildren = <Node>[];
+      for (final child in children) {
+        final context = child.key.currentContext;
+        var isVisible = true;
         context?.visitAncestorElements((element) {
           final widget = element.widget;
           if (widget is Opacity && widget.opacity == 0) {
@@ -117,8 +120,19 @@ extension EditorStateSelection on EditorState {
           }
           return true;
         });
-        return isVisible;
-      }).toList();
+        if (isVisible) {
+          visibleChildren.add(child);
+        } else {
+          hasInvisibleChildren = true;
+        }
+      }
+      if (hasInvisibleChildren) {
+        children = visibleChildren;
+      }
+
+      if (children.isEmpty) {
+        return node;
+      }
 
       return getNodeInOffset(
         children,
