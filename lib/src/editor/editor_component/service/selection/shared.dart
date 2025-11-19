@@ -3,6 +3,11 @@ import 'dart:math' as math;
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+// Cache for storing sorted children indexed by parent node id
+final Map<String, List<Node>> _sortedChildrenCache = {};
+int _sortCacheAccessCount = 0;
+const int _sortCacheInvalidationThreshold = 100; // Clear cache after 100 accesses
+
 extension EditorStateSelection on EditorState {
   List<Node> getVisibleNodes(EditorScrollController controller) {
     final List<Node> sortedNodes = [];
@@ -75,12 +80,23 @@ extension EditorStateSelection on EditorState {
     if (node.children.isNotEmpty &&
         node.children.first.renderBox != null &&
         node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false)
-        ..sort(
+      // Periodically clear cache
+      _sortCacheAccessCount++;
+      if (_sortCacheAccessCount > _sortCacheInvalidationThreshold) {
+        _sortedChildrenCache.clear();
+        _sortCacheAccessCount = 0;
+      }
+
+      // Get or compute sorted children
+      final children = _sortedChildrenCache.putIfAbsent(node.id, () {
+        final childList = node.children.toList(growable: false);
+        childList.sort(
           (a, b) => a.rect.bottom != b.rect.bottom
               ? a.rect.bottom.compareTo(b.rect.bottom)
               : a.rect.left.compareTo(b.rect.left),
         );
+        return childList;
+      });
 
       return getNodeInOffset(
         children,
