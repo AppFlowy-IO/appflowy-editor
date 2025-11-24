@@ -3,6 +3,7 @@ import 'package:appflowy_editor/src/editor/editor_component/service/ime/characte
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/delta_input_impl.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/services.dart';
+import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
 
 Future<void> onReplace(
   TextEditingDeltaReplacement replacement,
@@ -46,6 +47,33 @@ Future<void> onReplace(
     final transaction = editorState.transaction;
     final start = replacement.replacedRange.start;
     final length = replacement.replacedRange.end - start;
+    // Try to autocorrect on desktop using the bundled dictionary.
+    // If a suggestion is found and differs from the replacement text,
+    // use the suggestion as the replacement (auto-correct).
+    TextEditingDeltaReplacement replacementToApply = replacement;
+    try {
+      if (PlatformExtension.isMacOS || PlatformExtension.isLinux || PlatformExtension.isWindows) {
+        final replText = replacement.replacementText.trim();
+        if (replText.isNotEmpty && !replText.contains(RegExp(r"\s"))) {
+          final suggestions = await SpellChecker.instance.suggest(replText, maxSuggestions: 1);
+          if (suggestions.isNotEmpty) {
+            final top = suggestions.first;
+            if (top.toLowerCase() != replText.toLowerCase()) {
+              replacementToApply = TextEditingDeltaReplacement(
+                oldText: replacement.oldText,
+                replacementText: top,
+                replacedRange: replacement.replacedRange,
+                selection: replacement.selection,
+                composing: replacement.composing,
+              );
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // Fall back silently on any spell-check error.
+    }
+
     final afterSelection = Selection(
       start: Position(
         path: node.path,
@@ -57,7 +85,7 @@ Future<void> onReplace(
       ),
     );
     transaction
-      ..replaceText(node, start, length, replacement.replacementText)
+      ..replaceText(node, start, length, replacementToApply.replacementText)
       ..afterSelection = afterSelection;
     await editorState.apply(transaction);
   } else {
