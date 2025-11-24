@@ -5,6 +5,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_check_overlay.dart';
 
 typedef TextSpanDecoratorForAttribute = InlineSpan Function(
   BuildContext context,
@@ -145,6 +147,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         _buildPlaceholderText(context),
         _buildRichText(context),
         ..._buildRichTextOverlay(context),
+        _buildSpellCheckOverlay(),
       ],
     );
 
@@ -442,6 +445,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         [];
   }
 
+  Widget _buildSpellCheckOverlay() {
+    if (textKey.currentContext == null) return const SizedBox.shrink();
+    return SpellCheckOverlay(
+      editorState: widget.editorState,
+      node: widget.node,
+      delegate: this,
+      misspelledCache: _misspelledCache,
+    );
+  }
+
   void confirmContextEnabled() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && textKey.currentContext == null) {
@@ -611,27 +624,83 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           );
         }
       }
-      final textSpan = TextSpan(
-        text: textInsert.text,
-        style: textStyle,
-      );
-      textSpans.add(
-        textSpanDecoratorForAttribute != null
-            ? textSpanDecoratorForAttribute!(
-                context,
-                widget.node,
-                offset,
-                textInsert,
-                textSpan,
-                widget.textSpanDecorator?.call(textSpan) ?? textSpan,
-              )
-            : textSpan,
-      );
+      // Split the insert text into word and non-word tokens so we can
+      // underline misspelled words and attach hover suggestion UI.
+      final tokenReg = RegExp(r"(\w+|[^\w]+)");
+      final tokens = tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
+      int innerIndex = 0;
+
+      for (final token in tokens) {
+        final isWord = RegExp(r"^\w+$").hasMatch(token);
+        if (isWord) {
+          final word = token;
+          final lc = word.toLowerCase();
+
+          // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
+          // cache stored on state (to avoid repeated checks)
+          // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
+          if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
+            _checkWord(word);
+          }
+
+          // Only mark as misspelled if we've checked it and confirmed it's wrong
+          final isMisspelled = _misspelledCache[lc] == true;
+
+          final spanStyle = isMisspelled
+              ? textStyle.copyWith(
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.wavy,
+                  decorationColor: Colors.red,
+                )
+              : textStyle;
+
+          // Always use TextSpan - never WidgetSpan to avoid transaction errors
+          final textSpan = TextSpan(text: word, style: spanStyle);
+          final span = textSpanDecoratorForAttribute != null
+              ? textSpanDecoratorForAttribute!(
+                  context,
+                  widget.node,
+                  offset + innerIndex,
+                  textInsert,
+                  textSpan,
+                  widget.textSpanDecorator?.call(textSpan) ?? textSpan,
+                )
+              : textSpan;
+
+          textSpans.add(span);
+        } else {
+          // non-word token (spaces, punctuation)
+          final textSpan = TextSpan(text: token, style: textStyle);
+          textSpans.add(textSpan);
+        }
+        innerIndex += token.length;
+      }
       offset += textInsert.length;
     }
     return TextSpan(
       children: textSpans,
     );
+  }
+
+  final Map<String, bool> _misspelledCache = {};
+
+  void _checkWord(String word) {
+    // Pass the original word (with original casing) to the spell checker
+    // so it can properly check for capital letters, camelCase, etc.
+    // Store result in cache using lowercase key for lookup
+    final lc = word.toLowerCase();
+    
+    SpellChecker.instance.contains(word).then((exists) {
+      final miss = !exists;
+      // avoid unnecessary setState
+      if (_misspelledCache[lc] != miss) {
+        _misspelledCache[lc] = miss;
+        if (mounted) setState(() {});
+      }
+    }).catchError((err) {
+      // treat as known on error
+      _misspelledCache[lc] = false;
+    });
   }
 
   TextSelection? textSelectionFromEditorSelection(Selection? selection) {
