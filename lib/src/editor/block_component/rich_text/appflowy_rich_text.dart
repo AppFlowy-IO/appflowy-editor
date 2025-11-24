@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_hover.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_check_overlay.dart';
 
 typedef TextSpanDecoratorForAttribute = InlineSpan Function(
   BuildContext context,
@@ -147,6 +147,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         _buildPlaceholderText(context),
         _buildRichText(context),
         ..._buildRichTextOverlay(context),
+        _buildSpellCheckOverlay(),
       ],
     );
 
@@ -444,6 +445,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         [];
   }
 
+  Widget _buildSpellCheckOverlay() {
+    if (textKey.currentContext == null) return const SizedBox.shrink();
+    return SpellCheckOverlay(
+      editorState: widget.editorState,
+      node: widget.node,
+      delegate: this,
+      misspelledCache: _misspelledCache,
+    );
+  }
+
   void confirmContextEnabled() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && textKey.currentContext == null) {
@@ -628,11 +639,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
           // cache stored on state (to avoid repeated checks)
           if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
+            print('SpellChecker [RichText]: Token "$word" is a word, initiating check...');
             _checkWord(lc);
           }
 
           // Only mark as misspelled if we've checked it and confirmed it's wrong
           final isMisspelled = _misspelledCache[lc] == true;
+          
+          if (isMisspelled) {
+            print('SpellChecker [RichText]: Word "$word" is MISSPELLED, applying red underline');
+          }
 
           final spanStyle = isMisspelled
               ? textStyle.copyWith(
@@ -642,45 +658,18 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
                 )
               : textStyle;
 
-          InlineSpan span;
-          if (isMisspelled) {
-            // Use a WidgetSpan to support hover interactivity.
-            span = WidgetSpan(
-              alignment: PlaceholderAlignment.baseline,
-              baseline: TextBaseline.alphabetic,
-              child: SpellHover(
-                word: word,
-                child: Text(
-                  word,
-                  style: spanStyle,
-                ),
-                onSelected: (suggestion) async {
-                  // replace the word in the node using editor transaction
-                  final node = widget.node;
-                  final start = offset + innerIndex;
-                  final length = word.length;
-                  final transaction = widget.editorState.transaction;
-                  transaction.replaceText(node, start, length, suggestion);
-                  transaction.afterSelection = Selection.collapsed(
-                    Position(path: node.path, offset: (start + suggestion.length).toInt()),
-                  );
-                  await widget.editorState.apply(transaction);
-                },
-              ),
-            );
-          } else {
-            final textSpan = TextSpan(text: word, style: spanStyle);
-            span = textSpanDecoratorForAttribute != null
-                ? textSpanDecoratorForAttribute!(
-                    context,
-                    widget.node,
-                    offset + innerIndex,
-                    textInsert,
-                    textSpan,
-                    widget.textSpanDecorator?.call(textSpan) ?? textSpan,
-                  )
-                : textSpan;
-          }
+          // Always use TextSpan - never WidgetSpan to avoid transaction errors
+          final textSpan = TextSpan(text: word, style: spanStyle);
+          final span = textSpanDecoratorForAttribute != null
+              ? textSpanDecoratorForAttribute!(
+                  context,
+                  widget.node,
+                  offset + innerIndex,
+                  textInsert,
+                  textSpan,
+                  widget.textSpanDecorator?.call(textSpan) ?? textSpan,
+                )
+              : textSpan;
 
           textSpans.add(span);
         } else {
@@ -700,12 +689,15 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   final Map<String, bool> _misspelledCache = {};
 
   void _checkWord(String lc) {
+    print('SpellChecker [RichText]: Checking word "$lc"...');
     // fire-and-forget check; update cache and rebuild when ready
     SpellChecker.instance.contains(lc).then((exists) {
       final miss = !exists;
+      print('SpellChecker [RichText]: Word "$lc" is ${miss ? "MISSPELLED" : "correct"}');
       // avoid unnecessary setState
       if (_misspelledCache[lc] != miss) {
         _misspelledCache[lc] = miss;
+        print('SpellChecker [RichText]: Updating cache and triggering rebuild for "$lc"');
         if (mounted) setState(() {});
       }
     }).catchError((err) {

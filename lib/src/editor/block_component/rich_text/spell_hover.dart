@@ -20,7 +20,8 @@ class SpellHover extends StatefulWidget {
 
 class _SpellHoverState extends State<SpellHover> {
   OverlayEntry? _entry;
-  bool _hovering = false;
+  bool _hoveringOnWord = false;
+  bool _hoveringOnPopup = false;
 
   @override
   void dispose() {
@@ -32,6 +33,8 @@ class _SpellHoverState extends State<SpellHover> {
     _entry?.remove();
     _entry = null;
   }
+
+  bool get _shouldShowOverlay => _hoveringOnWord || _hoveringOnPopup;
 
   Future<void> _showOverlay() async {
     _removeOverlay();
@@ -49,20 +52,31 @@ class _SpellHoverState extends State<SpellHover> {
         left: offset.dx,
         top: offset.dy + size.height + 4,
         child: MouseRegion(
+          onEnter: (_) {
+            _hoveringOnPopup = true;
+          },
           onExit: (_) {
+            _hoveringOnPopup = false;
             // remove after a short delay to avoid flicker
-            Future.delayed(const Duration(milliseconds: 150), () {
-              if (!_hovering) _removeOverlay();
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (!_shouldShowOverlay) _removeOverlay();
             });
           },
           child: Material(
-            elevation: 4,
+            elevation: 8,
+            borderRadius: BorderRadius.circular(12),
             color: Colors.white,
-            child: ConstrainedBox(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
               constraints: const BoxConstraints(maxWidth: 240),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: suggestions
                     .map(
                       (s) => InkWell(
@@ -70,12 +84,32 @@ class _SpellHoverState extends State<SpellHover> {
                           await widget.onSelected(s);
                           _removeOverlay();
                         },
+                        borderRadius: BorderRadius.circular(8),
+                        hoverColor: Colors.blue.shade50,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
+                            vertical: 10.0,
                             horizontal: 12.0,
                           ),
-                          child: Text(s),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.star,
+                                size: 16,
+                                color: Colors.amber.shade700,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  s,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )
@@ -95,13 +129,13 @@ class _SpellHoverState extends State<SpellHover> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) {
-        _hovering = true;
+        _hoveringOnWord = true;
         _showOverlay();
       },
       onExit: (_) {
-        _hovering = false;
-        Future.delayed(const Duration(milliseconds: 150), () {
-          if (!_hovering) _removeOverlay();
+        _hoveringOnWord = false;
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (!_shouldShowOverlay) _removeOverlay();
         });
       },
       child: widget.child,
