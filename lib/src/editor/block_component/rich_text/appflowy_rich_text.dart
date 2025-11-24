@@ -638,17 +638,13 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
           // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
           // cache stored on state (to avoid repeated checks)
+          // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
           if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
-            print('SpellChecker [RichText]: Token "$word" is a word, initiating check...');
-            _checkWord(lc);
+            _checkWord(word);
           }
 
           // Only mark as misspelled if we've checked it and confirmed it's wrong
           final isMisspelled = _misspelledCache[lc] == true;
-          
-          if (isMisspelled) {
-            print('SpellChecker [RichText]: Word "$word" is MISSPELLED, applying red underline');
-          }
 
           final spanStyle = isMisspelled
               ? textStyle.copyWith(
@@ -688,21 +684,21 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   final Map<String, bool> _misspelledCache = {};
 
-  void _checkWord(String lc) {
-    print('SpellChecker [RichText]: Checking word "$lc"...');
-    // fire-and-forget check; update cache and rebuild when ready
-    SpellChecker.instance.contains(lc).then((exists) {
+  void _checkWord(String word) {
+    // Pass the original word (with original casing) to the spell checker
+    // so it can properly check for capital letters, camelCase, etc.
+    // Store result in cache using lowercase key for lookup
+    final lc = word.toLowerCase();
+    
+    SpellChecker.instance.contains(word).then((exists) {
       final miss = !exists;
-      print('SpellChecker [RichText]: Word "$lc" is ${miss ? "MISSPELLED" : "correct"}');
       // avoid unnecessary setState
       if (_misspelledCache[lc] != miss) {
         _misspelledCache[lc] = miss;
-        print('SpellChecker [RichText]: Updating cache and triggering rebuild for "$lc"');
         if (mounted) setState(() {});
       }
     }).catchError((err) {
       // treat as known on error
-      print('SpellChecker error for "$lc": $err');
       _misspelledCache[lc] = false;
     });
   }

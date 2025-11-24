@@ -34,6 +34,12 @@ class SpellChecker {
     'appflowy', 'flutter', 'dart', 'widget', 'app', 'api', 'ui', 'ux',
     'html', 'css', 'json', 'xml', 'svg', 'png', 'jpg', 'gif', 'pdf',
     'http', 'https', 'url', 'uri', 'sql', 'db', 'id', 'uuid',
+    'github', 'git', 'npm', 'webpack', 'babel', 'eslint', 'prettier',
+    'typescript', 'javascript', 'python', 'java', 'kotlin', 'swift',
+    'ios', 'android', 'macos', 'windows', 'linux', 'ubuntu',
+    'docker', 'kubernetes', 'aws', 'gcp', 'azure', 'firebase',
+    'react', 'vue', 'angular', 'node', 'deno', 'bun',
+    'mongodb', 'postgresql', 'mysql', 'redis', 'graphql', 'rest',
   };
 
   /// Check if a word should be excluded from spell checking
@@ -41,19 +47,69 @@ class SpellChecker {
     final lc = word.toLowerCase();
     
     // Exclude very short words (likely to be abbreviations or common)
-    if (lc.length <= 2) return true;
+    if (lc.length <= 2) {
+      print('  → Excluded: too short (≤2 chars)');
+      return true;
+    }
     
-    // Exclude common nouns
-    if (_commonNouns.contains(lc)) return true;
+    // Exclude words that start with a capital letter (proper nouns, names, etc.)
+    if (word.isNotEmpty && word[0] == word[0].toUpperCase() && word[0] != word[0].toLowerCase()) {
+      print('  → Excluded: starts with capital letter (proper noun)');
+      return true;
+    }
     
-    // Check if the word is a common variation with suffix/prefix
-    // Try removing common suffixes and checking if the base word exists
+    // Exclude common nouns (case-insensitive)
+    if (_commonNouns.contains(lc)) {
+      print('  → Excluded: common technical term/noun');
+      return true;
+    }
+    
+    // Check if word contains numbers or special characters (likely technical term)
+    if (RegExp(r'[0-9_\-]').hasMatch(lc)) {
+      print('  → Excluded: contains numbers/hyphens/underscores');
+      return true;
+    }
+    
+    // Check if word is all caps (likely acronym) with 2+ chars
+    if (word == word.toUpperCase() && word.length >= 2) {
+      print('  → Excluded: ALL CAPS (acronym)');
+      return true;
+    }
+    
+    // Check if word is PascalCase or camelCase (likely a code identifier)
+    if (RegExp(r'^[a-z]+[A-Z]').hasMatch(word) || RegExp(r'^[A-Z][a-z]+[A-Z]').hasMatch(word)) {
+      print('  → Excluded: camelCase/PascalCase');
+      return true;
+    }
+    
+    return false;
+  }
+  
+  /// Check if a word is a valid grammatical variation of a dictionary word
+  bool _isGrammaticalVariation(String word) {
+    final lc = word.toLowerCase();
+    
+    // Check if the word is a common variation with suffix
     for (final suffix in _commonSuffixes) {
       if (lc.endsWith(suffix) && lc.length > suffix.length + 2) {
         final base = lc.substring(0, lc.length - suffix.length);
+        
+        // Check base word
         if (_words?.contains(base) ?? false) return true;
-        // Also check with 'e' added back (e.g., "hoping" -> "hope")
-        if (_words?.contains('$base' 'e') ?? false) return true;
+        
+        // Check with 'e' added back (e.g., "hoping" -> "hope")
+        if (_words?.contains(base + 'e') ?? false) return true;
+        
+        // For words ending in 'y', check with 'i' (e.g., "happier" -> "happy")
+        if (suffix == 'er' || suffix == 'est') {
+          if (_words?.contains(base + 'y') ?? false) return true;
+        }
+        
+        // For words ending in consonant doubling (e.g., "running" -> "run")
+        if (base.length >= 2 && base[base.length - 1] == base[base.length - 2]) {
+          final singleConsonant = base.substring(0, base.length - 1);
+          if (_words?.contains(singleConsonant) ?? false) return true;
+        }
       }
     }
     
@@ -64,12 +120,6 @@ class SpellChecker {
         if (_words?.contains(base) ?? false) return true;
       }
     }
-    
-    // Check if word contains numbers or special characters (likely technical term)
-    if (RegExp(r'[0-9_\-]').hasMatch(lc)) return true;
-    
-    // Check if word is all caps (likely acronym)
-    if (word == word.toUpperCase() && word.length >= 2) return true;
     
     return false;
   }
@@ -86,9 +136,7 @@ class SpellChecker {
           .map((l) => l.trim().toLowerCase())
           .where((l) => l.isNotEmpty && !l.startsWith(RegExp(r'[0-9&]')))
           .toSet();
-      print('SpellChecker: Loaded ${_words!.length} words');
     }).catchError((err) {
-      print('SpellChecker: Failed to load dictionary: $err');
       _words = <String>{};
     });
     return _loading!;
@@ -98,16 +146,28 @@ class SpellChecker {
   Future<bool> contains(String word) async {
     await _ensureLoaded();
     
-    // Check if word should be excluded from spell checking
+    // First check if word should be excluded from spell checking (technical terms, etc.)
     if (_shouldExcludeWord(word)) {
-      print('SpellChecker: Word "$word" excluded from checking');
+      print('SpellChecker: "$word" excluded by _shouldExcludeWord');
       return true;
     }
     
     final lc = word.toLowerCase();
-    final result = _words!.contains(lc);
-    print('SpellChecker: Word "$word" ${result ? "FOUND" : "NOT FOUND"} in dictionary');
-    return result;
+    
+    // Check if word exists in dictionary
+    if (_words!.contains(lc)) {
+      print('SpellChecker: "$word" found in dictionary');
+      return true;
+    }
+    
+    // Check if it's a grammatical variation of a dictionary word
+    if (_isGrammaticalVariation(word)) {
+      print('SpellChecker: "$word" is grammatical variation');
+      return true;
+    }
+    
+    print('SpellChecker: "$word" NOT FOUND - will be marked as misspelled');
+    return false;
   }
 
   /// Suggests up to [maxSuggestions] corrections for [word].
@@ -117,18 +177,15 @@ class SpellChecker {
     await _ensureLoaded();
     final input = word.trim().toLowerCase();
     if (input.isEmpty) return [];
-    if (_words!.contains(input)) {
-      print('SpellChecker: No suggestions needed for "$word" (found in dictionary)');
-      return [];
-    }
     
-    // Don't suggest for excluded words
-    if (_shouldExcludeWord(input)) {
-      print('SpellChecker: No suggestions for "$word" (excluded)');
-      return [];
-    }
-
-    print('SpellChecker: Generating suggestions for "$word"...');
+    // Don't suggest for words in dictionary
+    if (_words!.contains(input)) return [];
+    
+    // Don't suggest for excluded words (technical terms)
+    if (_shouldExcludeWord(input)) return [];
+    
+    // Don't suggest for grammatical variations
+    if (_isGrammaticalVariation(input)) return [];
 
     // Pre-filter candidates by first character and length difference to speed up.
     final first = input[0];
@@ -156,7 +213,6 @@ class SpellChecker {
     });
 
     final suggestions = scored.take(maxSuggestions).map((e) => e.word).toList();
-    print('SpellChecker: Found ${suggestions.length} suggestions for "$word": $suggestions');
     return suggestions;
   }
 

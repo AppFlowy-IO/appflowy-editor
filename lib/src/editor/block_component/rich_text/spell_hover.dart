@@ -94,9 +94,9 @@ class _SpellHoverState extends State<SpellHover> {
                           child: Row(
                             children: [
                               Icon(
-                                Icons.star,
+                                Icons.auto_fix_high,
                                 size: 16,
-                                color: Colors.amber.shade700,
+                                color: Colors.purple.shade600,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
