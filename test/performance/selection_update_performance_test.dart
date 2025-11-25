@@ -255,15 +255,6 @@ void main() {
 
         final elapsedMs = stopwatch.elapsedMilliseconds;
 
-        // Print the result
-        print('\n' + '=' * 60);
-        print('PERFORMANCE TEST RESULT');
-        print('=' * 60);
-        print('Total children: 1000');
-        print('Tapped: Last child (path [0, 999])');
-        print('Selection update time: ${elapsedMs}ms');
-        print('=' * 60 + '\n');
-
         // Performance assertion - selection should update within reasonable time
         expect(
           elapsedMs,

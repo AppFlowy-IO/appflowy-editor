@@ -57,7 +57,7 @@ extension EditorStateSelection on EditorState {
       compare: (index, rect) => rect.bottom <= offset.dy,
     );
 
-    final rowBottom = _getCachedRect(sortedNodes[min], rectCache!).bottom;
+    final rowBottom = _getCachedRect(sortedNodes[min], rectCache).bottom;
     final filteredNodes = <Node>[];
     for (final node in sortedNodes) {
       if (_getCachedRect(node, rectCache).bottom == rowBottom) {
