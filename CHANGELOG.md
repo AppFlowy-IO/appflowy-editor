@@ -1,3 +1,24 @@
+## 6.1.0
+* fix: unable to input text on windows desktop by @imaachman in https://github.com/AppFlowy-IO/appflowy-editor/pull/1126
+* feat: open html decoder for custom parser by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1145
+* fix: paste issue from ChatGPT by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1146
+* chore: optimize auto scroller speed by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1147
+* fix: scrolling issue with single block node from bottom to top by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1148
+* fix: TextStyleExtensions combine logic issue with fontfamily by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1149
+* chore: allow users to supply decoration instead of only color by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1150
+* feat: allow passing in a context menu builder by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1152
+* feat: add animation during auto scrolling by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1153
+* feat: add scroll animtion on mobile by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1154
+* fix: super weird bug with placeholders by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1159
+* feat: support formula in DeltaMarkdownDecoder by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1155
+* fix: word boundary regards white space as a word by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1157
+* fix: selection move direction logic should visit children by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1156
+* chore: adjust context menu visibility logic by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1158
+* chore: optimize context menu logic by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1161
+* chore: revert "fix: word boundary regards white space as a word (#1157)" by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1160
+* fix: support export markdown with inline math equation by @asjqkkkk in https://github.com/AppFlowy-IO/appflowy-editor/pull/1164
+* test: add performance tests by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1166
+
 ## 6.0.0
 * fix: paste single line text will remove the children block by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1100
 * feat: support block wrapper by @LucasXu0 in https://github.com/AppFlowy-IO/appflowy-editor/pull/1101
