@@ -32,8 +32,12 @@ extension EditorStateSelection on EditorState {
     List<Node> sortedNodes,
     Offset offset,
     int start,
-    int end,
-  ) {
+    int end, [
+    Map<String, Rect>? rectCache,
+  ]) {
+    // Create rect cache for this operation if not provided
+    rectCache ??= {};
+
     if (start < 0 && end >= sortedNodes.length) {
       return null;
     }
@@ -42,6 +46,7 @@ extension EditorStateSelection on EditorState {
       sortedNodes,
       start,
       end,
+      rectCache: rectCache,
       match: (index, rect) {
         final isMatch = rect.contains(offset);
         AppFlowyEditorLog.selection.debug(
@@ -52,14 +57,20 @@ extension EditorStateSelection on EditorState {
       compare: (index, rect) => rect.bottom <= offset.dy,
     );
 
-    final filteredNodes = List.of(sortedNodes)
-      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    final rowBottom = _getCachedRect(sortedNodes[min], rectCache).bottom;
+    final filteredNodes = <Node>[];
+    for (final node in sortedNodes) {
+      if (_getCachedRect(node, rectCache).bottom == rowBottom) {
+        filteredNodes.add(node);
+      }
+    }
     min = 0;
     if (filteredNodes.length > 1) {
       min = _findCloseNode(
-        sortedNodes,
+        filteredNodes,
         0,
         filteredNodes.length - 1,
+        rectCache: rectCache,
         match: (index, rect) {
           final isMatch = rect.contains(offset);
           AppFlowyEditorLog.selection.debug(
@@ -73,34 +84,82 @@ extension EditorStateSelection on EditorState {
 
     final node = filteredNodes[min];
     if (node.children.isNotEmpty &&
-        node.children.first.renderBox != null &&
-        node.children.first.rect.top <= offset.dy) {
-      final children = node.children.toList(growable: false)
-        ..sort(
-          (a, b) => a.rect.bottom != b.rect.bottom
-              ? a.rect.bottom.compareTo(b.rect.bottom)
-              : a.rect.left.compareTo(b.rect.left),
-        );
+        _getCachedRect(node.children.first, rectCache).top <= offset.dy) {
+      final skipSortingChildren =
+          node.selectable?.skipSortingChildrenWhenSelecting ?? false;
+
+      List<Node> children;
+
+      if (skipSortingChildren) {
+        children = node.children;
+      } else {
+        children = node.children.toList(growable: false)
+          ..sort(
+            (a, b) {
+              final aRect = _getCachedRect(a, rectCache!);
+              final bRect = _getCachedRect(b, rectCache);
+              return aRect.bottom != bRect.bottom
+                  ? aRect.bottom.compareTo(bRect.bottom)
+                  : aRect.left.compareTo(bRect.left);
+            },
+          );
+      }
+
+      // if the nodes are in the same tab view, their rect are overlaid,
+      //  we need to filter out the invisible nodes
+      bool hasInvisibleChildren = false;
+      final visibleChildren = <Node>[];
+      for (final child in children) {
+        final context = child.key.currentContext;
+        var isVisible = true;
+        context?.visitAncestorElements((element) {
+          final widget = element.widget;
+          if (widget is Opacity && widget.opacity == 0) {
+            isVisible = false;
+            return false;
+          }
+          return true;
+        });
+        if (isVisible) {
+          visibleChildren.add(child);
+        } else {
+          hasInvisibleChildren = true;
+        }
+      }
+      if (hasInvisibleChildren) {
+        children = visibleChildren;
+      }
+
+      if (children.isEmpty) {
+        return node;
+      }
 
       return getNodeInOffset(
         children,
         offset,
         0,
         children.length - 1,
+        rectCache,
       );
     }
     return node;
+  }
+
+  /// Get cached rect for a node, computing and caching if not present
+  Rect _getCachedRect(Node node, Map<String, Rect> cache) {
+    return cache.putIfAbsent(node.id, () => node.rect);
   }
 
   int _findCloseNode(
     List<Node> sortedNodes,
     int start,
     int end, {
+    required Map<String, Rect> rectCache,
     bool Function(int index, Rect rect)? match,
     required bool Function(int index, Rect rect) compare,
   }) {
     for (var i = start; i <= end; i++) {
-      final rect = sortedNodes[i].rect;
+      final rect = _getCachedRect(sortedNodes[i], rectCache);
       if (match != null && match(i, rect)) {
         return i;
       }
@@ -110,7 +169,7 @@ extension EditorStateSelection on EditorState {
     var max = end;
     while (min <= max) {
       final mid = min + ((max - min) >> 1);
-      final rect = sortedNodes[mid].rect;
+      final rect = _getCachedRect(sortedNodes[mid], rectCache);
       if (compare(mid, rect)) {
         min = mid + 1;
       } else {
