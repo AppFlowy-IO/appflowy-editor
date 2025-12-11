@@ -6,6 +6,8 @@ import 'package:appflowy_editor/src/core/legacy/built_in_attribute_keys.dart';
 import 'package:appflowy_editor/src/plugins/markdown/decoder/custom_syntaxes/underline_syntax.dart';
 import 'package:markdown/markdown.dart' as md;
 
+import 'custom_syntaxes/formula_syntax.dart';
+
 class DeltaMarkdownDecoder extends Converter<String, Delta>
     implements md.NodeVisitor {
   final _delta = Delta();
@@ -20,6 +22,7 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
   Delta convert(String input) {
     final inlineSyntaxes = [
       UnderlineInlineSyntax(),
+      FormulaInlineSyntax(),
       ...customInlineSyntaxes,
     ];
     final document = md.Document(
@@ -73,6 +76,8 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes[BuiltInAttributeKey.href] = element.attributes['href'];
     } else if (element.tag == 'u') {
       _attributes[BuiltInAttributeKey.underline] = true;
+    } else if (element.tag == 'formula') {
+      _attributes[BuiltInAttributeKey.formula] = element.attributes['formula'];
     } else {
       element.attributes.forEach((key, value) {
         try {
@@ -97,6 +102,8 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
       _attributes.remove(BuiltInAttributeKey.href);
     } else if (element.tag == 'u') {
       _attributes.remove(BuiltInAttributeKey.underline);
+    } else if (element.tag == 'formula') {
+      _attributes.remove(BuiltInAttributeKey.formula);
     } else {
       for (final key in element.attributes.keys) {
         _attributes.remove(key);

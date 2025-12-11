@@ -85,6 +85,14 @@ class TestableEditor {
             ...standardCharacterShortcutEvents,
             formatGreaterHyphen,
           ],
+          contextMenuBuilder: (context, position, editorState, onPressed) {
+            return ContextMenu(
+              position: position,
+              editorState: editorState,
+              items: standardContextMenuItems,
+              onPressed: onPressed,
+            );
+          },
           editorStyle: inMobile
               ? EditorStyle.mobile(
                   defaultTextDirection: defaultTextDirection,

@@ -69,7 +69,8 @@ extension TextStyleExtensions on TextStyle {
       decorationStyle: other.decorationStyle,
       decorationThickness: other.decorationThickness,
       debugLabel: other.debugLabel,
-      fontFamily: other.fontFamily,
+      fontFamily:
+          (other.fontFamily?.isEmpty ?? true) ? fontFamily : other.fontFamily,
       fontFamilyFallback: other.fontFamilyFallback,
       overflow: other.overflow,
     );

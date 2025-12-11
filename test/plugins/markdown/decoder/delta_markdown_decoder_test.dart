@@ -121,5 +121,20 @@ void main() async {
       final result = DeltaMarkdownDecoder().convert(markdown);
       expect(result, delta);
     });
+
+    test('formula', () {
+      const markdown = 'This is a math equation \$E = MC ^ 2\$';
+      final delta = Delta(
+        operations: [
+          TextInsert('This is a math equation '),
+          TextInsert(
+            '\$',
+            attributes: {BuiltInAttributeKey.formula: 'E = MC ^ 2'},
+          ),
+        ],
+      );
+      final result = DeltaMarkdownDecoder().convert(markdown);
+      expect(result, delta);
+    });
   });
 }

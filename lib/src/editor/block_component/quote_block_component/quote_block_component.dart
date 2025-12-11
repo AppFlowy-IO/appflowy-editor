@@ -156,12 +156,10 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     );
 
     child = Container(
-      color: backgroundColor,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
-      ),
+      decoration: decoration,
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
     );
 
     child = BlockSelectionContainer(

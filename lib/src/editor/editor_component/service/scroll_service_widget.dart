@@ -86,7 +86,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
-        [SelectionUpdateReason.selectAll, SelectionUpdateReason.searchHighlight]
+        [SelectionUpdateReason.selectAll]
             .contains(editorState.selectionUpdateReason)) {
       return;
     }
@@ -101,6 +101,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       AxisDirection? direction;
       final dynamic dragMode =
           editorState.selectionExtraInfo?['selection_drag_mode'];
+
+      // For desktop: if auto-scroller is already scrolling (from drag-to-select),
+      // don't override it here. The desktop_selection_service handles drag scrolling.
+      if (PlatformExtension.isDesktopOrWeb &&
+          (editorState.autoScroller?.scrolling ?? false)) {
+        return;
+      }
+
       switch (dragMode?.toString()) {
         case 'MobileSelectionDragMode.leftSelectionHandle':
           targetRect = selectionRects.first;
@@ -127,21 +135,34 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
       final endTouchPoint = targetRect.centerRight;
 
       if (PlatformExtension.isMobile) {
+        // Determine if this is a drag operation
+        final bool isDragOperation = dragMode != null &&
+            (dragMode.toString() ==
+                    'MobileSelectionDragMode.leftSelectionHandle' ||
+                dragMode.toString() ==
+                    'MobileSelectionDragMode.rightSelectionHandle');
+
+        // Use animation for drag operations, instant for others
+        final scrollDuration =
+            isDragOperation ? const Duration(milliseconds: 2) : Duration.zero;
+
         // soft keyboard
         // workaround: wait for the soft keyboard to show up
-        final duration = KeyboardHeightObserver.currentKeyboardHeight == 0
+        final keyboardDelay = KeyboardHeightObserver.currentKeyboardHeight == 0
             ? const Duration(milliseconds: 250)
             : Duration.zero;
 
-        Future.delayed(duration, () {
+        Future.delayed(keyboardDelay, () {
           if (_forwardKey.currentContext == null) {
             return;
           }
+          // Mobile needs to continuously update scroll position/direction during drag
+          // Don't skip even if already scrolling, because direction may have changed
           startAutoScroll(
             endTouchPoint,
             edgeOffset: editorState.autoScrollEdgeOffset,
             direction: direction,
-            duration: Duration.zero,
+            duration: scrollDuration,
           );
         });
       } else {
