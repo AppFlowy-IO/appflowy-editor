@@ -38,7 +38,8 @@ class _SpellHoverState extends State<SpellHover> {
 
   Future<void> _showOverlay() async {
     _removeOverlay();
-    final suggestions = await SpellChecker.instance.suggest(widget.word, maxSuggestions: 5);
+    final suggestions =
+        await SpellChecker.instance.suggest(widget.word, maxSuggestions: 5);
 
     if (!mounted || suggestions.isEmpty) return;
 
@@ -47,79 +48,81 @@ class _SpellHoverState extends State<SpellHover> {
     final offset = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
 
-    _entry = OverlayEntry(builder: (context) {
-      return Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height + 4,
-        child: MouseRegion(
-          onEnter: (_) {
-            _hoveringOnPopup = true;
-          },
-          onExit: (_) {
-            _hoveringOnPopup = false;
-            // remove after a short delay to avoid flicker
-            Future.delayed(const Duration(milliseconds: 100), () {
-              if (!_shouldShowOverlay) _removeOverlay();
-            });
-          },
-          child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                  width: 1,
+    _entry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          left: offset.dx,
+          top: offset.dy + size.height + 4,
+          child: MouseRegion(
+            onEnter: (_) {
+              _hoveringOnPopup = true;
+            },
+            onExit: (_) {
+              _hoveringOnPopup = false;
+              // remove after a short delay to avoid flicker
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (!_shouldShowOverlay) _removeOverlay();
+              });
+            },
+            child: Material(
+              elevation: 8,
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                    width: 1,
+                  ),
                 ),
-              ),
-              constraints: const BoxConstraints(maxWidth: 240),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: suggestions
-                    .map(
-                      (s) => InkWell(
-                        onTap: () async {
-                          await widget.onSelected(s);
-                          _removeOverlay();
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        hoverColor: Colors.blue.shade50,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: 12.0,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.auto_fix_high,
-                                size: 16,
-                                color: Colors.purple.shade600,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  s,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
+                constraints: const BoxConstraints(maxWidth: 240),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: suggestions
+                      .map(
+                        (s) => InkWell(
+                          onTap: () async {
+                            await widget.onSelected(s);
+                            _removeOverlay();
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          hoverColor: Colors.blue.shade50,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 12.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.auto_fix_high,
+                                  size: 16,
+                                  color: Colors.purple.shade600,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    s,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                      )
+                      .toList(),
+                ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     Overlay.of(context).insert(_entry!);
   }
