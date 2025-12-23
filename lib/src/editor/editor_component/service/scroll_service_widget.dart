@@ -86,7 +86,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
-        [SelectionUpdateReason.selectAll, SelectionUpdateReason.searchHighlight]
+        [SelectionUpdateReason.selectAll]
             .contains(editorState.selectionUpdateReason)) {
       return;
     }
