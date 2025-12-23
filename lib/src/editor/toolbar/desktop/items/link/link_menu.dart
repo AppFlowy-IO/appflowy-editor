@@ -41,6 +41,7 @@ class _LinkMenuState extends State<LinkMenu> {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _textEditingController.dispose();
     super.dispose();
   }

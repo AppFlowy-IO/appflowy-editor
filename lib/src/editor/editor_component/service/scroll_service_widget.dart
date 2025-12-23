@@ -43,6 +43,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
   @override
   void dispose() {
+    scrollController.dispose();
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     super.dispose();
   }
@@ -123,10 +124,13 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         default:
           targetRect = selectionRects.last;
 
-          /// sometimes moving up in a long single node may be not working
-          /// so we need to special handle this case.
-          final isInSingleNode = (lastSelection?.isSingle ?? false) &&
-              lastSelection?.start.path == selection.start.path;
+          // sometimes moving up in a long single node may be not working
+          // so we need to special handle this case.
+          final isLastSelectionSingle = lastSelection?.isSingle ?? false;
+          final isLastSelectionPathEqual =
+              lastSelection?.start.path.equals(selection.start.path) ?? false;
+          final isInSingleNode =
+              isLastSelectionSingle && isLastSelectionPathEqual;
           if (selection.isForward && isInSingleNode) {
             targetRect = selectionRects.first;
           }

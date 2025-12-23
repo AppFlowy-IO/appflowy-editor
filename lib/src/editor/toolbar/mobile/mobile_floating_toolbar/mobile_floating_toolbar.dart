@@ -83,6 +83,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
 
   @override
   void dispose() {
+    _toolbarContainer?.dispose();
+    _toolbarContainer = null;
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     widget.editorScrollController.offsetNotifier.removeListener(
       _onScrollPositionChanged,
