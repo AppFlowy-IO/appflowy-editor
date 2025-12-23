@@ -8,6 +8,7 @@ ButtonStyle buildOverlayButtonStyle(BuildContext context) {
         if (states.contains(WidgetState.hovered)) {
           return Theme.of(context).hoverColor;
         }
+
         return Colors.transparent;
       },
     ),

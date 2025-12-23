@@ -11,6 +11,7 @@ final textDecorationMobileToolbarItemV2 = MobileToolbarItem.withMenu(
     if (selection == null) {
       return const SizedBox.shrink();
     }
+
     return _TextDecorationMenu(editorState, selection);
   },
 );

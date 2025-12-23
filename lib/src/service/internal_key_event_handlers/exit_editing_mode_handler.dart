@@ -3,5 +3,6 @@ import 'package:flutter/material.dart';
 
 ShortcutEventHandler exitEditingModeEventHandler = (editorState, event) {
   editorState.service.selectionService.clearSelection();
+
   return KeyEventResult.handled;
 };

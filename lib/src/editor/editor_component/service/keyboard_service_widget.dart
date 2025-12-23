@@ -61,6 +61,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         enableIMEShortcuts = true;
         focusNode.requestFocus();
         textInputService.close();
+
         return true;
       },
     );
@@ -173,6 +174,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       if (textInputService.composingTextRange != TextRange.empty) {
         return KeyEventResult.skipRemainingHandlers;
       }
+
       return KeyEventResult.ignored;
     }
 
@@ -184,11 +186,13 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           AppFlowyEditorLog.keyboard.debug(
             'keyboard service - handled by command shortcut event: $shortcutEvent',
           );
+
           return KeyEventResult.handled;
         } else if (result == KeyEventResult.skipRemainingHandlers) {
           AppFlowyEditorLog.keyboard.debug(
             'keyboard service - skip by command shortcut event: $shortcutEvent',
           );
+
           return KeyEventResult.skipRemainingHandlers;
         }
         continue;
@@ -296,6 +300,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         composing: composingTextRange,
       );
     }
+
     return null;
   }
 
@@ -371,6 +376,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onInsert - intercepted by interceptor: $interceptor',
             );
+
             return false;
           }
         }
@@ -380,6 +386,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+
         return true;
       },
       onDelete: (deletion) async {
@@ -392,6 +399,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onDelete - intercepted by interceptor: $interceptor',
             );
+
             return false;
           }
         }
@@ -400,6 +408,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           deletion,
           editorState,
         );
+
         return true;
       },
       onReplace: (replacement) async {
@@ -413,6 +422,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onReplace - intercepted by interceptor: $interceptor',
             );
+
             return false;
           }
         }
@@ -422,6 +432,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+
         return true;
       },
       onNonTextUpdate: (nonTextUpdate) async {
@@ -435,6 +446,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onNonTextUpdate - intercepted by interceptor: $interceptor',
             );
+
             return false;
           }
         }
@@ -444,6 +456,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           editorState,
           widget.characterShortcutEvents,
         );
+
         return true;
       },
       onPerformAction: (action) async {
@@ -456,6 +469,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onPerformAction - intercepted by interceptor: $interceptor',
             );
+
             return;
           }
         }
@@ -475,6 +489,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
             AppFlowyEditorLog.input.info(
               'keyboard service onFloatingCursor - intercepted by interceptor: $interceptor',
             );
+
             return;
           }
         }

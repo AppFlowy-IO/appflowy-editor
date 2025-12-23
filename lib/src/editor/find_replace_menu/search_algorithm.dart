@@ -34,6 +34,7 @@ final class BoyerMooreMatch implements Match {
     if (group != 0) {
       throw RangeError.value(group);
     }
+
     return pattern;
   }
 

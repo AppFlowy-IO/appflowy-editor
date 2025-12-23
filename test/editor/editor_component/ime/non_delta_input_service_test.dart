@@ -156,18 +156,22 @@ void main() {
     final inputService = NonDeltaTextInputService(
       onInsert: (v) async {
         value = v.apply(value);
+
         return true;
       },
       onDelete: (v) async {
         value = v.apply(value);
+
         return true;
       },
       onReplace: (v) async {
         value = v.apply(value);
+
         return true;
       },
       onNonTextUpdate: (v) async {
         value = v.apply(value);
+
         return true;
       },
       onPerformAction: (_) async {},

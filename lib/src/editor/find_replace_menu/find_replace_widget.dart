@@ -201,6 +201,7 @@ class _FindMenuState extends State<FindMenu> {
     // the selectedIndex from searchService is 0-based
     final selectedIndex = widget.searchService.selectedIndex + 1;
     final matches = widget.searchService.matchWrappers.value;
+
     return Row(
       children: [
         // expand/collapse button
@@ -348,8 +349,10 @@ class _FindMenuState extends State<FindMenu> {
     switch (error) {
       case 'Regex':
         message = AppFlowyEditorLocalizations.current.regexError;
+
       case 'Empty':
         message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
+
       default:
         message = widget.localizations?.noResult ??
             AppFlowyEditorLocalizations.current.noFindResult;

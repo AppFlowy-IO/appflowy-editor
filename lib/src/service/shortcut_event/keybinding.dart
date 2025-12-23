@@ -16,6 +16,7 @@ extension KeybindingsExtension on List<Keybinding> {
         return true;
       }
     }
+
     return false;
   }
 }

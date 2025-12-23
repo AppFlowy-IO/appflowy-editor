@@ -30,6 +30,7 @@ class EditorSvg extends StatelessWidget {
         context.read<EditorState?>()?.editorStyle.textScaleFactor ?? 1.0;
     final height = (this.height ?? _defaultHeight) * scaleFactor;
     final width = (this.width ?? _defaultWidth) * scaleFactor;
+
     return Padding(
       padding: padding ?? const EdgeInsets.all(0),
       child: _buildSvg(
@@ -56,12 +57,14 @@ class EditorSvg extends StatelessWidget {
     } else if (number != null) {
       final numberText =
           '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><text x="30" y="150" fill="black" font-size="160">$number.</text></svg>';
+
       return SvgPicture.string(
         numberText,
         width: width,
         height: height,
       );
     }
+
     return Container();
   }
 }

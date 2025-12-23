@@ -41,6 +41,7 @@ class ClearColorButton extends StatelessWidget {
 class _DiagonalLinePainter extends CustomPainter {
   _DiagonalLinePainter(this.diagonalLineColor);
   final Color diagonalLineColor;
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()

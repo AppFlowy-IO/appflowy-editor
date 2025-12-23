@@ -65,6 +65,7 @@ CommandShortcutEventHandler _moveCursorTopSelectCommandHandler = (editorState) {
     selection.copyWith(end: position),
     reason: SelectionUpdateReason.uiEvent,
   );
+
   return KeyEventResult.handled;
 };
 
@@ -122,5 +123,6 @@ CommandShortcutEventHandler _moveCursorUpSelectCommandHandler = (editorState) {
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,
   );
+
   return KeyEventResult.handled;
 };

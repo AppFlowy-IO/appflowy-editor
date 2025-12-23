@@ -8,6 +8,7 @@ extension NodeAttributesExtensions on Attributes {
         this[BuiltInAttributeKey.heading] is String) {
       return this[BuiltInAttributeKey.heading];
     }
+
     return null;
   }
 
@@ -20,6 +21,7 @@ extension NodeAttributesExtensions on Attributes {
         this[BuiltInAttributeKey.number] is num) {
       return this[BuiltInAttributeKey.number];
     }
+
     return null;
   }
 
@@ -28,6 +30,7 @@ extension NodeAttributesExtensions on Attributes {
         this[BuiltInAttributeKey.checkbox] is bool) {
       return this[BuiltInAttributeKey.checkbox];
     }
+
     return false;
   }
 }

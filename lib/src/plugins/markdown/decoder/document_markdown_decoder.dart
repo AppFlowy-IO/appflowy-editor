@@ -74,6 +74,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
         final text = match[1] ?? '';
         final altText = match[2] ?? '';
         final url = match[3] ?? '';
+
         return '$text\n\n![$altText]($url)';
       },
     );

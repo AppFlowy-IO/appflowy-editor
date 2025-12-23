@@ -28,6 +28,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   @override
   double? get onePageHeight {
     final renderBox = context.findRenderObject() as RenderBox?;
+
     return renderBox?.size.height;
   }
 
@@ -43,8 +44,10 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
   int? get page {
     if (onePageHeight != null) {
       final scrollExtent = maxScrollExtent - minScrollExtent;
+
       return (scrollExtent / onePageHeight!).ceil();
     }
+
     return null;
   }
 

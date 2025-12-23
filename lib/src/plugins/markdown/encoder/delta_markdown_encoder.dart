@@ -28,6 +28,7 @@ class DeltaMarkdownEncoder extends Converter<Delta, String> {
         }
       }
     }
+
     return buffer.toString();
   }
 

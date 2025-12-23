@@ -30,6 +30,7 @@ class HTMLHeadingNodeParser extends HTMLNodeParser {
     final tagName = 'h${node.attributes[HeadingBlockKeys.level]}';
     final element =
         wrapChildrenNodesWithTagName(tagName, childNodes: convertedNodes);
+
     return [element];
   }
 }

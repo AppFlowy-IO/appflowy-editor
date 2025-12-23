@@ -119,6 +119,7 @@ class _LinkMenuState extends State<LinkMenu> {
           if (value == null || value.isEmpty || !isUri(value)) {
             return AppFlowyEditorL10n.current.incorrectLink;
           }
+
           return null;
         },
       ),
