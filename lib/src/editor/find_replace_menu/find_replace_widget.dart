@@ -194,13 +194,11 @@ class _FindMenuState extends State<FindMenu> {
   @override
   void dispose() {
     findTextFieldFocusNode.dispose();
+    findTextEditingController.removeListener(_searchPattern);
     findTextEditingController.dispose();
 
     widget.searchService.matchWrappers.removeListener(_setState);
     widget.searchService.currentSelectedIndex.removeListener(_setState);
-    widget.searchService.dispose();
-    findTextEditingController.removeListener(_searchPattern);
-    findTextEditingController.dispose();
 
     super.dispose();
   }
