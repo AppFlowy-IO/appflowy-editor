@@ -946,7 +946,7 @@ abstract class CustomRenderViewport
   @override
   void applyPaintTransform(RenderObject child, Matrix4 transform) {
     final Offset offset = paintOffsetOf(child as RenderSliver);
-    transform.translate(offset.dx, offset.dy);
+    transform.leftTranslateByDouble(offset.dx, offset.dy, 0.0, 1.0);
   }
 
   @override
