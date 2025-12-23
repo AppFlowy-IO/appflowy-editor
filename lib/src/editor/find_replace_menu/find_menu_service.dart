@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 abstract class FindReplaceService {
   void show();
+
   void dismiss();
 }
 
@@ -125,6 +126,7 @@ class FindReplaceMenu implements FindReplaceService {
 
     if (_selectionUpdateByInner) {
       _selectionUpdateByInner = false;
+
       return;
     }
 

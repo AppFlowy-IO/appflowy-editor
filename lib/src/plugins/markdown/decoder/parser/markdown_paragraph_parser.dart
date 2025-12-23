@@ -42,6 +42,7 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
     return splitContent.map((content) {
       final deltaDecoder = DeltaMarkdownDecoder();
       final delta = deltaDecoder.convertNodes(content);
+
       return paragraphNode(delta: delta);
     }).toList();
 
@@ -72,6 +73,7 @@ List<List<md.Node>> _splitByBrTag(List<md.Node> nodes) {
           } else {
             acc.last.add(node);
           }
+
           return acc;
         },
       )

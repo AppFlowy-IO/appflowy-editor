@@ -31,6 +31,7 @@ TextSpan mobileTextSpanDecoratorForAttribute(
           // Implement single tap logic
           safeLaunchUrl(hrefAddress);
           timer!.cancel();
+
           return;
         }
       };
@@ -69,6 +70,7 @@ TextSpan mobileTextSpanDecoratorForAttribute(
         );
       });
     };
+
     return TextSpan(
       style: before.style,
       text: text.text,
@@ -124,6 +126,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
               if (value == null || value.isEmpty) {
                 return AppFlowyEditorL10n.current.linkTextHint;
               }
+
               return null;
             },
             decoration: InputDecoration(
@@ -145,6 +148,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
               if (value == null || value.isEmpty) {
                 return AppFlowyEditorL10n.current.linkAddressHint;
               }
+
               return null;
             },
             decoration: InputDecoration(

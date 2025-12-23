@@ -24,6 +24,7 @@ class MarkdownHeadingParserV2 extends CustomMarkdownParser {
     final level = _headingTags.indexOf(element.tag) + 1;
 
     final deltaDecoder = DeltaMarkdownDecoder();
+
     return [
       headingNode(
         level: level,

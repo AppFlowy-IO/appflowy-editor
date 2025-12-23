@@ -63,6 +63,7 @@ class BlockSelectionContainer extends StatelessWidget {
           )
           .toList(),
     );
+
     return Stack(
       clipBehavior: Clip.none,
       // In RTL mode, if the alignment is topStart,

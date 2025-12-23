@@ -213,8 +213,10 @@ class _DesktopSelectionServiceWidgetState
     final selectable = node?.selectable;
     if (selectable == null) {
       clearSelection();
+
       return null;
     }
+
     return selectable.getPositionInOffset(offset);
   }
 
@@ -258,6 +260,7 @@ class _DesktopSelectionServiceWidgetState
     if (selectable == null) {
       // Clear old start offset
       _panStartOffset = null;
+
       return clearSelection();
     }
 
@@ -292,6 +295,7 @@ class _DesktopSelectionServiceWidgetState
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
+
       return;
     }
     updateSelection(selection);
@@ -303,6 +307,7 @@ class _DesktopSelectionServiceWidgetState
     final selectable = node?.selectable;
     if (selectable == null) {
       clearSelection();
+
       return;
     }
     Selection selection = Selection(
@@ -320,6 +325,7 @@ class _DesktopSelectionServiceWidgetState
 
     if (selectable == null) {
       clearSelection();
+
       return;
     }
 
@@ -377,6 +383,7 @@ class _DesktopSelectionServiceWidgetState
         ?.getPositionInOffset(_panStartOffset!);
     if (_panStartPosition == null) {
       _resetPanState();
+
       return;
     }
 
@@ -613,6 +620,7 @@ class _DesktopSelectionServiceWidgetState
             (isCloserToStart ? startOffset.dy : endOffset.dy) + editorOffset.dy;
 
         final width = blockRect.topRight.dx - startOffset.dx;
+
         return Positioned(
           top: indicatorTop,
           left: startOffset.dx + editorOffset.dx,

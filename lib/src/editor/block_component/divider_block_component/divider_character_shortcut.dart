@@ -52,5 +52,6 @@ Future<bool> _convertSyntaxToDivider(
     ..deleteNode(node)
     ..afterSelection = Selection.collapsed(Position(path: path.next));
   editorState.apply(transaction);
+
   return true;
 }

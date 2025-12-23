@@ -20,6 +20,7 @@ class PropertyValueNotifier<T> extends ChangeNotifier
   @override
   T get value => _value;
   T _value;
+
   set value(T newValue) {
     _value = newValue;
     notifyListeners();

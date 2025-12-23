@@ -41,6 +41,7 @@ class RemoteBlockSelectionsArea extends StatelessWidget {
         if (selections.isEmpty) {
           return child;
         }
+
         return Positioned.fill(
           child: Stack(
             children: selections
@@ -134,6 +135,7 @@ class _RemoteBlockSelectionAreaState extends State<RemoteBlockSelectionArea> {
               child,
         ],
       );
+
       return cursor;
     } else {
       // show the selection area when the selection is not collapsed
@@ -144,6 +146,7 @@ class _RemoteBlockSelectionAreaState extends State<RemoteBlockSelectionArea> {
               prevSelectionRects!.first.width == 0)) {
         return child;
       }
+
       return Stack(
         clipBehavior: Clip.none,
         children: [

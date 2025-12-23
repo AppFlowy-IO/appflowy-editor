@@ -25,6 +25,7 @@ extension EditorStateSelection on EditorState {
       }
       sortedNodes.add(child);
     }
+
     return sortedNodes;
   }
 
@@ -47,6 +48,7 @@ extension EditorStateSelection on EditorState {
         AppFlowyEditorLog.selection.debug(
           'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
         );
+
         return isMatch;
       },
       compare: (index, rect) => rect.bottom <= offset.dy,
@@ -65,6 +67,7 @@ extension EditorStateSelection on EditorState {
           AppFlowyEditorLog.selection.debug(
             'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
           );
+
           return isMatch;
         },
         compare: (index, rect) => rect.right <= offset.dx,
@@ -89,6 +92,7 @@ extension EditorStateSelection on EditorState {
         children.length - 1,
       );
     }
+
     return node;
   }
 

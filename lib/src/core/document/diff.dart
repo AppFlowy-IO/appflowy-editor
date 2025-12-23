@@ -71,6 +71,7 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
         }
       }
     }
+
     return combinedOperations;
   }
 
@@ -99,6 +100,7 @@ List<Operation> diffNodes(Node oldNode, Node newNode) {
         }
       }
     }
+
     return combinedOperations;
   }
 

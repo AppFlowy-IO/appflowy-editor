@@ -26,6 +26,7 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
         }
       }
     }
+
     return buffer.toString();
   }
 
@@ -40,6 +41,7 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
           .map((e) => e.isNotEmpty ? '\t$e' : e)
           .join('\n');
     }
+
     return result;
   }
 }

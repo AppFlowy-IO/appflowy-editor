@@ -23,6 +23,7 @@ CharacterShortcutEvent formatSignToHeading = CharacterShortcutEvent(
     },
     (text, node, delta) {
       final numberOfSign = text.split('').length;
+
       return [
         headingNode(
           level: numberOfSign,
@@ -61,6 +62,7 @@ CharacterShortcutEvent insertNewLineAfterHeading = CharacterShortcutEvent(
       Position(path: selection.start.path.next, offset: 0),
     );
     await editorState.apply(transaction);
+
     return true;
   },
 );
