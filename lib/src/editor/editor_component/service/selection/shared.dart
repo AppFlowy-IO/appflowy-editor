@@ -101,6 +101,7 @@ extension EditorStateSelection on EditorState {
             (a, b) {
               final aRect = _getCachedRect(a, rectCache!);
               final bRect = _getCachedRect(b, rectCache);
+
               return aRect.bottom != bRect.bottom
                   ? aRect.bottom.compareTo(bRect.bottom)
                   : aRect.left.compareTo(bRect.left);
@@ -119,8 +120,10 @@ extension EditorStateSelection on EditorState {
           final widget = element.widget;
           if (widget is Opacity && widget.opacity == 0) {
             isVisible = false;
+
             return false;
           }
+
           return true;
         });
         if (isVisible) {
