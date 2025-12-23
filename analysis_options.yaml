@@ -12,3 +12,13 @@ linter:
 analyzer:
   exclude:
     - lib/src/l10n/**
+  plugins:
+    - custom_lint
+
+custom_lint:
+  enable_all_lint_rules: false
+  rules:
+    - newline_before_case
+    - newline_before_constructor
+    - newline_before_method
+    - newline_before_return
