@@ -38,6 +38,7 @@ class ToolbarItemWidget extends StatelessWidget {
         ),
       );
     }
+
     return const SizedBox.shrink();
   }
 }

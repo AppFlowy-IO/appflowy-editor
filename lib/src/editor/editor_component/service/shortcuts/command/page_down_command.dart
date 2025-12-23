@@ -31,5 +31,6 @@ CommandShortcutEventHandler _pageUpCommandHandler = (editorState) {
     dy + scrollHeight,
     duration: const Duration(milliseconds: 150),
   );
+
   return KeyEventResult.handled;
 };

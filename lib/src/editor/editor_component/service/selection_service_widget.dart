@@ -37,6 +37,7 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
   final forwardKey = GlobalKey(
     debugLabel: 'forward_to_platform_selection_service',
   );
+
   AppFlowySelectionService get forward =>
       forwardKey.currentState as AppFlowySelectionService;
 
@@ -55,6 +56,7 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
     }
 
     final editorState = context.read<EditorState>();
+
     return MobileSelectionServiceWidget(
       key: forwardKey,
       cursorColor: widget.cursorColor,

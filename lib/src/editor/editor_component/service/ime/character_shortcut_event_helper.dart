@@ -28,6 +28,7 @@ Future<bool> executeCharacterShortcutEvent(
         AppFlowyEditorLog.input.debug(
           'keyboard service - handled by character shortcut event: $shortcutEvent',
         );
+
         return true;
       }
     }
@@ -36,6 +37,7 @@ Future<bool> executeCharacterShortcutEvent(
       AppFlowyEditorLog.input.debug(
         'keyboard service - handled by character shortcut event: $shortcutEvent',
       );
+
       return true;
     }
   }

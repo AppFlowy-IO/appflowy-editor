@@ -32,6 +32,7 @@ class HTMLQuoteNodeParser extends HTMLNodeParser {
 
     final element =
         wrapChildrenNodesWithTagName(HTMLTags.blockQuote, childNodes: domNodes);
+
     return [element];
   }
 }

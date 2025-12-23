@@ -79,6 +79,7 @@ Future<bool> _showSlashMenu(
   final afterSelection = editorState.selection;
   if (afterSelection == null || !afterSelection.isCollapsed) {
     assert(false, 'the selection should be collapsed');
+
     return true;
   }
 

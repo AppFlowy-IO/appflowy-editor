@@ -10,6 +10,7 @@ Future<bool> safeLaunchUrl(String? href) async {
   if (await canLaunchUrlString(newHref)) {
     await launchUrlString(newHref);
   }
+
   return Future.value(true);
 }
 

@@ -3,6 +3,7 @@ extension FlowyObjectExtensions on Object {
     if (this is T) {
       return this as T;
     }
+
     return null;
   }
 }

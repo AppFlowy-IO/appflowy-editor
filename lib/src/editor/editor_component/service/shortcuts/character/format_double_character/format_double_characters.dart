@@ -89,6 +89,7 @@ bool handleFormatByWrappingWithDoubleCharacter({
     case DoubleCharacterFormatStyle.bold:
       style = 'bold';
       break;
+
     case DoubleCharacterFormatStyle.strikethrough:
       style = 'strikethrough';
       break;
@@ -117,5 +118,6 @@ bool handleFormatByWrappingWithDoubleCharacter({
       ),
     );
   editorState.apply(format);
+
   return true;
 }

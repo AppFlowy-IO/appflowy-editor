@@ -13,6 +13,7 @@ class FormulaInlineSyntax extends md.InlineSyntax {
     final element = md.Element('formula', [md.Text('\$')]);
     element.attributes['formula'] = formula;
     parser.addNode(element);
+
     return true;
   }
 }

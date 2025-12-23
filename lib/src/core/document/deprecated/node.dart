@@ -87,6 +87,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
     if (subtype != null) {
       return '$type/$subtype';
     }
+
     return type;
   }
 
@@ -94,6 +95,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
     if (attributes[BuiltInAttributeKey.subtype] is String) {
       return attributes[BuiltInAttributeKey.subtype] as String;
     }
+
     return null;
   }
 
@@ -136,6 +138,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
       entry.parent = this;
       children.add(entry);
       notifyListeners();
+
       return;
     }
 
@@ -188,6 +191,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
     if (attributes.isNotEmpty) {
       map['attributes'] = attributes;
     }
+
     return map;
   }
 
@@ -208,6 +212,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
         );
       }
     }
+
     return node;
   }
 
@@ -222,6 +227,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
       }
       index += 1;
     }
+
     return parent!._computePath([index, ...previous]);
   }
 }
@@ -245,7 +251,9 @@ final class TextNodeV0 extends NodeV0 {
         );
 
   Delta _delta;
+
   Delta get delta => _delta;
+
   set delta(Delta v) {
     _delta = v;
     notifyListeners();
@@ -255,6 +263,7 @@ final class TextNodeV0 extends NodeV0 {
   Map<String, Object> toJson() {
     final map = super.toJson();
     map['delta'] = delta.toJson();
+
     return map;
   }
 
@@ -277,6 +286,7 @@ final class TextNodeV0 extends NodeV0 {
         );
       }
     }
+
     return textNode;
   }
 
@@ -293,6 +303,7 @@ extension NodeV0Equality on Iterable<NodeV0> {
         return false;
       }
     }
+
     return true;
   }
 

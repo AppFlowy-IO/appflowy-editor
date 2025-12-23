@@ -21,21 +21,27 @@ class SearchServiceV3 {
   Pattern queriedPattern = RegExp('');
 
   bool _regex = false;
+
   bool get regex => _regex;
+
   set regex(bool value) {
     _regex = value;
     findAndHighlight(targetString);
   }
 
   bool _caseSensitive = false;
+
   bool get caseSensitive => _caseSensitive;
+
   set caseSensitive(bool value) {
     _caseSensitive = value;
     findAndHighlight(targetString);
   }
 
   int _selectedIndex = 0;
+
   int get selectedIndex => _selectedIndex;
+
   set selectedIndex(int index) {
     _selectedIndex = matchWrappers.value.isEmpty
         ? -1
@@ -79,6 +85,7 @@ class SearchServiceV3 {
       pattern = _getPattern(target);
     } on FormatException {
       matchWrappers.value.clear();
+
       return 'Regex';
     }
 
@@ -147,6 +154,7 @@ class SearchServiceV3 {
         _getMatchWrappers(pattern: pattern, nodes: node.children),
       );
     }
+
     return result;
   }
 

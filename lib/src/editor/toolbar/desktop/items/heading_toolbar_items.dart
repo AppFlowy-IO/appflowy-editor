@@ -68,6 +68,7 @@ class _HeadingToolbarItem extends ToolbarItem {
     } else if (level == 3) {
       return AppFlowyEditorL10n.current.heading3;
     }
+
     return '';
   }
 }

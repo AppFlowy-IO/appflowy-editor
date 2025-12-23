@@ -69,5 +69,6 @@ bool insertNodeAfterSelection(
   }
 
   editorState.apply(transaction);
+
   return true;
 }

@@ -34,6 +34,7 @@ class InsertOperation extends Operation {
     final nodes = (json['nodes'] as List)
         .map((n) => Node.fromJson(n))
         .toList(growable: false);
+
     return InsertOperation(path, nodes);
   }
 
@@ -81,6 +82,7 @@ class DeleteOperation extends Operation {
     final nodes = (json['nodes'] as List)
         .map((n) => Node.fromJson(n))
         .toList(growable: false);
+
     return DeleteOperation(path, nodes);
   }
 
@@ -128,6 +130,7 @@ class UpdateOperation extends Operation {
     final path = json['path'] as Path;
     final oldAttributes = json['oldAttributes'] as Attributes;
     final attributes = json['attributes'] as Attributes;
+
     return UpdateOperation(
       path,
       attributes,
@@ -191,6 +194,7 @@ class UpdateTextOperation extends Operation {
     final path = json['path'] as Path;
     final delta = Delta.fromJson(json['delta']);
     final inverted = Delta.fromJson(json['inverted']);
+
     return UpdateTextOperation(path, delta, inverted);
   }
 
@@ -255,6 +259,7 @@ Path transformPath(Path preInsertPath, Path b, [int delta = 1]) {
 Operation? transformOperation(Operation a, Operation b) {
   if (a is InsertOperation) {
     final newPath = transformPath(a.path, b.path, a.nodes.length);
+
     return b.copyWith(path: newPath);
   } else if (a is DeleteOperation) {
     if (b is DeleteOperation) {
@@ -265,6 +270,7 @@ Operation? transformOperation(Operation a, Operation b) {
       }
     }
     final newPath = transformPath(a.path, b.path, -1 * a.nodes.length);
+
     return b.copyWith(path: newPath);
   }
 

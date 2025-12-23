@@ -246,6 +246,7 @@ class ItemScrollController {
     assert(_scrollableListState != null);
     assert(opacityAnimationWeights.length == 3);
     assert(duration > Duration.zero);
+
     return _scrollableListState!._scrollTo(
       index: index,
       alignment: alignment,
@@ -491,6 +492,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
             ],
           ),
         );
+
         return child;
       },
     );
@@ -652,6 +654,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   Animatable<double> _opacityAnimation(List<double> opacityAnimationWeights) {
     const startOpacity = 0.0;
     const endOpacity = 1.0;
+
     return TweenSequence<double>(<TweenSequenceItem<double>>[
       TweenSequenceItem<double>(
         tween: ConstantTween<double>(startOpacity),

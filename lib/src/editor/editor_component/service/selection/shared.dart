@@ -25,6 +25,7 @@ extension EditorStateSelection on EditorState {
       }
       sortedNodes.add(child);
     }
+
     return sortedNodes;
   }
 
@@ -52,6 +53,7 @@ extension EditorStateSelection on EditorState {
         AppFlowyEditorLog.selection.debug(
           'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
         );
+
         return isMatch;
       },
       compare: (index, rect) => rect.bottom <= offset.dy,
@@ -76,6 +78,7 @@ extension EditorStateSelection on EditorState {
           AppFlowyEditorLog.selection.debug(
             'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
           );
+
           return isMatch;
         },
         compare: (index, rect) => rect.right <= offset.dx,
@@ -98,6 +101,7 @@ extension EditorStateSelection on EditorState {
             (a, b) {
               final aRect = _getCachedRect(a, rectCache!);
               final bRect = _getCachedRect(b, rectCache);
+
               return aRect.bottom != bRect.bottom
                   ? aRect.bottom.compareTo(bRect.bottom)
                   : aRect.left.compareTo(bRect.left);
@@ -116,8 +120,10 @@ extension EditorStateSelection on EditorState {
           final widget = element.widget;
           if (widget is Opacity && widget.opacity == 0) {
             isVisible = false;
+
             return false;
           }
+
           return true;
         });
         if (isVisible) {
@@ -142,6 +148,7 @@ extension EditorStateSelection on EditorState {
         rectCache,
       );
     }
+
     return node;
   }
 

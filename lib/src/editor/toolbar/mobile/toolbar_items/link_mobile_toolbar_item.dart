@@ -72,6 +72,7 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
     const double spacing = 8;
+
     return Material(
       // TextField widget needs to be wrapped in a Material widget to provide a visual appearance
       color: style.backgroundColor,

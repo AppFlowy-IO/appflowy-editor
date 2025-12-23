@@ -30,6 +30,7 @@ class ColumnBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return ColumnBlockComponent(
       key: node.key,
       node: node,
@@ -135,6 +136,7 @@ class ColumnBlockComponentState extends State<ColumnBlockComponent>
       Selection.collapsed(position),
       shiftWithBaseOffset: shiftWithBaseOffset,
     );
+
     return rects.firstOrNull;
   }
 
@@ -154,6 +156,7 @@ class ColumnBlockComponentState extends State<ColumnBlockComponent>
             renderBox.size,
       ];
     }
+
     return [Offset.zero & _renderBox!.size];
   }
 

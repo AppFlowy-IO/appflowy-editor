@@ -33,6 +33,7 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
   Widget build(BuildContext context) {
     final style = widget.selectionMenuStyle;
     final isSelected = widget.isSelected || _onHover;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 5.0),
       child: SizedBox(

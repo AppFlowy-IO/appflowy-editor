@@ -23,6 +23,7 @@ abstract class TextInputService {
   final ContentInsertionConfiguration? contentInsertionConfiguration;
 
   TextRange? get composingTextRange;
+
   bool get attached;
 
   void clearComposingTextRange();

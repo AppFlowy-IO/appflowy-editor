@@ -9,6 +9,7 @@ extension EditorStateSelectable on EditorState {
         return (nodes[i], selectable);
       }
     }
+
     return null;
   }
 
@@ -19,6 +20,7 @@ extension EditorStateSelectable on EditorState {
     if (node != null) {
       return (node, renderer.blockComponentSelectable(node.type)!);
     }
+
     return null;
   }
 }

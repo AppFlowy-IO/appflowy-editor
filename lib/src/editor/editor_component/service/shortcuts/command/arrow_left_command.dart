@@ -36,6 +36,7 @@ CommandShortcutEventHandler _arrowLeftCommandHandler = (editorState) {
   } else {
     editorState.moveCursorForward(SelectionMoveRange.character);
   }
+
   return KeyEventResult.handled;
 };
 
@@ -59,6 +60,7 @@ CommandShortcutEventHandler _moveCursorToBeginCommandHandler = (editorState) {
   } else {
     editorState.moveCursorForward(SelectionMoveRange.line);
   }
+
   return KeyEventResult.handled;
 };
 
@@ -119,6 +121,7 @@ CommandShortcutEventHandler _moveCursorToLeftWordCommandHandler =
     }
     editorState.moveCursorForward(SelectionMoveRange.word);
   }
+
   return KeyEventResult.handled;
 };
 
@@ -154,6 +157,7 @@ CommandShortcutEventHandler _moveCursorLeftWordSelectCommandHandler =
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,
   );
+
   return KeyEventResult.handled;
 };
 
@@ -184,6 +188,7 @@ CommandShortcutEventHandler _moveCursorLeftSelectCommandHandler =
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,
   );
+
   return KeyEventResult.handled;
 };
 
@@ -217,13 +222,16 @@ CommandShortcutEventHandler _moveCursorBeginSelectCommandHandler =
     selection.copyWith(end: end),
     reason: SelectionUpdateReason.uiEvent,
   );
+
   return KeyEventResult.handled;
 };
 
 bool isRTL(EditorState editorState) {
   if (editorState.selection != null) {
     final node = editorState.getNodeAtPath(editorState.selection!.end.path);
+
     return node?.selectable?.textDirection() == TextDirection.rtl;
   }
+
   return false;
 }

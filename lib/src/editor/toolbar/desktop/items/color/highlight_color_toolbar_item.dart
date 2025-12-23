@@ -19,6 +19,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
 
         return delta.everyAttributes((attributes) {
           highlightColorHex = attributes[AppFlowyRichTextKeys.backgroundColor];
+
           return highlightColorHex != null;
         });
       });
@@ -40,6 +41,7 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
                 },
               );
             }
+
             return true;
           });
           showColorMenu(

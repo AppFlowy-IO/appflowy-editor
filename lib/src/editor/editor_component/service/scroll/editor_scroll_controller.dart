@@ -90,6 +90,7 @@ class EditorScrollController {
         'when shrinkWrap is true',
       );
     }
+
     return _itemScrollController;
   }
 
@@ -102,6 +103,7 @@ class EditorScrollController {
         'when shrinkWrap is true',
       );
     }
+
     return _scrollOffsetController;
   }
 
@@ -115,6 +117,7 @@ class EditorScrollController {
         'when shrinkWrap is true',
       );
     }
+
     return _itemPositionsListener;
   }
 
@@ -128,6 +131,7 @@ class EditorScrollController {
         'when shrinkWrap is true',
       );
     }
+
     return _scrollOffsetListener;
   }
 
@@ -231,6 +235,7 @@ class EditorScrollController {
 
     if (positions.isEmpty) {
       visibleRangeNotifier.value = (-1, -1);
+
       return;
     }
 

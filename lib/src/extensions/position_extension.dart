@@ -24,6 +24,7 @@ extension PositionExtension on Position {
       if (previousEnd != null) {
         return previousEnd;
       }
+
       return null;
     } else if (!forward) {
       final end = node.selectable?.end();
@@ -45,6 +46,7 @@ extension PositionExtension on Position {
         }
 
         return Position(path: path, offset: offset);
+
       case SelectionRange.word:
         final delta = node.delta;
         if (delta != null) {
@@ -86,6 +88,7 @@ extension PositionExtension on Position {
       if (editorSelection.isBackward) {
         return current.bottom > next.bottom ? current : next;
       }
+
       return current.top <= next.top ? current : next;
     });
 
@@ -104,6 +107,7 @@ extension PositionExtension on Position {
         ?.configuration;
     if (nodeConfig == null) {
       assert(nodeConfig != null, 'Block Configuration should not be null');
+
       return this;
     }
 
@@ -212,6 +216,7 @@ extension PositionExtension on Position {
           selectable.start().offset,
           selectable.end().offset,
         );
+
         return Position(path: neighbourPath, offset: offset);
       }
     }

@@ -46,6 +46,7 @@ final class HistoryItem extends LinkedListEntry<HistoryItem> {
     }
     builder.afterSelection = beforeSelection;
     builder.beforeSelection = afterSelection;
+
     return builder;
   }
 }
@@ -98,6 +99,7 @@ class UndoManager {
     if (undoStack.isEmpty) {
       final item = HistoryItem();
       undoStack.push(item);
+
       return item;
     }
     final last = undoStack.last;
@@ -105,8 +107,10 @@ class UndoManager {
       redoStack.clear();
       final item = HistoryItem();
       undoStack.push(item);
+
       return item;
     }
+
     return last;
   }
 

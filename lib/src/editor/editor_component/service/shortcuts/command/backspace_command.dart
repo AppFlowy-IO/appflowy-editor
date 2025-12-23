@@ -62,6 +62,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
       ),
     );
     editorState.apply(transaction);
+
     return KeyEventResult.handled;
   }
 
@@ -141,6 +142,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
   }
 
   editorState.apply(transaction);
+
   return KeyEventResult.handled;
 };
 
@@ -151,6 +153,7 @@ CommandShortcutEventHandler _backspaceInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+
   return KeyEventResult.handled;
 };
 

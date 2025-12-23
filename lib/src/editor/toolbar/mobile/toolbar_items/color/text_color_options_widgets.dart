@@ -63,6 +63,7 @@ class _TextColorOptionsWidgetsState extends State<TextColorOptionsWidgets> {
                     attributes[AppFlowyRichTextKeys.textColor] == e.colorHex,
               );
             });
+
             return ColorButton(
               colorOption: e,
               onPressed: () {

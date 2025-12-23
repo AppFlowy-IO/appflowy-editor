@@ -343,6 +343,7 @@ void main() {
     final cleanJson = jsonList.map((e) {
       final map = e as Map;
       map.removeWhere((k, v) => k != 'insert' && k != 'attributes');
+
       return map;
     }).toList();
     expect(

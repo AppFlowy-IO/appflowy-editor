@@ -84,8 +84,10 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// The children of the node.
   final LinkedList<Node> _children;
+
   List<Node> get children {
     _cacheChildren ??= _children.toList(growable: false);
+
     return _cacheChildren!;
   }
 
@@ -93,6 +95,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// The attributes of the node.
   Attributes _attributes;
+
   Attributes get attributes => {..._attributes};
 
   /// The path of the node.
@@ -138,6 +141,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     final index = path.first;
     final child = childAtIndexOrNull(index);
+
     return child?.childAtPath(path.sublist(1));
   }
 
@@ -161,6 +165,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     if (_children.isEmpty) {
       _children.add(entry);
       notifyListeners();
+
       return;
     }
 
@@ -213,6 +218,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     parent?.notifyListeners();
     parent = null;
+
     return true;
   }
 
@@ -235,6 +241,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     if (attributes['delta'] is List) {
       return Delta.fromJson(attributes['delta']);
     }
+
     return null;
   }
 
@@ -253,6 +260,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
       // filter the null value
       map['data'] = attributes..removeWhere((_, value) => value == null);
     }
+
     return map;
   }
 
@@ -281,6 +289,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     }
     node.externalValues = externalValues;
     node.extraInfos = extraInfos;
+
     return node;
   }
 
@@ -297,6 +306,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
       return previous;
     }
     final index = parent.children.indexOf(this);
+
     return parent._computePath([index, ...previous]);
   }
 
@@ -351,8 +361,10 @@ final class TextNode extends Node {
   String get subtype => '';
 
   Delta _delta;
+
   @override
   Delta get delta => _delta;
+
   set delta(Delta v) {
     _delta = v;
     notifyListeners();
@@ -362,6 +374,7 @@ final class TextNode extends Node {
   Map<String, Object> toJson() {
     final map = super.toJson();
     map['delta'] = delta.toJson();
+
     return map;
   }
 
@@ -385,6 +398,7 @@ final class TextNode extends Node {
         );
       }
     }
+
     return textNode;
   }
 
@@ -401,6 +415,7 @@ extension NodeEquality on Iterable<Node> {
         return false;
       }
     }
+
     return true;
   }
 

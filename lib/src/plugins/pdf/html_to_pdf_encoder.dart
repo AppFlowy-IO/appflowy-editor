@@ -44,6 +44,7 @@ class PdfHTMLEncoder {
           },
         ),
       );
+
       return blank;
     }
     final nodes = await _parseElement(body.nodes);
@@ -51,6 +52,7 @@ class PdfHTMLEncoder {
     newPdf.addPage(
       pw.MultiPage(build: (pw.Context context) => nodes.toList()),
     );
+
     return newPdf;
   }
 
@@ -142,6 +144,7 @@ class PdfHTMLEncoder {
         ),
       );
     }
+
     return nodes;
   }
 
@@ -153,22 +156,31 @@ class PdfHTMLEncoder {
     switch (localName) {
       case HTMLTags.h1:
         return [_parseHeadingElement(element, level: 1)];
+
       case HTMLTags.h2:
         return [_parseHeadingElement(element, level: 2)];
+
       case HTMLTags.h3:
         return [_parseHeadingElement(element, level: 3)];
+
       case HTMLTags.h4:
         return [_parseHeadingElement(element, level: 4)];
+
       case HTMLTags.h5:
         return [_parseHeadingElement(element, level: 5)];
+
       case HTMLTags.h6:
         return [_parseHeadingElement(element, level: 6)];
+
       case HTMLTags.unorderedList:
         return _parseUnOrderListElement(element);
+
       case HTMLTags.orderedList:
         return _parseOrderListElement(element);
+
       case HTMLTags.table:
         return _parseRawTableData(element);
+
       case HTMLTags.list:
         return [
           _parseListElement(
@@ -176,10 +188,13 @@ class PdfHTMLEncoder {
             type: type,
           ),
         ];
+
       case HTMLTags.paragraph:
         return [await _parseParagraphElement(element)];
+
       case HTMLTags.image:
         return [await _parseImageElement(element)];
+
       default:
         return [await _parseParagraphElement(element)];
     }
@@ -227,6 +242,7 @@ class PdfHTMLEncoder {
       }
       tableRows.add(pw.TableRow(children: rowData));
     }
+
     return [
       pw.Table(
         children: tableRows,
@@ -253,9 +269,11 @@ class PdfHTMLEncoder {
       case HTMLTags.em:
         attributes = attributes.copyWith(fontStyle: pw.FontStyle.italic);
         break;
+
       case HTMLTags.underline:
         decoration.add(pw.TextDecoration.underline);
         break;
+
       case HTMLTags.del:
         attributes =
             attributes.copyWith(decoration: pw.TextDecoration.lineThrough);
@@ -276,11 +294,13 @@ class PdfHTMLEncoder {
           attributes = attributes.copyWith(color: pdf.PdfColors.blue);
         }
         break;
+
       case HTMLTags.code:
         attributes = attributes.copyWith(
           background: const pw.BoxDecoration(color: pdf.PdfColors.grey),
         );
         break;
+
       default:
         break;
     }
@@ -292,6 +312,7 @@ class PdfHTMLEncoder {
         textAlign = formattedAttrs.$1;
       }
     }
+
     return (
       textAlign,
       attributes.copyWith(decoration: pw.TextDecoration.combine(decoration))
@@ -324,6 +345,7 @@ class PdfHTMLEncoder {
         );
       }
     }
+
     return pw.Header(
       level: level,
       child: pw.RichText(
@@ -386,6 +408,7 @@ class PdfHTMLEncoder {
       if (element.text.contains('[x]')) {
         condition = true;
       }
+
       return pw.Row(
         children: [
           pw.Checkbox(
@@ -418,9 +441,11 @@ class PdfHTMLEncoder {
       if (src != null) {
         if (src.startsWith('https')) {
           final networkImage = await _fetchImage(src);
+
           return pw.Image(pw.MemoryImage(networkImage));
         } else {
           File localImage = File(src);
+
           return pw.Image(pw.MemoryImage(await localImage.readAsBytes()));
         }
       } else {
@@ -434,6 +459,7 @@ class PdfHTMLEncoder {
   Future<Uint8List> _fetchImage(String url) async {
     try {
       final Response response = await get(Uri.parse(url));
+
       return response.bodyBytes;
     } catch (e) {
       throw Exception(e);
@@ -491,6 +517,7 @@ class PdfHTMLEncoder {
         );
       }
     }
+
     return pw.Wrap(
       children: [
         pw.SizedBox(
@@ -521,6 +548,7 @@ class PdfHTMLEncoder {
         textDecorations.add(pw.TextDecoration.underline);
       }
     }
+
     return style.copyWith(
       decoration: pw.TextDecoration.combine(
         textDecorations,
@@ -593,12 +621,16 @@ class PdfHTMLEncoder {
     switch (alignment) {
       case 'right':
         return pw.TextAlign.right;
+
       case 'center':
         return pw.TextAlign.center;
+
       case 'left':
         return pw.TextAlign.left;
+
       case 'justify':
         return pw.TextAlign.justify;
+
       default:
         return pw.TextAlign.left;
     }
@@ -617,6 +649,7 @@ class PdfHTMLEncoder {
       }
       result[tuples[0].trim()] = tuples[1].trim();
     }
+
     return result;
   }
 }
@@ -626,16 +659,22 @@ extension HeaderSize on int {
     switch (this) {
       case 1:
         return 32;
+
       case 2:
         return 28;
+
       case 3:
         return 20;
+
       case 4:
         return 17;
+
       case 5:
         return 14;
+
       case 6:
         return 10;
+
       default:
         return 32;
     }

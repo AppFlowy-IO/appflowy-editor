@@ -11,6 +11,7 @@ final blocksMobileToolbarItem = MobileToolbarItem.withMenu(
     if (selection == null) {
       return const SizedBox.shrink();
     }
+
     return _BlocksMenu(editorState, selection);
   },
 );

@@ -72,5 +72,6 @@ Future<bool> formatMarkdownSymbol(
     ..afterSelection = afterSelection;
 
   await editorState.apply(transaction);
+
   return true;
 }

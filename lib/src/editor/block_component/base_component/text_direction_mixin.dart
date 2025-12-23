@@ -110,6 +110,7 @@ TextDirection? _getDirectionFromPreviousOrParentNode(
       defaultTextDirection,
     );
   }
+
   return prevOrParentNodeDirection;
 }
 
@@ -138,6 +139,7 @@ extension on String {
     } else if (this == blockComponentTextDirectionRTL) {
       return TextDirection.rtl;
     }
+
     return null;
   }
 }

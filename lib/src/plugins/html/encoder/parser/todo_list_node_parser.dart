@@ -38,6 +38,7 @@ class HTMLTodoListNodeParser extends HTMLNodeParser {
 
     final element =
         wrapChildrenNodesWithTagName(HTMLTags.div, childNodes: domNodes);
+
     return [element];
   }
 }

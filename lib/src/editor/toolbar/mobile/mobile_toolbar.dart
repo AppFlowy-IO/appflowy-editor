@@ -52,6 +52,7 @@ class MobileToolbar extends StatelessWidget {
         if (selection == null) {
           return const SizedBox.shrink();
         }
+
         return RepaintBoundary(
           child: MobileToolbarTheme(
             backgroundColor: backgroundColor,
@@ -280,6 +281,7 @@ class _ToolbarItemListView extends StatelessWidget {
         if (icon == null) {
           return const SizedBox.shrink();
         }
+
         return IconButton(
           icon: icon,
           onPressed: () {

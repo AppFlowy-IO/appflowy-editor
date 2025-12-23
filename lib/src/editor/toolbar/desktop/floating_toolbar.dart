@@ -213,6 +213,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     if (nodes.isEmpty ||
         nodes.every((node) {
           final delta = node.delta;
+
           return delta == null || delta.isEmpty;
         })) {
       return;
@@ -233,6 +234,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         final child = _buildToolbar(context);
+
         return widget.toolbarBuilder
                 ?.call(context, child, _clear, isMetricsChanged) ??
             Positioned(
@@ -269,6 +271,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
         placeHolderBuilder: widget.placeHolderBuilder,
       );
     }
+
     return _toolbarWidget!;
   }
 

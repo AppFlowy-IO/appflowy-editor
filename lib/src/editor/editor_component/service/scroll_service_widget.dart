@@ -114,10 +114,12 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           targetRect = selectionRects.first;
           direction = AxisDirection.up;
           break;
+
         case 'MobileSelectionDragMode.rightSelectionHandle':
           targetRect = selectionRects.last;
           direction = AxisDirection.down;
           break;
+
         default:
           targetRect = selectionRects.last;
 

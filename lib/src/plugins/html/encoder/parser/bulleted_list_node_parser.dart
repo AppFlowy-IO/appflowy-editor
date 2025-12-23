@@ -49,6 +49,7 @@ class HTMLBulletedListNodeParser extends HTMLNodeParser {
       HTMLTags.list,
       childNodes: domNodes,
     );
+
     return [element];
   }
 }

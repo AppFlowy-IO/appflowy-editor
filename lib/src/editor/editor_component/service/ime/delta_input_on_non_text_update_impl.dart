@@ -100,12 +100,14 @@ Future<bool> _checkIfBacktickPressed(
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
     AppFlowyEditorLog.input.debug('selection is null or not collapsed');
+
     return false;
   }
 
   final node = editorState.getNodesInSelection(selection).firstOrNull;
   if (node == null) {
     AppFlowyEditorLog.input.debug('node is null');
+
     return false;
   }
 
@@ -113,6 +115,7 @@ Future<bool> _checkIfBacktickPressed(
   final lastCharacter = node.delta?.toPlainText().characters.lastOrNull;
   if (lastCharacter != '`') {
     AppFlowyEditorLog.input.debug('last character is not backtick');
+
     return false;
   }
 
@@ -127,6 +130,7 @@ Future<bool> _checkIfBacktickPressed(
 
   if (!shouldApplyFormat) {
     AppFlowyEditorLog.input.debug('should not apply format');
+
     return false;
   }
 

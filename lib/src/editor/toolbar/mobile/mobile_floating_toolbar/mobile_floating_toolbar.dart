@@ -110,6 +110,7 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
           _onScrollEnd!.call();
           _onScrollEnd = null;
         }
+
         return false;
       },
       child: widget.child,

@@ -32,12 +32,14 @@ void main() {
       switch (message.method) {
         case "Clipboard.getData":
           return mockClipboard.getData;
+
         case "Clipboard.setData":
           final args = message.arguments as Map<String, dynamic>;
           mockClipboard = mockClipboard.copyWith(
             text: args['text'],
           );
       }
+
       return null;
     });
   });

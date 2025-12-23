@@ -22,12 +22,14 @@ extension TextSpanExtensions on TextSpan {
     if (other == null) {
       return this;
     }
+
     return copyWith(
       style: style?.combine(other),
       children: children?.map((child) {
         if (child is TextSpan) {
           return child.updateTextStyle(other);
         }
+
         return child;
       }).toList(growable: false),
     );

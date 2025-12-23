@@ -77,6 +77,7 @@ class SelectionMenu extends SelectionMenuService {
       _show();
       completer.complete();
     });
+
     return completer.future;
   }
 
@@ -176,6 +177,7 @@ class SelectionMenu extends SelectionMenuService {
 
     if (_selectionUpdateByInner) {
       _selectionUpdateByInner = false;
+
       return;
     }
 
@@ -190,14 +192,17 @@ class SelectionMenu extends SelectionMenuService {
         left = offset.dx;
         top = offset.dy;
         break;
+
       case Alignment.bottomLeft:
         left = offset.dx;
         bottom = offset.dy;
         break;
+
       case Alignment.topRight:
         right = offset.dx;
         top = offset.dy;
         break;
+
       case Alignment.bottomRight:
         right = offset.dx;
         bottom = offset.dy;

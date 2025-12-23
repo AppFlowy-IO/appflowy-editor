@@ -102,6 +102,7 @@ class UnboundedRenderViewport extends RenderViewport {
       case Axis.vertical:
         offset.applyViewportDimension(size.height);
         break;
+
       case Axis.horizontal:
         offset.applyViewportDimension(size.width);
         break;
@@ -122,6 +123,7 @@ class UnboundedRenderViewport extends RenderViewport {
           semanticBounds.right,
           semanticBounds.bottom + _calculatedCacheExtent!,
         );
+
       default:
         return Rect.fromLTRB(
           semanticBounds.left - _calculatedCacheExtent!,
@@ -140,6 +142,7 @@ class UnboundedRenderViewport extends RenderViewport {
       _maxScrollExtent = 0.0;
       _hasVisualOverflow = false;
       offset.applyContentDimensions(0.0, 0.0);
+
       return;
     }
     assert(center!.parent == this);
@@ -151,6 +154,7 @@ class UnboundedRenderViewport extends RenderViewport {
         mainAxisExtent = size.height;
         crossAxisExtent = size.width;
         break;
+
       case Axis.horizontal:
         mainAxisExtent = size.width;
         crossAxisExtent = size.height;
@@ -203,6 +207,7 @@ class UnboundedRenderViewport extends RenderViewport {
             ' so complicated that it cannot be resolved in any reasonable number of'
             ' layout passes.');
       }
+
       return true;
     }());
   }
@@ -234,6 +239,7 @@ class UnboundedRenderViewport extends RenderViewport {
       case CacheExtentStyle.pixel:
         _calculatedCacheExtent = cacheExtent;
         break;
+
       case CacheExtentStyle.viewport:
         _calculatedCacheExtent = mainAxisExtent * cacheExtent!;
         break;
@@ -298,6 +304,7 @@ class UnboundedRenderViewport extends RenderViewport {
       case GrowthDirection.forward:
         _maxScrollExtent += childLayoutGeometry.scrollExtent;
         break;
+
       case GrowthDirection.reverse:
         _minScrollExtent -= childLayoutGeometry.scrollExtent;
         break;

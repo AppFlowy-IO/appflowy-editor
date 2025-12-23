@@ -30,6 +30,7 @@ abstract class HTMLNodeParser {
     for (final node in childNodes) {
       p.append(node);
     }
+
     return p;
   }
 
@@ -49,6 +50,7 @@ abstract class HTMLNodeParser {
         );
       }
     }
+
     return result;
   }
 

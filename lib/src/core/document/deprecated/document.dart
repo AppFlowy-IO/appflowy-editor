@@ -22,6 +22,7 @@ class DocumentV0 {
 
     final document = Map<String, Object>.from(json['document'] as Map);
     final root = NodeV0.fromJson(document);
+
     return DocumentV0(root: root);
   }
 
@@ -31,6 +32,7 @@ class DocumentV0 {
       type: 'editor',
       children: LinkedList<NodeV0>()..add(TextNodeV0.empty()),
     );
+
     return DocumentV0(
       root: root,
     );
@@ -54,6 +56,7 @@ class DocumentV0 {
       for (final node in nodes) {
         target.insertBefore(node);
       }
+
       return true;
     }
 
@@ -62,6 +65,7 @@ class DocumentV0 {
       for (var i = 0; i < nodes.length; i++) {
         parent.insert(nodes.elementAt(i), index: path.last + i);
       }
+
       return true;
     }
 
@@ -83,6 +87,7 @@ class DocumentV0 {
       target = next;
       length--;
     }
+
     return true;
   }
 
@@ -96,6 +101,7 @@ class DocumentV0 {
       return false;
     }
     target.updateAttributes(attributes);
+
     return true;
   }
 
@@ -109,6 +115,7 @@ class DocumentV0 {
       return false;
     }
     target.delta = target.delta.compose(delta);
+
     return true;
   }
 

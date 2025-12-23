@@ -28,6 +28,7 @@ Node numberedListNode({
     'delta': (delta ?? Delta()).toJson(),
     NumberedListBlockKeys.number: number,
   };
+
   return Node(
     type: NumberedListBlockKeys.type,
     attributes: {
@@ -56,6 +57,7 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return NumberedListBlockComponentWidget(
       key: node.key,
       node: node,
@@ -224,6 +226,7 @@ class _NumberedListIcon extends StatelessWidget {
     final editorState = context.read<EditorState>();
     final text = editorState.editorStyle.textStyleConfiguration.text;
     final textScaleFactor = editorState.editorStyle.textScaleFactor;
+
     return Container(
       constraints:
           const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
@@ -257,6 +260,7 @@ extension on Node {
       2 => indexInSameLevel.roman,
       _ => '$indexInSameLevel',
     };
+
     return '$levelString.';
   }
 }
@@ -278,6 +282,7 @@ class _NumberedListIconBuilder {
       }
       parent = parent.parent;
     }
+
     return level;
   }
 
@@ -300,6 +305,7 @@ class _NumberedListIconBuilder {
     if (startNumber != null) {
       return startNumber + level - 1;
     }
+
     return level;
   }
 }
@@ -313,6 +319,7 @@ extension on int {
       result = String.fromCharCode(remainder + 65) + result;
       number = (number - 1) ~/ 26;
     }
+
     return result.toLowerCase();
   }
 

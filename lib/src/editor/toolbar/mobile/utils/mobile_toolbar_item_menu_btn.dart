@@ -18,6 +18,7 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
+
     return OutlinedButton(
       onPressed: onPressed,
       style: ButtonStyle(
@@ -32,6 +33,7 @@ class MobileToolbarItemMenuBtn extends StatelessWidget {
                 width: style.buttonSelectedBorderWidth,
               );
             }
+
             return BorderSide(color: style.itemOutlineColor);
           },
         ),

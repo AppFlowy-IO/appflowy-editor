@@ -72,6 +72,7 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
           next,
         );
       editorState.apply(transaction);
+
       return KeyEventResult.handled;
     }
   } else {
@@ -83,6 +84,7 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
         nextIndex - position.offset,
       );
       editorState.apply(transaction);
+
       return KeyEventResult.handled;
     }
   }
@@ -97,6 +99,7 @@ CommandShortcutEventHandler _deleteInNotCollapsedSelection = (editorState) {
     return KeyEventResult.ignored;
   }
   editorState.deleteSelection(selection);
+
   return KeyEventResult.handled;
 };
 

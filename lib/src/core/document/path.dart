@@ -14,6 +14,7 @@ extension PathExtensions on Path {
     if (equals(other)) {
       return true;
     }
+
     return this > other;
   }
 
@@ -32,6 +33,7 @@ extension PathExtensions on Path {
     if (this.length < other.length) {
       return false;
     }
+
     return true;
   }
 
@@ -39,6 +41,7 @@ extension PathExtensions on Path {
     if (equals(other)) {
       return true;
     }
+
     return this < other;
   }
 
@@ -57,6 +60,7 @@ extension PathExtensions on Path {
     if (this.length > other.length) {
       return false;
     }
+
     return true;
   }
 
@@ -66,6 +70,7 @@ extension PathExtensions on Path {
       return nextPath;
     }
     final last = nextPath.last;
+
     return nextPath
       ..removeLast()
       ..add(last + 1);
@@ -77,6 +82,7 @@ extension PathExtensions on Path {
       return nextPath;
     }
     final last = nextPath.last;
+
     return nextPath
       ..removeLast()
       ..add(last + n);
@@ -92,6 +98,7 @@ extension PathExtensions on Path {
       return previousPath;
     }
     final last = previousPath.last;
+
     return previousPath
       ..removeLast()
       ..add(max(0, last - 1));
@@ -103,6 +110,7 @@ extension PathExtensions on Path {
       return previousPath;
     }
     final last = previousPath.last;
+
     return previousPath
       ..removeLast()
       ..add(max(0, last - n));
@@ -112,6 +120,7 @@ extension PathExtensions on Path {
     if (isEmpty) {
       return this;
     }
+
     return Path.from(this, growable: true)..removeLast();
   }
 
@@ -130,6 +139,7 @@ extension PathExtensions on Path {
         return false;
       }
     }
+
     return true;
   }
 
@@ -145,6 +155,7 @@ extension PathExtensions on Path {
     if (isSameDepth) {
       return result && selection.start.path.length == length;
     }
+
     return result;
   }
 }
