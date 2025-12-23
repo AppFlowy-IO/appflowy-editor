@@ -18,7 +18,21 @@ analyzer:
 custom_lint:
   enable_all_lint_rules: false
   rules:
+    # Formatting rules
     - newline_before_case
     - newline_before_constructor
     - newline_before_method
     - newline_before_return
+
+    - no_equal_then_else
+    - no_equal_conditions
+    - avoid_contradictory_expressions
+    - avoid_constant_conditions
+    - avoid_collection_equality_checks
+    - avoid_collection_methods_with_unrelated_types
+    # - avoid_late_context
+    - avoid_mounted_in_setstate
+    - proper_super_calls
+    - dispose_fields
+    # - avoid_undisposed_instances
+    # - dispose_class_fields

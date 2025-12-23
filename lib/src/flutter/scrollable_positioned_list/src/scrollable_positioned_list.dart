@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 // coverage:ignore-file
+// ignore_for_file: dispose_fields
 
 import 'dart:async';
 import 'dart:math';
@@ -320,10 +321,12 @@ class ScrollOffsetController {
 class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     with TickerProviderStateMixin {
   /// Details for the primary (active) [ListView].
+  // ignore: dispose_fields
   var primary = _ListDisplayDetails(const ValueKey('Ping'));
 
   /// Details for the secondary (transitional) [ListView] that is temporarily
   /// shown when scrolling a long distance.
+  // ignore: dispose_fields
   var secondary = _ListDisplayDetails(const ValueKey('Pong'));
 
   final opacity = ProxyAnimation(const AlwaysStoppedAnimation<double>(0));
