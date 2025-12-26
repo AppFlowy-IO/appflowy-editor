@@ -8,6 +8,12 @@ import 'package:appflowy_editor/src/history/undo_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// A value emitted by the [EditorState.transactionStream].
+///
+/// Contains:
+/// - [time]: Whether the event is before or after the transaction
+/// - [transaction]: The transaction being applied
+/// - [options]: The options used when applying the transaction
 typedef EditorTransactionValue = (
   TransactionTime time,
   Transaction transaction,
@@ -43,6 +49,8 @@ class ApplyOptions {
   /// whether the transaction should be recorded into
   /// the undo stack
   final bool recordUndo;
+
+  /// Whether the transaction should be recorded into the redo stack.
   final bool recordRedo;
 
   /// This flag used to determine whether the transaction is in-memory update.
@@ -55,21 +63,39 @@ enum CursorUpdateReason {
   others,
 }
 
+/// The reason why the selection was updated.
 enum SelectionUpdateReason {
-  uiEvent, // like mouse click, keyboard event
-  transaction, // like insert, delete, format
-  remote, // like remote selection
+  /// Selection changed due to user interaction (mouse click, keyboard event).
+  uiEvent,
+
+  /// Selection changed due to a transaction (insert, delete, format).
+  transaction,
+
+  /// Selection changed from a remote user (for collaborative editing).
+  remote,
+
+  /// Selection changed due to select all operation.
   selectAll,
-  searchHighlight, // Highlighting search results
+
+  /// Selection changed to highlight search results.
+  searchHighlight,
 }
 
+/// The type of selection.
 enum SelectionType {
+  /// Inline selection within text (standard text selection).
   inline,
+
+  /// Block-level selection (selecting entire blocks).
   block,
 }
 
+/// Represents when a transaction event is emitted.
 enum TransactionTime {
+  /// Event emitted before the transaction is applied.
   before,
+
+  /// Event emitted after the transaction is applied.
   after,
 }
 
@@ -106,6 +132,10 @@ class EditorState {
           document: Document.blank(),
         );
 
+  /// Creates an editor state with a blank document.
+  ///
+  /// If [withInitialText] is true, the document will contain an empty paragraph.
+  /// If false, the document will be completely empty.
   EditorState.blank({
     bool withInitialText = true,
   }) : this(
@@ -166,6 +196,7 @@ class EditorState {
 
   SelectionType? _selectionType;
 
+  /// The type of the current selection (inline or block).
   set selectionType(SelectionType? value) {
     if (value == _selectionType) {
       return;
@@ -173,23 +204,33 @@ class EditorState {
     _selectionType = value;
   }
 
+  /// The type of the current selection (inline or block).
   SelectionType? get selectionType => _selectionType;
 
   SelectionUpdateReason _selectionUpdateReason = SelectionUpdateReason.uiEvent;
 
+  /// The reason for the last selection update.
   SelectionUpdateReason get selectionUpdateReason => _selectionUpdateReason;
 
+  /// Extra information associated with the current selection.
+  ///
+  /// Can be used to pass additional context about the selection change.
   Map? selectionExtraInfo;
 
   // Service reference.
+  /// The editor service that manages all editor services.
   final service = EditorService();
 
+  /// The scroll service for managing scrolling behavior.
   AppFlowyScrollService? get scrollService => service.scrollService;
 
+  /// The selection service for managing selection rendering and behavior.
   AppFlowySelectionService get selectionService => service.selectionService;
 
+  /// The renderer service for rendering block components.
   BlockComponentRendererService get renderer => service.rendererService;
 
+  /// Sets the renderer service for rendering block components.
   set renderer(BlockComponentRendererService value) {
     service.rendererService = value;
   }
@@ -199,8 +240,13 @@ class EditorState {
   /// Refer to [EditorStateDebugInfo] for more details.
   EditorStateDebugInfo debugInfo = EditorStateDebugInfo();
 
-  /// store the auto scroller instance in here temporarily.
+  /// Store the auto scroller instance.
+  ///
+  /// Used internally to manage automatic scrolling when selecting text
+  /// or dragging near the edges of the editor.
   AutoScroller? autoScroller;
+
+  /// The scrollable state of the editor's scroll view.
   ScrollableState? scrollableState;
 
   /// Configures log output parameters,
@@ -234,6 +280,12 @@ class EditorState {
   final _toggledStyle = Attributes();
   late final toggledStyleNotifier = ValueNotifier<Attributes>(toggledStyle);
 
+  /// Updates the toggled text style (e.g., bold, italic).
+  ///
+  /// The key must be from [AppFlowyRichTextKeys.supportToggled].
+  /// This style will be applied to the next text input.
+  ///
+  /// Note: The toggled style is cleared when the selection changes.
   void updateToggledStyle(String key, dynamic value) {
     _toggledStyle[key] = value;
     toggledStyleNotifier.value = {..._toggledStyle};
@@ -264,13 +316,19 @@ class EditorState {
     return transaction;
   }
 
+  /// Whether to show the header widget above the editor.
   bool showHeader = false;
+
+  /// Whether to show the footer widget below the editor.
   bool showFooter = false;
 
+  /// Whether to enable auto-completion functionality.
   bool enableAutoComplete = false;
+
+  /// Provider for auto-complete text suggestions.
   AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
-  // only used for testing
+  /// Only used for testing to disable the transaction seal timer.
   bool disableSealTimer = false;
 
   /// The rules to apply to the document.
@@ -324,6 +382,16 @@ class EditorState {
     return null;
   }
 
+  /// Updates the selection with a specific reason and optional extra information.
+  ///
+  /// Parameters:
+  /// - [selection]: The new selection to set
+  /// - [reason]: The reason for the selection change (defaults to transaction)
+  /// - [extraInfo]: Additional context about the selection change
+  /// - [customSelectionType]: Override the selection type (inline or block)
+  ///
+  /// This method is asynchronous and completes after the selection update
+  /// is processed, especially for UI events which wait for the next frame.
   Future<void> updateSelectionWithReason(
     Selection? selection, {
     SelectionUpdateReason reason = SelectionUpdateReason.transaction,
@@ -378,6 +446,15 @@ class EditorState {
 
   bool isDisposed = false;
 
+  /// Disposes the editor state and cleans up all resources.
+  ///
+  /// This includes:
+  /// - Closing transaction streams
+  /// - Canceling timers
+  /// - Disposing the document
+  /// - Clearing all listeners
+  ///
+  /// Should be called when the editor is no longer needed.
   void dispose() {
     isDisposed = true;
     _observer.close();
@@ -493,6 +570,15 @@ class EditorState {
     return [];
   }
 
+  /// Gets the nodes within the current or provided selection.
+  ///
+  /// Parameters:
+  /// - [selection]: The selection to use (defaults to current selection)
+  /// - [withCopy]: Whether to return copies of the nodes (default: true)
+  ///
+  /// Returns a list of nodes, filtering out nodes that are children of
+  /// other nodes in the selection. The returned nodes have their deltas
+  /// sliced according to the selection boundaries.
   List<Node> getSelectedNodes({
     Selection? selection,
     bool withCopy = true,
@@ -570,11 +656,17 @@ class EditorState {
     return res;
   }
 
+  /// Gets the node at the specified path in the document.
+  ///
+  /// Returns null if no node exists at the given path.
   Node? getNodeAtPath(Path path) {
     return document.nodeAtPath(path);
   }
 
-  /// The current selection areas's rect in editor.
+  /// Gets the rectangles occupied by the current selection in the editor.
+  ///
+  /// Returns an empty list if there is no current selection.
+  /// Each rectangle represents a visual region of the selection.
   List<Rect> selectionRects() {
     final selection = this.selection;
     if (selection == null) {
@@ -627,10 +719,14 @@ class EditorState {
     return rects;
   }
 
+  /// Cancels and closes the transaction stream subscription.
+  ///
+  /// Should be called when disposing the editor state to clean up resources.
   void cancelSubscription() {
     _observer.close();
   }
 
+  /// Updates the auto-scroller configuration.
   void updateAutoScroller(
     ScrollableState scrollableState,
   ) {

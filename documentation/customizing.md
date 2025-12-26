@@ -17,7 +17,7 @@ class UnderScoreToItalic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppFlowyEditor.custom(
+    return AppFlowyEditor(
       editorState: EditorState.blank(withInitialText: true),
       blockComponentBuilders: standardBlockComponentBuilderMap,
       characterShortcutEvents: const [],
@@ -63,7 +63,7 @@ class UnderScoreToItalic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppFlowyEditor.custom(
+    return AppFlowyEditor(
       editorState: EditorState.blank(withInitialText: true),
       blockComponentBuilders: standardBlockComponentBuilderMap,
       characterShortcutEvents: [

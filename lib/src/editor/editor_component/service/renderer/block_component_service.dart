@@ -1,63 +1,119 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+/// The key used for the error block component builder.
+///
+/// This is used when a block fails validation and needs to be rendered
+/// as a placeholder error widget.
 const errorBlockComponentBuilderKey = 'errorBlockComponentBuilderKey';
 
-// this value is used to force show the block action.
-// it is only for test now.
+/// Forces block actions to always show.
+///
+/// This value is only for testing purposes.
 bool forceShowBlockAction = false;
 
+/// A function that builds the action widget shown when hovering over a block.
+///
+/// Parameters:
+/// - [blockComponentContext]: Context information about the block
+/// - [state]: The current state of the block component action
+///
+/// Returns a widget to display as the block action (e.g., drag handle, add button).
 typedef BlockActionBuilder = Widget Function(
   BlockComponentContext blockComponentContext,
   BlockComponentActionState state,
 );
 
+/// A function that builds the trailing action widget shown after the block.
+///
+/// Parameters:
+/// - [blockComponentContext]: Context information about the block
+/// - [state]: The current state of the block component action
+///
+/// Returns a widget to display after the block content.
 typedef BlockActionTrailingBuilder = Widget Function(
   BlockComponentContext blockComponentContext,
   BlockComponentActionState state,
 );
 
+/// A function that validates whether a node can be rendered by a block component.
+///
+/// Returns true if the node is valid for this component, false otherwise.
+/// If false, the node will be displayed as a placeholder error widget.
 typedef BlockComponentValidate = bool Function(Node node);
 
+/// Interface for controlling block component action visibility.
 abstract class BlockComponentActionState {
+  /// Sets whether the block actions should always be visible.
   set alwaysShowActions(bool alwaysShowActions);
 }
 
-/// BlockComponentBuilder is used to build a BlockComponentWidget.
+/// Abstract builder for creating block component widgets.
+///
+/// This is the core extensibility point for adding new block types to the editor.
+/// Implement this class to create custom block components.
+///
+/// Example:
+/// ```dart
+/// class MyBlockComponentBuilder extends BlockComponentBuilder {
+///   @override
+///   BlockComponentWidget build(BlockComponentContext context) {
+///     return MyBlockComponentWidget(
+///       key: context.node.key,
+///       node: context.node,
+///       configuration: configuration,
+///     );
+///   }
+/// }
+/// ```
 abstract class BlockComponentBuilder with BlockComponentSelectable {
   BlockComponentBuilder({
     this.configuration = const BlockComponentConfiguration(),
   });
 
-  /// validate the node.
+  /// Validates whether a node can be rendered by this component.
   ///
-  /// return true if the node is valid.
-  /// return false if the node is invalid,
-  ///   and the node will be displayed as a PlaceHolder widget.
+  /// Return true if the node is valid.
+  /// Return false if the node is invalid - it will be displayed as a placeholder widget.
   BlockComponentValidate validate = (_) => true;
 
+  /// Builds the block component widget.
+  ///
+  /// This is the main method that creates the visual representation of the block.
   BlockComponentWidget build(BlockComponentContext blockComponentContext);
 
+  /// Determines whether to show action buttons for a node.
+  ///
+  /// Return true to display action buttons (e.g., drag handle, add button).
   bool Function(Node node) showActions = (_) => false;
 
+  /// Builds the action widget shown when hovering over the block.
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 
+  /// Builds the trailing action widget shown after the block.
   BlockActionTrailingBuilder actionTrailingBuilder =
       (_, __) => const SizedBox.shrink();
 
+  /// Configuration for the block component's appearance and behavior.
   BlockComponentConfiguration configuration =
       const BlockComponentConfiguration();
 }
 
+/// Mixin that provides selection boundary methods for block components.
+///
+/// This mixin defines how to determine the start and end positions
+/// for selection within a block component.
 mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
-  /// the start position of the block component.
+  /// Gets the start position of the block component.
   ///
-  /// For the text block component, the start position is always 0.
+  /// For text block components, this is always position 0.
+  /// Override this for custom selection behavior.
   Position start(Node node) => Position(path: node.path, offset: 0);
 
-  /// the end position of the block component.
+  /// Gets the end position of the block component.
   ///
-  /// For the text block component, the end position is always the length of the text.
+  /// For text block components, this is the length of the text delta.
+  /// Override this for custom selection behavior.
   Position end(Node node) => Position(
         path: node.path,
         offset: node.delta?.length ?? 0,

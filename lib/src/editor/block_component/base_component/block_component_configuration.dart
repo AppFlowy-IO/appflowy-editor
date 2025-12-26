@@ -1,12 +1,19 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+/// A function that builds a text style for a block component.
+///
+/// Takes a [node] and optionally a [textSpan] to determine the appropriate
+/// text style for rendering the block's content.
 typedef BlockComponentTextStyleBuilder = TextStyle Function(
   Node node, {
   TextSpan? textSpan,
 });
 
-/// only for the common config of block component
+/// Configuration for customizing the appearance and behavior of block components.
+///
+/// This class provides common configuration options that can be applied
+/// to any block component, such as padding, text styles, and alignment.
 class BlockComponentConfiguration {
   const BlockComponentConfiguration({
     this.padding = _padding,
