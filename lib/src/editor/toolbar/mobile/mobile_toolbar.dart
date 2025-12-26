@@ -7,6 +7,11 @@ import 'package:flutter/material.dart';
 
 const String selectionExtraInfoDisableMobileToolbarKey = 'disableMobileToolbar';
 
+abstract class MobileToolbarWidgetService {
+  /// close item menu and enable keyboard
+  void closeItemMenu();
+}
+
 class MobileToolbar extends StatefulWidget {
   const MobileToolbar({
     super.key,
@@ -117,9 +122,8 @@ class _MobileToolbarState extends State<MobileToolbar> {
       builder: (_, Selection? selection, __) {
         // if the selection is null, hide the toolbar
         if (selection == null ||
-            widget
-                    .editorState
-                    .selectionExtraInfo?[selectionExtraInfoDisableMobileToolbarKey] ==
+            widget.editorState.selectionExtraInfo?[
+                    selectionExtraInfoDisableMobileToolbarKey] ==
                 true) {
           return const SizedBox.shrink();
         }
@@ -177,10 +181,10 @@ class _MobileToolbar extends StatefulWidget {
   final List<MobileToolbarItem> toolbarItems;
 
   @override
-  State<_MobileToolbar> createState() => _MobileToolbarState();
+  State<_MobileToolbar> createState() => _MobileToolbarWidgetState();
 }
 
-class _MobileToolbarState extends State<_MobileToolbar>
+class _MobileToolbarWidgetState extends State<_MobileToolbar>
     implements MobileToolbarWidgetService {
   // used to control the toolbar menu items
   PropertyValueNotifier<bool> showMenuNotifier = PropertyValueNotifier(false);
@@ -397,8 +401,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
                       editorState: widget.editorState,
                       itemMenuBuilder: () {
                         final menu = widget
-                            .toolbarItems[selectedMenuIndex!]
-                            .itemMenuBuilder!
+                            .toolbarItems[selectedMenuIndex!].itemMenuBuilder!
                             .call(context, widget.editorState, this);
 
                         return menu ?? const SizedBox.shrink();

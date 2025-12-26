@@ -109,16 +109,13 @@ class TestableEditor {
           quoteMobileToolbarItem,
           codeMobileToolbarItem,
         ];
-        editor = Column(
-          children: [
-            Expanded(
-              child: AppFlowyEditor(
-                editorStyle: const EditorStyle.mobile(),
-                editorState: editorState,
-              ),
-            ),
-            MobileToolbar(editorState: editorState, toolbarItems: items),
-          ],
+        editor = MobileToolbar(
+          editorState: editorState,
+          toolbarItems: items,
+          child: AppFlowyEditor(
+            editorStyle: const EditorStyle.mobile(),
+            editorState: editorState,
+          ),
         );
       } else {
         editor = FloatingToolbar(
@@ -282,9 +279,8 @@ class MockIMEInput {
   final WidgetTester tester;
 
   TextInputService get imeInput {
-    final keyboardService =
-        tester.state(find.byType(KeyboardServiceWidget))
-            as KeyboardServiceWidgetState;
+    final keyboardService = tester.state(find.byType(KeyboardServiceWidget))
+        as KeyboardServiceWidgetState;
 
     return keyboardService.textInputService;
   }
@@ -340,10 +336,8 @@ class MockIMEInput {
       return;
     }
 
-    final oldText = editorState
-        .getNodeAtPath(selection.start.path)!
-        .delta!
-        .toPlainText();
+    final oldText =
+        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
 
     await imeInput.apply([
       TextEditingDeltaReplacement(

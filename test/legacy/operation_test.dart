@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:appflowy_editor/src/core/document/node.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appflowy_editor/src/core/transform/operation.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/editor/editor_state.dart';
 import 'package:appflowy_editor/src/core/document/document.dart';
 
 void main() {

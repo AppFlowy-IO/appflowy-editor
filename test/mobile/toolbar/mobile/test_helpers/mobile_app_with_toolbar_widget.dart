@@ -13,8 +13,7 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localToolbarItems =
-        toolbarItems ??
+    final localToolbarItems = toolbarItems ??
         [
           textDecorationMobileToolbarItem,
           headingMobileToolbarItem,
@@ -26,19 +25,13 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
         ];
 
     return MaterialApp(
-      home: Column(
-        children: [
-          Expanded(
-            child: AppFlowyEditor(
-              editorStyle: const EditorStyle.mobile(),
-              editorState: editorState,
-            ),
-          ),
-          MobileToolbar(
-            editorState: editorState,
-            toolbarItems: localToolbarItems,
-          ),
-        ],
+      home: MobileToolbar(
+        editorState: editorState,
+        toolbarItems: localToolbarItems,
+        child: AppFlowyEditor(
+          editorStyle: const EditorStyle.mobile(),
+          editorState: editorState,
+        ),
       ),
     );
   }

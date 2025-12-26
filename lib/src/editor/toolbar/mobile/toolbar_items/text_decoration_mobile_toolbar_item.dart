@@ -16,6 +16,18 @@ final textDecorationMobileToolbarItem = MobileToolbarItem.withMenu(
   },
 );
 
+class TextDecorationUnit {
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
+
+  TextDecorationUnit({
+    required this.icon,
+    required this.label,
+    required this.name,
+  });
+}
+
 class _TextDecorationMenu extends StatefulWidget {
   const _TextDecorationMenu(this.editorState, this.selection);
 

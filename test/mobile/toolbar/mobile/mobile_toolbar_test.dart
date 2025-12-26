@@ -23,6 +23,9 @@ void main() {
           home: MobileToolbar(
             editorState: editor.editorState,
             toolbarItems: toolbarItems,
+            child: AppFlowyEditor(
+              editorState: editor.editorState,
+            ),
           ),
         ),
       );
@@ -50,7 +53,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(MobileToolbarWidget), findsOneWidget);
+      expect(find.byType(MobileToolbar), findsOneWidget);
     });
   });
 }
