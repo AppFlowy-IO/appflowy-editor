@@ -25,7 +25,10 @@ class _SpellHoverState extends State<SpellHover> {
 
   @override
   void dispose() {
-    _removeOverlay();
+    _entry?.remove();
+    _entry?.dispose();
+    _entry = null;
+
     super.dispose();
   }
 

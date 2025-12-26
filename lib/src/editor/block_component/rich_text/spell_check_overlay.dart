@@ -31,8 +31,12 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
 
   @override
   void dispose() {
-    _removeOverlay();
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
+
     _hoverDebounce?.cancel();
+
     super.dispose();
   }
 
@@ -135,7 +139,10 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
   }
 
   Future<void> _replaceMisspelledWord(
-      String suggestion, int start, int length) async {
+    String suggestion,
+    int start,
+    int length,
+  ) async {
     _removeOverlay();
 
     final transaction = widget.editorState.transaction;
@@ -166,6 +173,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
           _removeOverlay();
         }
       });
+
       return;
     }
 
@@ -177,6 +185,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
           _removeOverlay();
         }
       });
+
       return;
     }
 
@@ -191,6 +200,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
           _removeOverlay();
         }
       });
+
       return;
     }
 
@@ -205,6 +215,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
           _removeOverlay();
         }
       });
+
       return;
     }
 

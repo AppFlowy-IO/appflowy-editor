@@ -2,11 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_check_overlay.dart';
+import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
-import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_check_overlay.dart';
 
 typedef TextSpanDecoratorForAttribute = InlineSpan Function(
   BuildContext context,
@@ -127,6 +127,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   bool get enableAutoComplete =>
       widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
+  bool get enableSpellChecker => widget.editorState.enableSpellChecker;
+
   TextStyleConfiguration get textStyleConfiguration =>
       widget.editorState.editorStyle.textStyleConfiguration;
 
@@ -147,7 +149,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         _buildPlaceholderText(context),
         _buildRichText(context),
         ..._buildRichTextOverlay(context),
-        _buildSpellCheckOverlay(),
+        if (enableSpellChecker) _buildSpellCheckOverlay(),
       ],
     );
 
@@ -456,6 +458,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   Widget _buildSpellCheckOverlay() {
     if (textKey.currentContext == null) return const SizedBox.shrink();
+
     return SpellCheckOverlay(
       editorState: widget.editorState,
       node: widget.node,
@@ -637,58 +640,64 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           );
         }
       }
-      // Split the insert text into word and non-word tokens so we can
-      // underline misspelled words and attach hover suggestion UI.
-      final tokenReg = RegExp(r"(\w+|[^\w]+)");
-      final tokens =
-          tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
-      int innerIndex = 0;
 
-      for (final token in tokens) {
-        final isWord = RegExp(r"^\w+$").hasMatch(token);
-        if (isWord) {
-          final word = token;
-          final lc = word.toLowerCase();
+      if (enableSpellChecker) {
+        // Split the insert text into word and non-word tokens so we can
+        // underline misspelled words and attach hover suggestion UI.
+        final tokenReg = RegExp(r"(\w+|[^\w]+)");
+        final tokens = tokenReg
+            .allMatches(textInsert.text)
+            .map((m) => m.group(0)!)
+            .toList();
+        int innerIndex = 0;
 
-          // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
-          // cache stored on state (to avoid repeated checks)
-          // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
-          if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
-            _checkWord(word);
+        for (final token in tokens) {
+          final isWord = RegExp(r"^\w+$").hasMatch(token);
+          if (isWord) {
+            final word = token;
+            final lc = word.toLowerCase();
+
+            // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
+            // cache stored on state (to avoid repeated checks)
+            // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
+            if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
+              _checkWord(word);
+            }
+
+            // Only mark as misspelled if we've checked it and confirmed it's wrong
+            final isMisspelled = _misspelledCache[lc] == true;
+
+            final spanStyle = isMisspelled
+                ? textStyle.copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.wavy,
+                    decorationColor: Colors.red,
+                  )
+                : textStyle;
+
+            // Always use TextSpan - never WidgetSpan to avoid transaction errors
+            final textSpan = TextSpan(text: word, style: spanStyle);
+            final span = textSpanDecoratorForAttribute != null
+                ? textSpanDecoratorForAttribute!(
+                    context,
+                    widget.node,
+                    offset + innerIndex,
+                    textInsert,
+                    textSpan,
+                    widget.textSpanDecorator?.call(textSpan) ?? textSpan,
+                  )
+                : textSpan;
+
+            textSpans.add(span);
+          } else {
+            // non-word token (spaces, punctuation)
+            final textSpan = TextSpan(text: token, style: textStyle);
+            textSpans.add(textSpan);
           }
-
-          // Only mark as misspelled if we've checked it and confirmed it's wrong
-          final isMisspelled = _misspelledCache[lc] == true;
-
-          final spanStyle = isMisspelled
-              ? textStyle.copyWith(
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  decorationColor: Colors.red,
-                )
-              : textStyle;
-
-          // Always use TextSpan - never WidgetSpan to avoid transaction errors
-          final textSpan = TextSpan(text: word, style: spanStyle);
-          final span = textSpanDecoratorForAttribute != null
-              ? textSpanDecoratorForAttribute!(
-                  context,
-                  widget.node,
-                  offset + innerIndex,
-                  textInsert,
-                  textSpan,
-                  widget.textSpanDecorator?.call(textSpan) ?? textSpan,
-                )
-              : textSpan;
-
-          textSpans.add(span);
-        } else {
-          // non-word token (spaces, punctuation)
-          final textSpan = TextSpan(text: token, style: textStyle);
-          textSpans.add(textSpan);
+          innerIndex += token.length;
         }
-        innerIndex += token.length;
       }
+
       offset += textInsert.length;
     }
 

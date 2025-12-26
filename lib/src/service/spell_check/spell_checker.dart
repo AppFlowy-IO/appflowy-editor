@@ -153,6 +153,7 @@ class SpellChecker {
     // Exclude very short words (likely to be abbreviations or common)
     if (lc.length <= 2) {
       AppFlowyEditorLog.editor.debug('  → Excluded: too short (≤2 chars)');
+
       return true;
     }
 
@@ -162,6 +163,7 @@ class SpellChecker {
         word[0] != word[0].toLowerCase()) {
       AppFlowyEditorLog.editor
           .debug('  → Excluded: starts with capital letter (proper noun)');
+
       return true;
     }
 
@@ -169,6 +171,7 @@ class SpellChecker {
     if (_commonNouns.contains(lc)) {
       AppFlowyEditorLog.editor
           .debug('  → Excluded: common technical term/noun');
+
       return true;
     }
 
@@ -176,18 +179,21 @@ class SpellChecker {
     if (_numbersAndSpecialCharsRegex.hasMatch(lc)) {
       AppFlowyEditorLog.editor
           .debug('  → Excluded: contains numbers/hyphens/underscores');
+
       return true;
     }
 
     // Check if word is all caps (likely acronym) with 2+ chars
     if (word == word.toUpperCase() && word.length >= 2) {
       AppFlowyEditorLog.editor.debug('  → Excluded: ALL CAPS (acronym)');
+
       return true;
     }
 
     // Check if word is PascalCase or camelCase (likely a code identifier)
     if (_camelCaseRegex.hasMatch(word) || _pascalCaseRegex.hasMatch(word)) {
       AppFlowyEditorLog.editor.debug('  → Excluded: camelCase/PascalCase');
+
       return true;
     }
 
@@ -254,6 +260,7 @@ class SpellChecker {
     }).catchError((err) {
       _words = <String>{};
     });
+
     return _loading!;
   }
 
@@ -279,6 +286,7 @@ class SpellChecker {
     if (_shouldExcludeWord(word)) {
       AppFlowyEditorLog.editor
           .debug('SpellChecker: "$word" excluded by _shouldExcludeWord');
+
       return true;
     }
 
@@ -288,6 +296,7 @@ class SpellChecker {
     if (_words.contains(lc)) {
       AppFlowyEditorLog.editor
           .debug('SpellChecker: "$word" found in dictionary');
+
       return true;
     }
 
@@ -295,12 +304,14 @@ class SpellChecker {
     if (_isGrammaticalVariation(word)) {
       AppFlowyEditorLog.editor
           .debug('SpellChecker: "$word" is grammatical variation');
+
       return true;
     }
 
     AppFlowyEditorLog.editor.debug(
       'SpellChecker: "$word" NOT FOUND - will be marked as misspelled',
     );
+
     return false;
   }
 
@@ -348,10 +359,12 @@ class SpellChecker {
     scored.sort((a, b) {
       final cmp = a.distance.compareTo(b.distance);
       if (cmp != 0) return cmp;
+
       return a.word.compareTo(b.word);
     });
 
     final suggestions = scored.take(maxSuggestions).map((e) => e.word).toList();
+
     return suggestions;
   }
 
@@ -390,6 +403,7 @@ class SpellChecker {
 class _Candidate {
   final String word;
   final int distance;
+
   _Candidate(
     this.word,
     this.distance,

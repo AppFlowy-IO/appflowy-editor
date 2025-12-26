@@ -270,6 +270,8 @@ class EditorState {
   bool enableAutoComplete = false;
   AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
+  bool enableSpellChecker = false;
+
   // only used for testing
   bool disableSealTimer = false;
 
