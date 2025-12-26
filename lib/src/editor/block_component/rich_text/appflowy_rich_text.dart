@@ -412,7 +412,6 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textScaler: TextScaler.linear(
         widget.editorState.editorStyle.textScaleFactor,
       ),
-      overflow: TextOverflow.ellipsis,
     );
   }
 
