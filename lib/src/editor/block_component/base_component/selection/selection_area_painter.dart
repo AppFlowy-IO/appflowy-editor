@@ -23,24 +23,34 @@ class _AnimatedSelectionAreaPaintState extends State<AnimatedSelectionAreaPaint>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
+  late CurvedAnimation curvedAnimation;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.withAnimation) {
+      curvedAnimation = CurvedAnimation(
+        parent: controller,
+        curve: Curves.bounceInOut,
+      );
       controller = AnimationController(
         duration: const Duration(seconds: 4),
         vsync: this,
       );
-      animation = Tween<double>(begin: 0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: controller,
-          curve: Curves.bounceInOut,
-        ),
-      );
+      animation = Tween<double>(begin: 0, end: 1.0).animate(curvedAnimation);
       controller.repeat();
     }
+  }
+
+  @override
+  void dispose() {
+    if (widget.withAnimation) {
+      curvedAnimation.dispose();
+      controller.dispose();
+    }
+
+    super.dispose();
   }
 
   @override
@@ -69,15 +79,6 @@ class _AnimatedSelectionAreaPaintState extends State<AnimatedSelectionAreaPaint>
         return builder(animation.value);
       },
     );
-  }
-
-  @override
-  void dispose() {
-    if (widget.withAnimation) {
-      controller.dispose();
-    }
-
-    super.dispose();
   }
 }
 

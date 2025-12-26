@@ -100,13 +100,17 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   @override
   void dispose() {
+    Debounce.cancel(_debounceKey);
+
+    _toolbarContainer?.remove();
+    _toolbarContainer?.dispose();
+    _toolbarContainer = null;
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     widget.editorScrollController.offsetNotifier.removeListener(
       _onScrollPositionChanged,
     );
     WidgetsBinding.instance.removeObserver(this);
 
-    _clear();
     _toolbarWidget = null;
 
     super.dispose();

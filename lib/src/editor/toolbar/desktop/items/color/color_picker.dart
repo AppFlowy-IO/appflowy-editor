@@ -45,6 +45,13 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   @override
+  void dispose() {
+    _colorHexController.dispose();
+    _colorOpacityController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return basicOverlay(
       context,

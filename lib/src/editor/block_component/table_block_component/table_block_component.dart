@@ -220,6 +220,12 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   final _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = Scrollbar(
       controller: _scrollController,
