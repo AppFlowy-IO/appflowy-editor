@@ -642,60 +642,26 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       }
 
       if (enableSpellChecker) {
-        // Split the insert text into word and non-word tokens so we can
-        // underline misspelled words and attach hover suggestion UI.
-        final tokenReg = RegExp(r"(\w+|[^\w]+)");
-        final tokens = tokenReg
-            .allMatches(textInsert.text)
-            .map((m) => m.group(0)!)
-            .toList();
-        int innerIndex = 0;
-
-        for (final token in tokens) {
-          final isWord = RegExp(r"^\w+$").hasMatch(token);
-          if (isWord) {
-            final word = token;
-            final lc = word.toLowerCase();
-
-            // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
-            // cache stored on state (to avoid repeated checks)
-            // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
-            if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
-              _checkWord(word);
-            }
-
-            // Only mark as misspelled if we've checked it and confirmed it's wrong
-            final isMisspelled = _misspelledCache[lc] == true;
-
-            final spanStyle = isMisspelled
-                ? textStyle.copyWith(
-                    decoration: TextDecoration.underline,
-                    decorationStyle: TextDecorationStyle.wavy,
-                    decorationColor: Colors.red,
-                  )
-                : textStyle;
-
-            // Always use TextSpan - never WidgetSpan to avoid transaction errors
-            final textSpan = TextSpan(text: word, style: spanStyle);
-            final span = textSpanDecoratorForAttribute != null
-                ? textSpanDecoratorForAttribute!(
-                    context,
-                    widget.node,
-                    offset + innerIndex,
-                    textInsert,
-                    textSpan,
-                    widget.textSpanDecorator?.call(textSpan) ?? textSpan,
-                  )
-                : textSpan;
-
-            textSpans.add(span);
-          } else {
-            // non-word token (spaces, punctuation)
-            final textSpan = TextSpan(text: token, style: textStyle);
-            textSpans.add(textSpan);
-          }
-          innerIndex += token.length;
-        }
+        textSpans.addAll(
+          _buildTextSpansWithSpellCheck(context, textInsert, textStyle, offset),
+        );
+      } else {
+        final textSpan = TextSpan(
+          text: textInsert.text,
+          style: textStyle,
+        );
+        textSpans.add(
+          textSpanDecoratorForAttribute != null
+              ? textSpanDecoratorForAttribute!(
+                  context,
+                  widget.node,
+                  offset,
+                  textInsert,
+                  textSpan,
+                  widget.textSpanDecorator?.call(textSpan) ?? textSpan,
+                )
+              : textSpan,
+        );
       }
 
       offset += textInsert.length;
@@ -707,6 +673,70 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   final Map<String, bool> _misspelledCache = {};
+  static const int _maxCacheSize = 1000;
+
+  List<InlineSpan> _buildTextSpansWithSpellCheck(
+    BuildContext context,
+    TextInsert textInsert,
+    TextStyle textStyle,
+    int offset,
+  ) {
+    final textSpans = <InlineSpan>[];
+    // Split the insert text into word and non-word tokens so we can
+    // underline misspelled words and attach hover suggestion UI.
+    final tokenReg = RegExp(r"(\w+|[^\w]+)");
+    final tokens =
+        tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
+    int innerIndex = 0;
+
+    for (final token in tokens) {
+      final isWord = RegExp(r"^\w+$").hasMatch(token);
+      if (isWord) {
+        final word = token;
+        final lc = word.toLowerCase();
+
+        // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
+        // cache stored on state (to avoid repeated checks)
+        // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
+        if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
+          _checkWord(word);
+        }
+
+        // Only mark as misspelled if we've checked it and confirmed it's wrong
+        final isMisspelled = _misspelledCache[lc] == true;
+
+        final spanStyle = isMisspelled
+            ? textStyle.copyWith(
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.wavy,
+                decorationColor: Colors.red,
+              )
+            : textStyle;
+
+        // Always use TextSpan - never WidgetSpan to avoid transaction errors
+        final textSpan = TextSpan(text: word, style: spanStyle);
+        final span = textSpanDecoratorForAttribute != null
+            ? textSpanDecoratorForAttribute!(
+                context,
+                widget.node,
+                offset + innerIndex,
+                textInsert,
+                textSpan,
+                widget.textSpanDecorator?.call(textSpan) ?? textSpan,
+              )
+            : textSpan;
+
+        textSpans.add(span);
+      } else {
+        // non-word token (spaces, punctuation)
+        final textSpan = TextSpan(text: token, style: textStyle);
+        textSpans.add(textSpan);
+      }
+      innerIndex += token.length;
+    }
+
+    return textSpans;
+  }
 
   void _checkWord(String word) {
     // Pass the original word (with original casing) to the spell checker
@@ -719,6 +749,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       // avoid unnecessary setState
       if (_misspelledCache[lc] != miss) {
         _misspelledCache[lc] = miss;
+
+        // Limit cache size to prevent memory leak in long editing sessions
+        if (_misspelledCache.length > _maxCacheSize) {
+          _misspelledCache.clear();
+        }
+
         if (mounted) setState(() {});
       }
     }).catchError((err) {

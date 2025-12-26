@@ -48,8 +48,7 @@ Future<void> onReplace(
     final start = replacement.replacedRange.start;
     final length = replacement.replacedRange.end - start;
     // Try to autocorrect on desktop using the bundled dictionary.
-    // If a suggestion is found and differs from the replacement text,
-    // use the suggestion as the replacement (auto-correct).
+    // Only autocorrect if the word is actually misspelled.
     TextEditingDeltaReplacement replacementToApply = replacement;
     try {
       if (PlatformExtension.isMacOS ||
@@ -57,18 +56,23 @@ Future<void> onReplace(
           PlatformExtension.isWindows) {
         final replText = replacement.replacementText.trim();
         if (replText.isNotEmpty && !replText.contains(RegExp(r"\s"))) {
-          final suggestions =
-              await SpellChecker.instance.suggest(replText, maxSuggestions: 1);
-          if (suggestions.isNotEmpty) {
-            final top = suggestions.first;
-            if (top.toLowerCase() != replText.toLowerCase()) {
-              replacementToApply = TextEditingDeltaReplacement(
-                oldText: replacement.oldText,
-                replacementText: top,
-                replacedRange: replacement.replacedRange,
-                selection: replacement.selection,
-                composing: replacement.composing,
-              );
+          // First check if the word is misspelled
+          final isValid = await SpellChecker.instance.contains(replText);
+          if (!isValid) {
+            // Only suggest corrections for confirmed misspellings
+            final suggestions = await SpellChecker.instance
+                .suggest(replText, maxSuggestions: 1);
+            if (suggestions.isNotEmpty) {
+              final top = suggestions.first;
+              if (top.toLowerCase() != replText.toLowerCase()) {
+                replacementToApply = TextEditingDeltaReplacement(
+                  oldText: replacement.oldText,
+                  replacementText: top,
+                  replacedRange: replacement.replacedRange,
+                  selection: replacement.selection,
+                  composing: replacement.composing,
+                );
+              }
             }
           }
         }

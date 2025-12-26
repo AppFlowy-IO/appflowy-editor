@@ -23,6 +23,11 @@ class _SpellHoverState extends State<SpellHover> {
   bool _hoveringOnWord = false;
   bool _hoveringOnPopup = false;
 
+  // Constants
+  static const _popupVerticalOffset = 4.0;
+  static const _popupMaxWidth = 240.0;
+  static const _overlayRemoveDelay = Duration(milliseconds: 100);
+
   @override
   void dispose() {
     _entry?.remove();
@@ -55,7 +60,7 @@ class _SpellHoverState extends State<SpellHover> {
       builder: (context) {
         return Positioned(
           left: offset.dx,
-          top: offset.dy + size.height + 4,
+          top: offset.dy + size.height + _popupVerticalOffset,
           child: MouseRegion(
             onEnter: (_) {
               _hoveringOnPopup = true;
@@ -63,7 +68,7 @@ class _SpellHoverState extends State<SpellHover> {
             onExit: (_) {
               _hoveringOnPopup = false;
               // remove after a short delay to avoid flicker
-              Future.delayed(const Duration(milliseconds: 100), () {
+              Future.delayed(_overlayRemoveDelay, () {
                 if (!_shouldShowOverlay) _removeOverlay();
               });
             },
@@ -79,7 +84,7 @@ class _SpellHoverState extends State<SpellHover> {
                     width: 1,
                   ),
                 ),
-                constraints: const BoxConstraints(maxWidth: 240),
+                constraints: const BoxConstraints(maxWidth: _popupMaxWidth),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: suggestions
@@ -140,7 +145,7 @@ class _SpellHoverState extends State<SpellHover> {
       },
       onExit: (_) {
         _hoveringOnWord = false;
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future.delayed(_overlayRemoveDelay, () {
           if (!_shouldShowOverlay) _removeOverlay();
         });
       },

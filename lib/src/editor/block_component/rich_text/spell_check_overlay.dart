@@ -29,6 +29,14 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
   Timer? _hoverDebounce;
   bool _hoveringOnPopup = false;
 
+  // Constants
+  static const _popupVerticalOffset = 20.0;
+  static const _popupMaxWidth = 240.0;
+  static const _hoverExitDelay = Duration(milliseconds: 50);
+  static const _hoverShowDelay = Duration(milliseconds: 200);
+  static const _overlayRemoveDelay = Duration(milliseconds: 100);
+  static const _minWordLengthForCheck = 3;
+
   @override
   void dispose() {
     _overlayEntry?.remove();
@@ -44,6 +52,48 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     _overlayEntry?.remove();
     _overlayEntry = null;
     _hoveredWord = null;
+  }
+
+  void _scheduleOverlayRemoval([Duration? delay]) {
+    _hoverDebounce?.cancel();
+    _hoverDebounce = Timer(delay ?? _overlayRemoveDelay, () {
+      if (!_hoveringOnPopup) {
+        _removeOverlay();
+      }
+    });
+  }
+
+  bool _isValidWordForSpellCheck(String word) {
+    return RegExp(r'^\w+$').hasMatch(word) &&
+        word.length >= _minWordLengthForCheck;
+  }
+
+  ({Offset position, String word, int start, int length})? _getWordAtPosition(
+    PointerEvent event,
+  ) {
+    final localPosition = event.localPosition;
+    final globalPosition = widget.delegate.localToGlobal(localPosition);
+    final position = widget.delegate.getPositionInOffset(globalPosition);
+    final selection = widget.delegate.getWordBoundaryInPosition(position);
+
+    if (selection == null) return null;
+
+    final delta = widget.node.delta;
+    if (delta == null) return null;
+
+    final text = delta.toPlainText();
+    final start = selection.start.offset;
+    final end = selection.end.offset;
+
+    if (start < 0 || end > text.length || start >= end) return null;
+
+    final word = text.substring(start, end);
+    return (
+      position: globalPosition,
+      word: word,
+      start: start,
+      length: end - start
+    );
   }
 
   Future<void> _showSuggestionsPopup(
@@ -66,7 +116,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         left: position.dx,
-        top: position.dy + 20,
+        top: position.dy + _popupVerticalOffset,
         child: MouseRegion(
           onEnter: (_) {
             _hoveringOnPopup = true;
@@ -74,7 +124,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
           onExit: (_) {
             _hoveringOnPopup = false;
             // Small delay to allow for mouse movement between word and popup
-            Future.delayed(const Duration(milliseconds: 50), () {
+            Future.delayed(_hoverExitDelay, () {
               if (!_hoveringOnPopup) {
                 _removeOverlay();
               }
@@ -85,7 +135,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
             borderRadius: BorderRadius.circular(12),
             color: Colors.white,
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 240),
+              constraints: const BoxConstraints(maxWidth: _popupMaxWidth),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
@@ -159,63 +209,15 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
   }
 
   void _handlePointerHover(PointerEvent event) {
-    final localPosition = event.localPosition;
-
-    // Get the word at the current mouse position
-    final globalPosition = widget.delegate.localToGlobal(localPosition);
-    final position = widget.delegate.getPositionInOffset(globalPosition);
-    final selection = widget.delegate.getWordBoundaryInPosition(position);
-
-    if (selection == null) {
-      _hoverDebounce?.cancel();
-      _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-        if (!_hoveringOnPopup) {
-          _removeOverlay();
-        }
-      });
-
+    final wordData = _getWordAtPosition(event);
+    if (wordData == null) {
+      _scheduleOverlayRemoval();
       return;
     }
 
-    final delta = widget.node.delta;
-    if (delta == null) {
-      _hoverDebounce?.cancel();
-      _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-        if (!_hoveringOnPopup) {
-          _removeOverlay();
-        }
-      });
-
-      return;
-    }
-
-    final text = delta.toPlainText();
-    final start = selection.start.offset;
-    final end = selection.end.offset;
-
-    if (start < 0 || end > text.length || start >= end) {
-      _hoverDebounce?.cancel();
-      _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-        if (!_hoveringOnPopup) {
-          _removeOverlay();
-        }
-      });
-
-      return;
-    }
-
-    final word = text.substring(start, end);
-    final isWord = RegExp(r'^\w+$').hasMatch(word);
-
-    // Only show suggestions for actual words with 3+ characters
-    if (!isWord || word.length < 3) {
-      _hoverDebounce?.cancel();
-      _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-        if (!_hoveringOnPopup) {
-          _removeOverlay();
-        }
-      });
-
+    final (:position, :word, :start, :length) = wordData;
+    if (!_isValidWordForSpellCheck(word)) {
+      _scheduleOverlayRemoval();
       return;
     }
 
@@ -226,20 +228,15 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
       if (_hoveredWord != word) {
         // Hovering over a new misspelled word
         _hoverDebounce?.cancel();
-        _hoverDebounce = Timer(const Duration(milliseconds: 200), () {
-          _showSuggestionsPopup(word, globalPosition, start, end - start);
+        _hoverDebounce = Timer(_hoverShowDelay, () {
+          _showSuggestionsPopup(word, position, start, length);
         });
       }
       // If hovering on the same misspelled word, keep showing popup
     } else {
       // Not hovering on a misspelled word
       if (_hoveredWord != null && !_hoveringOnPopup) {
-        _hoverDebounce?.cancel();
-        _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-          if (!_hoveringOnPopup) {
-            _removeOverlay();
-          }
-        });
+        _scheduleOverlayRemoval();
       }
     }
   }
@@ -250,12 +247,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
       child: MouseRegion(
         onHover: _handlePointerHover,
         onExit: (_) {
-          _hoverDebounce?.cancel();
-          _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
-            if (!_hoveringOnPopup) {
-              _removeOverlay();
-            }
-          });
+          _scheduleOverlayRemoval();
         },
         child: IgnorePointer(
           child: Container(),

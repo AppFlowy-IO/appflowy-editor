@@ -258,6 +258,8 @@ class SpellChecker {
       // Build index for faster lookup in suggest()
       _buildWordIndex();
     }).catchError((err) {
+      AppFlowyEditorLog.editor
+          .error('Failed to load spell check dictionary: $err');
       _words = <String>{};
     });
 
