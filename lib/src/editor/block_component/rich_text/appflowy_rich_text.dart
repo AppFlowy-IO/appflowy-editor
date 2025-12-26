@@ -146,6 +146,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
+  void dispose() {
+    // Cancel all pending spell check timers to prevent memory leaks
+    for (final timer in _debounceTimers.values) {
+      timer?.cancel();
+    }
+    _debounceTimers.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = Stack(
       children: [
