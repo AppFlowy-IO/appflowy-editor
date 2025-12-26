@@ -74,7 +74,10 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
 
   @override
   void dispose() {
-    _removeKeyboardToolbar();
+    isKeyboardShow.dispose();
+    toolbarOverlay?.remove();
+    toolbarOverlay?.dispose();
+    toolbarOverlay = null;
     KeyboardHeightObserver.instance.removeListener(_onKeyboardHeightChanged);
 
     super.dispose();

@@ -67,6 +67,12 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
   }
 
   @override
+  void dispose() {
+    searchService.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -187,11 +193,12 @@ class _FindMenuState extends State<FindMenu> {
 
   @override
   void dispose() {
-    widget.searchService.matchWrappers.removeListener(_setState);
-    widget.searchService.currentSelectedIndex.removeListener(_setState);
-    widget.searchService.dispose();
+    findTextFieldFocusNode.dispose();
     findTextEditingController.removeListener(_searchPattern);
     findTextEditingController.dispose();
+
+    widget.searchService.matchWrappers.removeListener(_setState);
+    widget.searchService.currentSelectedIndex.removeListener(_setState);
 
     super.dispose();
   }
@@ -388,6 +395,13 @@ class ReplaceMenu extends StatefulWidget {
 class _ReplaceMenuState extends State<ReplaceMenu> {
   final replaceTextFieldFocusNode = FocusNode();
   final replaceTextEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    replaceTextFieldFocusNode.dispose();
+    replaceTextEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

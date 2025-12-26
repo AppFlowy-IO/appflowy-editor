@@ -89,6 +89,8 @@ class _DesktopSelectionServiceWidgetState
   @override
   void dispose() {
     clearSelection();
+    _dropTargetEntry?.dispose();
+    _dropTargetEntry = null;
     WidgetsBinding.instance.removeObserver(this);
     editorState.selectionNotifier.removeListener(_updateSelection);
     editorState.removeScrollViewScrolledListener(

@@ -133,6 +133,13 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   bool alwaysShowMenu = false;
 
   @override
+  void dispose() {
+    showActionsNotifier.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final node = widget.node;
     final attributes = node.attributes;

@@ -45,19 +45,6 @@ class Document {
     return Document(root: root);
   }
 
-  /// Creates a empty document with a single text node.
-  @Deprecated('use Document.blank() instead')
-  factory Document.empty() {
-    final root = Node(
-      type: 'document',
-      children: LinkedList<Node>()..add(TextNode.empty()),
-    );
-
-    return Document(
-      root: root,
-    );
-  }
-
   /// Creates a blank [Document] containing an empty root [Node].
   ///
   /// If [withInitialText] is true, the document will contain an empty

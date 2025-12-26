@@ -33,7 +33,7 @@ class KeyboardServiceWidget extends StatefulWidget {
 class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     implements AppFlowyKeyboardService {
   late final SelectionGestureInterceptor interceptor;
-  late final EditorState editorState;
+  late final EditorState editorState = context.read<EditorState>();
   late final TextInputService textInputService;
   late final FocusNode focusNode;
 
@@ -52,7 +52,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   void initState() {
     super.initState();
 
-    editorState = Provider.of<EditorState>(context, listen: false);
     editorState.selectionNotifier.addListener(_onSelectionChanged);
 
     interceptor = SelectionGestureInterceptor(
@@ -78,6 +77,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   @override
   void dispose() {
+    textInputService.close();
     editorState.selectionNotifier.removeListener(_onSelectionChanged);
     editorState.service.selectionService.unregisterGestureInterceptor(
       'keyboard',

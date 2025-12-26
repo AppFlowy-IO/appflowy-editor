@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 // coverage:ignore-file
+// ignore_for_file: dispose_fields
 
 import 'dart:async';
 import 'dart:math';

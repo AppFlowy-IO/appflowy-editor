@@ -115,6 +115,8 @@ class _MobileSelectionServiceWidgetState
   @override
   void dispose() {
     clearSelection();
+    _lastPanOffset.dispose();
+    currentSelection.dispose();
     WidgetsBinding.instance.removeObserver(this);
     selectionNotifierAfterLayout.dispose();
     editorState.selectionNotifier.removeListener(_updateSelection);

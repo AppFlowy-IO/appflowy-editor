@@ -129,7 +129,7 @@ class TableNode {
     return TableNode(node: node);
   }
 
-  Node getCell(int col, row) => _cells[col][row];
+  Node getCell(int col, int row) => _cells[col][row];
 
   TableConfig get config => _config;
 
