@@ -207,9 +207,8 @@ return AppFlowyEditor(
 **Files to Update:**
 - `documentation/customizing.md` - Lines 20, 66, and all code examples
 - Review all code examples for deprecated APIs
-- Ensure consistency with `documentation/UPGRADING.md`
 
-**Migration Reference:** See `documentation/UPGRADING.md` section "From 1.1 to 1.2"
+**Note:** The `AppFlowyEditor.custom()` and `AppFlowyEditor.standard()` constructors were removed in version 1.2. Use `AppFlowyEditor()` constructor instead.
 
 ---
 
@@ -220,7 +219,6 @@ return AppFlowyEditor(
 - ✅ `documentation/importing.md` - Accurate import examples
 - ✅ `documentation/testing.md` - Test examples are current
 - ✅ `documentation/translation.md` - Accurate translation workflow
-- ✅ `documentation/UPGRADING.md` - Clear migration guide
 - ✅ `example/README.md` - Basic example documentation
 
 ---
@@ -543,7 +541,7 @@ Track improvement with these metrics:
 - Static code analysis
 - Documentation parsing
 - Structural analysis of 378 Dart files
-- Cross-reference checking with UPGRADING.md
+- Cross-reference checking with documentation
 
 **Files Reviewed in Detail:**
 - Core: `document.dart`, `node.dart`, `position.dart`, `selection.dart`, `transaction.dart`
