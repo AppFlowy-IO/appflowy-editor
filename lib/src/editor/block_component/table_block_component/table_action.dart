@@ -194,6 +194,7 @@ void _addRow(Node tableNode, int position, EditorState editorState) async {
 
   if (error) {
     AppFlowyEditorLog.editor.debug('unable to insert row');
+
     return;
   }
 

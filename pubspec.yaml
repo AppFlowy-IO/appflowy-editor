@@ -13,7 +13,7 @@ description: A highly customizable rich-text editor for Flutter. The AppFlowy
 
 dependencies:
   collection: "^1.18.0"
-  device_info_plus: "^11.0.0"
+  device_info_plus: ^12.3.0
   diff_match_patch: "^0.4.1"
   file_picker: ^10.2.0
   flutter:
@@ -36,6 +36,11 @@ dependencies:
   url_launcher: "^6.1.11"
 
 dev_dependencies:
+  awesome_lints:
+    git:
+      url: https://github.com/LucasXu0/awesome_lints.git
+      ref: main
+  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
   flutter_localizations:
     sdk: flutter

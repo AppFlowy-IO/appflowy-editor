@@ -53,6 +53,7 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return TableCelBlockWidget(
       key: node.key,
       node: node,

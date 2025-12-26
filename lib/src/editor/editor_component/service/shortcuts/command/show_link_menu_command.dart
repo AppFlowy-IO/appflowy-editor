@@ -19,6 +19,7 @@ KeyEventResult _showLinkMenu(
 ) {
   if (PlatformExtension.isMobile) {
     assert(false, 'showLinkMenuCommand is not supported on mobile platform.');
+
     return KeyEventResult.ignored;
   }
 

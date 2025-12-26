@@ -14,6 +14,7 @@ class TableNode {
   }) : _config = TableConfig.fromJson(node.attributes) {
     if (node.type != TableBlockKeys.type) {
       AppFlowyEditorLog.editor.debug('TableNode: node is not a table');
+
       return;
     }
 
@@ -28,6 +29,7 @@ class TableNode {
       AppFlowyEditorLog.editor.debug(
         'TableNode: colsLen or rowsLen is not an integer or null',
       );
+
       return;
     }
 
@@ -35,6 +37,7 @@ class TableNode {
       AppFlowyEditorLog.editor.debug(
         'TableNode: the number of children is not equal to the number of cells',
       );
+
       return;
     }
 
@@ -44,6 +47,7 @@ class TableNode {
           !child.attributes.containsKey(TableCellBlockKeys.colPosition)) {
         AppFlowyEditorLog.editor
             .debug('TableNode: cell has no rowPosition or colPosition');
+
         return;
       }
     }
@@ -62,6 +66,7 @@ class TableNode {
         if (cell == null) {
           AppFlowyEditorLog.editor.debug('TableNode: cell is empty');
           _cells.clear();
+
           return;
         }
 
@@ -124,7 +129,7 @@ class TableNode {
     return TableNode(node: node);
   }
 
-  Node getCell(int col, row) => _cells[col][row];
+  Node getCell(int col, int row) => _cells[col][row];
 
   TableConfig get config => _config;
 

@@ -51,6 +51,7 @@ void _pasteMarkdown(EditorState editorState, String markdown) {
 
   if (lines.length == 1) {
     _pasteSingleLine(editorState, selection, lines[0]);
+
     return;
   }
 
@@ -108,6 +109,7 @@ void pasteHTML(EditorState editorState, String html) {
     if (delta == null) {
       return true;
     }
+
     return delta.isNotEmpty;
   });
   if (htmlToNodes.isEmpty) {
@@ -138,6 +140,7 @@ Selection _computeSelectionAfterPasteMultipleNodes(
   final currentPath = [...currentCursor.path];
   currentPath[currentPath.length - 1] += nodes.length;
   final int lenOfLastNode = _textLengthOfNode(nodes.last);
+
   return Selection.collapsed(
     Position(path: currentPath, offset: lenOfLastNode),
   );
@@ -270,6 +273,7 @@ void _pasteMultipleLinesInText(
       ]);
       transaction.afterSelection = afterSelection;
       editorState.apply(transaction);
+
       return;
     }
     final path = node.path;
@@ -286,6 +290,7 @@ void _pasteMultipleLinesInText(
     ]);
     transaction.afterSelection = afterSelection;
     editorState.apply(transaction);
+
     return;
   }
 
@@ -343,10 +348,12 @@ void handlePaste(EditorState editorState) async {
 void _pasteRichClipboard(EditorState editorState, AppFlowyClipboardData data) {
   if (data.html != null) {
     pasteHTML(editorState, data.html!);
+
     return;
   }
   if (data.text != null) {
     handlePastePlainText(editorState, data.text!);
+
     return;
   }
 }
@@ -359,6 +366,7 @@ bool _isNodeInsideTable(Node node) {
     }
     current = current.parent;
   }
+
   return false;
 }
 

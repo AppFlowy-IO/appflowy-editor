@@ -33,6 +33,7 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     for (final node in document) {
       node.accept(this);
     }
+
     return _delta;
   }
 
@@ -44,6 +45,7 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
     for (final node in nodes) {
       node.accept(this);
     }
+
     return _delta;
   }
 
@@ -55,6 +57,7 @@ class DeltaMarkdownDecoder extends Converter<String, Delta>
   @override
   bool visitElementBefore(md.Element element) {
     _addAttributeKey(element);
+
     return true;
   }
 

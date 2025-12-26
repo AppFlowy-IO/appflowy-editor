@@ -18,6 +18,7 @@ class ColorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
+
     return InkWell(
       onTap: onPressed,
       child: Container(

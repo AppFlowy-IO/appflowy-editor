@@ -8,6 +8,7 @@ class UnderlineInlineSyntax extends md.InlineSyntax {
     final text = match.group(1) ?? '';
     List<md.Node> nestedNodes = md.InlineParser(text, parser.document).parse();
     parser.addNode(md.Element('u', nestedNodes));
+
     return true;
   }
 }

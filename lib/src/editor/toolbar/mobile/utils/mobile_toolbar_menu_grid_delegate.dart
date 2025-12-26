@@ -48,6 +48,7 @@ class SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight
     assert(mainAxisSpacing >= 0.0);
     assert(crossAxisSpacing >= 0.0);
     assert(height > 0.0);
+
     return true;
   }
 
@@ -58,6 +59,7 @@ class SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight
         constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1);
     final double childCrossAxisExtent = usableCrossAxisExtent / crossAxisCount;
     final double childMainAxisExtent = height;
+
     return SliverGridRegularTileLayout(
       crossAxisCount: crossAxisCount,
       mainAxisStride: childMainAxisExtent + mainAxisSpacing,

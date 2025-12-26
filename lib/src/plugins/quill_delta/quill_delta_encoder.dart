@@ -126,6 +126,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         delta: node.delta,
       );
     }
+
     return node;
   }
 
@@ -134,6 +135,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     if (header == null) {
       return node;
     }
+
     return headingNode(
       delta: node.delta,
       level: header,
@@ -158,6 +160,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
           nestedLists[0]?.add(bulletedList);
         }
         return bulletedList;
+
       case _orderedList:
         final numberedList = numberedListNode(
           delta: node.delta,
@@ -172,18 +175,21 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
           nestedLists[0]?.add(numberedList);
         }
         return numberedList;
+
       case _checkedList:
         final checkedList = todoListNode(
           delta: node.delta,
           checked: true,
         );
         return checkedList;
+
       case _uncheckedList:
         final uncheckedList = todoListNode(
           delta: node.delta,
           checked: false,
         );
         return uncheckedList;
+
       default:
         return node;
     }
@@ -191,17 +197,20 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
 
   int _indentLevel(Map? attributes) {
     final indent = attributes?['indent'] as int?;
+
     return indent ?? 1;
   }
 
   bool _isIndentBulletedList(Map<String, dynamic>? attributes) {
     final list = attributes?[_list] as String?;
     final indent = attributes?[_indent] as int?;
+
     return [_bulletedList, _orderedList].contains(list) && indent != null;
   }
 
   bool _containsStyle(Map<String, dynamic>? attributes, String key) {
     final value = attributes?[key] as bool?;
+
     return value == true;
   }
 
@@ -213,6 +222,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
       return '0xFF${color.substring(1)}';
     } else if (color.startsWith("rgba")) {
       List rgbaList = color.substring(5, color.length - 1).split(',');
+
       return Color.fromRGBO(
         int.parse(rgbaList[0]),
         int.parse(rgbaList[1]),
@@ -220,6 +230,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         double.parse(rgbaList[3]),
       ).toHex();
     }
+
     return null;
   }
 }

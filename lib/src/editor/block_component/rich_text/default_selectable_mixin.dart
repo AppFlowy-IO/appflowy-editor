@@ -19,6 +19,7 @@ mixin DefaultSelectableMixin {
         return childBox.localToGlobal(Offset.zero, ancestor: parentBox);
       }
     }
+
     return Offset.zero;
   }
 
@@ -33,8 +34,10 @@ mixin DefaultSelectableMixin {
       if (shiftWithBaseOffset) {
         return offset & (size - offset as Size);
       }
+
       return Offset.zero & (size - offset as Size);
     }
+
     return Rect.zero;
   }
 

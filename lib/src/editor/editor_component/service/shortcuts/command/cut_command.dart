@@ -21,5 +21,6 @@ CommandShortcutEventHandler _cutCommandHandler = (editorState) {
   }
   // plain text.
   handleCut(editorState);
+
   return KeyEventResult.handled;
 };

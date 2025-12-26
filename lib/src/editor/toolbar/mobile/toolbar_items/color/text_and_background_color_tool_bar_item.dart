@@ -15,6 +15,7 @@ MobileToolbarItem buildTextAndBackgroundColorMobileToolbarItem({
       if (selection == null) {
         return const SizedBox.shrink();
       }
+
       return _TextAndBackgroundColorMenu(
         editorState,
         selection,

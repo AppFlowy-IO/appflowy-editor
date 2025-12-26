@@ -41,6 +41,7 @@ class _LinkMenuState extends State<LinkMenu> {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _textEditingController.dispose();
     super.dispose();
   }
@@ -119,6 +120,7 @@ class _LinkMenuState extends State<LinkMenu> {
           if (value == null || value.isEmpty || !isUri(value)) {
             return AppFlowyEditorL10n.current.incorrectLink;
           }
+
           return null;
         },
       ),

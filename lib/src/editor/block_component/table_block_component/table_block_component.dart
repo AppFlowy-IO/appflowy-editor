@@ -94,6 +94,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
     TableDefaults.rowHeight = tableStyle.rowHeight;
     TableDefaults.colMinimumWidth = tableStyle.colMinimumWidth;
     TableDefaults.borderWidth = tableStyle.borderWidth;
+
     return TableBlockComponentWidget(
       key: node.key,
       tableNode: TableNode(node: node),
@@ -119,6 +120,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
         if (node.attributes.isEmpty) {
           AppFlowyEditorLog.editor
               .debug('TableBlockComponentBuilder: node is empty');
+
           return false;
         }
 
@@ -128,6 +130,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
           AppFlowyEditorLog.editor.debug(
             'TableBlockComponentBuilder: node has no colsLen or rowsLen',
           );
+
           return false;
         }
 
@@ -139,6 +142,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
         if (children.isEmpty) {
           AppFlowyEditorLog.editor
               .debug('TableBlockComponentBuilder: children is empty');
+
           return false;
         }
 
@@ -146,6 +150,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
           AppFlowyEditorLog.editor.debug(
             'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
           );
+
           return false;
         }
 
@@ -161,6 +166,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
               AppFlowyEditorLog.editor.debug(
                 'TableBlockComponentBuilder: child($i, $j) is empty',
               );
+
               return false;
             }
 
@@ -169,6 +175,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
               AppFlowyEditorLog.editor.debug(
                 'TableBlockComponentBuilder: child($i, $j) is not unique',
               );
+
               return false;
             }
           }
@@ -211,6 +218,12 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
 
   late final editorState = Provider.of<EditorState>(context, listen: false);
   final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,6 +300,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
             tableBox.size,
       ];
     }
+
     return [Offset.zero & _renderBox.size];
   }
 
@@ -323,6 +337,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     bool shiftWithBaseOffset = false,
   }) {
     final size = _renderBox.size;
+
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
 }

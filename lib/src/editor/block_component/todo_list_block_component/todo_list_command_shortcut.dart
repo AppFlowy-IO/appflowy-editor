@@ -21,6 +21,7 @@ final CommandShortcutEvent toggleTodoListCommand = CommandShortcutEvent(
 CommandShortcutEventHandler _toggleTodoListCommandHandler = (editorState) {
   if (PlatformExtension.isMobile) {
     assert(false, 'enter key is not supported on mobile platform.');
+
     return KeyEventResult.ignored;
   }
 
@@ -45,5 +46,6 @@ CommandShortcutEventHandler _toggleTodoListCommandHandler = (editorState) {
   }
   transaction.afterSelection = selection;
   editorState.apply(transaction);
+
   return KeyEventResult.handled;
 };

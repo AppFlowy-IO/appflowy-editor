@@ -88,7 +88,7 @@ class _TableColBorderState extends State<TableColBorder> {
       height: context.select(
         (Node n) => n.attributes[TableBlockKeys.colsHeight],
       ),
-      color: Colors.grey,
+      color: widget.borderColor,
     );
   }
 }

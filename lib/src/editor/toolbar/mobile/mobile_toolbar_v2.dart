@@ -74,7 +74,10 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
 
   @override
   void dispose() {
-    _removeKeyboardToolbar();
+    isKeyboardShow.dispose();
+    toolbarOverlay?.remove();
+    toolbarOverlay?.dispose();
+    toolbarOverlay = null;
     KeyboardHeightObserver.instance.removeListener(_onKeyboardHeightChanged);
 
     super.dispose();
@@ -123,6 +126,7 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
                 true) {
           return const SizedBox.shrink();
         }
+
         return RepaintBoundary(
           child: MobileToolbarTheme(
             backgroundColor: widget.backgroundColor,
@@ -402,6 +406,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
                 );
               }
             }
+
             return SizedBox(
               height: keyboardHeight,
               child: (showingMenu && selectedMenuIndex != null)
@@ -415,6 +420,7 @@ class _MobileToolbarState extends State<_MobileToolbar>
                           widget.editorState,
                           this,
                         );
+
                         return menu ?? const SizedBox.shrink();
                       },
                     )
@@ -466,6 +472,7 @@ class _ToolbarItemListView extends StatelessWidget {
         if (icon == null) {
           return const SizedBox.shrink();
         }
+
         return IconButton(
           icon: icon,
           onPressed: () {

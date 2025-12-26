@@ -14,6 +14,7 @@ class MobileMagnifier extends StatelessWidget {
   Widget build(BuildContext context) {
     // the magnifier will blink if the center is the same as the offset.
     final magicOffset = Offset(0, size.height - 22);
+
     return Positioned.fromRect(
       rect: Rect.fromCenter(
         center: offset - magicOffset,

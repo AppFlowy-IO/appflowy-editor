@@ -47,6 +47,7 @@ class HTMLNumberedListNodeParser extends HTMLNodeParser {
       HTMLTags.list,
       childNodes: domNodes,
     );
+
     return [element];
   }
 }

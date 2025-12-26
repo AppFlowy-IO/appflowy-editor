@@ -41,19 +41,8 @@ class Document {
 
     final document = Map<String, Object>.from(json['document'] as Map);
     final root = Node.fromJson(document);
-    return Document(root: root);
-  }
 
-  /// Creates a empty document with a single text node.
-  @Deprecated('use Document.blank() instead')
-  factory Document.empty() {
-    final root = Node(
-      type: 'document',
-      children: LinkedList<Node>()..add(TextNode.empty()),
-    );
-    return Document(
-      root: root,
-    );
+    return Document(root: root);
   }
 
   /// Creates a blank [Document] containing an empty root [Node].
@@ -66,6 +55,7 @@ class Document {
       type: 'page',
       children: withInitialText ? [paragraphNode()] : [],
     );
+
     return Document(
       root: root,
     );
@@ -83,6 +73,7 @@ class Document {
     while (current != null && current.children.isNotEmpty) {
       current = current.children.last;
     }
+
     return current;
   }
 
@@ -110,6 +101,7 @@ class Document {
       for (final node in nodes) {
         target.insertBefore(node);
       }
+
       return true;
     }
 
@@ -118,6 +110,7 @@ class Document {
       for (var i = 0; i < nodes.length; i++) {
         parent.insert(nodes.elementAt(i), index: path.last + i);
       }
+
       return true;
     }
 
@@ -139,6 +132,7 @@ class Document {
       target = next;
       length--;
     }
+
     return true;
   }
 
@@ -147,6 +141,7 @@ class Document {
     // if the path is empty, it means the root node.
     if (path.isEmpty) {
       root.updateAttributes(attributes);
+
       return true;
     }
     final target = nodeAtPath(path);
@@ -154,6 +149,7 @@ class Document {
       return false;
     }
     target.updateAttributes(attributes);
+
     return true;
   }
 
@@ -168,6 +164,7 @@ class Document {
       return false;
     }
     target.updateAttributes({'delta': (targetDelta.compose(delta)).toJson()});
+
     return true;
   }
 
