@@ -14,16 +14,22 @@ void main() async {
     test(
       'mock inputting a ` ` after asterisk which is located at the front of the text',
       () async {
-        testFormatCharacterShortcut(formatAsteriskToBulletedList, '*', 1, (
-          result,
-          before,
-          after,
-          editorState,
-        ) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, BulletedListBlockKeys.type);
-        }, text: text,);
+        testFormatCharacterShortcut(
+          formatAsteriskToBulletedList,
+          '*',
+          1,
+          (
+            result,
+            before,
+            after,
+            editorState,
+          ) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, BulletedListBlockKeys.type);
+          },
+          text: text,
+        );
       },
     );
 
@@ -32,16 +38,22 @@ void main() async {
     // After
     // *W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the text - 1', () async {
-      return testFormatCharacterShortcut(formatAsteriskToBulletedList, '*', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        // nothing happens
-        expect(result, false);
-        expect(before.toJson(), after.toJson());
-      }, text: text,);
+      return testFormatCharacterShortcut(
+        formatAsteriskToBulletedList,
+        '*',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
+      );
     });
 
     // Before

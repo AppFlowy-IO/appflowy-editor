@@ -23,7 +23,9 @@ class TableCellBlockKeys {
 }
 
 typedef TableBlockCellComponentColorBuilder = Color? Function(
-    BuildContext context, Node node,);
+  BuildContext context,
+  Node node,
+);
 
 Node tableCellNode(String text, int rowPosition, int colPosition) {
   return Node(

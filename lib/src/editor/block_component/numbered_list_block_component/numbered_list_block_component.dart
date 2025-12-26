@@ -41,7 +41,10 @@ Node numberedListNode({
 }
 
 typedef NumberedListIconBuilder = Widget Function(
-    BuildContext context, Node node, TextDirection direction,);
+  BuildContext context,
+  Node node,
+  TextDirection direction,
+);
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({super.configuration, this.iconBuilder});

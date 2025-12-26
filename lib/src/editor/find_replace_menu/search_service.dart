@@ -208,10 +208,11 @@ class SearchService {
         ? style.selectedHighlightColor.toHex()
         : style.unselectedHighlightColor.toHex();
     editorState.formatDelta(
-        selection,
-        {
-          AppFlowyRichTextKeys.findBackgroundColor: color,
-        },
-        withUpdateSelection: false,);
+      selection,
+      {
+        AppFlowyRichTextKeys.findBackgroundColor: color,
+      },
+      withUpdateSelection: false,
+    );
   }
 }

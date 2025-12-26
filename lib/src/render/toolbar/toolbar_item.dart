@@ -3,7 +3,9 @@ import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 typedef ToolbarItemEventHandler = void Function(
-    EditorState editorState, BuildContext context,);
+  EditorState editorState,
+  BuildContext context,
+);
 typedef ToolbarItemValidator = bool Function(EditorState editorState);
 typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 

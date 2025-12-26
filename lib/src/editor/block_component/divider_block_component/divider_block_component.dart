@@ -14,7 +14,10 @@ Node dividerNode() {
 }
 
 typedef DividerBlockWrapper = Widget Function(
-    BuildContext context, Node node, Widget child,);
+  BuildContext context,
+  Node node,
+  Widget child,
+);
 
 class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({

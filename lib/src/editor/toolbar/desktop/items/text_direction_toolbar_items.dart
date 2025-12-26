@@ -28,8 +28,13 @@ class _TextDirectionToolbarItem extends ToolbarItem {
           id: 'editor.$id',
           group: 7,
           isActive: onlyShowInTextType,
-          builder: (context, editorState, highlightColor, iconColor,
-              tooltipBuilder,) {
+          builder: (
+            context,
+            editorState,
+            highlightColor,
+            iconColor,
+            tooltipBuilder,
+          ) {
             final selection = editorState.selection!;
             final nodes = editorState.getNodesInSelection(selection);
             final isHighlight = nodes.every(

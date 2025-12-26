@@ -185,7 +185,9 @@ class _PositionedListState extends State<PositionedList> {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) => widget.separatorBuilder == null
                         ? _buildItem(
-                            context, widget.positionedIndex - (index + 1),)
+                            context,
+                            widget.positionedIndex - (index + 1),
+                          )
                         : _buildSeparatedListElement(
                             context,
                             2 * widget.positionedIndex - (index + 1),
@@ -225,7 +227,9 @@ class _PositionedListState extends State<PositionedList> {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) => widget.separatorBuilder == null
                         ? _buildItem(
-                            context, index + widget.positionedIndex + 1,)
+                            context,
+                            index + widget.positionedIndex + 1,
+                          )
                         : _buildSeparatedListElement(
                             context,
                             index + 2 * widget.positionedIndex + 1,

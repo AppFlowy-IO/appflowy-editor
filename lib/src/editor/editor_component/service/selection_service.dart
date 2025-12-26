@@ -12,10 +12,14 @@ class DragAreaBuilderData {
 }
 
 typedef DragAreaBuilder = Widget Function(
-    BuildContext context, DragAreaBuilderData data,);
+  BuildContext context,
+  DragAreaBuilderData data,
+);
 
 typedef DragTargetNodeInterceptor = Node Function(
-    BuildContext context, Node node,);
+  BuildContext context,
+  Node node,
+);
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.

@@ -12,16 +12,22 @@ void main() async {
     // After
     // 1|Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the number but not dot', () async {
-      testFormatCharacterShortcut(formatNumberToNumberedList, '1', 1, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        // nothing happens
-        expect(result, false);
-        expect(before.toJson(), after.toJson());
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatNumberToNumberedList,
+        '1',
+        1,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
+      );
     });
 
     // Before
@@ -31,16 +37,22 @@ void main() async {
     test(
       'mock inputting a ` ` after the number which is located at the front of the text',
       () async {
-        testFormatCharacterShortcut(formatNumberToNumberedList, '1.', 2, (
-          result,
-          before,
-          after,
-          editorState,
-        ) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, NumberedListBlockKeys.type);
-        }, text: text,);
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          '1.',
+          2,
+          (
+            result,
+            before,
+            after,
+            editorState,
+          ) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, NumberedListBlockKeys.type);
+          },
+          text: text,
+        );
       },
     );
 
@@ -49,16 +61,22 @@ void main() async {
     // After
     // 1.W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
-      testFormatCharacterShortcut(formatNumberToNumberedList, '1.', 3, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        // nothing happens
-        expect(result, false);
-        expect(before.toJson(), after.toJson());
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatNumberToNumberedList,
+        '1.',
+        3,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
+      );
     });
 
     // Before

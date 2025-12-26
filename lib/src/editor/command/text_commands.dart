@@ -191,11 +191,12 @@ extension TextTransforms on EditorState {
         return delta.everyAttributes((attributes) => attributes[key] == true);
       });
       await formatDelta(
-          selection,
-          {
-            key: !isHighlight,
-          },
-          selectionExtraInfo: selectionExtraInfo,);
+        selection,
+        {
+          key: !isHighlight,
+        },
+        selectionExtraInfo: selectionExtraInfo,
+      );
     }
   }
 

@@ -1,10 +1,13 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 typedef CharacterShortcutEventHandler = Future<bool> Function(
-    EditorState editorState,);
+  EditorState editorState,
+);
 
 typedef CharacterShortcutEventHandlerWithCharacter = Future<bool> Function(
-    EditorState editorState, String character,);
+  EditorState editorState,
+  String character,
+);
 
 /// Defines the implementation of shortcut event based on character.
 class CharacterShortcutEvent {

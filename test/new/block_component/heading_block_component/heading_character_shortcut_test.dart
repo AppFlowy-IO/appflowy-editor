@@ -13,17 +13,23 @@ void main() async {
     // After
     // ' '
     test('mock inputting a ` ` after the >', () async {
-      testFormatCharacterShortcut(formatSignToHeading, '', 0, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, false);
-        expect(before.delta!.toPlainText(), '');
-        expect(after.delta!.toPlainText(), '');
-        expect(after.type != HeadingBlockKeys.type, true);
-      }, text: '',);
+      testFormatCharacterShortcut(
+        formatSignToHeading,
+        '',
+        0,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, false);
+          expect(before.delta!.toPlainText(), '');
+          expect(after.delta!.toPlainText(), '');
+          expect(after.type != HeadingBlockKeys.type, true);
+        },
+        text: '',
+      );
     });
 
     // Before
@@ -32,16 +38,22 @@ void main() async {
     // [heading] Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
       for (var i = 1; i <= 6; i++) {
-        testFormatCharacterShortcut(formatSignToHeading, '#' * i, i, (
-          result,
-          before,
-          after,
-          editorState,
-        ) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, 'heading');
-        }, text: text,);
+        testFormatCharacterShortcut(
+          formatSignToHeading,
+          '#' * i,
+          i,
+          (
+            result,
+            before,
+            after,
+            editorState,
+          ) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, 'heading');
+          },
+          text: text,
+        );
       }
     });
 
@@ -50,16 +62,22 @@ void main() async {
     // After
     // #######|Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
-      testFormatCharacterShortcut(formatSignToHeading, '#' * 7, 7, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        // nothing happens
-        expect(result, false);
-        expect(before.toJson(), after.toJson());
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatSignToHeading,
+        '#' * 7,
+        7,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
+      );
     });
 
     // Before
@@ -67,16 +85,22 @@ void main() async {
     // After
     // >W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
-      testFormatCharacterShortcut(formatSignToHeading, '#', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        // nothing happens
-        expect(result, false);
-        expect(before.toJson(), after.toJson());
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatSignToHeading,
+        '#',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          // nothing happens
+          expect(result, false);
+          expect(before.toJson(), after.toJson());
+        },
+        text: text,
+      );
     });
 
     // Before

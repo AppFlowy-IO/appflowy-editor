@@ -17,7 +17,10 @@ typedef TextSpanDecoratorForAttribute = InlineSpan Function(
 
 typedef AppFlowyTextSpanDecorator = TextSpan Function(TextSpan textSpan);
 typedef AppFlowyAutoCompleteTextProvider = String? Function(
-    BuildContext context, Node node, TextSpan? textSpan,);
+  BuildContext context,
+  Node node,
+  TextSpan? textSpan,
+);
 
 typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
   BuildContext context,

@@ -265,10 +265,13 @@ void main() {
         colDefaultWidth: 20,
         rowDefaultHeight: 30,
       );
-      final tableNode = TableNode.fromList([
-        ['1', '2'],
-        ['3', '4'],
-      ], config: config,);
+      final tableNode = TableNode.fromList(
+        [
+          ['1', '2'],
+          ['3', '4'],
+        ],
+        config: config,
+      );
 
       expect(tableNode.config.colMinimumWidth, config.colMinimumWidth);
       expect(tableNode.config.colDefaultWidth, config.colDefaultWidth);

@@ -10,7 +10,9 @@ typedef MobileToolbarItemIconBuilder = Widget? Function(
 );
 
 typedef MobileToolbarItemActionHandler = void Function(
-    BuildContext context, EditorState editorState,);
+  BuildContext context,
+  EditorState editorState,
+);
 
 class MobileToolbarItem {
   /// Tool bar item that implements attribute directly(without opening menu)

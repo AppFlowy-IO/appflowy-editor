@@ -3,7 +3,8 @@ import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
 typedef CommandShortcutEventHandler = KeyEventResult Function(
-    EditorState editorState,);
+  EditorState editorState,
+);
 
 /// Defines the implementation of shortcut event based on command.
 class CommandShortcutEvent {

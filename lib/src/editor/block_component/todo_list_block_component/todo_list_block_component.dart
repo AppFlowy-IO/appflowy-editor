@@ -42,7 +42,10 @@ Node todoListNode({
 }
 
 typedef TodoListIconBuilder = Widget Function(
-    BuildContext context, Node node, VoidCallback onCheck,);
+  BuildContext context,
+  Node node,
+  VoidCallback onCheck,
+);
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({

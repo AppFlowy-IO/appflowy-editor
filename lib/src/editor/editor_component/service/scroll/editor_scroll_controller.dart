@@ -70,10 +70,12 @@ class EditorScrollController {
   // 10. text10
   //
   // So the visible range is (2-1, 9-1) = (1, 8), index start from 0.
-  final ValueNotifier<(int, int)> visibleRangeNotifier = ValueNotifier((
-    -1,
-    -1,
-  ),);
+  final ValueNotifier<(int, int)> visibleRangeNotifier = ValueNotifier(
+    (
+      -1,
+      -1,
+    ),
+  );
 
   // these value is required by SingleChildScrollView
   // notes: don't use them if shrinkWrap is false

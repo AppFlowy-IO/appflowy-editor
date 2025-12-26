@@ -12,7 +12,10 @@ typedef SelectionMenuItemHandler = void Function(
 );
 
 typedef SelectionMenuItemNameBuilder = Widget Function(
-    String name, SelectionMenuStyle style, bool isSelected,);
+  String name,
+  SelectionMenuStyle style,
+  bool isSelected,
+);
 
 /// Selection Menu Item
 class SelectionMenuItem {

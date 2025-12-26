@@ -3,10 +3,14 @@ import 'package:appflowy_editor/src/editor/editor_component/service/renderer/blo
 import 'package:flutter/material.dart';
 
 typedef BlockComponentActionBuilder = Widget Function(
-    BuildContext context, BlockComponentActionState state,);
+  BuildContext context,
+  BlockComponentActionState state,
+);
 
 typedef BlockComponentActionTrailingBuilder = Widget Function(
-    BuildContext context, BlockComponentActionState state,);
+  BuildContext context,
+  BlockComponentActionState state,
+);
 
 class BlockComponentActionWrapper extends StatefulWidget {
   const BlockComponentActionWrapper({

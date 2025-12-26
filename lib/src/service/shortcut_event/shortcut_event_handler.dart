@@ -27,4 +27,6 @@ import 'package:flutter/material.dart';
 /// };
 /// ```
 typedef ShortcutEventHandler = KeyEventResult Function(
-    EditorState editorState, KeyEvent? event,);
+  EditorState editorState,
+  KeyEvent? event,
+);

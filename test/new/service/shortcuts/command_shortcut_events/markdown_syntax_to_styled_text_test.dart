@@ -257,71 +257,83 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('App**Flowy** to bold AppFlowy', ((tester) async {
-      const text = 'App**Flowy*';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertAsterisk(editor);
-      final node = editor.nodeAtPath([0]);
-      final result = allBoldInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 3,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+    testWidgets(
+      'App**Flowy** to bold AppFlowy',
+      ((tester) async {
+        const text = 'App**Flowy*';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertAsterisk(editor);
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 3,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, true);
-      expect(node.delta?.toPlainText(), 'AppFlowy');
-      await editor.dispose();
-    }),);
+        expect(result, true);
+        expect(node.delta?.toPlainText(), 'AppFlowy');
+        await editor.dispose();
+      }),
+    );
 
-    testWidgets('***AppFlowy** to bold *AppFlowy', ((tester) async {
-      const text = '***AppFlowy*';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertAsterisk(editor);
-      final node = editor.nodeAtPath([0]);
-      final result = allBoldInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 1,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+    testWidgets(
+      '***AppFlowy** to bold *AppFlowy',
+      ((tester) async {
+        const text = '***AppFlowy*';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertAsterisk(editor);
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, true);
-      expect(node.delta?.toPlainText(), '*AppFlowy');
-      await editor.dispose();
-    }),);
+        expect(result, true);
+        expect(node.delta?.toPlainText(), '*AppFlowy');
+        await editor.dispose();
+      }),
+    );
 
-    testWidgets('**** nothing changes', ((tester) async {
-      const text = '***';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertAsterisk(editor);
-      final node = editor.nodeAtPath([0]);
-      final result = allBoldInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 1,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+    testWidgets(
+      '**** nothing changes',
+      ((tester) async {
+        const text = '***';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertAsterisk(editor);
+        final node = editor.nodeAtPath([0]);
+        final result = allBoldInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, false);
-      expect(node.delta?.toPlainText(), '****');
-      await editor.dispose();
-    }),);
+        expect(result, false);
+        expect(node.delta?.toPlainText(), '****');
+        await editor.dispose();
+      }),
+    );
 
     testWidgets('**bold and _nested_ italics**', (tester) async {
       const doubleAsterisks = '**';
@@ -598,96 +610,112 @@ void main() async {
       }
     }
 
-    testWidgets('__AppFlowy__ to bold AppFlowy', ((tester) async {
-      const text = '__AppFlowy_';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertUnderscore(editor);
-      final node = editor.nodeAtPath([0]);
+    testWidgets(
+      '__AppFlowy__ to bold AppFlowy',
+      ((tester) async {
+        const text = '__AppFlowy_';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-      final result = allItalicInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 0,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+        final result = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 0,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, true);
-      expect(node.delta!.toPlainText(), 'AppFlowy');
-      await editor.dispose();
-    }),);
+        expect(result, true);
+        expect(node.delta!.toPlainText(), 'AppFlowy');
+        await editor.dispose();
+      }),
+    );
 
-    testWidgets('App__Flowy__ to bold AppFlowy', ((tester) async {
-      const text = 'App__Flowy_';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertUnderscore(editor);
-      final node = editor.nodeAtPath([0]);
+    testWidgets(
+      'App__Flowy__ to bold AppFlowy',
+      ((tester) async {
+        const text = 'App__Flowy_';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-      final result = allItalicInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 3,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+        final result = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 3,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, true);
-      expect(node.delta!.toPlainText(), 'AppFlowy');
-      await editor.dispose();
-    }),);
+        expect(result, true);
+        expect(node.delta!.toPlainText(), 'AppFlowy');
+        await editor.dispose();
+      }),
+    );
 
-    testWidgets('__*AppFlowy__ to bold *AppFlowy', ((tester) async {
-      const text = '__*AppFlowy_';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertUnderscore(editor);
-      final node = editor.nodeAtPath([0]);
+    testWidgets(
+      '__*AppFlowy__ to bold *AppFlowy',
+      ((tester) async {
+        const text = '__*AppFlowy_';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-      final result = allItalicInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 1,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+        final result = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, true);
-      expect(node.delta!.toPlainText(), '*AppFlowy');
-      await editor.dispose();
-    }),);
+        expect(result, true);
+        expect(node.delta!.toPlainText(), '*AppFlowy');
+        await editor.dispose();
+      }),
+    );
 
-    testWidgets('____ nothing changes', ((tester) async {
-      const text = '___';
-      final editor = tester.editor..addEmptyParagraph();
-      await editor.startTesting();
-      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
-      await editor.editorState.insertTextAtCurrentSelection(text);
-      await insertUnderscore(editor);
-      final node = editor.nodeAtPath([0]);
+    testWidgets(
+      '____ nothing changes',
+      ((tester) async {
+        const text = '___';
+        final editor = tester.editor..addEmptyParagraph();
+        await editor.startTesting();
+        await editor
+            .updateSelection(Selection.single(path: [0], startOffset: 0));
+        await editor.editorState.insertTextAtCurrentSelection(text);
+        await insertUnderscore(editor);
+        final node = editor.nodeAtPath([0]);
 
-      final result = allItalicInSelection(
-        node,
-        Selection.single(
-          path: [0],
-          startOffset: 1,
-          endOffset: node!.delta!.toPlainText().length,
-        ),
-      );
+        final result = allItalicInSelection(
+          node,
+          Selection.single(
+            path: [0],
+            startOffset: 1,
+            endOffset: node!.delta!.toPlainText().length,
+          ),
+        );
 
-      expect(result, false);
-      expect(node.delta!.toPlainText(), '____');
-      await editor.dispose();
-    }),);
+        expect(result, false);
+        expect(node.delta!.toPlainText(), '____');
+        await editor.dispose();
+      }),
+    );
   });
 }

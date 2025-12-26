@@ -11,20 +11,26 @@ void main() async {
     // [divider]
     test('--- to divider', () async {
       const text = '';
-      testFormatCharacterShortcut(convertMinusesToDivider, '--', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, true);
-        expect(after.delta, null);
-        expect(after.type, DividerBlockKeys.type);
-        expect(after.next, isNotNull);
-        expect(after.next!.type, ParagraphBlockKeys.type);
-        final nextNode = editorState.getNodeAtPath(after.next!.path);
-        expect(nextNode!.path, editorState.selection!.end.path);
-      }, text: text,);
+      testFormatCharacterShortcut(
+        convertMinusesToDivider,
+        '--',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta, null);
+          expect(after.type, DividerBlockKeys.type);
+          expect(after.next, isNotNull);
+          expect(after.next!.type, ParagraphBlockKeys.type);
+          final nextNode = editorState.getNodeAtPath(after.next!.path);
+          expect(nextNode!.path, editorState.selection!.end.path);
+        },
+        text: text,
+      );
     });
 
     // Before
@@ -33,16 +39,22 @@ void main() async {
     // [divider]
     test('*** to divider', () async {
       const text = '';
-      testFormatCharacterShortcut(convertStarsToDivider, '**', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, true);
-        expect(after.delta, null);
-        expect(after.type, DividerBlockKeys.type);
-      }, text: text,);
+      testFormatCharacterShortcut(
+        convertStarsToDivider,
+        '**',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta, null);
+          expect(after.type, DividerBlockKeys.type);
+        },
+        text: text,
+      );
     });
 
     // Before
@@ -51,16 +63,22 @@ void main() async {
     // [divider]
     test('___ to divider', () async {
       const text = '';
-      testFormatCharacterShortcut(convertUnderscoreToDivider, '__', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, true);
-        expect(after.delta, null);
-        expect(after.type, DividerBlockKeys.type);
-      }, text: text,);
+      testFormatCharacterShortcut(
+        convertUnderscoreToDivider,
+        '__',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta, null);
+          expect(after.type, DividerBlockKeys.type);
+        },
+        text: text,
+      );
     });
   });
 }

@@ -48,7 +48,9 @@ Node imageNode({
 }
 
 typedef ImageBlockComponentMenuBuilder = Widget Function(
-    Node node, ImageBlockComponentWidgetState state,);
+  Node node,
+  ImageBlockComponentWidgetState state,
+);
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({

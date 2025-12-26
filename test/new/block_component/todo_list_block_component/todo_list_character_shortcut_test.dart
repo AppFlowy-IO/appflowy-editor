@@ -11,17 +11,23 @@ void main() async {
     // [uncheckedbox]Welcome to AppFlowy Editor 🔥!
     test('[] to unchecked todo list ', () async {
       const text = 'Welcome to AppFlowy Editor 🔥!';
-      testFormatCharacterShortcut(formatEmptyBracketsToUncheckedBox, '[]', 2, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, true);
-        expect(after.delta!.toPlainText(), text);
-        expect(after.type, 'todo_list');
-        expect(after.attributes['checked'], false);
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatEmptyBracketsToUncheckedBox,
+        '[]',
+        2,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, 'todo_list');
+          expect(after.attributes['checked'], false);
+        },
+        text: text,
+      );
     });
 
     // Before
@@ -50,17 +56,23 @@ void main() async {
     // [checkedbox]Welcome to AppFlowy Editor 🔥!
     test('[x] to checked todo list ', () async {
       const text = 'Welcome to AppFlowy Editor 🔥!';
-      testFormatCharacterShortcut(formatFilledBracketsToCheckedBox, '[x]', 3, (
-        result,
-        before,
-        after,
-        editorState,
-      ) {
-        expect(result, true);
-        expect(after.delta!.toPlainText(), text);
-        expect(after.type, 'todo_list');
-        expect(after.attributes['checked'], true);
-      }, text: text,);
+      testFormatCharacterShortcut(
+        formatFilledBracketsToCheckedBox,
+        '[x]',
+        3,
+        (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, 'todo_list');
+          expect(after.attributes['checked'], true);
+        },
+        text: text,
+      );
     });
 
     // Before

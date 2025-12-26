@@ -427,7 +427,8 @@ class EdgeDraggingAutoScroller {
 /// This function is used as the type for [Scrollable.incrementCalculator],
 /// which is called from a [ScrollAction].
 typedef ScrollIncrementCalculator = double Function(
-    ScrollIncrementDetails details,);
+  ScrollIncrementDetails details,
+);
 
 /// Describes the type of scroll increment that will be performed by a
 /// [ScrollAction] on a [Scrollable].
