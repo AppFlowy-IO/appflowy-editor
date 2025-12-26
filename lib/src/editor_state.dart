@@ -271,6 +271,8 @@ class EditorState {
   AppFlowyAutoCompleteTextProvider? autoCompleteTextProvider;
 
   bool enableSpellChecker = false;
+  AppFlowySpellCheckConfiguration spellCheckConfiguration =
+      const AppFlowySpellCheckConfiguration();
 
   // only used for testing
   bool disableSealTimer = false;

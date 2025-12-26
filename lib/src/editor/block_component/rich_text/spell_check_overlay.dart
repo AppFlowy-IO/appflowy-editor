@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
 import 'package:flutter/material.dart';
 
 /// Overlay widget that shows spell check suggestions when hovering over misspelled words

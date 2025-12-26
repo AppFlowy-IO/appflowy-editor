@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/rich_text/spell_check_overlay.dart';
-import 'package:appflowy_editor/src/service/spell_check/spell_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -128,6 +128,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
   bool get enableSpellChecker => widget.editorState.enableSpellChecker;
+
+  AppFlowySpellCheckConfiguration get spellCheckConfiguration =>
+      widget.editorState.spellCheckConfiguration;
 
   TextStyleConfiguration get textStyleConfiguration =>
       widget.editorState.editorStyle.textStyleConfiguration;
@@ -673,6 +676,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   final Map<String, bool> _misspelledCache = {};
+  final Map<String, Timer?> _debounceTimers = {};
   static const int _maxCacheSize = 1000;
 
   List<InlineSpan> _buildTextSpansWithSpellCheck(
@@ -689,21 +693,52 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
     int innerIndex = 0;
 
-    for (final token in tokens) {
+    final config = spellCheckConfiguration;
+
+    for (int i = 0; i < tokens.length; i++) {
+      final token = tokens[i];
       final isWord = RegExp(r"^\w+$").hasMatch(token);
       if (isWord) {
         final word = token;
         final lc = word.toLowerCase();
 
-        // schedule async check for unknown words (only words >= 3 chars to avoid common short words)
+        // Check if word should be spell-checked based on configuration
+        bool shouldCheck = word.length >= config.minWordLength;
+
+        // If checkOnlyCompletedWords is true, only check if next token is whitespace/punctuation
+        // Don't check the last token (still being typed)
+        if (shouldCheck && config.checkOnlyCompletedWords) {
+          final isLastToken = i == tokens.length - 1;
+          final nextToken = isLastToken ? null : tokens[i + 1];
+          // Only check if there's a next token AND it's whitespace/punctuation (not a word)
+          shouldCheck =
+              nextToken != null && !RegExp(r"^\w+$").hasMatch(nextToken);
+        }
+
+        // Check custom dictionary
+        if (shouldCheck && config.customDictionary.contains(word)) {
+          shouldCheck = false;
+        }
+
+        // Check exclude patterns
+        if (shouldCheck) {
+          for (final pattern in config.excludePatterns) {
+            if (pattern.hasMatch(word)) {
+              shouldCheck = false;
+              break;
+            }
+          }
+        }
+
+        // schedule async check for unknown words
         // cache stored on state (to avoid repeated checks)
         // IMPORTANT: Pass the original word (not lowercase) so capital letter check works!
-        if (!_misspelledCache.containsKey(lc) && word.length >= 3) {
+        if (shouldCheck && !_misspelledCache.containsKey(lc)) {
           _checkWord(word);
         }
 
         // Only mark as misspelled if we've checked it and confirmed it's wrong
-        final isMisspelled = _misspelledCache[lc] == true;
+        final isMisspelled = shouldCheck && _misspelledCache[lc] == true;
 
         final spanStyle = isMisspelled
             ? textStyle.copyWith(
@@ -743,7 +778,39 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     // so it can properly check for capital letters, camelCase, etc.
     // Store result in cache using lowercase key for lookup
     final lc = word.toLowerCase();
+    final debounceDelay = spellCheckConfiguration.debounceDelay;
 
+    // Cancel existing timer for this word
+    _debounceTimers[lc]?.cancel();
+
+    // If debounce delay is zero, check immediately
+    if (debounceDelay == Duration.zero) {
+      _performSpellCheck(word, lc);
+    } else {
+      // Schedule check after debounce delay
+      _debounceTimers[lc] = Timer(debounceDelay, () {
+        _performSpellCheck(word, lc);
+        _debounceTimers.remove(lc);
+      });
+    }
+  }
+
+  void _performSpellCheck(String word, String lc) {
+    final config = spellCheckConfiguration;
+
+    // If custom dictionary is provided and not empty, use it directly
+    if (config.customDictionary.isNotEmpty) {
+      final exists = config.customDictionary.contains(lc);
+      final miss = !exists;
+
+      if (_misspelledCache[lc] != miss) {
+        _misspelledCache[lc] = miss;
+        if (mounted) setState(() {});
+      }
+      return;
+    }
+
+    // Otherwise use the bundled dictionary
     SpellChecker.instance.contains(word).then((exists) {
       final miss = !exists;
       // avoid unnecessary setState
