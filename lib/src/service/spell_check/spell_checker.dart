@@ -249,10 +249,10 @@ class SpellChecker {
     _loading = rootBundle
         .loadString('packages/appflowy_editor/assets/dictionary/words.txt')
         .then((content) {
-      final lines = content.split(RegExp('\\r?\\n'));
-      _words = lines
-          .map((l) => l.trim().toLowerCase())
-          .where((l) => l.isNotEmpty && !l.startsWith(RegExp('[0-9&]')))
+      final words = content.split(RegExp(r'\s+'));
+      _words = words
+          .map((w) => w.trim().toLowerCase())
+          .where((w) => w.isNotEmpty && !w.startsWith(RegExp('[0-9&]')))
           .toSet();
 
       // Build index for faster lookup in suggest()
