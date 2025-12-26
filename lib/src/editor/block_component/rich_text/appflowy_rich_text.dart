@@ -817,6 +817,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         _misspelledCache[lc] = miss;
         if (mounted) setState(() {});
       }
+
       return;
     }
 

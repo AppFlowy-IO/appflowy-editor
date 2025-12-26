@@ -87,6 +87,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     if (start < 0 || end > text.length || start >= end) return null;
 
     final word = text.substring(start, end);
+
     return (
       position: globalPosition,
       word: word,
@@ -211,12 +212,14 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     final wordData = _getWordAtPosition(event);
     if (wordData == null) {
       _scheduleOverlayRemoval();
+
       return;
     }
 
     final (:position, :word, :start, :length) = wordData;
     if (!_isValidWordForSpellCheck(word)) {
       _scheduleOverlayRemoval();
+
       return;
     }
 
