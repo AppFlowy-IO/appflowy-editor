@@ -48,10 +48,10 @@ class _MobileEditorState extends State<MobileEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return MobileToolbarV2(
+    return MobileToolbar(
       toolbarHeight: 48.0,
       toolbarItems: [
-        textDecorationMobileToolbarItemV2,
+        textDecorationMobileToolbarItem,
         buildTextAndBackgroundColorMobileToolbarItem(),
         blocksMobileToolbarItem,
         linkMobileToolbarItem,

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:appflowy_editor/src/core/transform/operation.dart';
 import 'package:appflowy_editor/src/core/transform/transaction.dart';
-import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/editor/editor_state.dart';
 import 'package:appflowy_editor/src/infra/log.dart';
 
 /// A [HistoryItem] contains list of operations committed by users.

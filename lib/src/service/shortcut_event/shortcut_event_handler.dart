@@ -1,4 +1,4 @@
-import 'package:appflowy_editor/src/editor_state.dart';
+import 'package:appflowy_editor/src/editor/editor_state.dart';
 import 'package:flutter/material.dart';
 
 /// Handler function for keyboard shortcut events.

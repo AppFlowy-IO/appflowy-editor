@@ -9,11 +9,10 @@ export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
 export 'src/editor/block_component/table_block_component/table.dart';
 // editor part, including editor component, block component, etc.
 export 'src/editor/editor.dart';
+export 'src/editor/editor_state.dart';
 export 'src/editor/find_replace_menu/find_and_replace.dart';
 export 'src/editor/l10n/appflowy_editor_l10n.dart';
 export 'src/editor/selection_menu/selection_menu.dart';
-// editor state
-export 'src/editor_state.dart';
 // extension
 export 'src/extensions/extensions.dart';
 export 'src/infra/clipboard.dart';
