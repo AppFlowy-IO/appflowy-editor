@@ -101,16 +101,15 @@ void main() async {
     // Welcome <b>|to AppFlowy Editor 🔥!</b>
     // <b>Welcome to AppFlowy|</b> Editor 🔥!
     test('the selection is not collapsed and not single - 1', () async {
-      final document =
-          Document.blank().addParagraph(
-            builder: (index) => Delta()
-              ..insert(welcome)
-              ..insert(toAppFlowy + editor, attributes: {'bold': true}),
-          )..addParagraph(
-            builder: (index) => Delta()
-              ..insert(welcome + toAppFlowy, attributes: {'bold': true})
-              ..insert(editor),
-          );
+      final document = Document.blank().addParagraph(
+        builder: (index) => Delta()
+          ..insert(welcome)
+          ..insert(toAppFlowy + editor, attributes: {'bold': true}),
+      )..addParagraph(
+          builder: (index) => Delta()
+            ..insert(welcome + toAppFlowy, attributes: {'bold': true})
+            ..insert(editor),
+        );
       final editorState = EditorState(document: document);
 
       // Welcome <b>|to AppFlowy Editor 🔥!</b>
@@ -134,16 +133,15 @@ void main() async {
     // |Welcome <b>to AppFlowy Editor 🔥!</b>
     // <b>Welcome to AppFlowy</b> Editor 🔥!|
     test('the selection is not collapsed and not single - 2', () async {
-      final document =
-          Document.blank().addParagraph(
-            builder: (index) => Delta()
-              ..insert(welcome)
-              ..insert(toAppFlowy + editor, attributes: {'bold': true}),
-          )..addParagraph(
-            builder: (index) => Delta()
-              ..insert(welcome + toAppFlowy, attributes: {'bold': true})
-              ..insert(editor),
-          );
+      final document = Document.blank().addParagraph(
+        builder: (index) => Delta()
+          ..insert(welcome)
+          ..insert(toAppFlowy + editor, attributes: {'bold': true}),
+      )..addParagraph(
+          builder: (index) => Delta()
+            ..insert(welcome + toAppFlowy, attributes: {'bold': true})
+            ..insert(editor),
+        );
       final editorState = EditorState(document: document);
 
       // |Welcome <b>to AppFlowy Editor 🔥!</b>

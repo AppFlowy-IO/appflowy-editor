@@ -38,8 +38,8 @@ class EditorScrollController {
       this.scrollController = scrollController ?? ScrollController();
       // listen to the scroll offset
       this.scrollController.addListener(
-        () => offsetNotifier.value = this.scrollController.offset,
-      );
+            () => offsetNotifier.value = this.scrollController.offset,
+          );
     } else {
       // listen to the scroll offset
       _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
@@ -73,7 +73,7 @@ class EditorScrollController {
   final ValueNotifier<(int, int)> visibleRangeNotifier = ValueNotifier((
     -1,
     -1,
-  ));
+  ),);
 
   // these value is required by SingleChildScrollView
   // notes: don't use them if shrinkWrap is false
@@ -152,7 +152,8 @@ class EditorScrollController {
     if (!shrinkWrap) {
       _scrollOffsetSubscription.cancel();
       _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
-      (_itemPositionsListener as ItemPositionsNotifier?)?.itemPositions
+      (_itemPositionsListener as ItemPositionsNotifier?)
+          ?.itemPositions
           .dispose();
     }
 

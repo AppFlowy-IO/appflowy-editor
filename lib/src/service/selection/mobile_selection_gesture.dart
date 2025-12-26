@@ -55,44 +55,44 @@ class MobileSelectionGestureDetectorState
       gestures: {
         PanGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-              () => PanGestureRecognizer(
-                supportedDevices: {
-                  //   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
-                  //   PointerDeviceKind.trackpad,
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                  PointerDeviceKind.stylus,
-                  PointerDeviceKind.invertedStylus,
-                },
-              ),
-              (recognizer) {
-                recognizer
-                  ..dragStartBehavior = DragStartBehavior.down
-                  ..onStart = widget.onPanStart
-                  ..onUpdate = widget.onPanUpdate
-                  ..onEnd = widget.onPanEnd;
-              },
-            ),
+          () => PanGestureRecognizer(
+            supportedDevices: {
+              //   // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
+              //   PointerDeviceKind.trackpad,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.invertedStylus,
+            },
+          ),
+          (recognizer) {
+            recognizer
+              ..dragStartBehavior = DragStartBehavior.down
+              ..onStart = widget.onPanStart
+              ..onUpdate = widget.onPanUpdate
+              ..onEnd = widget.onPanEnd;
+          },
+        ),
         LongPressGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
-              () => LongPressGestureRecognizer(),
-              (recognizer) {
-                recognizer
-                  ..onLongPressStart = widget.onLongPressStart
-                  ..onLongPressEnd = widget.onLongPressEnd
-                  ..onLongPressMoveUpdate = widget.onLongPressMoveUpdate;
-              },
-            ),
+          () => LongPressGestureRecognizer(),
+          (recognizer) {
+            recognizer
+              ..onLongPressStart = widget.onLongPressStart
+              ..onLongPressEnd = widget.onLongPressEnd
+              ..onLongPressMoveUpdate = widget.onLongPressMoveUpdate;
+          },
+        ),
         TapGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-              () => TapGestureRecognizer(),
-              (recognizer) {
-                // use tap up instead of tap down to avoid this gesture detector
-                //  being responded before the pan gesture detector.
-                recognizer.onTapUp = _tapDownDelegate;
-                recognizer.onSecondaryTapUp = widget.onSecondaryTapUp;
-              },
-            ),
+          () => TapGestureRecognizer(),
+          (recognizer) {
+            // use tap up instead of tap down to avoid this gesture detector
+            //  being responded before the pan gesture detector.
+            recognizer.onTapUp = _tapDownDelegate;
+            recognizer.onSecondaryTapUp = widget.onSecondaryTapUp;
+          },
+        ),
       },
       child: widget.child,
     );

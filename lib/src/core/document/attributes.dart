@@ -67,5 +67,5 @@ Attributes? diffAttributes(
 }
 
 int hashAttributes(Attributes base) => Object.hashAllUnordered(
-  base.entries.map((e) => Object.hash(e.key, e.value)),
-);
+      base.entries.map((e) => Object.hash(e.key, e.value)),
+    );

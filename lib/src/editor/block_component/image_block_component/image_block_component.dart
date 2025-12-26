@@ -47,8 +47,8 @@ Node imageNode({
   );
 }
 
-typedef ImageBlockComponentMenuBuilder =
-    Widget Function(Node node, ImageBlockComponentWidgetState state);
+typedef ImageBlockComponentMenuBuilder = Widget Function(
+    Node node, ImageBlockComponentWidgetState state,);
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
@@ -142,8 +142,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final alignment = AlignmentExtension.fromString(
       attributes[ImageBlockKeys.align] ?? 'center',
     );
-    final width =
-        attributes[ImageBlockKeys.width]?.toDouble() ??
+    final width = attributes[ImageBlockKeys.width]?.toDouble() ??
         MediaQuery.of(context).size.width;
     final height = attributes[ImageBlockKeys.height]?.toDouble();
 

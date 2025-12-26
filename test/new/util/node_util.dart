@@ -9,11 +9,9 @@ extension NodeExtension on Node {
     String? initialText,
     NodeDecorator? decorator,
   }) {
-    final builder0 =
-        builder ??
-        (index) =>
-            Delta()
-              ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
+    final builder0 = builder ??
+        (index) => Delta()
+          ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
     final decorator0 = decorator ?? (index, node) {};
     final nodes = List.generate(count, (index) {
       final node = Node(type: 'paragraph');
@@ -46,8 +44,8 @@ extension NodeExtension on Node {
     return allSatisfyInSelection(
       selection,
       (delta) => delta.whereType<TextInsert>().every(
-        (element) => test(element.attributes?[key]),
-      ),
+            (element) => test(element.attributes?[key]),
+          ),
     );
   }
 

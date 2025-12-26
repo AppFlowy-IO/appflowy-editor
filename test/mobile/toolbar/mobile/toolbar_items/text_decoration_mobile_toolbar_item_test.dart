@@ -41,8 +41,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[AppFlowyRichTextKeys.bold] == true,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.bold] == true,
+            );
       }),
       true,
     );
@@ -58,8 +59,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[AppFlowyRichTextKeys.italic] == true,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.italic] == true,
+            );
       }),
       true,
     );
@@ -75,9 +77,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.underline] == true,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.underline] == true,
+            );
       }),
       true,
     );
@@ -93,9 +95,10 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.strikethrough] == true,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.strikethrough] ==
+                  true,
+            );
       }),
       true,
     );

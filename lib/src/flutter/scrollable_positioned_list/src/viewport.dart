@@ -37,8 +37,7 @@ class UnboundedViewport extends Viewport {
   RenderViewport createRenderObject(BuildContext context) {
     return UnboundedRenderViewport(
       axisDirection: axisDirection,
-      crossAxisDirection:
-          crossAxisDirection ??
+      crossAxisDirection: crossAxisDirection ??
           Viewport.getDefaultCrossAxisDirection(context, axisDirection),
       anchor: anchor,
       offset: offset,
@@ -285,9 +284,8 @@ class UnboundedRenderViewport extends RenderViewport {
     return layoutChildSequence(
       child: center,
       scrollOffset: math.max(0.0, -centerOffset),
-      overlap: leadingNegativeChild == null
-          ? math.min(0.0, -centerOffset)
-          : 0.0,
+      overlap:
+          leadingNegativeChild == null ? math.min(0.0, -centerOffset) : 0.0,
       layoutOffset: centerOffset >= mainAxisExtent
           ? centerOffset
           : reverseDirectionRemainingPaintExtent,

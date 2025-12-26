@@ -53,10 +53,10 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.textColor] ==
-              Colors.red.toHex(),
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.textColor] ==
+                  Colors.red.toHex(),
+            );
       }),
       true,
     );
@@ -66,9 +66,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.textColor] == null,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.textColor] == null,
+            );
       }),
       true,
     );
@@ -85,10 +85,10 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
-              Colors.red.withValues(alpha: 0.3).toHex(),
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
+                  Colors.red.withValues(alpha: 0.3).toHex(),
+            );
       }),
       true,
     );
@@ -98,9 +98,10 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.backgroundColor] == null,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.backgroundColor] ==
+                  null,
+            );
       }),
       true,
     );

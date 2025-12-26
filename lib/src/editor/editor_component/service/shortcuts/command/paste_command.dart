@@ -22,31 +22,30 @@ final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent pasteTextWithoutFormattingCommand =
     CommandShortcutEvent(
-      key: 'paste the content as plain text',
-      getDescription: () =>
-          AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
-      command: 'ctrl+shift+v',
-      macOSCommand: 'cmd+shift+v',
-      handler: _pasteTextWithoutFormattingCommandHandler,
-    );
+  key: 'paste the content as plain text',
+  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
+  command: 'ctrl+shift+v',
+  macOSCommand: 'cmd+shift+v',
+  handler: _pasteTextWithoutFormattingCommandHandler,
+);
 
 CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     (editorState) {
-      final selection = editorState.selection;
-      if (selection == null) {
-        return KeyEventResult.ignored;
-      }
+  final selection = editorState.selection;
+  if (selection == null) {
+    return KeyEventResult.ignored;
+  }
 
-      () async {
-        final data = await AppFlowyClipboard.getData();
-        final text = data.text;
-        if (text != null && text.isNotEmpty) {
-          await editorState.pastePlainText(text);
-        }
-      }();
+  () async {
+    final data = await AppFlowyClipboard.getData();
+    final text = data.text;
+    if (text != null && text.isNotEmpty) {
+      await editorState.pastePlainText(text);
+    }
+  }();
 
-      return KeyEventResult.handled;
-    };
+  return KeyEventResult.handled;
+};
 
 CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   final selection = editorState.selection;
@@ -134,8 +133,7 @@ extension on EditorState {
           Delta delta = Delta();
           if (_hrefRegex.hasMatch(paragraph) ||
               _phoneRegex.hasMatch(paragraph)) {
-            final match =
-                _hrefRegex.firstMatch(paragraph) ??
+            final match = _hrefRegex.firstMatch(paragraph) ??
                 _phoneRegex.firstMatch(paragraph);
             if (match != null) {
               int startPos = match.start;
@@ -151,9 +149,8 @@ extension on EditorState {
                 delta.insert(
                   paragraph.substring(startPos, endPos),
                   attributes: {
-                    AppFlowyRichTextKeys.href: _phoneRegex.hasMatch(entity)
-                        ? 'tel:$entity'
-                        : entity,
+                    AppFlowyRichTextKeys.href:
+                        _phoneRegex.hasMatch(entity) ? 'tel:$entity' : entity,
                   },
                 );
 

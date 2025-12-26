@@ -87,11 +87,11 @@ extension PositionExtension on Position {
     // Either the top if moving upwards, or the bottom if moving downwards.
     final Offset caretOffset = editorSelection.isBackward
         ? upwards
-              ? caretRect.topRight
-              : caretRect.bottomRight
+            ? caretRect.topRight
+            : caretRect.bottomRight
         : upwards
-        ? caretRect.topLeft
-        : caretRect.bottomLeft;
+            ? caretRect.topLeft
+            : caretRect.bottomLeft;
 
     final nodeConfig = editorState.service.rendererService
         .blockComponentBuilder(node.type)
@@ -132,11 +132,9 @@ extension PositionExtension on Position {
     //   skipped because `remainingMultilineHeight` would be 0.
     Offset newOffset = caretOffset;
     Position? newPosition;
-    for (
-      double y = minFontSize;
-      y < remainingMultilineHeight + minFontSize;
-      y += minFontSize
-    ) {
+    for (double y = minFontSize;
+        y < remainingMultilineHeight + minFontSize;
+        y += minFontSize) {
       newOffset = caretOffset.translate(0, upwards ? -y : y);
 
       newPosition = editorState.service.selectionService.getPositionInOffset(

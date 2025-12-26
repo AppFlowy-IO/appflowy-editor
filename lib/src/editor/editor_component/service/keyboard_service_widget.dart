@@ -273,7 +273,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // we should clear the composing range on Android.
     final shouldClearComposingRange =
         editorState.selectionType == SelectionType.inline &&
-        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent;
+            editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent;
 
     if (PlatformExtension.isAndroid && shouldClearComposingRange) {
       textInputService.clearComposingTextRange();

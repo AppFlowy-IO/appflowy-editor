@@ -65,11 +65,11 @@ class _HomePageState extends State<HomePage> {
         : rootBundle.loadString('assets/mobile_example.json');
 
     _widgetBuilder = (context) => Editor(
-      jsonString: _jsonString,
-      onEditorStateChange: (editorState) {
-        _editorState = editorState;
-      },
-    );
+          jsonString: _jsonString,
+          onEditorStateChange: (editorState) {
+            _editorState = editorState;
+          },
+        );
   }
 
   @override
@@ -77,12 +77,13 @@ class _HomePageState extends State<HomePage> {
     super.reassemble();
 
     _widgetBuilder = (context) => Editor(
-      jsonString: _jsonString,
-      onEditorStateChange: (editorState) {
-        _editorState = editorState;
-        _jsonString = Future.value(jsonEncode(_editorState.document.toJson()));
-      },
-    );
+          jsonString: _jsonString,
+          onEditorStateChange: (editorState) {
+            _editorState = editorState;
+            _jsonString =
+                Future.value(jsonEncode(_editorState.document.toJson()));
+          },
+        );
   }
 
   @override
@@ -330,12 +331,12 @@ class _HomePageState extends State<HomePage> {
     _jsonString = jsonString;
     setState(() {
       _widgetBuilder = (context) => Editor(
-        jsonString: _jsonString,
-        onEditorStateChange: (editorState) {
-          _editorState = editorState;
-        },
-        textDirection: textDirection,
-      );
+            jsonString: _jsonString,
+            onEditorStateChange: (editorState) {
+              _editorState = editorState;
+            },
+            textDirection: textDirection,
+          );
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       completer.complete();
@@ -364,8 +365,8 @@ class _HomePageState extends State<HomePage> {
     if (kIsWeb) {
       final blob = html.Blob([result], 'text/plain', 'native');
       html.AnchorElement(
-          href: html.Url.createObjectUrlFromBlob(blob).toString(),
-        )
+        href: html.Url.createObjectUrlFromBlob(blob).toString(),
+      )
         ..setAttribute('download', 'document.${fileType.extension}')
         ..click();
     } else if (UniversalPlatform.isMobile) {

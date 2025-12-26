@@ -101,8 +101,8 @@ Future<void> _applyFormatting(
   expect(
     node!.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (el) => el.attributes?[matchStyle] == true,
-      );
+            (el) => el.attributes?[matchStyle] == true,
+          );
     }),
     true,
   );
@@ -116,8 +116,8 @@ void _checkSelectionNotFormatted(
   expect(
     node.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (el) => el.attributes?[matchStyle] != true,
-      );
+            (el) => el.attributes?[matchStyle] != true,
+          );
     }),
     true,
   );

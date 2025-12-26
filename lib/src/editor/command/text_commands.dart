@@ -190,9 +190,12 @@ extension TextTransforms on EditorState {
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
         return delta.everyAttributes((attributes) => attributes[key] == true);
       });
-      await formatDelta(selection, {
-        key: !isHighlight,
-      }, selectionExtraInfo: selectionExtraInfo);
+      await formatDelta(
+          selection,
+          {
+            key: !isHighlight,
+          },
+          selectionExtraInfo: selectionExtraInfo,);
     }
   }
 

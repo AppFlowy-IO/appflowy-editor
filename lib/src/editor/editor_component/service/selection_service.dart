@@ -11,11 +11,11 @@ class DragAreaBuilderData {
   final Offset dragOffset;
 }
 
-typedef DragAreaBuilder =
-    Widget Function(BuildContext context, DragAreaBuilderData data);
+typedef DragAreaBuilder = Widget Function(
+    BuildContext context, DragAreaBuilderData data,);
 
-typedef DragTargetNodeInterceptor =
-    Node Function(BuildContext context, Node node);
+typedef DragTargetNodeInterceptor = Node Function(
+    BuildContext context, Node node,);
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.

@@ -26,5 +26,5 @@ import 'package:flutter/material.dart';
 ///   return KeyEventResult.ignored;
 /// };
 /// ```
-typedef ShortcutEventHandler =
-    KeyEventResult Function(EditorState editorState, KeyEvent? event);
+typedef ShortcutEventHandler = KeyEventResult Function(
+    EditorState editorState, KeyEvent? event,);

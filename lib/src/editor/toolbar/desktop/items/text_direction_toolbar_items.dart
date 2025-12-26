@@ -25,37 +25,37 @@ class _TextDirectionToolbarItem extends ToolbarItem {
     required String name,
     required String iconName,
   }) : super(
-         id: 'editor.$id',
-         group: 7,
-         isActive: onlyShowInTextType,
-         builder:
-             (context, editorState, highlightColor, iconColor, tooltipBuilder) {
-               final selection = editorState.selection!;
-               final nodes = editorState.getNodesInSelection(selection);
-               final isHighlight = nodes.every(
-                 (n) => n.attributes[blockComponentTextDirection] == name,
-               );
-               final child = SVGIconItemWidget(
-                 iconName: 'toolbar/$iconName',
-                 isHighlight: isHighlight,
-                 highlightColor: highlightColor,
-                 iconColor: iconColor,
-                 onPressed: () => editorState.updateNode(
-                   selection,
-                   (node) => node.copyWith(
-                     attributes: {
-                       ...node.attributes,
-                       blockComponentTextDirection: isHighlight ? null : name,
-                     },
-                   ),
-                 ),
-               );
+          id: 'editor.$id',
+          group: 7,
+          isActive: onlyShowInTextType,
+          builder: (context, editorState, highlightColor, iconColor,
+              tooltipBuilder,) {
+            final selection = editorState.selection!;
+            final nodes = editorState.getNodesInSelection(selection);
+            final isHighlight = nodes.every(
+              (n) => n.attributes[blockComponentTextDirection] == name,
+            );
+            final child = SVGIconItemWidget(
+              iconName: 'toolbar/$iconName',
+              isHighlight: isHighlight,
+              highlightColor: highlightColor,
+              iconColor: iconColor,
+              onPressed: () => editorState.updateNode(
+                selection,
+                (node) => node.copyWith(
+                  attributes: {
+                    ...node.attributes,
+                    blockComponentTextDirection: isHighlight ? null : name,
+                  },
+                ),
+              ),
+            );
 
-               if (tooltipBuilder != null) {
-                 return tooltipBuilder(context, id, getTooltipText(id), child);
-               }
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(context, id, getTooltipText(id), child);
+            }
 
-               return child;
-             },
-       );
+            return child;
+          },
+        );
 }

@@ -161,7 +161,8 @@ extension on Node {
       updateAttributes({blockComponentDelta: delta.toJson()});
     } else if (insertAfter) {
       updateAttributes({
-        blockComponentDelta: this.delta!
+        blockComponentDelta: this
+            .delta!
             .compose(
               Delta()
                 ..retain(this.delta!.length)

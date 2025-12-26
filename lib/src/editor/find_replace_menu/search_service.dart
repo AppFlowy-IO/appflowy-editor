@@ -131,13 +131,11 @@ class SearchService {
     }
 
     if (moveUp) {
-      selectedIndex = selectedIndex - 1 < 0
-          ? matchedPositions.length - 1
-          : --selectedIndex;
+      selectedIndex =
+          selectedIndex - 1 < 0 ? matchedPositions.length - 1 : --selectedIndex;
     } else {
-      selectedIndex = (selectedIndex + 1) < matchedPositions.length
-          ? ++selectedIndex
-          : 0;
+      selectedIndex =
+          (selectedIndex + 1) < matchedPositions.length ? ++selectedIndex : 0;
     }
     final match = matchedPositions[selectedIndex];
     _selectWordAtPosition(match, true);
@@ -209,8 +207,11 @@ class SearchService {
     final color = isSelected
         ? style.selectedHighlightColor.toHex()
         : style.unselectedHighlightColor.toHex();
-    editorState.formatDelta(selection, {
-      AppFlowyRichTextKeys.findBackgroundColor: color,
-    }, withUpdateSelection: false);
+    editorState.formatDelta(
+        selection,
+        {
+          AppFlowyRichTextKeys.findBackgroundColor: color,
+        },
+        withUpdateSelection: false,);
   }
 }

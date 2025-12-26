@@ -17,17 +17,17 @@ void main() async {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-          switch (message.method) {
-            case "Clipboard.getData":
-              return mockClipboard.getData;
+      switch (message.method) {
+        case "Clipboard.getData":
+          return mockClipboard.getData;
 
-            case "Clipboard.setData":
-              final args = message.arguments as Map<String, dynamic>;
-              mockClipboard = mockClipboard.copyWith(text: args['text']);
-          }
+        case "Clipboard.setData":
+          final args = message.arguments as Map<String, dynamic>;
+          mockClipboard = mockClipboard.copyWith(text: args['text']);
+      }
 
-          return null;
-        });
+      return null;
+    });
   });
   group('copy_paste_handler_test.dart', () {
     testWidgets('Presses Command + A in small document and copy text', (
@@ -86,9 +86,8 @@ Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  final text = editor.editorState
-      .getTextInSelection(editor.selection)
-      .join('\n');
+  final text =
+      editor.editorState.getTextInSelection(editor.selection).join('\n');
   handleCopy(editor.editorState);
   final clipBoardData = await AppFlowyClipboard.getData();
   //this will be null because html content is not testable

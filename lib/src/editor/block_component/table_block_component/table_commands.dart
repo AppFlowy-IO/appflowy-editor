@@ -24,8 +24,7 @@ final CommandShortcutEvent enterInTableCell = CommandShortcutEvent(
 final CommandShortcutEvent leftInTableCell = CommandShortcutEvent(
   key: 'Move to left cell if its at start of current cell',
   getDescription: () => AppFlowyEditorL10n
-      .current
-      .cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell,
+      .current.cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell,
   command: 'arrow left',
   handler: _leftInTableCellHandler,
 );
@@ -33,8 +32,7 @@ final CommandShortcutEvent leftInTableCell = CommandShortcutEvent(
 final CommandShortcutEvent rightInTableCell = CommandShortcutEvent(
   key: 'Move to right cell if its at the end of current cell',
   getDescription: () => AppFlowyEditorL10n
-      .current
-      .cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell,
+      .current.cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell,
   command: 'arrow right',
   handler: _rightInTableCellHandler,
 );

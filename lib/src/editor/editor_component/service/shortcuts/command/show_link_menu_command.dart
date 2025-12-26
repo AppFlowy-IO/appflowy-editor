@@ -25,10 +25,8 @@ KeyEventResult _showLinkMenu(EditorState editorState) {
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }
-  final context = editorState
-      .getNodeAtPath(selection.end.path)
-      ?.key
-      .currentContext;
+  final context =
+      editorState.getNodeAtPath(selection.end.path)?.key.currentContext;
   if (context == null) {
     return KeyEventResult.ignored;
   }

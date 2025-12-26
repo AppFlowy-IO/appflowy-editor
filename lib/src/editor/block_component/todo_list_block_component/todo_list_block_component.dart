@@ -32,8 +32,8 @@ Node todoListNode({
     type: TodoListBlockKeys.type,
     attributes: {
       TodoListBlockKeys.checked: checked,
-      TodoListBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
-          .toJson(),
+      TodoListBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null) TodoListBlockKeys.textDirection: textDirection,
     },
@@ -41,8 +41,8 @@ Node todoListNode({
   );
 }
 
-typedef TodoListIconBuilder =
-    Widget Function(BuildContext context, Node node, VoidCallback onCheck);
+typedef TodoListIconBuilder = Widget Function(
+    BuildContext context, Node node, VoidCallback onCheck,);
 
 class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   TodoListBlockComponentBuilder({
@@ -79,8 +79,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class TodoListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -173,8 +172,8 @@ class _TodoListBlockComponentWidgetState
                   ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                  ),
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
+              ),
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
@@ -262,10 +261,8 @@ class _TodoListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context
-        .read<EditorState>()
-        .editorStyle
-        .textScaleFactor;
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -273,8 +270,7 @@ class _TodoListIcon extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          constraints:
-              const BoxConstraints(minWidth: 26, minHeight: 22) *
+          constraints: const BoxConstraints(minWidth: 26, minHeight: 22) *
               textScaleFactor,
           padding: const EdgeInsets.only(right: 4.0),
           child: EditorSvg(

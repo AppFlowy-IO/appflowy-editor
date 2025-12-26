@@ -55,9 +55,8 @@ CharacterShortcutEvent formatNumberToNumberedList = CharacterShortcutEvent(
         node.copyWith(
           type: NumberedListBlockKeys.type,
           attributes: {
-            NumberedListBlockKeys.delta: delta
-                .compose(Delta()..delete(matchText.length))
-                .toJson(),
+            NumberedListBlockKeys.delta:
+                delta.compose(Delta()..delete(matchText.length)).toJson(),
             NumberedListBlockKeys.number: int.tryParse(number),
           },
         ),

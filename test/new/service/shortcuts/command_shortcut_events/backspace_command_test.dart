@@ -522,7 +522,10 @@ void main() async {
           tableNode.node,
           0,
           0,
-        )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+        )!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
         textRow1,
       );
 
@@ -531,7 +534,10 @@ void main() async {
           tableNode.node,
           0,
           1,
-        )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+        )!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
         textRow2,
       );
 
@@ -540,7 +546,10 @@ void main() async {
           tableNode.node,
           0,
           2,
-        )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+        )!
+            .childAtIndexOrNull(0)!
+            .delta
+            ?.toPlainText(),
         textRow3,
       );
 
@@ -594,7 +603,10 @@ void main() async {
         tableNode.node,
         0,
         0,
-      )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+      )!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
       textCol1,
     );
 
@@ -603,7 +615,10 @@ void main() async {
         tableNode.node,
         1,
         0,
-      )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+      )!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
       textCol2,
     );
 
@@ -612,7 +627,10 @@ void main() async {
         tableNode.node,
         2,
         0,
-      )!.childAtIndexOrNull(0)!.delta?.toPlainText(),
+      )!
+          .childAtIndexOrNull(0)!
+          .delta
+          ?.toPlainText(),
       textCol3,
     );
 

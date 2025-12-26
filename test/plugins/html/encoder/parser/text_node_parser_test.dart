@@ -136,8 +136,8 @@ void main() async {
     test('underline', () {
       final node = paragraphNode(
         attributes: {
-          'delta': (Delta()..insert(text, attributes: {'underline': true}))
-              .toJson(),
+          'delta':
+              (Delta()..insert(text, attributes: {'underline': true})).toJson(),
         },
       );
 
@@ -168,12 +168,12 @@ void main() async {
     test('underline and strikethrough', () {
       final node = paragraphNode(
         attributes: {
-          'delta':
-              (Delta()..insert(
-                    text,
-                    attributes: {'strikethrough': true, 'underline': true},
-                  ))
-                  .toJson(),
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {'strikethrough': true, 'underline': true},
+                ))
+              .toJson(),
         },
       );
 
@@ -188,19 +188,19 @@ void main() async {
     test('multiple attributes Test with background and text color', () {
       final node = paragraphNode(
         attributes: {
-          'delta':
-              (Delta()..insert(
-                    text,
-                    attributes: {
-                      'bold': true,
-                      'italic': true,
-                      "underline": true,
-                      "strikethrough": true,
-                      "bg_color": "0x6000bcf0",
-                      "font_color": "0xff2196f3",
-                    },
-                  ))
-                  .toJson(),
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "bg_color": "0x6000bcf0",
+                    "font_color": "0xff2196f3",
+                  },
+                ))
+              .toJson(),
         },
       );
 
@@ -215,18 +215,18 @@ void main() async {
     test('multiple attributes Test with background', () {
       final node = paragraphNode(
         attributes: {
-          'delta':
-              (Delta()..insert(
-                    text,
-                    attributes: {
-                      'bold': true,
-                      'italic': true,
-                      "underline": true,
-                      "strikethrough": true,
-                      "bg_color": "0x6000bcf0",
-                    },
-                  ))
-                  .toJson(),
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "bg_color": "0x6000bcf0",
+                  },
+                ))
+              .toJson(),
         },
       );
 
@@ -241,18 +241,18 @@ void main() async {
     test('multiple attributes Test with text color', () {
       final node = paragraphNode(
         attributes: {
-          'delta':
-              (Delta()..insert(
-                    text,
-                    attributes: {
-                      'bold': true,
-                      'italic': true,
-                      "underline": true,
-                      "strikethrough": true,
-                      "font_color": "0xff2196f3",
-                    },
-                  ))
-                  .toJson(),
+          'delta': (Delta()
+                ..insert(
+                  text,
+                  attributes: {
+                    'bold': true,
+                    'italic': true,
+                    "underline": true,
+                    "strikethrough": true,
+                    "font_color": "0xff2196f3",
+                  },
+                ))
+              .toJson(),
         },
       );
       expect(

@@ -19,11 +19,10 @@ bool forceShowBlockAction = false;
 /// - [state]: The current state of the block component action
 ///
 /// Returns a widget to display as the block action (e.g., drag handle, add button).
-typedef BlockActionBuilder =
-    Widget Function(
-      BlockComponentContext blockComponentContext,
-      BlockComponentActionState state,
-    );
+typedef BlockActionBuilder = Widget Function(
+  BlockComponentContext blockComponentContext,
+  BlockComponentActionState state,
+);
 
 /// A function that builds the trailing action widget shown after the block.
 ///
@@ -32,11 +31,10 @@ typedef BlockActionBuilder =
 /// - [state]: The current state of the block component action
 ///
 /// Returns a widget to display after the block content.
-typedef BlockActionTrailingBuilder =
-    Widget Function(
-      BlockComponentContext blockComponentContext,
-      BlockComponentActionState state,
-    );
+typedef BlockActionTrailingBuilder = Widget Function(
+  BlockComponentContext blockComponentContext,
+  BlockComponentActionState state,
+);
 
 /// A function that validates whether a node can be rendered by a block component.
 ///
@@ -93,8 +91,8 @@ abstract class BlockComponentBuilder with BlockComponentSelectable {
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 
   /// Builds the trailing action widget shown after the block.
-  BlockActionTrailingBuilder actionTrailingBuilder = (_, __) =>
-      const SizedBox.shrink();
+  BlockActionTrailingBuilder actionTrailingBuilder =
+      (_, __) => const SizedBox.shrink();
 
   /// Configuration for the block component's appearance and behavior.
   BlockComponentConfiguration configuration =

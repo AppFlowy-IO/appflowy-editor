@@ -252,9 +252,9 @@ class MatchWrapper {
   final Path path;
 
   Selection get selection => Selection(
-    start: Position(path: path, offset: match.start),
-    end: Position(path: path, offset: match.end),
-  );
+        start: Position(path: path, offset: match.start),
+        end: Position(path: path, offset: match.end),
+      );
 }
 
 extension on Pattern {

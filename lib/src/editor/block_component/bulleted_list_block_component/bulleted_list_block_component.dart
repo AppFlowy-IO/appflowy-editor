@@ -25,8 +25,8 @@ Node bulletedListNode({
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {
-      BulletedListBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
-          .toJson(),
+      BulletedListBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null)
         BulletedListBlockKeys.textDirection: textDirection,
@@ -58,8 +58,7 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class BulletedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -144,8 +143,8 @@ class _BulletedListBlockComponentWidgetState
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                  ),
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
+              ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
@@ -211,10 +210,8 @@ class _BulletedListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context
-        .read<EditorState>()
-        .editorStyle
-        .textScaleFactor;
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
 
     return Container(
       constraints:

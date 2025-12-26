@@ -29,9 +29,9 @@ class UnboundedCustomScrollView extends CustomScrollView {
     super.slivers,
     super.semanticChildCount,
     super.dragStartBehavior,
-  }) : _shrinkWrap = shrinkWrap,
-       _anchor = anchor,
-       super(shrinkWrap: false);
+  })  : _shrinkWrap = shrinkWrap,
+        _anchor = anchor,
+        super(shrinkWrap: false);
 
   // [CustomScrollView] enforces constraints on [CustomScrollView.anchor], so
   // we need our own version.

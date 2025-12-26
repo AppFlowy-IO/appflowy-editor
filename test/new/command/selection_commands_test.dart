@@ -90,9 +90,8 @@ void main() async {
         decorator: (index, node) {
           node.addParagraphs(
             2,
-            builder: (index2) =>
-                Delta()
-                  ..insert('$index.$index2. Welcome to AppFlowy Editor 🔥!'),
+            builder: (index2) => Delta()
+              ..insert('$index.$index2. Welcome to AppFlowy Editor 🔥!'),
             decorator: (index2, node2) {
               if (index2 == 0) {
                 node2.addParagraph(

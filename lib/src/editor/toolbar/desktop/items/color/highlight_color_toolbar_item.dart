@@ -34,8 +34,8 @@ ToolbarItem buildHighlightColorItem({List<ColorOption>? colorOptions}) {
           nodes.allSatisfyInSelection(selection, (delta) {
             if (!showClearButton) {
               showClearButton = delta.whereType<TextInsert>().any((element) {
-                return element.attributes?[AppFlowyRichTextKeys
-                        .backgroundColor] !=
+                return element
+                        .attributes?[AppFlowyRichTextKeys.backgroundColor] !=
                     null;
               });
             }

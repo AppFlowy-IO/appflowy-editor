@@ -53,45 +53,45 @@ class SelectionGestureDetectorState extends State<SelectionGestureDetector> {
         if (widget.enablePanImmediate)
           ImmediateMultiDragGestureRecognizer:
               GestureRecognizerFactoryWithHandlers<
-                ImmediateMultiDragGestureRecognizer
-              >(() => ImmediateMultiDragGestureRecognizer(), (recognizer) {
-                recognizer.onStart = (offset) {
-                  return _ImmediateDrag(
-                    offset: offset,
-                    onStart: widget.onPanStart,
-                    onUpdate: widget.onPanUpdate,
-                    onEnd: widget.onPanEnd,
-                  );
-                };
-              }),
+                      ImmediateMultiDragGestureRecognizer>(
+                  () => ImmediateMultiDragGestureRecognizer(), (recognizer) {
+            recognizer.onStart = (offset) {
+              return _ImmediateDrag(
+                offset: offset,
+                onStart: widget.onPanStart,
+                onUpdate: widget.onPanUpdate,
+                onEnd: widget.onPanEnd,
+              );
+            };
+          }),
         if (!widget.enablePanImmediate)
           PanGestureRecognizer:
               GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-                () => PanGestureRecognizer(
-                  supportedDevices: {
-                    // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
-                    // Exclude PointerDeviceKind.trackpad.
-                    PointerDeviceKind.touch,
-                    PointerDeviceKind.mouse,
-                    PointerDeviceKind.stylus,
-                    PointerDeviceKind.invertedStylus,
-                  },
-                ),
-                (recognizer) {
-                  recognizer
-                    // ..onStart = widget.onPanStart
-                    ..onUpdate = widget.onPanUpdate
-                    ..onEnd = widget.onPanEnd;
-                },
-              ),
-        TapGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-              () => TapGestureRecognizer(),
-              (recognizer) {
-                recognizer.onTapDown = _tapDownDelegate;
-                recognizer.onSecondaryTapDown = widget.onSecondaryTapDown;
+            () => PanGestureRecognizer(
+              supportedDevices: {
+                // https://docs.flutter.dev/release/breaking-changes/trackpad-gestures#for-gesture-interactions-not-suitable-for-trackpad-usage
+                // Exclude PointerDeviceKind.trackpad.
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.stylus,
+                PointerDeviceKind.invertedStylus,
               },
             ),
+            (recognizer) {
+              recognizer
+                // ..onStart = widget.onPanStart
+                ..onUpdate = widget.onPanUpdate
+                ..onEnd = widget.onPanEnd;
+            },
+          ),
+        TapGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+          () => TapGestureRecognizer(),
+          (recognizer) {
+            recognizer.onTapDown = _tapDownDelegate;
+            recognizer.onSecondaryTapDown = widget.onSecondaryTapDown;
+          },
+        ),
       },
       child: widget.child,
     );

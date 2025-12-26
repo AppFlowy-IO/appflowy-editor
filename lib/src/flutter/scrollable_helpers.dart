@@ -153,12 +153,12 @@ class EdgeDraggingAutoScroller {
     double minimumAutoScrollDelta = 1.0,
     double maxAutoScrollDelta = 20.0,
     Duration? animationDuration,
-  }) : assert(minimumAutoScrollDelta >= 0),
-       assert(maxAutoScrollDelta >= minimumAutoScrollDelta),
-       _minimumAutoScrollDelta = minimumAutoScrollDelta,
-       _maxAutoScrollDelta = maxAutoScrollDelta,
-       _animationDuration =
-           animationDuration ?? const Duration(milliseconds: 5);
+  })  : assert(minimumAutoScrollDelta >= 0),
+        assert(maxAutoScrollDelta >= minimumAutoScrollDelta),
+        _minimumAutoScrollDelta = minimumAutoScrollDelta,
+        _maxAutoScrollDelta = maxAutoScrollDelta,
+        _animationDuration =
+            animationDuration ?? const Duration(milliseconds: 5);
 
   /// The [Scrollable] this auto scroller is scrolling.
   final ScrollableState scrollable;
@@ -368,9 +368,9 @@ class EdgeDraggingAutoScroller {
         final double direction = delta.sign;
         final double target =
             (currentPixels + direction * _minimumAutoScrollDelta).clamp(
-              scrollable.position.minScrollExtent,
-              scrollable.position.maxScrollExtent,
-            );
+          scrollable.position.minScrollExtent,
+          scrollable.position.maxScrollExtent,
+        );
         newOffset = target.toDouble();
         delta = newOffset - currentPixels;
         if (delta.abs() <= precisionErrorTolerance) {
@@ -426,8 +426,8 @@ class EdgeDraggingAutoScroller {
 ///
 /// This function is used as the type for [Scrollable.incrementCalculator],
 /// which is called from a [ScrollAction].
-typedef ScrollIncrementCalculator =
-    double Function(ScrollIncrementDetails details);
+typedef ScrollIncrementCalculator = double Function(
+    ScrollIncrementDetails details,);
 
 /// Describes the type of scroll increment that will be performed by a
 /// [ScrollAction] on a [Scrollable].

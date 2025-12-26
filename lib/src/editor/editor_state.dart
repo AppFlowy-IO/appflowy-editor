@@ -129,7 +129,7 @@ class EditorState {
   /// If [withInitialText] is true, the document will contain an empty paragraph.
   /// If false, the document will be completely empty.
   EditorState.blank({bool withInitialText = true})
-    : this(document: Document.blank(withInitialText: withInitialText));
+      : this(document: Document.blank(withInitialText: withInitialText));
 
   final Document document;
 
@@ -360,8 +360,8 @@ class EditorState {
   }
 
   RenderBox? get renderBox {
-    final renderObject = service.scrollServiceKey.currentContext
-        ?.findRenderObject();
+    final renderObject =
+        service.scrollServiceKey.currentContext?.findRenderObject();
     if (renderObject != null && renderObject is RenderBox) {
       return renderObject;
     }
@@ -609,9 +609,8 @@ class EditorState {
             node.copyWith(
               attributes: {
                 ...node.attributes,
-                blockComponentDelta: delta
-                    .slice(0, selection.endIndex)
-                    .toJson(),
+                blockComponentDelta:
+                    delta.slice(0, selection.endIndex).toJson(),
               },
             ),
           );
@@ -711,8 +710,7 @@ class EditorState {
           _notifyScrollViewScrolledListeners();
           if (!isDesktopOrWeb) {
             final dynamic dragMode = selectionExtraInfo?[_selectionDragModeKey];
-            final bool isDraggingSelection =
-                dragMode != null &&
+            final bool isDraggingSelection = dragMode != null &&
                 dragMode.toString() != 'MobileSelectionDragMode.none';
             if (!isDraggingSelection) {
               return;

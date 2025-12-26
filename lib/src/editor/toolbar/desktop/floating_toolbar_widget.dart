@@ -9,13 +9,12 @@ const floatingToolbarContainerKey = Key(
 @visibleForTesting
 const floatingToolbarItemPrefixKey = 'appflowy_editor_floating_toolbar_item';
 
-typedef ToolbarTooltipBuilder =
-    Widget Function(
-      BuildContext context,
-      String id,
-      String message,
-      Widget child,
-    );
+typedef ToolbarTooltipBuilder = Widget Function(
+  BuildContext context,
+  String id,
+  String message,
+  Widget child,
+);
 
 typedef PlaceHolderItemBuilder = ToolbarItem Function(BuildContext context);
 
@@ -106,22 +105,20 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             textDirection: widget.textDirection,
-            children: activeItems
-                .mapIndexed((index, item) {
-                  return Center(
-                    key: Key(
-                      '${floatingToolbarItemPrefixKey}_${item.id}_$index',
-                    ),
-                    child: item.builder!(
-                      context,
-                      widget.editorState,
-                      widget.toolbarActiveColor,
-                      widget.toolbarIconColor,
-                      widget.tooltipBuilder,
-                    ),
-                  );
-                })
-                .toList(growable: false),
+            children: activeItems.mapIndexed((index, item) {
+              return Center(
+                key: Key(
+                  '${floatingToolbarItemPrefixKey}_${item.id}_$index',
+                ),
+                child: item.builder!(
+                  context,
+                  widget.editorState,
+                  widget.toolbarActiveColor,
+                  widget.toolbarIconColor,
+                  widget.tooltipBuilder,
+                ),
+              );
+            }).toList(growable: false),
           ),
         ),
       ),

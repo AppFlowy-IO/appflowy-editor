@@ -213,9 +213,8 @@ void main() async {
       const text = 'App_Flowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) =>
-            Delta()
-              ..insert(text, attributes: {AppFlowyRichTextKeys.code: true}),
+        builder: (index) => Delta()
+          ..insert(text, attributes: {AppFlowyRichTextKeys.code: true}),
       );
       final editorState = EditorState(document: document);
       final selection = Selection.collapsed(

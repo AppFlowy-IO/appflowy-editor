@@ -21,7 +21,7 @@ void main() async {
         expect(result, true);
         expect(after.delta!.toPlainText(), text);
         expect(after.type, 'quote');
-      }, text: text);
+      }, text: text,);
     });
 
     // Before
@@ -38,7 +38,7 @@ void main() async {
         // nothing happens
         expect(result, false);
         expect(before.toJson(), after.toJson());
-      }, text: text);
+      }, text: text,);
     });
 
     // Before

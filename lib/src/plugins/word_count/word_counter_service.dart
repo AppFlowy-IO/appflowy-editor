@@ -27,8 +27,8 @@ final _wordRegex = RegExp(r"\S+");
 ///
 class Counters {
   const Counters({int wordCount = 0, int charCount = 0})
-    : _wordCount = wordCount,
-      _charCount = charCount;
+      : _wordCount = wordCount,
+        _charCount = charCount;
 
   final int _wordCount;
 

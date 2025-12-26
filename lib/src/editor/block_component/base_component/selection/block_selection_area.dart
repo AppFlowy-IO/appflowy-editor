@@ -131,8 +131,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           final editorState = context.read<EditorState>();
           final dragMode =
               editorState.selectionExtraInfo?[selectionDragModeKey];
-          final shouldBlink =
-              widget.delegate.shouldCursorBlink &&
+          final shouldBlink = widget.delegate.shouldCursorBlink &&
               dragMode != MobileSelectionDragMode.cursor;
           final cursor = Cursor(
             key: cursorKey,

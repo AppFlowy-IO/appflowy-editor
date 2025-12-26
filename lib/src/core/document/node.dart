@@ -33,12 +33,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     this.parent,
     Attributes attributes = const {},
     Iterable<Node> children = const [],
-  }) : _children = LinkedList<Node>()
-         ..addAll(
-           children.map((e) => e..unlink()),
-         ), // unlink the given children to avoid the error of "node has already a parent"
-       _attributes = attributes,
-       id = id ?? nanoid(6) {
+  })  : _children = LinkedList<Node>()
+          ..addAll(
+            children.map((e) => e..unlink()),
+          ), // unlink the given children to avoid the error of "node has already a parent"
+        _attributes = attributes,
+        id = id ?? nanoid(6) {
     for (final child in children) {
       child.parent = this;
     }
@@ -247,9 +247,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Map<String, Object> toJson() {
     final map = <String, Object>{'type': type};
     if (children.isNotEmpty) {
-      map['children'] = children
-          .map((node) => node.toJson())
-          .toList(growable: false);
+      map['children'] =
+          children.map((node) => node.toJson()).toList(growable: false);
     }
     if (attributes.isNotEmpty) {
       // filter the null value
@@ -331,17 +330,17 @@ final class TextNode extends Node {
     required Delta delta,
     Iterable<Node>? children,
     Attributes? attributes,
-  }) : _delta = delta,
-       super(
-         type: 'text',
-         children: children?.toList() ?? [],
-         attributes: attributes ?? {},
-         id: '',
-       );
+  })  : _delta = delta,
+        super(
+          type: 'text',
+          children: children?.toList() ?? [],
+          attributes: attributes ?? {},
+          id: '',
+        );
 
   TextNode.empty({Attributes? attributes})
-    : _delta = Delta(operations: [TextInsert('')]),
-      super(type: 'text', attributes: attributes ?? {});
+      : _delta = Delta(operations: [TextInsert('')]),
+        super(type: 'text', attributes: attributes ?? {});
 
   @override
   @Deprecated('Use type instead')

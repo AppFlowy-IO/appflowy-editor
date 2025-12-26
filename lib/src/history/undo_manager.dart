@@ -92,8 +92,8 @@ class UndoManager {
   EditorState? state;
 
   UndoManager([int stackSize = 20])
-    : undoStack = FixedSizeStack(stackSize),
-      redoStack = FixedSizeStack(stackSize);
+      : undoStack = FixedSizeStack(stackSize),
+        redoStack = FixedSizeStack(stackSize);
 
   HistoryItem getUndoHistoryItem() {
     if (undoStack.isEmpty) {

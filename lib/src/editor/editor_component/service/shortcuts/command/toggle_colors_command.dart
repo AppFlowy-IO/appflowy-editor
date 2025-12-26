@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 ///   - web
 
 List<CommandShortcutEvent> toggleColorCommands({ToggleColorsStyle? style}) => [
-  customToggleHighlightCommand(style: style ?? ToggleColorsStyle()),
-];
+      customToggleHighlightCommand(style: style ?? ToggleColorsStyle()),
+    ];
 
 class ToggleColorsStyle {
   ToggleColorsStyle({this.highlightColor = const Color(0x60FFCE00)});
@@ -31,13 +31,14 @@ final CommandShortcutEvent toggleHighlightCommand = CommandShortcutEvent(
 
 CommandShortcutEvent customToggleHighlightCommand({
   required ToggleColorsStyle style,
-}) => CommandShortcutEvent(
-  key: 'toggle highlight',
-  getDescription: () => AppFlowyEditorL10n.current.cmdToggleHighlight,
-  command: 'ctrl+shift+h',
-  macOSCommand: 'cmd+shift+h',
-  handler: (editorState) => _toggleHighlight(editorState, style: style),
-);
+}) =>
+    CommandShortcutEvent(
+      key: 'toggle highlight',
+      getDescription: () => AppFlowyEditorL10n.current.cmdToggleHighlight,
+      command: 'ctrl+shift+h',
+      macOSCommand: 'cmd+shift+h',
+      handler: (editorState) => _toggleHighlight(editorState, style: style),
+    );
 
 KeyEventResult _toggleHighlight(
   EditorState editorState, {
@@ -63,9 +64,8 @@ KeyEventResult _toggleHighlight(
   });
 
   editorState.formatDelta(selection, {
-    AppFlowyRichTextKeys.backgroundColor: isHighlighted
-        ? null
-        : style.highlightColor.toHex(),
+    AppFlowyRichTextKeys.backgroundColor:
+        isHighlighted ? null : style.highlightColor.toHex(),
   });
 
   return KeyEventResult.handled;

@@ -31,33 +31,33 @@ class NestedListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (mode) {
       NestedListMode.stack => Stack(
-        children: [
-          child,
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
-        ],
-      ),
-      NestedListMode.column => Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          child,
-          Padding(
-            padding: indentPadding,
-            child: Column(
+          children: [
+            child,
+            Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: children,
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      NestedListMode.column => Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            child,
+            Padding(
+              padding: indentPadding,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: children,
+              ),
+            ),
+          ],
+        ),
     };
   }
 }

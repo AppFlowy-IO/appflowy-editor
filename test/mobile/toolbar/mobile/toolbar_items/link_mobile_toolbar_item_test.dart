@@ -51,9 +51,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) =>
-              element.attributes?[AppFlowyRichTextKeys.href] == linkAddress,
-        );
+              (element) =>
+                  element.attributes?[AppFlowyRichTextKeys.href] == linkAddress,
+            );
       }),
       true,
     );

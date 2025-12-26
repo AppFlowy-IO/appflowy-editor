@@ -80,8 +80,7 @@ class _BlocksMenuState extends State<_BlocksMenu> {
         widget.selection.start.path,
       )!;
 
-      final isSelected =
-          node.type == list.name &&
+      final isSelected = node.type == list.name &&
           (list.level == null ||
               node.attributes[HeadingBlockKeys.level] == list.level);
 

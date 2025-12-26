@@ -202,8 +202,7 @@ extension TextTransaction on Transaction {
       return;
     }
 
-    final newAttributes =
-        attributes ??
+    final newAttributes = attributes ??
         (sliceAttributes ? delta.sliceAttributes(index) : {}) ??
         {};
 

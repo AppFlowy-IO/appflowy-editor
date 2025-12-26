@@ -1,12 +1,11 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-typedef BlockComponentWrapper =
-    Widget Function(
-      BuildContext context, {
-      required Node node,
-      required Widget child,
-    });
+typedef BlockComponentWrapper = Widget Function(
+  BuildContext context, {
+  required Node node,
+  required Widget child,
+});
 
 class BlockComponentContext {
   const BlockComponentContext(

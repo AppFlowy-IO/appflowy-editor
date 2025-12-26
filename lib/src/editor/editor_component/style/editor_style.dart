@@ -116,27 +116,26 @@ class EditorStyle {
     this.cursorWidth = 2.0,
     this.textScaleFactor = 1.0,
     this.maxWidth,
-  }) : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
-       cursorColor = cursorColor ?? const Color(0xFF00BCF0),
-       selectionColor =
-           selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
-       textStyleConfiguration =
-           textStyleConfiguration ??
-           const TextStyleConfiguration(
-             text: TextStyle(fontSize: 16, color: Colors.black),
-           ),
-       textSpanDecorator =
-           textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
-       magnifierSize = Size.zero,
-       mobileDragHandleBallSize = Size.zero,
-       mobileDragHandleWidth = 0.0,
-       enableHapticFeedbackOnAndroid = false,
-       dragHandleColor = Colors.transparent,
-       mobileDragHandleTopExtend = null,
-       mobileDragHandleWidthExtend = null,
-       mobileDragHandleLeftExtend = null,
-       mobileDragHandleHeightExtend = null,
-       autoDismissCollapsedHandleDuration = const Duration(seconds: 0);
+  })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
+        cursorColor = cursorColor ?? const Color(0xFF00BCF0),
+        selectionColor =
+            selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        textStyleConfiguration = textStyleConfiguration ??
+            const TextStyleConfiguration(
+              text: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+        textSpanDecorator =
+            textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
+        magnifierSize = Size.zero,
+        mobileDragHandleBallSize = Size.zero,
+        mobileDragHandleWidth = 0.0,
+        enableHapticFeedbackOnAndroid = false,
+        dragHandleColor = Colors.transparent,
+        mobileDragHandleTopExtend = null,
+        mobileDragHandleWidthExtend = null,
+        mobileDragHandleLeftExtend = null,
+        mobileDragHandleHeightExtend = null,
+        autoDismissCollapsedHandleDuration = const Duration(seconds: 0);
 
   const EditorStyle.mobile({
     EdgeInsets? padding,
@@ -159,18 +158,17 @@ class EditorStyle {
     this.mobileDragHandleLeftExtend,
     this.mobileDragHandleHeightExtend,
     this.autoDismissCollapsedHandleDuration = const Duration(seconds: 3),
-  }) : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
-       cursorColor = cursorColor ?? const Color(0xFF00BCF0),
-       dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
-       selectionColor =
-           selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
-       textStyleConfiguration =
-           textStyleConfiguration ??
-           const TextStyleConfiguration(
-             text: TextStyle(fontSize: 16, color: Colors.black),
-           ),
-       textSpanDecorator =
-           textSpanDecorator ?? mobileTextSpanDecoratorForAttribute;
+  })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
+        cursorColor = cursorColor ?? const Color(0xFF00BCF0),
+        dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
+        selectionColor =
+            selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        textStyleConfiguration = textStyleConfiguration ??
+            const TextStyleConfiguration(
+              text: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+        textSpanDecorator =
+            textSpanDecorator ?? mobileTextSpanDecoratorForAttribute;
 
   EditorStyle copyWith({
     EdgeInsets? padding,
@@ -223,8 +221,7 @@ class EditorStyle {
           mobileDragHandleLeftExtend ?? this.mobileDragHandleLeftExtend,
       mobileDragHandleHeightExtend:
           mobileDragHandleHeightExtend ?? this.mobileDragHandleHeightExtend,
-      autoDismissCollapsedHandleDuration:
-          autoDismissCollapsedHandleDuration ??
+      autoDismissCollapsedHandleDuration: autoDismissCollapsedHandleDuration ??
           this.autoDismissCollapsedHandleDuration,
     );
   }

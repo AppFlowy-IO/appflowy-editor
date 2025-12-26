@@ -8,7 +8,7 @@ Future<void> testFormatCharacterShortcut(
   String prefix,
   int index,
   void Function(bool result, Node before, Node after, EditorState editorState)
-  test, {
+      test, {
   String text = 'Welcome to AppFlowy Editor 🔥!',
   Node? node,
 }) async {

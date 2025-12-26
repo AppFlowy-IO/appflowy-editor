@@ -71,8 +71,8 @@ class OverlayEntry extends ChangeNotifier {
     required this.builder,
     bool opaque = false,
     bool maintainState = false,
-  }) : _opaque = opaque,
-       _maintainState = maintainState;
+  })  : _opaque = opaque,
+        _maintainState = maintainState;
 
   /// This entry will include the widget built by this builder in the overlay at
   /// the entry's position.
@@ -588,8 +588,8 @@ class _Theatre extends MultiChildRenderObjectWidget {
     this.skipCount = 0,
     this.clipBehavior = Clip.hardEdge,
     super.children,
-  }) : assert(skipCount >= 0),
-       assert(children.length >= skipCount);
+  })  : assert(skipCount >= 0),
+        assert(children.length >= skipCount);
 
   final int skipCount;
 
@@ -643,10 +643,10 @@ class _RenderTheatre extends RenderBox
     required TextDirection textDirection,
     int skipCount = 0,
     Clip clipBehavior = Clip.hardEdge,
-  }) : assert(skipCount >= 0),
-       _textDirection = textDirection,
-       _skipCount = skipCount,
-       _clipBehavior = clipBehavior {
+  })  : assert(skipCount >= 0),
+        _textDirection = textDirection,
+        _skipCount = skipCount,
+        _clipBehavior = clipBehavior {
     addAll(children);
   }
 
@@ -817,8 +817,7 @@ class _RenderTheatre extends RenderBox
           size - child.size as Offset,
         );
       } else {
-        _hasVisualOverflow =
-            RenderStack.layoutPositionedChild(
+        _hasVisualOverflow = RenderStack.layoutPositionedChild(
               child,
               childParentData,
               size,

@@ -88,8 +88,8 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(
     nodes.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[BuiltInAttributeKey.href] == link,
-      );
+            (element) => element.attributes?[BuiltInAttributeKey.href] == link,
+          );
     }),
     true,
   );
@@ -138,8 +138,8 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(
     nodes.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[BuiltInAttributeKey.href] == link,
-      );
+            (element) => element.attributes?[BuiltInAttributeKey.href] == link,
+          );
     }),
     false,
   );

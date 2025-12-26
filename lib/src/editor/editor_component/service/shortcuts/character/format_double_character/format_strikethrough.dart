@@ -12,11 +12,11 @@ const _tile = '~';
 ///
 final CharacterShortcutEvent formatDoubleTilesToStrikethrough =
     CharacterShortcutEvent(
-      key: 'format the text surrounded by double asterisks to bold',
-      character: _tile,
-      handler: (editorState) async => handleFormatByWrappingWithDoubleCharacter(
-        editorState: editorState,
-        character: _tile,
-        formatStyle: DoubleCharacterFormatStyle.strikethrough,
-      ),
-    );
+  key: 'format the text surrounded by double asterisks to bold',
+  character: _tile,
+  handler: (editorState) async => handleFormatByWrappingWithDoubleCharacter(
+    editorState: editorState,
+    character: _tile,
+    formatStyle: DoubleCharacterFormatStyle.strikethrough,
+  ),
+);

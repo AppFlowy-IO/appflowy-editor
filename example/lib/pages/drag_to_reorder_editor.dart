@@ -292,8 +292,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       // For VerticalPosition.top, we keep the target node's path
       if (verticalPosition == VerticalPosition.bottom) {
         newPath = horizontalPosition == HorizontalPosition.left
-            ? newPath
-                  .next // Insert after target node
+            ? newPath.next // Insert after target node
             : newPath.child(0); // Insert as first child of target node
       }
 

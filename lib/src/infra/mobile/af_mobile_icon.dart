@@ -53,9 +53,8 @@ class AFMobileIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       'assets/mobile/${afMobileIcons.iconPath}.svg',
-      colorFilter: color != null
-          ? ColorFilter.mode(color!, BlendMode.srcIn)
-          : null,
+      colorFilter:
+          color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
       fit: BoxFit.fill,
       height: size,
       width: size,

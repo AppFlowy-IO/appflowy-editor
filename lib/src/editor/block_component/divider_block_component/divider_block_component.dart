@@ -13,8 +13,8 @@ Node dividerNode() {
   return Node(type: DividerBlockKeys.type);
 }
 
-typedef DividerBlockWrapper =
-    Widget Function(BuildContext context, Node node, Widget child);
+typedef DividerBlockWrapper = Widget Function(
+    BuildContext context, Node node, Widget child,);
 
 class DividerBlockComponentBuilder extends BlockComponentBuilder {
   DividerBlockComponentBuilder({
@@ -48,8 +48,7 @@ class DividerBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.children.isEmpty;
+  BlockComponentValidate get validate => (node) => node.children.isEmpty;
 }
 
 class DividerBlockComponentWidget extends BlockComponentStatefulWidget {

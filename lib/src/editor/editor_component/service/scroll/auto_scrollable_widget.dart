@@ -17,7 +17,7 @@ class AutoScrollableWidget extends StatefulWidget {
   final bool shrinkWrap;
   final ScrollController scrollController;
   final Widget Function(BuildContext context, AutoScroller autoScroller)
-  builder;
+      builder;
 
   @override
   State<AutoScrollableWidget> createState() => _AutoScrollableWidgetState();
@@ -64,8 +64,7 @@ class _AutoScrollableWidgetState extends State<AutoScrollableWidget> {
               final editorState = context.read<EditorState?>();
               final dynamic dragMode =
                   editorState?.selectionExtraInfo?[_selectionDragModeKey];
-              final bool isDraggingSelection =
-                  dragMode != null &&
+              final bool isDraggingSelection = dragMode != null &&
                   dragMode.toString() != 'MobileSelectionDragMode.none';
               if (!isDraggingSelection) {
                 return;

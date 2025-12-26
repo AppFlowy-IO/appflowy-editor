@@ -68,15 +68,14 @@ class TableDefaults {
 
 enum TableDirection { row, col }
 
-typedef TableBlockComponentMenuBuilder =
-    Widget Function(
-      Node,
-      EditorState,
-      int,
-      TableDirection,
-      VoidCallback?,
-      VoidCallback?,
-    );
+typedef TableBlockComponentMenuBuilder = Widget Function(
+  Node,
+  EditorState,
+  int,
+  TableDirection,
+  VoidCallback?,
+  VoidCallback?,
+);
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
@@ -113,75 +112,75 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
 
   @override
   BlockComponentValidate get validate => (node) {
-    // check the node is valid
-    if (node.attributes.isEmpty) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: node is empty',
-      );
-
-      return false;
-    }
-
-    // check the node has rowPosition and colPosition
-    if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
-        !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: node has no colsLen or rowsLen',
-      );
-
-      return false;
-    }
-
-    final colsLen = node.attributes[TableBlockKeys.colsLen];
-    final rowsLen = node.attributes[TableBlockKeys.rowsLen];
-
-    // check its children
-    final children = node.children;
-    if (children.isEmpty) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: children is empty',
-      );
-
-      return false;
-    }
-
-    if (children.length != colsLen * rowsLen) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
-      );
-
-      return false;
-    }
-
-    // all children should contain rowPosition and colPosition
-    for (var i = 0; i < colsLen; i++) {
-      for (var j = 0; j < rowsLen; j++) {
-        final child = children.where(
-          (n) =>
-              n.attributes[TableCellBlockKeys.colPosition] == i &&
-              n.attributes[TableCellBlockKeys.rowPosition] == j,
-        );
-        if (child.isEmpty) {
+        // check the node is valid
+        if (node.attributes.isEmpty) {
           AppFlowyEditorLog.editor.debug(
-            'TableBlockComponentBuilder: child($i, $j) is empty',
+            'TableBlockComponentBuilder: node is empty',
           );
 
           return false;
         }
 
-        // should only contains one child
-        if (child.length != 1) {
+        // check the node has rowPosition and colPosition
+        if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
+            !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
           AppFlowyEditorLog.editor.debug(
-            'TableBlockComponentBuilder: child($i, $j) is not unique',
+            'TableBlockComponentBuilder: node has no colsLen or rowsLen',
           );
 
           return false;
         }
-      }
-    }
 
-    return true;
-  };
+        final colsLen = node.attributes[TableBlockKeys.colsLen];
+        final rowsLen = node.attributes[TableBlockKeys.rowsLen];
+
+        // check its children
+        final children = node.children;
+        if (children.isEmpty) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: children is empty',
+          );
+
+          return false;
+        }
+
+        if (children.length != colsLen * rowsLen) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
+          );
+
+          return false;
+        }
+
+        // all children should contain rowPosition and colPosition
+        for (var i = 0; i < colsLen; i++) {
+          for (var j = 0; j < rowsLen; j++) {
+            final child = children.where(
+              (n) =>
+                  n.attributes[TableCellBlockKeys.colPosition] == i &&
+                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+            );
+            if (child.isEmpty) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is empty',
+              );
+
+              return false;
+            }
+
+            // should only contains one child
+            if (child.length != 1) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is not unique',
+              );
+
+              return false;
+            }
+          }
+        }
+
+        return true;
+      };
 }
 
 class TableBlockComponentWidget extends BlockComponentStatefulWidget {

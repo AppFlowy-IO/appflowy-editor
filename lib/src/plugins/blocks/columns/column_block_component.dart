@@ -36,8 +36,7 @@ class ColumnBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.children.isNotEmpty;
+  BlockComponentValidate get validate => (node) => node.children.isNotEmpty;
 }
 
 class ColumnBlockComponent extends BlockComponentStatefulWidget {

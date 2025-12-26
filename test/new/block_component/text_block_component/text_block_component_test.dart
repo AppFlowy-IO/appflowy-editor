@@ -19,7 +19,7 @@ void main() async {
 
       final editorOffset =
           editor.editorState.renderBox?.localToGlobal(Offset.zero) ??
-          Offset.zero;
+              Offset.zero;
       final editorSize = editor.editorState.renderBox?.size ?? Size.zero;
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;
@@ -48,7 +48,7 @@ void main() async {
 
       final editorOffset =
           editor.editorState.renderBox?.localToGlobal(Offset.zero) ??
-          Offset.zero;
+              Offset.zero;
       final editorSize = editor.editorState.renderBox?.size ?? Size.zero;
       final editorRect = editorOffset & editorSize;
       final editorCenter = editorRect.center;

@@ -39,9 +39,8 @@ bool isIndentable(EditorState editorState) {
 
   // there's no need to consider the child nodes
   // since we are ignoring child nodes, all nodes will be on same level
-  nodes = nodes
-      .where((node) => node.path.length == previous.path.length)
-      .toList();
+  nodes =
+      nodes.where((node) => node.path.length == previous.path.length).toList();
 
   final isAllIndentable = nodes.every(
     (node) => indentableBlockTypes.contains(node.type),
@@ -73,9 +72,8 @@ CommandShortcutEventHandler _indentCommandHandler = (editorState) {
   }
 
   // keep the nodes in the same level as the previous block
-  nodes = nodes
-      .where((node) => node.path.length == previous.path.length)
-      .toList();
+  nodes =
+      nodes.where((node) => node.path.length == previous.path.length).toList();
 
   final startPath = previous.path + [previous.children.length];
   final endPath = previous.path + [previous.children.length + nodes.length - 1];

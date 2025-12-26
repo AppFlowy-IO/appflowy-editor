@@ -56,8 +56,7 @@ class QuoteBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class QuoteBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -138,8 +137,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 ),
                 placeholderTextSpanDecorator: (textSpan) =>
                     textSpan.updateTextStyle(
-                      placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                    ),
+                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                ),
                 textDirection: textDirection,
                 cursorColor: editorState.editorStyle.cursorColor,
                 selectionColor: editorState.editorStyle.selectionColor,
@@ -186,10 +185,8 @@ class _QuoteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context
-        .read<EditorState>()
-        .editorStyle
-        .textScaleFactor;
+    final textScaleFactor =
+        context.read<EditorState>().editorStyle.textScaleFactor;
 
     return Container(
       alignment: Alignment.center,

@@ -5,15 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-typedef SelectionMenuItemHandler =
-    void Function(
-      EditorState editorState,
-      SelectionMenuService menuService,
-      BuildContext context,
-    );
+typedef SelectionMenuItemHandler = void Function(
+  EditorState editorState,
+  SelectionMenuService menuService,
+  BuildContext context,
+);
 
-typedef SelectionMenuItemNameBuilder =
-    Widget Function(String name, SelectionMenuStyle style, bool isSelected);
+typedef SelectionMenuItemNameBuilder = Widget Function(
+    String name, SelectionMenuStyle style, bool isSelected,);
 
 /// Selection Menu Item
 class SelectionMenuItem {
@@ -41,8 +40,7 @@ class SelectionMenuItem {
     EditorState editorState,
     bool onSelected,
     SelectionMenuStyle style,
-  )
-  icon;
+  ) icon;
   final SelectionMenuItemNameBuilder? nameBuilder;
 
   String get name => _getName();
@@ -101,14 +99,13 @@ class SelectionMenuItem {
     required String Function() getName,
     required List<String> keywords,
     required Node Function(EditorState editorState, BuildContext context)
-    nodeBuilder,
+        nodeBuilder,
     IconData? iconData,
     Widget Function(
       EditorState editorState,
       bool onSelected,
       SelectionMenuStyle style,
-    )?
-    iconBuilder,
+    )? iconBuilder,
     SelectionMenuItemNameBuilder? nameBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
     bool Function(EditorState editorState, Node node)? replace,
@@ -117,8 +114,7 @@ class SelectionMenuItem {
       Path insertPath,
       bool replaced,
       bool insertedBefore,
-    )?
-    updateSelection,
+    )? updateSelection,
   }) {
     // the iconData and iconBuilder are mutually exclusive
     assert(iconData == null || iconBuilder == null);
@@ -168,8 +164,7 @@ class SelectionMenuItem {
 
         transaction
           ..insertNode(path, newNode)
-          ..afterSelection =
-              updateSelection?.call(
+          ..afterSelection = updateSelection?.call(
                 editorState,
                 path,
                 bReplace,
@@ -569,8 +564,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       newSelectedIndex -= widget.maxItemInRow;
       if (newSelectedIndex < 0) {
         // Calculate the last row's starting position
-        final lastRowStart =
-            (_showingItems.length - 1) -
+        final lastRowStart = (_showingItems.length - 1) -
             ((_showingItems.length - 1) % widget.maxItemInRow);
         // Move to the same column in the last row
         newSelectedIndex =

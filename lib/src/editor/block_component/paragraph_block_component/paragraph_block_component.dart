@@ -23,8 +23,8 @@ Node paragraphNode({
   return Node(
     type: ParagraphBlockKeys.type,
     attributes: {
-      ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
-          .toJson(),
+      ParagraphBlockKeys.delta:
+          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null)
         ParagraphBlockKeys.textDirection: textDirection,
@@ -58,8 +58,7 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -130,8 +129,7 @@ class _ParagraphBlockComponentWidgetState
         _showPlaceholder = widget.showPlaceholder!(editorState, node);
       });
     } else {
-      final showPlaceholder =
-          selection != null &&
+      final showPlaceholder = selection != null &&
           (selection.isSingle && selection.start.path.equals(node.path));
       if (showPlaceholder != _showPlaceholder) {
         setState(() => _showPlaceholder = showPlaceholder);
@@ -169,8 +167,8 @@ class _ParagraphBlockComponentWidgetState
             ),
             placeholderTextSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(
-                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                ),
+              placeholderTextStyleWithTextSpan(textSpan: textSpan),
+            ),
             textDirection: textDirection,
             cursorColor: editorState.editorStyle.cursorColor,
             selectionColor: editorState.editorStyle.selectionColor,

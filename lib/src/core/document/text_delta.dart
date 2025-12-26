@@ -6,16 +6,18 @@ import 'package:diff_match_patch/diff_match_patch.dart' as diff_match_patch;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-typedef AppFlowyEditorSliceAttributes =
-    Attributes? Function(Delta delta, int index);
+typedef AppFlowyEditorSliceAttributes = Attributes? Function(
+  Delta delta,
+  int index,
+);
 
 /// Default slice attributes function.
 ///
 /// For the BIUS attributes, the slice attributes function will slice the attributes from the previous position,
 ///   if the index is 0, it will slice the attributes from the next position.
 /// For the link and code attributes, the slice attributes function will only work if the index is in the range of the link or code.
-AppFlowyEditorSliceAttributes?
-defaultAppFlowyEditorSliceAttributes = (delta, int index) {
+AppFlowyEditorSliceAttributes? defaultAppFlowyEditorSliceAttributes =
+    (delta, int index) {
   if (index < 0) {
     return null;
   }
@@ -53,18 +55,20 @@ defaultAppFlowyEditorSliceAttributes = (delta, int index) {
   // check if the nextAttributes includes the code.
   final nextAttributes = delta.slice(index, index + 1).firstOrNull?.attributes;
   if (nextAttributes == null) {
-    return prevAttributes..removeWhere(
-      (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
-    );
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
   }
 
   // if the nextAttributes doesn't include the code/href, exclude the code/href format.
   if (!nextAttributes.keys.any(
     (element) => AppFlowyRichTextKeys.partialSliced.contains(element),
   )) {
-    return prevAttributes..removeWhere(
-      (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
-    );
+    return prevAttributes
+      ..removeWhere(
+        (key, _) => AppFlowyRichTextKeys.partialSliced.contains(key),
+      );
   }
 
   return prevAttributes;
@@ -203,7 +207,7 @@ class TextDelete extends TextOperation {
 /// Basically borrowed from: https://github.com/quilljs/delta
 class Delta extends Iterable<TextOperation> {
   Delta({List<TextOperation>? operations})
-    : _operations = operations ?? <TextOperation>[];
+      : _operations = operations ?? <TextOperation>[];
 
   factory Delta.fromJson(List<dynamic> list) {
     final operations = <TextOperation>[];
@@ -325,8 +329,8 @@ class Delta extends Iterable<TextOperation> {
         firstOther is TextRetain &&
         firstOther.attributes == null) {
       int firstLeft = firstOther.length;
-      while (thisIter.peek() is TextInsert &&
-          thisIter.peekLength() <= firstLeft) {
+      while (
+          thisIter.peek() is TextInsert && thisIter.peekLength() <= firstLeft) {
         firstLeft -= thisIter.peekLength();
         final next = thisIter.next();
         operations.add(next);
@@ -574,10 +578,8 @@ class Delta extends Iterable<TextOperation> {
   }
 
   String toPlainText() {
-    _plainText ??= _operations
-        .whereType<TextInsert>()
-        .map((op) => op.text)
-        .join();
+    _plainText ??=
+        _operations.whereType<TextInsert>().map((op) => op.text).join();
 
     return _plainText!;
   }
@@ -614,7 +616,7 @@ class Delta extends Iterable<TextOperation> {
 
 class _OpIterator {
   _OpIterator(Iterable<TextOperation> operations)
-    : _operations = UnmodifiableListView(operations);
+      : _operations = UnmodifiableListView(operations);
 
   final UnmodifiableListView<TextOperation> _operations;
   int _index = 0;

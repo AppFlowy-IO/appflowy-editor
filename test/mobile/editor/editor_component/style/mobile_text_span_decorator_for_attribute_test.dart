@@ -39,9 +39,8 @@ void main() {
 
         //create a link [Appflowy website](https://appflowy.com/)
         editor.addParagraph(
-          builder: (index) =>
-              Delta()
-                ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          builder: (index) => Delta()
+            ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
         );
         await editor.startTesting(inMobile: true, editable: false);
         await tester.pumpAndSettle();
@@ -61,9 +60,8 @@ void main() {
 
         //create a link [Appflowy website](https://appflowy.com/)
         editor.addParagraph(
-          builder: (index) =>
-              Delta()
-                ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          builder: (index) => Delta()
+            ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
         );
         await editor.startTesting(inMobile: true, editable: false);
         await tester.pumpAndSettle();
@@ -98,9 +96,8 @@ void main() {
 
         //create a link [Appflowy website](https://appflowy.com/)
         editor.addParagraph(
-          builder: (index) =>
-              Delta()
-                ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          builder: (index) => Delta()
+            ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
         );
         await editor.startTesting(inMobile: true);
         await tester.pumpAndSettle();
@@ -131,9 +128,9 @@ void main() {
         expect(
           node.allSatisfyInSelection(selection, (delta) {
             return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[BuiltInAttributeKey.href] == address2,
-            );
+                  (element) =>
+                      element.attributes?[BuiltInAttributeKey.href] == address2,
+                );
           }),
           true,
         );
@@ -147,9 +144,8 @@ void main() {
 
         //create a link [Appflowy website](https://appflowy.com/)
         editor.addParagraph(
-          builder: (index) =>
-              Delta()
-                ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          builder: (index) => Delta()
+            ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
         );
         await editor.startTesting(inMobile: true);
         await tester.pumpAndSettle();
@@ -178,9 +174,9 @@ void main() {
         expect(
           node.allSatisfyInSelection(selection, (delta) {
             return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[BuiltInAttributeKey.href] == null,
-            );
+                  (element) =>
+                      element.attributes?[BuiltInAttributeKey.href] == null,
+                );
           }),
           true,
         );
@@ -194,9 +190,8 @@ void main() {
 
         //create a link [Appflowy website](https://appflowy.com/)
         editor.addParagraph(
-          builder: (index) =>
-              Delta()
-                ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
+          builder: (index) => Delta()
+            ..insert(text, attributes: {BuiltInAttributeKey.href: address}),
         );
         await editor.startTesting(inMobile: true, editable: false);
         await tester.pumpAndSettle();

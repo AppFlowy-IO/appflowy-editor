@@ -34,8 +34,7 @@ class MobileFloatingToolbar extends StatefulWidget {
     BuildContext context,
     Offset anchor,
     VoidCallback closeToolbar,
-  )
-  toolbarBuilder;
+  ) toolbarBuilder;
 
   @override
   State<MobileFloatingToolbar> createState() => _MobileFloatingToolbarState();
@@ -65,10 +64,10 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
     widget.editorScrollController.offsetNotifier.addListener(
       _onScrollPositionChanged,
     );
-    _onTapSelectionAreaSubscription = appFlowyEditorOnTapSelectionArea.stream
-        .listen((event) {
-          _isToolbarVisible ? _clear() : _showAfterDelay();
-        });
+    _onTapSelectionAreaSubscription =
+        appFlowyEditorOnTapSelectionArea.stream.listen((event) {
+      _isToolbarVisible ? _clear() : _showAfterDelay();
+    });
   }
 
   @override
@@ -128,8 +127,8 @@ class _MobileFloatingToolbarState extends State<MobileFloatingToolbar>
         _clear();
       } else if (prevSelection == selection &&
           editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent &&
-          editorState
-                  .selectionExtraInfo?[selectionExtraInfoDisableFloatingToolbar] !=
+          editorState.selectionExtraInfo?[
+                  selectionExtraInfoDisableFloatingToolbar] !=
               true) {
         _showAfterDelay();
       }

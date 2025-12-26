@@ -46,9 +46,8 @@ Diff getDiff(String oldText, String newText, int cursorPosition) {
   final inserted = newText.substring(start, end + delta);
 
   var i = 0;
-  while (i < deleted.length &&
-      i < inserted.length &&
-      deleted[i] == inserted[i]) {
+  while (
+      i < deleted.length && i < inserted.length && deleted[i] == inserted[i]) {
     i++;
   }
 

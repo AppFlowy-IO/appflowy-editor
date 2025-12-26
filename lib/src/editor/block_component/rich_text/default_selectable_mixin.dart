@@ -43,20 +43,22 @@ mixin DefaultSelectableMixin {
   Rect? getCursorRectInPosition(
     Position position, {
     bool shiftWithBaseOffset = false,
-  }) => forward
-      .getCursorRectInPosition(position)
-      ?.shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset));
+  }) =>
+      forward
+          .getCursorRectInPosition(position)
+          ?.shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset));
 
   List<Rect> getRectsInSelection(
     Selection selection, {
     bool shiftWithBaseOffset = false,
-  }) => forward
-      .getRectsInSelection(selection)
-      .map(
-        (rect) =>
-            rect.shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset)),
-      )
-      .toList(growable: false);
+  }) =>
+      forward
+          .getRectsInSelection(selection)
+          .map(
+            (rect) => rect
+                .shift(baseOffset(shiftWithBaseOffset: shiftWithBaseOffset)),
+          )
+          .toList(growable: false);
 
   Selection getSelectionInRange(Offset start, Offset end) =>
       forward.getSelectionInRange(start, end);

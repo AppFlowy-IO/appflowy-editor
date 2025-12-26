@@ -71,8 +71,7 @@ void main() async {
     });
 
     test('hashCode should return the correct hash code', () {
-      final hashCode =
-          shortcutEvent.key.hashCode ^
+      final hashCode = shortcutEvent.key.hashCode ^
           shortcutEvent.character.hashCode ^
           shortcutEvent.handler.hashCode ^
           shortcutEvent.handlerWithCharacter.hashCode;

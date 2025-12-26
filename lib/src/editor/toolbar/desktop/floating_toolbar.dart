@@ -19,13 +19,12 @@ class FloatingToolbarStyle {
   final double toolbarElevation;
 }
 
-typedef FloatingToolbarBuilder =
-    Widget Function(
-      BuildContext context,
-      Widget child,
-      VoidCallback onDismiss,
-      bool isMetricsChanged,
-    );
+typedef FloatingToolbarBuilder = Widget Function(
+  BuildContext context,
+  Widget child,
+  VoidCallback onDismiss,
+  bool isMetricsChanged,
+);
 
 /// A floating toolbar that displays at the top of the editor when the selection
 ///   and will be hidden when the selection is collapsed.
@@ -143,7 +142,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     final disableToolbar =
         editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-        true;
+            true;
 
     if (disableToolbar) {
       _clear();

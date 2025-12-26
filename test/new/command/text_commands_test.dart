@@ -191,14 +191,13 @@ void main() async {
     /// Hello|
     /// Welcome to AppFlowy Editor 🔥!
     test('insertText', () async {
-      final document = Document.blank()
-          .addParagraph(initialText: '')
-          .addParagraph(
-            initialText: text,
-            decorator: (index, node) {
-              node.addParagraph(initialText: text);
-            },
-          );
+      final document =
+          Document.blank().addParagraph(initialText: '').addParagraph(
+                initialText: text,
+                decorator: (index, node) {
+                  node.addParagraph(initialText: text);
+                },
+              );
       final editorState = EditorState(document: document);
 
       const hello = 'Hello';
@@ -208,14 +207,13 @@ void main() async {
     });
 
     test('insertTextAtCurrentSelection', () async {
-      final document = Document.blank()
-          .addParagraph(initialText: '')
-          .addParagraph(
-            initialText: text,
-            decorator: (index, node) {
-              node.addParagraph(initialText: text);
-            },
-          );
+      final document =
+          Document.blank().addParagraph(initialText: '').addParagraph(
+                initialText: text,
+                decorator: (index, node) {
+                  node.addParagraph(initialText: text);
+                },
+              );
       final selection = Selection.collapsed(Position(path: [0], offset: 0));
       final editorState = EditorState(document: document);
       editorState.selection = selection;

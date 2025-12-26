@@ -54,8 +54,7 @@ class _HeadingMenuState extends State<_HeadingMenu> {
       final node = widget.editorState.getNodeAtPath(
         widget.selection.start.path,
       )!;
-      final isSelected =
-          node.type == HeadingBlockKeys.type &&
+      final isSelected = node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == currentHeading.level;
 
       return ConstrainedBox(

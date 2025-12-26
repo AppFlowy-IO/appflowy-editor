@@ -24,7 +24,7 @@ void main() async {
         expect(after.next!.type, ParagraphBlockKeys.type);
         final nextNode = editorState.getNodeAtPath(after.next!.path);
         expect(nextNode!.path, editorState.selection!.end.path);
-      }, text: text);
+      }, text: text,);
     });
 
     // Before
@@ -42,7 +42,7 @@ void main() async {
         expect(result, true);
         expect(after.delta, null);
         expect(after.type, DividerBlockKeys.type);
-      }, text: text);
+      }, text: text,);
     });
 
     // Before
@@ -60,7 +60,7 @@ void main() async {
         expect(result, true);
         expect(after.delta, null);
         expect(after.type, DividerBlockKeys.type);
-      }, text: text);
+      }, text: text,);
     });
   });
 }

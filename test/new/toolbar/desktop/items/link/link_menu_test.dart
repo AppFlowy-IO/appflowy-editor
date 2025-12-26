@@ -45,9 +45,8 @@ void main() async {
       final editor = tester.editor;
       // create a link [appflowy.io](appflowy.io)
       editor.addParagraph(
-        builder: (index) =>
-            Delta()
-              ..insert(link, attributes: {AppFlowyRichTextKeys.href: link}),
+        builder: (index) => Delta()
+          ..insert(link, attributes: {AppFlowyRichTextKeys.href: link}),
       );
       await editor.startTesting();
 

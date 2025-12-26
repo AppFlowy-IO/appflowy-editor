@@ -24,10 +24,10 @@ final CharacterShortcutEvent convertStarsToDivider = CharacterShortcutEvent(
 
 final CharacterShortcutEvent convertUnderscoreToDivider =
     CharacterShortcutEvent(
-      key: 'convert underscore to a divider',
-      character: '_',
-      handler: (editorState) => _convertSyntaxToDivider(editorState, '__'),
-    );
+  key: 'convert underscore to a divider',
+  character: '_',
+  handler: (editorState) => _convertSyntaxToDivider(editorState, '__'),
+);
 
 Future<bool> _convertSyntaxToDivider(
   EditorState editorState,

@@ -38,7 +38,9 @@ class Position {
   ///
   /// Used to represent an undefined or error state.
   /// Has a path of [-1] and offset of -1.
-  Position.invalid() : path = [-1], offset = -1;
+  Position.invalid()
+      : path = [-1],
+        offset = -1;
 
   /// Creates a position from a JSON map.
   ///

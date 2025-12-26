@@ -5,12 +5,11 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
-typedef ElementParser =
-    Iterable<Node> Function(
-      dom.Element element,
-      (Delta, Iterable<Node>) Function(dom.Element element, {String? type})
+typedef ElementParser = Iterable<Node> Function(
+  dom.Element element,
+  (Delta, Iterable<Node>) Function(dom.Element element, {String? type})
       parseDeltaElement,
-    );
+);
 
 class DocumentHTMLDecoder extends Converter<String, Document> {
   DocumentHTMLDecoder({this.customDecoders = const {}});
@@ -32,16 +31,16 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     /// It can prevent parsing exceptions caused by having a single,
     /// all-encompassing tag under the body. However,
     /// this method needs to be removed in the future as it is not stable
-    final parseForSingleChild =
-        body.children.length == 1 &&
+    final parseForSingleChild = body.children.length == 1 &&
         HTMLTags.formattingElements.contains(body.children.first.localName);
 
-    return Document.blank(withInitialText: false)..insert(
-      [0],
-      parseForSingleChild
-          ? _parseElement(body.children.first.children)
-          : _parseElement(body.nodes),
-    );
+    return Document.blank(withInitialText: false)
+      ..insert(
+        [0],
+        parseForSingleChild
+            ? _parseElement(body.children.first.children)
+            : _parseElement(body.nodes),
+      );
   }
 
   Iterable<Node> _parseElement(Iterable<dom.Node> domNodes, {String? type}) {

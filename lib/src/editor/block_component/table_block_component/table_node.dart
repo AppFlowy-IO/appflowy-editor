@@ -10,7 +10,7 @@ class TableNode {
   final List<List<Node>> _cells = [];
 
   TableNode({required this.node})
-    : _config = TableConfig.fromJson(node.attributes) {
+      : _config = TableConfig.fromJson(node.attributes) {
     if (node.type != TableBlockKeys.type) {
       AppFlowyEditorLog.editor.debug('TableNode: node is not a table');
 

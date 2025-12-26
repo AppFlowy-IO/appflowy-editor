@@ -214,39 +214,39 @@ extension on TextEditingDelta {
 
 extension on TextEditingDeltaInsertion {
   TextEditingDeltaInsertion format() => TextEditingDeltaInsertion(
-    oldText: oldText << _len,
-    textInserted: textInserted,
-    insertionOffset: insertionOffset - _len,
-    selection: selection << _len,
-    composing: composing << _len,
-  );
+        oldText: oldText << _len,
+        textInserted: textInserted,
+        insertionOffset: insertionOffset - _len,
+        selection: selection << _len,
+        composing: composing << _len,
+      );
 }
 
 extension on TextEditingDeltaDeletion {
   TextEditingDeltaDeletion format() => TextEditingDeltaDeletion(
-    oldText: oldText << _len,
-    deletedRange: deletedRange << _len,
-    selection: selection << _len,
-    composing: composing << _len,
-  );
+        oldText: oldText << _len,
+        deletedRange: deletedRange << _len,
+        selection: selection << _len,
+        composing: composing << _len,
+      );
 }
 
 extension on TextEditingDeltaReplacement {
   TextEditingDeltaReplacement format() => TextEditingDeltaReplacement(
-    oldText: oldText << _len,
-    replacementText: replacementText,
-    replacedRange: replacedRange << _len,
-    selection: selection << _len,
-    composing: composing << _len,
-  );
+        oldText: oldText << _len,
+        replacementText: replacementText,
+        replacedRange: replacedRange << _len,
+        selection: selection << _len,
+        composing: composing << _len,
+      );
 }
 
 extension on TextEditingDeltaNonTextUpdate {
   TextEditingDeltaNonTextUpdate format() => TextEditingDeltaNonTextUpdate(
-    oldText: oldText << _len,
-    selection: selection << _len,
-    composing: composing << _len,
-  );
+        oldText: oldText << _len,
+        selection: selection << _len,
+        composing: composing << _len,
+      );
 }
 
 extension on TextSelection {
@@ -255,9 +255,9 @@ extension on TextSelection {
   TextSelection operator >>(int shiftAmount) => shift(shiftAmount);
 
   TextSelection shift(int shiftAmount) => TextSelection(
-    baseOffset: max(0, baseOffset + shiftAmount),
-    extentOffset: max(0, extentOffset + shiftAmount),
-  );
+        baseOffset: max(0, baseOffset + shiftAmount),
+        extentOffset: max(0, extentOffset + shiftAmount),
+      );
 }
 
 extension on TextRange {

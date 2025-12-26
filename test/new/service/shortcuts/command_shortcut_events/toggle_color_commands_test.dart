@@ -50,8 +50,8 @@ Future<void> _testUpdateTextColorByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] != null,
-      );
+            (element) => element.attributes?[matchStyle] != null,
+          );
     }),
     true,
   );
@@ -72,8 +72,8 @@ Future<void> _testUpdateTextColorByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] != null,
-      );
+            (element) => element.attributes?[matchStyle] != null,
+          );
     }),
     true,
   );
@@ -90,8 +90,8 @@ Future<void> _testUpdateTextColorByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] == null,
-      );
+            (element) => element.attributes?[matchStyle] == null,
+          );
     }),
     true,
   );
@@ -112,8 +112,8 @@ Future<void> _testUpdateTextColorByCommandX(
     expect(
       node.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[matchStyle] != null,
-        );
+              (element) => element.attributes?[matchStyle] != null,
+            );
       }),
       true,
     );
@@ -132,8 +132,8 @@ Future<void> _testUpdateTextColorByCommandX(
     expect(
       node.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[matchStyle] == null,
-        );
+              (element) => element.attributes?[matchStyle] == null,
+            );
       }),
       true,
     );

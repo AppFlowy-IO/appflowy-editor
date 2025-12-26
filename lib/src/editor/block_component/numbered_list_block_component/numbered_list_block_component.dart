@@ -40,8 +40,8 @@ Node numberedListNode({
   );
 }
 
-typedef NumberedListIconBuilder =
-    Widget Function(BuildContext context, Node node, TextDirection direction);
+typedef NumberedListIconBuilder = Widget Function(
+    BuildContext context, Node node, TextDirection direction,);
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   NumberedListBlockComponentBuilder({super.configuration, this.iconBuilder});
@@ -66,8 +66,7 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.delta != null;
+  BlockComponentValidate get validate => (node) => node.delta != null;
 }
 
 class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -153,8 +152,8 @@ class _NumberedListBlockComponentWidgetState
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
-                  ),
+                placeholderTextStyleWithTextSpan(textSpan: textSpan),
+              ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,

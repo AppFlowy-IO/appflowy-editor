@@ -22,7 +22,8 @@ abstract class FilePickerService {
     bool withData = false,
     bool withReadStream = false,
     bool lockParentWindow = false,
-  }) async => throw UnimplementedError('pickFiles() has not been implemented.');
+  }) async =>
+      throw UnimplementedError('pickFiles() has not been implemented.');
 
   Future<String?> saveFile({
     String? dialogTitle,
@@ -31,5 +32,6 @@ abstract class FilePickerService {
     FileType type = FileType.any,
     List<String>? allowedExtensions,
     bool lockParentWindow = false,
-  }) async => throw UnimplementedError('saveFile() has not been implemented.');
+  }) async =>
+      throw UnimplementedError('saveFile() has not been implemented.');
 }

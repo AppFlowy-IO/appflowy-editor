@@ -72,9 +72,8 @@ void showColorMenu(
         resetText: isTextColor
             ? AppFlowyEditorL10n.current.resetToDefaultColor
             : AppFlowyEditorL10n.current.clearHighlightColor,
-        resetIconName: isTextColor
-            ? 'reset_text_color'
-            : 'clear_highlight_color',
+        resetIconName:
+            isTextColor ? 'reset_text_color' : 'clear_highlight_color',
       );
     },
   ).build();

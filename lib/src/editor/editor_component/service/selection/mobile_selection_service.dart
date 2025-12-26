@@ -278,8 +278,7 @@ class _MobileSelectionServiceWidgetState
           return const SizedBox.shrink();
         }
 
-        final isCollapsedWhenDraggingHandle =
-            selection.isCollapsed &&
+        final isCollapsedWhenDraggingHandle = selection.isCollapsed &&
             [
               MobileSelectionDragMode.leftSelectionHandle,
               MobileSelectionDragMode.rightSelectionHandle,
@@ -892,9 +891,8 @@ class _MobileSelectionServiceWidgetState
 
     currentSelectedNodes = nodes;
 
-    final backwardNodes = selection.isBackward
-        ? nodes
-        : nodes.reversed.toList(growable: false);
+    final backwardNodes =
+        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
@@ -975,5 +973,6 @@ class _MobileSelectionServiceWidgetState
   DropTargetRenderData? getDropTargetRenderData(
     Offset offset, {
     DragTargetNodeInterceptor? interceptor,
-  }) => null;
+  }) =>
+      null;
 }

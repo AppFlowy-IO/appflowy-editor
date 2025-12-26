@@ -41,9 +41,8 @@ class EditorSvg extends StatelessWidget {
     if (name != null) {
       return SvgPicture.asset(
         'assets/images/$name.svg',
-        colorFilter: color != null
-            ? ColorFilter.mode(color!, BlendMode.srcIn)
-            : null,
+        colorFilter:
+            color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
         fit: BoxFit.fill,
         height: height,
         width: width,

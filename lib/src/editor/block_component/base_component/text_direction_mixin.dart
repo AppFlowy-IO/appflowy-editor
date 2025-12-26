@@ -73,8 +73,7 @@ TextDirection calculateNodeDirection({
     if (lastDirection != null) {
       defaultTextDirection = lastDirection.name;
     } else {
-      defaultTextDirection =
-          _getDirectionFromPreviousOrParentNode(
+      defaultTextDirection = _getDirectionFromPreviousOrParentNode(
             node,
             defaultTextDirection,
           )?.name ??

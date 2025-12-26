@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 ///
 /// Takes a [node] and optionally a [textSpan] to determine the appropriate
 /// text style for rendering the block's content.
-typedef BlockComponentTextStyleBuilder =
-    TextStyle Function(Node node, {TextSpan? textSpan});
+typedef BlockComponentTextStyleBuilder = TextStyle Function(
+  Node node, {
+  TextSpan? textSpan,
+});
 
 /// Configuration for customizing the appearance and behavior of block components.
 ///
@@ -32,7 +34,7 @@ class BlockComponentConfiguration {
   ///
   /// It works only for the block that needs to be indented.
   final EdgeInsets Function(Node node, TextDirection textDirection)
-  indentPadding;
+      indentPadding;
 
   /// The text style of a block component.
   final BlockComponentTextStyleBuilder textStyle;

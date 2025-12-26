@@ -90,8 +90,8 @@ Future<void> _testUpdateTextStyleByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] == matchValue,
-      );
+            (element) => element.attributes?[matchStyle] == matchValue,
+          );
     }),
     true,
   );
@@ -112,8 +112,8 @@ Future<void> _testUpdateTextStyleByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] == matchValue,
-      );
+            (element) => element.attributes?[matchStyle] == matchValue,
+          );
     }),
     true,
   );
@@ -130,8 +130,8 @@ Future<void> _testUpdateTextStyleByCommandX(
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-        (element) => element.attributes?[matchStyle] != matchValue,
-      );
+            (element) => element.attributes?[matchStyle] != matchValue,
+          );
     }),
     true,
   );
@@ -152,8 +152,8 @@ Future<void> _testUpdateTextStyleByCommandX(
     expect(
       node.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[matchStyle] == matchValue,
-        );
+              (element) => element.attributes?[matchStyle] == matchValue,
+            );
       }),
       true,
     );
@@ -172,8 +172,8 @@ Future<void> _testUpdateTextStyleByCommandX(
     expect(
       node.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-          (element) => element.attributes?[matchStyle] != matchValue,
-        );
+              (element) => element.attributes?[matchStyle] != matchValue,
+            );
       }),
       true,
     );

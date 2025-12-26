@@ -21,7 +21,7 @@ void main() async {
         expect(after.delta!.toPlainText(), text);
         expect(after.type, 'todo_list');
         expect(after.attributes['checked'], false);
-      }, text: text);
+      }, text: text,);
     });
 
     // Before
@@ -60,7 +60,7 @@ void main() async {
         expect(after.delta!.toPlainText(), text);
         expect(after.type, 'todo_list');
         expect(after.attributes['checked'], true);
-      }, text: text);
+      }, text: text,);
     });
 
     // Before

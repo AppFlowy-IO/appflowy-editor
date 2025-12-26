@@ -23,8 +23,8 @@ void _pasteSingleLine(
   final Attributes attributes = _linkRegex.hasMatch(line)
       ? {AppFlowyRichTextKeys.href: line}
       : _phoneRegex.hasMatch(line)
-      ? {AppFlowyRichTextKeys.href: line}
-      : {};
+          ? {AppFlowyRichTextKeys.href: line}
+          : {};
 
   final node = editorState.getNodeAtPath(selection.end.path)!;
   final transaction = editorState.transaction

@@ -6,9 +6,12 @@ void formatHighlightColor(
   String? color, {
   bool withUpdateSelection = false,
 }) {
-  editorState.formatDelta(selection, {
-    AppFlowyRichTextKeys.backgroundColor: color,
-  }, withUpdateSelection: withUpdateSelection);
+  editorState.formatDelta(
+      selection,
+      {
+        AppFlowyRichTextKeys.backgroundColor: color,
+      },
+      withUpdateSelection: withUpdateSelection,);
 }
 
 void formatFontColor(
@@ -17,7 +20,10 @@ void formatFontColor(
   String? color, {
   bool withUpdateSelection = false,
 }) {
-  editorState.formatDelta(selection, {
-    AppFlowyRichTextKeys.textColor: color,
-  }, withUpdateSelection: withUpdateSelection);
+  editorState.formatDelta(
+      selection,
+      {
+        AppFlowyRichTextKeys.textColor: color,
+      },
+      withUpdateSelection: withUpdateSelection,);
 }

@@ -35,8 +35,9 @@ void main() async {
       expect(
         nodes.allSatisfyInSelection(selection, (delta) {
           return delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[BuiltInAttributeKey.href] != null,
-          );
+                (element) =>
+                    element.attributes?[BuiltInAttributeKey.href] != null,
+              );
         }),
         true,
       );

@@ -38,11 +38,9 @@ extension DocumentExtension on Document {
     String? initialText,
     NodeDecorator? decorator,
   }) {
-    final builder0 =
-        builder ??
-        (index) =>
-            Delta()
-              ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
+    final builder0 = builder ??
+        (index) => Delta()
+          ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
     final decorator0 = decorator ?? (index, node) {};
     final children = List.generate(count, (index) {
       final node = Node(type: type);

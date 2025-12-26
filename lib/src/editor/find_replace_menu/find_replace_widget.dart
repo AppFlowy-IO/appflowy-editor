@@ -266,8 +266,7 @@ class _FindMenuState extends State<FindMenu> {
             widget.searchService.navigateToMatch(moveUp: true);
           },
           icon: const Icon(Icons.arrow_upward),
-          tooltip:
-              widget.localizations?.previousMatch ??
+          tooltip: widget.localizations?.previousMatch ??
               AppFlowyEditorL10n.current.previousMatch,
         ),
         // next match button
@@ -282,16 +281,14 @@ class _FindMenuState extends State<FindMenu> {
             widget.searchService.navigateToMatch();
           },
           icon: const Icon(Icons.arrow_downward),
-          tooltip:
-              widget.localizations?.nextMatch ??
+          tooltip: widget.localizations?.nextMatch ??
               AppFlowyEditorL10n.current.nextMatch,
         ),
         FindAndReplaceMenuIconButton(
           iconButtonKey: const Key('closeButton'),
           onPressed: widget.onDismiss,
           icon: const Icon(Icons.close),
-          tooltip:
-              widget.localizations?.close ??
+          tooltip: widget.localizations?.close ??
               AppFlowyEditorL10n.current.closeFind,
         ),
         // regex button
@@ -355,8 +352,7 @@ class _FindMenuState extends State<FindMenu> {
         message = AppFlowyEditorLocalizations.current.emptySearchBoxHint;
 
       default:
-        message =
-            widget.localizations?.noResult ??
+        message = widget.localizations?.noResult ??
             AppFlowyEditorLocalizations.current.noFindResult;
     }
 
@@ -433,8 +429,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
           iconButtonKey: const Key('replaceSelectedButton'),
           onPressed: _replaceSelectedWord,
           icon: const Icon(Icons.find_replace),
-          tooltip:
-              widget.localizations?.replace ??
+          tooltip: widget.localizations?.replace ??
               AppFlowyEditorL10n.current.replace,
         ),
         FindAndReplaceMenuIconButton(
@@ -443,8 +438,7 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
             replaceTextEditingController.text,
           ),
           icon: const Icon(Icons.change_circle_outlined),
-          tooltip:
-              widget.localizations?.replaceAll ??
+          tooltip: widget.localizations?.replaceAll ??
               AppFlowyEditorL10n.current.replaceAll,
         ),
       ],

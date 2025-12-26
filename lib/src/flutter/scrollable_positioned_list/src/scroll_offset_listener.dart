@@ -18,7 +18,8 @@ abstract class ScrollOffsetListener {
   /// programmatic scrolls.
   factory ScrollOffsetListener.create({
     bool recordProgrammaticScrolls = true,
-  }) => ScrollOffsetNotifier(
-    recordProgrammaticScrolls: recordProgrammaticScrolls,
-  );
+  }) =>
+      ScrollOffsetNotifier(
+        recordProgrammaticScrolls: recordProgrammaticScrolls,
+      );
 }

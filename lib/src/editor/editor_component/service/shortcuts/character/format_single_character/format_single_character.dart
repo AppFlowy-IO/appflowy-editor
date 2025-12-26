@@ -22,7 +22,7 @@ class CheckSingleFormatFormatResult {
 /// It's helpful for the IME to check if the single character format should be applied.
 /// // The selection is not only the editorState.selection, you can pass any selection in line to check every node in the selection.
 (bool, CheckSingleFormatFormatResult?)
-checkSingleCharacterFormatShouldBeApplied({
+    checkSingleCharacterFormatShouldBeApplied({
   required EditorState editorState,
   required Selection selection,
   required String character,
@@ -78,9 +78,9 @@ checkSingleCharacterFormatShouldBeApplied({
   }
 
   final plainText = delta.toPlainText().substring(
-    startIndex,
-    selection.end.offset,
-  );
+        startIndex,
+        selection.end.offset,
+      );
   final lastCharIndex = plainText.lastIndexOf(character);
   final textAfterLastChar = plainText.substring(lastCharIndex + 1);
   bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;

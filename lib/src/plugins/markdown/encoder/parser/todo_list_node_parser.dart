@@ -10,9 +10,8 @@ class TodoListNodeParser extends NodeParser {
   String transform(Node node, DocumentMarkdownEncoder? encoder) {
     final delta = node.delta ?? Delta()
       ..insert('');
-    final checked = node.attributes[TodoListBlockKeys.checked] == true
-        ? '- [x]'
-        : '- [ ]';
+    final checked =
+        node.attributes[TodoListBlockKeys.checked] == true ? '- [x]' : '- [ ]';
     final children = encoder?.convertNodes(node.children, withIndent: true);
     String markdown = '$checked ${DeltaMarkdownEncoder().convert(delta)}\n';
     if (children != null && children.isNotEmpty) {

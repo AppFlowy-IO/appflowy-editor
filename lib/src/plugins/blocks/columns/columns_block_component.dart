@@ -8,8 +8,7 @@ import 'package:provider/provider.dart';
 Node columnsNode({List<Node>? children}) {
   return Node(
     type: ColumnsBlockKeys.type,
-    children:
-        children ??
+    children: children ??
         [
           for (var i = 0; i < 2; i++)
             columnNode(children: [paragraphNode(text: 'Column $i')]),
@@ -42,8 +41,7 @@ class ColumnsBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate =>
-      (node) => node.children.isNotEmpty;
+  BlockComponentValidate get validate => (node) => node.children.isNotEmpty;
 }
 
 class ColumnsBlockComponent extends BlockComponentStatefulWidget {

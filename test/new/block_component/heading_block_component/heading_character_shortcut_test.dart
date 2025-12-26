@@ -23,7 +23,7 @@ void main() async {
         expect(before.delta!.toPlainText(), '');
         expect(after.delta!.toPlainText(), '');
         expect(after.type != HeadingBlockKeys.type, true);
-      }, text: '');
+      }, text: '',);
     });
 
     // Before
@@ -41,7 +41,7 @@ void main() async {
           expect(result, true);
           expect(after.delta!.toPlainText(), text);
           expect(after.type, 'heading');
-        }, text: text);
+        }, text: text,);
       }
     });
 
@@ -59,7 +59,7 @@ void main() async {
         // nothing happens
         expect(result, false);
         expect(before.toJson(), after.toJson());
-      }, text: text);
+      }, text: text,);
     });
 
     // Before
@@ -76,7 +76,7 @@ void main() async {
         // nothing happens
         expect(result, false);
         expect(before.toJson(), after.toJson());
-      }, text: text);
+      }, text: text,);
     });
 
     // Before

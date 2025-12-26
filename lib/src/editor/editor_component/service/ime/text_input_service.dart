@@ -16,7 +16,7 @@ abstract class TextInputService {
   Future<bool> Function(TextEditingDeltaDeletion deletion) onDelete;
   Future<bool> Function(TextEditingDeltaReplacement replacement) onReplace;
   Future<bool> Function(TextEditingDeltaNonTextUpdate nonTextUpdate)
-  onNonTextUpdate;
+      onNonTextUpdate;
   Future<void> Function(TextInputAction action) onPerformAction;
   Future<void> Function(RawFloatingCursorPoint point)? onFloatingCursor;
 

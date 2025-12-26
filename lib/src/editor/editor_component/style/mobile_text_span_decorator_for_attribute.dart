@@ -193,7 +193,7 @@ class _LinkEditFormState extends State<LinkEditForm> {
                         hrefTextTextEditingController.text != widget.hrefText;
                     final bool addressChanged =
                         hrefAddressTextEditingController.text !=
-                        widget.hrefAddress;
+                            widget.hrefAddress;
 
                     if (textChanged && addressChanged) {
                       final transaction = widget.editorState.transaction
@@ -230,16 +230,14 @@ class _LinkEditFormState extends State<LinkEditForm> {
                         },
                       );
                     } else if (!textChanged && addressChanged) {
-                      await widget.editorState
-                          .formatDelta(widget.selection, {
-                            AppFlowyRichTextKeys.href:
-                                hrefAddressTextEditingController.value.text,
-                          })
-                          .whenComplete(() {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          });
+                      await widget.editorState.formatDelta(widget.selection, {
+                        AppFlowyRichTextKeys.href:
+                            hrefAddressTextEditingController.value.text,
+                      }).whenComplete(() {
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      });
                     } else {
                       Navigator.of(context).pop();
                     }

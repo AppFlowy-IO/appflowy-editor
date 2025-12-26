@@ -10,8 +10,8 @@ void main() async {
     return node?.allSatisfyInSelection(
           selection,
           (delta) => delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[key] == true,
-          ),
+                (element) => element.attributes?[key] == true,
+              ),
         ) ??
         false;
   }
@@ -277,7 +277,7 @@ void main() async {
       expect(result, true);
       expect(node.delta?.toPlainText(), 'AppFlowy');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('***AppFlowy** to bold *AppFlowy', ((tester) async {
       const text = '***AppFlowy*';
@@ -299,7 +299,7 @@ void main() async {
       expect(result, true);
       expect(node.delta?.toPlainText(), '*AppFlowy');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('**** nothing changes', ((tester) async {
       const text = '***';
@@ -321,7 +321,7 @@ void main() async {
       expect(result, false);
       expect(node.delta?.toPlainText(), '****');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('**bold and _nested_ italics**', (tester) async {
       const doubleAsterisks = '**';
@@ -330,8 +330,7 @@ void main() async {
       const underscore = '_';
       const italicsSegment = 'nested';
       const secondBoldSegment = ' italics';
-      const text =
-          doubleAsterisks +
+      const text = doubleAsterisks +
           firstBoldSegment +
           underscore +
           italicsSegment +
@@ -391,8 +390,7 @@ void main() async {
       const underscore = '_';
       const italicsSegment = 'nested';
       const secondBoldSegment = ' italics';
-      const text =
-          regularSegment +
+      const text = regularSegment +
           doubleAsterisks +
           firstBoldSegment +
           underscore +
@@ -426,8 +424,7 @@ void main() async {
         Selection.single(
           path: [0],
           startOffset: regularSegment.length + firstBoldSegment.length,
-          endOffset:
-              regularSegment.length +
+          endOffset: regularSegment.length +
               firstBoldSegment.length +
               italicsSegment.length -
               1,
@@ -442,8 +439,7 @@ void main() async {
           endOffset: text.length,
         ),
       );
-      const plainText =
-          regularSegment +
+      const plainText = regularSegment +
           firstBoldSegment +
           italicsSegment +
           secondBoldSegment;
@@ -465,8 +461,7 @@ void main() async {
       const secondBoldSegment = ' ';
       const secondItalicsSegment = 'nested';
       const thirdBoldSegment = ' italics';
-      const text =
-          doubleAsterisks +
+      const text = doubleAsterisks +
           firstBoldSegment +
           underscore +
           firstItalicsSegment +
@@ -504,8 +499,7 @@ void main() async {
         ),
       );
 
-      const secondItalicsSegmentIndex =
-          firstBoldSegment.length +
+      const secondItalicsSegmentIndex = firstBoldSegment.length +
           firstItalicsSegment.length +
           secondBoldSegment.length;
       final secondSegmentItalic = allItalicInSelection(
@@ -518,8 +512,7 @@ void main() async {
         ),
       );
 
-      const plainText =
-          firstBoldSegment +
+      const plainText = firstBoldSegment +
           firstItalicsSegment +
           secondBoldSegment +
           secondItalicsSegment +
@@ -542,8 +535,7 @@ void main() async {
       const underscore = '_';
       const italicsSegment = 'nested';
       const secondBoldSegment = ' italics with a _ unescaped';
-      const text =
-          doubleAsterisks +
+      const text = doubleAsterisks +
           firstBoldSegment +
           underscore +
           italicsSegment +
@@ -627,7 +619,7 @@ void main() async {
       expect(result, true);
       expect(node.delta!.toPlainText(), 'AppFlowy');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('App__Flowy__ to bold AppFlowy', ((tester) async {
       const text = 'App__Flowy_';
@@ -650,7 +642,7 @@ void main() async {
       expect(result, true);
       expect(node.delta!.toPlainText(), 'AppFlowy');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('__*AppFlowy__ to bold *AppFlowy', ((tester) async {
       const text = '__*AppFlowy_';
@@ -673,7 +665,7 @@ void main() async {
       expect(result, true);
       expect(node.delta!.toPlainText(), '*AppFlowy');
       await editor.dispose();
-    }));
+    }),);
 
     testWidgets('____ nothing changes', ((tester) async {
       const text = '___';
@@ -696,6 +688,6 @@ void main() async {
       expect(result, false);
       expect(node.delta!.toPlainText(), '____');
       await editor.dispose();
-    }));
+    }),);
   });
 }

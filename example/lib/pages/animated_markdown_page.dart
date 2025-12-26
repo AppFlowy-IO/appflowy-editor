@@ -56,41 +56,44 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
             editable: false,
             disableAutoScroll: true,
             editorStyle: const EditorStyle.desktop(),
-            blockWrapper:
-                (context, {required Node node, required Widget child}) {
-                  if (!_animations.containsKey(node.id)) {
-                    final controller = AnimationController(
-                      vsync: this,
-                      duration: const Duration(milliseconds: 2000),
-                    );
-                    final fade = Tween<double>(
-                      begin: 0,
-                      end: 1,
-                    ).animate(controller);
-                    _animations[node.id] = (controller, fade);
-                    controller.forward();
-                  }
-                  final (controller, fade) = _animations[node.id]!;
+            blockWrapper: (
+              context, {
+              required Node node,
+              required Widget child,
+            }) {
+              if (!_animations.containsKey(node.id)) {
+                final controller = AnimationController(
+                  vsync: this,
+                  duration: const Duration(milliseconds: 2000),
+                );
+                final fade = Tween<double>(
+                  begin: 0,
+                  end: 1,
+                ).animate(controller);
+                _animations[node.id] = (controller, fade);
+                controller.forward();
+              }
+              final (controller, fade) = _animations[node.id]!;
 
-                  return AnimatedBuilder(
-                    animation: fade,
-                    builder: (context, childWidget) {
-                      return ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            stops: [fade.value, fade.value],
-                            colors: const [Colors.white, Colors.transparent],
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.dstIn,
-                        child: Opacity(opacity: fade.value, child: childWidget),
-                      );
+              return AnimatedBuilder(
+                animation: fade,
+                builder: (context, childWidget) {
+                  return ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        stops: [fade.value, fade.value],
+                        colors: const [Colors.white, Colors.transparent],
+                      ).createShader(bounds);
                     },
-                    child: child,
+                    blendMode: BlendMode.dstIn,
+                    child: Opacity(opacity: fade.value, child: childWidget),
                   );
                 },
+                child: child,
+              );
+            },
           ),
         ),
       ),
@@ -198,8 +201,8 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
         document: previousDocument,
         startNode: previousDocument.root,
       );
-      while (documentIterator.moveNext() &&
-          previousDocumentIterator.moveNext()) {
+      while (
+          documentIterator.moveNext() && previousDocumentIterator.moveNext()) {
         final currentNode = documentIterator.current;
         final previousNode = previousDocumentIterator.current;
         if (currentNode.path.equals(previousNode.path)) {

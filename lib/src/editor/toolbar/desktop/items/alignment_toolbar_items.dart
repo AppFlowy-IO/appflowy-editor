@@ -13,38 +13,38 @@ class _AlignmentToolbarItem extends ToolbarItem {
     required String name,
     required String align,
   }) : super(
-         id: 'editor.$id',
-         group: 6,
-         isActive: onlyShowInTextType,
-         builder:
-             (context, editorState, highlightColor, iconColor, tooltipBuilder) {
-               final selection = editorState.selection!;
-               final nodes = editorState.getNodesInSelection(selection);
-               final isHighlight = nodes.every(
-                 (n) => n.attributes[blockComponentAlign] == align,
-               );
+          id: 'editor.$id',
+          group: 6,
+          isActive: onlyShowInTextType,
+          builder: (context, editorState, highlightColor, iconColor,
+              tooltipBuilder,) {
+            final selection = editorState.selection!;
+            final nodes = editorState.getNodesInSelection(selection);
+            final isHighlight = nodes.every(
+              (n) => n.attributes[blockComponentAlign] == align,
+            );
 
-               final child = SVGIconItemWidget(
-                 iconName: 'toolbar/$name',
-                 isHighlight: isHighlight,
-                 highlightColor: highlightColor,
-                 iconColor: iconColor,
-                 onPressed: () => editorState.updateNode(
-                   selection,
-                   (node) => node.copyWith(
-                     attributes: {
-                       ...node.attributes,
-                       blockComponentAlign: align,
-                     },
-                   ),
-                 ),
-               );
+            final child = SVGIconItemWidget(
+              iconName: 'toolbar/$name',
+              isHighlight: isHighlight,
+              highlightColor: highlightColor,
+              iconColor: iconColor,
+              onPressed: () => editorState.updateNode(
+                selection,
+                (node) => node.copyWith(
+                  attributes: {
+                    ...node.attributes,
+                    blockComponentAlign: align,
+                  },
+                ),
+              ),
+            );
 
-               if (tooltipBuilder != null) {
-                 return tooltipBuilder(context, id, getTooltipText(id), child);
-               }
+            if (tooltipBuilder != null) {
+              return tooltipBuilder(context, id, getTooltipText(id), child);
+            }
 
-               return child;
-             },
-       );
+            return child;
+          },
+        );
 }

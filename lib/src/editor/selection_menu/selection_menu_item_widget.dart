@@ -53,8 +53,7 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
                 ? WidgetStateProperty.all(style.selectionMenuItemSelectedColor)
                 : WidgetStateProperty.all(Colors.transparent),
           ),
-          label:
-              widget.item.nameBuilder?.call(
+          label: widget.item.nameBuilder?.call(
                 widget.item.name,
                 style,
                 isSelected,
