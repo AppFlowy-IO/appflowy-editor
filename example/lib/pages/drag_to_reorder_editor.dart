@@ -8,9 +8,7 @@ enum HorizontalPosition { left, center, right }
 enum VerticalPosition { top, middle, bottom }
 
 class DragToReorderEditor extends StatefulWidget {
-  const DragToReorderEditor({
-    super.key,
-  });
+  const DragToReorderEditor({super.key});
 
   @override
   State<DragToReorderEditor> createState() => _DragToReorderEditorState();
@@ -42,16 +40,12 @@ class _DragToReorderEditorState extends State<DragToReorderEditor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Drag to reorder'),
-      ),
+      appBar: AppBar(title: const Text('Drag to reorder')),
       body: AppFlowyEditor(
         editorState: editorState,
         editorStyle: editorStyle,
         blockComponentBuilders: blockComponentBuilders,
-        dropTargetStyle: const AppFlowyDropTargetStyle(
-          color: Colors.red,
-        ),
+        dropTargetStyle: const AppFlowyDropTargetStyle(color: Colors.red),
       ),
     );
   }
@@ -81,16 +75,15 @@ class _DragToReorderEditorState extends State<DragToReorderEditor> {
 
   EditorState _createEditorState() {
     final document = Document.blank()
-      ..insert([
-        0,
-      ], [
-        todoListNode(checked: false, text: 'Todo 1'),
-        todoListNode(checked: false, text: 'Todo 2'),
-        todoListNode(checked: false, text: 'Todo 3'),
-      ]);
-    return EditorState(
-      document: document,
-    );
+      ..insert(
+        [0],
+        [
+          todoListNode(checked: false, text: 'Todo 1'),
+          todoListNode(checked: false, text: 'Todo 2'),
+          todoListNode(checked: false, text: 'Todo 3'),
+        ],
+      );
+    return EditorState(document: document);
   }
 
   EditorStyle _createEditorStyle() {
@@ -99,14 +92,9 @@ class _DragToReorderEditorState extends State<DragToReorderEditor> {
       cursorColor: Colors.black,
       selectionColor: Colors.grey.shade300,
       textStyleConfiguration: TextStyleConfiguration(
-        text: GoogleFonts.poppins(
-          fontSize: 16,
-          color: Colors.black,
-        ),
+        text: GoogleFonts.poppins(fontSize: 16, color: Colors.black),
         code: GoogleFonts.architectsDaughter(),
-        bold: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-        ),
+        bold: GoogleFonts.poppins(fontWeight: FontWeight.w500),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 200.0),
     );
@@ -222,10 +210,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
           behavior: HitTestBehavior.translucent,
           child: const MouseRegion(
             cursor: SystemMouseCursors.grab,
-            child: Icon(
-              Icons.drag_indicator_rounded,
-              size: 18,
-            ),
+            child: Icon(Icons.drag_indicator_rounded, size: 18),
           ),
         ),
       ),
@@ -245,9 +230,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       );
     } else {
       debugPrint('onTap(2), set selection to block');
-      final selection = Selection.collapsed(
-        Position(path: path),
-      );
+      final selection = Selection.collapsed(Position(path: path));
       editorState.updateSelectionWithReason(
         selection,
         customSelectionType: SelectionType.block,
@@ -294,12 +277,8 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
     if (horizontalPosition == HorizontalPosition.right) {
       final node = columnsNode(
         children: [
-          columnNode(
-            children: [targetNode.deepCopy()],
-          ),
-          columnNode(
-            children: [realNode.deepCopy()],
-          ),
+          columnNode(children: [targetNode.deepCopy()]),
+          columnNode(children: [realNode.deepCopy()]),
         ],
       );
 
@@ -313,7 +292,8 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
       // For VerticalPosition.top, we keep the target node's path
       if (verticalPosition == VerticalPosition.bottom) {
         newPath = horizontalPosition == HorizontalPosition.left
-            ? newPath.next // Insert after target node
+            ? newPath
+                  .next // Insert after target node
             : newPath.child(0); // Insert as first child of target node
       }
 
@@ -359,10 +339,7 @@ class _DragToReorderActionState extends State<DragToReorderAction> {
 
     return Opacity(
       opacity: 0.7,
-      child: Material(
-        color: Colors.transparent,
-        child: child,
-      ),
+      child: Material(color: Colors.transparent, child: child),
     );
   }
 }
@@ -385,11 +362,7 @@ Widget _buildDropArea(
     return const SizedBox.shrink();
   }
 
-  final position = _getPosition(
-    context,
-    targetNode,
-    data.dragOffset,
-  );
+  final position = _getPosition(context, targetNode, data.dragOffset);
 
   if (position == null) {
     return const SizedBox.shrink();
@@ -401,11 +374,7 @@ Widget _buildDropArea(
   const indicatorWidth = 44.0;
   final width = globalBlockRect.width - indicatorWidth;
 
-  Widget child = Container(
-    height: 2,
-    width: width,
-    color: Colors.red,
-  );
+  Widget child = Container(height: 2, width: width, color: Colors.red);
 
   if (horizontalPosition == HorizontalPosition.center) {
     const breakWidth = 22.0;
@@ -413,11 +382,7 @@ Widget _buildDropArea(
     child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          height: 2,
-          width: breakWidth,
-          color: Colors.red,
-        ),
+        Container(height: 2, width: breakWidth, color: Colors.red),
         const SizedBox(width: padding),
         Container(
           height: 2,
@@ -431,10 +396,7 @@ Widget _buildDropArea(
       top: globalBlockRect.top,
       height: globalBlockRect.height,
       left: globalBlockRect.right - 2,
-      child: Container(
-        width: 2,
-        color: Colors.red,
-      ),
+      child: Container(width: 2, color: Colors.red),
     );
   }
 

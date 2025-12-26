@@ -104,10 +104,7 @@ class SelectionAreaPaint extends StatelessWidget {
 }
 
 class SelectionAreaPainter extends CustomPainter {
-  SelectionAreaPainter({
-    required this.rects,
-    required this.selectionColor,
-  });
+  SelectionAreaPainter({required this.rects, required this.selectionColor});
 
   final List<Rect> rects;
   final Color selectionColor;
@@ -123,10 +120,7 @@ class SelectionAreaPainter extends CustomPainter {
       if (rect.width <= 0) {
         rect = Rect.fromLTWH(rect.left, rect.top, 8.0, rect.height);
       }
-      canvas.drawRect(
-        rect,
-        paint,
-      );
+      canvas.drawRect(rect, paint);
     }
   }
 

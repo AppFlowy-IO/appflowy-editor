@@ -73,13 +73,11 @@ class AppFlowyEditorMarkdownCodec extends Codec<Document, String> {
 
   @override
   Converter<String, Document> get decoder => DocumentMarkdownDecoder(
-        markdownElementParsers: markdownParsers,
-        inlineSyntaxes: markdownInlineSyntaxes,
-      );
+    markdownElementParsers: markdownParsers,
+    inlineSyntaxes: markdownInlineSyntaxes,
+  );
 
   @override
-  Converter<Document, String> get encoder => DocumentMarkdownEncoder(
-        parsers: encodeParsers,
-        lineBreak: lineBreak,
-      );
+  Converter<Document, String> get encoder =>
+      DocumentMarkdownEncoder(parsers: encodeParsers, lineBreak: lineBreak);
 }

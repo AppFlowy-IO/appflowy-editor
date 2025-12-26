@@ -180,13 +180,7 @@ void main() async {
       const text = '_AppFlowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()
-          ..insert(
-            text,
-            attributes: {
-              'italic': true,
-            },
-          ),
+        builder: (index) => Delta()..insert(text, attributes: {'italic': true}),
       );
 
       final editorState = EditorState(document: document);
@@ -204,12 +198,10 @@ void main() async {
         after.delta!.toPlainText(),
         text.substring(1),
       ); // remove the first underscore
-      final isItalic =
-          after.delta!.everyAttributes((element) => element['italic'] == true);
-      expect(
-        isItalic,
-        false,
+      final isItalic = after.delta!.everyAttributes(
+        (element) => element['italic'] == true,
       );
+      expect(isItalic, false);
     });
 
     // skip the italic when the text is wrapped with code
@@ -221,13 +213,9 @@ void main() async {
       const text = 'App_Flowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()
-          ..insert(
-            text,
-            attributes: {
-              AppFlowyRichTextKeys.code: true,
-            },
-          ),
+        builder: (index) =>
+            Delta()
+              ..insert(text, attributes: {AppFlowyRichTextKeys.code: true}),
       );
       final editorState = EditorState(document: document);
       final selection = Selection.collapsed(

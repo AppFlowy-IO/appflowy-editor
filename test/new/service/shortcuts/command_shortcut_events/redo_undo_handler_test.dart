@@ -13,33 +13,39 @@ void main() async {
   });
 
   group('redo_undo_handler_test.dart', () {
-    testWidgets('Redo should do nothing if Undo is not yet performed',
-        (tester) async {
+    testWidgets('Redo should do nothing if Undo is not yet performed', (
+      tester,
+    ) async {
       await _testRedoWithoutUndo(tester);
     });
 
-    testWidgets('Undo and Redo works properly with text formatting bold',
-        (tester) async {
+    testWidgets('Undo and Redo works properly with text formatting bold', (
+      tester,
+    ) async {
       await _testWithTextFormattingBold(tester);
     });
 
-    testWidgets('Undo and Redo works properly with text formatting italics',
-        (tester) async {
+    testWidgets('Undo and Redo works properly with text formatting italics', (
+      tester,
+    ) async {
       await _testWithTextFormattingItalics(tester);
     });
 
-    testWidgets('Undo and Redo works properly with text formatting underline',
-        (tester) async {
+    testWidgets('Undo and Redo works properly with text formatting underline', (
+      tester,
+    ) async {
       await _testWithTextFormattingUnderline(tester);
     });
 
-    testWidgets('Redo, Undo for backspace key, and selection is downward',
-        (tester) async {
+    testWidgets('Redo, Undo for backspace key, and selection is downward', (
+      tester,
+    ) async {
       await _testBackspaceUndoRedo(tester, true);
     });
 
-    testWidgets('Redo, Undo for backspace key, and selection is forward',
-        (tester) async {
+    testWidgets('Redo, Undo for backspace key, and selection is forward', (
+      tester,
+    ) async {
       await _testBackspaceUndoRedo(tester, false);
     });
 
@@ -107,10 +113,7 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
 
   final start = Position(path: [0], offset: 0);
   final end = Position(path: [0], offset: text.length);
-  selection = Selection(
-    start: start,
-    end: end,
-  );
+  selection = Selection(start: start, end: end);
 
   await editor.updateSelection(selection);
   await editor.pressKey(
@@ -158,10 +161,7 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
 
   final start = Position(path: [0], offset: 0);
   final end = Position(path: [0], offset: text.length);
-  final selection = Selection(
-    start: start,
-    end: end,
-  );
+  final selection = Selection(start: start, end: end);
 
   await editor.updateSelection(selection);
 
@@ -210,10 +210,7 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
 
   final start = Position(path: [0], offset: 0);
   final end = Position(path: [0], offset: text.length);
-  final selection = Selection(
-    start: start,
-    end: end,
-  );
+  final selection = Selection(start: start, end: end);
 
   await editor.updateSelection(selection);
 

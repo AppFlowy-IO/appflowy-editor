@@ -34,10 +34,7 @@ void main() {
     test('todo list', () async {
       final todoListNodes = todoListNode(
         checked: false,
-        children: [
-          todoListNode(checked: false),
-          todoListNode(checked: false),
-        ],
+        children: [todoListNode(checked: false), todoListNode(checked: false)],
       );
       final document = Document.blank()..insert([0], [todoListNodes]);
 
@@ -57,10 +54,7 @@ void main() {
 
     test('numbered list', () async {
       final numberedListNodes = numberedListNode(
-        children: [
-          numberedListNode(),
-          numberedListNode(),
-        ],
+        children: [numberedListNode(), numberedListNode()],
       );
       final document = Document.blank()..insert([0], [numberedListNodes]);
 

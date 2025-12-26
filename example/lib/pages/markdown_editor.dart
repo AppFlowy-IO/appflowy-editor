@@ -23,14 +23,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
       lineHeight: 1.2,
       applyHeightToFirstAscent: true,
       applyHeightToLastDescent: true,
-      text: const TextStyle(
-        fontSize: 16,
-        color: Colors.black,
-      ),
+      text: const TextStyle(fontSize: 16, color: Colors.black),
       code: GoogleFonts.architectsDaughter(),
-      bold: GoogleFonts.poppins(
-        fontWeight: FontWeight.w500,
-      ),
+      bold: GoogleFonts.poppins(fontWeight: FontWeight.w500),
     ),
   );
 
@@ -53,9 +48,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         backgroundColor: Colors.black,
         title: const Text('Markdown Editor'),
         titleTextStyle: const TextStyle(color: Colors.white),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Row(
         mainAxisSize: MainAxisSize.max,
@@ -92,9 +85,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   void _onTextChanged() {
     final document = markdownToDocument(
       controller.text,
-      markdownParsers: [
-        const MarkdownCodeBlockParserV2(),
-      ],
+      markdownParsers: [const MarkdownCodeBlockParserV2()],
     );
     setState(() {
       editorState = EditorState(document: document);

@@ -25,9 +25,7 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
     editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
-          Map<String, Object>.from(
-            json.decode(value),
-          ),
+          Map<String, Object>.from(json.decode(value)),
         ),
       );
     });
@@ -40,9 +38,7 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
         backgroundColor: Colors.black,
         title: const Text('Focus Node Example'),
         titleTextStyle: const TextStyle(color: Colors.white),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         children: [
@@ -73,9 +69,7 @@ class _FocusExampleForEditorState extends State<FocusExampleForEditor> {
           ),
           const TextField(
             textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              hintText: 'Please input something ...',
-            ),
+            decoration: InputDecoration(hintText: 'Please input something ...'),
           ),
         ],
       ),

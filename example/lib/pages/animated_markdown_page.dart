@@ -56,50 +56,41 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
             editable: false,
             disableAutoScroll: true,
             editorStyle: const EditorStyle.desktop(),
-            blockWrapper: (
-              context, {
-              required Node node,
-              required Widget child,
-            }) {
-              if (!_animations.containsKey(node.id)) {
-                final controller = AnimationController(
-                  vsync: this,
-                  duration: const Duration(milliseconds: 2000),
-                );
-                final fade = Tween<double>(
-                  begin: 0,
-                  end: 1,
-                ).animate(controller);
-                _animations[node.id] = (controller, fade);
-                controller.forward();
-              }
-              final (controller, fade) = _animations[node.id]!;
+            blockWrapper:
+                (context, {required Node node, required Widget child}) {
+                  if (!_animations.containsKey(node.id)) {
+                    final controller = AnimationController(
+                      vsync: this,
+                      duration: const Duration(milliseconds: 2000),
+                    );
+                    final fade = Tween<double>(
+                      begin: 0,
+                      end: 1,
+                    ).animate(controller);
+                    _animations[node.id] = (controller, fade);
+                    controller.forward();
+                  }
+                  final (controller, fade) = _animations[node.id]!;
 
-              return AnimatedBuilder(
-                animation: fade,
-                builder: (context, childWidget) {
-                  return ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        stops: [fade.value, fade.value],
-                        colors: const [
-                          Colors.white,
-                          Colors.transparent,
-                        ],
-                      ).createShader(bounds);
+                  return AnimatedBuilder(
+                    animation: fade,
+                    builder: (context, childWidget) {
+                      return ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            stops: [fade.value, fade.value],
+                            colors: const [Colors.white, Colors.transparent],
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: Opacity(opacity: fade.value, child: childWidget),
+                      );
                     },
-                    blendMode: BlendMode.dstIn,
-                    child: Opacity(
-                      opacity: fade.value,
-                      child: childWidget,
-                    ),
+                    child: child,
                   );
                 },
-                child: child,
-              );
-            },
           ),
         ),
       ),
@@ -128,8 +119,9 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
 
     isTimerActive = true;
 
-    markdownInputTimer =
-        Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    markdownInputTimer = Timer.periodic(const Duration(milliseconds: 50), (
+      timer,
+    ) {
       markdown = _markdown.substring(0, offset);
 
       offset += 30;
@@ -139,8 +131,9 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
       }
     });
 
-    markdownOutputTimer =
-        Timer.periodic(const Duration(milliseconds: 20), (timer) {
+    markdownOutputTimer = Timer.periodic(const Duration(milliseconds: 20), (
+      timer,
+    ) {
       if (offset >= _markdown.length) {
         return;
       }
@@ -193,10 +186,7 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
     });
   }
 
-  EditorState _parseMarkdown(
-    String markdown, {
-    Document? previousDocument,
-  }) {
+  EditorState _parseMarkdown(String markdown, {Document? previousDocument}) {
     // merge the nodes from the previous document with the new document to keep the same node ids
     final document = markdownToDocument(markdown);
     final documentIterator = NodeIterator(
@@ -208,8 +198,8 @@ class _AnimatedMarkdownPageState extends State<AnimatedMarkdownPage>
         document: previousDocument,
         startNode: previousDocument.root,
       );
-      while (
-          documentIterator.moveNext() && previousDocumentIterator.moveNext()) {
+      while (documentIterator.moveNext() &&
+          previousDocumentIterator.moveNext()) {
         final currentNode = documentIterator.current;
         final previousNode = previousDocumentIterator.current;
         if (currentNode.path.equals(previousNode.path)) {

@@ -23,8 +23,8 @@ Node paragraphNode({
   return Node(
     type: ParagraphBlockKeys.type,
     attributes: {
-      ParagraphBlockKeys.delta:
-          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      ParagraphBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
+          .toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null)
         ParagraphBlockKeys.textDirection: textDirection,
@@ -36,10 +36,7 @@ Node paragraphNode({
 typedef ShowPlaceholder = bool Function(EditorState editorState, Node node);
 
 class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
-  ParagraphBlockComponentBuilder({
-    super.configuration,
-    this.showPlaceholder,
-  });
+  ParagraphBlockComponentBuilder({super.configuration, this.showPlaceholder});
 
   final ShowPlaceholder? showPlaceholder;
 
@@ -53,19 +50,16 @@ class ParagraphBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       showActions: showActions(node),
       showPlaceholder: showPlaceholder,
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.delta != null;
+  BlockComponentValidate get validate =>
+      (node) => node.delta != null;
 }
 
 class ParagraphBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -136,7 +130,8 @@ class _ParagraphBlockComponentWidgetState
         _showPlaceholder = widget.showPlaceholder!(editorState, node);
       });
     } else {
-      final showPlaceholder = selection != null &&
+      final showPlaceholder =
+          selection != null &&
           (selection.isSingle && selection.start.path.equals(node.path));
       if (showPlaceholder != _showPlaceholder) {
         setState(() => _showPlaceholder = showPlaceholder);
@@ -170,14 +165,12 @@ class _ParagraphBlockComponentWidgetState
             textAlign: alignment?.toTextAlign ?? textAlign,
             placeholderText: _showPlaceholder ? placeholderText : ' ',
             textSpanDecorator: (textSpan) => textSpan.updateTextStyle(
-              textStyleWithTextSpan(
-                textSpan: textSpan,
-              ),
+              textStyleWithTextSpan(textSpan: textSpan),
             ),
             placeholderTextSpanDecorator: (textSpan) =>
                 textSpan.updateTextStyle(
-              placeholderTextStyleWithTextSpan(textSpan: textSpan),
-            ),
+                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                ),
             textDirection: textDirection,
             cursorColor: editorState.editorStyle.cursorColor,
             selectionColor: editorState.editorStyle.selectionColor,
@@ -200,9 +193,7 @@ class _ParagraphBlockComponentWidgetState
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 

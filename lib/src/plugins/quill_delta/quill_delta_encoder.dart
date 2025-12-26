@@ -122,9 +122,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
   Node _applyBlockquoteIfNeeded(Node node, Map<String, dynamic> attributes) {
     final blockquote = attributes[_blockquote] as bool?;
     if (blockquote == true) {
-      return quoteNode(
-        delta: node.delta,
-      );
+      return quoteNode(delta: node.delta);
     }
 
     return node;
@@ -136,10 +134,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
       return node;
     }
 
-    return headingNode(
-      delta: node.delta,
-      level: header,
-    );
+    return headingNode(delta: node.delta, level: header);
   }
 
   // If the attributes contains the list style, then apply the list style to the node.
@@ -147,9 +142,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     final list = attributes[_list] as String?;
     switch (list) {
       case _bulletedList:
-        final bulletedList = bulletedListNode(
-          delta: node.delta,
-        );
+        final bulletedList = bulletedListNode(delta: node.delta);
         final indent = attributes[_indent] as int?;
         if (indent != null) {
           nestedLists[indent] ??= [];
@@ -162,9 +155,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         return bulletedList;
 
       case _orderedList:
-        final numberedList = numberedListNode(
-          delta: node.delta,
-        );
+        final numberedList = numberedListNode(delta: node.delta);
         final indent = attributes[_indent] as int?;
         if (indent != null) {
           nestedLists[indent] ??= [];
@@ -177,17 +168,11 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         return numberedList;
 
       case _checkedList:
-        final checkedList = todoListNode(
-          delta: node.delta,
-          checked: true,
-        );
+        final checkedList = todoListNode(delta: node.delta, checked: true);
         return checkedList;
 
       case _uncheckedList:
-        final uncheckedList = todoListNode(
-          delta: node.delta,
-          checked: false,
-        );
+        final uncheckedList = todoListNode(delta: node.delta, checked: false);
         return uncheckedList;
 
       default:

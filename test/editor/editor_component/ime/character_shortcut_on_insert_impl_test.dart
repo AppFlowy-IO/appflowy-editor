@@ -10,9 +10,7 @@ void main() {
 
     test('call', () async {
       final editorState = EditorState.blank();
-      editorState.selection = Selection.collapsed(
-        Position(path: [0]),
-      );
+      editorState.selection = Selection.collapsed(Position(path: [0]));
       await onInsert(
         const TextEditingDeltaInsertion(
           textInserted: ' \n',

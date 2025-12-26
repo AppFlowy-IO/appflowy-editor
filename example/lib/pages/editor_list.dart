@@ -2,9 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 class EditorList extends StatefulWidget {
-  const EditorList({
-    super.key,
-  });
+  const EditorList({super.key});
 
   @override
   State<EditorList> createState() => _EditorListState();
@@ -19,19 +17,20 @@ class _EditorListState extends State<EditorList> {
 
     for (var i = 0; i < 100; i++) {
       final document = Document.blank()
-        ..insert([
-          0,
-        ], [
-          headingNode(level: 3, delta: Delta()..insert('Heading $i')),
-          paragraphNode(
-            delta: Delta()
-              ..insert('Paragraph $i: ')
-              ..insert(
-                'formatted text',
-                attributes: {'bold': true, 'italic': true, 'underline': true},
-              ),
-          ),
-        ]);
+        ..insert(
+          [0],
+          [
+            headingNode(level: 3, delta: Delta()..insert('Heading $i')),
+            paragraphNode(
+              delta: Delta()
+                ..insert('Paragraph $i: ')
+                ..insert(
+                  'formatted text',
+                  attributes: {'bold': true, 'italic': true, 'underline': true},
+                ),
+            ),
+          ],
+        );
       documents.add(document);
     }
   }
@@ -43,30 +42,26 @@ class _EditorListState extends State<EditorList> {
         backgroundColor: Colors.black,
         title: const Text('Editor List'),
         titleTextStyle: const TextStyle(color: Colors.white),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: documents
-              .map(
-                (e) {
-                  final editorState = EditorState(document: e);
-                  return [
-                    IntrinsicHeight(
-                      child: AppFlowyEditor(
-                        editorState: editorState,
-                        shrinkWrap: true,
-                        editable: false,
-                      ),
+              .map((e) {
+                final editorState = EditorState(document: e);
+                return [
+                  IntrinsicHeight(
+                    child: AppFlowyEditor(
+                      editorState: editorState,
+                      shrinkWrap: true,
+                      editable: false,
                     ),
-                    const Divider(),
-                  ];
-                },
-              )
+                  ),
+                  const Divider(),
+                ];
+              })
               .expand((element) => element)
               .toList(),
         ),

@@ -66,16 +66,15 @@ void main() async {
 
     test('toJson', () {
       final beforeSelection = Selection.collapsed(Position(path: [0]));
-      final afterSelection =
-          Selection.collapsed(Position(path: [0], offset: 'paragraph'.length));
+      final afterSelection = Selection.collapsed(
+        Position(path: [0], offset: 'paragraph'.length),
+      );
       final io = InsertOperation([0], [Node(type: 'paragraph')]);
 
       final empty = {};
 
       final withOperation = {
-        "operations": [
-          io.toJson(),
-        ],
+        "operations": [io.toJson()],
       };
 
       final withAfterSelection = {
@@ -250,14 +249,8 @@ void main() async {
 
     test('test selection propagates if non-selected node is deleted', () async {
       final document = Document.blank()
-          .addParagraphs(
-            1,
-            initialText: 'Welcome to AppFlowy!',
-          )
-          .addParagraphs(
-            1,
-            initialText: 'Testing selection on this',
-          );
+          .addParagraphs(1, initialText: 'Welcome to AppFlowy!')
+          .addParagraphs(1, initialText: 'Testing selection on this');
       final editorState = EditorState(document: document);
 
       expect(editorState.document.root.children.length, 2);
@@ -275,45 +268,34 @@ void main() async {
       expect(editorState.document.root.children.length, 1);
       expect(
         editorState.selection,
-        Selection.single(
+        Selection.single(path: [0], startOffset: 0, endOffset: 20),
+      );
+    });
+
+    test(
+      'test selection does not propagate if selected node is deleted',
+      () async {
+        final document = Document.blank()
+            .addParagraphs(1, initialText: 'Welcome to AppFlowy!')
+            .addParagraphs(1, initialText: 'Testing selection on this');
+        final editorState = EditorState(document: document);
+
+        expect(editorState.document.root.children.length, 2);
+
+        editorState.selection = Selection.single(
           path: [0],
           startOffset: 0,
           endOffset: 20,
-        ),
-      );
-    });
+        );
 
-    test('test selection does not propagate if selected node is deleted',
-        () async {
-      final document = Document.blank()
-          .addParagraphs(
-            1,
-            initialText: 'Welcome to AppFlowy!',
-          )
-          .addParagraphs(
-            1,
-            initialText: 'Testing selection on this',
-          );
-      final editorState = EditorState(document: document);
+        final transaction = editorState.transaction;
+        transaction.deleteNode(editorState.getNodeAtPath([0])!);
+        await editorState.apply(transaction);
 
-      expect(editorState.document.root.children.length, 2);
-
-      editorState.selection = Selection.single(
-        path: [0],
-        startOffset: 0,
-        endOffset: 20,
-      );
-
-      final transaction = editorState.transaction;
-      transaction.deleteNode(editorState.getNodeAtPath([0])!);
-      await editorState.apply(transaction);
-
-      expect(editorState.document.root.children.length, 1);
-      expect(
-        editorState.selection,
-        null,
-      );
-    });
+        expect(editorState.document.root.children.length, 1);
+        expect(editorState.selection, null);
+      },
+    );
 
     const replaceText1 = 'Click to start typing.';
     const replaceText2 = 'Highlight text to style it using the editing menu.';
@@ -355,11 +337,7 @@ void main() async {
 
     test('replace texts, nodes.length < texts.length', () async {
       final document = Document(
-        root: pageNode(
-          children: [
-            todoListNode(checked: false, text: text1),
-          ],
-        ),
+        root: pageNode(children: [todoListNode(checked: false, text: text1)]),
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
@@ -369,11 +347,11 @@ void main() async {
       editorState.selection = selection;
       final transaction = editorState.transaction;
       final nodes = editorState.getNodesInSelection(selection);
-      transaction.replaceTexts(
-        nodes,
-        selection,
-        [replaceText1, replaceText2, replaceText3],
-      );
+      transaction.replaceTexts(nodes, selection, [
+        replaceText1,
+        replaceText2,
+        replaceText3,
+      ]);
       await editorState.apply(transaction);
       expect(editorState.document.root.children.length, 3);
       expect(
@@ -408,11 +386,11 @@ void main() async {
       editorState.selection = selection;
       final transaction = editorState.transaction;
       final nodes = editorState.getNodesInSelection(selection);
-      transaction.replaceTexts(
-        nodes,
-        selection,
-        [replaceText1, replaceText2, replaceText3],
-      );
+      transaction.replaceTexts(nodes, selection, [
+        replaceText1,
+        replaceText2,
+        replaceText3,
+      ]);
       await editorState.apply(transaction);
       expect(editorState.document.root.children.length, 3);
       expect(
@@ -456,7 +434,7 @@ void main() async {
         {
           'insert': 'AppFlowy',
           'attributes': {'href': 'appflowy.io'},
-        }
+        },
       ]);
     });
   });
@@ -500,11 +478,11 @@ void main() async {
     editorState.selection = selection;
     final transaction = editorState.transaction;
     final nodes = editorState.getNodesInSelection(selection);
-    transaction.replaceTexts(
-      nodes,
-      selection,
-      ['replaced 1-1', 'replaced 1-2', 'replaced 1-3'],
-    );
+    transaction.replaceTexts(nodes, selection, [
+      'replaced 1-1',
+      'replaced 1-2',
+      'replaced 1-3',
+    ]);
     await editorState.apply(transaction);
     expect(editorState.document.root.children.length, 3);
     expect(
@@ -567,11 +545,11 @@ void main() async {
     editorState.selection = selection;
     final transaction = editorState.transaction;
     final nodes = editorState.getNodesInSelection(selection);
-    transaction.replaceTexts(
-      nodes,
-      selection,
-      ['replaced 1-1', 'replaced 1-2', 'replaced 1-3'],
-    );
+    transaction.replaceTexts(nodes, selection, [
+      'replaced 1-1',
+      'replaced 1-2',
+      'replaced 1-3',
+    ]);
     await editorState.apply(transaction);
     expect(editorState.getNodeAtPath([0])!.children.length, 3);
     expect(
@@ -621,17 +599,13 @@ void main() async {
     editorState.selection = selection;
     final transaction = editorState.transaction;
     final nodes = editorState.getNodesInSelection(selection);
-    transaction.replaceTexts(
-      nodes,
-      selection,
-      [
-        'replaced 1-1',
-        'replaced 1-2',
-        'replaced 1-3',
-        'replaced 1-4',
-        'replaced 1-5',
-      ],
-    );
+    transaction.replaceTexts(nodes, selection, [
+      'replaced 1-1',
+      'replaced 1-2',
+      'replaced 1-3',
+      'replaced 1-4',
+      'replaced 1-5',
+    ]);
     await editorState.apply(transaction);
     expect(editorState.getNodeAtPath([0])!.children.length, 5);
     expect(

@@ -22,10 +22,7 @@ void main() async {
       final rect = tester.getRect(finder);
       // tap at the beginning
       await tester.tapAt(rect.centerLeft);
-      expect(
-        editor.selection,
-        Selection.single(path: [1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [1], startOffset: 0));
 
       await tester.pumpAndSettle(const Duration(seconds: 1));
       // tap at the ending
@@ -111,39 +108,38 @@ void main() async {
       },
     );
 
-    testWidgets(
-      'Test secondary tap - collapsed selection remains unchanged',
-      (tester) async {
-        const text = 'Welcome to Appflowy 😁';
-        final editor = tester.editor..addParagraphs(3, initialText: text);
-        await editor.startTesting();
+    testWidgets('Test secondary tap - collapsed selection remains unchanged', (
+      tester,
+    ) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(3, initialText: text);
+      await editor.startTesting();
 
-        final secondNode = editor.nodeAtPath([1]);
-        final finder = find.byKey(secondNode!.key);
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
 
-        final rect = tester.getRect(finder);
+      final rect = tester.getRect(finder);
 
-        await tester.tapAt(rect.centerLeft + const Offset(30.0, 0.0));
-        await tester.pump();
+      await tester.tapAt(rect.centerLeft + const Offset(30.0, 0.0));
+      await tester.pump();
 
-        final originalSelection = editor.selection;
-        expect(originalSelection, isNotNull);
-        expect(originalSelection!.isCollapsed, isTrue);
+      final originalSelection = editor.selection;
+      expect(originalSelection, isNotNull);
+      expect(originalSelection!.isCollapsed, isTrue);
 
-        await tester.tapAt(
-          rect.centerLeft + const Offset(80.0, 0.0),
-          buttons: kSecondaryButton,
-        );
-        await tester.pump();
+      await tester.tapAt(
+        rect.centerLeft + const Offset(80.0, 0.0),
+        buttons: kSecondaryButton,
+      );
+      await tester.pump();
 
-        expect(editor.selection, equals(originalSelection));
+      expect(editor.selection, equals(originalSelection));
 
-        final contextMenu = find.byType(ContextMenu);
-        expect(contextMenu, findsOneWidget);
+      final contextMenu = find.byType(ContextMenu);
+      expect(contextMenu, findsOneWidget);
 
-        await editor.dispose();
-      },
-    );
+      await editor.dispose();
+    });
 
     testWidgets(
       'Test secondary tap - non-collapsed selection remains when tapping within selected node',
@@ -311,44 +307,43 @@ void main() async {
       },
     );
 
-    testWidgets(
-      'Test secondary tap - context menu and toolbar behavior',
-      (tester) async {
-        const text = 'Welcome to Appflowy 😁';
-        final editor = tester.editor..addParagraphs(3, initialText: text);
-        await editor.startTesting();
+    testWidgets('Test secondary tap - context menu and toolbar behavior', (
+      tester,
+    ) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(3, initialText: text);
+      await editor.startTesting();
 
-        final secondNode = editor.nodeAtPath([1]);
-        final finder = find.byKey(secondNode!.key);
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
 
-        final rect = tester.getRect(finder);
+      final rect = tester.getRect(finder);
 
-        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
-        await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
-        await tester.pumpAndSettle();
+      await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+      await tester.tapAt(rect.centerLeft + const Offset(10.0, 0.0));
+      await tester.pumpAndSettle();
 
-        final originalSelection = editor.selection;
-        expect(originalSelection, isNotNull);
-        expect(originalSelection!.isCollapsed, isFalse);
+      final originalSelection = editor.selection;
+      expect(originalSelection, isNotNull);
+      expect(originalSelection!.isCollapsed, isFalse);
 
-        await tester.tapAt(
-          rect.centerLeft + const Offset(20.0, 0.0),
-          buttons: kSecondaryButton,
-        );
-        await tester.pumpAndSettle();
+      await tester.tapAt(
+        rect.centerLeft + const Offset(20.0, 0.0),
+        buttons: kSecondaryButton,
+      );
+      await tester.pumpAndSettle();
 
-        final contextMenu = find.byType(ContextMenu);
-        expect(contextMenu, findsOneWidget);
+      final contextMenu = find.byType(ContextMenu);
+      expect(contextMenu, findsOneWidget);
 
-        await tester.tapAt(const Offset(10.0, 10.0));
-        await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(10.0, 10.0));
+      await tester.pumpAndSettle();
 
-        expect(find.byType(ContextMenu), findsNothing);
-        expect(editor.selection, isNotNull);
+      expect(find.byType(ContextMenu), findsNothing);
+      expect(editor.selection, isNotNull);
 
-        await editor.dispose();
-      },
-    );
+      await editor.dispose();
+    });
 
     testWidgets(
       'Test secondary tap - shortcuts blocked when context menu shows',
@@ -439,10 +434,7 @@ void main() async {
 
       // tap at the beginning
       await tester.tapAt(rect.centerLeft);
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0], startOffset: 0));
 
       expect(editor.editorState.selectionType, SelectionType.inline);
 

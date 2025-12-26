@@ -101,18 +101,12 @@ class _TableColState extends State<TableCol> {
       addListener(node.children.first, i);
 
       cells.addAll([
-        widget.editorState.renderer.build(
-          context,
-          node,
-        ),
+        widget.editorState.renderer.build(context, node),
         cellBorder,
       ]);
     }
 
-    return [
-      cellBorder,
-      ...cells,
-    ];
+    return [cellBorder, ...cells];
   }
 
   void addListener(Node node, int row) {

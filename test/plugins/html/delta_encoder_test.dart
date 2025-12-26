@@ -8,12 +8,7 @@ void main() async {
       final delta = Delta(
         operations: [
           TextInsert('Welcome to '),
-          TextInsert(
-            'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.bold: true,
-            },
-          ),
+          TextInsert('AppFlowy', attributes: {BuiltInAttributeKey.bold: true}),
         ],
       );
       final childNodes = <dom.Node>[];
@@ -25,16 +20,10 @@ void main() async {
       strong.append(dom.Text('AppFlowy'));
       childNodes.add(strong);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('italic', () {
@@ -43,9 +32,7 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.italic: true,
-            },
+            attributes: {BuiltInAttributeKey.italic: true},
           ),
         ],
       );
@@ -58,16 +45,10 @@ void main() async {
       italic.append(dom.Text('AppFlowy'));
       childNodes.add(italic);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('underline', () {
@@ -94,16 +75,10 @@ void main() async {
       underline.append(dom.Text('AppFlowy'));
       childNodes.add(underline);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('strikethrough', () {
@@ -112,9 +87,7 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.strikethrough: true,
-            },
+            attributes: {BuiltInAttributeKey.strikethrough: true},
           ),
         ],
       );
@@ -127,16 +100,10 @@ void main() async {
       del.append(dom.Text('AppFlowy'));
       childNodes.add(del);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('href', () {
@@ -145,9 +112,7 @@ void main() async {
           TextInsert('Welcome to '),
           TextInsert(
             'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.href: 'https://appflowy.io',
-            },
+            attributes: {BuiltInAttributeKey.href: 'https://appflowy.io'},
           ),
         ],
       );
@@ -162,28 +127,17 @@ void main() async {
 
       childNodes.add(anchor);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('code', () {
       final delta = Delta(
         operations: [
           TextInsert('Welcome to '),
-          TextInsert(
-            'AppFlowy',
-            attributes: {
-              BuiltInAttributeKey.code: true,
-            },
-          ),
+          TextInsert('AppFlowy', attributes: {BuiltInAttributeKey.code: true}),
         ],
       );
       final childNodes = <dom.Node>[];
@@ -197,16 +151,10 @@ void main() async {
 
       childNodes.add(code);
 
-      expect(
-        result.first.text,
-        childNodes.first.text,
-      );
+      expect(result.first.text, childNodes.first.text);
       final resultelement = result.last as dom.Element;
       final expectElement = childNodes.last as dom.Element;
-      expect(
-        resultelement.className,
-        expectElement.className,
-      );
+      expect(resultelement.className, expectElement.className);
     });
 
     test('composition', () {
@@ -248,52 +196,25 @@ void main() async {
         result.first.attributes.toString(),
         '''{style: font-weight: bold; text-decoration: underline; font-style: italic}''',
       );
-      expect(
-        result.first.text,
-        "Welcome",
-      );
+      expect(result.first.text, "Welcome");
 
       expect(
         result[2].attributes.toString(),
         '''{style: font-weight: bold; text-decoration: line-through; font-style: italic}''',
       );
-      expect(
-        result[2].text,
-        "to",
-      );
+      expect(result[2].text, "to");
 
-      expect(
-        result[4].text,
-        "AppFlowy",
-      );
+      expect(result[4].text, "AppFlowy");
       final element = result[4] as dom.Element;
-      expect(
-        element.localName,
-        "a",
-      );
+      expect(element.localName, "a");
 
-      expect(
-        element.children.length,
-        1,
-      );
+      expect(element.children.length, 1);
       final anchorChildElement = element.children.first;
-      expect(
-        anchorChildElement.localName,
-        "u",
-      );
-      expect(
-        element.children.first.children.length,
-        1,
-      );
-      expect(
-        element.children.first.children.first.localName,
-        "i",
-      );
+      expect(anchorChildElement.localName, "u");
+      expect(element.children.first.children.length, 1);
+      expect(element.children.first.children.first.localName, "i");
 
-      expect(
-        element.children.first.children.first.children.length,
-        1,
-      );
+      expect(element.children.first.children.first.children.length, 1);
       expect(
         element.children.first.children.first.children.first.localName,
         "strong",

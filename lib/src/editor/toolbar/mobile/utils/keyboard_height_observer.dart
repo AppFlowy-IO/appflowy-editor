@@ -12,8 +12,8 @@ class KeyboardHeightObserver {
   KeyboardHeightObserver._() {
     if (PlatformExtension.isAndroid && androidSDKVersion == -1) {
       DeviceInfoPlugin().androidInfo.then(
-            (value) => androidSDKVersion = value.version.sdkInt,
-          );
+        (value) => androidSDKVersion = value.version.sdkInt,
+      );
     }
     _keyboardHeightPlugin.onKeyboardHeightChanged((height) {
       notify(height);

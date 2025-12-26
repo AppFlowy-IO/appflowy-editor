@@ -28,9 +28,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
     editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
-          Map<String, Object>.from(
-            json.decode(value),
-          ),
+          Map<String, Object>.from(json.decode(value)),
         ),
       );
     });
@@ -43,9 +41,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
         backgroundColor: Colors.black,
         title: const Text('Custom Theme For Editor'),
         titleTextStyle: const TextStyle(color: Colors.white),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: FutureBuilder(
         future: editorState,
@@ -75,9 +71,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   }
 
   /// custom the block style
-  Map<String, BlockComponentBuilder> customBuilder(
-    EditorState editorState,
-  ) {
+  Map<String, BlockComponentBuilder> customBuilder(EditorState editorState) {
     final configuration = BlockComponentConfiguration(
       padding: (node) {
         if (HeadingBlockKeys.type == node.type) {
@@ -126,11 +120,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
             width: 20,
             height: 20,
             alignment: Alignment.center,
-            child: const Icon(
-              Icons.circle,
-              size: 10,
-              color: Colors.red,
-            ),
+            child: const Icon(Icons.circle, size: 10, color: Colors.red),
           );
         },
       ),
@@ -160,21 +150,14 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       dragHandleColor: Colors.green,
       selectionColor: Colors.green.withValues(alpha: 0.5),
       textStyleConfiguration: TextStyleConfiguration(
-        text: GoogleFonts.poppins(
-          fontSize: 14.0,
-          color: Colors.white,
-        ),
-        bold: const TextStyle(
-          fontWeight: FontWeight.w900,
-        ),
+        text: GoogleFonts.poppins(fontSize: 14.0, color: Colors.white),
+        bold: const TextStyle(fontWeight: FontWeight.w900),
         href: TextStyle(
           color: Colors.amber,
-          decoration: TextDecoration.combine(
-            [
-              TextDecoration.overline,
-              TextDecoration.underline,
-            ],
-          ),
+          decoration: TextDecoration.combine([
+            TextDecoration.overline,
+            TextDecoration.underline,
+          ]),
         ),
         code: const TextStyle(
           fontSize: 14.0,

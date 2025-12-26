@@ -73,11 +73,7 @@ void main() {
     final root = Node(
       type: 'page',
       attributes: {},
-      children: [
-        item1,
-        item2,
-        item3,
-      ],
+      children: [item1, item2, item3],
     );
     final state = EditorState(document: Document(root: root));
 
@@ -109,18 +105,13 @@ void main() {
             "op": "insert",
             "path": [0],
             "nodes": [item1.toJson()],
-          }
+          },
         ],
       });
     });
     test("delete", () {
       final item1 = Node(type: "node", attributes: {}, children: LinkedList());
-      final root = Node(
-        type: "root",
-        children: [
-          item1,
-        ],
-      );
+      final root = Node(type: "root", children: [item1]);
       final state = EditorState(document: Document(root: root));
       final transaction = state.transaction;
       transaction.deleteNode(item1);
@@ -131,7 +122,7 @@ void main() {
             "op": "delete",
             "path": [0],
             "nodes": [item1.toJson()],
-          }
+          },
         ],
       });
     });

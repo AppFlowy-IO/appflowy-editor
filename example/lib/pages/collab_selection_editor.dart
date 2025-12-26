@@ -31,9 +31,7 @@ class _CollabSelectionEditorState extends State<CollabSelectionEditor> {
     // collapsed selection
     RemoteSelection(
       id: '2',
-      selection: Selection.collapsed(
-        Position(path: [1], offset: 3),
-      ),
+      selection: Selection.collapsed(Position(path: [1], offset: 3)),
       selectionColor: Colors.yellow,
       cursorColor: Colors.yellow,
       builder: _buildSelectionFlag,
@@ -79,17 +77,13 @@ class _CollabSelectionEditorState extends State<CollabSelectionEditor> {
               future: future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
                 editorState?.dispose();
                 editorState ??= EditorState(
                   document: Document.fromJson(jsonDecode(snapshot.data!)),
                 );
-                return AppFlowyEditor(
-                  editorState: editorState!,
-                );
+                return AppFlowyEditor(editorState: editorState!);
               },
             ),
           ),

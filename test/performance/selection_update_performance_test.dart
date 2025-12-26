@@ -180,92 +180,91 @@ void main() {
       },
     );
 
-    testWidgets(
-      'paragraph with 1000 children - scroll and tap last child',
-      (tester) async {
-        // Create 1000 child paragraphs
-        final children = <Node>[];
-        for (int i = 0; i < 1000; i++) {
-          children.add(paragraphNode(text: 'Child paragraph $i'));
+    testWidgets('paragraph with 1000 children - scroll and tap last child', (
+      tester,
+    ) async {
+      // Create 1000 child paragraphs
+      final children = <Node>[];
+      for (int i = 0; i < 1000; i++) {
+        children.add(paragraphNode(text: 'Child paragraph $i'));
+      }
+
+      // Create a paragraph node with 1000 children
+      final parentNode = paragraphNode(
+        text: 'Parent paragraph',
+        children: children,
+      );
+
+      final editor = tester.editor..addNode(parentNode);
+      await editor.startTesting();
+
+      final editorState = editor.editorState;
+      final scrollService = editorState.service.scrollService;
+
+      // Scroll to the bottom to bring last child into view
+      if (scrollService != null) {
+        await tester.pumpAndSettle();
+        scrollService.scrollTo(scrollService.maxScrollExtent);
+        await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      }
+
+      // Setup selection change listener
+      final selectionUpdatedCompleter = Completer<void>();
+      final stopwatch = Stopwatch();
+
+      void selectionListener() {
+        if (stopwatch.isRunning && editorState.selection != null) {
+          stopwatch.stop();
+          selectionUpdatedCompleter.complete();
         }
+      }
 
-        // Create a paragraph node with 1000 children
-        final parentNode = paragraphNode(
-          text: 'Parent paragraph',
-          children: children,
-        );
+      editorState.selectionNotifier.addListener(selectionListener);
 
-        final editor = tester.editor..addNode(parentNode);
-        await editor.startTesting();
+      // Find the last child (at path [0, 999])
+      final lastChild = editor.nodeAtPath([0, 999]);
+      expect(lastChild, isNotNull, reason: 'Last child should exist');
 
-        final editorState = editor.editorState;
-        final scrollService = editorState.service.scrollService;
+      final finder = find.byKey(lastChild!.key);
+      expect(finder, findsOneWidget, reason: 'Last child should be rendered');
 
-        // Scroll to the bottom to bring last child into view
-        if (scrollService != null) {
-          await tester.pumpAndSettle();
-          scrollService.scrollTo(scrollService.maxScrollExtent);
-          await tester.pumpAndSettle(const Duration(milliseconds: 500));
-        }
+      final rect = tester.getRect(finder);
 
-        // Setup selection change listener
-        final selectionUpdatedCompleter = Completer<void>();
-        final stopwatch = Stopwatch();
+      // Start measuring time
+      stopwatch.start();
 
-        void selectionListener() {
-          if (stopwatch.isRunning && editorState.selection != null) {
-            stopwatch.stop();
-            selectionUpdatedCompleter.complete();
-          }
-        }
+      // Tap the last child
+      await tester.tapAt(rect.centerLeft);
+      await tester.pump(); // Pump once to process the tap
 
-        editorState.selectionNotifier.addListener(selectionListener);
+      // Wait for selection to update (with timeout)
+      await selectionUpdatedCompleter.future.timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          stopwatch.stop();
+          fail(
+            'Selection did not update within timeout. '
+            'Elapsed: ${stopwatch.elapsedMilliseconds}ms',
+          );
+        },
+      );
 
-        // Find the last child (at path [0, 999])
-        final lastChild = editor.nodeAtPath([0, 999]);
-        expect(lastChild, isNotNull, reason: 'Last child should exist');
+      // Verify selection was updated correctly
+      expect(editorState.selection, isNotNull);
+      expect(editorState.selection!.start.path, [0, 999]);
 
-        final finder = find.byKey(lastChild!.key);
-        expect(finder, findsOneWidget, reason: 'Last child should be rendered');
+      final elapsedMs = stopwatch.elapsedMilliseconds;
 
-        final rect = tester.getRect(finder);
+      // Performance assertion - selection should update within reasonable time
+      expect(
+        elapsedMs,
+        lessThan(500),
+        reason: 'Selection update should complete in less than 500ms',
+      );
 
-        // Start measuring time
-        stopwatch.start();
-
-        // Tap the last child
-        await tester.tapAt(rect.centerLeft);
-        await tester.pump(); // Pump once to process the tap
-
-        // Wait for selection to update (with timeout)
-        await selectionUpdatedCompleter.future.timeout(
-          const Duration(seconds: 5),
-          onTimeout: () {
-            stopwatch.stop();
-            fail(
-              'Selection did not update within timeout. '
-              'Elapsed: ${stopwatch.elapsedMilliseconds}ms',
-            );
-          },
-        );
-
-        // Verify selection was updated correctly
-        expect(editorState.selection, isNotNull);
-        expect(editorState.selection!.start.path, [0, 999]);
-
-        final elapsedMs = stopwatch.elapsedMilliseconds;
-
-        // Performance assertion - selection should update within reasonable time
-        expect(
-          elapsedMs,
-          lessThan(500),
-          reason: 'Selection update should complete in less than 500ms',
-        );
-
-        // Cleanup
-        editorState.selectionNotifier.removeListener(selectionListener);
-        await editor.dispose();
-      },
-    );
+      // Cleanup
+      editorState.selectionNotifier.removeListener(selectionListener);
+      await editor.dispose();
+    });
   });
 }

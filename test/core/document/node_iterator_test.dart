@@ -29,38 +29,37 @@ void main() async {
       expect(nodes.moveNext(), false);
     });
 
-    test('toList - when we have at least three level nested nodes (children)',
-        () {
-      final root = Node(type: 'root'),
-          n1 = Node(type: 'node_1'),
-          n2 = Node(type: 'node_2');
+    test(
+      'toList - when we have at least three level nested nodes (children)',
+      () {
+        final root = Node(type: 'root'),
+            n1 = Node(type: 'node_1'),
+            n2 = Node(type: 'node_2');
 
-      root.insert(n1);
-      root.insert(n2);
-      n1.insert(Node(type: 'node_1_1'));
-      n1.insert(Node(type: 'node_1_2'));
-      n1.childAtIndexOrNull(0)?.insert(Node(type: 'node_1_1_1'));
-      n1.childAtIndexOrNull(1)?.insert(Node(type: 'node_1_2_1'));
+        root.insert(n1);
+        root.insert(n2);
+        n1.insert(Node(type: 'node_1_1'));
+        n1.insert(Node(type: 'node_1_2'));
+        n1.childAtIndexOrNull(0)?.insert(Node(type: 'node_1_1_1'));
+        n1.childAtIndexOrNull(1)?.insert(Node(type: 'node_1_2_1'));
 
-      final nodes = NodeIterator(
-        document: Document(root: root),
-        startNode: root.childAtPath([0])!,
-        endNode: root.childAtPath([1]),
-      ).toList();
+        final nodes = NodeIterator(
+          document: Document(root: root),
+          startNode: root.childAtPath([0])!,
+          endNode: root.childAtPath([1]),
+        ).toList();
 
-      expect(nodes[0].type, n1.type);
-      expect(nodes[1].type, n1.childAtIndexOrNull(0)!.type);
-      expect(nodes[nodes.length - 1].type, n2.type);
-    });
+        expect(nodes[0].type, n1.type);
+        expect(nodes[1].type, n1.childAtIndexOrNull(0)!.type);
+        expect(nodes[nodes.length - 1].type, n2.type);
+      },
+    );
 
     test('toList - when we have Dangling node', () {
       final doc = Document.blank();
       final root = doc.root;
 
-      final nodes = NodeIterator(
-        document: doc,
-        startNode: root,
-      ).toList();
+      final nodes = NodeIterator(document: doc, startNode: root).toList();
 
       expect(nodes.length, 1);
     });

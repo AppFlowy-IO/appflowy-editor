@@ -3,10 +3,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 // We currently have only one format style is triggered by double characters.
 // **abc** or __abc__ -> bold abc
 // If we have more in the future, we should add them in this enum and update the [style] variable in [handleDoubleCharactersFormat].
-enum DoubleCharacterFormatStyle {
-  bold,
-  strikethrough,
-}
+enum DoubleCharacterFormatStyle { bold, strikethrough }
 
 bool handleFormatByWrappingWithDoubleCharacter({
   // for demonstration purpose, the following comments use * to represent the character from the parameter [char].
@@ -96,10 +93,7 @@ bool handleFormatByWrappingWithDoubleCharacter({
   }
 
   // if the text is already formatted, we should remove the format.
-  final sliced = delta.slice(
-    thirdLastCharIndex + 2,
-    selection.end.offset - 1,
-  );
+  final sliced = delta.slice(thirdLastCharIndex + 2, selection.end.offset - 1);
   final result = sliced.everyAttributes((element) => element[style] == true);
 
   final format = editorState.transaction
@@ -107,15 +101,10 @@ bool handleFormatByWrappingWithDoubleCharacter({
       node,
       thirdLastCharIndex,
       selection.end.offset - thirdLastCharIndex - 3,
-      {
-        style: !result,
-      },
+      {style: !result},
     )
     ..afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: selection.end.offset - 3,
-      ),
+      Position(path: path, offset: selection.end.offset - 3),
     );
   editorState.apply(format);
 

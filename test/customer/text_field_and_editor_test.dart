@@ -33,9 +33,7 @@ void main() async {
 
   testWidgets('text field + editor, focus issue', (tester) async {
     final editorState = EditorState.blank();
-    final widget = TextFieldAndEditor(
-      editorState: editorState,
-    );
+    final widget = TextFieldAndEditor(editorState: editorState);
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -60,10 +58,7 @@ void main() async {
 }
 
 class TextFieldAndEditor extends StatelessWidget {
-  TextFieldAndEditor({
-    super.key,
-    this.editorState,
-  });
+  TextFieldAndEditor({super.key, this.editorState});
 
   final controller = TextEditingController();
   final focusNode = FocusNode();
@@ -78,10 +73,7 @@ class TextFieldAndEditor extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextField(
-                controller: controller,
-                focusNode: focusNode,
-              ),
+              TextField(controller: controller, focusNode: focusNode),
               Expanded(
                 child: Container(
                   width: 500,

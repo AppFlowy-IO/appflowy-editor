@@ -139,8 +139,9 @@ void main() async {
       // await editor.dispose();
     });
 
-    testWidgets('backspace on cell and after table node selection',
-        (tester) async {
+    testWidgets('backspace on cell and after table node selection', (
+      tester,
+    ) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cd'],
         ['ef', 'hi'],
@@ -155,14 +156,8 @@ void main() async {
 
       await editor.updateSelection(
         Selection(
-          start: Position(
-            path: cell11.childAtIndexOrNull(0)!.path,
-            offset: 1,
-          ),
-          end: Position(
-            path: editor.document.last!.path,
-            offset: 3,
-          ),
+          start: Position(path: cell11.childAtIndexOrNull(0)!.path, offset: 1),
+          end: Position(path: editor.document.last!.path, offset: 3),
         ),
       );
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
@@ -194,14 +189,8 @@ void main() async {
 
       await editor.updateSelection(
         Selection(
-          start: Position(
-            path: editor.document.first!.path,
-            offset: 1,
-          ),
-          end: Position(
-            path: editor.document.last!.path,
-            offset: 3,
-          ),
+          start: Position(path: editor.document.first!.path, offset: 1),
+          end: Position(path: editor.document.last!.path, offset: 3),
         ),
       );
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
@@ -217,8 +206,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('up arrow key move to above row with same column',
-        (tester) async {
+    testWidgets('up arrow key move to above row with same column', (
+      tester,
+    ) async {
       final tableNode = TableNode.fromList([
         ['ab', 'cde'],
         ['', ''],
@@ -261,8 +251,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('down arrow key move to down row with same column',
-        (tester) async {
+    testWidgets('down arrow key move to down row with same column', (
+      tester,
+    ) async {
       final tableNode = TableNode.fromList([
         ['abc', 'de'],
         ['', ''],

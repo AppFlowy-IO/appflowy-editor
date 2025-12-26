@@ -30,10 +30,9 @@ void main() async {
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), text);
-      expect(
-        after.delta!.toList()[0].attributes,
-        {AppFlowyRichTextKeys.href: link},
-      );
+      expect(after.delta!.toList()[0].attributes, {
+        AppFlowyRichTextKeys.href: link,
+      });
     });
 
     // Before
@@ -61,10 +60,9 @@ void main() async {
       final after = editorState.getNodeAtPath([0])!;
       expect(after.delta!.toPlainText(), 'AppFlowy');
       expect(after.delta!.toList()[0].attributes, null);
-      expect(
-        after.delta!.toList()[1].attributes,
-        {AppFlowyRichTextKeys.href: 'appflowy.com'},
-      );
+      expect(after.delta!.toList()[1].attributes, {
+        AppFlowyRichTextKeys.href: 'appflowy.com',
+      });
     });
 
     // Before
@@ -111,17 +109,14 @@ void main() async {
       final result = await formatMarkdownLinkToLink.execute(editorState);
       expect(result, true);
       final after = editorState.getNodeAtPath([0])!;
-      expect(
-        after.delta!.toJson(),
-        [
-          {'insert': 'Hello '},
-          {
-            'insert': 'AppFlowy',
-            'attributes': {'href': 'appflowy.com'},
-          },
-          {'insert': ' World'},
-        ],
-      );
+      expect(after.delta!.toJson(), [
+        {'insert': 'Hello '},
+        {
+          'insert': 'AppFlowy',
+          'attributes': {'href': 'appflowy.com'},
+        },
+        {'insert': ' World'},
+      ]);
     });
   });
 }

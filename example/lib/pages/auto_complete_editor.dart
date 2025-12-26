@@ -9,9 +9,7 @@ final _options = {
 };
 
 class AutoCompleteEditor extends StatelessWidget {
-  const AutoCompleteEditor({
-    super.key,
-  });
+  const AutoCompleteEditor({super.key});
 
   @override
   Widget build(BuildContext context) {

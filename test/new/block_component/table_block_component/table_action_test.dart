@@ -31,17 +31,14 @@ void main() async {
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.colsLen, 1);
-      expect(
-        tableNode.getCell(0, 0).children.first.toJson(),
-        {
-          "type": "paragraph",
-          "data": {
-            "delta": [
-              {"insert": "3"},
-            ],
-          },
+      expect(tableNode.getCell(0, 0).children.first.toJson(), {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "3"},
+          ],
         },
-      );
+      });
       await editor.dispose();
     });
 
@@ -65,17 +62,14 @@ void main() async {
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.rowsLen, 1);
-      expect(
-        tableNode.getCell(0, 0).children.first.toJson(),
-        {
-          "type": "paragraph",
-          "data": {
-            "delta": [
-              {"insert": "2"},
-            ],
-          },
+      expect(tableNode.getCell(0, 0).children.first.toJson(), {
+        "type": "paragraph",
+        "data": {
+          "delta": [
+            {"insert": "2"},
+          ],
         },
-      );
+      });
 
       await editor.dispose();
     });
@@ -201,13 +195,10 @@ void main() async {
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.colsLen, 3);
-      expect(
-        tableNode.getCell(2, 1).children.first.toJson(),
-        {
-          "type": "paragraph",
-          "data": {"delta": []},
-        },
-      );
+      expect(tableNode.getCell(2, 1).children.first.toJson(), {
+        "type": "paragraph",
+        "data": {"delta": []},
+      });
       expect(tableNode.getColWidth(2), tableNode.config.colDefaultWidth);
       await editor.dispose();
     });
@@ -232,13 +223,10 @@ void main() async {
       tableNode = TableNode(node: tableNode.node);
 
       expect(tableNode.rowsLen, 3);
-      expect(
-        tableNode.getCell(0, 2).children.first.toJson(),
-        {
-          "type": "paragraph",
-          "data": {"delta": []},
-        },
-      );
+      expect(tableNode.getCell(0, 2).children.first.toJson(), {
+        "type": "paragraph",
+        "data": {"delta": []},
+      });
 
       var cell12 = getCellNode(tableNode.node, 1, 2)!;
       expect(tableNode.getRowHeight(2), cell12.children.first.rect.height + 8);

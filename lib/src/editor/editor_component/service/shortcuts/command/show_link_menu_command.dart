@@ -14,9 +14,7 @@ final CommandShortcutEvent showLinkMenuCommand = CommandShortcutEvent(
   handler: _showLinkMenu,
 );
 
-KeyEventResult _showLinkMenu(
-  EditorState editorState,
-) {
+KeyEventResult _showLinkMenu(EditorState editorState) {
   if (PlatformExtension.isMobile) {
     assert(false, 'showLinkMenuCommand is not supported on mobile platform.');
 
@@ -27,8 +25,10 @@ KeyEventResult _showLinkMenu(
   if (selection == null || selection.isCollapsed) {
     return KeyEventResult.ignored;
   }
-  final context =
-      editorState.getNodeAtPath(selection.end.path)?.key.currentContext;
+  final context = editorState
+      .getNodeAtPath(selection.end.path)
+      ?.key
+      .currentContext;
   if (context == null) {
     return KeyEventResult.ignored;
   }
@@ -39,12 +39,7 @@ KeyEventResult _showLinkMenu(
     );
   });
 
-  showLinkMenu(
-    context,
-    editorState,
-    selection,
-    isHref,
-  );
+  showLinkMenu(context, editorState, selection, isHref);
 
   return KeyEventResult.handled;
 }

@@ -25,8 +25,8 @@ Node bulletedListNode({
   return Node(
     type: BulletedListBlockKeys.type,
     attributes: {
-      BulletedListBlockKeys.delta:
-          (delta ?? (Delta()..insert(text ?? ''))).toJson(),
+      BulletedListBlockKeys.delta: (delta ?? (Delta()..insert(text ?? '')))
+          .toJson(),
       if (attributes != null) ...attributes,
       if (textDirection != null)
         BulletedListBlockKeys.textDirection: textDirection,
@@ -36,10 +36,7 @@ Node bulletedListNode({
 }
 
 class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
-  BulletedListBlockComponentBuilder({
-    super.configuration,
-    this.iconBuilder,
-  });
+  BulletedListBlockComponentBuilder({super.configuration, this.iconBuilder});
 
   final BlockIconBuilder? iconBuilder;
 
@@ -53,19 +50,16 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       iconBuilder: iconBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.delta != null;
+  BlockComponentValidate get validate =>
+      (node) => node.delta != null;
 }
 
 class BulletedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -150,8 +144,8 @@ class _BulletedListBlockComponentWidgetState
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyleWithTextSpan(textSpan: textSpan),
-              ),
+                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                  ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
@@ -175,9 +169,7 @@ class _BulletedListBlockComponentWidgetState
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
@@ -195,19 +187,12 @@ class _BulletedListBlockComponentWidgetState
 }
 
 class _BulletedListIcon extends StatelessWidget {
-  const _BulletedListIcon({
-    required this.node,
-    required this.textStyle,
-  });
+  const _BulletedListIcon({required this.node, required this.textStyle});
 
   final Node node;
   final TextStyle textStyle;
 
-  static final bulletedListIcons = [
-    '●',
-    '◯',
-    '□',
-  ];
+  static final bulletedListIcons = ['●', '◯', '□'];
 
   int get level {
     var level = 0;
@@ -226,8 +211,10 @@ class _BulletedListIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor =
-        context.read<EditorState>().editorStyle.textScaleFactor;
+    final textScaleFactor = context
+        .read<EditorState>()
+        .editorStyle
+        .textScaleFactor;
 
     return Container(
       constraints:

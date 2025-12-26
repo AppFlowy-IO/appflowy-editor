@@ -3,16 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-Node columnNode({
-  List<Node>? children,
-  double? width,
-}) {
+Node columnNode({List<Node>? children, double? width}) {
   return Node(
     type: ColumnBlockKeys.type,
     children: children ?? [paragraphNode()],
-    attributes: {
-      ColumnBlockKeys.width: width,
-    },
+    attributes: {ColumnBlockKeys.width: width},
   );
 }
 
@@ -41,7 +36,8 @@ class ColumnBlockComponentBuilder extends BlockComponentBuilder {
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.children.isNotEmpty;
+  BlockComponentValidate get validate =>
+      (node) => node.children.isNotEmpty;
 }
 
 class ColumnBlockComponent extends BlockComponentStatefulWidget {
@@ -89,18 +85,13 @@ class ColumnBlockComponentState extends State<ColumnBlockComponent>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: node.children
           .map(
-            (e) => IntrinsicHeight(
-              child: editorState.renderer.build(context, e),
-            ),
+            (e) =>
+                IntrinsicHeight(child: editorState.renderer.build(context, e)),
           )
           .toList(),
     );
 
-    child = Padding(
-      key: columnKey,
-      padding: padding,
-      child: child,
-    );
+    child = Padding(key: columnKey, padding: padding, child: child);
 
     return child;
   }
@@ -121,9 +112,7 @@ class ColumnBlockComponentState extends State<ColumnBlockComponent>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
     return getRectsInSelection(Selection.invalid()).first;
   }
 

@@ -40,10 +40,7 @@ class HTMLBulletedListNodeParser extends HTMLNodeParser {
     final delta = node.delta ?? Delta();
     final domNodes = deltaHTMLEncoder.convert(delta);
     domNodes.addAll(
-      processChildrenNodes(
-        node.children,
-        encodeParsers: encodeParsers,
-      ),
+      processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
     final element = wrapChildrenNodesWithTagName(
       HTMLTags.list,

@@ -22,9 +22,7 @@ class _FixedToolbarExampleState extends State<FixedToolbarExample> {
     editorState = jsonString.then((value) {
       return EditorState(
         document: Document.fromJson(
-          Map<String, Object>.from(
-            json.decode(value),
-          ),
+          Map<String, Object>.from(json.decode(value)),
         ),
       );
     });
@@ -37,9 +35,7 @@ class _FixedToolbarExampleState extends State<FixedToolbarExample> {
         backgroundColor: Colors.black,
         title: const Text('Fixed Toolbar Example'),
         titleTextStyle: const TextStyle(color: Colors.white),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: FutureBuilder(
         future: editorState,
@@ -50,9 +46,7 @@ class _FixedToolbarExampleState extends State<FixedToolbarExample> {
                   children: [
                     SizedBox(
                       height: 36,
-                      child: _FixedToolbar(
-                        editorState: snapshot.data!,
-                      ),
+                      child: _FixedToolbar(editorState: snapshot.data!),
                     ),
                     const Divider(),
                     FutureBuilder(
@@ -76,9 +70,7 @@ class _FixedToolbarExampleState extends State<FixedToolbarExample> {
 }
 
 class _FixedToolbar extends StatelessWidget {
-  const _FixedToolbar({
-    required this.editorState,
-  });
+  const _FixedToolbar({required this.editorState});
 
   final EditorState editorState;
 
@@ -132,14 +124,13 @@ class _FixedToolbar extends StatelessWidget {
                     editorState.toggleAttribute(AppFlowyRichTextKeys.underline);
                     break;
                   case Icons.format_strikethrough:
-                    editorState
-                        .toggleAttribute(AppFlowyRichTextKeys.strikethrough);
+                    editorState.toggleAttribute(
+                      AppFlowyRichTextKeys.strikethrough,
+                    );
                     break;
                   case Icons.text_fields:
                     editorState.formatNode(null, (node) {
-                      return node.copyWith(
-                        type: ParagraphBlockKeys.type,
-                      );
+                      return node.copyWith(type: ParagraphBlockKeys.type);
                     });
                     break;
                   case Icons.format_list_bulleted:
@@ -229,9 +220,7 @@ class _FixedToolbar extends StatelessWidget {
       return editorState.toggledStyle.containsKey(name);
     } else {
       return nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[name] == true,
-        );
+        return delta.everyAttributes((attributes) => attributes[name] == true);
       });
     }
   }

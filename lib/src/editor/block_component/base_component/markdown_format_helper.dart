@@ -16,16 +16,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 Future<bool> formatMarkdownSymbol(
   EditorState editorState,
   bool Function(Node node) shouldFormat,
-  bool Function(
-    Node node,
-    String text,
-    Selection selection,
-  ) predicate,
-  List<Node> Function(
-    String text,
-    Node node,
-    Delta delta,
-  ) nodesBuilder,
+  bool Function(Node node, String text, Selection selection) predicate,
+  List<Node> Function(String text, Node node, Delta delta) nodesBuilder,
 ) async {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
@@ -53,10 +45,7 @@ Future<bool> formatMarkdownSymbol(
   }
 
   final afterSelection = Selection.collapsed(
-    Position(
-      path: node.path,
-      offset: 0,
-    ),
+    Position(path: node.path, offset: 0),
   );
 
   final formattedNodes = nodesBuilder(text, node, delta);
@@ -64,10 +53,7 @@ Future<bool> formatMarkdownSymbol(
   // Create a transaction that replaces the current node with the
   // formatted node.
   final transaction = editorState.transaction
-    ..insertNodes(
-      node.path,
-      formattedNodes,
-    )
+    ..insertNodes(node.path, formattedNodes)
     ..deleteNode(node)
     ..afterSelection = afterSelection;
 

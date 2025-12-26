@@ -4,11 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 class MobileEditor extends StatefulWidget {
-  const MobileEditor({
-    super.key,
-    required this.editorState,
-    this.editorStyle,
-  });
+  const MobileEditor({super.key, required this.editorState, this.editorStyle});
 
   final EditorState editorState;
   final EditorStyle? editorStyle;
@@ -80,9 +76,7 @@ class _MobileEditorState extends State<MobileEditor> {
                   onLookUp: null,
                   onSearchWeb: null,
                   onShare: null,
-                  anchors: TextSelectionToolbarAnchors(
-                    primaryAnchor: anchor,
-                  ),
+                  anchors: TextSelectionToolbarAnchors(primaryAnchor: anchor),
                 );
               },
               child: AppFlowyEditor(
@@ -94,13 +88,9 @@ class _MobileEditorState extends State<MobileEditor> {
                 // showcase 3: customize the header and footer.
                 header: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Image.asset(
-                    'assets/images/header.png',
-                  ),
+                  child: Image.asset('assets/images/header.png'),
                 ),
-                footer: const SizedBox(
-                  height: 100,
-                ),
+                footer: const SizedBox(height: 100),
               ),
             ),
           ),
@@ -117,13 +107,8 @@ class _MobileEditorState extends State<MobileEditor> {
       dragHandleColor: const Color.fromARGB(255, 134, 46, 247),
       selectionColor: const Color.fromARGB(50, 134, 46, 247),
       textStyleConfiguration: TextStyleConfiguration(
-        text: GoogleFonts.poppins(
-          fontSize: 14,
-          color: Colors.black,
-        ),
-        code: GoogleFonts.sourceCodePro(
-          backgroundColor: Colors.grey.shade200,
-        ),
+        text: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+        code: GoogleFonts.sourceCodePro(backgroundColor: Colors.grey.shade200),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       magnifierSize: const Size(144, 96),
@@ -137,18 +122,9 @@ class _MobileEditorState extends State<MobileEditor> {
 
   // showcase 2: customize the block style
   Map<String, BlockComponentBuilder> _buildBlockComponentBuilders() {
-    final map = {
-      ...standardBlockComponentBuilderMap,
-    };
+    final map = {...standardBlockComponentBuilderMap};
     // customize the heading block component
-    final levelToFontSize = [
-      24.0,
-      22.0,
-      20.0,
-      18.0,
-      16.0,
-      14.0,
-    ];
+    final levelToFontSize = [24.0, 22.0, 20.0, 18.0, 16.0, 14.0];
     map[HeadingBlockKeys.type] = HeadingBlockComponentBuilder(
       textStyleBuilder: (level) => GoogleFonts.poppins(
         fontSize: levelToFontSize.elementAtOrNull(level - 1) ?? 14.0,

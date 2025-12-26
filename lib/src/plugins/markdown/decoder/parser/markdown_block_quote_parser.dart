@@ -21,10 +21,6 @@ class MarkdownBlockQuoteParserV2 extends CustomMarkdownParser {
 
     final deltaDecoder = DeltaMarkdownDecoder();
 
-    return [
-      quoteNode(
-        delta: deltaDecoder.convertNodes(element.children),
-      ),
-    ];
+    return [quoteNode(delta: deltaDecoder.convertNodes(element.children))];
   }
 }

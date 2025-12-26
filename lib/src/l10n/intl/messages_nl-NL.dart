@@ -22,22 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("Vet"),
-        "bulletedList":
-            MessageLookupByLibrary.simpleMessage("Opsommingstekens"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("Selectievakje"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("Invoegcode"),
-        "heading1": MessageLookupByLibrary.simpleMessage("H1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("H2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("H3"),
-        "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
-        "image": MessageLookupByLibrary.simpleMessage("Afbeelding"),
-        "italic": MessageLookupByLibrary.simpleMessage("Cursief"),
-        "link": MessageLookupByLibrary.simpleMessage(""),
-        "numberedList": MessageLookupByLibrary.simpleMessage("Nummering"),
-        "quote": MessageLookupByLibrary.simpleMessage("Quote"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("Doorhalen"),
-        "text": MessageLookupByLibrary.simpleMessage("Tekst"),
-        "underline": MessageLookupByLibrary.simpleMessage("Onderstrepen")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("Vet"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage("Opsommingstekens"),
+    "checkbox": MessageLookupByLibrary.simpleMessage("Selectievakje"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("Invoegcode"),
+    "heading1": MessageLookupByLibrary.simpleMessage("H1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("H2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("H3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("Highlight"),
+    "image": MessageLookupByLibrary.simpleMessage("Afbeelding"),
+    "italic": MessageLookupByLibrary.simpleMessage("Cursief"),
+    "link": MessageLookupByLibrary.simpleMessage(""),
+    "numberedList": MessageLookupByLibrary.simpleMessage("Nummering"),
+    "quote": MessageLookupByLibrary.simpleMessage("Quote"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("Doorhalen"),
+    "text": MessageLookupByLibrary.simpleMessage("Tekst"),
+    "underline": MessageLookupByLibrary.simpleMessage("Onderstrepen"),
+  };
 }

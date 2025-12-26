@@ -37,10 +37,7 @@ Future<bool> insertNewLineInType(
   await editorState.insertNewLine(
     nodeBuilder: (node) => node.copyWith(
       type: type,
-      attributes: {
-        ...node.attributes,
-        ...attributes,
-      },
+      attributes: {...node.attributes, ...attributes},
     ),
   );
 

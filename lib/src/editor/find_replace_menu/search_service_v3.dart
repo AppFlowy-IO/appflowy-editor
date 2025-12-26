@@ -6,9 +6,7 @@ import 'package:flutter/widgets.dart';
 const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
 
 class SearchServiceV3 {
-  SearchServiceV3({
-    required this.editorState,
-  });
+  SearchServiceV3({required this.editorState});
 
   final EditorState editorState;
 
@@ -60,8 +58,9 @@ class SearchServiceV3 {
   }
 
   String _getRegexReplaced(String replaceText, Match match) {
-    List<String?> groups = match
-        .groups(List<int>.generate(match.groupCount + 1, (index) => index));
+    List<String?> groups = match.groups(
+      List<int>.generate(match.groupCount + 1, (index) => index),
+    );
 
     String replacedText = replaceText;
     for (int i = 0; i <= match.groupCount; i++) {
@@ -108,10 +107,7 @@ class SearchServiceV3 {
   /// Finds the pattern in editorState.document and stores it in matchedPositions.
   /// Calls the highlightMatch method to highlight the pattern
   /// if it is found.
-  void _findAndHighlight(
-    Pattern pattern, {
-    bool unHighlight = false,
-  }) {
+  void _findAndHighlight(Pattern pattern, {bool unHighlight = false}) {
     matchWrappers.value = _getMatchWrappers(
       pattern: pattern,
       nodes: editorState.document.root.children,
@@ -121,15 +117,11 @@ class SearchServiceV3 {
       editorState.updateSelectionWithReason(
         null,
         reason: SelectionUpdateReason.searchHighlight,
-        extraInfo: {
-          selectionExtraInfoDoNotAttachTextService: true,
-        },
+        extraInfo: {selectionExtraInfoDoNotAttachTextService: true},
       );
     } else {
       selectedIndex = selectedIndex;
-      _highlightCurrentMatch(
-        pattern,
-      );
+      _highlightCurrentMatch(pattern);
     }
   }
 
@@ -145,22 +137,16 @@ class SearchServiceV3 {
         // we will store this list of offsets along with their path,
         // in a list of positions.
         for (Match match in matches) {
-          result.add(
-            MatchWrapper(match, node.path),
-          );
+          result.add(MatchWrapper(match, node.path));
         }
       }
-      result.addAll(
-        _getMatchWrappers(pattern: pattern, nodes: node.children),
-      );
+      result.addAll(_getMatchWrappers(pattern: pattern, nodes: node.children));
     }
 
     return result;
   }
 
-  void _highlightCurrentMatch(
-    Pattern pattern,
-  ) {
+  void _highlightCurrentMatch(Pattern pattern) {
     final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
 
     editorState.scrollService?.jumpTo(path.first);
@@ -266,9 +252,9 @@ class MatchWrapper {
   final Path path;
 
   Selection get selection => Selection(
-        start: Position(path: path, offset: match.start),
-        end: Position(path: path, offset: match.end),
-      );
+    start: Position(path: path, offset: match.start),
+    end: Position(path: path, offset: match.end),
+  );
 }
 
 extension on Pattern {

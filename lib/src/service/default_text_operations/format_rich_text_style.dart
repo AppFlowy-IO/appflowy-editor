@@ -1,44 +1,26 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 void insertHeadingAfterSelection(EditorState editorState, int level) {
-  insertNodeAfterSelection(
-    editorState,
-    headingNode(level: level),
-  );
+  insertNodeAfterSelection(editorState, headingNode(level: level));
 }
 
 void insertQuoteAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
-    editorState,
-    quoteNode(),
-  );
+  insertNodeAfterSelection(editorState, quoteNode());
 }
 
 void insertCheckboxAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
-    editorState,
-    todoListNode(checked: false),
-  );
+  insertNodeAfterSelection(editorState, todoListNode(checked: false));
 }
 
 void insertBulletedListAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
-    editorState,
-    bulletedListNode(),
-  );
+  insertNodeAfterSelection(editorState, bulletedListNode());
 }
 
 void insertNumberedListAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
-    editorState,
-    numberedListNode(),
-  );
+  insertNodeAfterSelection(editorState, numberedListNode());
 }
 
-bool insertNodeAfterSelection(
-  EditorState editorState,
-  Node node,
-) {
+bool insertNodeAfterSelection(EditorState editorState, Node node) {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
     return false;
@@ -59,8 +41,9 @@ bool insertNodeAfterSelection(
     transaction
       ..insertNode(selection.end.path, node)
       ..deleteNode(currentNode)
-      ..afterSelection =
-          Selection.collapsed(Position(path: selection.end.path));
+      ..afterSelection = Selection.collapsed(
+        Position(path: selection.end.path),
+      );
   } else {
     final next = selection.end.path.next;
     transaction

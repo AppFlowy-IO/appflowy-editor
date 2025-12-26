@@ -13,18 +13,17 @@ void main() async {
     // After
     // ' '
     test('mock inputting a ` ` after the >', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '',
-        0,
-        (result, before, after, editorState) {
-          expect(result, false);
-          expect(before.delta!.toPlainText(), '');
-          expect(after.delta!.toPlainText(), '');
-          expect(after.type != HeadingBlockKeys.type, true);
-        },
-        text: '',
-      );
+      testFormatCharacterShortcut(formatSignToHeading, '', 0, (
+        result,
+        before,
+        after,
+        editorState,
+      ) {
+        expect(result, false);
+        expect(before.delta!.toPlainText(), '');
+        expect(after.delta!.toPlainText(), '');
+        expect(after.type != HeadingBlockKeys.type, true);
+      }, text: '');
     });
 
     // Before
@@ -33,17 +32,16 @@ void main() async {
     // [heading] Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
       for (var i = 1; i <= 6; i++) {
-        testFormatCharacterShortcut(
-          formatSignToHeading,
-          '#' * i,
-          i,
-          (result, before, after, editorState) {
-            expect(result, true);
-            expect(after.delta!.toPlainText(), text);
-            expect(after.type, 'heading');
-          },
-          text: text,
-        );
+        testFormatCharacterShortcut(formatSignToHeading, '#' * i, i, (
+          result,
+          before,
+          after,
+          editorState,
+        ) {
+          expect(result, true);
+          expect(after.delta!.toPlainText(), text);
+          expect(after.type, 'heading');
+        }, text: text);
       }
     });
 
@@ -52,17 +50,16 @@ void main() async {
     // After
     // #######|Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '#' * 7,
-        7,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
-      );
+      testFormatCharacterShortcut(formatSignToHeading, '#' * 7, 7, (
+        result,
+        before,
+        after,
+        editorState,
+      ) {
+        // nothing happens
+        expect(result, false);
+        expect(before.toJson(), after.toJson());
+      }, text: text);
     });
 
     // Before
@@ -70,17 +67,16 @@ void main() async {
     // After
     // >W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '#',
-        2,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
-      );
+      testFormatCharacterShortcut(formatSignToHeading, '#', 2, (
+        result,
+        before,
+        after,
+        editorState,
+      ) {
+        // nothing happens
+        expect(result, false);
+        expect(before.toJson(), after.toJson());
+      }, text: text);
     });
 
     // Before
@@ -90,32 +86,27 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!
     //[quote] Welcome to AppFlowy Editor 🔥!
     test(
-        'mock inputting a ` ` in the middle of the node, and there\'s a other node at the front of it.',
-        () async {
-      const text = 'Welcome to AppFlowy Editor 🔥!';
-      final document = Document.blank()
-          .addParagraph(
-            initialText: text,
-          )
-          .addParagraph(
-            initialText: '#$text',
-          );
-      final editorState = EditorState(document: document);
+      'mock inputting a ` ` in the middle of the node, and there\'s a other node at the front of it.',
+      () async {
+        const text = 'Welcome to AppFlowy Editor 🔥!';
+        final document = Document.blank()
+            .addParagraph(initialText: text)
+            .addParagraph(initialText: '#$text');
+        final editorState = EditorState(document: document);
 
-      // Welcome to AppFlowy Editor 🔥!
-      // *|Welcome to AppFlowy Editor 🔥!
-      final selection = Selection.collapsed(
-        Position(path: [1], offset: 1),
-      );
-      editorState.selection = selection;
-      final result = await formatSignToHeading.execute(editorState);
-      final after = editorState.getNodeAtPath([1])!;
+        // Welcome to AppFlowy Editor 🔥!
+        // *|Welcome to AppFlowy Editor 🔥!
+        final selection = Selection.collapsed(Position(path: [1], offset: 1));
+        editorState.selection = selection;
+        final result = await formatSignToHeading.execute(editorState);
+        final after = editorState.getNodeAtPath([1])!;
 
-      // the second line will be formatted as the bulleted list style
-      expect(result, true);
-      expect(after.type, 'heading');
-      expect(after.delta!.toPlainText(), text);
-    });
+        // the second line will be formatted as the bulleted list style
+        expect(result, true);
+        expect(after.type, 'heading');
+        expect(after.delta!.toPlainText(), text);
+      },
+    );
 
     test('convert bulleted_list to heading', () async {
       const syntax = '#';

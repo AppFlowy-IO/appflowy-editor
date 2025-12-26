@@ -17,31 +17,33 @@ void main() async {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
+          switch (message.method) {
+            case "Clipboard.getData":
+              return mockClipboard.getData;
 
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
+            case "Clipboard.setData":
+              final args = message.arguments as Map<String, dynamic>;
+              mockClipboard = mockClipboard.copyWith(text: args['text']);
+          }
 
-      return null;
-    });
+          return null;
+        });
   });
   group('copy_paste_handler_test.dart', () {
-    testWidgets('Presses Command + A in small document and copy text',
-        (tester) async {
+    testWidgets('Presses Command + A in small document and copy text', (
+      tester,
+    ) async {
       await _testHandleCopy(tester, Document.fromJson(paragraphData));
     });
-    testWidgets('Presses Command + A in small document and copy text same node',
-        (tester) async {
-      await _testSameNodeCopyPaste(tester, Document.fromJson(paragraphData));
-    });
-    testWidgets('Presses Command + A in nested document and copy text',
-        (tester) async {
+    testWidgets(
+      'Presses Command + A in small document and copy text same node',
+      (tester) async {
+        await _testSameNodeCopyPaste(tester, Document.fromJson(paragraphData));
+      },
+    );
+    testWidgets('Presses Command + A in nested document and copy text', (
+      tester,
+    ) async {
       await _testHandleCopy(tester, Document.fromJson(data));
     });
     // TODO: fix this test
@@ -57,10 +59,7 @@ void main() async {
   });
 }
 
-Future<void> _testCutHandle(
-  WidgetTester tester,
-  Document document,
-) async {
+Future<void> _testCutHandle(WidgetTester tester, Document document) async {
   final editor = tester.editor..initializeWithDocument(document);
 
   await editor.updateSelection(
@@ -87,8 +86,9 @@ Future<void> _testHandleCopy(WidgetTester tester, Document document) async {
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  final text =
-      editor.editorState.getTextInSelection(editor.selection).join('\n');
+  final text = editor.editorState
+      .getTextInSelection(editor.selection)
+      .join('\n');
   handleCopy(editor.editorState);
   final clipBoardData = await AppFlowyClipboard.getData();
   //this will be null because html content is not testable
@@ -119,10 +119,7 @@ Future<void> _testSameNodeCopyPaste(
     ),
   );
   pasteHTML(editor.editorState, documentToHTML(document));
-  expect(
-    editor.editorState.document.toJson(),
-    sameNodeParagraph,
-  );
+  expect(editor.editorState.document.toJson(), sameNodeParagraph);
 
   await editor.dispose();
 }
@@ -207,10 +204,10 @@ const paragraphData = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -241,10 +238,10 @@ const sameNodeParagraph = {
             {
               "insert": "rich-text editor",
               "attributes": {"italic": true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -261,7 +258,7 @@ const nestedNodeParagraph = {
             {
               "insert": "We",
               "attributes": {"bold": true},
-            }
+            },
           ],
         },
       },
@@ -282,7 +279,7 @@ const nestedNodeParagraph = {
                 "bold": true,
                 "italic": true,
               },
-            }
+            },
           ],
           "level": 2,
         },
@@ -309,7 +306,7 @@ const nestedNodeParagraph = {
             {
               "insert": "Flutter",
               "attributes": {"underline": true},
-            }
+            },
           ],
         },
       },
@@ -397,7 +394,7 @@ const nestedNodeParagraph = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -412,7 +409,7 @@ const nestedNodeParagraph = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
       },
@@ -433,7 +430,7 @@ const nestedNodeParagraph = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -460,7 +457,7 @@ const nestedNodeParagraph = {
             {
               "insert": "Flutter",
               "attributes": {"underline": true},
-            }
+            },
           ],
         },
       },
@@ -544,7 +541,7 @@ const nestedNodeParagraph = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -559,10 +556,10 @@ const nestedNodeParagraph = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -593,7 +590,7 @@ const data = {
             {
               'insert': 'AppFlowy Editor',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -610,7 +607,7 @@ const data = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -640,7 +637,7 @@ const data = {
             {
               'insert': 'Span element',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -652,7 +649,7 @@ const data = {
             {
               'insert': 'Span element two',
               'attributes': {'underline': true},
-            }
+            },
           ],
         },
       },
@@ -664,7 +661,7 @@ const data = {
             {
               'insert': 'Span element three',
               'attributes': {'bold': true, 'strikethrough': true},
-            }
+            },
           ],
         },
       },
@@ -676,7 +673,7 @@ const data = {
             {
               'insert': 'This is an anchor tag!',
               'attributes': {'href': 'https://appflowy.io'},
-            }
+            },
           ],
         },
       },
@@ -752,7 +749,7 @@ const data = {
             {
               'insert': ' Code block',
               'attributes': {'code': true},
-            }
+            },
           ],
         },
       },
@@ -764,7 +761,7 @@ const data = {
             {
               'insert': 'Italic one',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -776,7 +773,7 @@ const data = {
             {
               'insert': 'Italic two',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -788,7 +785,7 @@ const data = {
             {
               'insert': 'Bold tag',
               'attributes': {'bold': true},
-            }
+            },
           ],
         },
       },
@@ -821,7 +818,7 @@ const data = {
             {
               'insert':
                   'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!',
-            }
+            },
           ],
         },
       },
@@ -832,7 +829,7 @@ const data = {
       {
         'type': 'paragraph',
         'data': {'delta': []},
-      }
+      },
     ],
   },
 };
@@ -858,7 +855,7 @@ const exampledoc = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -885,7 +882,7 @@ const exampledoc = {
             {
               "insert": "Flutter",
               "attributes": {"underline": true},
-            }
+            },
           ],
         },
       },
@@ -969,7 +966,7 @@ const exampledoc = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -984,10 +981,10 @@ const exampledoc = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -1017,7 +1014,7 @@ const cutData = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -1044,7 +1041,7 @@ const cutData = {
             {
               "insert": "Flutter",
               "attributes": {"underline": true},
-            }
+            },
           ],
         },
       },
@@ -1128,7 +1125,7 @@ const cutData = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -1143,10 +1140,10 @@ const cutData = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };
@@ -1172,7 +1169,7 @@ const afterCut = {
                 "italic": true,
                 "bold": true,
               },
-            }
+            },
           ],
         },
       },
@@ -1264,7 +1261,7 @@ const afterCut = {
             {
               "insert":
                   "Select text to trigger to the toolbar to format your notes.",
-            }
+            },
           ],
         },
       },
@@ -1279,10 +1276,10 @@ const afterCut = {
             {
               "insert":
                   "If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

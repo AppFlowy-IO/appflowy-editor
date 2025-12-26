@@ -17,9 +17,7 @@ final ToolbarItem quoteItem = ToolbarItem(
       iconColor: iconColor,
       onPressed: () => editorState.formatNode(
         selection,
-        (node) => node.copyWith(
-          type: isHighlight ? 'paragraph' : 'quote',
-        ),
+        (node) => node.copyWith(type: isHighlight ? 'paragraph' : 'quote'),
       ),
     );
 

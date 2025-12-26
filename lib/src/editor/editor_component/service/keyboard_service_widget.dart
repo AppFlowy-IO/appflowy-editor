@@ -64,8 +64,9 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         return true;
       },
     );
-    editorState.service.selectionService
-        .registerGestureInterceptor(interceptor);
+    editorState.service.selectionService.registerGestureInterceptor(
+      interceptor,
+    );
 
     textInputService = buildTextInputService();
 
@@ -272,7 +273,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     // we should clear the composing range on Android.
     final shouldClearComposingRange =
         editorState.selectionType == SelectionType.inline &&
-            editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent;
+        editorState.selectionUpdateReason == SelectionUpdateReason.uiEvent;
 
     if (PlatformExtension.isAndroid && shouldClearComposingRange) {
       textInputService.clearComposingTextRange();
@@ -381,11 +382,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           }
         }
 
-        await onInsert(
-          insertion,
-          editorState,
-          widget.characterShortcutEvents,
-        );
+        await onInsert(insertion, editorState, widget.characterShortcutEvents);
 
         return true;
       },
@@ -404,10 +401,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           }
         }
 
-        await onDelete(
-          deletion,
-          editorState,
-        );
+        await onDelete(deletion, editorState);
 
         return true;
       },
@@ -474,10 +468,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           }
         }
 
-        await onPerformAction(
-          action,
-          editorState,
-        );
+        await onPerformAction(action, editorState);
       },
       onFloatingCursor: (point) async {
         for (final interceptor in interceptors) {
@@ -494,10 +485,7 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
           }
         }
 
-        await onFloatingCursorUpdate(
-          point,
-          editorState,
-        );
+        await onFloatingCursorUpdate(point, editorState);
       },
       contentInsertionConfiguration: widget.contentInsertionConfiguration,
     );

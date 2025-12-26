@@ -15,9 +15,7 @@ extension BuildAndPump on WidgetTester {
         ],
         supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
         locale: const Locale('en'),
-        home: Scaffold(
-          body: child,
-        ),
+        home: Scaffold(body: child),
       ),
     );
     await pump();

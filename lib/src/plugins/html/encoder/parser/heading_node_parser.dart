@@ -28,8 +28,10 @@ class HTMLHeadingNodeParser extends HTMLNodeParser {
       processChildrenNodes(node.children, encodeParsers: encodeParsers),
     );
     final tagName = 'h${node.attributes[HeadingBlockKeys.level]}';
-    final element =
-        wrapChildrenNodesWithTagName(tagName, childNodes: convertedNodes);
+    final element = wrapChildrenNodesWithTagName(
+      tagName,
+      childNodes: convertedNodes,
+    );
 
     return [element];
   }

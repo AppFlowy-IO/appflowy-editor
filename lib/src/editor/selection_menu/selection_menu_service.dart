@@ -227,38 +227,26 @@ class SelectionMenu extends SelectionMenuService {
     final bottomRight = rect.bottomRight;
     final topRight = rect.topRight;
     var offset = bottomRight + menuOffset;
-    _offset = Offset(
-      offset.dx,
-      offset.dy,
-    );
+    _offset = Offset(offset.dx, offset.dy);
 
     // show above
     if (offset.dy + menuHeight >= editorOffset.dy + editorHeight) {
       offset = topRight - menuOffset;
       _alignment = Alignment.bottomLeft;
 
-      _offset = Offset(
-        offset.dx,
-        editorHeight + editorOffset.dy - offset.dy,
-      );
+      _offset = Offset(offset.dx, editorHeight + editorOffset.dy - offset.dy);
     }
 
     // show on right
     if (_offset.dx + menuWidth < editorOffset.dx + editorWidth) {
-      _offset = Offset(
-        _offset.dx,
-        _offset.dy,
-      );
+      _offset = Offset(_offset.dx, _offset.dy);
     } else if (offset.dx - editorOffset.dx > menuWidth) {
       // show on left
       _alignment = _alignment == Alignment.topLeft
           ? Alignment.topRight
           : Alignment.bottomRight;
 
-      _offset = Offset(
-        editorWidth - _offset.dx + editorOffset.dx,
-        _offset.dy,
-      );
+      _offset = Offset(editorWidth - _offset.dx + editorOffset.dx, _offset.dy);
     }
   }
 }

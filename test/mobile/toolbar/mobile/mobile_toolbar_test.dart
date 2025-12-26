@@ -30,8 +30,9 @@ void main() {
       expect(find.byType(SizedBox), findsOneWidget);
     });
 
-    testWidgets('show MobileToolbarWidget when some text is selected ',
-        (tester) async {
+    testWidgets('show MobileToolbarWidget when some text is selected ', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();

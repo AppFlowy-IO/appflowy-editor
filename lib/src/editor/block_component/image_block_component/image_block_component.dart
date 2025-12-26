@@ -47,10 +47,8 @@ Node imageNode({
   );
 }
 
-typedef ImageBlockComponentMenuBuilder = Widget Function(
-  Node node,
-  ImageBlockComponentWidgetState state,
-);
+typedef ImageBlockComponentMenuBuilder =
+    Widget Function(Node node, ImageBlockComponentWidgetState state);
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
@@ -74,14 +72,10 @@ class ImageBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       showActions: showActions(node),
       configuration: configuration,
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
       showMenu: showMenu,
       menuBuilder: menuBuilder,
     );
@@ -148,7 +142,8 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     final alignment = AlignmentExtension.fromString(
       attributes[ImageBlockKeys.align] ?? 'center',
     );
-    final width = attributes[ImageBlockKeys.width]?.toDouble() ??
+    final width =
+        attributes[ImageBlockKeys.width]?.toDouble() ??
         MediaQuery.of(context).size.width;
     final height = attributes[ImageBlockKeys.height]?.toDouble();
 
@@ -160,18 +155,12 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       alignment: alignment,
       onResize: (width) {
         final transaction = editorState.transaction
-          ..updateNode(node, {
-            ImageBlockKeys.width: width,
-          });
+          ..updateNode(node, {ImageBlockKeys.width: width});
         editorState.apply(transaction);
       },
     );
 
-    child = Padding(
-      key: imageKey,
-      padding: padding,
-      child: child,
-    );
+    child = Padding(key: imageKey, padding: padding, child: child);
 
     child = BlockSelectionContainer(
       node: node,
@@ -179,9 +168,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
@@ -246,9 +233,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
     final imageBox = imageKey.currentContext?.findRenderObject();
     if (imageBox is RenderBox) {
       return Offset.zero & imageBox.size;
@@ -291,17 +276,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   }
 
   @override
-  Selection getSelectionInRange(Offset start, Offset end) => Selection.single(
-        path: widget.node.path,
-        startOffset: 0,
-        endOffset: 1,
-      );
+  Selection getSelectionInRange(Offset start, Offset end) =>
+      Selection.single(path: widget.node.path, startOffset: 0, endOffset: 1);
 
   @override
-  Offset localToGlobal(
-    Offset offset, {
-    bool shiftWithBaseOffset = false,
-  }) =>
+  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false}) =>
       _renderBox!.localToGlobal(offset);
 }
 

@@ -9,8 +9,9 @@ void main() async {
   });
 
   group('slash_handler.dart', () {
-    testWidgets('Presses / to trigger selection menu in 0 index',
-        (tester) async {
+    testWidgets('Presses / to trigger selection menu in 0 index', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       const lines = 3;
       final editor = tester.editor;
@@ -38,8 +39,9 @@ void main() async {
       );
     });
 
-    testWidgets('Presses / to trigger selection menu in not 0 index',
-        (tester) async {
+    testWidgets('Presses / to trigger selection menu in not 0 index', (
+      tester,
+    ) async {
       const text = 'Welcome to Appflowy 😁';
       const lines = 3;
       final editor = tester.editor;

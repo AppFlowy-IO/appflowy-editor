@@ -12,5 +12,7 @@ bool isUri(String text) {
 /// return true if the text looks like [xxx://xxx]
 bool isCustomUrL(String text) => customUrlRegex.hasMatch(text);
 
-final customUrlRegex =
-    RegExp(r'^[a-zA-Z0-9]+:\/\/[^\/\s].*$', caseSensitive: false);
+final customUrlRegex = RegExp(
+  r'^[a-zA-Z0-9]+:\/\/[^\/\s].*$',
+  caseSensitive: false,
+);

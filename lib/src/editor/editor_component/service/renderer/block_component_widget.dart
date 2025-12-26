@@ -82,7 +82,8 @@ class _BlockComponentStatefulWidgetState
 }
 
 mixin NestedBlockComponentStatefulWidgetMixin<
-        T extends BlockComponentStatefulWidget>
+  T extends BlockComponentStatefulWidget
+>
     on State<T>, BlockComponentBackgroundColorMixin {
   late final editorState = Provider.of<EditorState>(context, listen: false);
 
@@ -118,8 +119,9 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final left =
-          node.selectable?.getBlockRect(shiftWithBaseOffset: true).left;
+      final left = node.selectable
+          ?.getBlockRect(shiftWithBaseOffset: true)
+          .left;
       if (cachedLeft != left) {
         setState(() => cachedLeft = left);
       }
@@ -138,9 +140,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
       children: [
         Positioned.fill(
           left: cachedLeft,
-          child: Container(
-            decoration: decoration,
-          ),
+          child: Container(decoration: decoration),
         ),
         NestedListWidget(
           indentPadding: indentPadding,

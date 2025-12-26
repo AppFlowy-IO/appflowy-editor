@@ -62,13 +62,12 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
     final document = Document.blank()
       ..addParagraph(
         builder: (index) {
-          return Delta()
-            ..insert(
-              '\$',
-              attributes: {
-                'mention': {'id': 'PAGE_ID'},
-              },
-            );
+          return Delta()..insert(
+            '\$',
+            attributes: {
+              'mention': {'id': 'PAGE_ID'},
+            },
+          );
         },
       );
     final editorState = EditorState(document: document);
@@ -78,9 +77,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
         body: SafeArea(
           child: Container(
             width: 500,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: editorStyle,

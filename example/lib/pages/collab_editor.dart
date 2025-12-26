@@ -10,10 +10,12 @@ class CollabEditor extends StatefulWidget {
 }
 
 class _CollabEditorState extends State<CollabEditor> {
-  final EditorState editorStateA =
-      EditorState(document: Document.blank(withInitialText: true));
-  final EditorState editorStateB =
-      EditorState(document: Document.blank(withInitialText: true));
+  final EditorState editorStateA = EditorState(
+    document: Document.blank(withInitialText: true),
+  );
+  final EditorState editorStateB = EditorState(
+    document: Document.blank(withInitialText: true),
+  );
 
   @override
   void initState() {
@@ -48,17 +50,9 @@ class _CollabEditorState extends State<CollabEditor> {
     return Scaffold(
       body: Row(
         children: [
-          Expanded(
-            child: AppFlowyEditor(
-              editorState: editorStateA,
-            ),
-          ),
+          Expanded(child: AppFlowyEditor(editorState: editorStateA)),
           const VerticalDivider(),
-          Expanded(
-            child: AppFlowyEditor(
-              editorState: editorStateB,
-            ),
-          ),
+          Expanded(child: AppFlowyEditor(editorState: editorStateB)),
         ],
       ),
     );

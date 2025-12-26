@@ -106,187 +106,192 @@ void main() async {
     //  calculateTextDirection but it doesn't catch it. Commenting the callback
     //  out doesn't make this test fail.
     testWidgets(
-        "indent AUTO line under AUTO line changing the second line calculated direction",
-        (tester) async {
-      final editor = await indentTestHelper(
-        tester,
-        ('سلام', blockComponentTextDirectionAuto),
-        ('س', blockComponentTextDirectionAuto),
-      );
+      "indent AUTO line under AUTO line changing the second line calculated direction",
+      (tester) async {
+        final editor = await indentTestHelper(
+          tester,
+          ('سلام', blockComponentTextDirectionAuto),
+          ('س', blockComponentTextDirectionAuto),
+        );
 
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
 
-      Node node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+        Node node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, _padding);
+        expect(nestedBlock?.indentPadding.left, 0);
+        expect(nestedBlock?.indentPadding.right, _padding);
 
-      final selection = Selection.single(
-        path: [0, 0],
-        startOffset: 0,
-        endOffset: 1,
-      );
-      await editor.updateSelection(selection);
-      await editor.ime.typeText('a');
+        final selection = Selection.single(
+          path: [0, 0],
+          startOffset: 0,
+          endOffset: 1,
+        );
+        await editor.updateSelection(selection);
+        await editor.ime.typeText('a');
 
-      node = editor.nodeAtPath([0])!;
-      final nestedBlockAfter = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+        node = editor.nodeAtPath([0])!;
+        final nestedBlockAfter = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      expect(nestedBlockAfter?.indentPadding.left, _padding);
-      expect(nestedBlockAfter?.indentPadding.right, 0);
+        expect(nestedBlockAfter?.indentPadding.left, _padding);
+        expect(nestedBlockAfter?.indentPadding.right, 0);
 
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
   });
-  group('indentCommand (multi-line) - widget test multi-line indent padding',
-      () {
-    testWidgets("indent 2 LTR lines under LTR line", (tester) async {
-      final editor = await multiLineIndentTestHelper(
+  group(
+    'indentCommand (multi-line) - widget test multi-line indent padding',
+    () {
+      testWidgets("indent 2 LTR lines under LTR line", (tester) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('Hello', blockComponentTextDirectionLTR),
+          ('Will indent this', blockComponentTextDirectionLTR),
+          ('Third Line', blockComponentTextDirectionLTR),
+        );
+
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+
+        expect(nestedBlock?.indentPadding.left, _padding);
+        expect(nestedBlock?.indentPadding.right, 0);
+
+        await editor.dispose();
+      });
+
+      testWidgets("indent two LTR lines under RTL line", (tester) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('سلام', blockComponentTextDirectionRTL),
+          ('Will indent this', blockComponentTextDirectionLTR),
+          ('Third Line', blockComponentTextDirectionLTR),
+        );
+
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+
+        expect(nestedBlock?.indentPadding.left, _padding);
+        expect(nestedBlock?.indentPadding.right, 0);
+
+        await editor.dispose();
+      });
+
+      testWidgets("indent two RTL lines under RTL line", (tester) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('سلام', blockComponentTextDirectionRTL),
+          ('خط دوم', blockComponentTextDirectionRTL),
+          ('خط سوم', blockComponentTextDirectionRTL),
+        );
+
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+
+        expect(nestedBlock?.indentPadding.left, 0);
+        expect(nestedBlock?.indentPadding.right, _padding);
+
+        await editor.dispose();
+      });
+
+      testWidgets("indent two RTL lines under LTR line", (tester) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('Hello', blockComponentTextDirectionLTR),
+          ('خط دوم', blockComponentTextDirectionRTL),
+          ('خط سوم', blockComponentTextDirectionRTL),
+        );
+
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+
+        expect(nestedBlock?.indentPadding.left, 0);
+        expect(nestedBlock?.indentPadding.right, _padding);
+
+        await editor.dispose();
+      });
+
+      testWidgets("indent one RTL line and one LTR line under LTR line", (
         tester,
-        ('Hello', blockComponentTextDirectionLTR),
-        ('Will indent this', blockComponentTextDirectionLTR),
-        ('Third Line', blockComponentTextDirectionLTR),
-      );
+      ) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('Hello', blockComponentTextDirectionLTR),
+          ('خط دوم', blockComponentTextDirectionRTL),
+          ('Third Line', blockComponentTextDirectionLTR),
+        );
 
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
 
-      expect(nestedBlock?.indentPadding.left, _padding);
-      expect(nestedBlock?.indentPadding.right, 0);
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      await editor.dispose();
-    });
+        expect(nestedBlock?.indentPadding.left, 0);
+        expect(nestedBlock?.indentPadding.right, _padding);
 
-    testWidgets("indent two LTR lines under RTL line", (tester) async {
-      final editor = await multiLineIndentTestHelper(
+        await editor.dispose();
+      });
+
+      testWidgets("indent one LTR line and one RTL lines under RTL line", (
         tester,
-        ('سلام', blockComponentTextDirectionRTL),
-        ('Will indent this', blockComponentTextDirectionLTR),
-        ('Third Line', blockComponentTextDirectionLTR),
-      );
+      ) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('سلام', blockComponentTextDirectionRTL),
+          ('Will indent this', blockComponentTextDirectionLTR),
+          ('خط سوم', blockComponentTextDirectionRTL),
+        );
 
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
 
-      expect(nestedBlock?.indentPadding.left, _padding);
-      expect(nestedBlock?.indentPadding.right, 0);
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      await editor.dispose();
-    });
+        expect(nestedBlock?.indentPadding.left, _padding);
+        expect(nestedBlock?.indentPadding.right, 0);
 
-    testWidgets("indent two RTL lines under RTL line", (tester) async {
-      final editor = await multiLineIndentTestHelper(
-        tester,
-        ('سلام', blockComponentTextDirectionRTL),
-        ('خط دوم', blockComponentTextDirectionRTL),
-        ('خط سوم', blockComponentTextDirectionRTL),
-      );
+        await editor.dispose();
+      });
 
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
+      testWidgets("indent AUTO line under AUTO line", (tester) async {
+        final editor = await multiLineIndentTestHelper(
+          tester,
+          ('سلام', blockComponentTextDirectionAuto),
+          ('خط دوم', blockComponentTextDirectionAuto),
+          ('خط سوم', blockComponentTextDirectionAuto),
+        );
 
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
+        await editor.pressKey(key: LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
 
-      expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, _padding);
+        final node = editor.nodeAtPath([0])!;
+        final nestedBlock = node.key.currentState!
+            .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
 
-      await editor.dispose();
-    });
+        expect(nestedBlock?.indentPadding.left, 0);
+        expect(nestedBlock?.indentPadding.right, _padding);
 
-    testWidgets("indent two RTL lines under LTR line", (tester) async {
-      final editor = await multiLineIndentTestHelper(
-        tester,
-        ('Hello', blockComponentTextDirectionLTR),
-        ('خط دوم', blockComponentTextDirectionRTL),
-        ('خط سوم', blockComponentTextDirectionRTL),
-      );
-
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
-
-      expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, _padding);
-
-      await editor.dispose();
-    });
-
-    testWidgets("indent one RTL line and one LTR line under LTR line",
-        (tester) async {
-      final editor = await multiLineIndentTestHelper(
-        tester,
-        ('Hello', blockComponentTextDirectionLTR),
-        ('خط دوم', blockComponentTextDirectionRTL),
-        ('Third Line', blockComponentTextDirectionLTR),
-      );
-
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
-
-      expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, _padding);
-
-      await editor.dispose();
-    });
-
-    testWidgets("indent one LTR line and one RTL lines under RTL line",
-        (tester) async {
-      final editor = await multiLineIndentTestHelper(
-        tester,
-        ('سلام', blockComponentTextDirectionRTL),
-        ('Will indent this', blockComponentTextDirectionLTR),
-        ('خط سوم', blockComponentTextDirectionRTL),
-      );
-
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
-
-      expect(nestedBlock?.indentPadding.left, _padding);
-      expect(nestedBlock?.indentPadding.right, 0);
-
-      await editor.dispose();
-    });
-
-    testWidgets("indent AUTO line under AUTO line", (tester) async {
-      final editor = await multiLineIndentTestHelper(
-        tester,
-        ('سلام', blockComponentTextDirectionAuto),
-        ('خط دوم', blockComponentTextDirectionAuto),
-        ('خط سوم', blockComponentTextDirectionAuto),
-      );
-
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-
-      final node = editor.nodeAtPath([0])!;
-      final nestedBlock = node.key.currentState!
-          .unwrapOrNull<NestedBlockComponentStatefulWidgetMixin>();
-
-      expect(nestedBlock?.indentPadding.left, 0);
-      expect(nestedBlock?.indentPadding.right, _padding);
-
-      await editor.dispose();
-    });
-  });
+        await editor.dispose();
+      });
+    },
+  );
 }
 
 typedef TestLine = (String, String);
@@ -301,9 +306,7 @@ Future<TestableEditor> indentTestHelper(
     ..addNode(paragraphNode(text: secondLine.$1, textDirection: secondLine.$2));
   await editor.startTesting();
 
-  final selection = Selection.collapsed(
-    Position(path: [1], offset: 1),
-  );
+  final selection = Selection.collapsed(Position(path: [1], offset: 1));
   await editor.updateSelection(selection);
 
   await editor.pressKey(key: LogicalKeyboardKey.tab);

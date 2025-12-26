@@ -30,9 +30,7 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
 
     if (ec == null || ec.isEmpty) {
       // return empty paragraph node if there is no children
-      return [
-        paragraphNode(),
-      ];
+      return [paragraphNode()];
     }
 
     // Split the paragraph node by <br> tag
@@ -65,18 +63,15 @@ class MarkdownParagraphParserV2 extends CustomMarkdownParser {
 // ```
 List<List<md.Node>> _splitByBrTag(List<md.Node> nodes) {
   return nodes
-      .fold<List<List<md.Node>>>(
-        [[]],
-        (acc, node) {
-          if (node is md.Element && node.tag == 'br') {
-            acc.add([]);
-          } else {
-            acc.last.add(node);
-          }
+      .fold<List<List<md.Node>>>([[]], (acc, node) {
+        if (node is md.Element && node.tag == 'br') {
+          acc.add([]);
+        } else {
+          acc.last.add(node);
+        }
 
-          return acc;
-        },
-      )
+        return acc;
+      })
       .where((group) => group.isNotEmpty)
       .toList();
 }

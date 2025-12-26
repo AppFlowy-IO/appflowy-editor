@@ -40,7 +40,7 @@ void main() async {
                     {'insert': 'a'},
                   ],
                 },
-              }
+              },
             ],
           },
           {
@@ -57,10 +57,10 @@ void main() async {
                     {
                       'insert': 'b',
                       'attributes': {'bold': true},
-                    }
+                    },
                   ],
                 },
-              }
+              },
             ],
           },
           {
@@ -77,10 +77,10 @@ void main() async {
                     {
                       'insert': 'c',
                       'attributes': {'italic': true},
-                    }
+                    },
                   ],
                 },
-              }
+              },
             ],
           },
           {
@@ -97,9 +97,9 @@ void main() async {
                     {'insert': 'd'},
                   ],
                 },
-              }
+              },
             ],
-          }
+          },
         ],
       });
 

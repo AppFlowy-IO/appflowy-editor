@@ -21,10 +21,7 @@ Future<bool> executeCharacterShortcutEvent(
       hasMatchRegExp = regExp.hasMatch(character);
       if (hasMatchRegExp &&
           shortcutEvent.handlerWithCharacter != null &&
-          await shortcutEvent.executeWithCharacter(
-            editorState,
-            character,
-          )) {
+          await shortcutEvent.executeWithCharacter(editorState, character)) {
         AppFlowyEditorLog.input.debug(
           'keyboard service - handled by character shortcut event: $shortcutEvent',
         );

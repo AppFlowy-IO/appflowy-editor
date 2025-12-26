@@ -38,25 +38,21 @@ extension DocumentExtension on Document {
     String? initialText,
     NodeDecorator? decorator,
   }) {
-    final builder0 = builder ??
-        (index) => Delta()
-          ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
+    final builder0 =
+        builder ??
+        (index) =>
+            Delta()
+              ..insert(initialText ?? '🔥 $index. Welcome to AppFlowy Editor!');
     final decorator0 = decorator ?? (index, node) {};
     final children = List.generate(count, (index) {
       final node = Node(type: type);
       decorator0(index, node);
-      node.updateAttributes({
-        'delta': builder0(index).toJson(),
-      });
+      node.updateAttributes({'delta': builder0(index).toJson()});
 
       return node;
     });
 
-    return this
-      ..insert(
-        [root.children.length],
-        children,
-      );
+    return this..insert([root.children.length], children);
   }
 
   Document addNode(

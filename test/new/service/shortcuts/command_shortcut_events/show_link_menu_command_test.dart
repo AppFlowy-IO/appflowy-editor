@@ -53,15 +53,14 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   );
 
   await tester.pumpWidget(
-    MaterialApp(
-      home: Material(
-        child: editorWithToolbar,
-      ),
-    ),
+    MaterialApp(home: Material(child: editorWithToolbar)),
   );
 
-  final selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  final selection = Selection.single(
+    path: [1],
+    startOffset: 0,
+    endOffset: text.length,
+  );
   await editor.updateSelection(selection);
 
   // show toolbar
@@ -89,8 +88,8 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(
     nodes.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[BuiltInAttributeKey.href] == link,
-          );
+        (element) => element.attributes?[BuiltInAttributeKey.href] == link,
+      );
     }),
     true,
   );
@@ -139,8 +138,8 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
   expect(
     nodes.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-            (element) => element.attributes?[BuiltInAttributeKey.href] == link,
-          );
+        (element) => element.attributes?[BuiltInAttributeKey.href] == link,
+      );
     }),
     false,
   );

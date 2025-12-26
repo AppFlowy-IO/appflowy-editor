@@ -54,11 +54,7 @@ CommandShortcutEventHandler _tabToAutoCompleteCommandHandler = (editorState) {
   }
 
   final transaction = editorState.transaction
-    ..insertText(
-      node,
-      selection.endIndex,
-      autoCompleteText,
-    );
+    ..insertText(node, selection.endIndex, autoCompleteText);
   editorState.apply(transaction);
 
   return KeyEventResult.handled;

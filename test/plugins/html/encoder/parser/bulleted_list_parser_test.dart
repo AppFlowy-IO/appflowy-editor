@@ -15,9 +15,7 @@ void main() async {
       // to
       // <ul><li>A1</li><li>A2</li><li>A3</li><li>A4</li></ul>
       final encoder = DocumentHTMLEncoder(
-        encodeParsers: [
-          const HTMLBulletedListNodeParser(),
-        ],
+        encodeParsers: [const HTMLBulletedListNodeParser()],
       );
       final result = encoder.convert(Document.fromJson(_json1));
 

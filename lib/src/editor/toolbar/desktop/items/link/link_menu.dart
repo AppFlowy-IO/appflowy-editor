@@ -55,9 +55,7 @@ class _LinkMenuState extends State<LinkMenu> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          EditorOverlayTitle(
-            text: AppFlowyEditorL10n.current.addYourLink,
-          ),
+          EditorOverlayTitle(text: AppFlowyEditorL10n.current.addYourLink),
           const SizedBox(height: 16.0),
           _buildInput(),
           const SizedBox(height: 16.0),
@@ -104,11 +102,7 @@ class _LinkMenuState extends State<LinkMenu> {
           isDense: true,
           suffixIcon: IconButton(
             padding: const EdgeInsets.all(4.0),
-            icon: const EditorSvg(
-              name: 'clear',
-              width: 24,
-              height: 24,
-            ),
+            icon: const EditorSvg(name: 'clear', width: 24, height: 24),
             onPressed: _textEditingController.clear,
             splashRadius: 5,
           ),

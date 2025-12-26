@@ -5,24 +5,17 @@ import 'package:appflowy_editor/src/editor/editor_component/service/selection/mo
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 
 class DragAreaBuilderData {
-  DragAreaBuilderData({
-    required this.targetNode,
-    required this.dragOffset,
-  });
+  DragAreaBuilderData({required this.targetNode, required this.dragOffset});
 
   final Node targetNode;
   final Offset dragOffset;
 }
 
-typedef DragAreaBuilder = Widget Function(
-  BuildContext context,
-  DragAreaBuilderData data,
-);
+typedef DragAreaBuilder =
+    Widget Function(BuildContext context, DragAreaBuilderData data);
 
-typedef DragTargetNodeInterceptor = Node Function(
-  BuildContext context,
-  Node node,
-);
+typedef DragTargetNodeInterceptor =
+    Node Function(BuildContext context, Node node);
 
 /// [AppFlowySelectionService] is responsible for processing
 /// the [Selection] changes and updates.
@@ -90,20 +83,14 @@ abstract class AppFlowySelectionService {
   void unregisterGestureInterceptor(String key);
 
   /// The functions below are only for mobile.
-  Selection? onPanStart(
-    DragStartDetails details,
-    MobileSelectionDragMode mode,
-  );
+  Selection? onPanStart(DragStartDetails details, MobileSelectionDragMode mode);
 
   Selection? onPanUpdate(
     DragUpdateDetails details,
     MobileSelectionDragMode mode,
   );
 
-  void onPanEnd(
-    DragEndDetails details,
-    MobileSelectionDragMode mode,
-  );
+  void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode);
 
   /// Draws a horizontal line between the nearest nodes to the [offset].
   ///

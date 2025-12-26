@@ -19,12 +19,18 @@ class TableConfig {
         : defaultVal;
 
     return TableConfig(
-      colDefaultWidth:
-          func(TableBlockKeys.colDefaultWidth, TableDefaults.colWidth),
-      rowDefaultHeight:
-          func(TableBlockKeys.rowDefaultHeight, TableDefaults.rowHeight),
-      colMinimumWidth:
-          func(TableBlockKeys.colMinimumWidth, TableDefaults.colMinimumWidth),
+      colDefaultWidth: func(
+        TableBlockKeys.colDefaultWidth,
+        TableDefaults.colWidth,
+      ),
+      rowDefaultHeight: func(
+        TableBlockKeys.rowDefaultHeight,
+        TableDefaults.rowHeight,
+      ),
+      colMinimumWidth: func(
+        TableBlockKeys.colMinimumWidth,
+        TableDefaults.colMinimumWidth,
+      ),
       borderWidth: func(TableBlockKeys.borderWidth, TableDefaults.borderWidth),
     );
   }

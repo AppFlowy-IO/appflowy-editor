@@ -22,21 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("bátor"),
-        "bulletedList": MessageLookupByLibrary.simpleMessage("pontozott lista"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("jelölőnégyzetet"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("Beágyazás"),
-        "heading1": MessageLookupByLibrary.simpleMessage("címsor1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("címsor2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("címsor3"),
-        "highlight": MessageLookupByLibrary.simpleMessage("Kiemel"),
-        "image": MessageLookupByLibrary.simpleMessage("kép"),
-        "italic": MessageLookupByLibrary.simpleMessage("dőlt"),
-        "link": MessageLookupByLibrary.simpleMessage("link"),
-        "numberedList": MessageLookupByLibrary.simpleMessage("számozottLista"),
-        "quote": MessageLookupByLibrary.simpleMessage("idézet"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("áthúzott"),
-        "text": MessageLookupByLibrary.simpleMessage("szöveg"),
-        "underline": MessageLookupByLibrary.simpleMessage("aláhúzás")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("bátor"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage("pontozott lista"),
+    "checkbox": MessageLookupByLibrary.simpleMessage("jelölőnégyzetet"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("Beágyazás"),
+    "heading1": MessageLookupByLibrary.simpleMessage("címsor1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("címsor2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("címsor3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("Kiemel"),
+    "image": MessageLookupByLibrary.simpleMessage("kép"),
+    "italic": MessageLookupByLibrary.simpleMessage("dőlt"),
+    "link": MessageLookupByLibrary.simpleMessage("link"),
+    "numberedList": MessageLookupByLibrary.simpleMessage("számozottLista"),
+    "quote": MessageLookupByLibrary.simpleMessage("idézet"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("áthúzott"),
+    "text": MessageLookupByLibrary.simpleMessage("szöveg"),
+    "underline": MessageLookupByLibrary.simpleMessage("aláhúzás"),
+  };
 }

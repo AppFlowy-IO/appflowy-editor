@@ -22,30 +22,31 @@ final CommandShortcutEvent pasteCommand = CommandShortcutEvent(
 
 final CommandShortcutEvent pasteTextWithoutFormattingCommand =
     CommandShortcutEvent(
-  key: 'paste the content as plain text',
-  getDescription: () => AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
-  command: 'ctrl+shift+v',
-  macOSCommand: 'cmd+shift+v',
-  handler: _pasteTextWithoutFormattingCommandHandler,
-);
+      key: 'paste the content as plain text',
+      getDescription: () =>
+          AppFlowyEditorL10n.current.cmdPasteContentAsPlainText,
+      command: 'ctrl+shift+v',
+      macOSCommand: 'cmd+shift+v',
+      handler: _pasteTextWithoutFormattingCommandHandler,
+    );
 
 CommandShortcutEventHandler _pasteTextWithoutFormattingCommandHandler =
     (editorState) {
-  final selection = editorState.selection;
-  if (selection == null) {
-    return KeyEventResult.ignored;
-  }
+      final selection = editorState.selection;
+      if (selection == null) {
+        return KeyEventResult.ignored;
+      }
 
-  () async {
-    final data = await AppFlowyClipboard.getData();
-    final text = data.text;
-    if (text != null && text.isNotEmpty) {
-      await editorState.pastePlainText(text);
-    }
-  }();
+      () async {
+        final data = await AppFlowyClipboard.getData();
+        final text = data.text;
+        if (text != null && text.isNotEmpty) {
+          await editorState.pastePlainText(text);
+        }
+      }();
 
-  return KeyEventResult.handled;
-};
+      return KeyEventResult.handled;
+    };
 
 CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
   final selection = editorState.selection;
@@ -77,10 +78,11 @@ RegExp _hrefRegex = RegExp(
   r'https?://(?:www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:/[^\s]*)?',
 );
 
-RegExp _phoneRegex = RegExp(r'^\+?' // Optional '+' at start
-    r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
-    r'[0-9]$' // Ensure it ends with a digit
-    );
+RegExp _phoneRegex = RegExp(
+  r'^\+?' // Optional '+' at start
+  r'(?:[0-9][\s-.]?)+' // Sequence of digits with optional separators
+  r'[0-9]$', // Ensure it ends with a digit
+);
 
 extension on EditorState {
   Future<bool> pasteHtml(String html) async {
@@ -132,7 +134,8 @@ extension on EditorState {
           Delta delta = Delta();
           if (_hrefRegex.hasMatch(paragraph) ||
               _phoneRegex.hasMatch(paragraph)) {
-            final match = _hrefRegex.firstMatch(paragraph) ??
+            final match =
+                _hrefRegex.firstMatch(paragraph) ??
                 _phoneRegex.firstMatch(paragraph);
             if (match != null) {
               int startPos = match.start;
@@ -148,8 +151,9 @@ extension on EditorState {
                 delta.insert(
                   paragraph.substring(startPos, endPos),
                   attributes: {
-                    AppFlowyRichTextKeys.href:
-                        _phoneRegex.hasMatch(entity) ? 'tel:$entity' : entity,
+                    AppFlowyRichTextKeys.href: _phoneRegex.hasMatch(entity)
+                        ? 'tel:$entity'
+                        : entity,
                   },
                 );
 

@@ -35,8 +35,9 @@ CommandShortcutEventHandler _toggleTodoListCommandHandler = (editorState) {
     return KeyEventResult.ignored;
   }
 
-  final areAllTodoListChecked = todoNodes
-      .every((node) => node.attributes[TodoListBlockKeys.checked] == true);
+  final areAllTodoListChecked = todoNodes.every(
+    (node) => node.attributes[TodoListBlockKeys.checked] == true,
+  );
 
   final transaction = editorState.transaction;
   for (final node in todoNodes) {

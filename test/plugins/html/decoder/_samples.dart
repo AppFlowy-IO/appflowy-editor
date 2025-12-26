@@ -28,7 +28,7 @@ const documentSample1 = {
             {
               'insert': 'AppFlowy Editor',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -45,7 +45,7 @@ const documentSample1 = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -75,7 +75,7 @@ const documentSample1 = {
             {
               'insert': 'Span element',
               'attributes': {'bold': true, 'italic': true},
-            }
+            },
           ],
         },
       },
@@ -87,7 +87,7 @@ const documentSample1 = {
             {
               'insert': 'Span element two',
               'attributes': {'underline': true},
-            }
+            },
           ],
         },
       },
@@ -99,7 +99,7 @@ const documentSample1 = {
             {
               'insert': 'Span element three',
               'attributes': {'bold': true, 'strikethrough': true},
-            }
+            },
           ],
         },
       },
@@ -111,7 +111,7 @@ const documentSample1 = {
             {
               'insert': 'This is an anchor tag!',
               'attributes': {'href': 'https://appflowy.io'},
-            }
+            },
           ],
         },
       },
@@ -187,7 +187,7 @@ const documentSample1 = {
             {
               'insert': ' Code block',
               'attributes': {'code': true},
-            }
+            },
           ],
         },
       },
@@ -199,7 +199,7 @@ const documentSample1 = {
             {
               'insert': 'Italic one',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -211,7 +211,7 @@ const documentSample1 = {
             {
               'insert': 'Italic two',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
       },
@@ -223,7 +223,7 @@ const documentSample1 = {
             {
               'insert': 'Bold tag',
               'attributes': {'bold': true},
-            }
+            },
           ],
         },
       },
@@ -256,7 +256,7 @@ const documentSample1 = {
             {
               'insert':
                   'If you have questions or feedback, please submit an issue on Github or join the community along with 1000+ builders!',
-            }
+            },
           ],
         },
       },
@@ -267,7 +267,7 @@ const documentSample1 = {
       {
         'type': 'paragraph',
         'data': {'delta': []},
-      }
+      },
     ],
   },
 };
@@ -292,7 +292,7 @@ const documentSample2 = {
                   ],
                   "level": 2,
                 },
-              }
+              },
             ],
             "data": {
               "colPosition": 0,
@@ -311,10 +311,10 @@ const documentSample2 = {
                     {
                       "insert": "c",
                       "attributes": {"italic": true},
-                    }
+                    },
                   ],
                 },
-              }
+              },
             ],
             "data": {
               "colPosition": 1,
@@ -333,10 +333,10 @@ const documentSample2 = {
                     {
                       "insert": "b",
                       "attributes": {"bold": true},
-                    }
+                    },
                   ],
                 },
-              }
+              },
             ],
             "data": {
               "colPosition": 0,
@@ -355,7 +355,7 @@ const documentSample2 = {
                     {"insert": "d"},
                   ],
                 },
-              }
+              },
             ],
             "data": {
               "colPosition": 1,
@@ -363,7 +363,7 @@ const documentSample2 = {
               "height": 40.0,
               "width": 160.0,
             },
-          }
+          },
         ],
         "data": {
           "rowsLen": 2,
@@ -372,7 +372,7 @@ const documentSample2 = {
           "rowDefaultHeight": 40,
           "colMinimumWidth": 40,
         },
-      }
+      },
     ],
   },
 };
@@ -436,7 +436,7 @@ const documentSample3 = {
             {
               'insert':
                   'Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!',
-            }
+            },
           ],
         },
       },
@@ -451,7 +451,7 @@ const documentSample3 = {
             {
               'insert':
                   'If you\'d like to find out more about Lexical, you can:',
-            }
+            },
           ],
         },
       },
@@ -477,7 +477,7 @@ const documentSample3 = {
               'url': 'https://richtexteditor.com/images/editor-image.png',
               'align': 'center',
             },
-          }
+          },
         ],
         'data': {'delta': []},
       },
@@ -546,14 +546,14 @@ const documentSample3 = {
             {
               'insert':
                   'Lastly, we\'re constantly adding cool new features to this playground. So make sure you check back here when you next get a chance 🙂.',
-            }
+            },
           ],
         },
       },
       {
         'type': 'paragraph',
         'data': {'delta': []},
-      }
+      },
     ],
   },
 };
@@ -606,7 +606,7 @@ const documentSample4 = {
             {
               "insert":
                   "No clear dropout reason: prior support tickets and survey results show a long tail of possible issues (questions on amenities, fees, checkout time), no clear categories.",
-            }
+            },
           ],
         },
       },
@@ -617,7 +617,7 @@ const documentSample4 = {
             {
               "insert":
                   "Adding help content didn’t do much: last quarter we A/B tested content and UI to better point to help content and booking info. This nudged conversion by 1.5% points.",
-            }
+            },
           ],
         },
       },
@@ -628,10 +628,10 @@ const documentSample4 = {
             {
               "insert":
                   "I highly recommend bullets for readability. Use bold words to quickly convey the gist of each point, and limit bullets to 2-3 lines. I prefer numbered lists so one can refer to a point verbally.",
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

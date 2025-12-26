@@ -2,11 +2,7 @@ import 'package:appflowy_editor/src/core/location/position.dart';
 import 'package:appflowy_editor/src/core/location/selection.dart';
 import 'package:flutter/material.dart';
 
-enum CursorStyle {
-  verticalLine,
-  borderLine,
-  cover,
-}
+enum CursorStyle { verticalLine, borderLine, cover }
 
 /// [SelectableMixin] is used for the editor to calculate the position
 ///   and size of the selection.
@@ -17,9 +13,7 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   /// Returns the [Rect] representing the block selection in current widget.
   ///
   /// Normally, the rect should not include the action menu area.
-  Rect getBlockRect({
-    bool shiftWithBaseOffset = false,
-  });
+  Rect getBlockRect({bool shiftWithBaseOffset = false});
 
   /// Returns the [Selection] surrounded by start and end
   ///   in current widget.
@@ -54,10 +48,7 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
   }
 
   /// Return global offset from local offset.
-  Offset localToGlobal(
-    Offset offset, {
-    bool shiftWithBaseOffset = false,
-  });
+  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false});
 
   Position start();
   Position end();
@@ -90,10 +81,7 @@ mixin SelectableMixin<T extends StatefulWidget> on State<T> {
 
   CursorStyle get cursorStyle => CursorStyle.verticalLine;
 
-  Rect transformRectToGlobal(
-    Rect r, {
-    bool shiftWithBaseOffset = false,
-  }) {
+  Rect transformRectToGlobal(Rect r, {bool shiftWithBaseOffset = false}) {
     final topLeft = localToGlobal(
       r.topLeft,
       shiftWithBaseOffset: shiftWithBaseOffset,

@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('editor state', () {
     test('broadcast the transaction', () async {
-      final editorState = EditorState.blank(
-        withInitialText: false,
-      );
+      final editorState = EditorState.blank(withInitialText: false);
       int count = 0;
       editorState.transactionStream.listen((event) {
         count++;
@@ -31,9 +29,7 @@ void main() async {
     });
 
     test('transaction stream', () async {
-      final editorState = EditorState.blank(
-        withInitialText: false,
-      );
+      final editorState = EditorState.blank(withInitialText: false);
       var isInMemoryUpdate = false;
       editorState.transactionStream.listen((event) {
         isInMemoryUpdate = event.$3.inMemoryUpdate;

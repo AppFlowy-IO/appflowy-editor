@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('divider_node_parser.dart', () {
     test('parser divider node', () {
-      final node = Node(
-        type: DividerBlockKeys.type,
-      );
+      final node = Node(type: DividerBlockKeys.type);
 
       final result = const DividerNodeParser().transform(node, null);
       expect(result, '---\n');

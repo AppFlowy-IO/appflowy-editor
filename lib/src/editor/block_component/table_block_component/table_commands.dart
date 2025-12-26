@@ -24,7 +24,8 @@ final CommandShortcutEvent enterInTableCell = CommandShortcutEvent(
 final CommandShortcutEvent leftInTableCell = CommandShortcutEvent(
   key: 'Move to left cell if its at start of current cell',
   getDescription: () => AppFlowyEditorL10n
-      .current.cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell,
+      .current
+      .cmdTableMoveToLeftCellIfItsAtStartOfCurrentCell,
   command: 'arrow left',
   handler: _leftInTableCellHandler,
 );
@@ -32,7 +33,8 @@ final CommandShortcutEvent leftInTableCell = CommandShortcutEvent(
 final CommandShortcutEvent rightInTableCell = CommandShortcutEvent(
   key: 'Move to right cell if its at the end of current cell',
   getDescription: () => AppFlowyEditorL10n
-      .current.cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell,
+      .current
+      .cmdTableMoveToRightCellIfItsAtTheEndOfCurrentCell,
   command: 'arrow right',
   handler: _rightInTableCellHandler,
 );
@@ -88,8 +90,10 @@ CommandShortcutEventHandler _enterInTableCellHandler = (editorState) {
     if (nextNode == null) {
       final transaction = editorState.transaction;
       transaction.insertNode(cell.parent!.path.next, paragraphNode());
-      transaction.afterSelection =
-          Selection.single(path: cell.parent!.path.next, startOffset: 0);
+      transaction.afterSelection = Selection.single(
+        path: cell.parent!.path.next,
+        startOffset: 0,
+      );
       editorState.apply(transaction);
     } else if (_nodeHasTextChild(nextNode)) {
       editorState.selectionService.updateSelection(
@@ -113,10 +117,7 @@ CommandShortcutEventHandler _leftInTableCellHandler = (editorState) {
     if (_nodeHasTextChild(nextNode)) {
       final target = nextNode!.childAtIndexOrNull(0)!;
       editorState.selectionService.updateSelection(
-        Selection.single(
-          path: target.path,
-          startOffset: target.delta!.length,
-        ),
+        Selection.single(path: target.path, startOffset: target.delta!.length),
       );
     }
 
@@ -262,10 +263,7 @@ Iterable<Node> _inTableNodes(EditorState editorState) {
   );
 }
 
-bool _hasSelectionAndTableCell(
-  Iterable<Node> nodes,
-  Selection? selection,
-) =>
+bool _hasSelectionAndTableCell(Iterable<Node> nodes, Selection? selection) =>
     nodes.length == 1 &&
     selection != null &&
     selection.isCollapsed &&

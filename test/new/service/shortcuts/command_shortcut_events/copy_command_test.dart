@@ -15,32 +15,29 @@ void main() async {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
+          switch (message.method) {
+            case "Clipboard.getData":
+              return mockClipboard.getData;
 
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
+            case "Clipboard.setData":
+              final args = message.arguments as Map<String, dynamic>;
+              mockClipboard = mockClipboard.copyWith(text: args['text']);
+          }
 
-      return null;
-    });
+          return null;
+        });
   });
 
   group('copy_command_test.dart', () {
-    testWidgets('Presses Command + A in small document and copy text',
-        (tester) async {
+    testWidgets('Presses Command + A in small document and copy text', (
+      tester,
+    ) async {
       await _testHandleCopy(tester);
     });
   });
 }
 
-Future<void> _testHandleCopy(
-  WidgetTester tester,
-) async {
+Future<void> _testHandleCopy(WidgetTester tester) async {
   final editor = tester.editor
     ..initializeWithDocument(Document.fromJson(paragraphdata));
   await editor.startTesting(platform: TargetPlatform.windows);
@@ -90,10 +87,10 @@ const paragraphdata = {
             {
               'insert': 'rich-text editor',
               'attributes': {'italic': true},
-            }
+            },
           ],
         },
-      }
+      },
     ],
   },
 };

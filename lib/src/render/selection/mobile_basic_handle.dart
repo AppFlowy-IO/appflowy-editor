@@ -141,15 +141,9 @@ class DragHandle extends _IDragHandle {
         clipBehavior: Clip.none,
         children: [
           if (handleType == HandleType.left)
-            Positioned(
-              left: offset,
-              child: child,
-            ),
+            Positioned(left: offset, child: child),
           if (handleType == HandleType.right)
-            Positioned(
-              right: offset,
-              child: child,
-            ),
+            Positioned(right: offset, child: child),
         ],
       );
     }
@@ -193,10 +187,7 @@ class _IOSDragHandle extends _IDragHandle {
               ),
             ),
           if (handleType == HandleType.right)
-            SizedBox(
-              width: handleBallWidth,
-              height: handleBallWidth,
-            ),
+            SizedBox(width: handleBallWidth, height: handleBallWidth),
           Container(
             width: handleWidth,
             color: handleColor,
@@ -212,10 +203,7 @@ class _IOSDragHandle extends _IDragHandle {
               ),
             ),
           if (handleType == HandleType.left)
-            SizedBox(
-              width: handleBallWidth,
-              height: handleBallWidth,
-            ),
+            SizedBox(width: handleBallWidth, height: handleBallWidth),
         ],
       );
     }

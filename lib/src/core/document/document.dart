@@ -9,9 +9,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 /// **DO NOT** directly mutate the properties of a [Document] object.
 ///
 class Document {
-  Document({
-    required this.root,
-  });
+  Document({required this.root});
 
   /// Constructs a [Document] from a JSON strcuture.
   ///
@@ -56,9 +54,7 @@ class Document {
       children: withInitialText ? [paragraphNode()] : [],
     );
 
-    return Document(
-      root: root,
-    );
+    return Document(root: root);
   }
 
   /// The root [Node] of the [Document]
@@ -192,8 +188,6 @@ class Document {
   /// Encodes the [Document] into a JSON structure.
   ///
   Map<String, Object> toJson() {
-    return {
-      'document': root.toJson(),
-    };
+    return {'document': root.toJson()};
   }
 }

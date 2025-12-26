@@ -16,9 +16,7 @@ Document htmlToDocument(
   String html, {
   Map<String, ElementParser> customDecoders = const {},
 }) {
-  return AppFlowyEditorHTMLCodec(
-    customDecoders: customDecoders,
-  ).decode(html);
+  return AppFlowyEditorHTMLCodec(customDecoders: customDecoders).decode(html);
 }
 
 /// Converts a [Document] to html.
@@ -52,12 +50,10 @@ class AppFlowyEditorHTMLCodec extends Codec<Document, String> {
   final Map<String, ElementParser> customDecoders;
 
   @override
-  Converter<String, Document> get decoder => DocumentHTMLDecoder(
-        customDecoders: customDecoders,
-      );
+  Converter<String, Document> get decoder =>
+      DocumentHTMLDecoder(customDecoders: customDecoders);
 
   @override
-  Converter<Document, String> get encoder => DocumentHTMLEncoder(
-        encodeParsers: encodeParsers,
-      );
+  Converter<Document, String> get encoder =>
+      DocumentHTMLEncoder(encodeParsers: encodeParsers);
 }

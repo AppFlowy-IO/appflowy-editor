@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class IgnoreEditorSelectionGesture extends StatefulWidget {
-  const IgnoreEditorSelectionGesture({
-    super.key,
-    required this.child,
-  });
+  const IgnoreEditorSelectionGesture({super.key, required this.child});
 
   final Widget child;
 

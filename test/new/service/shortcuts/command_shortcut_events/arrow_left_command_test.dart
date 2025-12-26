@@ -17,8 +17,9 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // After
     // |Welcome to AppFlowy Editor 🔥!
-    testWidgets('press the left arrow key at the beginning of the document',
-        (tester) async {
+    testWidgets('press the left arrow key at the beginning of the document', (
+      tester,
+    ) async {
       final arrowLeftTest = ArrowTest(
         text: text,
         initialSel: Selection.collapsed(Position(path: [0])),
@@ -32,8 +33,9 @@ void main() async {
     // |Welcome| to AppFlowy Editor 🔥!
     // After
     // |Welcome to AppFlowy Editor 🔥!
-    testWidgets('press the left arrow key at the collapsed selection',
-        (tester) async {
+    testWidgets('press the left arrow key at the collapsed selection', (
+      tester,
+    ) async {
       final selection = Selection.single(
         path: [0],
         startOffset: 0,
@@ -55,43 +57,40 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // Welcome to AppFlowy Editor 🔥!
     testWidgets(
-        'press the left arrow key until it reaches the beginning of the document',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+      'press the left arrow key until it reaches the beginning of the document',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(
+          Position(path: [1], offset: text.length),
         );
-      await editor.startTesting();
+        await editor.updateSelection(selection);
 
-      final selection = Selection.collapsed(
-        Position(path: [1], offset: text.length),
-      );
-      await editor.updateSelection(selection);
+        // move the cursor to the beginning of node 1
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
+          await tester.pumpAndSettle();
+        }
+        expect(editor.selection, Selection.collapsed(Position(path: [1])));
 
-      // move the cursor to the beginning of node 1
-      for (var i = 1; i < text.length; i++) {
+        // move the cursor to the ending of node 0
         await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-        await tester.pumpAndSettle();
-      }
-      expect(editor.selection, Selection.collapsed(Position(path: [1])));
+        expect(
+          editor.selection,
+          Selection.collapsed(Position(path: [0], offset: text.length)),
+        );
 
-      // move the cursor to the ending of node 0
-      await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-      expect(
-        editor.selection,
-        Selection.collapsed(Position(path: [0], offset: text.length)),
-      );
+        // move the cursor to the beginning of node 0
+        for (var i = 1; i < text.length; i++) {
+          await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
+          await tester.pumpAndSettle();
+        }
+        expect(editor.selection, Selection.collapsed(Position(path: [0])));
 
-      // move the cursor to the beginning of node 0
-      for (var i = 1; i < text.length; i++) {
-        await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
-        await tester.pumpAndSettle();
-      }
-      expect(editor.selection, Selection.collapsed(Position(path: [0])));
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
     testWidgets('rtl text', (tester) async {
       const text = 'به ویرایشگر Appflowy خوش آمدید 🔥!';
@@ -102,12 +101,8 @@ void main() async {
           decorator: (i, n) => n.updateAttributes({
             blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
-          initialSel: Selection.collapsed(
-            Position(path: [0]),
-          ),
-          expSel: Selection.collapsed(
-            Position(path: [0], offset: 1),
-          ),
+          initialSel: Selection.collapsed(Position(path: [0])),
+          expSel: Selection.collapsed(Position(path: [0], offset: 1)),
         ),
         ArrowTest(
           text: text,
@@ -115,17 +110,9 @@ void main() async {
             blockComponentTextDirection: blockComponentTextDirectionRTL,
           }),
           initialSel: Selection.collapsed(
-            Position(
-              path: [0],
-              offset: text.length,
-            ),
+            Position(path: [0], offset: text.length),
           ),
-          expSel: Selection.collapsed(
-            Position(
-              path: [0],
-              offset: text.length,
-            ),
-          ),
+          expSel: Selection.collapsed(Position(path: [0], offset: text.length)),
         ),
         ArrowTest(
           text: text,
@@ -156,17 +143,16 @@ void main() async {
     // Welcome| to AppFlowy Editor 🔥!
     // After
     // Welcom|e| to AppFlowy Editor 🔥!
-    testWidgets('press shift + arrow left to select left character',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+    testWidgets('press shift + arrow left to select left character', (
+      tester,
+    ) async {
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       const initialOffset = 'Welcome'.length;
-      final selection =
-          Selection.collapsed(Position(path: [0], offset: initialOffset));
+      final selection = Selection.collapsed(
+        Position(path: [0], offset: initialOffset),
+      );
       await editor.updateSelection(selection);
 
       await editor.pressKey(
@@ -192,88 +178,86 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // After on Windows & Linux
     // Welcome to AppFlowy |Editor 🔥!
-    testWidgets('''press the ctrl+arrow left key,
+    testWidgets(
+      '''press the ctrl+arrow left key,
          on windows & linux it should move to the start of a word,
          on mac it should move the cursor to the start of the line
-         ''', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+         ''',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+
+        const initialOffset = 26;
+        final selection = Selection.collapsed(
+          Position(path: [1], offset: initialOffset),
         );
-      await editor.startTesting();
+        await editor.updateSelection(selection);
 
-      const initialOffset = 26;
-      final selection = Selection.collapsed(
-        Position(path: [1], offset: initialOffset),
-      );
-      await editor.updateSelection(selection);
-
-      await editor.pressKey(
-        key: LogicalKeyboardKey.arrowLeft,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-      );
-
-      const expectedOffset = initialOffset - "Editor".length;
-      if (Platform.isMacOS) {
-        expect(editor.selection, Selection.collapsed(Position(path: [1])));
-      } else {
-        expect(
-          editor.selection,
-          Selection.collapsed(Position(path: [1], offset: expectedOffset)),
+        await editor.pressKey(
+          key: LogicalKeyboardKey.arrowLeft,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
         );
-      }
 
-      await editor.dispose();
-    });
+        const expectedOffset = initialOffset - "Editor".length;
+        if (Platform.isMacOS) {
+          expect(editor.selection, Selection.collapsed(Position(path: [1])));
+        } else {
+          expect(
+            editor.selection,
+            Selection.collapsed(Position(path: [1], offset: expectedOffset)),
+          );
+        }
 
-    testWidgets('''press the ctrl+shift+arrow left key,
+        await editor.dispose();
+      },
+    );
+
+    testWidgets(
+      '''press the ctrl+shift+arrow left key,
          on windows & linux it should move to the start of a word and select it,
          on mac it should move the cursor to the start of the line and select it
-         ''', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          2,
-          initialText: text,
+         ''',
+      (tester) async {
+        final editor = tester.editor..addParagraphs(2, initialText: text);
+        await editor.startTesting();
+        const initialOffset = 26;
+
+        final selection = Selection.collapsed(
+          Position(path: [1], offset: initialOffset),
         );
-      await editor.startTesting();
-      const initialOffset = 26;
+        await editor.updateSelection(selection);
 
-      final selection = Selection.collapsed(
-        Position(path: [1], offset: initialOffset),
-      );
-      await editor.updateSelection(selection);
-
-      await editor.pressKey(
-        key: LogicalKeyboardKey.arrowLeft,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-        isShiftPressed: true,
-      );
-
-      const expectedOffset = initialOffset - "Editor".length;
-      if (Platform.isMacOS) {
-        expect(
-          editor.selection,
-          Selection.single(
-            path: [1],
-            startOffset: initialOffset,
-            endOffset: 0,
-          ),
+        await editor.pressKey(
+          key: LogicalKeyboardKey.arrowLeft,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
+          isShiftPressed: true,
         );
-      } else {
-        expect(
-          editor.selection,
-          Selection.single(
-            path: [1],
-            startOffset: initialOffset,
-            endOffset: expectedOffset,
-          ),
-        );
-      }
 
-      await editor.dispose();
-    });
+        const expectedOffset = initialOffset - "Editor".length;
+        if (Platform.isMacOS) {
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [1],
+              startOffset: initialOffset,
+              endOffset: 0,
+            ),
+          );
+        } else {
+          expect(
+            editor.selection,
+            Selection.single(
+              path: [1],
+              startOffset: initialOffset,
+              endOffset: expectedOffset,
+            ),
+          );
+        }
+
+        await editor.dispose();
+      },
+    );
   });
 }

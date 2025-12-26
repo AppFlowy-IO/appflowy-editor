@@ -97,10 +97,7 @@ void main() {
       );
 
       inputService.insertContent(
-        const KeyboardInsertedContent(
-          mimeType: 'mimeType',
-          uri: 'uri',
-        ),
+        const KeyboardInsertedContent(mimeType: 'mimeType', uri: 'uri'),
       );
 
       expect(completer.future, completion(true));
@@ -150,8 +147,9 @@ void main() {
   });
 
   testWidgets('Delta insertion format with deletion', (tester) async {
-    TextEditingValue value =
-        const TextEditingValue(selection: TextSelection.collapsed(offset: 0));
+    TextEditingValue value = const TextEditingValue(
+      selection: TextSelection.collapsed(offset: 0),
+    );
     const space = ' ';
     final inputService = NonDeltaTextInputService(
       onInsert: (v) async {
@@ -177,40 +175,34 @@ void main() {
       onPerformAction: (_) async {},
     );
     inputService.attach(value, const TextInputConfiguration());
-    await inputService.apply(
-      const [
-        TextEditingDeltaInsertion(
-          oldText: '',
-          textInserted: space,
-          insertionOffset: 0,
-          selection: TextSelection.collapsed(offset: 1),
-          composing: TextRange.empty,
-        ),
-      ],
-    );
+    await inputService.apply(const [
+      TextEditingDeltaInsertion(
+        oldText: '',
+        textInserted: space,
+        insertionOffset: 0,
+        selection: TextSelection.collapsed(offset: 1),
+        composing: TextRange.empty,
+      ),
+    ]);
     assert(value.text == space);
-    await inputService.apply(
-      [
-        TextEditingDeltaDeletion(
-          oldText: value.text,
-          deletedRange: const TextRange(start: 0, end: 1),
-          selection: const TextSelection.collapsed(offset: 0),
-          composing: TextRange.empty,
-        ),
-      ],
-    );
+    await inputService.apply([
+      TextEditingDeltaDeletion(
+        oldText: value.text,
+        deletedRange: const TextRange(start: 0, end: 1),
+        selection: const TextSelection.collapsed(offset: 0),
+        composing: TextRange.empty,
+      ),
+    ]);
     assert(value.text == '');
-    await inputService.apply(
-      [
-        TextEditingDeltaInsertion(
-          oldText: value.text,
-          textInserted: 'A' * 100,
-          insertionOffset: 0,
-          selection: const TextSelection.collapsed(offset: 100),
-          composing: TextRange.empty,
-        ),
-      ],
-    );
+    await inputService.apply([
+      TextEditingDeltaInsertion(
+        oldText: value.text,
+        textInserted: 'A' * 100,
+        insertionOffset: 0,
+        selection: const TextSelection.collapsed(offset: 100),
+        composing: TextRange.empty,
+      ),
+    ]);
     assert(value.text == 'A' * 100);
     inputService.currentTextEditingValue = value;
     final currentSelection = inputService.currentTextEditingValue?.selection;

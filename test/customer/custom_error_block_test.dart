@@ -12,17 +12,10 @@ void main() async {
     editorState.document.insert(
       [0],
       [
-        Node(
-          type: 'not_exist',
-          attributes: {
-            'text': 'line 1',
-          },
-        ),
+        Node(type: 'not_exist', attributes: {'text': 'line 1'}),
       ],
     );
-    final widget = ErrorEditor(
-      editorState: editorState,
-    );
+    final widget = ErrorEditor(editorState: editorState);
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
 
@@ -31,10 +24,7 @@ void main() async {
 }
 
 class ErrorEditor extends StatelessWidget {
-  const ErrorEditor({
-    super.key,
-    required this.editorState,
-  });
+  const ErrorEditor({super.key, required this.editorState});
 
   final EditorState editorState;
 
@@ -71,9 +61,7 @@ class ErrorEditor extends StatelessWidget {
 }
 
 class ErrorBlockComponentBuilder extends BlockComponentBuilder {
-  ErrorBlockComponentBuilder({
-    super.configuration,
-  });
+  ErrorBlockComponentBuilder({super.configuration});
 
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
@@ -84,14 +72,10 @@ class ErrorBlockComponentBuilder extends BlockComponentBuilder {
       node: node,
       configuration: configuration,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 }
@@ -121,9 +105,6 @@ class _DividerBlockComponentWidgetState extends State<ErrorBlockComponentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: const Text('error'),
-    );
+    return Container(color: Colors.red, child: const Text('error'));
   }
 }

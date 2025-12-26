@@ -41,10 +41,7 @@ Node headingNode({
 }
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
-  HeadingBlockComponentBuilder({
-    super.configuration,
-    this.textStyleBuilder,
-  });
+  HeadingBlockComponentBuilder({super.configuration, this.textStyleBuilder});
 
   /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;
@@ -59,14 +56,10 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       textStyleBuilder: textStyleBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 }
@@ -182,17 +175,11 @@ class _HeadingBlockComponentWidgetState
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
-    child = Container(
-      padding: padding,
-      decoration: decoration,
-      child: child,
-    );
+    child = Container(padding: padding, decoration: decoration, child: child);
 
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
@@ -210,9 +197,6 @@ class _HeadingBlockComponentWidgetState
     final fontSizes = [32.0, 28.0, 24.0, 18.0, 18.0, 18.0];
     final fontSize = fontSizes.elementAtOrNull(level) ?? 18.0;
 
-    return TextStyle(
-      fontSize: fontSize,
-      fontWeight: FontWeight.bold,
-    );
+    return TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
   }
 }

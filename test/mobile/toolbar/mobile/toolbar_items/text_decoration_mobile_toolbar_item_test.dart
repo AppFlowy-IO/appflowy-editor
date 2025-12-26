@@ -8,10 +8,7 @@ void main() {
   testWidgets('textDecorationMobileToolbarItem', (WidgetTester tester) async {
     const text = 'Welcome to Appflowy 😁';
     final editor = tester.editor..addParagraphs(3, initialText: text);
-    await editor.startTesting(
-      inMobile: true,
-      withFloatingToolbar: true,
-    );
+    await editor.startTesting(inMobile: true, withFloatingToolbar: true);
 
     var selection = Selection.single(
       path: [1],
@@ -27,22 +24,10 @@ void main() {
 
     // Show its menu and it has 4 buttons
     expect(find.byType(MobileToolbarItemMenu), findsOneWidget);
-    expect(
-      find.text(AppFlowyEditorL10n.current.bold),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppFlowyEditorL10n.current.italic),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppFlowyEditorL10n.current.underline),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppFlowyEditorL10n.current.strikethrough),
-      findsOneWidget,
-    );
+    expect(find.text(AppFlowyEditorL10n.current.bold), findsOneWidget);
+    expect(find.text(AppFlowyEditorL10n.current.italic), findsOneWidget);
+    expect(find.text(AppFlowyEditorL10n.current.underline), findsOneWidget);
+    expect(find.text(AppFlowyEditorL10n.current.strikethrough), findsOneWidget);
 
     // Test bold button
     await tester.tap(
@@ -56,9 +41,8 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.bold] == true,
-            );
+          (element) => element.attributes?[AppFlowyRichTextKeys.bold] == true,
+        );
       }),
       true,
     );
@@ -74,9 +58,8 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.italic] == true,
-            );
+          (element) => element.attributes?[AppFlowyRichTextKeys.italic] == true,
+        );
       }),
       true,
     );
@@ -92,9 +75,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.underline] == true,
-            );
+          (element) =>
+              element.attributes?[AppFlowyRichTextKeys.underline] == true,
+        );
       }),
       true,
     );
@@ -110,10 +93,9 @@ void main() {
     expect(
       node?.allSatisfyInSelection(selection, (delta) {
         return delta.whereType<TextInsert>().every(
-              (element) =>
-                  element.attributes?[AppFlowyRichTextKeys.strikethrough] ==
-                  true,
-            );
+          (element) =>
+              element.attributes?[AppFlowyRichTextKeys.strikethrough] == true,
+        );
       }),
       true,
     );

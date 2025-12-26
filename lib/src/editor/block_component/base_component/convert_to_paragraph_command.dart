@@ -46,9 +46,7 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
     ..insertNode(
       node.path,
       paragraphNode(
-        attributes: {
-          ParagraphBlockKeys.delta: delta.toJson(),
-        },
+        attributes: {ParagraphBlockKeys.delta: delta.toJson()},
         textDirection: textDirection,
         children: node.children.map((e) => e.deepCopy()).toList(),
       ),

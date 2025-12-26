@@ -19,9 +19,7 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(url: url),
-          )
+          ..addNode(imageNode(url: url))
           ..addParagraph(initialText: text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -37,14 +35,10 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(url: url),
-          )
+          ..addNode(imageNode(url: url))
           ..addParagraph(initialText: text);
 
-        await editor.startTesting(
-          editable: false,
-        );
+        await editor.startTesting(editable: false);
         await tester.pumpAndSettle();
 
         expect(editor.documentRootLen, 3);
@@ -70,9 +64,7 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(url: url),
-          )
+          ..addNode(imageNode(url: url))
           ..addParagraph(initialText: text);
 
         await editor.startTesting();
@@ -101,27 +93,9 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(
-              url: url,
-              align: 'left',
-              width: 100,
-            ),
-          )
-          ..addNode(
-            imageNode(
-              url: url,
-              align: 'center',
-              width: 100,
-            ),
-          )
-          ..addNode(
-            imageNode(
-              url: url,
-              align: 'right',
-              width: 100,
-            ),
-          )
+          ..addNode(imageNode(url: url, align: 'left', width: 100))
+          ..addNode(imageNode(url: url, align: 'center', width: 100))
+          ..addNode(imageNode(url: url, align: 'right', width: 100))
           ..addParagraph(initialText: text);
         await editor.startTesting();
         await tester.pumpAndSettle();
@@ -134,10 +108,7 @@ void main() async {
         final editorRect = tester.getRect(editorFinder);
 
         final leftImageRect = tester.getRect(imageFinder.at(0));
-        expect(
-          leftImageRect.left,
-          editor.editorState.editorStyle.padding.left,
-        );
+        expect(leftImageRect.left, editor.editorState.editorStyle.padding.left);
         final rightImageRect = tester.getRect(imageFinder.at(2));
         expect(
           rightImageRect.right,
@@ -173,9 +144,7 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(url: url),
-          )
+          ..addNode(imageNode(url: url))
           ..addParagraph(initialText: text);
         await editor.startTesting();
 
@@ -194,9 +163,7 @@ void main() async {
       mockNetworkImagesFor(() async {
         final editor = tester.editor
           ..addParagraph(initialText: text)
-          ..addNode(
-            imageNode(url: url),
-          )
+          ..addNode(imageNode(url: url))
           ..addParagraph(initialText: text);
         await editor.startTesting();
         await tester.pumpAndSettle();

@@ -75,11 +75,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         ...alignmentItems,
       ],
       tooltipBuilder: (context, _, message, child) {
-        return Tooltip(
-          message: message,
-          preferBelow: false,
-          child: child,
-        );
+        return Tooltip(message: message, preferBelow: false, child: child);
       },
       editorState: editorState,
       textDirection: widget.textDirection,
@@ -94,9 +90,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           editorStyle: editorStyle,
           enableAutoComplete: true,
           autoCompleteTextProvider: _buildAutoCompleteTextProvider,
-          dropTargetStyle: const AppFlowyDropTargetStyle(
-            color: Colors.red,
-          ),
+          dropTargetStyle: const AppFlowyDropTargetStyle(color: Colors.red),
           contextMenuBuilder: (context, position, editorState, onPressed) {
             return ContextMenu(
               position: position,
@@ -126,14 +120,9 @@ class _DesktopEditorState extends State<DesktopEditor> {
       cursorColor: Colors.blue,
       selectionColor: Colors.grey.shade300,
       textStyleConfiguration: TextStyleConfiguration(
-        text: GoogleFonts.poppins(
-          fontSize: 16,
-          color: Colors.black,
-        ),
+        text: GoogleFonts.poppins(fontSize: 16, color: Colors.black),
         code: GoogleFonts.architectsDaughter(),
-        bold: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-        ),
+        bold: GoogleFonts.poppins(fontWeight: FontWeight.w500),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 40),
       maxWidth: 640,
@@ -157,10 +146,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
       final rects = delegate.getRectsInSelection(
         Selection(
           start: Position(path: node.path, offset: index),
-          end: Position(
-            path: node.path,
-            offset: index + textInsert.length,
-          ),
+          end: Position(path: node.path, offset: index + textInsert.length),
         ),
       );
       // Add a hover menu to the linked text.
@@ -207,21 +193,11 @@ class _DesktopEditorState extends State<DesktopEditor> {
     map[ImageBlockKeys.type] = ImageBlockComponentBuilder(
       showMenu: true,
       menuBuilder: (node, _) {
-        return const Positioned(
-          right: 10,
-          child: Text('⭐️ Here is a menu!'),
-        );
+        return const Positioned(right: 10, child: Text('⭐️ Here is a menu!'));
       },
     );
     // customize the heading block component
-    final levelToFontSize = [
-      30.0,
-      26.0,
-      22.0,
-      18.0,
-      16.0,
-      14.0,
-    ];
+    final levelToFontSize = [30.0, 26.0, 22.0, 18.0, 16.0, 14.0];
     map[HeadingBlockKeys.type] = HeadingBlockComponentBuilder(
       textStyleBuilder: (level) => GoogleFonts.poppins(
         fontSize: levelToFontSize.elementAtOrNull(level - 1) ?? 14.0,
@@ -238,9 +214,8 @@ class _DesktopEditorState extends State<DesktopEditor> {
           }
           return const EdgeInsets.symmetric(vertical: 8.0);
         },
-        blockSelectionAreaMargin: (_) => const EdgeInsets.symmetric(
-          vertical: 1.0,
-        ),
+        blockSelectionAreaMargin: (_) =>
+            const EdgeInsets.symmetric(vertical: 1.0),
       );
 
       if (key != PageBlockKeys.type) {
@@ -261,15 +236,11 @@ class _DesktopEditorState extends State<DesktopEditor> {
     return [
       // customize the highlight color
       customToggleHighlightCommand(
-        style: ToggleColorsStyle(
-          highlightColor: Colors.orange.shade700,
-        ),
+        style: ToggleColorsStyle(highlightColor: Colors.orange.shade700),
       ),
       ...[
         ...standardCommandShortcutEvents
-          ..removeWhere(
-            (el) => el == toggleHighlightCommand,
-          ),
+          ..removeWhere((el) => el == toggleHighlightCommand),
       ],
       ...findAndReplaceCommands(
         context: context,
@@ -295,16 +266,11 @@ class _DesktopEditorState extends State<DesktopEditor> {
           // check if the document is empty, if so, add a new paragraph block.
           if (editorState.document.root.children.isEmpty) {
             final transaction = editorState.transaction;
-            transaction.insertNode(
-              [0],
-              paragraphNode(),
-            );
+            transaction.insertNode([0], paragraphNode());
             await editorState.apply(transaction);
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              editorState.selection = Selection.collapsed(
-                Position(path: [0]),
-              );
+              editorState.selection = Selection.collapsed(Position(path: [0]));
             });
           }
         },
@@ -340,11 +306,7 @@ class HoverMenu extends StatefulWidget {
   final Widget child;
   final WidgetBuilder itemBuilder;
 
-  const HoverMenu({
-    super.key,
-    required this.child,
-    required this.itemBuilder,
-  });
+  const HoverMenu({super.key, required this.child, required this.itemBuilder});
 
   @override
   HoverMenuState createState() => HoverMenuState();

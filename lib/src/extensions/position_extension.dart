@@ -3,10 +3,7 @@ import 'dart:math' as math;
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
-enum SelectionRange {
-  character,
-  word,
-}
+enum SelectionRange { character, word }
 
 extension PositionExtension on Position {
   Position? moveHorizontal(
@@ -52,10 +49,7 @@ extension PositionExtension on Position {
         if (delta != null) {
           final result = forward
               ? node.selectable?.getWordBoundaryInPosition(
-                  Position(
-                    path: path,
-                    offset: delta.prevRunePosition(offset),
-                  ),
+                  Position(path: path, offset: delta.prevRunePosition(offset)),
                 )
               : node.selectable?.getWordBoundaryInPosition(this);
           if (result != null) {
@@ -67,10 +61,7 @@ extension PositionExtension on Position {
     }
   }
 
-  Position? moveVertical(
-    EditorState editorState, {
-    bool upwards = true,
-  }) {
+  Position? moveVertical(EditorState editorState, {bool upwards = true}) {
     final node = editorState.document.nodeAtPath(path);
     final nodeRenderBox = node?.renderBox;
     final nodeSelectable = node?.selectable;
@@ -96,11 +87,11 @@ extension PositionExtension on Position {
     // Either the top if moving upwards, or the bottom if moving downwards.
     final Offset caretOffset = editorSelection.isBackward
         ? upwards
-            ? caretRect.topRight
-            : caretRect.bottomRight
+              ? caretRect.topRight
+              : caretRect.bottomRight
         : upwards
-            ? caretRect.topLeft
-            : caretRect.bottomLeft;
+        ? caretRect.topLeft
+        : caretRect.bottomLeft;
 
     final nodeConfig = editorState.service.rendererService
         .blockComponentBuilder(node.type)
@@ -141,13 +132,16 @@ extension PositionExtension on Position {
     //   skipped because `remainingMultilineHeight` would be 0.
     Offset newOffset = caretOffset;
     Position? newPosition;
-    for (double y = minFontSize;
-        y < remainingMultilineHeight + minFontSize;
-        y += minFontSize) {
+    for (
+      double y = minFontSize;
+      y < remainingMultilineHeight + minFontSize;
+      y += minFontSize
+    ) {
       newOffset = caretOffset.translate(0, upwards ? -y : y);
 
-      newPosition =
-          editorState.service.selectionService.getPositionInOffset(newOffset);
+      newPosition = editorState.service.selectionService.getPositionInOffset(
+        newOffset,
+      );
 
       // If a position different from the current one is found, return it.
       if (newPosition != null && newPosition != this) {
@@ -191,8 +185,9 @@ extension PositionExtension on Position {
       math.min(newOffset.dy, nodeHeightOffset.dy),
     );
 
-    newPosition =
-        editorState.service.selectionService.getPositionInOffset(newOffset);
+    newPosition = editorState.service.selectionService.getPositionInOffset(
+      newOffset,
+    );
 
     if (newPosition != null && newPosition != this) {
       return newPosition;

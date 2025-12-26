@@ -97,16 +97,14 @@ extension EditorStateSelection on EditorState {
         children = node.children;
       } else {
         children = node.children.toList(growable: false)
-          ..sort(
-            (a, b) {
-              final aRect = _getCachedRect(a, rectCache!);
-              final bRect = _getCachedRect(b, rectCache);
+          ..sort((a, b) {
+            final aRect = _getCachedRect(a, rectCache!);
+            final bRect = _getCachedRect(b, rectCache);
 
-              return aRect.bottom != bRect.bottom
-                  ? aRect.bottom.compareTo(bRect.bottom)
-                  : aRect.left.compareTo(bRect.left);
-            },
-          );
+            return aRect.bottom != bRect.bottom
+                ? aRect.bottom.compareTo(bRect.bottom)
+                : aRect.left.compareTo(bRect.left);
+          });
       }
 
       // if the nodes are in the same tab view, their rect are overlaid,

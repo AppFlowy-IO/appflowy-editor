@@ -16,10 +16,7 @@ class DocumentHTMLEncoder extends Converter<Document, String> {
       );
       if (parser != null) {
         buffer.write(
-          parser.transformNodeToHTMLString(
-            node,
-            encodeParsers: encodeParsers,
-          ),
+          parser.transformNodeToHTMLString(node, encodeParsers: encodeParsers),
         );
       }
     }

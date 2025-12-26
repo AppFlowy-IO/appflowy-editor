@@ -23,8 +23,9 @@ class ScrollServiceWidget extends StatefulWidget {
 
 class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     implements AppFlowyScrollService {
-  final _forwardKey =
-      GlobalKey(debugLabel: 'forward_to_platform_scroll_service');
+  final _forwardKey = GlobalKey(
+    debugLabel: 'forward_to_platform_scroll_service',
+  );
   late AppFlowyScrollService forward =
       _forwardKey.currentState as AppFlowyScrollService;
 
@@ -65,30 +66,21 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     );
   }
 
-  Widget _buildDesktopScrollService(
-    BuildContext context,
-  ) {
-    return DesktopScrollService(
-      key: _forwardKey,
-      child: widget.child,
-    );
+  Widget _buildDesktopScrollService(BuildContext context) {
+    return DesktopScrollService(key: _forwardKey, child: widget.child);
   }
 
-  Widget _buildMobileScrollService(
-    BuildContext context,
-  ) {
-    return MobileScrollService(
-      key: _forwardKey,
-      child: widget.child,
-    );
+  Widget _buildMobileScrollService(BuildContext context) {
+    return MobileScrollService(key: _forwardKey, child: widget.child);
   }
 
   void _onSelectionChanged() {
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
     if (selection == null ||
-        [SelectionUpdateReason.selectAll]
-            .contains(editorState.selectionUpdateReason)) {
+        [
+          SelectionUpdateReason.selectAll,
+        ].contains(editorState.selectionUpdateReason)) {
       return;
     }
 
@@ -142,15 +134,17 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       if (PlatformExtension.isMobile) {
         // Determine if this is a drag operation
-        final bool isDragOperation = dragMode != null &&
+        final bool isDragOperation =
+            dragMode != null &&
             (dragMode.toString() ==
                     'MobileSelectionDragMode.leftSelectionHandle' ||
                 dragMode.toString() ==
                     'MobileSelectionDragMode.rightSelectionHandle');
 
         // Use animation for drag operations, instant for others
-        final scrollDuration =
-            isDragOperation ? const Duration(milliseconds: 2) : Duration.zero;
+        final scrollDuration = isDragOperation
+            ? const Duration(milliseconds: 2)
+            : Duration.zero;
 
         // soft keyboard
         // workaround: wait for the soft keyboard to show up
@@ -210,8 +204,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void scrollTo(
     double dy, {
     Duration duration = const Duration(milliseconds: 150),
-  }) =>
-      forward.scrollTo(dy, duration: duration);
+  }) => forward.scrollTo(dy, duration: duration);
 
   @override
   void jumpTo(int index) => forward.jumpTo(index);

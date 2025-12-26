@@ -92,13 +92,8 @@ void main() async {
       const text = '~AppFlowy';
       final document = Document.blank().addParagraphs(
         1,
-        builder: (index) => Delta()
-          ..insert(
-            text,
-            attributes: {
-              'strikethrough': true,
-            },
-          ),
+        builder: (index) =>
+            Delta()..insert(text, attributes: {'strikethrough': true}),
       );
 
       final editorState = EditorState(document: document);
@@ -116,12 +111,10 @@ void main() async {
         after.delta!.toPlainText(),
         text.substring(1),
       ); // remove the first underscore
-      final isStrikethrough = after.delta!
-          .everyAttributes((element) => element['strikethrough'] == true);
-      expect(
-        isStrikethrough,
-        false,
+      final isStrikethrough = after.delta!.everyAttributes(
+        (element) => element['strikethrough'] == true,
       );
+      expect(isStrikethrough, false);
     });
   });
 }

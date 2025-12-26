@@ -22,10 +22,8 @@ class TableCellBlockKeys {
   static const String colBackgroundColor = 'colBackgroundColor';
 }
 
-typedef TableBlockCellComponentColorBuilder = Color? Function(
-  BuildContext context,
-  Node node,
-);
+typedef TableBlockCellComponentColorBuilder =
+    Color? Function(BuildContext context, Node node);
 
 Node tableCellNode(String text, int rowPosition, int colPosition) {
   return Node(
@@ -34,9 +32,7 @@ Node tableCellNode(String text, int rowPosition, int colPosition) {
       TableCellBlockKeys.rowPosition: rowPosition,
       TableCellBlockKeys.colPosition: colPosition,
     },
-    children: [
-      paragraphNode(text: text),
-    ],
+    children: [paragraphNode(text: text)],
   );
 }
 
@@ -61,22 +57,19 @@ class TableCellBlockComponentBuilder extends BlockComponentBuilder {
       menuBuilder: menuBuilder,
       colorBuilder: colorBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) =>
-      node.attributes.isNotEmpty &&
-      node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
-      node.attributes.containsKey(TableCellBlockKeys.colPosition);
+  BlockComponentValidate get validate =>
+      (node) =>
+          node.attributes.isNotEmpty &&
+          node.attributes.containsKey(TableCellBlockKeys.rowPosition) &&
+          node.attributes.containsKey(TableCellBlockKeys.colPosition);
 }
 
 class TableCelBlockWidget extends BlockComponentStatefulWidget {
@@ -146,9 +139,11 @@ class _TableCeBlockWidgetState extends State<TableCelBlockWidget> {
             final int col = n.attributes[TableCellBlockKeys.colPosition];
             double left = -12;
             for (var i = 0; i < col; i++) {
-              left -= getCellNode(n.parent!, i, 0)?.cellWidth ??
+              left -=
+                  getCellNode(n.parent!, i, 0)?.cellWidth ??
                   TableDefaults.colWidth;
-              left -= n.parent!.attributes['borderWidth'] ??
+              left -=
+                  n.parent!.attributes['borderWidth'] ??
                   TableDefaults.borderWidth;
             }
 

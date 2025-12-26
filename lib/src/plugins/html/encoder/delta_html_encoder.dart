@@ -86,10 +86,7 @@ class DeltaHTMLEncoder extends Converter<Delta, List<dom.Node>> {
     return span;
   }
 
-  dom.Element? hrefEdgeCaseAttributes(
-    String text,
-    Attributes attributes,
-  ) {
+  dom.Element? hrefEdgeCaseAttributes(String text, Attributes attributes) {
     final href = attributes[AppFlowyRichTextKeys.href];
     if (href == null) {
       return null;

@@ -31,8 +31,9 @@ mixin BlockComponentTextDirectionMixin {
         direction != lastDirection &&
         node.direction(defaultTextDirection) ==
             blockComponentTextDirectionAuto) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => node.parent?.notify());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => node.parent?.notify(),
+      );
     }
     lastDirection = direction;
 
@@ -73,9 +74,11 @@ TextDirection calculateNodeDirection({
       defaultTextDirection = lastDirection.name;
     } else {
       defaultTextDirection =
-          _getDirectionFromPreviousOrParentNode(node, defaultTextDirection)
-                  ?.name ??
-              defaultTextDirection;
+          _getDirectionFromPreviousOrParentNode(
+            node,
+            defaultTextDirection,
+          )?.name ??
+          defaultTextDirection;
     }
   }
 

@@ -56,10 +56,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
       height: edgeOffset,
     );
 
-    startAutoScrollIfNecessary(
-      dragTarget,
-      duration: duration,
-    );
+    startAutoScrollIfNecessary(dragTarget, duration: duration);
   }
 
   @override

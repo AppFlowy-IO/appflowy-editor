@@ -27,8 +27,9 @@ Future<bool> handleDoubleCharacterReplacement({
   if (selection.end.offset > 0) {
     final plain = delta.toPlainText();
 
-    final expectedPrevious =
-        prefixCharacter?.isEmpty ?? true ? character : prefixCharacter;
+    final expectedPrevious = prefixCharacter?.isEmpty ?? true
+        ? character
+        : prefixCharacter;
 
     final previousCharacter = plain[selection.end.offset - 1];
     if (previousCharacter != expectedPrevious) {
@@ -36,12 +37,7 @@ Future<bool> handleDoubleCharacterReplacement({
     }
 
     final replace = editorState.transaction
-      ..replaceText(
-        node,
-        selection.end.offset - 1,
-        1,
-        replacement,
-      );
+      ..replaceText(node, selection.end.offset - 1, 1, replacement);
 
     await editorState.apply(replace);
 

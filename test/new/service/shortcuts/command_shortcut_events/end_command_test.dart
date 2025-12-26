@@ -15,12 +15,10 @@ void main() async {
     // Welcome to AppFlowy Editor 🔥!|
     // After
     // |Welcome to AppFlowy Editor 🔥!
-    testWidgets('press the end key to go to the end of line if only one line',
-        (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+    testWidgets('press the end key to go to the end of line if only one line', (
+      tester,
+    ) async {
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       final selection = Selection.collapsed(Position(path: [0]));
@@ -40,8 +38,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('press the home key to go to the start of selected line',
-        (tester) async {
+    testWidgets('press the home key to go to the start of selected line', (
+      tester,
+    ) async {
       final editor = tester.editor..addParagraphs(10, initialText: text);
 
       await editor.startTesting();
@@ -70,13 +69,11 @@ void main() async {
     // |Welcome to AppFlowy Editor 🔥!
     // After
     // |Welcome to AppFlowy Editor 🔥!|
-    testWidgets('press the shift + home to select till beginning of line',
-        (tester) async {
+    testWidgets('press the shift + home to select till beginning of line', (
+      tester,
+    ) async {
       if (!Platform.isMacOS) {
-        final editor = tester.editor
-          ..addParagraph(
-            initialText: text,
-          );
+        final editor = tester.editor..addParagraph(initialText: text);
         await editor.startTesting();
 
         final selection = Selection.collapsed(Position(path: [0]));
@@ -89,11 +86,7 @@ void main() async {
 
         expect(
           editor.selection,
-          Selection.single(
-            path: [0],
-            startOffset: 0,
-            endOffset: text.length,
-          ),
+          Selection.single(path: [0], startOffset: 0, endOffset: text.length),
         );
 
         await editor.dispose();

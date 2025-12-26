@@ -4,56 +4,35 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('node.dart', () {
     test('test node copyWith', () {
-      final node = Node(
-        type: 'example',
-        attributes: {
-          'example': 'example',
-        },
-      );
+      final node = Node(type: 'example', attributes: {'example': 'example'});
       expect(node.toJson(), {
         'type': 'example',
-        'data': {
-          'example': 'example',
-        },
+        'data': {'example': 'example'},
       });
-      expect(
-        node.copyWith().toJson(),
-        node.toJson(),
-      );
+      expect(node.copyWith().toJson(), node.toJson());
 
       final nodeWithChildren = Node(
         type: 'example',
         children: [node],
-        attributes: {
-          'example': 'example',
-        },
+        attributes: {'example': 'example'},
       );
       expect(nodeWithChildren.toJson(), {
         'type': 'example',
-        'data': {
-          'example': 'example',
-        },
+        'data': {'example': 'example'},
         'children': [
           {
             'type': 'example',
-            'data': {
-              'example': 'example',
-            },
+            'data': {'example': 'example'},
           },
         ],
       });
-      expect(
-        nodeWithChildren.copyWith().toJson(),
-        nodeWithChildren.toJson(),
-      );
+      expect(nodeWithChildren.copyWith().toJson(), nodeWithChildren.toJson());
     });
 
     test('test textNode copyWith', () {
       final node = paragraphNode(
         delta: Delta()..insert('AppFlowy'),
-        attributes: {
-          'example': 'example',
-        },
+        attributes: {'example': 'example'},
       );
       expect(node.toJson(), {
         'type': 'paragraph',
@@ -64,17 +43,12 @@ void main() async {
           ],
         },
       });
-      expect(
-        node.copyWith().toJson(),
-        node.toJson(),
-      );
+      expect(node.copyWith().toJson(), node.toJson());
 
       final nodeWithChildren = paragraphNode(
         delta: Delta()..insert('AppFlowy'),
         children: [node],
-        attributes: {
-          'example': 'example',
-        },
+        attributes: {'example': 'example'},
       );
       expect(nodeWithChildren.toJson(), {
         'type': 'paragraph',
@@ -96,59 +70,33 @@ void main() async {
           },
         ],
       });
-      expect(
-        nodeWithChildren.copyWith().toJson(),
-        nodeWithChildren.toJson(),
-      );
+      expect(nodeWithChildren.copyWith().toJson(), nodeWithChildren.toJson());
     });
 
     test('test copy with', () {
-      final child = Node(
-        type: 'child',
-        attributes: {},
-      );
-      final base = Node(
-        type: 'base',
-        attributes: {},
-        children: [child],
-      );
-      final node = base.copyWith(
-        type: 'node',
-      );
+      final child = Node(type: 'child', attributes: {});
+      final base = Node(type: 'base', attributes: {}, children: [child]);
+      final node = base.copyWith(type: 'node');
       expect(identical(node.attributes, base.attributes), false);
       expect(identical(node.children, base.children), false);
       expect(identical(node.children.first, base.children.first), false);
     });
 
     test('test insert', () {
-      final base = Node(
-        type: 'base',
-      );
+      final base = Node(type: 'base');
 
       // insert at the front when node's children is empty
-      final childA = Node(
-        type: 'child',
-      );
+      final childA = Node(type: 'child');
       base.insert(childA);
-      expect(
-        identical(base.childAtIndexOrNull(0), childA),
-        true,
-      );
+      expect(identical(base.childAtIndexOrNull(0), childA), true);
 
       // insert at the front
-      final childB = Node(
-        type: 'child',
-      );
+      final childB = Node(type: 'child');
       base.insert(childB, index: -1);
-      expect(
-        identical(base.childAtIndexOrNull(0), childB),
-        true,
-      );
+      expect(identical(base.childAtIndexOrNull(0), childB), true);
 
       // insert at the last
-      final childC = Node(
-        type: 'child',
-      );
+      final childC = Node(type: 'child');
       base.insert(childC, index: 1000);
       expect(
         identical(base.childAtIndexOrNull(base.children.length - 1), childC),
@@ -156,9 +104,7 @@ void main() async {
       );
 
       // insert at the last
-      final childD = Node(
-        type: 'child',
-      );
+      final childD = Node(type: 'child');
       base.insert(childD);
       expect(
         identical(base.childAtIndexOrNull(base.children.length - 1), childD),
@@ -166,14 +112,9 @@ void main() async {
       );
 
       // insert at the second
-      final childE = Node(
-        type: 'child',
-      );
+      final childE = Node(type: 'child');
       base.insert(childE, index: 1);
-      expect(
-        identical(base.childAtIndexOrNull(1), childE),
-        true,
-      );
+      expect(identical(base.childAtIndexOrNull(1), childE), true);
     });
 
     test('test fromJson', () {
@@ -185,9 +126,7 @@ void main() async {
         'children': [
           {
             'type': 'example',
-            'data': {
-              'example': 'example',
-            },
+            'data': {'example': 'example'},
           },
         ],
       });

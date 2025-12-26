@@ -43,8 +43,9 @@ bool isOutdentable(EditorState editorState) {
       .where((node) => node.path.length == parent.path.length + 1)
       .toList();
 
-  final isAllIndentable =
-      nodes.every((node) => indentableBlockTypes.contains(node.type));
+  final isAllIndentable = nodes.every(
+    (node) => indentableBlockTypes.contains(node.type),
+  );
   if (!isAllIndentable) {
     return false;
   }

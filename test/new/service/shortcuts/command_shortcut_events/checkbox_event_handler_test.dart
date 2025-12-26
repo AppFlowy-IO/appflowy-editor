@@ -15,12 +15,7 @@ void main() async {
     testWidgets('toggle checkbox with shortcut ctrl+enter', (tester) async {
       const text = 'Checkbox1';
       final editor = tester.editor
-        ..addNode(
-          todoListNode(
-            checked: false,
-            delta: Delta()..insert(text),
-          ),
-        );
+        ..addNode(todoListNode(checked: false, delta: Delta()..insert(text)));
       await editor.startTesting();
       await editor.updateSelection(
         Selection.single(path: [0], startOffset: text.length),
@@ -56,102 +51,103 @@ void main() async {
     });
 
     testWidgets(
-        'test if all checkboxes get unchecked after toggling them, if all of them were already checked',
-        (tester) async {
-      const text = 'Checkbox';
-      final editor = tester.editor
-        ..addNode(
-          todoListNode(
-            checked: true,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
-        )
-        ..addNode(
-          todoListNode(
-            checked: true,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
-        )
-        ..addNode(
-          todoListNode(
-            checked: true,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
+      'test if all checkboxes get unchecked after toggling them, if all of them were already checked',
+      (tester) async {
+        const text = 'Checkbox';
+        final editor = tester.editor
+          ..addNode(
+            todoListNode(
+              checked: true,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          )
+          ..addNode(
+            todoListNode(
+              checked: true,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          )
+          ..addNode(
+            todoListNode(
+              checked: true,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          );
+
+        await editor.startTesting();
+
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: text.length),
+        );
+        await editor.updateSelection(selection);
+
+        var nodes = editor.editorState.getNodesInSelection(selection);
+        for (final node in nodes) {
+          expect(node.type, 'todo_list');
+          expect(node.attributes[TodoListBlockKeys.checked], true);
+        }
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.enter,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
         );
 
-      await editor.startTesting();
+        nodes = editor.editorState.getNodesInSelection(selection);
+        for (final node in nodes) {
+          expect(node.attributes[TodoListBlockKeys.checked], false);
+        }
 
-      final selection =
-          Selection.collapsed(Position(path: [0], offset: text.length));
-      await editor.updateSelection(selection);
-
-      var nodes = editor.editorState.getNodesInSelection(selection);
-      for (final node in nodes) {
-        expect(node.type, 'todo_list');
-        expect(node.attributes[TodoListBlockKeys.checked], true);
-      }
-
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-      );
-
-      nodes = editor.editorState.getNodesInSelection(selection);
-      for (final node in nodes) {
-        expect(node.attributes[TodoListBlockKeys.checked], false);
-      }
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
 
     testWidgets(
-        'test if all checkboxes get checked after toggling them, if any one of them were already checked',
-        (tester) async {
-      const text = 'Checkbox';
-      final editor = tester.editor
-        ..addNode(
-          todoListNode(
-            checked: false,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
-        )
-        ..addNode(
-          todoListNode(
-            checked: true,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
-        )
-        ..addNode(
-          todoListNode(
-            checked: false,
-            attributes: {'delta': (Delta()..insert(text)).toJson()},
-          ),
+      'test if all checkboxes get checked after toggling them, if any one of them were already checked',
+      (tester) async {
+        const text = 'Checkbox';
+        final editor = tester.editor
+          ..addNode(
+            todoListNode(
+              checked: false,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          )
+          ..addNode(
+            todoListNode(
+              checked: true,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          )
+          ..addNode(
+            todoListNode(
+              checked: false,
+              attributes: {'delta': (Delta()..insert(text)).toJson()},
+            ),
+          );
+
+        await editor.startTesting();
+
+        final selection = Selection(
+          start: Position(path: [0], offset: 0),
+          end: Position(path: [2], offset: text.length),
+        );
+        await editor.updateSelection(selection);
+
+        await editor.pressKey(
+          key: LogicalKeyboardKey.enter,
+          isControlPressed: Platform.isWindows || Platform.isLinux,
+          isMetaPressed: Platform.isMacOS,
         );
 
-      await editor.startTesting();
+        final nodes = editor.editorState.getNodesInSelection(selection);
+        for (final node in nodes) {
+          expect(node.type, 'todo_list');
+          expect(node.attributes[TodoListBlockKeys.checked], true);
+        }
 
-      final selection = Selection(
-        start: Position(path: [0], offset: 0),
-        end: Position(path: [2], offset: text.length),
-      );
-      await editor.updateSelection(
-        selection,
-      );
-
-      await editor.pressKey(
-        key: LogicalKeyboardKey.enter,
-        isControlPressed: Platform.isWindows || Platform.isLinux,
-        isMetaPressed: Platform.isMacOS,
-      );
-
-      final nodes = editor.editorState.getNodesInSelection(selection);
-      for (final node in nodes) {
-        expect(node.type, 'todo_list');
-        expect(node.attributes[TodoListBlockKeys.checked], true);
-      }
-
-      await editor.dispose();
-    });
+        await editor.dispose();
+      },
+    );
   });
 }

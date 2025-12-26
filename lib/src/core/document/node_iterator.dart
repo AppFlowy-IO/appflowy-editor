@@ -4,11 +4,7 @@ import 'package:appflowy_editor/src/core/document/node.dart';
 /// [NodeIterator] is used to traverse the nodes in visual order.
 class NodeIterator implements Iterator<Node> {
   /// Creates a NodeIterator.
-  NodeIterator({
-    required this.document,
-    required this.startNode,
-    this.endNode,
-  });
+  NodeIterator({required this.document, required this.startNode, this.endNode});
 
   /// The document to iterate.
   final Document document;

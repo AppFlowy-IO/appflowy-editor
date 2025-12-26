@@ -2,8 +2,9 @@ import 'package:pdf/pdf.dart';
 
 extension ColorExt on PdfColor {
   static PdfColor? fromRgbaString(String colorString) {
-    final regex =
-        RegExp(r'rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)');
+    final regex = RegExp(
+      r'rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)',
+    );
     final match = regex.firstMatch(colorString);
 
     if (match == null) {

@@ -22,24 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("ബോൾഡ്"),
-        "bulletedList":
-            MessageLookupByLibrary.simpleMessage("ബുള്ളറ്റഡ് പട്ടിക"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("ചെക്ക്ബോക്സ്"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("എംബെഡഡ് കോഡ്"),
-        "heading1": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 3"),
-        "highlight":
-            MessageLookupByLibrary.simpleMessage("പ്രമുഖമാക്കിക്കാട്ടുക"),
-        "image": MessageLookupByLibrary.simpleMessage("ചിത്രം"),
-        "italic": MessageLookupByLibrary.simpleMessage("ഇറ്റാലിക്"),
-        "link": MessageLookupByLibrary.simpleMessage("ലിങ്ക്"),
-        "numberedList":
-            MessageLookupByLibrary.simpleMessage("അക്കമിട്ട പട്ടിക"),
-        "quote": MessageLookupByLibrary.simpleMessage("ഉദ്ധരണി"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("സ്ട്രൈക്ക്ത്രൂ"),
-        "text": MessageLookupByLibrary.simpleMessage("വചനം"),
-        "underline": MessageLookupByLibrary.simpleMessage("അടിവരയിടുക")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("ബോൾഡ്"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage("ബുള്ളറ്റഡ് പട്ടിക"),
+    "checkbox": MessageLookupByLibrary.simpleMessage("ചെക്ക്ബോക്സ്"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("എംബെഡഡ് കോഡ്"),
+    "heading1": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("തലക്കെട്ട് 3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("പ്രമുഖമാക്കിക്കാട്ടുക"),
+    "image": MessageLookupByLibrary.simpleMessage("ചിത്രം"),
+    "italic": MessageLookupByLibrary.simpleMessage("ഇറ്റാലിക്"),
+    "link": MessageLookupByLibrary.simpleMessage("ലിങ്ക്"),
+    "numberedList": MessageLookupByLibrary.simpleMessage("അക്കമിട്ട പട്ടിക"),
+    "quote": MessageLookupByLibrary.simpleMessage("ഉദ്ധരണി"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("സ്ട്രൈക്ക്ത്രൂ"),
+    "text": MessageLookupByLibrary.simpleMessage("വചനം"),
+    "underline": MessageLookupByLibrary.simpleMessage("അടിവരയിടുക"),
+  };
 }

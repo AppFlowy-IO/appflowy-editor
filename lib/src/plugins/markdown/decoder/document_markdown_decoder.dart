@@ -47,10 +47,7 @@ class DocumentMarkdownDecoder extends Converter<String, Document> {
     List<Node> nodes = [];
 
     for (final parser in markdownElementParsers) {
-      nodes = parser.transform(
-        mdNode,
-        markdownElementParsers,
-      );
+      nodes = parser.transform(mdNode, markdownElementParsers);
 
       if (nodes.isNotEmpty) {
         break;

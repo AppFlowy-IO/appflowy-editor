@@ -92,8 +92,8 @@ class UndoManager {
   EditorState? state;
 
   UndoManager([int stackSize = 20])
-      : undoStack = FixedSizeStack(stackSize),
-        redoStack = FixedSizeStack(stackSize);
+    : undoStack = FixedSizeStack(stackSize),
+      redoStack = FixedSizeStack(stackSize);
 
   HistoryItem getUndoHistoryItem() {
     if (undoStack.isEmpty) {
@@ -127,10 +127,7 @@ class UndoManager {
     final transaction = historyItem.toTransaction(s);
     s.apply(
       transaction,
-      options: const ApplyOptions(
-        recordUndo: false,
-        recordRedo: true,
-      ),
+      options: const ApplyOptions(recordUndo: false, recordRedo: true),
     );
   }
 
@@ -147,10 +144,7 @@ class UndoManager {
     final transaction = historyItem.toTransaction(s);
     s.apply(
       transaction,
-      options: const ApplyOptions(
-        recordUndo: true,
-        recordRedo: false,
-      ),
+      options: const ApplyOptions(recordUndo: true, recordRedo: false),
     );
   }
 

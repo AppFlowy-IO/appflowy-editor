@@ -8,8 +8,10 @@ import '../../../new/util/util.dart';
 void main() {
   group('DeltaInputOnDelete', () {
     test('onDelete', () async {
-      final document =
-          Document.blank().addParagraphs(4, initialText: 'AppFlowy!');
+      final document = Document.blank().addParagraphs(
+        4,
+        initialText: 'AppFlowy!',
+      );
 
       final editorState = EditorState(document: document);
       editorState.selection = Selection.collapsed(Position(path: [0]));

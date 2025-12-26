@@ -40,17 +40,11 @@ Node numberedListNode({
   );
 }
 
-typedef NumberedListIconBuilder = Widget Function(
-  BuildContext context,
-  Node node,
-  TextDirection direction,
-);
+typedef NumberedListIconBuilder =
+    Widget Function(BuildContext context, Node node, TextDirection direction);
 
 class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
-  NumberedListBlockComponentBuilder({
-    super.configuration,
-    this.iconBuilder,
-  });
+  NumberedListBlockComponentBuilder({super.configuration, this.iconBuilder});
 
   final NumberedListIconBuilder? iconBuilder;
 
@@ -64,19 +58,16 @@ class NumberedListBlockComponentBuilder extends BlockComponentBuilder {
       configuration: configuration,
       iconBuilder: iconBuilder,
       showActions: showActions(node),
-      actionBuilder: (context, state) => actionBuilder(
-        blockComponentContext,
-        state,
-      ),
-      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
-        blockComponentContext,
-        state,
-      ),
+      actionBuilder: (context, state) =>
+          actionBuilder(blockComponentContext, state),
+      actionTrailingBuilder: (context, state) =>
+          actionTrailingBuilder(blockComponentContext, state),
     );
   }
 
   @override
-  BlockComponentValidate get validate => (node) => node.delta != null;
+  BlockComponentValidate get validate =>
+      (node) => node.delta != null;
 }
 
 class NumberedListBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -143,11 +134,7 @@ class _NumberedListBlockComponentWidgetState
         textDirection: textDirection,
         children: [
           widget.iconBuilder != null
-              ? widget.iconBuilder!(
-                  context,
-                  node,
-                  textDirection,
-                )
+              ? widget.iconBuilder!(context, node, textDirection)
               : _NumberedListIcon(
                   node: node,
                   textStyle: textStyleWithTextSpan(),
@@ -166,8 +153,8 @@ class _NumberedListBlockComponentWidgetState
               ),
               placeholderTextSpanDecorator: (textSpan) =>
                   textSpan.updateTextStyle(
-                placeholderTextStyleWithTextSpan(textSpan: textSpan),
-              ),
+                    placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                  ),
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
@@ -191,9 +178,7 @@ class _NumberedListBlockComponentWidgetState
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
-      supportTypes: const [
-        BlockSelectionType.block,
-      ],
+      supportTypes: const [BlockSelectionType.block],
       child: child,
     );
 
@@ -238,10 +223,7 @@ class _NumberedListIcon extends StatelessWidget {
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
           ),
-          TextSpan(
-            text: node.levelString,
-            style: text.combine(textStyle),
-          ),
+          TextSpan(text: node.levelString, style: text.combine(textStyle)),
           textDirection: direction,
         ),
       ),
@@ -266,9 +248,7 @@ extension on Node {
 }
 
 class _NumberedListIconBuilder {
-  _NumberedListIconBuilder({
-    required this.node,
-  });
+  _NumberedListIconBuilder({required this.node});
 
   final Node node;
 

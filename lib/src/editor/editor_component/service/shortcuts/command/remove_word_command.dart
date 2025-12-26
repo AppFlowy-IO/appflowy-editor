@@ -56,9 +56,9 @@ CommandShortcutEventHandler _deleteLeftWordCommandHandler = (editorState) {
 
   //check if the selected word is whitespace
   final selectedWord = delta.toPlainText().substring(
-        startOfWord.offset,
-        selection.end.offset,
-      );
+    startOfWord.offset,
+    selection.end.offset,
+  );
 
   // if it is whitespace then we have to update the selection to include
   //  the left word from the whitespace.

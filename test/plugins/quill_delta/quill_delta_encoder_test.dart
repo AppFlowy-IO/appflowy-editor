@@ -14,9 +14,7 @@ void main() async {
     test('issues 356', () {
       const plainText =
           'How many digits are there in the smallest number which is composed entirely of fives (e.g.5555) and which is divisible by 99?';
-      final json = jsonDecode(
-        '[{"insert": "$plainText"}]',
-      );
+      final json = jsonDecode('[{"insert": "$plainText"}]');
       final document = quillDeltaEncoder.convert(Delta.fromJson(json));
       expect(document.root.children.length, 1);
       expect(document.nodeAtPath([0])!.delta!.toPlainText(), plainText);

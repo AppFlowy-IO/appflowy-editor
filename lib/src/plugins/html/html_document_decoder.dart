@@ -5,18 +5,15 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
-typedef ElementParser = Iterable<Node> Function(
-  dom.Element element,
-  (Delta, Iterable<Node>) Function(
-    dom.Element element, {
-    String? type,
-  }) parseDeltaElement,
-);
+typedef ElementParser =
+    Iterable<Node> Function(
+      dom.Element element,
+      (Delta, Iterable<Node>) Function(dom.Element element, {String? type})
+      parseDeltaElement,
+    );
 
 class DocumentHTMLDecoder extends Converter<String, Document> {
-  DocumentHTMLDecoder({
-    this.customDecoders = const {},
-  });
+  DocumentHTMLDecoder({this.customDecoders = const {}});
 
   final Map<String, ElementParser> customDecoders;
   // Set to true to enable parsing color from HTML
@@ -35,22 +32,19 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     /// It can prevent parsing exceptions caused by having a single,
     /// all-encompassing tag under the body. However,
     /// this method needs to be removed in the future as it is not stable
-    final parseForSingleChild = body.children.length == 1 &&
+    final parseForSingleChild =
+        body.children.length == 1 &&
         HTMLTags.formattingElements.contains(body.children.first.localName);
 
-    return Document.blank(withInitialText: false)
-      ..insert(
-        [0],
-        parseForSingleChild
-            ? _parseElement(body.children.first.children)
-            : _parseElement(body.nodes),
-      );
+    return Document.blank(withInitialText: false)..insert(
+      [0],
+      parseForSingleChild
+          ? _parseElement(body.children.first.children)
+          : _parseElement(body.nodes),
+    );
   }
 
-  Iterable<Node> _parseElement(
-    Iterable<dom.Node> domNodes, {
-    String? type,
-  }) {
+  Iterable<Node> _parseElement(Iterable<dom.Node> domNodes, {String? type}) {
     final delta = Delta();
     final List<Node> nodes = [];
     for (final domNode in domNodes) {
@@ -83,9 +77,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           if (delta.isNotEmpty) {
             nodes.add(paragraphNode(delta: delta));
           }
-          nodes.addAll(
-            customDecoders[localName]!(domNode, _parseDeltaElement),
-          );
+          nodes.addAll(customDecoders[localName]!(domNode, _parseDeltaElement));
         }
       } else if (domNode is dom.Text) {
         // skip the empty text node
@@ -138,12 +130,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         return _parseTable(element);
 
       case HTMLTags.list:
-        return [
-          _parseListElement(
-            element,
-            type: type,
-          ),
-        ];
+        return [_parseListElement(element, type: type)];
 
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
@@ -218,10 +205,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         TableCellBlockKeys.rowPosition: rowPosition,
       };
       if (data.attributes.isNotEmpty) {
-        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
-              element.attributes,
-            ) ??
-            {};
+        final deltaAttributes =
+            _getDeltaAttributesFromHTMLAttributes(element.attributes) ?? {};
         attributes.addAll(deltaAttributes);
       }
 
@@ -272,10 +257,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         nodes.add(paragraphNode(delta: delta));
       }
       nodes.addAll(
-        _parseSpecialElements(
-          element,
-          type: ParagraphBlockKeys.type,
-        ),
+        _parseSpecialElements(element, type: ParagraphBlockKeys.type),
       );
     } else if (element is dom.Text) {
       // skip the empty text node
@@ -290,9 +272,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     return nodes;
   }
 
-  Attributes _parserFormattingElementAttributes(
-    dom.Element element,
-  ) {
+  Attributes _parserFormattingElementAttributes(dom.Element element) {
     final localName = element.localName;
 
     Attributes attributes = {};
@@ -317,10 +297,8 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         attributes = {AppFlowyRichTextKeys.code: true};
 
       case HTMLTags.span || HTMLTags.mark:
-        final deltaAttributes = _getDeltaAttributesFromHTMLAttributes(
-              element.attributes,
-            ) ??
-            {};
+        final deltaAttributes =
+            _getDeltaAttributesFromHTMLAttributes(element.attributes) ?? {};
         attributes.addAll(deltaAttributes);
         break;
 
@@ -351,22 +329,13 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
   }) {
     final (delta, specialNodes) = _parseDeltaElement(element);
 
-    return [
-      headingNode(
-        level: level,
-        delta: delta,
-      ),
-      ...specialNodes,
-    ];
+    return [headingNode(level: level, delta: delta), ...specialNodes];
   }
 
   Node _parseBlockQuoteElement(dom.Element element) {
     final (delta, nodes) = _parseDeltaElement(element);
 
-    return quoteNode(
-      delta: delta,
-      children: nodes,
-    );
+    return quoteNode(delta: delta, children: nodes);
   }
 
   Iterable<Node> _parseUnOrderListElement(dom.Element element) {
@@ -385,10 +354,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         .toList();
   }
 
-  Node _parseListElement(
-    dom.Element element, {
-    required String type,
-  }) {
+  Node _parseListElement(dom.Element element, {required String type}) {
     var (delta, node) = _parseDeltaElement(element, type: type);
     if (delta.isEmpty &&
         element.children.length == 1 &&
@@ -429,9 +395,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
       return paragraphNode(); // return empty paragraph
     }
     // only support network image
-    return imageNode(
-      url: src,
-    );
+    return imageNode(url: src);
   }
 
   (Delta, Iterable<Node>) _parseDeltaElement(
@@ -453,10 +417,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
         } else {
           if (HTMLTags.specialElements.contains(child.localName)) {
             nodes.addAll(
-              _parseSpecialElements(
-                child,
-                type: ParagraphBlockKeys.type,
-              ),
+              _parseSpecialElements(child, type: ParagraphBlockKeys.type),
             );
           } else if (customDecoders.containsKey(child.localName)) {
             nodes.addAll(

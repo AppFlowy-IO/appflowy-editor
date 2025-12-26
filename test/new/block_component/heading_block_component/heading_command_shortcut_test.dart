@@ -12,22 +12,14 @@ void main() async {
     const text = 'Welcome to AppFlowy Editor 🔥!';
 
     test('toggle H1 from paragraph', () {
-      final document = Document.blank()
-        ..addParagraph(
-          initialText: text,
-        );
+      final document = Document.blank()..addParagraph(initialText: text);
 
       final editorState = EditorState(document: document);
 
       Node node = editorState.getNodeAtPath([0])!;
       expect(node.type, ParagraphBlockKeys.type);
 
-      final selection = Selection.collapsed(
-        Position(
-          path: [0],
-          offset: 1,
-        ),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 1));
 
       editorState.selection = selection;
       toggleH1.execute(editorState);
@@ -49,22 +41,14 @@ void main() async {
     });
 
     test('toggle H2 from paragraph', () {
-      final document = Document.blank()
-        ..addParagraph(
-          initialText: text,
-        );
+      final document = Document.blank()..addParagraph(initialText: text);
 
       final editorState = EditorState(document: document);
 
       Node node = editorState.getNodeAtPath([0])!;
       expect(node.type, ParagraphBlockKeys.type);
 
-      final selection = Selection.collapsed(
-        Position(
-          path: [0],
-          offset: 1,
-        ),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 1));
 
       editorState.selection = selection;
       toggleH2.execute(editorState);
@@ -86,22 +70,14 @@ void main() async {
     });
 
     test('toggle H3 from paragraph', () {
-      final document = Document.blank()
-        ..addParagraph(
-          initialText: text,
-        );
+      final document = Document.blank()..addParagraph(initialText: text);
 
       final editorState = EditorState(document: document);
 
       Node node = editorState.getNodeAtPath([0])!;
       expect(node.type, ParagraphBlockKeys.type);
 
-      final selection = Selection.collapsed(
-        Position(
-          path: [0],
-          offset: 1,
-        ),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 1));
 
       editorState.selection = selection;
       toggleH3.execute(editorState);
@@ -132,12 +108,7 @@ void main() async {
       expect(node.type, HeadingBlockKeys.type);
       expect(node.attributes[HeadingBlockKeys.level], 2);
 
-      final selection = Selection.collapsed(
-        Position(
-          path: [0],
-          offset: 1,
-        ),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 1));
 
       editorState.selection = selection;
       toggleBody.execute(editorState);

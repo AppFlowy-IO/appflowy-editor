@@ -27,10 +27,7 @@ class AppFlowyRichTextKeys {
   /// The attributes is partially supported sliced.
   ///
   /// For the code and href attributes, the slice attributes function will only work if the index is in the range of the code or href.
-  static List<String> partialSliced = [
-    code,
-    href,
-  ];
+  static List<String> partialSliced = [code, href];
 
   // The values supported toggled even if the selection is collapsed.
   static List<String> supportToggled = [

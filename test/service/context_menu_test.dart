@@ -13,32 +13,25 @@ void main() async {
     mockClipboard = const MockClipboard(html: null, text: null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (message) async {
-      switch (message.method) {
-        case "Clipboard.getData":
-          return mockClipboard.getData;
+          switch (message.method) {
+            case "Clipboard.getData":
+              return mockClipboard.getData;
 
-        case "Clipboard.setData":
-          final args = message.arguments as Map<String, dynamic>;
-          mockClipboard = mockClipboard.copyWith(
-            text: args['text'],
-          );
-      }
+            case "Clipboard.setData":
+              final args = message.arguments as Map<String, dynamic>;
+              mockClipboard = mockClipboard.copyWith(text: args['text']);
+          }
 
-      return null;
-    });
+          return null;
+        });
   });
   group('context menu test', () {
     void rightClickAt(Offset position) {
       GestureBinding.instance.handlePointerEvent(
-        PointerDownEvent(
-          position: position,
-          buttons: kSecondaryMouseButton,
-        ),
+        PointerDownEvent(position: position, buttons: kSecondaryMouseButton),
       );
 
-      GestureBinding.instance.handlePointerEvent(
-        const PointerUpEvent(),
-      );
+      GestureBinding.instance.handlePointerEvent(const PointerUpEvent());
     }
 
     testWidgets('context menu test', (tester) async {
@@ -62,18 +55,16 @@ void main() async {
         ..addParagraph(initialText: text)
         ..addParagraph(initialText: 'Hello');
       await editor.startTesting();
-      expect(
-        find.text(text, findRichText: true),
-        findsOneWidget,
-      );
+      expect(find.text(text, findRichText: true), findsOneWidget);
       await editor.updateSelection(
         Selection(
           start: Position(path: [1], offset: 0),
           end: Position(path: [1], offset: 5),
         ),
       );
-      final copiedText =
-          editor.editorState.getTextInSelection(editor.selection).join('/n');
+      final copiedText = editor.editorState
+          .getTextInSelection(editor.selection)
+          .join('/n');
       final position = tester.getCenter(find.text('Hello', findRichText: true));
       rightClickAt(position);
       await tester.pump();
@@ -93,8 +84,9 @@ void main() async {
           end: Position(path: [0], offset: 7),
         ),
       );
-      final newPosition =
-          tester.getTopLeft(find.text(text, findRichText: true));
+      final newPosition = tester.getTopLeft(
+        find.text(text, findRichText: true),
+      );
       rightClickAt(newPosition);
       await tester.pump();
       final pasteButton = find.text('Paste');

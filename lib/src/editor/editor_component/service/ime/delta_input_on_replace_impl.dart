@@ -33,8 +33,10 @@ Future<void> onReplace(
       if (replacement.replacementText.endsWith('\n')) {
         replacement = TextEditingDeltaReplacement(
           oldText: replacement.oldText,
-          replacementText: replacement.replacementText
-              .substring(0, replacement.replacementText.length - 1),
+          replacementText: replacement.replacementText.substring(
+            0,
+            replacement.replacementText.length - 1,
+          ),
           replacedRange: replacement.replacedRange,
           selection: replacement.selection,
           composing: replacement.composing,
@@ -64,11 +66,7 @@ Future<void> onReplace(
     await editorState.deleteSelection(selection);
     // insert the replacement
     final insertion = replacement.toInsertion();
-    await onInsert(
-      insertion,
-      editorState,
-      characterShortcutEvents,
-    );
+    await onInsert(insertion, editorState, characterShortcutEvents);
   }
 }
 

@@ -69,11 +69,7 @@ void main() async {
       await editor.updateSelection(selection);
       final node = editor.nodeAtPath([0]);
 
-      _checkSelectionNotFormatted(
-        node!,
-        selection,
-        BuiltInAttributeKey.bold,
-      );
+      _checkSelectionNotFormatted(node!, selection, BuiltInAttributeKey.bold);
 
       _checkSelectionNotFormatted(
         node,
@@ -81,11 +77,7 @@ void main() async {
         BuiltInAttributeKey.underline,
       );
 
-      _checkSelectionNotFormatted(
-        node,
-        selection,
-        BuiltInAttributeKey.italic,
-      );
+      _checkSelectionNotFormatted(node, selection, BuiltInAttributeKey.italic);
 
       await editor.dispose();
     });
@@ -97,11 +89,7 @@ Future<void> _applyFormatting(
   String matchStyle,
   LogicalKeyboardKey key,
 ) async {
-  final selection = Selection.single(
-    path: [0],
-    startOffset: 0,
-    endOffset: 7,
-  );
+  final selection = Selection.single(path: [0], startOffset: 0, endOffset: 7);
   await editor.updateSelection(selection);
   await editor.pressKey(
     key: key,
@@ -113,8 +101,8 @@ Future<void> _applyFormatting(
   expect(
     node!.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-            (el) => el.attributes?[matchStyle] == true,
-          );
+        (el) => el.attributes?[matchStyle] == true,
+      );
     }),
     true,
   );
@@ -128,8 +116,8 @@ void _checkSelectionNotFormatted(
   expect(
     node.allSatisfyInSelection(selection, (delta) {
       return delta.whereType<TextInsert>().every(
-            (el) => el.attributes?[matchStyle] != true,
-          );
+        (el) => el.attributes?[matchStyle] != true,
+      );
     }),
     true,
   );

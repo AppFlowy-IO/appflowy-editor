@@ -42,8 +42,9 @@ void main() async {
       final firstRootAttr = {'b': 'c'};
 
       final node = Node(type: 'example', attributes: {'a': 'a'});
-      final document =
-          Document(root: Node(type: 'root', attributes: firstRootAttr));
+      final document = Document(
+        root: Node(type: 'root', attributes: firstRootAttr),
+      );
       document.insert([0], [node]);
 
       final rootAttributes = {'b': 'b'};
@@ -66,10 +67,7 @@ void main() async {
       final document = Document.blank();
       document.insert([0], [textNode]);
       document.updateText([0], Delta()..insert('AppFlowy'));
-      expect(
-        document.nodeAtPath([0])?.delta?.toPlainText(),
-        'AppFlowyEditor',
-      );
+      expect(document.nodeAtPath([0])?.delta?.toPlainText(), 'AppFlowyEditor');
     });
 
     test('serialize', () {
@@ -95,10 +93,8 @@ void main() async {
             'children': [
               {
                 'type': 'paragraph',
-                'data': {
-                  'delta': [],
-                },
-              }
+                'data': {'delta': []},
+              },
             ],
           },
         }).isEmpty,
@@ -107,10 +103,7 @@ void main() async {
       expect(
         true,
         Document.fromJson({
-          'document': {
-            'type': 'page',
-            'children': [],
-          },
+          'document': {'type': 'page', 'children': []},
         }).isEmpty,
       );
 
@@ -127,7 +120,7 @@ void main() async {
                     {'insert': ''},
                   ],
                 },
-              }
+              },
             ],
           },
         }).isEmpty,
@@ -146,7 +139,7 @@ void main() async {
                     {'insert': 'Welcome to AppFlowy!'},
                   ],
                 },
-              }
+              },
             ],
           },
         }).isEmpty,
@@ -168,7 +161,7 @@ void main() async {
                 {'insert': firstLine},
               ],
             },
-          }
+          },
         ],
       },
     });
@@ -210,9 +203,9 @@ void main() async {
                     {'insert': secondChild},
                   ],
                 },
-              }
+              },
             ],
-          }
+          },
         ],
       },
     });

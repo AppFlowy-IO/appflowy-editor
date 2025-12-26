@@ -2,9 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:flutter/material.dart';
 
-typedef CommandShortcutEventHandler = KeyEventResult Function(
-  EditorState editorState,
-);
+typedef CommandShortcutEventHandler =
+    KeyEventResult Function(EditorState editorState);
 
 /// Defines the implementation of shortcut event based on command.
 class CommandShortcutEvent {
@@ -102,8 +101,10 @@ class CommandShortcutEvent {
     }
 
     if (matched) {
-      _keybindings =
-          this.command.split(',').map((e) => Keybinding.parse(e)).toList();
+      _keybindings = this.command
+          .split(',')
+          .map((e) => Keybinding.parse(e))
+          .toList();
     }
   }
 

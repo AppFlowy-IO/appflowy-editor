@@ -19,12 +19,13 @@ class FloatingToolbarStyle {
   final double toolbarElevation;
 }
 
-typedef FloatingToolbarBuilder = Widget Function(
-  BuildContext context,
-  Widget child,
-  VoidCallback onDismiss,
-  bool isMetricsChanged,
-);
+typedef FloatingToolbarBuilder =
+    Widget Function(
+      BuildContext context,
+      Widget child,
+      VoidCallback onDismiss,
+      bool isMetricsChanged,
+    );
 
 /// A floating toolbar that displays at the top of the editor when the selection
 ///   and will be hidden when the selection is collapsed.
@@ -142,7 +143,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     final disableToolbar =
         editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] ==
-            true;
+        true;
 
     if (disableToolbar) {
       _clear();
@@ -187,14 +188,10 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     bool isMetricsChanged = false,
   }) {
     // uses debounce to avoid the computing the rects too frequently.
-    Debounce.debounce(
-      _debounceKey,
-      duration,
-      () {
-        _clear(); // clear the previous toolbar.
-        _showToolbar(isMetricsChanged);
-      },
-    );
+    Debounce.debounce(_debounceKey, duration, () {
+      _clear(); // clear the previous toolbar.
+      _showToolbar(isMetricsChanged);
+    });
   }
 
   void _showToolbar(bool isMetricsChanged) {
@@ -239,8 +236,12 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       builder: (context) {
         final child = _buildToolbar(context);
 
-        return widget.toolbarBuilder
-                ?.call(context, child, _clear, isMetricsChanged) ??
+        return widget.toolbarBuilder?.call(
+              context,
+              child,
+              _clear,
+              isMetricsChanged,
+            ) ??
             Positioned(
               top: max(0, top) - floatingToolbarHeight,
               left: left,

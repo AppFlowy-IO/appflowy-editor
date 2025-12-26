@@ -7,19 +7,18 @@ List<CommandShortcutEvent> findAndReplaceCommands({
   FindReplaceLocalizations? localizations,
   required BuildContext context,
   FindReplaceStyle? style,
-}) =>
-    [
-      openFindDialog(
-        localizations: localizations,
-        context: context,
-        style: style ?? FindReplaceStyle(),
-      ),
-      openReplaceDialog(
-        localizations: localizations,
-        context: context,
-        style: style ?? FindReplaceStyle(),
-      ),
-    ];
+}) => [
+  openFindDialog(
+    localizations: localizations,
+    context: context,
+    style: style ?? FindReplaceStyle(),
+  ),
+  openReplaceDialog(
+    localizations: localizations,
+    context: context,
+    style: style ?? FindReplaceStyle(),
+  ),
+];
 
 class FindReplaceStyle {
   FindReplaceStyle({
@@ -41,7 +40,8 @@ class FindReplaceStyle {
     FindReplaceStyle style,
     bool showReplaceMenu,
     VoidCallback onDismiss,
-  )? findMenuBuilder;
+  )?
+  findMenuBuilder;
 }
 
 class FindReplaceLocalizations {
@@ -74,38 +74,36 @@ CommandShortcutEvent openFindDialog({
   FindReplaceLocalizations? localizations,
   required BuildContext context,
   required FindReplaceStyle style,
-}) =>
-    CommandShortcutEvent(
-      key: 'show the find dialog',
-      getDescription: () => AppFlowyEditorL10n.current.cmdOpenFind,
-      command: 'ctrl+f',
-      macOSCommand: 'cmd+f',
-      handler: (editorState) => _showFindAndReplaceDialog(
-        context,
-        editorState,
-        localizations: localizations,
-        style: style,
-      ),
-    );
+}) => CommandShortcutEvent(
+  key: 'show the find dialog',
+  getDescription: () => AppFlowyEditorL10n.current.cmdOpenFind,
+  command: 'ctrl+f',
+  macOSCommand: 'cmd+f',
+  handler: (editorState) => _showFindAndReplaceDialog(
+    context,
+    editorState,
+    localizations: localizations,
+    style: style,
+  ),
+);
 
 CommandShortcutEvent openReplaceDialog({
   FindReplaceLocalizations? localizations,
   required BuildContext context,
   required FindReplaceStyle style,
-}) =>
-    CommandShortcutEvent(
-      key: 'show the find and replace dialog',
-      getDescription: () => AppFlowyEditorL10n.current.cmdOpenFindAndReplace,
-      command: 'ctrl+h',
-      macOSCommand: 'cmd+h',
-      handler: (editorState) => _showFindAndReplaceDialog(
-        context,
-        editorState,
-        localizations: localizations,
-        style: style,
-        openReplace: true,
-      ),
-    );
+}) => CommandShortcutEvent(
+  key: 'show the find and replace dialog',
+  getDescription: () => AppFlowyEditorL10n.current.cmdOpenFindAndReplace,
+  command: 'ctrl+h',
+  macOSCommand: 'cmd+h',
+  handler: (editorState) => _showFindAndReplaceDialog(
+    context,
+    editorState,
+    localizations: localizations,
+    style: style,
+    openReplace: true,
+  ),
+);
 
 FindReplaceService? _findReplaceService;
 KeyEventResult _showFindAndReplaceDialog(

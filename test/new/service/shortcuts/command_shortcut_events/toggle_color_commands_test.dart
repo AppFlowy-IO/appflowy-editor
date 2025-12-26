@@ -12,14 +12,16 @@ void main() async {
   });
 
   group('toggle_color_commands.dart', () {
-    testWidgets('Presses Command + Shift + H to update text style - highlight',
-        (tester) async {
-      await _testUpdateTextColorByCommandX(
-        tester,
-        AppFlowyRichTextKeys.backgroundColor,
-        LogicalKeyboardKey.keyH,
-      );
-    });
+    testWidgets(
+      'Presses Command + Shift + H to update text style - highlight',
+      (tester) async {
+        await _testUpdateTextColorByCommandX(
+          tester,
+          AppFlowyRichTextKeys.backgroundColor,
+          LogicalKeyboardKey.keyH,
+        );
+      },
+    );
   });
 }
 
@@ -47,9 +49,9 @@ Future<void> _testUpdateTextColorByCommandX(
   var node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] != null);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] != null,
+      );
     }),
     true,
   );
@@ -69,9 +71,9 @@ Future<void> _testUpdateTextColorByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] != null);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] != null,
+      );
     }),
     true,
   );
@@ -87,9 +89,9 @@ Future<void> _testUpdateTextColorByCommandX(
   node = editor.nodeAtPath([1]);
   expect(
     node?.allSatisfyInSelection(selection, (delta) {
-      return delta
-          .whereType<TextInsert>()
-          .every((element) => element.attributes?[matchStyle] == null);
+      return delta.whereType<TextInsert>().every(
+        (element) => element.attributes?[matchStyle] == null,
+      );
     }),
     true,
   );
@@ -109,9 +111,9 @@ Future<void> _testUpdateTextColorByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(selection, (delta) {
-        return delta
-            .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] != null);
+        return delta.whereType<TextInsert>().every(
+          (element) => element.attributes?[matchStyle] != null,
+        );
       }),
       true,
     );
@@ -129,9 +131,9 @@ Future<void> _testUpdateTextColorByCommandX(
   for (final node in nodes) {
     expect(
       node.allSatisfyInSelection(selection, (delta) {
-        return delta
-            .whereType<TextInsert>()
-            .every((element) => element.attributes?[matchStyle] == null);
+        return delta.whereType<TextInsert>().every(
+          (element) => element.attributes?[matchStyle] == null,
+        );
       }),
       true,
     );

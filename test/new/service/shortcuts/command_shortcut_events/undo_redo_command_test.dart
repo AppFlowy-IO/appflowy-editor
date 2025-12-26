@@ -33,10 +33,7 @@ void main() async {
     // After Redo
     // |Welcome| to AppFlowy Editor 🔥!
     testWidgets('Delete text and then perform undo & redo', (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       // |Welcome| to AppFlowy Editor 🔥!
@@ -60,10 +57,7 @@ void main() async {
       //pressing undo shortcut should bring back deleted text.
       await _pressUndoCommand(editor);
 
-      expect(
-        editor.nodeAtPath([0])?.delta?.toPlainText(),
-        text,
-      );
+      expect(editor.nodeAtPath([0])?.delta?.toPlainText(), text);
 
       //redo should delete the text again.
       await _pressRedoCommand(editor);
@@ -76,8 +70,9 @@ void main() async {
       await editor.dispose();
     });
 
-    testWidgets('Delete a non-text node and then perform undo and redo',
-        (tester) async {
+    testWidgets('Delete a non-text node and then perform undo and redo', (
+      tester,
+    ) async {
       const kParagraphType = "paragraph";
       const kDividerType = "divider";
 
@@ -91,26 +86,17 @@ void main() async {
       await _selectNodeAtPathAndDelete(editor);
       await tester.pumpAndSettle();
 
-      expect(
-        editor.nodeAtPath([1])?.type,
-        kParagraphType,
-      );
+      expect(editor.nodeAtPath([1])?.type, kParagraphType);
 
       //pressing undo should add the divider back to the editor
       await _pressUndoCommand(editor);
 
-      expect(
-        editor.nodeAtPath([1])?.type,
-        kDividerType,
-      );
+      expect(editor.nodeAtPath([1])?.type, kDividerType);
 
       //redo should remove the divider again.
       await _pressRedoCommand(editor);
 
-      expect(
-        editor.nodeAtPath([1])?.type,
-        kParagraphType,
-      );
+      expect(editor.nodeAtPath([1])?.type, kParagraphType);
 
       await editor.dispose();
     });
@@ -213,11 +199,7 @@ Future<void> _pressRedoCommand(TestableEditor editor) async {
 }
 
 Future<void> _selectNodeAtPathAndDelete(TestableEditor editor) async {
-  final selection = Selection.single(
-    path: [1],
-    startOffset: 0,
-    endOffset: 1,
-  );
+  final selection = Selection.single(path: [1], startOffset: 0, endOffset: 1);
   await editor.updateSelection(selection);
 
   await editor.pressKey(key: LogicalKeyboardKey.backspace);

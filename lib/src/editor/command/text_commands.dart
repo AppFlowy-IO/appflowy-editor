@@ -49,9 +49,7 @@ extension TextTransforms on EditorState {
     }
 
     final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
-    final Map<String, dynamic> attributes = {
-      'delta': slicedDelta.toJson(),
-    };
+    final Map<String, dynamic> attributes = {'delta': slicedDelta.toJson()};
 
     // Copy the text direction from the current node.
     final textDirection =
@@ -67,18 +65,11 @@ extension TextTransforms on EditorState {
     nodeBuilder ??= (node) => node.copyWith();
 
     // Insert a new paragraph node.
-    transaction.insertNode(
-      next,
-      nodeBuilder(insertedNode),
-      deepCopy: true,
-    );
+    transaction.insertNode(next, nodeBuilder(insertedNode), deepCopy: true);
 
     // Set the selection to be at the beginning of the new paragraph.
     transaction.afterSelection = Selection.collapsed(
-      Position(
-        path: next,
-        offset: 0,
-      ),
+      Position(path: next, offset: 0),
     );
     transaction.selectionExtraInfo = {};
     transaction.customSelectionType = SelectionType.inline;
@@ -92,10 +83,7 @@ extension TextTransforms on EditorState {
   /// If there is no position, or if the selection is not collapsed, do nothing.
   /// Then it inserts the text at the given position.
 
-  Future<void> insertTextAtPosition(
-    String text, {
-    Position? position,
-  }) async {
+  Future<void> insertTextAtPosition(String text, {Position? position}) async {
     // If the position is not passed in, use the current selection.
     position ??= selection?.start;
 
@@ -123,10 +111,7 @@ extension TextTransforms on EditorState {
 
     // Set the selection to be at the beginning of the new paragraph.
     transaction.afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: position.offset + text.length,
-      ),
+      Position(path: path, offset: position.offset + text.length),
     );
 
     // Apply the transaction.
@@ -164,20 +149,12 @@ extension TextTransforms on EditorState {
       final startIndex = node == nodes.first ? selection.startIndex : 0;
       final endIndex = node == nodes.last ? selection.endIndex : delta.length;
       transaction
-        ..formatText(
-          node,
-          startIndex,
-          endIndex - startIndex,
-          attributes,
-        )
+        ..formatText(node, startIndex, endIndex - startIndex, attributes)
         ..afterSelection = transaction.beforeSelection
         ..selectionExtraInfo = selectionExtraInfo;
     }
 
-    return apply(
-      transaction,
-      withUpdateSelection: withUpdateSelection,
-    );
+    return apply(transaction, withUpdateSelection: withUpdateSelection);
   }
 
   /// Toggles the given attribute on or off for the selected text.
@@ -201,32 +178,21 @@ extension TextTransforms on EditorState {
         // get the attributes from the previous one character.
         selection = selection.copyWith(
           start: selection.start.copyWith(
-            offset: max(
-              selection.startIndex - 1,
-              0,
-            ),
+            offset: max(selection.startIndex - 1, 0),
           ),
         );
         final toggled = nodes.allSatisfyInSelection(selection, (delta) {
-          return delta.everyAttributes(
-            (attributes) => attributes[key] == true,
-          );
+          return delta.everyAttributes((attributes) => attributes[key] == true);
         });
         updateToggledStyle(key, !toggled);
       }
     } else {
       final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
-        return delta.everyAttributes(
-          (attributes) => attributes[key] == true,
-        );
+        return delta.everyAttributes((attributes) => attributes[key] == true);
       });
-      await formatDelta(
-        selection,
-        {
-          key: !isHighlight,
-        },
-        selectionExtraInfo: selectionExtraInfo,
-      );
+      await formatDelta(selection, {
+        key: !isHighlight,
+      }, selectionExtraInfo: selectionExtraInfo);
     }
   }
 
@@ -235,9 +201,7 @@ extension TextTransforms on EditorState {
   /// If the [Selection] is not passed in, use the current selection.
   Future<void> formatNode(
     Selection? selection,
-    Node Function(
-      Node node,
-    ) nodeBuilder, {
+    Node Function(Node node) nodeBuilder, {
     Map? selectionExtraInfo,
   }) async {
     selection ??= this.selection;
@@ -256,10 +220,7 @@ extension TextTransforms on EditorState {
 
     for (final node in nodes) {
       transaction
-        ..insertNode(
-          node.path,
-          nodeBuilder(node),
-        )
+        ..insertNode(node.path, nodeBuilder(node))
         ..deleteNode(node)
         ..afterSelection = transaction.beforeSelection
         ..selectionExtraInfo = selectionExtraInfo;
@@ -273,9 +234,7 @@ extension TextTransforms on EditorState {
   /// If the [Selection] is not passed in, use the current selection.
   Future<void> updateNode(
     Selection? selection,
-    Node Function(
-      Node node,
-    ) nodeBuilder, {
+    Node Function(Node node) nodeBuilder, {
     Map? selectionExtraInfo,
   }) async {
     selection ??= this.selection;
@@ -319,9 +278,7 @@ extension TextTransforms on EditorState {
       return;
     }
 
-    return apply(
-      transaction..insertText(node, index, text),
-    );
+    return apply(transaction..insertText(node, index, text));
   }
 
   Future<void> insertTextAtCurrentSelection(String text) async {
@@ -330,20 +287,14 @@ extension TextTransforms on EditorState {
       return;
     }
 
-    return insertText(
-      selection.startIndex,
-      text,
-      path: selection.end.path,
-    );
+    return insertText(selection.startIndex, text, path: selection.end.path);
   }
 
   /// Get the text in the given selection.
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
-  List<String> getTextInSelection([
-    Selection? selection,
-  ]) {
+  List<String> getTextInSelection([Selection? selection]) {
     List<String> res = [];
     selection ??= this.selection;
     if (selection == null || selection.isCollapsed) {
@@ -367,10 +318,7 @@ extension TextTransforms on EditorState {
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
-  T? getDeltaAttributeValueInSelection<T>(
-    String key, [
-    Selection? selection,
-  ]) {
+  T? getDeltaAttributeValueInSelection<T>(String key, [Selection? selection]) {
     selection ??= this.selection;
     selection = selection?.normalized;
     if (selection == null || !selection.isSingle) {
@@ -408,9 +356,7 @@ extension TextTransforms on EditorState {
   ///
   /// If the [Selection] is not passed in, use the current selection.
   ///
-  Attributes? getDeltaAttributesInSelectionStart([
-    Selection? selection,
-  ]) {
+  Attributes? getDeltaAttributesInSelectionStart([Selection? selection]) {
     selection ??= this.selection;
     selection = selection?.normalized;
     if (selection == null) {

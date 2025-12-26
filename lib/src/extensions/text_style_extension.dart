@@ -25,13 +25,15 @@ extension TextSpanExtensions on TextSpan {
 
     return copyWith(
       style: style?.combine(other),
-      children: children?.map((child) {
-        if (child is TextSpan) {
-          return child.updateTextStyle(other);
-        }
+      children: children
+          ?.map((child) {
+            if (child is TextSpan) {
+              return child.updateTextStyle(other);
+            }
 
-        return child;
-      }).toList(growable: false),
+            return child;
+          })
+          .toList(growable: false),
     );
   }
 }
@@ -71,8 +73,9 @@ extension TextStyleExtensions on TextStyle {
       decorationStyle: other.decorationStyle,
       decorationThickness: other.decorationThickness,
       debugLabel: other.debugLabel,
-      fontFamily:
-          (other.fontFamily?.isEmpty ?? true) ? fontFamily : other.fontFamily,
+      fontFamily: (other.fontFamily?.isEmpty ?? true)
+          ? fontFamily
+          : other.fontFamily,
       fontFamilyFallback: other.fontFamilyFallback,
       overflow: other.overflow,
     );

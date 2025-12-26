@@ -13,7 +13,8 @@ class MobileAppWithToolbarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localToolbarItems = toolbarItems ??
+    final localToolbarItems =
+        toolbarItems ??
         [
           textDecorationMobileToolbarItem,
           headingMobileToolbarItem,

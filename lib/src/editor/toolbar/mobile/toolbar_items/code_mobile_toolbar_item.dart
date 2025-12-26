@@ -5,7 +5,6 @@ final codeMobileToolbarItem = MobileToolbarItem.action(
     afMobileIcons: AFMobileIcons.code,
     color: MobileToolbarTheme.of(context).iconColor,
   ),
-  actionHandler: (_, editorState) => editorState.toggleAttribute(
-    AppFlowyRichTextKeys.code,
-  ),
+  actionHandler: (_, editorState) =>
+      editorState.toggleAttribute(AppFlowyRichTextKeys.code),
 );

@@ -16,17 +16,12 @@ class PdfHTMLEncoder {
   final pw.Font? font;
   final List<pw.Font> fontFallback;
 
-  PdfHTMLEncoder({
-    this.font,
-    required this.fontFallback,
-  });
+  PdfHTMLEncoder({this.font, required this.fontFallback});
 
   Future<pw.Document> convert(String input) async {
     final htmlx = md.markdownToHtml(
       input,
-      blockSyntaxes: const [
-        md.TableSyntax(),
-      ],
+      blockSyntaxes: const [md.TableSyntax()],
       inlineSyntaxes: [
         md.InlineHtmlSyntax(),
         md.ImageSyntax(),
@@ -49,9 +44,7 @@ class PdfHTMLEncoder {
     }
     final nodes = await _parseElement(body.nodes);
     final newPdf = pw.Document();
-    newPdf.addPage(
-      pw.MultiPage(build: (pw.Context context) => nodes.toList()),
-    );
+    newPdf.addPage(pw.MultiPage(build: (pw.Context context) => nodes.toList()));
 
     return newPdf;
   }
@@ -70,12 +63,7 @@ class PdfHTMLEncoder {
           textSpan.add(const pw.TextSpan(text: '\n'));
         } else if (HTMLTags.formattingElements.contains(localName)) {
           final attributes = _parserFormattingElementAttributes(domNode);
-          nodes.add(
-            pw.Paragraph(
-              text: domNode.text,
-              style: attributes.$2,
-            ),
-          );
+          nodes.add(pw.Paragraph(text: domNode.text, style: attributes.$2));
         } else if (HTMLTags.specialElements.contains(localName)) {
           if (textSpan.isNotEmpty) {
             final newTextSpanList = List<pw.TextSpan>.from(textSpan);
@@ -182,12 +170,7 @@ class PdfHTMLEncoder {
         return _parseRawTableData(element);
 
       case HTMLTags.list:
-        return [
-          _parseListElement(
-            element,
-            type: type,
-          ),
-        ];
+        return [_parseListElement(element, type: type)];
 
       case HTMLTags.paragraph:
         return [await _parseParagraphElement(element)];
@@ -213,12 +196,7 @@ class PdfHTMLEncoder {
             dom.Element element = node as dom.Element;
             if (HTMLTags.formattingElements.contains(element.localName)) {
               final attributes = _parserFormattingElementAttributes(element);
-              cellContent.add(
-                pw.Text(
-                  element.text,
-                  style: attributes.$2,
-                ),
-              );
+              cellContent.add(pw.Text(element.text, style: attributes.$2));
             }
             if (HTMLTags.specialElements.contains(element.localName)) {
               cellContent.addAll(
@@ -256,8 +234,10 @@ class PdfHTMLEncoder {
   ) {
     final localName = element.localName;
     pw.TextAlign? textAlign;
-    pw.TextStyle attributes =
-        pw.TextStyle(fontFallback: fontFallback, font: font);
+    pw.TextStyle attributes = pw.TextStyle(
+      fontFallback: fontFallback,
+      font: font,
+    );
     final List<pw.TextDecoration> decoration = [];
 
     switch (localName) {
@@ -275,8 +255,9 @@ class PdfHTMLEncoder {
         break;
 
       case HTMLTags.del:
-        attributes =
-            attributes.copyWith(decoration: pw.TextDecoration.lineThrough);
+        attributes = attributes.copyWith(
+          decoration: pw.TextDecoration.lineThrough,
+        );
         break;
       /*
       case HTMLTags.span || HTMLTags.mark:
@@ -315,14 +296,11 @@ class PdfHTMLEncoder {
 
     return (
       textAlign,
-      attributes.copyWith(decoration: pw.TextDecoration.combine(decoration))
+      attributes.copyWith(decoration: pw.TextDecoration.combine(decoration)),
     );
   }
 
-  pw.Widget _parseHeadingElement(
-    dom.Element element, {
-    required int level,
-  }) {
+  pw.Widget _parseHeadingElement(dom.Element element, {required int level}) {
     pw.TextAlign? textAlign;
     final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
@@ -330,12 +308,7 @@ class PdfHTMLEncoder {
       if (child is dom.Element) {
         final attributes = _parserFormattingElementAttributes(child);
         textAlign = attributes.$1;
-        textSpan.add(
-          pw.TextSpan(
-            text: child.text,
-            style: attributes.$2,
-          ),
-        );
+        textSpan.add(pw.TextSpan(text: child.text, style: attributes.$2));
       } else {
         textSpan.add(
           pw.TextSpan(
@@ -364,8 +337,9 @@ class PdfHTMLEncoder {
   }
 
   Iterable<pw.Widget> _parseUnOrderListElement(dom.Element element) {
-    final findTodos =
-        element.children.where((element) => element.text.contains('['));
+    final findTodos = element.children.where(
+      (element) => element.text.contains('['),
+    );
     if (findTodos.isNotEmpty) {
       return element.children
           .map(
@@ -375,10 +349,8 @@ class PdfHTMLEncoder {
     } else {
       return element.children
           .map(
-            (child) => _parseListElement(
-              child,
-              type: BulletedListBlockKeys.type,
-            ),
+            (child) =>
+                _parseListElement(child, type: BulletedListBlockKeys.type),
           )
           .toList();
     }
@@ -387,23 +359,19 @@ class PdfHTMLEncoder {
   Iterable<pw.Widget> _parseOrderListElement(dom.Element element) {
     return element.children
         .map(
-          (child) => _parseListElement(
-            child,
-            type: NumberedListBlockKeys.type,
-          ),
+          (child) => _parseListElement(child, type: NumberedListBlockKeys.type),
         )
         .toList();
   }
 
-  pw.Widget _parseListElement(
-    dom.Element element, {
-    required String type,
-  }) {
+  pw.Widget _parseListElement(dom.Element element, {required String type}) {
     //TODO: Handle Numbered Lists & Handle nested lists
     if (type == TodoListBlockKeys.type) {
       final bracketRightIndex = element.text.indexOf(']') + 1;
-      final strippedString =
-          element.text.substring(bracketRightIndex, element.text.length);
+      final strippedString = element.text.substring(
+        bracketRightIndex,
+        element.text.length,
+      );
       bool condition = false;
       if (element.text.contains('[x]')) {
         condition = true;
@@ -466,9 +434,7 @@ class PdfHTMLEncoder {
     }
   }
 
-  Future<pw.Widget> _parseDeltaElement(
-    dom.Element element,
-  ) async {
+  Future<pw.Widget> _parseDeltaElement(dom.Element element) async {
     final textSpan = <pw.TextSpan>[];
     final children = element.nodes.toList();
     final subNodes = <pw.Widget>[];
@@ -485,10 +451,7 @@ class PdfHTMLEncoder {
         } else {
           if (HTMLTags.specialElements.contains(child.localName)) {
             subNodes.addAll(
-              await _parseSpecialElements(
-                child,
-                type: ParagraphBlockKeys.type,
-              ),
+              await _parseSpecialElements(child, type: ParagraphBlockKeys.type),
             );
           } else {
             if (child.localName == HTMLTags.br) {
@@ -506,8 +469,9 @@ class PdfHTMLEncoder {
           }
         }
       } else {
-        final attributes =
-            _getDeltaAttributesFromHTMLAttributes(element.attributes);
+        final attributes = _getDeltaAttributesFromHTMLAttributes(
+          element.attributes,
+        );
         textAlign = attributes.$1;
         textSpan.add(
           pw.TextSpan(
@@ -550,9 +514,7 @@ class PdfHTMLEncoder {
     }
 
     return style.copyWith(
-      decoration: pw.TextDecoration.combine(
-        textDecorations,
-      ),
+      decoration: pw.TextDecoration.combine(textDecorations),
     );
   }
 
@@ -588,8 +550,9 @@ class PdfHTMLEncoder {
     if (backgroundColor != null) {
       final highlightColor = ColorExt.fromRgbaString(backgroundColor);
       if (highlightColor != null) {
-        style =
-            style.copyWith(background: pw.BoxDecoration(color: highlightColor));
+        style = style.copyWith(
+          background: pw.BoxDecoration(color: highlightColor),
+        );
       }
     }
 

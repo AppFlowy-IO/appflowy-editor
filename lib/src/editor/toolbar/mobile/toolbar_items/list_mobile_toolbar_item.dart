@@ -17,10 +17,7 @@ final listMobileToolbarItem = MobileToolbarItem.withMenu(
 );
 
 class _ListMenu extends StatefulWidget {
-  const _ListMenu(
-    this.editorState,
-    this.selection,
-  );
+  const _ListMenu(this.editorState, this.selection);
 
   final Selection selection;
   final EditorState editorState;
@@ -47,8 +44,9 @@ class _ListMenuState extends State<_ListMenu> {
   Widget build(BuildContext context) {
     final btnList = lists.map((currentList) {
       // Check if current node is list and its type
-      final node =
-          widget.editorState.getNodeAtPath(widget.selection.start.path)!;
+      final node = widget.editorState.getNodeAtPath(
+        widget.selection.start.path,
+      )!;
       final isSelected = node.type == currentList.name;
 
       return MobileToolbarItemMenuBtn(
@@ -92,9 +90,5 @@ class ListUnit {
   final String label;
   final String name;
 
-  ListUnit({
-    required this.icon,
-    required this.label,
-    required this.name,
-  });
+  ListUnit({required this.icon, required this.label, required this.name});
 }

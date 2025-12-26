@@ -77,9 +77,7 @@ Future<void> onFloatingCursorUpdate(
 
       disableMagnifier = true;
       selectionService.onPanUpdate(
-        DragUpdateDetails(
-          globalPosition: _cursorOffset! + point.offset!,
-        ),
+        DragUpdateDetails(globalPosition: _cursorOffset! + point.offset!),
         MobileSelectionDragMode.cursor,
       );
       break;

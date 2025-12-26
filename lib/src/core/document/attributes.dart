@@ -16,10 +16,7 @@ Attributes? composeAttributes(
 }) {
   base ??= {};
   other ??= {};
-  Attributes attributes = {
-    ...base,
-    ...other,
-  };
+  Attributes attributes = {...base, ...other};
 
   if (!keepNull) {
     attributes = Attributes.from(attributes)
@@ -70,5 +67,5 @@ Attributes? diffAttributes(
 }
 
 int hashAttributes(Attributes base) => Object.hashAllUnordered(
-      base.entries.map((e) => Object.hash(e.key, e.value)),
-    );
+  base.entries.map((e) => Object.hash(e.key, e.value)),
+);

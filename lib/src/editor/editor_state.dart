@@ -21,9 +21,7 @@ typedef EditorTransactionValue = (
 );
 
 class EditorStateDebugInfo {
-  EditorStateDebugInfo({
-    this.debugPaintSizeEnabled = false,
-  });
+  EditorStateDebugInfo({this.debugPaintSizeEnabled = false});
 
   /// Enable the debug paint size for selection handle.
   ///
@@ -58,10 +56,7 @@ class ApplyOptions {
 }
 
 @Deprecated('use SelectionUpdateReason instead')
-enum CursorUpdateReason {
-  uiEvent,
-  others,
-}
+enum CursorUpdateReason { uiEvent, others }
 
 /// The reason why the selection was updated.
 enum SelectionUpdateReason {
@@ -127,22 +122,14 @@ class EditorState {
   }
 
   @Deprecated('use EditorState.blank() instead')
-  EditorState.empty()
-      : this(
-          document: Document.blank(),
-        );
+  EditorState.empty() : this(document: Document.blank());
 
   /// Creates an editor state with a blank document.
   ///
   /// If [withInitialText] is true, the document will contain an empty paragraph.
   /// If false, the document will be completely empty.
-  EditorState.blank({
-    bool withInitialText = true,
-  }) : this(
-          document: Document.blank(
-            withInitialText: withInitialText,
-          ),
-        );
+  EditorState.blank({bool withInitialText = true})
+    : this(document: Document.blank(withInitialText: withInitialText));
 
   final Document document;
 
@@ -373,8 +360,8 @@ class EditorState {
   }
 
   RenderBox? get renderBox {
-    final renderObject =
-        service.scrollServiceKey.currentContext?.findRenderObject();
+    final renderObject = service.scrollServiceKey.currentContext
+        ?.findRenderObject();
     if (renderObject != null && renderObject is RenderBox) {
       return renderObject;
     }
@@ -579,10 +566,7 @@ class EditorState {
   /// Returns a list of nodes, filtering out nodes that are children of
   /// other nodes in the selection. The returned nodes have their deltas
   /// sliced according to the selection boundaries.
-  List<Node> getSelectedNodes({
-    Selection? selection,
-    bool withCopy = true,
-  }) {
+  List<Node> getSelectedNodes({Selection? selection, bool withCopy = true}) {
     List<Node> res = [];
     selection ??= this.selection;
     if (selection == null) {
@@ -603,17 +587,15 @@ class EditorState {
     if (res.isNotEmpty) {
       var delta = res.first.delta;
       if (delta != null) {
-        res.first.updateAttributes(
-          {
-            ...res.first.attributes,
-            blockComponentDelta: delta
-                .slice(
-                  selection.startIndex,
-                  selection.isSingle ? selection.endIndex : delta.length,
-                )
-                .toJson(),
-          },
-        );
+        res.first.updateAttributes({
+          ...res.first.attributes,
+          blockComponentDelta: delta
+              .slice(
+                selection.startIndex,
+                selection.isSingle ? selection.endIndex : delta.length,
+              )
+              .toJson(),
+        });
       }
 
       var node = res.last;
@@ -628,27 +610,17 @@ class EditorState {
               attributes: {
                 ...node.attributes,
                 blockComponentDelta: delta
-                    .slice(
-                      0,
-                      selection.endIndex,
-                    )
+                    .slice(0, selection.endIndex)
                     .toJson(),
               },
             ),
           );
           node.unlink();
         } else {
-          node.updateAttributes(
-            {
-              ...node.attributes,
-              blockComponentDelta: delta
-                  .slice(
-                    0,
-                    selection.endIndex,
-                  )
-                  .toJson(),
-            },
-          );
+          node.updateAttributes({
+            ...node.attributes,
+            blockComponentDelta: delta.slice(0, selection.endIndex).toJson(),
+          });
         }
       }
     }
@@ -685,10 +657,7 @@ class EditorState {
         );
         if (rect != null) {
           rects.add(
-            selectable.transformRectToGlobal(
-              rect,
-              shiftWithBaseOffset: true,
-            ),
+            selectable.transformRectToGlobal(rect, shiftWithBaseOffset: true),
           );
         }
       }
@@ -727,9 +696,7 @@ class EditorState {
   }
 
   /// Updates the auto-scroller configuration.
-  void updateAutoScroller(
-    ScrollableState scrollableState,
-  ) {
+  void updateAutoScroller(ScrollableState scrollableState) {
     if (this.scrollableState != scrollableState) {
       autoScroller?.stopAutoScroll();
       final bool isDesktopOrWeb = PlatformExtension.isDesktopOrWeb;
@@ -744,7 +711,8 @@ class EditorState {
           _notifyScrollViewScrolledListeners();
           if (!isDesktopOrWeb) {
             final dynamic dragMode = selectionExtraInfo?[_selectionDragModeKey];
-            final bool isDraggingSelection = dragMode != null &&
+            final bool isDraggingSelection =
+                dragMode != null &&
                 dragMode.toString() != 'MobileSelectionDragMode.none';
             if (!isDraggingSelection) {
               return;
@@ -854,9 +822,7 @@ class EditorState {
               start: selection.start.copyWith(
                 path: selection.start.path.previous,
               ),
-              end: selection.end.copyWith(
-                path: selection.end.path.previous,
-              ),
+              end: selection.end.copyWith(path: selection.end.path.previous),
             );
           }
         }

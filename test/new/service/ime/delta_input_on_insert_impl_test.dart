@@ -12,10 +12,7 @@ void main() async {
     // After
     // |a| to AppFlowy Editor 🔥!
     testWidgets('replace a text in non-collapsed selection', (tester) async {
-      final editor = tester.editor
-        ..addParagraph(
-          initialText: text,
-        );
+      final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
 
       final selection = Selection.single(
@@ -45,11 +42,7 @@ void main() async {
     // After
     // Welcomea to AppFlowy Editor 🔥!
     testWidgets('replace a text in multi-line selection', (tester) async {
-      final editor = tester.editor
-        ..addParagraphs(
-          3,
-          initialText: text,
-        );
+      final editor = tester.editor..addParagraphs(3, initialText: text);
       await editor.startTesting();
 
       const welcomeLength = 'Welcome'.length;

@@ -71,8 +71,8 @@ class OverlayEntry extends ChangeNotifier {
     required this.builder,
     bool opaque = false,
     bool maintainState = false,
-  })  : _opaque = opaque,
-        _maintainState = maintainState;
+  }) : _opaque = opaque,
+       _maintainState = maintainState;
 
   /// This entry will include the widget built by this builder in the overlay at
   /// the entry's position.
@@ -212,7 +212,9 @@ class _OverlayEntryWidgetState extends State<_OverlayEntryWidget> {
   }
 
   void _markNeedsBuild() {
-    setState(() {/* the state that changed is in the builder */});
+    setState(() {
+      /* the state that changed is in the builder */
+    });
   }
 }
 
@@ -483,8 +485,9 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
     );
     if (newEntriesList.isEmpty) return;
     if (listEquals(_entries, newEntriesList)) return;
-    final LinkedHashSet<OverlayEntry> old =
-        LinkedHashSet<OverlayEntry>.of(_entries);
+    final LinkedHashSet<OverlayEntry> old = LinkedHashSet<OverlayEntry>.of(
+      _entries,
+    );
     for (final OverlayEntry entry in newEntriesList) {
       entry._overlay ??= this;
     }
@@ -545,12 +548,7 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
       final OverlayEntry entry = _entries[i];
       if (onstage) {
         onstageCount += 1;
-        children.add(
-          _OverlayEntryWidget(
-            key: entry._key,
-            entry: entry,
-          ),
-        );
+        children.add(_OverlayEntryWidget(key: entry._key, entry: entry));
         if (entry.opaque) onstage = false;
       } else if (entry.maintainState) {
         children.add(
@@ -575,8 +573,9 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
     super.debugFillProperties(properties);
     // TODO(jacobr): use IterableProperty instead as that would
     // provide a slightly more consistent string summary of the List.
-    properties
-        .add(DiagnosticsProperty<List<OverlayEntry>>('entries', _entries));
+    properties.add(
+      DiagnosticsProperty<List<OverlayEntry>>('entries', _entries),
+    );
   }
 }
 
@@ -589,8 +588,8 @@ class _Theatre extends MultiChildRenderObjectWidget {
     this.skipCount = 0,
     this.clipBehavior = Clip.hardEdge,
     super.children,
-  })  : assert(skipCount >= 0),
-        assert(children.length >= skipCount);
+  }) : assert(skipCount >= 0),
+       assert(children.length >= skipCount);
 
   final int skipCount;
 
@@ -644,10 +643,10 @@ class _RenderTheatre extends RenderBox
     required TextDirection textDirection,
     int skipCount = 0,
     Clip clipBehavior = Clip.hardEdge,
-  })  : assert(skipCount >= 0),
-        _textDirection = textDirection,
-        _skipCount = skipCount,
-        _clipBehavior = clipBehavior {
+  }) : assert(skipCount >= 0),
+       _textDirection = textDirection,
+       _skipCount = skipCount,
+       _clipBehavior = clipBehavior {
     addAll(children);
   }
 
@@ -803,8 +802,9 @@ class _RenderTheatre extends RenderBox
     assert(_resolvedAlignment != null);
 
     // Same BoxConstraints as used by RenderStack for StackFit.expand.
-    final BoxConstraints nonPositionedConstraints =
-        BoxConstraints.tight(constraints.biggest);
+    final BoxConstraints nonPositionedConstraints = BoxConstraints.tight(
+      constraints.biggest,
+    );
 
     RenderBox? child = _firstOnstageChild;
     while (child != null) {
@@ -813,10 +813,12 @@ class _RenderTheatre extends RenderBox
 
       if (!childParentData.isPositioned) {
         child.layout(nonPositionedConstraints, parentUsesSize: true);
-        childParentData.offset =
-            _resolvedAlignment!.alongOffset(size - child.size as Offset);
+        childParentData.offset = _resolvedAlignment!.alongOffset(
+          size - child.size as Offset,
+        );
       } else {
-        _hasVisualOverflow = RenderStack.layoutPositionedChild(
+        _hasVisualOverflow =
+            RenderStack.layoutPositionedChild(
               child,
               childParentData,
               size,
@@ -929,11 +931,7 @@ class _RenderTheatre extends RenderBox
       }
 
       if (onstage) {
-        onstageChildren.add(
-          child.toDiagnosticsNode(
-            name: 'onstage $count',
-          ),
-        );
+        onstageChildren.add(child.toDiagnosticsNode(name: 'onstage $count'));
       } else {
         offstageChildren.add(
           child.toDiagnosticsNode(

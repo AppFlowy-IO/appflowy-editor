@@ -10,10 +10,7 @@ import 'package:appflowy_editor/src/core/location/position.dart';
 /// 3. collapsed, the end position is equal to the start position.
 class Selection {
   /// Create a selection with [start], [end].
-  Selection({
-    required this.start,
-    required this.end,
-  });
+  Selection({required this.start, required this.end});
 
   factory Selection.fromJson(Map<String, dynamic> json) {
     return Selection(
@@ -32,23 +29,19 @@ class Selection {
     required Path path,
     required int startOffset,
     int? endOffset,
-  })  : start = Position(path: path, offset: startOffset),
-        end = Position(path: path, offset: endOffset ?? startOffset);
+  }) : start = Position(path: path, offset: startOffset),
+       end = Position(path: path, offset: endOffset ?? startOffset);
 
   /// Create a collapsed selection with [position].
-  Selection.collapsed(Position position)
-      : start = position,
-        end = position;
+  Selection.collapsed(Position position) : start = position, end = position;
 
   /// Create a collapsed selection with [position].
   @Deprecated('use Selection.collapsed() instead')
   Selection.collapse(Path path, int offset)
-      : start = Position(path: path, offset: offset),
-        end = Position(path: path, offset: offset);
+    : start = Position(path: path, offset: offset),
+      end = Position(path: path, offset: offset);
 
-  Selection.invalid()
-      : start = Position.invalid(),
-        end = Position.invalid();
+  Selection.invalid() : start = Position.invalid(), end = Position.invalid();
 
   final Position start;
   final Position end;
@@ -109,17 +102,11 @@ class Selection {
   }
 
   Selection copyWith({Position? start, Position? end}) {
-    return Selection(
-      start: start ?? this.start,
-      end: end ?? this.end,
-    );
+    return Selection(start: start ?? this.start, end: end ?? this.end);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'start': start.toJson(),
-      'end': end.toJson(),
-    };
+    return {'start': start.toJson(), 'end': end.toJson()};
   }
 
   Selection shift(int offset) {

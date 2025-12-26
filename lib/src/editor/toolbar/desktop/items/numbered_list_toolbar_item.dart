@@ -17,9 +17,8 @@ final ToolbarItem numberedListItem = ToolbarItem(
       iconColor: iconColor,
       onPressed: () => editorState.formatNode(
         selection,
-        (node) => node.copyWith(
-          type: isHighlight ? 'paragraph' : 'numbered_list',
-        ),
+        (node) =>
+            node.copyWith(type: isHighlight ? 'paragraph' : 'numbered_list'),
       ),
     );
 

@@ -23,17 +23,13 @@ void main() {
     });
 
     testWidgets('FlowySvg w/ Number', (tester) async {
-      await tester.buildAndPump(
-        const EditorSvg(number: 1),
-      );
+      await tester.buildAndPump(const EditorSvg(number: 1));
 
       expect(find.byType(SvgPicture), findsOneWidget);
     });
 
     testWidgets('FlowySvg null', (tester) async {
-      await tester.buildAndPump(
-        const EditorSvg(),
-      );
+      await tester.buildAndPump(const EditorSvg());
 
       expect(find.byType(Container), findsOneWidget);
       expect(find.byType(SvgPicture), findsNothing);

@@ -16,18 +16,12 @@ void main() async {
       await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0], startOffset: 0));
 
       await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0, 0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0, 0], startOffset: 0));
 
       await editor.dispose();
     });
@@ -45,10 +39,7 @@ void main() async {
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       // nothing happens
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0], startOffset: 0));
       expect(editor.document.toJson(), document.toJson());
 
       // Before
@@ -64,36 +55,21 @@ void main() async {
 
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0, 0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0, 0], startOffset: 0));
       expect(editor.nodeAtPath([0])!.type, 'bulleted_list');
       expect(editor.nodeAtPath([1])!.type, 'bulleted_list');
       expect(editor.nodeAtPath([2]), null);
-      expect(
-        editor.nodeAtPath([0, 0])!.type,
-        'bulleted_list',
-      );
+      expect(editor.nodeAtPath([0, 0])!.type, 'bulleted_list');
 
       await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0, 1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0, 1], startOffset: 0));
       expect(editor.nodeAtPath([0])!.type, 'bulleted_list');
       expect(editor.nodeAtPath([1]), null);
       expect(editor.nodeAtPath([2]), null);
-      expect(
-        editor.nodeAtPath([0, 0])!.type,
-        'bulleted_list',
-      );
-      expect(
-        editor.nodeAtPath([0, 1])!.type,
-        'bulleted_list',
-      );
+      expect(editor.nodeAtPath([0, 0])!.type, 'bulleted_list');
+      expect(editor.nodeAtPath([0, 1])!.type, 'bulleted_list');
 
       // Before
       // * Welcome to Appflowy 😁
@@ -105,37 +81,27 @@ void main() async {
       //    * Welcome to Appflowy 😁
       document = editor.document;
 
-      await editor
-          .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-
-      expect(
-        editor.selection,
+      await editor.updateSelection(
         Selection.single(path: [0, 0], startOffset: 0),
       );
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+
+      expect(editor.selection, Selection.single(path: [0, 0], startOffset: 0));
       expect(editor.document.toJson(), document.toJson());
 
-      await editor
-          .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
+      await editor.updateSelection(
+        Selection.single(path: [0, 1], startOffset: 0),
+      );
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       expect(
         editor.selection,
         Selection.single(path: [0, 0, 0], startOffset: 0),
       );
-      expect(
-        editor.nodeAtPath([0])!.type,
-        'bulleted_list',
-      );
-      expect(
-        editor.nodeAtPath([0, 0])!.type,
-        'bulleted_list',
-      );
+      expect(editor.nodeAtPath([0])!.type, 'bulleted_list');
+      expect(editor.nodeAtPath([0, 0])!.type, 'bulleted_list');
       expect(editor.nodeAtPath([0, 1]), null);
-      expect(
-        editor.nodeAtPath([0, 0, 0])!.type,
-        'bulleted_list',
-      );
+      expect(editor.nodeAtPath([0, 0, 0])!.type, 'bulleted_list');
 
       await editor.dispose();
     });
@@ -153,10 +119,7 @@ void main() async {
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       // nothing happens
-      expect(
-        editor.selection,
-        Selection.single(path: [0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0], startOffset: 0));
       expect(editor.document.toJson(), document.toJson());
 
       // Before
@@ -172,10 +135,7 @@ void main() async {
 
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0, 0], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0, 0], startOffset: 0));
       expect(editor.nodeAtPath([0])!.type, 'todo_list');
       expect(editor.nodeAtPath([1])!.type, 'todo_list');
       expect(editor.nodeAtPath([2]), null);
@@ -184,10 +144,7 @@ void main() async {
       await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
-      expect(
-        editor.selection,
-        Selection.single(path: [0, 1], startOffset: 0),
-      );
+      expect(editor.selection, Selection.single(path: [0, 1], startOffset: 0));
       expect(editor.nodeAtPath([0])!.type, 'todo_list');
       expect(editor.nodeAtPath([1]), null);
       expect(editor.nodeAtPath([2]), null);
@@ -204,37 +161,27 @@ void main() async {
       //   [] Welcome to Appflowy 😁
       document = editor.document;
 
-      await editor
-          .updateSelection(Selection.single(path: [0, 0], startOffset: 0));
-      await editor.pressKey(key: LogicalKeyboardKey.tab);
-
-      expect(
-        editor.selection,
+      await editor.updateSelection(
         Selection.single(path: [0, 0], startOffset: 0),
       );
+      await editor.pressKey(key: LogicalKeyboardKey.tab);
+
+      expect(editor.selection, Selection.single(path: [0, 0], startOffset: 0));
       expect(editor.document.toJson(), document.toJson());
 
-      await editor
-          .updateSelection(Selection.single(path: [0, 1], startOffset: 0));
+      await editor.updateSelection(
+        Selection.single(path: [0, 1], startOffset: 0),
+      );
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 
       expect(
         editor.selection,
         Selection.single(path: [0, 0, 0], startOffset: 0),
       );
-      expect(
-        editor.nodeAtPath([0])!.type,
-        'todo_list',
-      );
-      expect(
-        editor.nodeAtPath([0, 0])!.type,
-        'todo_list',
-      );
+      expect(editor.nodeAtPath([0])!.type, 'todo_list');
+      expect(editor.nodeAtPath([0, 0])!.type, 'todo_list');
       expect(editor.nodeAtPath([0, 1]), null);
-      expect(
-        editor.nodeAtPath([0, 0, 0])!.type,
-        'todo_list',
-      );
+      expect(editor.nodeAtPath([0, 0, 0])!.type, 'todo_list');
 
       await editor.dispose();
     });

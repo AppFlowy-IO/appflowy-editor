@@ -22,21 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "bold": MessageLookupByLibrary.simpleMessage("berani"),
-        "bulletedList": MessageLookupByLibrary.simpleMessage("daftar berpoin"),
-        "checkbox": MessageLookupByLibrary.simpleMessage("kotak centang"),
-        "embedCode": MessageLookupByLibrary.simpleMessage("menyematkan Kode"),
-        "heading1": MessageLookupByLibrary.simpleMessage("pos1"),
-        "heading2": MessageLookupByLibrary.simpleMessage("pos2"),
-        "heading3": MessageLookupByLibrary.simpleMessage("pos3"),
-        "highlight": MessageLookupByLibrary.simpleMessage("menyorot"),
-        "image": MessageLookupByLibrary.simpleMessage("gambar"),
-        "italic": MessageLookupByLibrary.simpleMessage("miring"),
-        "link": MessageLookupByLibrary.simpleMessage("tautan"),
-        "numberedList": MessageLookupByLibrary.simpleMessage("daftar bernomor"),
-        "quote": MessageLookupByLibrary.simpleMessage("mengutip"),
-        "strikethrough": MessageLookupByLibrary.simpleMessage("coret"),
-        "text": MessageLookupByLibrary.simpleMessage("teks"),
-        "underline": MessageLookupByLibrary.simpleMessage("menggarisbawahi")
-      };
+    "bold": MessageLookupByLibrary.simpleMessage("berani"),
+    "bulletedList": MessageLookupByLibrary.simpleMessage("daftar berpoin"),
+    "checkbox": MessageLookupByLibrary.simpleMessage("kotak centang"),
+    "embedCode": MessageLookupByLibrary.simpleMessage("menyematkan Kode"),
+    "heading1": MessageLookupByLibrary.simpleMessage("pos1"),
+    "heading2": MessageLookupByLibrary.simpleMessage("pos2"),
+    "heading3": MessageLookupByLibrary.simpleMessage("pos3"),
+    "highlight": MessageLookupByLibrary.simpleMessage("menyorot"),
+    "image": MessageLookupByLibrary.simpleMessage("gambar"),
+    "italic": MessageLookupByLibrary.simpleMessage("miring"),
+    "link": MessageLookupByLibrary.simpleMessage("tautan"),
+    "numberedList": MessageLookupByLibrary.simpleMessage("daftar bernomor"),
+    "quote": MessageLookupByLibrary.simpleMessage("mengutip"),
+    "strikethrough": MessageLookupByLibrary.simpleMessage("coret"),
+    "text": MessageLookupByLibrary.simpleMessage("teks"),
+    "underline": MessageLookupByLibrary.simpleMessage("menggarisbawahi"),
+  };
 }

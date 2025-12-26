@@ -19,10 +19,11 @@ bool forceShowBlockAction = false;
 /// - [state]: The current state of the block component action
 ///
 /// Returns a widget to display as the block action (e.g., drag handle, add button).
-typedef BlockActionBuilder = Widget Function(
-  BlockComponentContext blockComponentContext,
-  BlockComponentActionState state,
-);
+typedef BlockActionBuilder =
+    Widget Function(
+      BlockComponentContext blockComponentContext,
+      BlockComponentActionState state,
+    );
 
 /// A function that builds the trailing action widget shown after the block.
 ///
@@ -31,10 +32,11 @@ typedef BlockActionBuilder = Widget Function(
 /// - [state]: The current state of the block component action
 ///
 /// Returns a widget to display after the block content.
-typedef BlockActionTrailingBuilder = Widget Function(
-  BlockComponentContext blockComponentContext,
-  BlockComponentActionState state,
-);
+typedef BlockActionTrailingBuilder =
+    Widget Function(
+      BlockComponentContext blockComponentContext,
+      BlockComponentActionState state,
+    );
 
 /// A function that validates whether a node can be rendered by a block component.
 ///
@@ -91,8 +93,8 @@ abstract class BlockComponentBuilder with BlockComponentSelectable {
   BlockActionBuilder actionBuilder = (_, __) => const SizedBox.shrink();
 
   /// Builds the trailing action widget shown after the block.
-  BlockActionTrailingBuilder actionTrailingBuilder =
-      (_, __) => const SizedBox.shrink();
+  BlockActionTrailingBuilder actionTrailingBuilder = (_, __) =>
+      const SizedBox.shrink();
 
   /// Configuration for the block component's appearance and behavior.
   BlockComponentConfiguration configuration =
@@ -114,10 +116,8 @@ mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
   ///
   /// For text block components, this is the length of the text delta.
   /// Override this for custom selection behavior.
-  Position end(Node node) => Position(
-        path: node.path,
-        offset: node.delta?.length ?? 0,
-      );
+  Position end(Node node) =>
+      Position(path: node.path, offset: node.delta?.length ?? 0);
 }
 
 abstract class BlockComponentRendererService {
@@ -163,10 +163,7 @@ abstract class BlockComponentRendererService {
     BlockComponentWrapper? wrapper,
   });
 
-  List<Widget> buildList(
-    BuildContext buildContext,
-    Iterable<Node> nodes,
-  ) {
+  List<Widget> buildList(BuildContext buildContext, Iterable<Node> nodes) {
     return nodes
         .map((node) => build(buildContext, node))
         .toList(growable: false);
@@ -225,8 +222,9 @@ class BlockComponentRenderer extends BlockComponentRendererService {
 
   @override
   void register(String type, BlockComponentBuilder builder) {
-    AppFlowyEditorLog.editor
-        .info('register block component builder for type($type)');
+    AppFlowyEditorLog.editor.info(
+      'register block component builder for type($type)',
+    );
     if (type.isEmpty) {
       throw ArgumentError('type should not be empty');
     }

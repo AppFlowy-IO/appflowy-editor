@@ -5,24 +5,17 @@ import 'package:flutter/material.dart';
 class Debounce {
   static final Map<String, Timer> _actions = {};
 
-  static void debounce(
-    String key,
-    Duration duration,
-    VoidCallback callback,
-  ) {
+  static void debounce(String key, Duration duration, VoidCallback callback) {
     if (duration == Duration.zero) {
       // Call immediately
       callback();
       cancel(key);
     } else {
       cancel(key);
-      _actions[key] = Timer(
-        duration,
-        () {
-          callback();
-          cancel(key);
-        },
-      );
+      _actions[key] = Timer(duration, () {
+        callback();
+        cancel(key);
+      });
     }
   }
 

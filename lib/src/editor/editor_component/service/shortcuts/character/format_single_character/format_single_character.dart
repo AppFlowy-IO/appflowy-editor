@@ -1,11 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 
-enum FormatStyleByWrappingWithSingleChar {
-  code,
-  italic,
-  strikethrough,
-}
+enum FormatStyleByWrappingWithSingleChar { code, italic, strikethrough }
 
 class CheckSingleFormatFormatResult {
   CheckSingleFormatFormatResult({
@@ -26,7 +22,7 @@ class CheckSingleFormatFormatResult {
 /// It's helpful for the IME to check if the single character format should be applied.
 /// // The selection is not only the editorState.selection, you can pass any selection in line to check every node in the selection.
 (bool, CheckSingleFormatFormatResult?)
-    checkSingleCharacterFormatShouldBeApplied({
+checkSingleCharacterFormatShouldBeApplied({
   required EditorState editorState,
   required Selection selection,
   required String character,
@@ -38,7 +34,7 @@ class CheckSingleFormatFormatResult {
     return (false, null);
   }
 
-// If the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
+  // If the selection is not collapsed or the cursor is at the first two index range, we don't need to format it.
   // We should return false to let the IME handle it.
   if (!selection.isCollapsed || selection.end.offset < 2) {
     AppFlowyEditorLog.input.debug('selection is not valid');
@@ -82,9 +78,9 @@ class CheckSingleFormatFormatResult {
   }
 
   final plainText = delta.toPlainText().substring(
-        startIndex,
-        selection.end.offset,
-      );
+    startIndex,
+    selection.end.offset,
+  );
   final lastCharIndex = plainText.lastIndexOf(character);
   final textAfterLastChar = plainText.substring(lastCharIndex + 1);
   bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
@@ -127,7 +123,7 @@ class CheckSingleFormatFormatResult {
       lastCharIndex: startIndex + lastCharIndex,
       path: path,
       delta: delta,
-    )
+    ),
   );
 }
 
@@ -203,15 +199,10 @@ bool handleFormatByWrappingWithSingleCharacter({
       node,
       lastCharIndex,
       selection.end.offset - lastCharIndex - 1,
-      {
-        style: !result,
-      },
+      {style: !result},
     )
     ..afterSelection = Selection.collapsed(
-      Position(
-        path: path,
-        offset: selection.end.offset - 1,
-      ),
+      Position(path: path, offset: selection.end.offset - 1),
     );
   editorState.apply(format);
 

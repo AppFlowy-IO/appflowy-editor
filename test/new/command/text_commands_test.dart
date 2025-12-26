@@ -13,9 +13,7 @@ void main() async {
 
     // Welcome |to AppFlowy Editor 🔥!
     test('format delta in collapsed selection', () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
+      final document = Document.blank().addParagraph(initialText: text);
       final editorState = EditorState(document: document);
 
       // Welcome |to AppFlowy Editor 🔥!
@@ -26,9 +24,7 @@ void main() async {
       editorState.selection = selection;
 
       final before = editorState.getNodeAtPath([0]);
-      await editorState.formatDelta(selection, {
-        'bold': true,
-      });
+      await editorState.formatDelta(selection, {'bold': true});
       final after = editorState.getNodeAtPath([0]);
 
       expect(before?.toJson(), after?.toJson());
@@ -40,9 +36,7 @@ void main() async {
     // After
     // Welcome to <bold>AppFlowy</bold> Editor 🔥!
     test('format delta in single selection', () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
+      final document = Document.blank().addParagraph(initialText: text);
       final editorState = EditorState(document: document);
 
       // Welcome |to AppFlowy Editor 🔥!
@@ -55,16 +49,15 @@ void main() async {
       );
       editorState.selection = selection;
 
-      await editorState.formatDelta(selection, {
-        'bold': true,
-      });
+      await editorState.formatDelta(selection, {'bold': true});
       final after = editorState.getNodeAtPath([0]);
 
       final result = after?.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
 
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, true);
       expect(editorState.selection, selection);
@@ -76,9 +69,7 @@ void main() async {
     // Welcome to <bold>AppFlowy Editor 🔥!</bold>
     // <bold>Welcome to </bold>AppFlowy Editor 🔥!
     test('format delta in not single selection', () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
+      final document = Document.blank().addParagraph(initialText: text);
       final editorState = EditorState(document: document);
 
       // Welcome |to AppFlowy Editor 🔥!
@@ -89,16 +80,15 @@ void main() async {
       );
       editorState.selection = selection;
 
-      await editorState.formatDelta(selection, {
-        'bold': true,
-      });
+      await editorState.formatDelta(selection, {'bold': true});
 
       final after = editorState.getNodesInSelection(selection);
       final result = after.allSatisfyInSelection(selection, (delta) {
         final textInserts = delta.whereType<TextInsert>();
 
-        return textInserts
-            .every((element) => element.attributes?['bold'] == true);
+        return textInserts.every(
+          (element) => element.attributes?['bold'] == true,
+        );
       });
       expect(result, true);
       expect(editorState.selection, selection);
@@ -113,27 +103,27 @@ void main() async {
     // After
     // Welcome
     // |AppFlowy Editor 🔥!
-    test('insert new line at the node which  doesn\'t contains children',
-        () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
-      final editorState = EditorState(document: document);
+    test(
+      'insert new line at the node which  doesn\'t contains children',
+      () async {
+        final document = Document.blank().addParagraph(initialText: text);
+        final editorState = EditorState(document: document);
 
-      // Welcome |to AppFlowy Editor 🔥!
-      const welcome = 'Welcome ';
-      final selection = Selection.collapsed(
-        Position(path: [0], offset: welcome.length),
-      );
-      editorState.selection = selection;
-      editorState.insertNewLine();
+        // Welcome |to AppFlowy Editor 🔥!
+        const welcome = 'Welcome ';
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: welcome.length),
+        );
+        editorState.selection = selection;
+        editorState.insertNewLine();
 
-      expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), welcome);
-      expect(
-        editorState.getNodeAtPath([1])?.delta?.toPlainText(),
-        text.substring(welcome.length),
-      );
-    });
+        expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), welcome);
+        expect(
+          editorState.getNodeAtPath([1])?.delta?.toPlainText(),
+          text.substring(welcome.length),
+        );
+      },
+    );
 
     // Before
     // Welcome |to AppFlowy Editor 🔥!
@@ -146,9 +136,7 @@ void main() async {
       final document = Document.blank().addParagraph(
         initialText: text,
         decorator: (index, node) {
-          node.addParagraph(
-            initialText: text,
-          );
+          node.addParagraph(initialText: text);
         },
       );
       final editorState = EditorState(document: document);
@@ -173,9 +161,9 @@ void main() async {
     test('insert new line preserve direction', () async {
       final document = Document.blank().addParagraph(
         initialText: text,
-        decorator: (index, node) => node.updateAttributes(
-          {ParagraphBlockKeys.textDirection: blockComponentTextDirectionRTL},
-        ),
+        decorator: (index, node) => node.updateAttributes({
+          ParagraphBlockKeys.textDirection: blockComponentTextDirectionRTL,
+        }),
       );
       final editorState = EditorState(document: document);
 
@@ -185,12 +173,10 @@ void main() async {
       editorState.selection = selection;
       await editorState.insertNewLine();
 
-      final textDirection = editorState
-          .getNodeAtPath([1])?.attributes[ParagraphBlockKeys.textDirection];
-      expect(
-        textDirection,
-        blockComponentTextDirectionRTL,
-      );
+      final textDirection = editorState.getNodeAtPath([
+        1,
+      ])?.attributes[ParagraphBlockKeys.textDirection];
+      expect(textDirection, blockComponentTextDirectionRTL);
     });
   });
 
@@ -206,15 +192,11 @@ void main() async {
     /// Welcome to AppFlowy Editor 🔥!
     test('insertText', () async {
       final document = Document.blank()
-          .addParagraph(
-            initialText: '',
-          )
+          .addParagraph(initialText: '')
           .addParagraph(
             initialText: text,
             decorator: (index, node) {
-              node.addParagraph(
-                initialText: text,
-              );
+              node.addParagraph(initialText: text);
             },
           );
       final editorState = EditorState(document: document);
@@ -227,20 +209,14 @@ void main() async {
 
     test('insertTextAtCurrentSelection', () async {
       final document = Document.blank()
-          .addParagraph(
-            initialText: '',
-          )
+          .addParagraph(initialText: '')
           .addParagraph(
             initialText: text,
             decorator: (index, node) {
-              node.addParagraph(
-                initialText: text,
-              );
+              node.addParagraph(initialText: text);
             },
           );
-      final selection = Selection.collapsed(
-        Position(path: [0], offset: 0),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 0));
       final editorState = EditorState(document: document);
       editorState.selection = selection;
 
@@ -250,9 +226,7 @@ void main() async {
       expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), hello);
       expect(
         editorState.selection,
-        Selection.collapsed(
-          Position(path: [0], offset: hello.length),
-        ),
+        Selection.collapsed(Position(path: [0], offset: hello.length)),
       );
     });
   });
@@ -262,13 +236,9 @@ void main() async {
 
     // Welcome| to AppFlowy Editor 🔥!
     test('get nodes in collapsed selection', () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
+      final document = Document.blank().addParagraph(initialText: text);
       // Welcome| to AppFlowy Editor 🔥!
-      final selection = Selection.collapsed(
-        Position(path: [0], offset: 4),
-      );
+      final selection = Selection.collapsed(Position(path: [0], offset: 4));
       final editorState = EditorState(document: document);
       editorState.selection = selection;
       final texts = editorState.getTextInSelection(selection);
@@ -277,9 +247,7 @@ void main() async {
 
     // Welcome to |AppFlowy| Editor 🔥!
     test('get nodes in single selection', () async {
-      final document = Document.blank().addParagraph(
-        initialText: text,
-      );
+      final document = Document.blank().addParagraph(initialText: text);
       // Welcome to |AppFlowy| Editor 🔥!
       final selection = Selection.single(
         path: [0],
@@ -297,15 +265,9 @@ void main() async {
     // App|Flowy
     test('get nodes in multi selection', () async {
       final document = Document.blank()
-          .addParagraph(
-            initialText: 'Welcome',
-          )
-          .addParagraph(
-            initialText: 'To',
-          )
-          .addParagraph(
-            initialText: 'AppFlowy',
-          );
+          .addParagraph(initialText: 'Welcome')
+          .addParagraph(initialText: 'To')
+          .addParagraph(initialText: 'AppFlowy');
       // Wel|come
       // To
       // App|Flowy
@@ -321,8 +283,9 @@ void main() async {
   });
 
   group('toggle style', () {
-    testWidgets('toggle the style if the previous character isn\'t formatted',
-        (tester) async {
+    testWidgets('toggle the style if the previous character isn\'t formatted', (
+      tester,
+    ) async {
       const text = '';
       final editor = tester.editor..addParagraph(initialText: text);
 
@@ -351,7 +314,7 @@ void main() async {
         {
           "insert": "Hello",
           "attributes": {"bold": true, "italic": true, "underline": true},
-        }
+        },
       ]);
 
       // cancel the toggled style
@@ -418,7 +381,7 @@ void main() async {
         {
           "insert": "Hello",
           "attributes": {"bold": false, "italic": false, "underline": false},
-        }
+        },
       ]);
 
       expect(editor.editorState.toggledStyle, isEmpty);

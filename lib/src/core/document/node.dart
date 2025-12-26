@@ -33,14 +33,12 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     this.parent,
     Attributes attributes = const {},
     Iterable<Node> children = const [],
-  })  : _children = LinkedList<Node>()
-          ..addAll(
-            children.map(
-              (e) => e..unlink(),
-            ),
-          ), // unlink the given children to avoid the error of "node has already a parent"
-        _attributes = attributes,
-        id = id ?? nanoid(6) {
+  }) : _children = LinkedList<Node>()
+         ..addAll(
+           children.map((e) => e..unlink()),
+         ), // unlink the given children to avoid the error of "node has already a parent"
+       _attributes = attributes,
+       id = id ?? nanoid(6) {
     for (final child in children) {
       child.parent = this;
     }
@@ -154,8 +152,9 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final length = _children.length;
     index ??= length;
 
-    AppFlowyEditorLog.editor
-        .debug('insert Node $entry at path ${path + [index]}}');
+    AppFlowyEditorLog.editor.debug(
+      'insert Node $entry at path ${path + [index]}}',
+    );
 
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
@@ -246,14 +245,10 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   }
 
   Map<String, Object> toJson() {
-    final map = <String, Object>{
-      'type': type,
-    };
+    final map = <String, Object>{'type': type};
     if (children.isNotEmpty) {
       map['children'] = children
-          .map(
-            (node) => node.toJson(),
-          )
+          .map((node) => node.toJson())
           .toList(growable: false);
     }
     if (attributes.isNotEmpty) {
@@ -282,9 +277,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     );
     if (children == null && _children.isNotEmpty) {
       for (final child in _children) {
-        node._children.add(
-          child.copyWith()..parent = node,
-        );
+        node._children.add(child.copyWith()..parent = node);
       }
     }
     node.externalValues = externalValues;
@@ -318,10 +311,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
       final errorMessage =
           '''Please submit an issue to https://github.com/AppFlowy-IO/appflowy-editor/issues if you see this error!
           node = ${toJson()}''';
-      assert(
-        parent != null,
-        errorMessage,
-      );
+      assert(parent != null, errorMessage);
       // also, its parent should contain this node
       assert(
         parent!.children.where((element) => element.id == id).length == 1,
@@ -341,20 +331,17 @@ final class TextNode extends Node {
     required Delta delta,
     Iterable<Node>? children,
     Attributes? attributes,
-  })  : _delta = delta,
-        super(
-          type: 'text',
-          children: children?.toList() ?? [],
-          attributes: attributes ?? {},
-          id: '',
-        );
+  }) : _delta = delta,
+       super(
+         type: 'text',
+         children: children?.toList() ?? [],
+         attributes: attributes ?? {},
+         id: '',
+       );
 
   TextNode.empty({Attributes? attributes})
-      : _delta = Delta(operations: [TextInsert('')]),
-        super(
-          type: 'text',
-          attributes: attributes ?? {},
-        );
+    : _delta = Delta(operations: [TextInsert('')]),
+      super(type: 'text', attributes: attributes ?? {});
 
   @override
   @Deprecated('Use type instead')
@@ -393,9 +380,7 @@ final class TextNode extends Node {
     );
     if (children == null && this.children.isNotEmpty) {
       for (final child in this.children) {
-        textNode._children.add(
-          child.copyWith()..parent = textNode,
-        );
+        textNode._children.add(child.copyWith()..parent = textNode);
       }
     }
 

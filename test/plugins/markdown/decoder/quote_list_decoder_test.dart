@@ -5,9 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   group('markdown_quote_list_parser.dart', () {
     final parser = DocumentMarkdownDecoder(
-      markdownElementParsers: [
-        const MarkdownBlockQuoteParserV2(),
-      ],
+      markdownElementParsers: [const MarkdownBlockQuoteParserV2()],
     );
 
     test('convert > to quote ', () {

@@ -54,7 +54,7 @@ const exampleJson = {
             {
               "insert": "AppFlowy",
               "attributes": {"href": "appflowy.io"},
-            }
+            },
           ],
         },
       },
@@ -109,7 +109,7 @@ const exampleJson = {
             },
           ],
         },
-      }
+      },
     ],
   },
 };

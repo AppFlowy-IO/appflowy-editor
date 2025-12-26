@@ -38,9 +38,7 @@ void main() {
 
     group('compose', () {
       test('addAll + length', () {
-        final delta = Delta(
-          operations: [TextInsert('Welcome')],
-        );
+        final delta = Delta(operations: [TextInsert('Welcome')]);
 
         final operations = [TextInsert(' to '), TextInsert('AppFlowy!')];
         delta.addAll(operations);
@@ -61,30 +59,15 @@ void main() {
       test('test delta', () {
         final delta = Delta(
           operations: <TextOperation>[
-            TextInsert(
-              'Gandalf',
-              attributes: {
-                'bold': true,
-              },
-            ),
+            TextInsert('Gandalf', attributes: {'bold': true}),
             TextInsert(' the '),
-            TextInsert(
-              'Grey',
-              attributes: {
-                'color': '#ccc',
-              },
-            ),
+            TextInsert('Grey', attributes: {'color': '#ccc'}),
           ],
         );
 
         final death = Delta()
           ..retain(12)
-          ..insert(
-            "White",
-            attributes: {
-              'color': '#fff',
-            },
-          )
+          ..insert("White", attributes: {'color': '#fff'})
           ..delete(4);
 
         final restores = delta.compose(death);
@@ -107,21 +90,9 @@ void main() {
       test('insert + retain', () {
         final a = Delta()..insert('A');
         final b = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..retain(1, attributes: {'bold': true, 'color': 'red'});
         final expected = Delta()
-          ..insert(
-            'A',
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..insert('A', attributes: {'bold': true, 'color': 'red'});
         expect(a.compose(b), expected);
       });
 
@@ -144,22 +115,10 @@ void main() {
       test('delete + retain', () {
         final a = Delta()..delete(1);
         final b = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..retain(1, attributes: {'bold': true, 'color': 'red'});
         final expected = Delta()
           ..delete(1)
-          ..retain(
-            1,
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..retain(1, attributes: {'bold': true, 'color': 'red'});
         expect(a.compose(b), expected);
       });
 
@@ -175,50 +134,21 @@ void main() {
         final b = Delta()..insert('B');
         final expected = Delta()
           ..insert('B')
-          ..retain(
-            1,
-            attributes: {
-              'color': 'blue',
-            },
-          );
+          ..retain(1, attributes: {'color': 'blue'});
         expect(a.compose(b), expected);
       });
 
       test('retain + retain', () {
-        final a = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'color': 'blue',
-            },
-          );
+        final a = Delta()..retain(1, attributes: {'color': 'blue'});
         final b = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..retain(1, attributes: {'bold': true, 'color': 'red'});
         final expected = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'bold': true,
-              'color': 'red',
-            },
-          );
+          ..retain(1, attributes: {'bold': true, 'color': 'red'});
         expect(a.compose(b), expected);
       });
 
       test('retain + delete', () {
-        final a = Delta()
-          ..retain(
-            1,
-            attributes: {
-              'color': 'blue',
-            },
-          );
+        final a = Delta()..retain(1, attributes: {'color': 'blue'});
         final b = Delta()..delete(1);
         final expected = Delta()..delete(1);
         expect(a.compose(b), expected);
@@ -481,8 +411,11 @@ void main() {
 
     group("attributes", () {
       test("compose", () {
-        final attrs =
-            composeAttributes({'a': null}, {'b': null}, keepNull: true);
+        final attrs = composeAttributes(
+          {'a': null},
+          {'b': null},
+          keepNull: true,
+        );
         expect(attrs != null, true);
         expect(attrs?.containsKey("a"), true);
         expect(attrs?.containsKey("b"), true);
@@ -548,11 +481,7 @@ void main() {
       test('retain with attributes - 1', () {
         final a = Delta()..insert('Hello');
         final b = Delta()..insert('Hello', attributes: {'bold': true});
-        final expected = Delta()
-          ..retain(
-            5,
-            attributes: {'bold': true},
-          );
+        final expected = Delta()..retain(5, attributes: {'bold': true});
         expect(a.diff(b), expected);
       });
 
@@ -560,10 +489,7 @@ void main() {
         final a = Delta()..insert('Hello', attributes: {'bold': true});
         final b = Delta()..insert('Hello', attributes: {'italic': true});
         final expected = Delta()
-          ..retain(
-            5,
-            attributes: {'bold': null, 'italic': true},
-          );
+          ..retain(5, attributes: {'bold': null, 'italic': true});
         expect(a.diff(b), expected);
       });
     });

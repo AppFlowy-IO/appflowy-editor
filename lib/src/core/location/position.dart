@@ -32,18 +32,13 @@ class Position {
   /// Creates a position with the specified [path] and [offset].
   ///
   /// The offset defaults to 0 if not provided.
-  Position({
-    required this.path,
-    this.offset = 0,
-  });
+  Position({required this.path, this.offset = 0});
 
   /// Creates an invalid position.
   ///
   /// Used to represent an undefined or error state.
   /// Has a path of [-1] and offset of -1.
-  Position.invalid()
-      : path = [-1],
-        offset = -1;
+  Position.invalid() : path = [-1], offset = -1;
 
   /// Creates a position from a JSON map.
   ///
@@ -52,10 +47,7 @@ class Position {
     final path = Path.from(json['path'] as List);
     final offset = json['offset'];
 
-    return Position(
-      path: path,
-      offset: offset ?? 0,
-    );
+    return Position(path: path, offset: offset ?? 0);
   }
 
   @override
@@ -77,19 +69,13 @@ class Position {
   ///
   /// If [path] or [offset] are not provided, the current values are used.
   Position copyWith({Path? path, int? offset}) {
-    return Position(
-      path: path ?? this.path,
-      offset: offset ?? this.offset,
-    );
+    return Position(path: path ?? this.path, offset: offset ?? this.offset);
   }
 
   /// Converts this position to a JSON map.
   ///
   /// Returns a map with 'path' and 'offset' keys.
   Map<String, dynamic> toJson() {
-    return {
-      'path': path,
-      'offset': offset,
-    };
+    return {'path': path, 'offset': offset};
   }
 }

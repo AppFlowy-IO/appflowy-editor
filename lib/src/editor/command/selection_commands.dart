@@ -1,16 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-enum SelectionMoveRange {
-  character,
-  word,
-  line,
-  block,
-}
+enum SelectionMoveRange { character, word, line, block }
 
-enum SelectionMoveDirection {
-  forward,
-  backward,
-}
+enum SelectionMoveDirection { forward, backward }
 
 extension SelectionTransform on EditorState {
   /// backward delete one character
@@ -50,9 +42,7 @@ extension SelectionTransform on EditorState {
   /// For the other cases, this function just deletes all the nodes.
   Future<bool> deleteSelection(
     Selection selection, {
-    List<String> ignoreNodeTypes = const [
-      TableCellBlockKeys.type,
-    ],
+    List<String> ignoreNodeTypes = const [TableCellBlockKeys.type],
   }) async {
     // Nothing to do if the selection is collapsed.
     if (selection.isCollapsed) {
@@ -76,16 +66,11 @@ extension SelectionTransform on EditorState {
           ? nodes.first.children.first
           : nodes.first;
       if (node.delta != null) {
-        transaction.deleteText(
-          node,
-          selection.startIndex,
-          selection.length,
-        );
+        transaction.deleteText(node, selection.startIndex, selection.length);
       } else if (!ignoreNodeTypes.contains(node.parent?.type)) {
         transaction.deleteNode(node);
       }
     }
-
     // Otherwise, multiple nodes are selected, so we have to do more work.
     else {
       // The nodes are guaranteed to be in order, so we can determine which
@@ -100,11 +85,7 @@ extension SelectionTransform on EditorState {
           // Never delete a table cell node child
           if (ignoreNodeTypes.contains(node.parent?.type)) {
             if (!nodes.any((n) => n.id == node.parent?.parent?.id)) {
-              transaction.deleteText(
-                node,
-                0,
-                selection.end.offset,
-              );
+              transaction.deleteText(node, 0, selection.end.offset);
             }
           }
           // If first node was inside table cell then it wasn't mergable to last
@@ -112,11 +93,7 @@ extension SelectionTransform on EditorState {
           // the text inside selection
           else if (node.id == nodes.last.id &&
               ignoreNodeTypes.contains(nodes.first.parent?.type)) {
-            transaction.deleteText(
-              node,
-              0,
-              selection.end.offset,
-            );
+            transaction.deleteText(node, 0, selection.end.offset);
           } else if (!ignoreNodeTypes.contains(node.type)) {
             transaction.deleteNode(node);
           }
@@ -127,8 +104,10 @@ extension SelectionTransform on EditorState {
         // and also the current node isn't inside table cell, then we can merge
         // the text between the two nodes.
         if (nodes.last.delta != null &&
-            ![node.parent?.type, nodes.last.parent?.type]
-                .any((type) => ignoreNodeTypes.contains(type))) {
+            ![
+              node.parent?.type,
+              nodes.last.parent?.type,
+            ].any((type) => ignoreNodeTypes.contains(type))) {
           transaction.mergeText(
             node,
             nodes.last,
@@ -155,7 +134,6 @@ extension SelectionTransform on EditorState {
             }
           }
         }
-
         // Otherwise, we can just delete the selected text.
         else {
           // If the last or first node is inside table we will only delete
@@ -181,8 +159,9 @@ extension SelectionTransform on EditorState {
     // After the selection is deleted, we want to move the selection to the
     // beginning of the deleted selection.
     transaction.afterSelection = selection.collapse(atStart: true);
-    AppFlowyEditorLog.editor
-        .debug(transaction.operations.map((e) => e.toString()).toString());
+    AppFlowyEditorLog.editor.debug(
+      transaction.operations.map((e) => e.toString()).toString(),
+    );
 
     // Apply the transaction.
     await apply(transaction);
@@ -308,8 +287,9 @@ extension SelectionTransform on EditorState {
                 )
               : selection.start;
           // move the cursor to the left or right by one line
-          final wordSelection =
-              node.selectable?.getWordBoundaryInPosition(position);
+          final wordSelection = node.selectable?.getWordBoundaryInPosition(
+            position,
+          );
           if (wordSelection != null) {
             updateSelectionWithReason(
               Selection.collapsed(

@@ -19,19 +19,12 @@ void main() async {
       //
       final editor = tester.editor..addEmptyParagraph();
       await editor.startTesting();
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 0),
-      );
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       // Pressing the enter key continuously.
       for (int i = 1; i <= 10; i++) {
-        await editor.pressKey(
-          character: '\n',
-        );
+        await editor.pressKey(character: '\n');
         expect(editor.documentRootLen, i + 1);
-        expect(
-          editor.selection,
-          Selection.single(path: [i], startOffset: 0),
-        );
+        expect(editor.selection, Selection.single(path: [i], startOffset: 0));
       }
 
       await editor.dispose();
@@ -64,9 +57,7 @@ void main() async {
       await editor.updateSelection(
         Selection.single(path: [lines - 1], startOffset: 0),
       );
-      await editor.pressKey(
-        character: '\n',
-      );
+      await editor.pressKey(character: '\n');
       lines += 1;
       expect(editor.documentRootLen, lines);
       expect(
@@ -78,10 +69,7 @@ void main() async {
       expect(lastNode?.type, 'paragraph');
       expect(lastNode?.delta?.toPlainText(), text);
       expect(lastNode?.previous?.delta?.toPlainText(), '');
-      expect(
-        lastNode?.previous?.previous?.delta?.toPlainText(),
-        text,
-      );
+      expect(lastNode?.previous?.previous?.delta?.toPlainText(), text);
 
       await editor.dispose();
     });
@@ -119,13 +107,15 @@ void main() async {
       await _testListOutdent(tester, 'bulleted_list');
     });
 
-    testWidgets('Presses enter key in multiple selection from top to bottom',
-        (tester) async {
+    testWidgets('Presses enter key in multiple selection from top to bottom', (
+      tester,
+    ) async {
       _testMultipleSelection(tester, true);
     });
 
-    testWidgets('Presses enter key in multiple selection from bottom to top',
-        (tester) async {
+    testWidgets('Presses enter key in multiple selection from bottom to top', (
+      tester,
+    ) async {
       _testMultipleSelection(tester, false);
     });
 
@@ -142,9 +132,7 @@ void main() async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraph(initialText: text);
       await editor.startTesting();
-      await editor.updateSelection(
-        Selection.single(path: [0], startOffset: 0),
-      );
+      await editor.updateSelection(Selection.single(path: [0], startOffset: 0));
       await editor.pressKey(character: '\n');
       expect(editor.documentRootLen, 2);
       expect(editor.nodeAtPath([1])?.delta?.toPlainText(), text);
@@ -156,9 +144,7 @@ void main() async {
 
 Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
   const text = 'Welcome to Appflowy 😁';
-  final attributes = {
-    'delta': (Delta()..insert(text)).toJson(),
-  };
+  final attributes = {'delta': (Delta()..insert(text)).toJson()};
   Node? node;
   if (style == 'todo_list') {
     node = todoListNode(checked: true, attributes: attributes);
@@ -178,31 +164,20 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
     ..addNode(node.copyWith());
 
   await editor.startTesting();
-  await editor.updateSelection(
-    Selection.single(path: [1], startOffset: 0),
-  );
-  await editor.pressKey(
-    character: '\n',
-  );
+  await editor.updateSelection(Selection.single(path: [1], startOffset: 0));
+  await editor.pressKey(character: '\n');
   expect(editor.selection, Selection.single(path: [2], startOffset: 0));
 
   await editor.updateSelection(
     Selection.single(path: [3], startOffset: text.length),
   );
-  await editor.pressKey(
-    character: '\n',
-  );
+  await editor.pressKey(character: '\n');
   expect(editor.selection, Selection.single(path: [4], startOffset: 0));
 
   expect(editor.nodeAtPath([4])?.type, style);
 
-  await editor.pressKey(
-    character: '\n',
-  );
-  expect(
-    editor.selection,
-    Selection.single(path: [4], startOffset: 0),
-  );
+  await editor.pressKey(character: '\n');
+  expect(editor.selection, Selection.single(path: [4], startOffset: 0));
   expect(editor.nodeAtPath([4])?.type, 'paragraph');
 
   await editor.dispose();
@@ -210,9 +185,7 @@ Future<void> _testStyleNeedToBeCopy(WidgetTester tester, String style) async {
 
 Future<void> _testListOutdent(WidgetTester tester, String style) async {
   const text = 'Welcome to Appflowy 😁';
-  final attributes = {
-    'delta': (Delta()..insert(text)).toJson(),
-  };
+  final attributes = {'delta': (Delta()..insert(text)).toJson()};
   Node? node;
   if (style == 'todo_list') {
     node = todoListNode(checked: true, attributes: attributes);
@@ -229,42 +202,22 @@ Future<void> _testListOutdent(WidgetTester tester, String style) async {
     ..addNode(node)
     ..addNode(
       node.copyWith(
-        attributes: {
-          ...node.attributes,
-          'delta': Delta().toJson(),
-        },
+        attributes: {...node.attributes, 'delta': Delta().toJson()},
       ),
     );
 
   await editor.startTesting();
-  await editor.updateSelection(
-    Selection.single(path: [2], startOffset: 0),
-  );
-  await editor.pressKey(
-    key: LogicalKeyboardKey.tab,
-  );
-  expect(
-    editor.selection,
-    Selection.single(path: [1, 0], startOffset: 0),
-  );
+  await editor.updateSelection(Selection.single(path: [2], startOffset: 0));
+  await editor.pressKey(key: LogicalKeyboardKey.tab);
+  expect(editor.selection, Selection.single(path: [1, 0], startOffset: 0));
 
-  await editor.pressKey(
-    character: '\n',
-  );
+  await editor.pressKey(character: '\n');
   // clear the style
-  expect(
-    editor.selection,
-    Selection.single(path: [2], startOffset: 0),
-  );
+  expect(editor.selection, Selection.single(path: [2], startOffset: 0));
   expect(editor.nodeAtPath([2])?.type, style);
 
-  await editor.pressKey(
-    character: '\n',
-  );
-  expect(
-    editor.selection,
-    Selection.single(path: [2], startOffset: 0),
-  );
+  await editor.pressKey(character: '\n');
+  expect(editor.selection, Selection.single(path: [2], startOffset: 0));
 
   expect(editor.nodeAtPath([2])?.type, 'paragraph');
 
@@ -302,9 +255,7 @@ Future<void> _testMultipleSelection(
       end: isBackwardSelection ? end : start,
     ),
   );
-  await editor.pressKey(
-    character: '\n',
-  );
+  await editor.pressKey(character: '\n');
 
   expect(editor.documentRootLen, 2);
   expect(editor.nodeAtPath([0])?.delta?.toPlainText(), 'Welcome');

@@ -50,9 +50,7 @@ class _TextAndBackgroundColorMenuState
   Widget build(BuildContext context) {
     final style = MobileToolbarTheme.of(context);
     List<Tab> myTabs = <Tab>[
-      Tab(
-        text: AppFlowyEditorL10n.current.textColor,
-      ),
+      Tab(text: AppFlowyEditorL10n.current.textColor),
       Tab(text: AppFlowyEditorL10n.current.backgroundColor),
     ];
 
