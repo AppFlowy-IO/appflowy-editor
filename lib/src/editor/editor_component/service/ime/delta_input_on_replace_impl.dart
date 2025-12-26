@@ -52,10 +52,13 @@ Future<void> onReplace(
     // use the suggestion as the replacement (auto-correct).
     TextEditingDeltaReplacement replacementToApply = replacement;
     try {
-      if (PlatformExtension.isMacOS || PlatformExtension.isLinux || PlatformExtension.isWindows) {
+      if (PlatformExtension.isMacOS ||
+          PlatformExtension.isLinux ||
+          PlatformExtension.isWindows) {
         final replText = replacement.replacementText.trim();
         if (replText.isNotEmpty && !replText.contains(RegExp(r"\s"))) {
-          final suggestions = await SpellChecker.instance.suggest(replText, maxSuggestions: 1);
+          final suggestions =
+              await SpellChecker.instance.suggest(replText, maxSuggestions: 1);
           if (suggestions.isNotEmpty) {
             final top = suggestions.first;
             if (top.toLowerCase() != replText.toLowerCase()) {

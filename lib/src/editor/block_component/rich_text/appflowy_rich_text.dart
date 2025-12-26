@@ -627,7 +627,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       // Split the insert text into word and non-word tokens so we can
       // underline misspelled words and attach hover suggestion UI.
       final tokenReg = RegExp(r"(\w+|[^\w]+)");
-      final tokens = tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
+      final tokens =
+          tokenReg.allMatches(textInsert.text).map((m) => m.group(0)!).toList();
       int innerIndex = 0;
 
       for (final token in tokens) {
@@ -689,7 +690,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     // so it can properly check for capital letters, camelCase, etc.
     // Store result in cache using lowercase key for lookup
     final lc = word.toLowerCase();
-    
+
     SpellChecker.instance.contains(word).then((exists) {
       final miss = !exists;
       // avoid unnecessary setState

@@ -50,10 +50,11 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
   ) async {
     // Don't show popup if already showing for the same word
     if (_hoveredWord == word && _overlayEntry != null) return;
-    
+
     _removeOverlay();
-    
-    final suggestions = await SpellChecker.instance.suggest(word, maxSuggestions: 5);
+
+    final suggestions =
+        await SpellChecker.instance.suggest(word, maxSuggestions: 5);
     if (!mounted || suggestions.isEmpty) return;
 
     _hoveredWord = word;
@@ -92,7 +93,8 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
                 mainAxisSize: MainAxisSize.min,
                 children: suggestions.map((suggestion) {
                   return InkWell(
-                    onTap: () => _replaceMisspelledWord(suggestion, start, length),
+                    onTap: () =>
+                        _replaceMisspelledWord(suggestion, start, length),
                     borderRadius: BorderRadius.circular(8),
                     hoverColor: Colors.blue.shade50,
                     child: Padding(
@@ -132,16 +134,17 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
-  Future<void> _replaceMisspelledWord(String suggestion, int start, int length) async {
+  Future<void> _replaceMisspelledWord(
+      String suggestion, int start, int length) async {
     _removeOverlay();
-    
+
     final transaction = widget.editorState.transaction;
     transaction.replaceText(widget.node, start, length, suggestion);
     transaction.afterSelection = Selection.collapsed(
       Position(path: widget.node.path, offset: start + suggestion.length),
     );
     await widget.editorState.apply(transaction);
-    
+
     // Clear the old word from cache since it's been replaced
     if (_hoveredWord != null) {
       widget.misspelledCache.remove(_hoveredWord!.toLowerCase());
@@ -150,7 +153,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
 
   void _handlePointerHover(PointerEvent event) {
     final localPosition = event.localPosition;
-    
+
     // Get the word at the current mouse position
     final globalPosition = widget.delegate.localToGlobal(localPosition);
     final position = widget.delegate.getPositionInOffset(globalPosition);
@@ -180,7 +183,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     final text = delta.toPlainText();
     final start = selection.start.offset;
     final end = selection.end.offset;
-    
+
     if (start < 0 || end > text.length || start >= end) {
       _hoverDebounce?.cancel();
       _hoverDebounce = Timer(const Duration(milliseconds: 100), () {
@@ -190,10 +193,10 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
       });
       return;
     }
-    
+
     final word = text.substring(start, end);
     final isWord = RegExp(r'^\w+$').hasMatch(word);
-    
+
     // Only show suggestions for actual words with 3+ characters
     if (!isWord || word.length < 3) {
       _hoverDebounce?.cancel();
@@ -206,7 +209,7 @@ class _SpellCheckOverlayState extends State<SpellCheckOverlay> {
     }
 
     final isMisspelled = widget.misspelledCache[word.toLowerCase()] == true;
-    
+
     if (isMisspelled) {
       // Hovering on a misspelled word
       if (_hoveredWord != word) {
