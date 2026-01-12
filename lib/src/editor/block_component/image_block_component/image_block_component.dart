@@ -218,6 +218,11 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       );
     }
 
+    child = Padding(
+      padding: margin,
+      child: child,
+    );
+
     return child;
   }
 

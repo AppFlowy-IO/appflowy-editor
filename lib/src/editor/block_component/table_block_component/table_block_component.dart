@@ -256,6 +256,11 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       );
     }
 
+    child = Padding(
+      padding: margin,
+      child: child,
+    );
+
     return child;
   }
 
