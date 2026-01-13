@@ -141,6 +141,11 @@ class _DividerBlockComponentWidgetState
       child = widget.wrapper!(context, node, child);
     }
 
+    child = Padding(
+      padding: margin,
+      child: child,
+    );
+
     return child;
   }
 

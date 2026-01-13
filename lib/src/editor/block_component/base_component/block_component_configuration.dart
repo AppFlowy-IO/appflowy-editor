@@ -10,6 +10,7 @@ typedef BlockComponentTextStyleBuilder = TextStyle Function(
 class BlockComponentConfiguration {
   const BlockComponentConfiguration({
     this.padding = _padding,
+    this.margin = _margin,
     this.indentPadding = _indentPadding,
     this.placeholderText = _placeholderText,
     this.textStyle = _textStyle,
@@ -22,6 +23,11 @@ class BlockComponentConfiguration {
   ///
   /// It works only for the block component itself, not for the children.
   final EdgeInsets Function(Node node) padding;
+
+  /// The margin of a block component.
+  ///
+  /// Sits outside the padding/background/selection area.
+  final EdgeInsets Function(Node node) margin;
 
   /// The padding of a block component.
   ///
@@ -53,6 +59,7 @@ class BlockComponentConfiguration {
 
   BlockComponentConfiguration copyWith({
     EdgeInsets Function(Node node)? padding,
+    EdgeInsets Function(Node node)? margin,
     BlockComponentTextStyleBuilder? textStyle,
     String Function(Node node)? placeholderText,
     BlockComponentTextStyleBuilder? placeholderTextStyle,
@@ -62,6 +69,7 @@ class BlockComponentConfiguration {
   }) {
     return BlockComponentConfiguration(
       padding: padding ?? this.padding,
+      margin: margin ?? this.margin,
       textStyle: textStyle ?? this.textStyle,
       placeholderText: placeholderText ?? this.placeholderText,
       placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
@@ -78,6 +86,7 @@ mixin BlockComponentConfigurable<T extends StatefulWidget> on State<T> {
   Node get node;
 
   EdgeInsets get padding => configuration.padding(node);
+  EdgeInsets get margin => configuration.margin(node);
 
   TextStyle textStyleWithTextSpan({TextSpan? textSpan}) =>
       configuration.textStyle(node, textSpan: textSpan);
@@ -92,6 +101,10 @@ mixin BlockComponentConfigurable<T extends StatefulWidget> on State<T> {
 
 EdgeInsets _padding(Node node) {
   return const EdgeInsets.symmetric(vertical: 4.0);
+}
+
+EdgeInsets _margin(Node node) {
+  return EdgeInsets.zero;
 }
 
 EdgeInsets _indentPadding(Node node, TextDirection textDirection) {
