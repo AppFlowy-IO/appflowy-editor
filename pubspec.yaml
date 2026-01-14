@@ -22,7 +22,7 @@ dependencies:
   html: ^0.15.5
   http: "^1.2.0"
   intl: "^0.20.2"
-  keyboard_height_plugin: "^0.1.5"
+  keyboard_height_plugin: ^0.2.0
   logging: "^1.2.0"
   markdown: "^7.2.1"
   nanoid: "^1.0.0"
