@@ -1,6 +1,7 @@
 export 'custom_markdown_node_parser.dart';
 export 'markdown_block_quote_parser.dart';
 export 'markdown_divider_parser.dart';
+export 'markdown_soft_code_block_parser.dart';
 export 'markdown_heading_parser.dart';
 export 'markdown_image_parser.dart';
 export 'markdown_ordered_list_item_parser.dart';
