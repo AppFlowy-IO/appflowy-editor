@@ -248,7 +248,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   Widget _buildToolbar(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    bool needRefreshToolbar = brightness != this.brightness;
+    final bool needRefreshToolbar = brightness != this.brightness;
     if (needRefreshToolbar) {
       this.brightness = brightness;
     }

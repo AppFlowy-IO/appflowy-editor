@@ -173,7 +173,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  Position start() => Position(path: widget.node.path, offset: 0);
+  Position start() => Position(path: widget.node.path);
 
   @override
   Position end() => Position(
@@ -204,7 +204,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    double? placeholderCursorHeight =
+    final double? placeholderCursorHeight =
         _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
     Offset? placeholderCursorOffset =
         _placeholderRenderParagraph?.getOffsetForCaret(
@@ -551,7 +551,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     required Iterable<TextInsert> textInserts,
   }) {
     int offset = 0;
-    List<InlineSpan> textSpans = [];
+    final List<InlineSpan> textSpans = [];
     for (final textInsert in textInserts) {
       TextStyle textStyle = textStyleConfiguration.text.copyWith(
         height: textStyleConfiguration.lineHeight,
@@ -696,8 +696,8 @@ extension AppFlowyRichTextAttributes on Attributes {
   bool get code => this[AppFlowyRichTextKeys.code] == true;
 
   bool get strikethrough {
-    return (containsKey(AppFlowyRichTextKeys.strikethrough) &&
-        this[AppFlowyRichTextKeys.strikethrough] == true);
+    return containsKey(AppFlowyRichTextKeys.strikethrough) &&
+        this[AppFlowyRichTextKeys.strikethrough] == true;
   }
 
   Color? get color {

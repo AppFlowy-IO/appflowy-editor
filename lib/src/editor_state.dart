@@ -399,7 +399,7 @@ class EditorState {
   Future<void> apply(
     Transaction transaction, {
     bool isRemote = false,
-    ApplyOptions options = const ApplyOptions(recordUndo: true),
+    ApplyOptions options = const ApplyOptions(),
     bool withUpdateSelection = true,
     bool skipHistoryDebounce = false,
   }) async {

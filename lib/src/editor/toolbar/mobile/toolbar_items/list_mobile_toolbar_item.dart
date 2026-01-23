@@ -86,13 +86,12 @@ class _ListMenuState extends State<_ListMenu> {
 }
 
 class ListUnit {
-  final AFMobileIcons icon;
-  final String label;
-  final String name;
-
   ListUnit({
     required this.icon,
     required this.label,
     required this.name,
   });
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
 }

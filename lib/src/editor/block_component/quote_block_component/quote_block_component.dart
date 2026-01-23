@@ -122,7 +122,6 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           textDirection: textDirection,
           children: [

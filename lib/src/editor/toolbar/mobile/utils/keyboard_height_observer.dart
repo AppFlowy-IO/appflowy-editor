@@ -7,8 +7,6 @@ typedef KeyboardHeightCallback = void Function(double height);
 // the KeyboardHeightPlugin only accepts one listener, so we need to create a
 //  singleton class to manage the multiple listeners.
 class KeyboardHeightObserver {
-  static int androidSDKVersion = -1;
-
   KeyboardHeightObserver._() {
     if (PlatformExtension.isAndroid && androidSDKVersion == -1) {
       DeviceInfoPlugin().androidInfo.then(
@@ -21,6 +19,7 @@ class KeyboardHeightObserver {
       currentKeyboardHeight = height;
     });
   }
+  static int androidSDKVersion = -1;
 
   static final KeyboardHeightObserver instance = KeyboardHeightObserver._();
   static double currentKeyboardHeight = 0;

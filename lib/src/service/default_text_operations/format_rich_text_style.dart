@@ -35,10 +35,10 @@ void insertNumberedListAfterSelection(EditorState editorState) {
   );
 }
 
-bool insertNodeAfterSelection(
+Future<bool> insertNodeAfterSelection(
   EditorState editorState,
   Node node,
-) {
+) async {
   final selection = editorState.selection;
   if (selection == null || !selection.isCollapsed) {
     return false;
@@ -68,6 +68,6 @@ bool insertNodeAfterSelection(
       ..afterSelection = Selection.collapsed(Position(path: next));
   }
 
-  editorState.apply(transaction);
+  await editorState.apply(transaction);
   return true;
 }

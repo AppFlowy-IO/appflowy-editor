@@ -89,7 +89,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
     return ValueListenableBuilder(
       key: ValueKey(widget.node.id + widget.supportTypes.toString()),
       valueListenable: widget.listenable,
-      builder: ((context, value, child) {
+      builder: (context, value, child) {
         final sizedBox = child ?? const SizedBox.shrink();
         final selection = value?.normalized;
 
@@ -160,7 +160,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
             selectionColor: widget.selectionColor,
           );
         }
-      }),
+      },
       child: const SizedBox.shrink(),
     );
   }

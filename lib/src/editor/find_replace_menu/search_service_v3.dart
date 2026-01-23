@@ -54,7 +54,7 @@ class SearchServiceV3 {
   }
 
   String _getRegexReplaced(String replaceText, Match match) {
-    List<String?> groups = match
+    final List<String?> groups = match
         .groups(List<int>.generate(match.groupCount + 1, (index) => index));
 
     String replacedText = replaceText;
@@ -137,7 +137,7 @@ class SearchServiceV3 {
         final matches = searchAlgorithm.searchMethod(pattern, text);
         // we will store this list of offsets along with their path,
         // in a list of positions.
-        for (Match match in matches) {
+        for (final Match match in matches) {
           result.add(
             MatchWrapper(match, node.path),
           );

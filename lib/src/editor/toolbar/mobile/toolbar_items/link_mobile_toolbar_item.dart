@@ -88,7 +88,6 @@ class _MobileLinkMenuState extends State<MobileLinkMenu> {
               decoration: InputDecoration(
                 hintText: 'URL',
                 contentPadding: const EdgeInsets.symmetric(
-                  vertical: 0,
                   horizontal: 8,
                 ),
                 enabledBorder: OutlineInputBorder(

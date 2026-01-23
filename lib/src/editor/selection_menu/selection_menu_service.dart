@@ -267,8 +267,8 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['text'],
-    handler: (editorState, _, __) {
-      insertNodeAfterSelection(editorState, paragraphNode());
+    handler: (editorState, _, __) async {
+      await insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
   SelectionMenuItem(
@@ -279,7 +279,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 1, h1'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertHeadingAfterSelection(editorState, 1);
     },
   ),
@@ -291,7 +291,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 2, h2'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertHeadingAfterSelection(editorState, 2);
     },
   ),
@@ -303,7 +303,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 3, h3'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertHeadingAfterSelection(editorState, 3);
     },
   ),
@@ -315,7 +315,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['image'],
-    handler: (editorState, menuService, context) {
+    handler: (editorState, menuService, context) async {
       final container = Overlay.of(context, rootOverlay: true);
       showImageMenu(container, editorState, menuService);
     },
@@ -328,7 +328,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['bulleted list', 'list', 'unordered list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertBulletedListAfterSelection(editorState);
     },
   ),
@@ -340,7 +340,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['numbered list', 'list', 'ordered list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertNumberedListAfterSelection(editorState);
     },
   ),
@@ -352,7 +352,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['todo list', 'list', 'checkbox list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertCheckboxAfterSelection(editorState);
     },
   ),
@@ -364,7 +364,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['quote', 'refer'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertQuoteAfterSelection(editorState);
     },
   ),
@@ -381,8 +381,8 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['text'],
-    handler: (editorState, _, __) {
-      insertNodeAfterSelection(editorState, paragraphNode());
+    handler: (editorState, _, __) async {
+      await insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
   SelectionMenuItem(
@@ -393,7 +393,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['heading 1, h1'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertHeadingAfterSelection(editorState, 1);
     },
   ),
@@ -405,7 +405,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['heading 2, h2'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, __) async {
       insertHeadingAfterSelection(editorState, 2);
     },
   ),

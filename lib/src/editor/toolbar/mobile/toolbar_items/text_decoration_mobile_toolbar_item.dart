@@ -99,13 +99,12 @@ class _TextDecorationMenuState extends State<_TextDecorationMenu> {
 }
 
 class TextDecorationUnit {
-  final AFMobileIcons icon;
-  final String label;
-  final String name;
-
   TextDecorationUnit({
     required this.icon,
     required this.label,
     required this.name,
   });
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
 }

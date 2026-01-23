@@ -49,7 +49,6 @@ class MarkdownUnorderedListItemParserV2 extends CustomMarkdownParser {
         children: parseElementChildren(
           ec.reversed.toList(),
           parsers,
-          listType: MarkdownListType.unknown,
         ),
       ),
     ];

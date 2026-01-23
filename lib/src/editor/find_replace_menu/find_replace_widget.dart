@@ -69,7 +69,6 @@ class _FindAndReplaceMenuWidgetState extends State<FindAndReplaceMenuWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -400,7 +399,6 @@ class _ReplaceMenuState extends State<ReplaceMenu> {
           child: TextField(
             key: const Key('replaceTextField'),
             focusNode: replaceTextFieldFocusNode,
-            autofocus: false,
             controller: replaceTextEditingController,
             onSubmitted: (_) {
               _replaceSelectedWord();

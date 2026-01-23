@@ -52,7 +52,6 @@ CommandShortcutEventHandler _convertToParagraphCommandHandler = (editorState) {
         textDirection: textDirection,
         children: node.children.map((e) => e.deepCopy()).toList(),
       ),
-      deepCopy: true,
     )
     ..deleteNode(node)
     ..afterSelection = transaction.beforeSelection;

@@ -55,7 +55,6 @@ Future<bool> formatMarkdownSymbol(
   final afterSelection = Selection.collapsed(
     Position(
       path: node.path,
-      offset: 0,
     ),
   );
 

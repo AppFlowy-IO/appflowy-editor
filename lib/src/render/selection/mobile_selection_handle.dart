@@ -42,9 +42,9 @@ class MobileSelectionHandle extends StatelessWidget {
         // on Android, normally the cursor will be hidden if the selection is not collapsed.
         // Extend the click area to make it easier to click.
         adjustedRect = Rect.fromLTWH(
-          rect.left - 2 * (handleBallWidth),
+          rect.left - 2 * handleBallWidth,
           rect.top,
-          rect.width + 4 * (handleBallWidth),
+          rect.width + 4 * handleBallWidth,
           // Enable clicking in the handle area outside the stack.
           // https://github.com/flutter/flutter/issues/75747
           rect.height + 2 * handleBallWidth,

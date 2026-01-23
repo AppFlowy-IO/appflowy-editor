@@ -70,14 +70,12 @@ extension TextTransforms on EditorState {
     transaction.insertNode(
       next,
       nodeBuilder(insertedNode),
-      deepCopy: true,
     );
 
     // Set the selection to be at the beginning of the new paragraph.
     transaction.afterSelection = Selection.collapsed(
       Position(
         path: next,
-        offset: 0,
       ),
     );
     transaction.selectionExtraInfo = {};
@@ -341,7 +339,7 @@ extension TextTransforms on EditorState {
   List<String> getTextInSelection([
     Selection? selection,
   ]) {
-    List<String> res = [];
+    final List<String> res = [];
     selection ??= this.selection;
     if (selection == null || selection.isCollapsed) {
       return res;

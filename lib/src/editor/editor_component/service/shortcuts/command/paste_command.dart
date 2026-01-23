@@ -66,7 +66,7 @@ CommandShortcutEventHandler _pasteCommandHandler = (editorState) {
     }
 
     if (text != null && text.isNotEmpty) {
-      editorState.pastePlainText(text);
+      await editorState.pastePlainText(text);
     }
   }();
 
@@ -128,14 +128,14 @@ extension on EditorState {
             ..trimRight(),
         )
         .map((paragraph) {
-          Delta delta = Delta();
+          final Delta delta = Delta();
           if (_hrefRegex.hasMatch(paragraph) ||
               _phoneRegex.hasMatch(paragraph)) {
             final match = _hrefRegex.firstMatch(paragraph) ??
                 _phoneRegex.firstMatch(paragraph);
             if (match != null) {
-              int startPos = match.start;
-              int endPos = match.end;
+              final int startPos = match.start;
+              final int endPos = match.end;
               final String? entity = match.group(0);
               if (entity != null) {
                 /// insert the text before the link or phone

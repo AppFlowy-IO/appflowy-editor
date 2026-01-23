@@ -21,6 +21,18 @@ extension KeybindingsExtension on List<Keybinding> {
 }
 
 class Keybinding {
+  factory Keybinding.fromMap(Map<String, dynamic> map) {
+    return Keybinding(
+      isAltPressed: map['isAltPressed'] ?? false,
+      isControlPressed: map['isControlPressed'] ?? false,
+      isMetaPressed: map['isMetaPressed'] ?? false,
+      isShiftPressed: map['isShiftPressed'] ?? false,
+      keyLabel: map['keyLabel'] ?? '',
+    );
+  }
+
+  factory Keybinding.fromJson(String source) =>
+      Keybinding.fromMap(json.decode(source));
   Keybinding({
     required this.isAltPressed,
     required this.isControlPressed,
@@ -112,20 +124,7 @@ class Keybinding {
     };
   }
 
-  factory Keybinding.fromMap(Map<String, dynamic> map) {
-    return Keybinding(
-      isAltPressed: map['isAltPressed'] ?? false,
-      isControlPressed: map['isControlPressed'] ?? false,
-      isMetaPressed: map['isMetaPressed'] ?? false,
-      isShiftPressed: map['isShiftPressed'] ?? false,
-      keyLabel: map['keyLabel'] ?? '',
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory Keybinding.fromJson(String source) =>
-      Keybinding.fromMap(json.decode(source));
 
   @override
   String toString() {

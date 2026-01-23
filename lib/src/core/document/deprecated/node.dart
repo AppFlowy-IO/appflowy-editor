@@ -107,7 +107,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
     // Notifies the new attributes
     // if attributes contains 'subtype', should notify parent to rebuild node
     // else, just notify current node.
-    bool shouldNotifyParent =
+    final bool shouldNotifyParent =
         this.attributes['subtype'] != oldAttributes['subtype'];
     shouldNotifyParent ? parent?.notifyListeners() : notifyListeners();
   }
@@ -178,7 +178,7 @@ final class NodeV0 extends ChangeNotifier with LinkedListEntry<NodeV0> {
   }
 
   Map<String, Object> toJson() {
-    var map = <String, Object>{
+    final map = <String, Object>{
       'type': type,
     };
     if (children.isNotEmpty) {

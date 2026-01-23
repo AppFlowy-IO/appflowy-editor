@@ -13,13 +13,12 @@ import 'package:markdown/markdown.dart' as md;
 
 /// This class handles conversion from html to pdf
 class PdfHTMLEncoder {
-  final pw.Font? font;
-  final List<pw.Font> fontFallback;
-
   PdfHTMLEncoder({
     this.font,
     required this.fontFallback,
   });
+  final pw.Font? font;
+  final List<pw.Font> fontFallback;
 
   Future<pw.Document> convert(String input) async {
     final htmlx = md.markdownToHtml(
@@ -186,16 +185,16 @@ class PdfHTMLEncoder {
   }
 
   Future<Iterable<pw.Widget>> _parseRawTableData(dom.Element element) async {
-    List<pw.TableRow> tableRows = [];
+    final List<pw.TableRow> tableRows = [];
 
-    for (dom.Element row in element.querySelectorAll('tr')) {
-      List<pw.Widget> rowData = [];
+    for (final dom.Element row in element.querySelectorAll('tr')) {
+      final List<pw.Widget> rowData = [];
       for (final dom.Element cell in row.children) {
-        List<pw.Widget> cellContent = [];
+        final List<pw.Widget> cellContent = [];
         //NOTE: Handle nested HTML tags within table cells
         for (final dom.Node node in cell.nodes) {
           if (node.nodeType == dom.Node.ELEMENT_NODE) {
-            dom.Element element = node as dom.Element;
+            final dom.Element element = node as dom.Element;
             if (HTMLTags.formattingElements.contains(element.localName)) {
               final attributes = _parserFormattingElementAttributes(element);
               cellContent.add(
@@ -230,7 +229,7 @@ class PdfHTMLEncoder {
     return [
       pw.Table(
         children: tableRows,
-        border: pw.TableBorder.all(color: pdf.PdfColors.black),
+        border: pw.TableBorder.all(),
       ),
     ];
   }
@@ -420,7 +419,7 @@ class PdfHTMLEncoder {
           final networkImage = await _fetchImage(src);
           return pw.Image(pw.MemoryImage(networkImage));
         } else {
-          File localImage = File(src);
+          final File localImage = File(src);
           return pw.Image(pw.MemoryImage(await localImage.readAsBytes()));
         }
       } else {

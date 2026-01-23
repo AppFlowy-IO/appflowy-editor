@@ -83,7 +83,7 @@ class CheckSingleFormatFormatResult {
       );
   final lastCharIndex = plainText.lastIndexOf(character);
   final textAfterLastChar = plainText.substring(lastCharIndex + 1);
-  bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
+  final bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
 
   // The following conditions won't trigger the single character formatting:
   // 1. There is no 'Character' in the plainText: lastIndexOf returns -1.

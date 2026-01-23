@@ -82,7 +82,7 @@ class _FloatingToolbarWidgetState extends State<FloatingToolbarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var activeItems = _computeActiveItems();
+    final activeItems = _computeActiveItems();
     if (activeItems.isEmpty) {
       return const SizedBox.shrink();
     }

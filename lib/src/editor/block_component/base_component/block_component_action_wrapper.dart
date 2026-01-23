@@ -78,7 +78,6 @@ class _BlockComponentActionWrapperState
       opaque: false,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           ValueListenableBuilder<bool>(

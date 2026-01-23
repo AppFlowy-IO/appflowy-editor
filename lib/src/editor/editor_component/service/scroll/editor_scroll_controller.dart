@@ -200,7 +200,6 @@ class EditorScrollController {
     if (index < start || index > end) {
       itemScrollController.jumpTo(
         index: max(0, index),
-        alignment: 0,
       );
     }
   }
@@ -237,7 +236,7 @@ class EditorScrollController {
     // Determine the first visible item by finding the item with the
     // smallest trailing edge that is greater than 0.  i.e. the first
     // item whose trailing edge in visible in the viewport.
-    int min = positions
+    final int min = positions
         .where((ItemPosition position) => position.itemTrailingEdge > 0)
         .reduce(
           (ItemPosition min, ItemPosition position) =>

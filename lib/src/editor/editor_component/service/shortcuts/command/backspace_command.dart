@@ -58,7 +58,6 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
     transaction.afterSelection = Selection.collapsed(
       Position(
         path: position.path,
-        offset: 0,
       ),
     );
     editorState.apply(transaction);
@@ -84,7 +83,6 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
         ..afterSelection = Selection.collapsed(
           Position(
             path: path,
-            offset: 0,
           ),
         );
     } else {
@@ -96,7 +94,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
         return KeyEventResult.handled;
       }
 
-      Node? tableParent =
+      final Node? tableParent =
           node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
       final prev = node.previousNodeWhere((element) {

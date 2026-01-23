@@ -131,7 +131,7 @@ TextStyle _placeholderTextStyle(Node node, {TextSpan? textSpan}) {
 }
 
 EdgeInsets _blockSelectionAreaPadding(Node node) {
-  return const EdgeInsets.symmetric(vertical: 0.0);
+  return const EdgeInsets.symmetric();
 }
 
 TextAlign _textAlign(Node node) {

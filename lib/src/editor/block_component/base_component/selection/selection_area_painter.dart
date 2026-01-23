@@ -8,7 +8,6 @@ class AnimatedSelectionAreaPaint extends StatefulWidget {
     super.key,
     required this.rects,
     this.withAnimation = false,
-    s,
   });
 
   final List<Rect> rects;

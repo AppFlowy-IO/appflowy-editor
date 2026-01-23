@@ -167,7 +167,7 @@ class Document {
     if (target == null || targetDelta == null) {
       return false;
     }
-    target.updateAttributes({'delta': (targetDelta.compose(delta)).toJson()});
+    target.updateAttributes({'delta': targetDelta.compose(delta).toJson()});
     return true;
   }
 

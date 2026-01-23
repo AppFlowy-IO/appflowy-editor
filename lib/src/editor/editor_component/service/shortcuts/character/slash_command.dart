@@ -23,7 +23,7 @@ const Set<String> _defaultSupportSlashMenuNodeTypes = {
 final CharacterShortcutEvent slashCommand = CharacterShortcutEvent(
   key: 'show the slash menu',
   character: '/',
-  handler: (editorState) async => await _showSlashMenu(
+  handler: (editorState) async => _showSlashMenu(
     editorState,
     standardSelectionMenuItems,
   ),
@@ -110,7 +110,7 @@ Future<bool> _showSlashMenu(
       style: style,
     );
     if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
-      _selectionMenuService?.show();
+      await _selectionMenuService?.show();
     } else {
       await _selectionMenuService?.show();
     }

@@ -301,7 +301,7 @@ void handlePaste(EditorState editorState) async {
     return _pasteRichClipboard(editorState, data);
   }
 
-  deleteSelectedContent(editorState);
+  await deleteSelectedContent(editorState);
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     _pasteRichClipboard(editorState, data);

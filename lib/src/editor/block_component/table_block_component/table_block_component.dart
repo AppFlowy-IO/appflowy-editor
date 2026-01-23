@@ -25,15 +25,6 @@ class TableBlockKeys {
 }
 
 class TableStyle {
-  final double colWidth;
-  final double rowHeight;
-  final double colMinimumWidth;
-  final double borderWidth;
-  final Widget addIcon;
-  final Widget handlerIcon;
-  final Color borderColor;
-  final Color borderHoverColor;
-
   const TableStyle({
     this.colWidth = 160,
     this.rowHeight = 40,
@@ -44,6 +35,14 @@ class TableStyle {
     this.borderColor = TableDefaults.borderColor,
     this.borderHoverColor = TableDefaults.borderHoverColor,
   });
+  final double colWidth;
+  final double rowHeight;
+  final double colMinimumWidth;
+  final double borderWidth;
+  final Widget addIcon;
+  final Widget handlerIcon;
+  final Color borderColor;
+  final Color borderHoverColor;
 }
 
 class TableDefaults {
@@ -269,7 +268,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   RenderBox get _renderBox => context.findRenderObject() as RenderBox;
 
   @override
-  Position start() => Position(path: widget.node.path, offset: 0);
+  Position start() => Position(path: widget.node.path);
 
   @override
   Position end() => Position(path: widget.node.path, offset: 1);
@@ -340,7 +339,7 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
     style: style,
   ),
   keywords: ['table'],
-  handler: (editorState, _, __) {
+  handler: (editorState, _, __) async {
     final selection = editorState.selection;
     if (selection == null || !selection.isCollapsed) {
       return;
@@ -365,7 +364,6 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
       transaction.afterSelection = Selection.collapsed(
         Position(
           path: selection.end.path + [0, 0],
-          offset: 0,
         ),
       );
     } else {
@@ -373,11 +371,10 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
       transaction.afterSelection = Selection.collapsed(
         Position(
           path: selection.end.path.next + [0, 0],
-          offset: 0,
         ),
       );
     }
 
-    editorState.apply(transaction);
+    await editorState.apply(transaction);
   },
 );

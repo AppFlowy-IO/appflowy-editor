@@ -475,7 +475,7 @@ class Delta extends Iterable<TextOperation> {
 
   /// This method joins two Delta together.
   Delta operator +(Delta other) {
-    var operations = [..._operations];
+    final operations = [..._operations];
     if (other._operations.isNotEmpty) {
       operations.add(other._operations[0]);
       operations.addAll(other._operations.sublist(1));

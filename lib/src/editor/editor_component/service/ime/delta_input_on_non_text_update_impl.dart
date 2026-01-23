@@ -33,7 +33,7 @@ Future<void> onNonTextUpdate(
     }
   } else if (PlatformExtension.isLinux) {
     if (selection != null) {
-      editorState.updateSelectionWithReason(
+      await editorState.updateSelectionWithReason(
         Selection.collapsed(
           Position(
             path: selection.start.path,
@@ -44,7 +44,7 @@ Future<void> onNonTextUpdate(
     }
   } else if (PlatformExtension.isMacOS) {
     if (selection != null) {
-      editorState.updateSelectionWithReason(
+      await editorState.updateSelectionWithReason(
         Selection.collapsed(
           Position(
             path: selection.start.path,
@@ -63,7 +63,7 @@ Future<void> onNonTextUpdate(
       final nonTextUpdateStart = nonTextUpdate.selection.start;
       final selectionStart = selection.start.offset;
       if (nonTextUpdateStart != selectionStart) {
-        editorState.updateSelectionWithReason(
+        await editorState.updateSelectionWithReason(
           Selection.collapsed(
             Position(
               path: selection.start.path,

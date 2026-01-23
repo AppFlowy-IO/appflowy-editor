@@ -330,7 +330,7 @@ class _PositionedListState extends State<PositionedList> {
         }
         final positions = <ItemPosition>[];
         RenderViewportBase? viewport;
-        for (var element in elements) {
+        for (final element in elements) {
           final RenderBox box = element.renderObject as RenderBox;
           viewport ??= RenderAbstractViewport.of(box) as RenderViewportBase?;
           var anchor = 0.0;

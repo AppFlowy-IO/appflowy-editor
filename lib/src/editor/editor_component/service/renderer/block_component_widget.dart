@@ -130,7 +130,7 @@ mixin NestedBlockComponentStatefulWidgetMixin<
     return Padding(
       padding: configuration.margin(node),
       child: node.children.isEmpty
-          ? buildComponent(context, withBackgroundColor: true)
+          ? buildComponent(context)
           : buildComponentWithChildren(context),
     );
   }

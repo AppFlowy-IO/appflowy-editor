@@ -92,8 +92,8 @@ void showActionMenu(
 
               _showColorMenu(
                 context,
-                (color) {
-                  TableActions.setBgColor(
+                (color) async {
+                  await TableActions.setBgColor(
                     node,
                     position,
                     editorState,

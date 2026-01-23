@@ -172,7 +172,6 @@ class _IOSDragHandle extends _IDragHandle {
       );
     } else {
       child = Column(
-        mainAxisSize: MainAxisSize.max,
         children: [
           if (handleType == HandleType.left)
             Container(

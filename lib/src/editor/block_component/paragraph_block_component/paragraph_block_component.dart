@@ -157,7 +157,6 @@ class _ParagraphBlockComponentWidgetState
       alignment: alignment,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [

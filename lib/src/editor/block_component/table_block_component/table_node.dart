@@ -4,11 +4,6 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 
 class TableNode {
-  final TableConfig _config;
-
-  final Node node;
-  final List<List<Node>> _cells = [];
-
   TableNode({
     required this.node,
   }) : _config = TableConfig.fromJson(node.attributes) {
@@ -73,6 +68,10 @@ class TableNode {
   factory TableNode.fromJson(Map<String, Object> json) {
     return TableNode(node: Node.fromJson(json));
   }
+  final TableConfig _config;
+
+  final Node node;
+  final List<List<Node>> _cells = [];
 
   static TableNode fromList<T>(List<List<T>> cols, {TableConfig? config}) {
     assert(
@@ -88,7 +87,7 @@ class TableNode {
 
     config = config ?? TableConfig();
 
-    Node node = Node(
+    final Node node = Node(
       type: TableBlockKeys.type,
       attributes: {}
         ..addAll({
@@ -188,7 +187,7 @@ class TableNode {
     Transaction? transaction,
   }) {
     // The extra 8 is because of paragraph padding
-    double maxHeight = _cells
+    final double maxHeight = _cells
         .map<double>((c) => c[row].children.first.rect.height + 8)
         .reduce(max);
 

@@ -21,7 +21,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
   @override
   Document convert(Delta input) {
     final iterator = input.iterator;
-    final document = Document.blank(withInitialText: false);
+    final document = Document.blank();
 
     Node node = paragraphNode();
     int index = 0;
@@ -212,7 +212,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     if (color.startsWith('#')) {
       return '0xFF${color.substring(1)}';
     } else if (color.startsWith("rgba")) {
-      List rgbaList = color.substring(5, color.length - 1).split(',');
+      final List rgbaList = color.substring(5, color.length - 1).split(',');
       return Color.fromRGBO(
         int.parse(rgbaList[0]),
         int.parse(rgbaList[1]),

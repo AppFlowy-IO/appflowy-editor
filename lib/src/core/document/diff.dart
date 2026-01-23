@@ -8,7 +8,7 @@ List<Operation> diffDocuments(Document oldDocument, Document newDocument) {
 }
 
 List<Operation> diffNodes(Node oldNode, Node newNode) {
-  List<Operation> operations = [];
+  final List<Operation> operations = [];
 
   if (!_equality.equals(oldNode.attributes, newNode.attributes)) {
     operations.add(

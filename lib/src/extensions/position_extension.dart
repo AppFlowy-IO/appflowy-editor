@@ -119,7 +119,7 @@ extension PositionExtension on Position {
 
     // If the current node is not multiline, this will be ~= 0
     // so the loop will be skipped.
-    final remainingMultilineHeight = (textHeight - caretHeight);
+    final remainingMultilineHeight = textHeight - caretHeight;
 
     // Linearly search for a new position.
     // It's acceptable to use a linear search because the starting point is
@@ -219,7 +219,7 @@ extension PositionExtension on Position {
     final delta = node.delta;
     if (delta != null) {
       if (upwards) {
-        return Position(path: path, offset: 0);
+        return Position(path: path);
       } else {
         final length = delta.length;
         // move the cursor to the end of the node

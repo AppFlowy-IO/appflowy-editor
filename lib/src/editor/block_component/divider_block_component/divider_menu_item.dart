@@ -9,7 +9,7 @@ SelectionMenuItem dividerMenuItem = SelectionMenuItem(
     style: style,
   ),
   keywords: ['horizontal rule', 'divider'],
-  handler: (editorState, _, __) {
+  handler: (editorState, _, __) async {
     final selection = editorState.selection;
     if (selection == null || !selection.isCollapsed) {
       return;
@@ -25,6 +25,6 @@ SelectionMenuItem dividerMenuItem = SelectionMenuItem(
       ..insertNode(insertedPath, dividerNode())
       ..insertNode(insertedPath, paragraphNode())
       ..afterSelection = Selection.collapsed(Position(path: insertedPath.next));
-    editorState.apply(transaction);
+    await editorState.apply(transaction);
   },
 );

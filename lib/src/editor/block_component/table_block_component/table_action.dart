@@ -56,17 +56,17 @@ class TableActions {
     }
   }
 
-  static void setBgColor(
+  static Future<void> setBgColor(
     Node node,
     int position,
     EditorState editorState,
     String? color,
     TableDirection dir,
-  ) {
+  ) async {
     if (dir == TableDirection.col) {
-      _setColBgColor(node, position, editorState, color);
+      await _setColBgColor(node, position, editorState, color);
     } else {
-      _setRowBgColor(node, position, editorState, color);
+      await _setRowBgColor(node, position, editorState, color);
     }
   }
 }
@@ -76,7 +76,7 @@ void _addCol(Node tableNode, int position, EditorState editorState) {
 
   final transaction = editorState.transaction;
 
-  List<Node> cellNodes = [];
+  final List<Node> cellNodes = [];
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
 
@@ -221,7 +221,7 @@ void _deleteCol(Node tableNode, int col, EditorState editorState) {
     transaction.deleteNode(tableNode);
     tableNode.dispose();
   } else {
-    List<Node> nodes = [];
+    final List<Node> nodes = [];
     for (var i = 0; i < rowsLen; i++) {
       nodes.add(getCellNode(tableNode, col, i)!);
     }
@@ -249,7 +249,7 @@ void _deleteRow(Node tableNode, int row, EditorState editorState) {
     transaction.deleteNode(tableNode);
     tableNode.dispose();
   } else {
-    List<Node> nodes = [];
+    final List<Node> nodes = [];
     for (var i = 0; i < colsLen; i++) {
       nodes.add(getCellNode(tableNode, i, row)!);
     }
@@ -268,7 +268,7 @@ void _duplicateCol(Node tableNode, int col, EditorState editorState) {
 
   final int rowsLen = tableNode.attributes[TableBlockKeys.rowsLen],
       colsLen = tableNode.attributes[TableBlockKeys.colsLen];
-  List<Node> nodes = [];
+  final List<Node> nodes = [];
   for (var i = 0; i < rowsLen; i++) {
     final node = getCellNode(tableNode, col, i)!;
     nodes.add(
@@ -318,15 +318,15 @@ void _duplicateRow(Node tableNode, int row, EditorState editorState) async {
 
   transaction = editorState.transaction;
   transaction.updateNode(tableNode, {TableBlockKeys.rowsLen: rowsLen + 1});
-  editorState.apply(transaction, withUpdateSelection: false);
+  await editorState.apply(transaction, withUpdateSelection: false);
 }
 
-void _setColBgColor(
+Future<void> _setColBgColor(
   Node tableNode,
   int col,
   EditorState editorState,
   String? color,
-) {
+) async {
   final transaction = editorState.transaction;
 
   final rowslen = tableNode.attributes[TableBlockKeys.rowsLen];
@@ -338,15 +338,15 @@ void _setColBgColor(
     );
   }
 
-  editorState.apply(transaction, withUpdateSelection: false);
+  await editorState.apply(transaction, withUpdateSelection: false);
 }
 
-void _setRowBgColor(
+Future<void> _setRowBgColor(
   Node tableNode,
   int row,
   EditorState editorState,
   String? color,
-) {
+) async {
   final transaction = editorState.transaction;
 
   final colsLen = tableNode.attributes[TableBlockKeys.colsLen];
@@ -358,7 +358,7 @@ void _setRowBgColor(
     );
   }
 
-  editorState.apply(transaction, withUpdateSelection: false);
+  await editorState.apply(transaction, withUpdateSelection: false);
 }
 
 void _clearCol(

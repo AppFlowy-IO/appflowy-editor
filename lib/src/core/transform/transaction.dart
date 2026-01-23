@@ -97,7 +97,7 @@ class Transaction {
     if (beforeSelection != null) {
       final nodePath = node.path;
       final selectionPath = beforeSelection!.start.path;
-      if (!(nodePath.equals(selectionPath))) {
+      if (!nodePath.equals(selectionPath)) {
         afterSelection = beforeSelection;
       }
     }

@@ -143,13 +143,11 @@ extension SelectionTransform on EditorState {
               transaction.insertNodes(
                 node.path + [0],
                 last.children,
-                deepCopy: true,
               );
             } else {
               transaction.insertNodes(
                 node.path.next,
                 last.children,
-                deepCopy: true,
               );
             }
           }
