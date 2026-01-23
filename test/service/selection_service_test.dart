@@ -394,7 +394,7 @@ void main() async {
     );
 
     testWidgets('single tap with horizontal nodes', (tester) async {
-      var tableNode = TableNode.fromList([
+      final tableNode = TableNode.fromList([
         ['00', '01', '02', '03', '04'],
         ['10', '11', '12', '13', '14'],
         ['20', '21', '22', '23', '24'],

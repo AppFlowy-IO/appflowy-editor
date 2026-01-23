@@ -149,7 +149,7 @@ void main() async {
 
       await editor.startTesting();
       await editor.updateSelection(
-        Selection.collapsed(Position(path: [1], offset: 0)),
+        Selection.collapsed(Position(path: [1])),
       );
       await editor.pressKey(key: LogicalKeyboardKey.tab);
 

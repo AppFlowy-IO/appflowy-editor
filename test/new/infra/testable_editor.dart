@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/ime/text_input_service.dart';
 import 'package:flutter/material.dart';
@@ -224,9 +225,11 @@ class TestableEditor {
   }
 
   Future<void> updateSelection(Selection? selection) async {
-    _editorState.updateSelectionWithReason(
-      selection,
-      reason: SelectionUpdateReason.uiEvent,
+    unawaited(
+      _editorState.updateSelectionWithReason(
+        selection,
+        reason: SelectionUpdateReason.uiEvent,
+      ),
     );
     await tester.pumpAndSettle();
   }

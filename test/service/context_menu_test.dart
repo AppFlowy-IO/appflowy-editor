@@ -66,7 +66,7 @@ void main() async {
       );
       await editor.updateSelection(
         Selection(
-          start: Position(path: [1], offset: 0),
+          start: Position(path: [1]),
           end: Position(path: [1], offset: 5),
         ),
       );
@@ -87,7 +87,7 @@ void main() async {
       expect(clipBoardData.text, copiedText);
       await editor.updateSelection(
         Selection(
-          start: Position(path: [0], offset: 0),
+          start: Position(path: [0]),
           end: Position(path: [0], offset: 7),
         ),
       );

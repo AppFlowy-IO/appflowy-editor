@@ -289,7 +289,7 @@ void main() async {
 
     testWidgets(
       'App**Flowy** to bold AppFlowy',
-      ((tester) async {
+      (tester) async {
         const text = 'App**Flowy*';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -311,12 +311,12 @@ void main() async {
         expect(result, true);
         expect(node.delta?.toPlainText(), 'AppFlowy');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
       '***AppFlowy** to bold *AppFlowy',
-      ((tester) async {
+      (tester) async {
         const text = '***AppFlowy*';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -338,12 +338,12 @@ void main() async {
         expect(result, true);
         expect(node.delta?.toPlainText(), '*AppFlowy');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
       '**** nothing changes',
-      ((tester) async {
+      (tester) async {
         const text = '***';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -365,7 +365,7 @@ void main() async {
         expect(result, false);
         expect(node.delta?.toPlainText(), '****');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
@@ -667,7 +667,7 @@ void main() async {
 
     testWidgets(
       '__AppFlowy__ to bold AppFlowy',
-      ((tester) async {
+      (tester) async {
         const text = '__AppFlowy_';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -690,12 +690,12 @@ void main() async {
         expect(result, true);
         expect(node.delta!.toPlainText(), 'AppFlowy');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
       'App__Flowy__ to bold AppFlowy',
-      ((tester) async {
+      (tester) async {
         const text = 'App__Flowy_';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -718,12 +718,12 @@ void main() async {
         expect(result, true);
         expect(node.delta!.toPlainText(), 'AppFlowy');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
       '__*AppFlowy__ to bold *AppFlowy',
-      ((tester) async {
+      (tester) async {
         const text = '__*AppFlowy_';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -746,12 +746,12 @@ void main() async {
         expect(result, true);
         expect(node.delta!.toPlainText(), '*AppFlowy');
         await editor.dispose();
-      }),
+      },
     );
 
     testWidgets(
       '____ nothing changes',
-      ((tester) async {
+      (tester) async {
         const text = '___';
         final editor = tester.editor..addEmptyParagraph();
         await editor.startTesting();
@@ -774,7 +774,7 @@ void main() async {
         expect(result, false);
         expect(node.delta!.toPlainText(), '____');
         await editor.dispose();
-      }),
+      },
     );
   });
 }

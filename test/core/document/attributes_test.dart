@@ -13,7 +13,7 @@ void main() async {
         'c': 4,
         'd': null,
       };
-      expect(composeAttributes(base, other, keepNull: false), {
+      expect(composeAttributes(base, other), {
         'a': 1,
         'b': 3,
         'c': 4,
@@ -24,11 +24,11 @@ void main() async {
         'c': 4,
         'd': null,
       });
-      expect(composeAttributes(null, other, keepNull: false), {
+      expect(composeAttributes(null, other), {
         'b': 3,
         'c': 4,
       });
-      expect(composeAttributes(base, null, keepNull: false), {
+      expect(composeAttributes(base, null), {
         'a': 1,
         'b': 2,
       });
@@ -75,7 +75,7 @@ void main() async {
           'd': 4,
         };
 
-        var x = hashAttributes(base);
+        final x = hashAttributes(base);
         var y = hashAttributes(base);
         // x & y should have same hash code
         expect(x == y, true);

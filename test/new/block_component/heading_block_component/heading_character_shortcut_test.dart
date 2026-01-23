@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,17 +14,19 @@ void main() async {
     // After
     // ' '
     test('mock inputting a ` ` after the >', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '',
-        0,
-        (result, before, after, editorState) {
-          expect(result, false);
-          expect(before.delta!.toPlainText(), '');
-          expect(after.delta!.toPlainText(), '');
-          expect(after.type != HeadingBlockKeys.type, true);
-        },
-        text: '',
+      unawaited(
+        testFormatCharacterShortcut(
+          formatSignToHeading,
+          '',
+          0,
+          (result, before, after, editorState) {
+            expect(result, false);
+            expect(before.delta!.toPlainText(), '');
+            expect(after.delta!.toPlainText(), '');
+            expect(after.type != HeadingBlockKeys.type, true);
+          },
+          text: '',
+        ),
       );
     });
 
@@ -33,16 +36,17 @@ void main() async {
     // [heading] Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
       for (var i = 1; i <= 6; i++) {
-        testFormatCharacterShortcut(
-          formatSignToHeading,
-          '#' * i,
-          i,
-          (result, before, after, editorState) {
-            expect(result, true);
-            expect(after.delta!.toPlainText(), text);
-            expect(after.type, 'heading');
-          },
-          text: text,
+        unawaited(
+          testFormatCharacterShortcut(
+            formatSignToHeading,
+            '#' * i,
+            i,
+            (result, before, after, editorState) {
+              expect(result, true);
+              expect(after.delta!.toPlainText(), text);
+              expect(after.type, 'heading');
+            },
+          ),
         );
       }
     });
@@ -52,16 +56,17 @@ void main() async {
     // After
     // #######|Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the #', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '#' * 7,
-        7,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatSignToHeading,
+          '#' * 7,
+          7,
+          (result, before, after, editorState) {
+            // nothing happens
+            expect(result, false);
+            expect(before.toJson(), after.toJson());
+          },
+        ),
       );
     });
 
@@ -70,16 +75,17 @@ void main() async {
     // After
     // >W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
-      testFormatCharacterShortcut(
-        formatSignToHeading,
-        '#',
-        2,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatSignToHeading,
+          '#',
+          2,
+          (result, before, after, editorState) {
+            // nothing happens
+            expect(result, false);
+            expect(before.toJson(), after.toJson());
+          },
+        ),
       );
     });
 
@@ -120,7 +126,7 @@ void main() async {
     test('convert bulleted_list to heading', () async {
       const syntax = '#';
       const text = 'Welcome to AppFlowy Editor 🔥!';
-      testFormatCharacterShortcut(
+      await testFormatCharacterShortcut(
         formatSignToHeading,
         syntax,
         syntax.length,
@@ -133,7 +139,6 @@ void main() async {
           expect(after.next!.delta!.toPlainText(), '1 $text');
           expect(after.next!.next!.delta!.toPlainText(), '2 $text');
         },
-        text: text,
         node: bulletedListNode(
           text: '$syntax$text',
           children: [

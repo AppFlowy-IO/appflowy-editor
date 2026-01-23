@@ -105,7 +105,7 @@ Future<void> _testWithTextFormattingBold(WidgetTester tester) async {
   expect(node.delta!.toPlainText(), text);
   expect(result, false);
 
-  final start = Position(path: [0], offset: 0);
+  final start = Position(path: [0]);
   final end = Position(path: [0], offset: text.length);
   selection = Selection(
     start: start,
@@ -156,7 +156,7 @@ Future<void> _testWithTextFormattingItalics(WidgetTester tester) async {
   expect(node.delta!.toPlainText(), text);
   expect(allItalics, false);
 
-  final start = Position(path: [0], offset: 0);
+  final start = Position(path: [0]);
   final end = Position(path: [0], offset: text.length);
   final selection = Selection(
     start: start,
@@ -208,7 +208,7 @@ Future<void> _testWithTextFormattingUnderline(WidgetTester tester) async {
   expect(node.delta!.toPlainText(), text);
   expect(allUnderline, false);
 
-  final start = Position(path: [0], offset: 0);
+  final start = Position(path: [0]);
   final end = Position(path: [0], offset: text.length);
   final selection = Selection(
     start: start,

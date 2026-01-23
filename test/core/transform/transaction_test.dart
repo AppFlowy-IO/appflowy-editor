@@ -229,7 +229,7 @@ void main() async {
         end: Position(path: [0], offset: 10),
       );
       final transaction = editorState.transaction;
-      var nodes = editorState.getNodesInSelection(selection);
+      final nodes = editorState.getNodesInSelection(selection);
       final texts = ['ABC1', 'ABC2', 'ABC3', 'ABC4', 'ABC5'];
       transaction.replaceTexts(nodes, selection, texts);
       await editorState.apply(transaction);
@@ -338,7 +338,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [2], offset: text3.length),
       );
       editorState.selection = selection;
@@ -363,7 +363,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [0], offset: text1.length),
       );
       editorState.selection = selection;
@@ -402,7 +402,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [2], offset: text3.length),
       );
       editorState.selection = selection;
@@ -442,7 +442,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [0], offset: 5),
       );
       editorState.selection = selection;
@@ -494,7 +494,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
     );
     editorState.selection = selection;
@@ -561,7 +561,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 3], offset: 'paragraph 1-4'.length),
     );
     editorState.selection = selection;
@@ -615,7 +615,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
     );
     editorState.selection = selection;

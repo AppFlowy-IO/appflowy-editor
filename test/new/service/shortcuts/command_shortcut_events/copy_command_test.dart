@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -53,7 +54,7 @@ Future<void> _testHandleCopy(
     isControlPressed: Platform.isWindows || Platform.isLinux,
     isMetaPressed: Platform.isMacOS,
   );
-  deleteSelectedContent(editor.editorState);
+  unawaited(deleteSelectedContent(editor.editorState));
   expect(editor.document.root.children.length, 1);
   expect(editor.document.root.children.first.delta!.isEmpty, true);
   await editor.pressKey(

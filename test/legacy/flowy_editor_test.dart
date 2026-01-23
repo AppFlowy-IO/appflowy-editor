@@ -86,8 +86,8 @@ void main() {
   });
 
   test('test position comparator', () {
-    final pos1 = Position(path: [1], offset: 0);
-    final pos2 = Position(path: [1], offset: 0);
+    final pos1 = Position(path: [1]);
+    final pos2 = Position(path: [1]);
     expect(pos1 == pos2, true);
     expect(pos1.hashCode == pos2.hashCode, true);
   });
@@ -114,14 +114,14 @@ void main() {
   });
 
   test('test selection comparator', () {
-    final pos = Position(path: [0], offset: 0);
+    final pos = Position(path: [0]);
     final sel = Selection.collapsed(pos);
     expect(sel.start, sel.end);
     expect(sel.isCollapsed, true);
   });
 
   test('test selection collapse', () {
-    final start = Position(path: [0], offset: 0);
+    final start = Position(path: [0]);
     final end = Position(path: [0], offset: 10);
     final sel = Selection(start: start, end: end);
 

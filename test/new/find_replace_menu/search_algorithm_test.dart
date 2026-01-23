@@ -13,7 +13,7 @@ void main() {
       const pattern = 'Appflowy';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
@@ -30,7 +30,7 @@ grouped by property. Design and modify Appflowy your way with an
 open core codebase. Appflowy is built with Flutter and Rust.
       ''';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11, 24, 80, 196, 324, 371]);
     });
@@ -48,7 +48,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = '😁';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [20]);
     });
@@ -59,7 +59,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'App';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
@@ -68,7 +68,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       const pattern = 'APPFLOWY';
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, []);
     });
@@ -77,7 +77,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       final pattern = RegExp('APPFLOWY', caseSensitive: false);
       const text = 'Welcome to Appflowy 😁';
 
-      List<int> result =
+      final List<int> result =
           algorithm.searchMethod(pattern, text).map((e) => e.start).toList();
       expect(result, [11]);
     });
@@ -86,7 +86,7 @@ open core codebase. Appflowy is built with Flutter and Rust.
       final pattern = RegExp('a[a-z]p', caseSensitive: false);
       const text = 'Welcome to Appflowy example app 😁';
 
-      Iterable<Match> result = algorithm.searchMethod(pattern, text);
+      final Iterable<Match> result = algorithm.searchMethod(pattern, text);
       final starts = result.map((e) => e.start).toList();
       final ends = result.map((e) => e.end).toList();
       expect(starts, [11, 22, 28]);

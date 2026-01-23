@@ -35,7 +35,7 @@ Future<void> _testSelectAllHandler(WidgetTester tester, int lines) async {
   expect(
     editor.selection,
     Selection(
-      start: Position(path: [0], offset: 0),
+      start: Position(path: [0]),
       end: Position(path: [lines - 1], offset: text.length),
     ),
   );

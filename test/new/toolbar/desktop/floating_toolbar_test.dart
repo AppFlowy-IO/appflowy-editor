@@ -109,8 +109,8 @@ void main() async {
       await editor.startTesting(withFloatingToolbar: true);
 
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
-        end: Position(path: [2], offset: 0),
+        start: Position(path: [0]),
+        end: Position(path: [2]),
       );
       await editor.updateSelection(selection);
 
