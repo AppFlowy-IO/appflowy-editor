@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -33,7 +34,8 @@ class SelectionMenuItem {
   factory SelectionMenuItem.node({
     required String Function() getName,
     required List<String> keywords,
-    required Node Function(EditorState editorState, BuildContext context)
+    required FutureOr<Node> Function(
+            EditorState editorState, BuildContext context)
         nodeBuilder,
     IconData? iconData,
     Widget Function(
@@ -43,6 +45,7 @@ class SelectionMenuItem {
     )? iconBuilder,
     SelectionMenuItemNameBuilder? nameBuilder,
     bool Function(EditorState editorState, Node node)? insertBefore,
+    bool Function(EditorState editorState, Node node)? insertAfter,
     bool Function(EditorState editorState, Node node)? replace,
     Selection? Function(
       EditorState editorState,
@@ -84,7 +87,7 @@ class SelectionMenuItem {
         if (node == null || delta == null) {
           return;
         }
-        final newNode = nodeBuilder(editorState, context);
+        final newNode = await nodeBuilder(editorState, context);
         final transaction = editorState.transaction;
         final bReplace = replace?.call(editorState, node) ?? false;
         final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
@@ -112,6 +115,8 @@ class SelectionMenuItem {
         }
 
         await editorState.apply(transaction);
+
+        insertAfter?.call(editorState, newNode);
       },
     );
   }

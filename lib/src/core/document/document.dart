@@ -199,4 +199,8 @@ class Document {
       'document': root.toJson(),
     };
   }
+
+  Document deepCopy() {
+    return Document.fromJson(toJson());
+  }
 }

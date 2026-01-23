@@ -280,7 +280,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['heading 1, h1'],
     handler: (editorState, _, __) async {
-      insertHeadingAfterSelection(editorState, 1);
+      await insertHeadingAfterSelection(editorState, 1);
     },
   ),
   SelectionMenuItem(
@@ -292,7 +292,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['heading 2, h2'],
     handler: (editorState, _, __) async {
-      insertHeadingAfterSelection(editorState, 2);
+      await insertHeadingAfterSelection(editorState, 2);
     },
   ),
   SelectionMenuItem(
@@ -304,7 +304,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['heading 3, h3'],
     handler: (editorState, _, __) async {
-      insertHeadingAfterSelection(editorState, 3);
+      await insertHeadingAfterSelection(editorState, 3);
     },
   ),
   SelectionMenuItem(
@@ -329,7 +329,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['bulleted list', 'list', 'unordered list'],
     handler: (editorState, _, __) async {
-      insertBulletedListAfterSelection(editorState);
+      await insertBulletedListAfterSelection(editorState);
     },
   ),
   SelectionMenuItem(
@@ -341,7 +341,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['numbered list', 'list', 'ordered list'],
     handler: (editorState, _, __) async {
-      insertNumberedListAfterSelection(editorState);
+      await insertNumberedListAfterSelection(editorState);
     },
   ),
   SelectionMenuItem(
@@ -353,7 +353,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['todo list', 'list', 'checkbox list'],
     handler: (editorState, _, __) async {
-      insertCheckboxAfterSelection(editorState);
+      await insertCheckboxAfterSelection(editorState);
     },
   ),
   SelectionMenuItem(
@@ -365,7 +365,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
     ),
     keywords: ['quote', 'refer'],
     handler: (editorState, _, __) async {
-      insertQuoteAfterSelection(editorState);
+      await insertQuoteAfterSelection(editorState);
     },
   ),
   dividerMenuItem,
@@ -394,7 +394,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
     ),
     keywords: ['heading 1, h1'],
     handler: (editorState, _, __) async {
-      insertHeadingAfterSelection(editorState, 1);
+      await insertHeadingAfterSelection(editorState, 1);
     },
   ),
   SelectionMenuItem(
@@ -406,7 +406,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
     ),
     keywords: ['heading 2, h2'],
     handler: (editorState, _, __) async {
-      insertHeadingAfterSelection(editorState, 2);
+      await insertHeadingAfterSelection(editorState, 2);
     },
   ),
 ];

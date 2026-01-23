@@ -1,35 +1,38 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 
-void insertHeadingAfterSelection(EditorState editorState, int level) {
-  insertNodeAfterSelection(
+Future<bool> insertHeadingAfterSelection(
+  EditorState editorState,
+  int level,
+) async {
+  return insertNodeAfterSelection(
     editorState,
     headingNode(level: level),
   );
 }
 
-void insertQuoteAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
+Future<bool> insertQuoteAfterSelection(EditorState editorState) async {
+  return insertNodeAfterSelection(
     editorState,
     quoteNode(),
   );
 }
 
-void insertCheckboxAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
+Future<bool> insertCheckboxAfterSelection(EditorState editorState) async {
+  return insertNodeAfterSelection(
     editorState,
     todoListNode(checked: false),
   );
 }
 
-void insertBulletedListAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
+Future<bool> insertBulletedListAfterSelection(EditorState editorState) async {
+  return insertNodeAfterSelection(
     editorState,
     bulletedListNode(),
   );
 }
 
-void insertNumberedListAfterSelection(EditorState editorState) {
-  insertNodeAfterSelection(
+Future<bool> insertNumberedListAfterSelection(EditorState editorState) async {
+  return insertNodeAfterSelection(
     editorState,
     numberedListNode(),
   );
