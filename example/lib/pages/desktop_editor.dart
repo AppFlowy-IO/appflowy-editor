@@ -163,6 +163,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           ),
         ),
       );
+
       // Add a hover menu to the linked text.
       if (rects.isNotEmpty && textInsert.attributes?.href != null) {
         widgets.add(
