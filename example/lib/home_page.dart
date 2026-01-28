@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' if (dart.library.html) 'package:example/file_io_stub.dart';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -416,7 +416,7 @@ class _HomePageState extends State<HomePage> {
       }
     } else {
       // for desktop
-      final path = await FilePicker.platform.saveFile(
+      final path = await FilePicker.saveFile(
         fileName: 'document.${fileType.extension}',
       );
       if (path != null) {
@@ -444,7 +444,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _importFile(ExportFileType fileType) async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       allowMultiple: false,
       allowedExtensions: [fileType.extension],
       type: FileType.custom,
