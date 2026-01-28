@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor_sync_plugin/appflowy_editor_sync_utility_functions.dart';
+import 'package:appflowy_editor_sync_plugin/appflowy_editor_sync_utility_functions.dart'
+    if (dart.library.html) 'package:example/sync_plugin_stub.dart';
 import 'package:example/home_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
