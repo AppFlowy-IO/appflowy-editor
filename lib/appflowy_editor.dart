@@ -31,3 +31,4 @@ export 'src/service/default_text_operations/format_rich_text_style.dart';
 export 'src/service/internal_key_event_handlers/copy_paste_handler.dart';
 export 'src/service/shortcut_event/key_mapping.dart';
 export 'src/service/shortcut_event/keybinding.dart';
+export 'src/service/spell_check/spell_check.dart';
