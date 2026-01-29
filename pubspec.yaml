@@ -15,7 +15,7 @@ dependencies:
   collection: "^1.18.0"
   device_info_plus: ^12.3.0
   diff_match_patch: "^0.4.1"
-  file_picker: ^10.2.0
+  file_picker: ^10.3.10
   flutter:
     sdk: flutter
   flutter_svg: "^2.0.6"

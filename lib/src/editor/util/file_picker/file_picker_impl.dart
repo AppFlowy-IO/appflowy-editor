@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart' as fp;
 class FilePicker implements FilePickerService {
   @override
   Future<String?> getDirectoryPath({String? title}) {
-    return fp.FilePicker.getDirectoryPath();
+    return fp.FilePicker.platform.getDirectoryPath();
   }
 
   @override
@@ -19,7 +19,7 @@ class FilePicker implements FilePickerService {
     bool withReadStream = false,
     bool lockParentWindow = false,
   }) async {
-    final result = await fp.FilePicker.pickFiles(
+    final result = await fp.FilePicker.platform.pickFiles(
       dialogTitle: dialogTitle,
       initialDirectory: initialDirectory,
       type: type,
@@ -43,7 +43,7 @@ class FilePicker implements FilePickerService {
     List<String>? allowedExtensions,
     bool lockParentWindow = false,
   }) {
-    return fp.FilePicker.saveFile(
+    return fp.FilePicker.platform.saveFile(
       dialogTitle: dialogTitle,
       fileName: fileName,
       initialDirectory: initialDirectory,
