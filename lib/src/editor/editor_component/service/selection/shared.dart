@@ -83,33 +83,11 @@ extension EditorStateSelection on EditorState {
     }
 
     final node = filteredNodes[min];
-    if (node.children.isNotEmpty &&
-        _getCachedRect(node.children.first, rectCache).top <= offset.dy) {
-      final skipSortingChildren =
-          node.selectable?.skipSortingChildrenWhenSelecting ?? false;
-
-      List<Node> children;
-
-      if (skipSortingChildren) {
-        children = node.children;
-      } else {
-        children = node.children.toList(growable: false)
-          ..sort(
-            (a, b) {
-              final aRect = _getCachedRect(a, rectCache!);
-              final bRect = _getCachedRect(b, rectCache);
-              return aRect.bottom != bRect.bottom
-                  ? aRect.bottom.compareTo(bRect.bottom)
-                  : aRect.left.compareTo(bRect.left);
-            },
-          );
-      }
-
-      // if the nodes are in the same tab view, their rect are overlaid,
-      //  we need to filter out the invisible nodes
-      bool hasInvisibleChildren = false;
+    if (node.children.isNotEmpty) {
+      // First, filter out invisible children (Offstage or Opacity 0)
+      // This must happen BEFORE checking rect conditions
       final visibleChildren = <Node>[];
-      for (final child in children) {
+      for (final child in node.children) {
         final context = child.key.currentContext;
         var isVisible = true;
         context?.visitAncestorElements((element) {
@@ -118,29 +96,52 @@ extension EditorStateSelection on EditorState {
             isVisible = false;
             return false;
           }
+          if (widget is Offstage && widget.offstage) {
+            isVisible = false;
+            return false;
+          }
           return true;
         });
         if (isVisible) {
           visibleChildren.add(child);
-        } else {
-          hasInvisibleChildren = true;
         }
       }
-      if (hasInvisibleChildren) {
-        children = visibleChildren;
-      }
 
-      if (children.isEmpty) {
-        return node;
-      }
+      // Now check if any visible child's rect contains the offset
+      if (visibleChildren.isNotEmpty &&
+          _getCachedRect(visibleChildren.first, rectCache).top <= offset.dy) {
+        final skipSortingChildren =
+            node.selectable?.skipSortingChildrenWhenSelecting ?? false;
 
-      return getNodeInOffset(
-        children,
-        offset,
-        0,
-        children.length - 1,
-        rectCache,
-      );
+        List<Node> children;
+
+        if (skipSortingChildren) {
+          children = visibleChildren;
+        } else {
+          children = visibleChildren.toList(growable: false)
+            ..sort(
+              (a, b) {
+                final aRect = _getCachedRect(a, rectCache!);
+                final bRect = _getCachedRect(b, rectCache);
+                return aRect.bottom != bRect.bottom
+                    ? aRect.bottom.compareTo(bRect.bottom)
+                    : aRect.left.compareTo(bRect.left);
+              },
+            );
+        }
+
+        if (children.isEmpty) {
+          return node;
+        }
+
+        return getNodeInOffset(
+          children,
+          offset,
+          0,
+          children.length - 1,
+          rectCache,
+        );
+      }
     }
     return node;
   }
