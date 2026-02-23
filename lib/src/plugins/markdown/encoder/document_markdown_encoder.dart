@@ -34,7 +34,9 @@ class DocumentMarkdownEncoder extends Converter<Document, String> {
     List<Node> nodes, {
     bool withIndent = false,
   }) {
-    final result = convert(Document(root: pageNode(children: nodes)));
+    final result = convert(
+      Document(root: pageNode(children: nodes.map((n) => n.deepCopy()))),
+    );
     if (result.isNotEmpty && withIndent) {
       return result
           .split('\n')
