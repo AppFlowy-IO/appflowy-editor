@@ -8,9 +8,19 @@ final _listTypes = [
 
 extension EditorCopyPaste on EditorState {
   Future<void> pasteSingleLineNode(Node insertedNode) async {
-    final selection = await deleteSelectionIfNeeded();
-    if (selection == null) {
-      return;
+    AppFlowyEditorLog.editor
+        .debug('EditorCopyPaste: initiate paste single line node');
+    var selection = await deleteSelectionIfNeeded();
+    var attempts = 0;
+    while (selection == null) {
+      await Future.delayed(Duration(milliseconds: 50));
+      selection = await deleteSelectionIfNeeded();
+      attempts++;
+      if (attempts > 10) {
+        AppFlowyEditorLog.editor
+            .debug('EditorCopyPaste: selection is empty, attempted $attempts times');
+        return;
+      }
     }
     final node = getNodeAtPath(selection.start.path);
     final delta = node?.delta;
