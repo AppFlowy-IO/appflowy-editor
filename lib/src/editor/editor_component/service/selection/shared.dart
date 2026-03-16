@@ -25,7 +25,6 @@ extension EditorStateSelection on EditorState {
       }
       sortedNodes.add(child);
     }
-
     return sortedNodes;
   }
 
@@ -38,6 +37,10 @@ extension EditorStateSelection on EditorState {
   ]) {
     // Create rect cache for this operation if not provided
     rectCache ??= {};
+
+    if (sortedNodes.isEmpty || start > end) {
+      return null;
+    }
 
     if (start < 0 && end >= sortedNodes.length) {
       return null;
@@ -53,7 +56,6 @@ extension EditorStateSelection on EditorState {
         AppFlowyEditorLog.selection.debug(
           'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
         );
-
         return isMatch;
       },
       compare: (index, rect) => rect.bottom <= offset.dy,
@@ -78,7 +80,6 @@ extension EditorStateSelection on EditorState {
           AppFlowyEditorLog.selection.debug(
             'findNodeInOffset: $index, rect: $rect, offset: $offset, isMatch: $isMatch',
           );
-
           return isMatch;
         },
         compare: (index, rect) => rect.right <= offset.dx,
@@ -101,7 +102,6 @@ extension EditorStateSelection on EditorState {
             (a, b) {
               final aRect = _getCachedRect(a, rectCache!);
               final bRect = _getCachedRect(b, rectCache);
-
               return aRect.bottom != bRect.bottom
                   ? aRect.bottom.compareTo(bRect.bottom)
                   : aRect.left.compareTo(bRect.left);
@@ -120,10 +120,8 @@ extension EditorStateSelection on EditorState {
           final widget = element.widget;
           if (widget is Opacity && widget.opacity == 0) {
             isVisible = false;
-
             return false;
           }
-
           return true;
         });
         if (isVisible) {
@@ -148,7 +146,6 @@ extension EditorStateSelection on EditorState {
         rectCache,
       );
     }
-
     return node;
   }
 
@@ -165,6 +162,10 @@ extension EditorStateSelection on EditorState {
     bool Function(int index, Rect rect)? match,
     required bool Function(int index, Rect rect) compare,
   }) {
+    if (sortedNodes.isEmpty || start > end) {
+      return 0;
+    }
+
     for (var i = start; i <= end; i++) {
       final rect = _getCachedRect(sortedNodes[i], rectCache);
       if (match != null && match(i, rect)) {
