@@ -69,7 +69,8 @@ void main() {
         expect(
           scroller.capturedRect!.bottom,
           offset.dy,
-          reason: 'proxy rect bottom should be at the handle position, not below it',
+          reason:
+              'proxy rect bottom should be at the handle position, not below it',
         );
 
         // Guard: bottom must NOT be offset.dy + edgeOffset (the old buggy value
@@ -78,7 +79,8 @@ void main() {
         expect(
           scroller.capturedRect!.bottom,
           isNot(offset.dy + edgeOffset),
-          reason: 'old buggy value extended the rect downward, triggering wrong-direction scroll',
+          reason:
+              'old buggy value extended the rect downward, triggering wrong-direction scroll',
         );
       },
     );
@@ -104,7 +106,8 @@ void main() {
         expect(
           scroller.capturedRect!.center,
           offset,
-          reason: 'right handle proxy rect should be centered on the handle offset',
+          reason:
+              'right handle proxy rect should be centered on the handle offset',
         );
         expect(scroller.capturedRect!.width, edgeOffset);
         expect(scroller.capturedRect!.height, edgeOffset);
