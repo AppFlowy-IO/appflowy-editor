@@ -37,6 +37,7 @@ class ApplyOptions {
     this.recordUndo = true,
     this.recordRedo = false,
     this.inMemoryUpdate = false,
+    this.isRedo = false,
   });
 
   /// This flag indicates that
@@ -47,6 +48,9 @@ class ApplyOptions {
 
   /// This flag used to determine whether the transaction is in-memory update.
   final bool inMemoryUpdate;
+
+  /// This flag used to determine whether the transaction is recorded for redo.
+  final bool isRedo;
 }
 
 @Deprecated('use SelectionUpdateReason instead')
@@ -672,7 +676,9 @@ class EditorState {
     bool skipDebounce,
   ) {
     if (options.recordUndo) {
-      final undoItem = undoManager.getUndoHistoryItem();
+      final undoItem = undoManager.getUndoHistoryItem(
+        clearRedoStack: !options.recordRedo && !options.isRedo,
+      );
       undoItem.addAll(transaction.operations);
       if (undoItem.beforeSelection == null &&
           transaction.beforeSelection != null) {

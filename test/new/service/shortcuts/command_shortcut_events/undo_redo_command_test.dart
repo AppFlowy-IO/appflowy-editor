@@ -187,8 +187,8 @@ void main() async {
       // second redo
       await _pressRedoCommand(editor);
       expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
-      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
-      expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
+      expect(editor.nodeAtPath([0, 0])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([0, 0, 0])!.delta!.toPlainText(), text01);
 
       await editor.dispose();
     });
