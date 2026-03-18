@@ -93,6 +93,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
           commandShortcutEvents: commandShortcuts,
           editorStyle: editorStyle,
           enableAutoComplete: true,
+          enableSpellChecker: true,
           autoCompleteTextProvider: _buildAutoCompleteTextProvider,
           dropTargetStyle: const AppFlowyDropTargetStyle(
             color: Colors.red,
