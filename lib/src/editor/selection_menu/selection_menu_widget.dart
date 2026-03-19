@@ -130,8 +130,12 @@ class SelectionMenuItem {
     this.deleteSlash = true,
   }) : _getName = getName {
     this.handler = (editorState, menuService, context) async {
-      if (deleteSlash || deleteKeywords) {
-        await _deleteSlash(editorState);
+      try {
+        if (deleteSlash || deleteKeywords) {
+          await _deleteSlash(editorState);
+        }
+      } catch (e) {
+        AppFlowyEditorLog.ui.debug('Error deleting slash or keywords: $e');
       }
 
       if (context.mounted) {
