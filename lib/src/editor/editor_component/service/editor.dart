@@ -56,7 +56,11 @@ class AppFlowyEditor extends StatefulWidget {
         characterShortcutEvents =
             characterShortcutEvents ?? standardCharacterShortcutEvents,
         commandShortcutEvents =
-            commandShortcutEvents ?? standardCommandShortcutEvents;
+            commandShortcutEvents ?? standardCommandShortcutEvents,
+        assert(
+          !showCommentSidebar || inlineCommentController != null,
+          'showCommentSidebar requires inlineCommentController to be set.',
+        );
 
   final EditorState editorState;
 
@@ -235,8 +239,20 @@ class AppFlowyEditor extends StatefulWidget {
   /// Wrap the block component with a widget.
   final BlockComponentWrapper? blockWrapper;
 
+  /// Providing this controller enables the inline comment feature.
+  ///
   final InlineCommentController? inlineCommentController;
+
+  /// Whether to show the comment sidebar on the right side of the editor.
+  ///
+  /// Only applicable on Desktop.
+  ///
   final bool showCommentSidebar;
+
+  /// The width of the comment sidebar.
+  ///
+  /// Defaults to 240.0.
+  ///
   final double sidebarWidth;
 
   @override
