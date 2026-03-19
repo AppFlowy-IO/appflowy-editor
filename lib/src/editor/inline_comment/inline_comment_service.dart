@@ -42,9 +42,20 @@ class InlineCommentService {
 
   /// Scans the entire document delta and returns a mapping from comment id to
   /// its first anchor position (nodePath + startOffset within that node's delta).
-  Map<String, CommentAnchor> scanAnchors() {
+  ///
+  /// This is a convenience wrapper around [scanDocumentAnchors] that uses the
+  /// service's own [editorState].
+  Map<String, CommentAnchor> scanAnchors() =>
+      scanDocumentAnchors(editorState.document);
+
+  /// Scans [document] and returns a mapping from comment id to its first anchor
+  /// position (nodePath + startOffset within that node's delta).
+  ///
+  /// This is a **pure read operation** with no side effects, and can be called
+  /// without instantiating an [InlineCommentService].
+  static Map<String, CommentAnchor> scanDocumentAnchors(Document document) {
     final result = <String, CommentAnchor>{};
-    _visitDescendants(editorState.document.root, (node) {
+    _visitDescendantsStatic(document.root, (node) {
       final delta = node.delta;
       if (delta == null) return;
 
@@ -54,7 +65,7 @@ class InlineCommentService {
           final attrs = op.attributes;
           if (attrs != null && attrs.containsKey('comment-ids')) {
             final raw = attrs['comment-ids'];
-            final ids = _extractCommentIds(raw);
+            final ids = _extractCommentIdsStatic(raw);
             for (final id in ids) {
               // Only record the first occurrence.
               result.putIfAbsent(
@@ -81,18 +92,21 @@ class InlineCommentService {
 
   /// Visits all descendant nodes recursively, starting from [node]'s children.
   /// The [node] itself is intentionally skipped (typically the document root).
-  void _visitDescendants(Node node, void Function(Node) visitor) {
+  static void _visitDescendantsStatic(
+    Node node,
+    void Function(Node) visitor,
+  ) {
     for (final child in node.children) {
       visitor(child);
       if (child.children.isNotEmpty) {
-        _visitDescendants(child, visitor);
+        _visitDescendantsStatic(child, visitor);
       }
     }
   }
 
   /// Extract a `List<String>` of comment ids from the attribute value, which
   /// may be stored as a `List<dynamic>` or a plain `String`.
-  List<String> _extractCommentIds(dynamic raw) {
+  static List<String> _extractCommentIdsStatic(dynamic raw) {
     if (raw is List) {
       return raw.map((e) => e.toString()).toList();
     } else if (raw is String) {

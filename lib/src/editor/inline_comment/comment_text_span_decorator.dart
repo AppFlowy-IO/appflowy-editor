@@ -19,6 +19,12 @@ import 'inline_comment_controller.dart';
 /// - The text insert carries no `comment-ids`
 /// - No matching [InlineComment] is found in the controller
 /// - The controller is not available in the widget tree
+///
+/// [recognizerProvider] is an optional factory that returns a managed
+/// [TapGestureRecognizer] for a given comment-id key. When provided, the
+/// caller owns the recognizer lifecycle (creation and disposal). When omitted,
+/// a short-lived recognizer is created locally — callers should prefer
+/// providing a [recognizerProvider] to avoid memory leaks.
 InlineSpan applyCommentDecoration({
   required BuildContext context,
   required Node node,
@@ -27,6 +33,11 @@ InlineSpan applyCommentDecoration({
   required InlineSpan before,
   required InlineSpan after,
   required InlineCommentController controller,
+  TapGestureRecognizer Function(
+    String commentId,
+    InlineCommentController controller,
+    BuildContext context,
+  )? recognizerProvider,
 }) {
   // 1. Read comment-ids attribute
   final attributes = textInsert.attributes;
@@ -37,7 +48,7 @@ InlineSpan applyCommentDecoration({
 
   final List<String> ids;
   if (rawIds is List) {
-    ids = rawIds.cast<String>();
+    ids = rawIds.map((e) => e.toString()).toList();
   } else if (rawIds is String) {
     ids = [rawIds];
   } else {
@@ -68,13 +79,28 @@ InlineSpan applyCommentDecoration({
     decorationColor: color.withValues(alpha: 0.8),
   );
 
-  // 5. TapGestureRecognizer — single tap triggers onCommentTapped
-  final recognizer = TapGestureRecognizer()
-    ..onTap = () {
+  // 5. TapGestureRecognizer — single tap triggers onCommentTapped.
+  // Use the managed recognizer from the provider when available so that the
+  // caller (e.g. _InlineCommentServiceWidgetState) can properly dispose it.
+  // Fall back to a locally-created recognizer only when no provider is given.
+  final TapGestureRecognizer recognizer;
+  if (recognizerProvider != null) {
+    recognizer = recognizerProvider(comments.first.id, controller, context);
+    // Refresh the onTap binding so it captures the current comments list and
+    // BuildContext every time the decoration is re-applied.
+    recognizer.onTap = () {
       for (final comment in comments) {
         controller.onCommentTapped?.call(comment.id, context);
       }
     };
+  } else {
+    recognizer = TapGestureRecognizer()
+      ..onTap = () {
+        for (final comment in comments) {
+          controller.onCommentTapped?.call(comment.id, context);
+        }
+      };
+  }
 
   return TextSpan(
     text: textInsert.text,

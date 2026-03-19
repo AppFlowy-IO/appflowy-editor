@@ -115,7 +115,7 @@ class CommentCard extends StatelessWidget {
               controller.removeComment(comment.id);
             },
             icon: const Icon(Icons.delete_outline, size: 14),
-            label: const Text('删除'),
+            label: const Text('Delete'),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

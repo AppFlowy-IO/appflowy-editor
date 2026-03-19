@@ -36,26 +36,26 @@ class CommentSidebarWidget extends StatefulWidget {
 class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
   final Map<String, double> _commentTopPositions = {};
   String? _focusedCommentId;
-  late final InlineCommentService _anchorScanner;
 
   @override
   void initState() {
     super.initState();
-    // Create a separate InlineCommentService instance used only for
-    // scanAnchors(). We supply a no-op onCommentDeleted callback so that
-    // this scanner never triggers deletion side-effects; the real service
-    // installed by InlineCommentServiceWidget handles that.
-    _anchorScanner = InlineCommentService(
-      editorState: widget.editorState,
-      controller: widget.controller,
-    );
     widget.controller.addListener(_schedulePositionUpdate);
+  }
+
+  @override
+  void didUpdateWidget(covariant CommentSidebarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller.removeListener(_schedulePositionUpdate);
+      widget.controller.addListener(_schedulePositionUpdate);
+      _schedulePositionUpdate();
+    }
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_schedulePositionUpdate);
-    _anchorScanner.dispose();
     super.dispose();
   }
 
@@ -66,7 +66,9 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
   }
 
   void _updateCommentPositions() {
-    final anchors = _anchorScanner.scanAnchors();
+    final anchors = InlineCommentService.scanDocumentAnchors(
+      widget.editorState.document,
+    );
     final newPositions = <String, double>{};
 
     for (final entry in anchors.entries) {
@@ -117,10 +119,6 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, _) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _updateCommentPositions();
-        });
-
         final comments = widget.controller.comments
             .where((c) => _commentTopPositions.containsKey(c.id))
             .toList()

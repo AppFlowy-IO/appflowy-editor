@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/comment_text_span_decorator.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_controller.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // ---------------------------------------------------------------------------
@@ -64,6 +65,13 @@ class _InlineCommentServiceWidgetState
   late InlineCommentService _service;
   TextSpanDecoratorForAttribute? _previousDecorator;
 
+  /// Keyed by commentId → [TapGestureRecognizer].
+  ///
+  /// Recognizers are created on demand during text-span decoration and must be
+  /// disposed when the controller changes or the widget is destroyed to avoid
+  /// memory leaks.
+  final Map<String, TapGestureRecognizer> _recognizers = {};
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +79,7 @@ class _InlineCommentServiceWidgetState
       editorState: widget.editorState,
       controller: widget.controller,
     );
+    widget.controller.addListener(_onControllerChanged);
     _installDecorator();
   }
 
@@ -85,6 +94,14 @@ class _InlineCommentServiceWidgetState
       _service.dispose();
       _restoreDecorator();
 
+      if (controllerChanged) {
+        oldWidget.controller.removeListener(_onControllerChanged);
+        widget.controller.addListener(_onControllerChanged);
+      }
+
+      // Dispose stale recognizers before rebuilding.
+      _disposeRecognizers();
+
       // Rebuild service and decorator for the new editorState/controller.
       _service = InlineCommentService(
         editorState: widget.editorState,
@@ -97,9 +114,43 @@ class _InlineCommentServiceWidgetState
 
   @override
   void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
+    _disposeRecognizers();
     _service.dispose();
     _restoreDecorator();
     super.dispose();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Recognizer pool
+  // ---------------------------------------------------------------------------
+
+  /// Called whenever the controller notifies listeners (i.e. the comment list
+  /// has changed). Stale recognizers are disposed so they are recreated fresh
+  /// on the next rebuild, picking up the updated comment list and context.
+  void _onControllerChanged() {
+    _disposeRecognizers();
+  }
+
+  void _disposeRecognizers() {
+    for (final r in _recognizers.values) {
+      r.dispose();
+    }
+    _recognizers.clear();
+  }
+
+  /// Returns the cached [TapGestureRecognizer] for [commentId], creating one
+  /// if it does not yet exist.
+  ///
+  /// The [onTap] binding is intentionally set at call-site (in
+  /// [_buildChainedDecorator]) so it always captures the freshest [comments]
+  /// list and [BuildContext].
+  TapGestureRecognizer _getOrCreateRecognizer(
+    String commentId,
+    InlineCommentController controller,
+    BuildContext context,
+  ) {
+    return _recognizers.putIfAbsent(commentId, TapGestureRecognizer.new);
   }
 
   // ---------------------------------------------------------------------------
@@ -144,6 +195,7 @@ class _InlineCommentServiceWidgetState
           before: intermediate,
           after: after,
           controller: controller,
+          recognizerProvider: _getOrCreateRecognizer,
         );
       }
       return intermediate;
