@@ -47,5 +47,5 @@ class AppFlowyRichTextKeys {
   /// The attribute key used to store a list of comment ids anchored to a text
   /// range. Intentionally excluded from [supportSliced] so that new text
   /// typed adjacent to a commented range does NOT inherit the comment marker.
-  static String commentIds = 'comment-ids';
+  static const String commentIds = 'comment-ids';
 }

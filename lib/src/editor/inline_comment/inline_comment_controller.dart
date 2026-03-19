@@ -77,7 +77,7 @@ class InlineCommentController extends ChangeNotifier {
 
   /// Override per-comment highlight color. Receives the comment and returns
   /// the desired background color. Falls back to [defaultHighlightColor].
-  Color Function(InlineComment comment)? commentHighlightColorBuilder;
+  final Color Function(InlineComment comment)? commentHighlightColorBuilder;
 
   /// Default highlight color applied to text that carries a comment.
   final Color defaultHighlightColor;
@@ -115,11 +115,10 @@ class InlineCommentController extends ChangeNotifier {
 
   /// Look up a comment by id; returns null if not found.
   InlineComment? findById(String id) {
-    try {
-      return _comments.firstWhere((c) => c.id == id);
-    } catch (_) {
-      return null;
+    for (final c in _comments) {
+      if (c.id == id) return c;
     }
+    return null;
   }
 
   /// Returns the highlight color to use for [comment].

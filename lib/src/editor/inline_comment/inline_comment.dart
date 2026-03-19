@@ -41,9 +41,7 @@ class InlineComment {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is InlineComment &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is InlineComment && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
