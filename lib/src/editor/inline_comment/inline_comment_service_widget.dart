@@ -13,17 +13,18 @@ import 'package:flutter/material.dart';
 /// in `comment_text_span_decorator.dart` (Task 3). It currently returns
 /// [before] unchanged so that the widget tree compiles and works without the
 /// real decorator.
-// ignore: prefer_function_declarations_over_variables
+// Placeholder — will be replaced in Task 3
 InlineSpan applyCommentDecoration({
   required BuildContext context,
   required Node node,
   required int index,
   required TextInsert textInsert,
-  required TextSpan before,
-  required TextSpan after,
+  required InlineSpan before,
+  required InlineSpan after,
   required InlineCommentController controller,
-}) =>
-    before;
+}) {
+  return before;
+}
 
 // ---------------------------------------------------------------------------
 // InlineCommentScope — InheritedWidget
@@ -93,6 +94,27 @@ class _InlineCommentServiceWidgetState
       controller: widget.controller,
     );
     _installDecorator();
+  }
+
+  @override
+  void didUpdateWidget(covariant InlineCommentServiceWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final editorStateChanged = widget.editorState != oldWidget.editorState;
+    final controllerChanged = widget.controller != oldWidget.controller;
+
+    if (editorStateChanged || controllerChanged) {
+      // Clean up the old service and decorator.
+      _service.dispose();
+      _restoreDecorator();
+
+      // Rebuild service and decorator for the new editorState/controller.
+      _service = InlineCommentService(
+        editorState: widget.editorState,
+        controller: widget.controller,
+      );
+      _previousDecorator = widget.editorState.editorStyle.textSpanDecorator;
+      _installDecorator();
+    }
   }
 
   @override

@@ -44,7 +44,7 @@ class InlineCommentService {
   /// its first anchor position (nodePath + startOffset within that node's delta).
   Map<String, CommentAnchor> scanAnchors() {
     final result = <String, CommentAnchor>{};
-    _visitAllNodes(editorState.document.root, (node) {
+    _visitDescendants(editorState.document.root, (node) {
       final delta = node.delta;
       if (delta == null) return;
 
@@ -79,11 +79,13 @@ class InlineCommentService {
   // Private helpers
   // ---------------------------------------------------------------------------
 
-  void _visitAllNodes(Node node, void Function(Node) visitor) {
+  /// Visits all descendant nodes recursively, starting from [node]'s children.
+  /// The [node] itself is intentionally skipped (typically the document root).
+  void _visitDescendants(Node node, void Function(Node) visitor) {
     for (final child in node.children) {
       visitor(child);
       if (child.children.isNotEmpty) {
-        _visitAllNodes(child, visitor);
+        _visitDescendants(child, visitor);
       }
     }
   }
@@ -100,8 +102,7 @@ class InlineCommentService {
   }
 
   void _onTransaction(EditorTransactionValue value) {
-    final (time, _, options) = value;
-    // options not used beyond destructuring.
+    final (time, _, _) = value;
     if (time != TransactionTime.after) return;
 
     // After every transaction, collect the comment ids still present in the
@@ -114,7 +115,7 @@ class InlineCommentService {
     for (final comment in List.of(controller.comments)) {
       if (!existingIds.contains(comment.id)) {
         // Notify the host application and remove from the controller's list.
-        controller.onCommentDeleted(comment.id);
+        unawaited(controller.onCommentDeleted(comment.id));
         controller.removeComment(comment.id);
       }
     }
