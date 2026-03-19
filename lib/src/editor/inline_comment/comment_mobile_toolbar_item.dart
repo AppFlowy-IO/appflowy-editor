@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/inline_comment/comment_utils.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +20,10 @@ final commentMobileToolbarItem = MobileToolbarItem.action(
   itemIconBuilder: (context, editorState, __) {
     final selection = editorState.selection;
     if (selection == null || selection.isCollapsed) return null;
+    if (!selection.isSingle) return null;
 
-    final nodes = editorState.getNodesInSelection(selection);
-    if (!nodes.any((n) => n.delta != null)) return null;
+    final node = editorState.getNodeAtPath(selection.start.path);
+    if (node?.delta == null) return null;
 
     return Icon(
       Icons.comment_outlined,
@@ -28,7 +32,7 @@ final commentMobileToolbarItem = MobileToolbarItem.action(
     );
   },
   actionHandler: (context, editorState) {
-    _addComment(context, editorState);
+    unawaited(_addComment(context, editorState));
   },
 );
 
@@ -48,7 +52,7 @@ Future<void> _addComment(
   final controller = InlineCommentScope.of(context);
   if (controller == null) return;
 
-  final existingIds = _collectExistingCommentIds(editorState, selection);
+  final existingIds = collectExistingCommentIds(editorState, selection);
 
   final commentId = await controller.onCommentAdded(
     node.id,
@@ -67,25 +71,3 @@ Future<void> _addComment(
   );
 }
 
-List<String> _collectExistingCommentIds(
-  EditorState editorState,
-  Selection selection,
-) {
-  final existing = <String>{};
-  final nodes = editorState.getNodesInSelection(selection);
-  for (final node in nodes) {
-    final delta = node.delta;
-    if (delta == null) continue;
-    for (final op in delta) {
-      if (op is TextInsert) {
-        final raw = op.attributes?[AppFlowyRichTextKeys.commentIds];
-        if (raw is List) {
-          existing.addAll(raw.map((e) => e.toString()));
-        } else if (raw is String) {
-          existing.add(raw);
-        }
-      }
-    }
-  }
-  return existing.toList();
-}

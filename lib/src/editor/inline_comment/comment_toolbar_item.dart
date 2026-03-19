@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/inline_comment/comment_utils.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_controller.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service_widget.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +44,10 @@ final commentToolbarItem = ToolbarItem(
 
 bool _isActive(EditorState editorState) {
   final selection = editorState.selection;
-  if (selection == null || selection.isCollapsed) {
-    return false;
-  }
-  final nodes = editorState.getNodesInSelection(selection);
-  return nodes.any((n) => n.delta != null);
+  if (selection == null || selection.isCollapsed) return false;
+  if (!selection.isSingle) return false;
+  final node = editorState.getNodeAtPath(selection.start.path);
+  return node?.delta != null;
 }
 
 // ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ class _CommentToolbarButton extends StatelessWidget {
     final controller = InlineCommentScope.of(context);
     if (controller == null) return;
 
-    final existingIds = _collectExistingCommentIds(editorState, selection);
+    final existingIds = collectExistingCommentIds(editorState, selection);
 
     final commentId = await controller.onCommentAdded(
       node.id,
@@ -110,29 +110,3 @@ class _CommentToolbarButton extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-List<String> _collectExistingCommentIds(
-  EditorState editorState,
-  Selection selection,
-) {
-  final existing = <String>{};
-  final nodes = editorState.getNodesInSelection(selection);
-  for (final node in nodes) {
-    final delta = node.delta;
-    if (delta == null) continue;
-    for (final op in delta) {
-      if (op is TextInsert) {
-        final raw = op.attributes?[AppFlowyRichTextKeys.commentIds];
-        if (raw is List) {
-          existing.addAll(raw.map((e) => e.toString()));
-        } else if (raw is String) {
-          existing.add(raw);
-        }
-      }
-    }
-  }
-  return existing.toList();
-}
