@@ -1,46 +1,47 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/comment_utils.dart';
-import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_controller.dart';
-import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service_widget.dart';
 import 'package:flutter/material.dart';
 
 const _kCommentItemId = 'editor.comment';
 
-/// Desktop floating-toolbar button that adds an inline comment to the current
-/// text selection.
+/// Returns a [ToolbarItem] that adds an inline comment on the selected text.
 ///
-/// The button is active whenever there is a non-collapsed text selection that
-/// spans at least one node with a delta (text) type. Clicking it:
+/// Pass the [InlineCommentController] that manages comments for the editor.
 ///
-/// 1. Normalises the current [Selection].
-/// 2. Collects any comment-ids already present in the selected range so that
-///    they are not overwritten.
-/// 3. Calls [InlineCommentController.onCommentAdded] to obtain a new comment id
-///    from the host app.
-/// 4. Writes `{AppFlowyRichTextKeys.commentIds: [...existingIds, newId]}` into
-///    the delta via [EditorState.formatDelta].
-final commentToolbarItem = ToolbarItem(
-  id: _kCommentItemId,
-  group: 4,
-  isActive: _isActive,
-  builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
-    final child = _CommentToolbarButton(
-      editorState: editorState,
-      iconColor: iconColor,
-    );
-
-    if (tooltipBuilder != null) {
-      return tooltipBuilder(
-        context,
-        _kCommentItemId,
-        'Comment',
-        child,
+/// Usage:
+/// ```dart
+/// AppFlowyEditor(
+///   floatingToolbarItems: [
+///     ...standardFloatingToolbarItems,
+///     buildCommentToolbarItem(myController),
+///   ],
+/// )
+/// ```
+ToolbarItem buildCommentToolbarItem(InlineCommentController controller) {
+  return ToolbarItem(
+    id: _kCommentItemId,
+    group: 4,
+    isActive: _isActive,
+    builder: (context, editorState, highlightColor, iconColor, tooltipBuilder) {
+      final child = _CommentToolbarButton(
+        editorState: editorState,
+        iconColor: iconColor,
+        controller: controller,
       );
-    }
 
-    return child;
-  },
-);
+      if (tooltipBuilder != null) {
+        return tooltipBuilder(
+          context,
+          _kCommentItemId,
+          'Comment',
+          child,
+        );
+      }
+
+      return child;
+    },
+  );
+}
 
 bool _isActive(EditorState editorState) {
   final selection = editorState.selection;
@@ -58,10 +59,12 @@ class _CommentToolbarButton extends StatelessWidget {
   const _CommentToolbarButton({
     required this.editorState,
     required this.iconColor,
+    required this.controller,
   });
 
   final EditorState editorState;
   final Color? iconColor;
+  final InlineCommentController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +74,13 @@ class _CommentToolbarButton extends StatelessWidget {
         size: 16,
         color: iconColor,
       ),
-      onPressed: () => _onPressed(context),
+      onPressed: () => _onPressed(),
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints.tightFor(width: 28, height: 28),
     );
   }
 
-  Future<void> _onPressed(BuildContext context) async {
+  Future<void> _onPressed() async {
     final selection = editorState.selection?.normalized;
     if (selection == null || selection.isCollapsed) return;
 
@@ -86,9 +89,6 @@ class _CommentToolbarButton extends StatelessWidget {
 
     final node = editorState.getNodeAtPath(selection.start.path);
     if (node == null || node.id.isEmpty) return;
-
-    final controller = InlineCommentScope.of(context);
-    if (controller == null) return;
 
     final existingIds = collectExistingCommentIds(editorState, selection);
 
@@ -109,4 +109,3 @@ class _CommentToolbarButton extends StatelessWidget {
     );
   }
 }
-

@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/comment_utils.dart';
-import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service_widget.dart';
 import 'package:flutter/material.dart';
 
-/// Mobile toolbar item that adds an inline comment to the current text
-/// selection.
+/// Returns a [MobileToolbarItem] that adds an inline comment to the current
+/// text selection.
+///
+/// Pass the [InlineCommentController] that manages comments for the editor.
 ///
 /// The item icon is hidden (returns `null`) when:
 /// - There is no active selection.
@@ -16,28 +17,32 @@ import 'package:flutter/material.dart';
 /// When the user taps the icon the same add-comment flow as the desktop item
 /// is executed: existing comment-ids are collected, [onCommentAdded] is called,
 /// and the result is written back via [EditorState.formatDelta].
-final commentMobileToolbarItem = MobileToolbarItem.action(
-  itemIconBuilder: (context, editorState, __) {
-    final selection = editorState.selection;
-    if (selection == null || selection.isCollapsed) return null;
-    if (!selection.isSingle) return null;
+MobileToolbarItem buildCommentMobileToolbarItem(
+  InlineCommentController controller,
+) {
+  return MobileToolbarItem.action(
+    itemIconBuilder: (context, editorState, __) {
+      final selection = editorState.selection;
+      if (selection == null || selection.isCollapsed) return null;
+      if (!selection.isSingle) return null;
 
-    final node = editorState.getNodeAtPath(selection.start.path);
-    if (node?.delta == null) return null;
+      final node = editorState.getNodeAtPath(selection.start.path);
+      if (node?.delta == null) return null;
 
-    return Icon(
-      Icons.comment_outlined,
-      color: MobileToolbarTheme.of(context).iconColor,
-      size: 22,
-    );
-  },
-  actionHandler: (context, editorState) {
-    unawaited(_addComment(context, editorState));
-  },
-);
+      return Icon(
+        Icons.comment_outlined,
+        color: MobileToolbarTheme.of(context).iconColor,
+        size: 22,
+      );
+    },
+    actionHandler: (context, editorState) {
+      unawaited(_addComment(controller, editorState));
+    },
+  );
+}
 
 Future<void> _addComment(
-  BuildContext context,
+  InlineCommentController controller,
   EditorState editorState,
 ) async {
   final selection = editorState.selection?.normalized;
@@ -48,9 +53,6 @@ Future<void> _addComment(
 
   final node = editorState.getNodeAtPath(selection.start.path);
   if (node == null || node.id.isEmpty) return;
-
-  final controller = InlineCommentScope.of(context);
-  if (controller == null) return;
 
   final existingIds = collectExistingCommentIds(editorState, selection);
 
@@ -70,4 +72,3 @@ Future<void> _addComment(
     },
   );
 }
-
