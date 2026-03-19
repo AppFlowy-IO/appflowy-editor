@@ -1,30 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/inline_comment/comment_text_span_decorator.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_controller.dart';
 import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service.dart';
 import 'package:flutter/material.dart';
-
-// ---------------------------------------------------------------------------
-// Placeholder for the real comment text-span decorator (Task 3).
-// ---------------------------------------------------------------------------
-
-/// Applies comment highlight decoration to [before].
-///
-/// This is a placeholder implementation that is replaced by the full version
-/// in `comment_text_span_decorator.dart` (Task 3). It currently returns
-/// [before] unchanged so that the widget tree compiles and works without the
-/// real decorator.
-// Placeholder — will be replaced in Task 3
-InlineSpan applyCommentDecoration({
-  required BuildContext context,
-  required Node node,
-  required int index,
-  required TextInsert textInsert,
-  required InlineSpan before,
-  required InlineSpan after,
-  required InlineCommentController controller,
-}) {
-  return before;
-}
 
 // ---------------------------------------------------------------------------
 // InlineCommentScope — InheritedWidget
