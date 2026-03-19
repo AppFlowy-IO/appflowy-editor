@@ -16,17 +16,16 @@ class CommentSidebarWidget extends StatefulWidget {
     super.key,
     required this.editorState,
     required this.controller,
-    required this.child,
     this.sidebarWidth = 240.0,
   });
 
   final EditorState editorState;
   final InlineCommentController controller;
 
-  /// The editor widget (takes all remaining horizontal space).
-  final Widget child;
-
   /// Width of the sidebar in logical pixels.
+  ///
+  /// Used as a reference for internal card spacing. The actual width of this
+  /// widget is controlled by the parent (e.g. a [SizedBox] inside a [Row]).
   final double sidebarWidth;
 
   @override
@@ -103,15 +102,9 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: widget.child),
-        SizedBox(
-          width: widget.sidebarWidth,
-          child: _buildSidebar(),
-        ),
-      ],
+    return SizedBox(
+      width: widget.sidebarWidth,
+      child: _buildSidebar(),
     );
   }
 

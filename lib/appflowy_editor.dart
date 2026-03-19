@@ -14,6 +14,7 @@ export 'src/editor/inline_comment/inline_comment.dart';
 export 'src/editor/inline_comment/inline_comment_controller.dart';
 export 'src/editor/inline_comment/inline_comment_service.dart' show CommentAnchor;
 export 'src/editor/inline_comment/comment_sidebar_widget.dart';
+export 'src/editor/inline_comment/inline_comment_widget.dart';
 export 'src/editor/inline_comment/comment_toolbar_item.dart';
 export 'src/editor/inline_comment/comment_mobile_toolbar_item.dart';
 export 'src/editor/find_replace_menu/find_and_replace.dart';
