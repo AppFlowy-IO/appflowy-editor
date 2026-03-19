@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_service_widget.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
@@ -47,6 +48,9 @@ class AppFlowyEditor extends StatefulWidget {
     this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
     this.documentRules = const [],
     this.blockWrapper,
+    this.inlineCommentController,
+    this.showCommentSidebar = false,
+    this.sidebarWidth = 240.0,
   })  : blockComponentBuilders =
             blockComponentBuilders ?? standardBlockComponentBuilderMap,
         characterShortcutEvents =
@@ -231,6 +235,10 @@ class AppFlowyEditor extends StatefulWidget {
   /// Wrap the block component with a widget.
   final BlockComponentWrapper? blockWrapper;
 
+  final InlineCommentController? inlineCommentController;
+  final bool showCommentSidebar;
+  final double sidebarWidth;
+
   @override
   State<AppFlowyEditor> createState() => _AppFlowyEditorState();
 }
@@ -351,6 +359,23 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         key: editorState.service.scrollServiceKey,
         editorScrollController: editorScrollController,
         child: child,
+      );
+    }
+
+    if (widget.inlineCommentController != null) {
+      final editorOrSidebar = widget.showCommentSidebar
+          ? CommentSidebarWidget(
+              editorState: editorState,
+              controller: widget.inlineCommentController!,
+              sidebarWidth: widget.sidebarWidth,
+              child: child,
+            )
+          : child;
+
+      child = InlineCommentServiceWidget(
+        editorState: editorState,
+        controller: widget.inlineCommentController!,
+        child: editorOrSidebar,
       );
     }
 
