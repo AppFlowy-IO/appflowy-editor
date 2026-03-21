@@ -21,7 +21,22 @@ class PdfHTMLEncoder {
     required this.fontFallback,
   });
 
-  Future<pw.Document> convert(String input) async {
+  Future<pw.Document> convert(
+    String input,
+    {
+      pw.CrossAxisAlignment crossAxisAlignment = pw.CrossAxisAlignment.start,
+      pw.BuildCallback? footer,
+      pw.BuildCallback? header,
+      pw.MainAxisAlignment mainAxisAlignment = pw.MainAxisAlignment.start,
+      pw.EdgeInsetsGeometry? margin,
+      int maxPages = 20,
+      pw.PageOrientation? orientation,
+      pdf.PdfPageFormat? pageFormat,
+      pw.PageTheme? pageTheme,
+      pw.TextDirection? textDirection,
+      pw.ThemeData? theme
+    }
+  ) async {
     final htmlx = md.markdownToHtml(
       input,
       blockSyntaxes: const [
@@ -42,6 +57,12 @@ class PdfHTMLEncoder {
           build: (pw.Context context) {
             return pw.Column(children: [pw.SizedBox.shrink()]);
           },
+          margin: margin,
+          orientation: orientation,
+          pageFormat: pageFormat,
+          pageTheme: pageTheme,
+          textDirection: textDirection,
+          theme: theme,
         ),
       );
 
@@ -50,7 +71,20 @@ class PdfHTMLEncoder {
     final nodes = await _parseElement(body.nodes);
     final newPdf = pw.Document();
     newPdf.addPage(
-      pw.MultiPage(build: (pw.Context context) => nodes.toList()),
+      pw.MultiPage(
+        build: (pw.Context context) => nodes.toList(),
+        crossAxisAlignment: crossAxisAlignment,
+        footer: footer,
+        header: header,
+        mainAxisAlignment: mainAxisAlignment,
+        margin: margin,
+        maxPages: maxPages,
+        orientation: orientation,
+        pageFormat: pageFormat,
+        pageTheme: pageTheme,
+        textDirection: textDirection,
+        theme: theme,
+      ),
     );
 
     return newPdf;
