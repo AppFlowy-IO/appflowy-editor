@@ -132,8 +132,9 @@ class CommentCard extends StatelessWidget {
         height: 28,
         child: TextButton(
           onPressed: () async {
-            await controller.onCommentDeleted(comment.id);
-            controller.removeComment(comment.id);
+            final id = comment.id;
+            await controller.onCommentDeleted(id);
+            controller.removeComment(id);
           },
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.onSurface.withValues(alpha: 0.5),
