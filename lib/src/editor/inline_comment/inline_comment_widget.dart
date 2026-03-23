@@ -1,13 +1,17 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'inline_comment_service.dart';
-import 'comment_text_span_decorator.dart';
 
 /// A wrapper widget that adds inline comment support to [AppFlowyEditor].
 ///
 /// Place this widget **around** [AppFlowyEditor] instead of modifying the
 /// editor itself. The editor remains completely unaware of comments.
+///
+/// **Important:** To render comment highlights the caller must pass a
+/// [buildCommentTextSpanDecorator] as the `textSpanDecorator` of the
+/// [EditorStyle] supplied to [AppFlowyEditor]. This widget no longer
+/// monkey-patches the decorator at runtime, which avoids the bug where
+/// `AppFlowyEditor._updateValues()` would overwrite the decorator.
 ///
 /// Usage:
 /// ```dart
@@ -17,10 +21,11 @@ import 'comment_text_span_decorator.dart';
 ///   showSidebar: true,
 ///   child: AppFlowyEditor(
 ///     editorState: editorState,
-///     floatingToolbarItems: [
-///       ...standardFloatingToolbarItems,
-///       buildCommentToolbarItem(myController),
-///     ],
+///     editorStyle: EditorStyle.desktop(
+///       textSpanDecorator: buildCommentTextSpanDecorator(
+///         controller: myController,
+///       ),
+///     ),
 ///   ),
 /// )
 /// ```
@@ -56,8 +61,6 @@ class InlineCommentWidget extends StatefulWidget {
 
 class _InlineCommentWidgetState extends State<InlineCommentWidget> {
   late InlineCommentService _service;
-  TextSpanDecoratorForAttribute? _previousDecorator;
-  final Map<String, TapGestureRecognizer> _recognizers = {};
 
   @override
   void initState() {
@@ -66,101 +69,25 @@ class _InlineCommentWidgetState extends State<InlineCommentWidget> {
       editorState: widget.editorState,
       controller: widget.controller,
     );
-    widget.controller.addListener(_onControllerChanged);
-    _installDecorator();
   }
 
   @override
   void didUpdateWidget(covariant InlineCommentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final editorChanged = widget.editorState != oldWidget.editorState;
-    final controllerChanged = widget.controller != oldWidget.controller;
-
-    if (editorChanged || controllerChanged) {
-      oldWidget.controller.removeListener(_onControllerChanged);
+    if (widget.editorState != oldWidget.editorState ||
+        widget.controller != oldWidget.controller) {
       _service.dispose();
-      _restoreDecorator();
-      _disposeRecognizers();
-
       _service = InlineCommentService(
         editorState: widget.editorState,
         controller: widget.controller,
       );
-      widget.controller.addListener(_onControllerChanged);
-      _installDecorator();
     }
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onControllerChanged);
     _service.dispose();
-    _restoreDecorator();
-    _disposeRecognizers();
     super.dispose();
-  }
-
-  void _onControllerChanged() {
-    _disposeRecognizers();
-  }
-
-  void _disposeRecognizers() {
-    for (final r in _recognizers.values) {
-      r.dispose();
-    }
-    _recognizers.clear();
-  }
-
-  TapGestureRecognizer _getOrCreateRecognizer(
-    String commentId,
-    InlineCommentController controller,
-    BuildContext context,
-  ) {
-    return _recognizers.putIfAbsent(commentId, TapGestureRecognizer.new);
-  }
-
-  void _installDecorator() {
-    _previousDecorator = widget.editorState.editorStyle.textSpanDecorator;
-    widget.editorState.editorStyle = widget.editorState.editorStyle.copyWith(
-      textSpanDecorator: _buildChainedDecorator(
-        _previousDecorator,
-        widget.controller,
-      ),
-    );
-  }
-
-  void _restoreDecorator() {
-    widget.editorState.editorStyle = widget.editorState.editorStyle.copyWith(
-      textSpanDecorator: _previousDecorator,
-    );
-  }
-
-  TextSpanDecoratorForAttribute _buildChainedDecorator(
-    TextSpanDecoratorForAttribute? existing,
-    InlineCommentController controller,
-  ) {
-    return (context, node, index, textInsert, before, after) {
-      // First, run the previously installed decorator (if any).
-      final intermediate =
-          existing?.call(context, node, index, textInsert, before, after) ??
-              before;
-
-      // Then apply comment decoration on top.
-      // `intermediate` may be an InlineSpan (e.g. a WidgetSpan) that is not a
-      // TextSpan. In that case, skip the comment decorator to avoid a cast
-      // error.
-      if (intermediate is! TextSpan) return intermediate;
-      return applyCommentDecoration(
-        context: context,
-        node: node,
-        index: index,
-        textInsert: textInsert,
-        before: intermediate,
-        after: after,
-        controller: controller,
-        recognizerProvider: _getOrCreateRecognizer,
-      );
-    };
   }
 
   @override

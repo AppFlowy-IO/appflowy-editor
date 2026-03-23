@@ -4,6 +4,42 @@ import 'package:flutter/material.dart';
 import 'inline_comment.dart';
 import 'inline_comment_controller.dart';
 
+/// Builds a [TextSpanDecoratorForAttribute] that highlights text with
+/// inline comments.
+///
+/// Pass the result as the `textSpanDecorator` of your [EditorStyle]:
+///
+/// ```dart
+/// EditorStyle.desktop(
+///   textSpanDecorator: buildCommentTextSpanDecorator(
+///     controller: myController,
+///   ),
+/// )
+/// ```
+///
+/// If you have an existing decorator (e.g. the default href handler), pass
+/// it as [base] to chain them together.
+TextSpanDecoratorForAttribute buildCommentTextSpanDecorator({
+  required InlineCommentController controller,
+  TextSpanDecoratorForAttribute? base,
+}) {
+  base ??= defaultTextSpanDecoratorForAttribute;
+  return (context, node, index, textInsert, before, after) {
+    final intermediate =
+        base!.call(context, node, index, textInsert, before, after);
+    if (intermediate is! TextSpan) return intermediate;
+    return applyCommentDecoration(
+      context: context,
+      node: node,
+      index: index,
+      textInsert: textInsert,
+      before: intermediate,
+      after: after,
+      controller: controller,
+    );
+  };
+}
+
 /// Applies comment highlight decoration to a [TextInsert] that carries comment ids.
 ///
 /// This function is designed to be used as part of a chained

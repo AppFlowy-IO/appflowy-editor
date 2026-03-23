@@ -181,6 +181,9 @@ class _InlineCommentEditorState extends State<InlineCommentEditor> {
             editorScrollController: editorScrollController,
             editorStyle: EditorStyle.desktop(
               padding: const EdgeInsets.symmetric(horizontal: 40),
+              textSpanDecorator: buildCommentTextSpanDecorator(
+                controller: commentController,
+              ),
             ),
           ),
         ),

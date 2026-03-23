@@ -17,6 +17,8 @@ export 'src/editor/inline_comment/comment_sidebar_widget.dart';
 export 'src/editor/inline_comment/inline_comment_widget.dart';
 export 'src/editor/inline_comment/comment_toolbar_item.dart';
 export 'src/editor/inline_comment/comment_mobile_toolbar_item.dart';
+export 'src/editor/inline_comment/comment_text_span_decorator.dart'
+    show buildCommentTextSpanDecorator;
 export 'src/editor/find_replace_menu/find_and_replace.dart';
 export 'src/editor/l10n/appflowy_editor_l10n.dart';
 export 'src/editor/selection_menu/selection_menu.dart';
