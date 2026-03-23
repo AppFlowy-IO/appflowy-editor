@@ -102,8 +102,16 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
       width: widget.sidebarWidth,
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+          ),
+        ),
+      ),
       child: _buildSidebar(),
     );
   }
@@ -148,8 +156,8 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
     double sidebarTop,
   ) {
     double lastBottom = 0;
-    const minGap = 8.0;
-    const estimatedCardHeight = 80.0;
+    const minGap = 6.0;
+    const estimatedCardHeight = 72.0;
     final widgets = <Widget>[];
 
     for (final comment in comments) {
@@ -160,8 +168,8 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
       widgets.add(
         Positioned(
           top: top,
-          left: 8,
-          right: 8,
+          left: 12,
+          right: 12,
           child: CommentCard(
             comment: comment,
             controller: widget.controller,

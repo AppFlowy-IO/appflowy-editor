@@ -5,7 +5,7 @@ import 'inline_comment_controller.dart';
 /// A card widget that displays a single [InlineComment].
 ///
 /// Shows the author name, relative time, comment content, and action buttons
-/// (resolve / delete). The card is visually elevated when [isFocused] is true.
+/// (delete). The card is visually elevated when [isFocused] is true.
 class CommentCard extends StatelessWidget {
   const CommentCard({
     super.key,
@@ -22,51 +22,134 @@ class CommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
-      onTap: () => onFocusChanged?.call(true),
+      onTap: () => onFocusChanged?.call(!isFocused),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(vertical: 2),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: isFocused
+              ? colorScheme.primaryContainer.withValues(alpha: 0.3)
+              : colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isFocused
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            width: 1.5,
+                ? colorScheme.primary.withValues(alpha: 0.5)
+                : colorScheme.outlineVariant.withValues(alpha: 0.4),
           ),
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: isFocused
-              ? [
-                  BoxShadow(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.15),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 6),
+            Text(
+              comment.content,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.85),
+                height: 1.4,
+              ),
+              maxLines: isFocused ? null : 2,
+              overflow: isFocused ? null : TextOverflow.ellipsis,
+            ),
+            if (isFocused && !comment.isResolved) ...[
+              const SizedBox(height: 8),
+              _buildActions(context),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Row(
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              comment.authorName.isNotEmpty
+                  ? comment.authorName[0].toUpperCase()
+                  : '?',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: colorScheme.primary,
+                fontWeight: FontWeight.w600,
+                fontSize: 10,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            comment.authorName,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (comment.isResolved) ...[
+          Icon(
+            Icons.check_circle,
+            size: 14,
+            color: colorScheme.primary,
+          ),
+          const SizedBox(width: 4),
+        ],
+        Text(
+          _formatRelativeTime(comment.createdAt),
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurface.withValues(alpha: 0.45),
+            fontSize: 11,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActions(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: 28,
+        child: TextButton(
+          onPressed: () async {
+            await controller.onCommentDeleted(comment.id);
+            controller.removeComment(comment.id);
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: colorScheme.onSurface.withValues(alpha: 0.5),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildHeader(context),
-              const SizedBox(height: 4),
-              Text(
-                comment.content,
-                style: Theme.of(context).textTheme.bodySmall,
-                maxLines: isFocused ? null : 3,
-                overflow: isFocused ? null : TextOverflow.ellipsis,
-              ),
-              if (isFocused) ...[
-                const SizedBox(height: 8),
-                _buildActions(context),
-              ],
+              Icon(Icons.delete_outline, size: 14),
+              SizedBox(width: 4),
+              Text('Delete', style: TextStyle(fontSize: 12)),
             ],
           ),
         ),
@@ -74,65 +157,14 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            comment.authorName,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        Text(
-          _formatRelativeTime(comment.createdAt),
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.outline,
-              ),
-        ),
-        if (comment.isResolved) ...[
-          const SizedBox(width: 4),
-          Icon(
-            Icons.check_circle_outline,
-            size: 12,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildActions(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (!comment.isResolved)
-          TextButton.icon(
-            onPressed: () async {
-              await controller.onCommentDeleted(comment.id);
-              controller.removeComment(comment.id);
-            },
-            icon: const Icon(Icons.delete_outline, size: 14),
-            label: const Text('Delete'),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-          ),
-      ],
-    );
-  }
-
   String _formatRelativeTime(DateTime dateTime) {
     final now = DateTime.now();
     final diff = now.difference(dateTime);
-    if (diff.inDays > 0) return '${diff.inDays}d ago';
-    if (diff.inHours > 0) return '${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
-    return 'just now';
+    if (diff.inDays > 365) return '${diff.inDays ~/ 365}y';
+    if (diff.inDays > 30) return '${diff.inDays ~/ 30}mo';
+    if (diff.inDays > 0) return '${diff.inDays}d';
+    if (diff.inHours > 0) return '${diff.inHours}h';
+    if (diff.inMinutes > 0) return '${diff.inMinutes}m';
+    return 'now';
   }
 }
