@@ -50,6 +50,13 @@ class AutoScroller extends EdgeDraggingAutoScroller
       );
     }
 
+    if (direction != null && direction == AxisDirection.down) {
+      return startAutoScrollIfNecessary(
+        Rect.fromLTWH(offset.dx, offset.dy, 1, edgeOffset),
+        duration: duration,
+      );
+    }
+
     final dragTarget = Rect.fromCenter(
       center: offset,
       width: edgeOffset,
