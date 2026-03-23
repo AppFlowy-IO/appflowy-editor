@@ -5,12 +5,10 @@ import 'inline_comment_controller.dart';
 import 'inline_comment_service.dart';
 import 'comment_card_widget.dart';
 
-/// Desktop sidebar that displays all [InlineComment]s aligned to their
-/// text anchors in the editor.
+/// Desktop sidebar that displays all [InlineComment]s in document order.
 ///
-/// Uses [InlineCommentService.scanAnchors] to determine each comment's
-/// vertical position by resolving its anchor to a screen Y-coordinate,
-/// then renders comment cards in a [Stack] with [Positioned] children.
+/// Uses [InlineCommentService.scanDocumentAnchors] to determine each comment's
+/// order by its text position, then renders cards in a scrollable column.
 class CommentSidebarWidget extends StatefulWidget {
   const CommentSidebarWidget({
     super.key,
@@ -23,9 +21,6 @@ class CommentSidebarWidget extends StatefulWidget {
   final InlineCommentController controller;
 
   /// Width of the sidebar in logical pixels.
-  ///
-  /// Used as a reference for internal card spacing. The actual width of this
-  /// widget is controlled by the parent (e.g. a [SizedBox] inside a [Row]).
   final double sidebarWidth;
 
   @override
@@ -33,71 +28,60 @@ class CommentSidebarWidget extends StatefulWidget {
 }
 
 class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
-  final Map<String, double> _commentTopPositions = {};
+  List<String> _orderedCommentIds = [];
   String? _focusedCommentId;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_schedulePositionUpdate);
+    widget.controller.addListener(_onCommentsChanged);
+    _updateOrder();
   }
 
   @override
   void didUpdateWidget(covariant CommentSidebarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_schedulePositionUpdate);
-      widget.controller.addListener(_schedulePositionUpdate);
-      _schedulePositionUpdate();
+      oldWidget.controller.removeListener(_onCommentsChanged);
+      widget.controller.addListener(_onCommentsChanged);
     }
+    _updateOrder();
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_schedulePositionUpdate);
+    widget.controller.removeListener(_onCommentsChanged);
     super.dispose();
   }
 
-  void _schedulePositionUpdate() {
+  void _onCommentsChanged() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _updateCommentPositions();
+      if (mounted) {
+        _updateOrder();
+        setState(() {});
+      }
     });
   }
 
-  void _updateCommentPositions() {
+  void _updateOrder() {
     final anchors = InlineCommentService.scanDocumentAnchors(
       widget.editorState.document,
     );
-    final newPositions = <String, double>{};
-
-    for (final entry in anchors.entries) {
-      final commentId = entry.key;
-      final anchor = entry.value;
-
-      final node = widget.editorState.document.nodeAtPath(anchor.nodePath);
-      if (node == null) continue;
-
-      // Get the selectable interface to query cursor rect
-      final selectable = node.selectable;
-      if (selectable == null) continue;
-
-      final rect = selectable.getCursorRectInPosition(
-        Position(path: anchor.nodePath, offset: anchor.startOffset),
-      );
-      if (rect == null) continue;
-
-      // Convert the local cursor position to global Y using selectable.localToGlobal
-      final globalOffset = selectable.localToGlobal(rect.topLeft);
-      newPositions[commentId] = globalOffset.dy;
-    }
-
-    if (mounted) {
-      setState(() {
-        _commentTopPositions
-          ..clear()
-          ..addAll(newPositions);
+    // Sort comment ids by their document position (path then offset).
+    final sortedIds = anchors.entries.toList()
+      ..sort((a, b) {
+        final pathCmp = _comparePaths(a.value.nodePath, b.value.nodePath);
+        if (pathCmp != 0) return pathCmp;
+        return a.value.startOffset.compareTo(b.value.startOffset);
       });
+    _orderedCommentIds = sortedIds.map((e) => e.key).toList();
+  }
+
+  int _comparePaths(List<int> a, List<int> b) {
+    for (int i = 0; i < a.length && i < b.length; i++) {
+      if (a[i] != b[i]) return a[i].compareTo(b[i]);
     }
+    return a.length.compareTo(b.length);
   }
 
   @override
@@ -120,72 +104,36 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, _) {
-        final comments = widget.controller.comments
-            .where((c) => _commentTopPositions.containsKey(c.id))
-            .toList()
-          ..sort(
-            (a, b) => _commentTopPositions[a.id]!
-                .compareTo(_commentTopPositions[b.id]!),
-          );
+        // Filter to comments that exist in both the controller and the document.
+        final comments = _orderedCommentIds
+            .map((id) => widget.controller.findById(id))
+            .whereType<InlineComment>()
+            .toList();
 
         if (comments.isEmpty) return const SizedBox.shrink();
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final sidebarTop = _getSidebarTop(context);
-            final positioned = _buildPositionedCards(
-              comments,
-              sidebarTop,
-            );
-            return Stack(children: positioned);
-          },
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (int i = 0; i < comments.length; i++) ...[
+                if (i > 0) const SizedBox(height: 8),
+                CommentCard(
+                  comment: comments[i],
+                  controller: widget.controller,
+                  isFocused: _focusedCommentId == comments[i].id,
+                  onFocusChanged: (focused) {
+                    setState(() {
+                      _focusedCommentId = focused ? comments[i].id : null;
+                    });
+                  },
+                ),
+              ],
+            ],
+          ),
         );
       },
     );
-  }
-
-  /// Returns the global Y of the top edge of this sidebar widget.
-  double _getSidebarTop(BuildContext context) {
-    final box = context.findRenderObject() as RenderBox?;
-    if (box == null) return 0;
-    return box.localToGlobal(Offset.zero).dy;
-  }
-
-  List<Widget> _buildPositionedCards(
-    List<InlineComment> comments,
-    double sidebarTop,
-  ) {
-    double lastBottom = 0;
-    const minGap = 6.0;
-    const estimatedCardHeight = 72.0;
-    final widgets = <Widget>[];
-
-    for (final comment in comments) {
-      final globalY = _commentTopPositions[comment.id]!;
-      double top = globalY - sidebarTop;
-      if (top < lastBottom + minGap) top = lastBottom + minGap;
-
-      widgets.add(
-        Positioned(
-          top: top,
-          left: 12,
-          right: 12,
-          child: CommentCard(
-            comment: comment,
-            controller: widget.controller,
-            isFocused: _focusedCommentId == comment.id,
-            onFocusChanged: (focused) {
-              setState(() {
-                _focusedCommentId = focused ? comment.id : null;
-              });
-            },
-          ),
-        ),
-      );
-
-      lastBottom = top + estimatedCardHeight;
-    }
-
-    return widgets;
   }
 }

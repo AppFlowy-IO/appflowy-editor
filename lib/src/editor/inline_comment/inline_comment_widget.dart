@@ -94,7 +94,7 @@ class _InlineCommentWidgetState extends State<InlineCommentWidget> {
   Widget build(BuildContext context) {
     if (widget.showSidebar) {
       return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(child: widget.child),
           CommentSidebarWidget(
