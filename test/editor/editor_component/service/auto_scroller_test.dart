@@ -102,14 +102,17 @@ void main() {
 
         expect(scroller.capturedRect, isNotNull);
 
-        // For AxisDirection.down the generic Rect.fromCenter path is used.
+        // For AxisDirection.down the rect starts at offset and extends downward.
         expect(
-          scroller.capturedRect!.center,
-          offset,
-          reason:
-              'right handle proxy rect should be centered on the handle offset',
+          scroller.capturedRect!.top,
+          offset.dy,
+          reason: 'proxy rect should start at the handle position',
         );
-        expect(scroller.capturedRect!.width, edgeOffset);
+        expect(
+          scroller.capturedRect!.bottom,
+          offset.dy + edgeOffset,
+          reason: 'proxy rect should extend edgeOffset pixels BELOW the handle',
+        );
         expect(scroller.capturedRect!.height, edgeOffset);
       },
     );
