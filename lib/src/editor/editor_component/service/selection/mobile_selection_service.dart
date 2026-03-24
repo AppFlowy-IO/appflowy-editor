@@ -764,6 +764,7 @@ class _MobileSelectionServiceWidgetState
       selection,
       reason: SelectionUpdateReason.uiEvent,
       extraInfo: {
+        selectionDragModeKey: dragMode,
         selectionExtraInfoDisableFloatingToolbar: true,
       },
     );
@@ -812,6 +813,7 @@ class _MobileSelectionServiceWidgetState
         newSelection,
         reason: SelectionUpdateReason.uiEvent,
         extraInfo: {
+          selectionDragModeKey: dragMode,
           selectionExtraInfoDisableFloatingToolbar: true,
         },
       );

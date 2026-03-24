@@ -118,6 +118,17 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           targetRect = selectionRects.last;
           direction = AxisDirection.down;
           break;
+
+        case 'MobileSelectionDragMode.cursor':
+          targetRect = selectionRects.last;
+          if (lastSelection != null) {
+            final isMovingUp = selection.end.path < lastSelection!.end.path ||
+                (selection.end.path.equals(lastSelection!.end.path) &&
+                    selection.end.offset < lastSelection!.end.offset);
+            direction = isMovingUp ? AxisDirection.up : AxisDirection.down;
+          }
+          break;
+
         default:
           targetRect = selectionRects.last;
 
@@ -140,7 +151,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             (dragMode.toString() ==
                     'MobileSelectionDragMode.leftSelectionHandle' ||
                 dragMode.toString() ==
-                    'MobileSelectionDragMode.rightSelectionHandle');
+                    'MobileSelectionDragMode.rightSelectionHandle' ||
+                dragMode.toString() == 'MobileSelectionDragMode.cursor');
 
         // Use animation for drag operations, instant for others
         final scrollDuration =
