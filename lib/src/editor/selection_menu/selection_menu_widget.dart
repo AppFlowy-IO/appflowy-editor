@@ -35,8 +35,9 @@ class SelectionMenuItem {
     required String Function() getName,
     required List<String> keywords,
     required FutureOr<Node> Function(
-            EditorState editorState, BuildContext context)
-        nodeBuilder,
+      EditorState editorState,
+      BuildContext context,
+    ) nodeBuilder,
     IconData? iconData,
     Widget Function(
       EditorState editorState,
