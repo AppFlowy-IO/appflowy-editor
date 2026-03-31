@@ -54,7 +54,6 @@ void main() {
 
         scroller.startAutoScroll(
           offset,
-          edgeOffset: edgeOffset,
           direction: AxisDirection.up,
         );
 
@@ -96,7 +95,6 @@ void main() {
 
         scroller.startAutoScroll(
           offset,
-          edgeOffset: edgeOffset,
           direction: AxisDirection.down,
         );
 
