@@ -427,7 +427,6 @@ void main() async {
       transaction,
       options: const ApplyOptions(
         recordUndo: false,
-        recordRedo: false,
         source: TransactionSource.none,
       ),
     );

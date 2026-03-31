@@ -203,7 +203,7 @@ void main() async {
 
       // Place cursor at [0] offset 0
       await editor.updateSelection(
-        Selection.collapsed(Position(path: [0], offset: 0)),
+        Selection.collapsed(Position(path: [0])),
       );
 
       // Type 4 characters with pumpAndSettle between each
