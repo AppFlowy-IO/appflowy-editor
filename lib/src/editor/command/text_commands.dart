@@ -255,6 +255,12 @@ extension TextTransforms on EditorState {
     final transaction = this.transaction;
 
     for (final node in nodes) {
+
+      // if node is table, skip
+      if (node.type == TableCellBlockKeys.type) {
+        continue;
+      }
+      
       transaction
         ..insertNode(
           node.path,
