@@ -18,6 +18,7 @@ Document markdownToDocument(
     markdownParsers: [
       ...markdownParsers,
       const MarkdownParagraphParserV2(),
+      const MarkdownSoftCodeBlockParser(),
       const MarkdownHeadingParserV2(),
       const MarkdownTodoListParserV2(),
       const MarkdownUnorderedListParserV2(),
