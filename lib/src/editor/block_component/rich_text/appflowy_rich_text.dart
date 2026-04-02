@@ -221,8 +221,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       }
     }
 
-    double? cursorHeight =
-        _renderParagraph?.getFullHeightForCaret(textPosition);
+    // Fix: Use consistent cursor height based on font metrics instead of
+    // getFullHeightForCaret() which returns different heights for different
+    // characters (especially spaces vs letters on iOS).
+    // See: https://github.com/AppFlowy-IO/appflowy-editor/issues/1137
+    final fontSize = textStyleConfiguration.text.fontSize ?? 16.0;
+    double? cursorHeight = fontSize * 1.2;
     Offset? cursorOffset =
         _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
             Offset.zero;
