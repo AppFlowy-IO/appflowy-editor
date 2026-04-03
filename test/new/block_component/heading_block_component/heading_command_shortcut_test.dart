@@ -149,5 +149,31 @@ void main() async {
       node = editorState.getNodeAtPath([0])!;
       expect(node.type, ParagraphBlockKeys.type);
     });
+
+    test('toggle H1 preserves each selected node text', () {
+      const firstText = 'First paragraph';
+      const secondText = 'Second paragraph';
+      final document = Document.blank()
+        ..addParagraph(initialText: firstText)
+        ..addParagraph(initialText: secondText);
+
+      final editorState = EditorState(document: document)
+        ..selection = Selection(
+          start: Position(path: [0], offset: 0),
+          end: Position(path: [1], offset: secondText.length),
+        );
+
+      toggleH1.execute(editorState);
+
+      final firstNode = editorState.getNodeAtPath([0])!;
+      final secondNode = editorState.getNodeAtPath([1])!;
+
+      expect(firstNode.type, HeadingBlockKeys.type);
+      expect(secondNode.type, HeadingBlockKeys.type);
+      expect(firstNode.attributes[HeadingBlockKeys.level], 1);
+      expect(secondNode.attributes[HeadingBlockKeys.level], 1);
+      expect(firstNode.delta?.toPlainText(), firstText);
+      expect(secondNode.delta?.toPlainText(), secondText);
+    });
   });
 }
