@@ -36,23 +36,27 @@ class HtmlTableNodeParser extends HTMLNodeParser {
       for (var j = 0; j < colsLen; j++) {
         final Node cell = getCellNode(node, j, i)!;
 
+        final List<dom.Node> cellNodes = [];
         for (final childnode in cell.children) {
           HTMLNodeParser? parser = encodeParsers.firstWhereOrNull(
             (element) => element.id == childnode.type,
           );
 
           if (parser != null) {
-            nodes.add(
-              wrapChildrenNodesWithTagName(
-                HTMLTags.tabledata,
-                childNodes: parser.transformNodeToDomNodes(
-                  childnode,
-                  encodeParsers: encodeParsers,
-                ),
+            cellNodes.addAll(
+              parser.transformNodeToDomNodes(
+                childnode,
+                encodeParsers: encodeParsers,
               ),
             );
           }
         }
+        nodes.add(
+          wrapChildrenNodesWithTagName(
+            HTMLTags.tabledata,
+            childNodes: cellNodes,
+          ),
+        );
       }
       final rowelement =
           wrapChildrenNodesWithTagName(HTMLTags.tableRow, childNodes: nodes);
@@ -68,3 +72,4 @@ class HtmlTableNodeParser extends HTMLNodeParser {
     ];
   }
 }
+

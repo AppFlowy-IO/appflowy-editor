@@ -201,13 +201,19 @@ class PdfHTMLEncoder {
   }
 
   Future<Iterable<pw.Widget>> _parseRawTableData(dom.Element element) async {
-    List<pw.TableRow> tableRows = [];
+    List<pw.Widget> widgets = [];
+    widgets.add(pw.SizedBox(height: 8));
+    widgets.add(pw.Divider(color: pdf.PdfColors.black, thickness: 1));
 
-    for (dom.Element row in element.querySelectorAll('tr')) {
+    final rows = element.querySelectorAll('tr');
+    for (int i = 0; i < rows.length; i++) {
+      final row = rows[i];
       List<pw.Widget> rowData = [];
-      for (final dom.Element cell in row.children) {
+      
+      final cells = row.children;
+      for (int j = 0; j < cells.length; j++) {
+        final cell = cells[j];
         List<pw.Widget> cellContent = [];
-        //NOTE: Handle nested HTML tags within table cells
         for (final dom.Node node in cell.nodes) {
           if (node.nodeType == dom.Node.ELEMENT_NODE) {
             dom.Element element = node as dom.Element;
@@ -238,17 +244,28 @@ class PdfHTMLEncoder {
           }
         }
 
-        rowData.add(pw.Wrap(children: cellContent));
+        if (j > 0 && cellContent.isNotEmpty) {
+           rowData.add(pw.Text(' \u2014 ', style: pw.TextStyle(font: font, fontFallback: fontFallback, fontWeight: pw.FontWeight.bold)));
+        }
+        rowData.addAll(cellContent);
       }
-      tableRows.add(pw.TableRow(children: rowData));
+
+      widgets.add(pw.Wrap(
+        children: rowData,
+        spacing: 4,
+        runSpacing: 4,
+      ));
+
+      if (i < rows.length - 1) {
+        widgets.add(pw.SizedBox(height: 4));
+        widgets.add(pw.Divider(color: pdf.PdfColors.grey400, thickness: 0.5));
+        widgets.add(pw.SizedBox(height: 4));
+      }
     }
 
-    return [
-      pw.Table(
-        children: tableRows,
-        border: pw.TableBorder.all(color: pdf.PdfColors.black),
-      ),
-    ];
+    widgets.add(pw.Divider(color: pdf.PdfColors.black, thickness: 1));
+    widgets.add(pw.SizedBox(height: 8));
+    return widgets;
   }
 
   (pw.TextAlign?, pw.TextStyle) _parserFormattingElementAttributes(
@@ -680,3 +697,4 @@ extension HeaderSize on int {
     }
   }
 }
+
