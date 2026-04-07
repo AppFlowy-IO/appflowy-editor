@@ -163,6 +163,7 @@ class SearchServiceV3 {
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
         selectionExtraInfoDoNotAttachTextService: true,
+        selectionExtraInfoDisableMobileToolbarKey: true,
       },
     );
   }
