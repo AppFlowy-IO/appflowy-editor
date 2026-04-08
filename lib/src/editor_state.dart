@@ -32,6 +32,10 @@ const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
 const _selectionDragModeKey = 'selection_drag_mode';
 
+/// The border radius for selection area rendering.
+/// The type of this value is double.
+const selectionExtraInfoSelectionRadius = 'selectionExtraInfoSelectionRadius';
+
 class ApplyOptions {
   const ApplyOptions({
     this.recordUndo = true,

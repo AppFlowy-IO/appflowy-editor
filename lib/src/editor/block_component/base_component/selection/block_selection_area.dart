@@ -155,9 +155,15 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
                   prevSelectionRects!.first.width == 0)) {
             return sizedBox;
           }
+          final radius = editorState.selectionExtraInfo is Map
+              ? (editorState.selectionExtraInfo![
+                      selectionExtraInfoSelectionRadius] as double?) ??
+                  0.0
+              : 0.0;
           return SelectionAreaPaint(
             rects: prevSelectionRects!,
             selectionColor: widget.selectionColor,
+            radius: radius,
           );
         }
       },

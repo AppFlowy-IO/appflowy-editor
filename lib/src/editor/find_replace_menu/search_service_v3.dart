@@ -164,6 +164,7 @@ class SearchServiceV3 {
         selectionExtraInfoDisableToolbar: true,
         selectionExtraInfoDoNotAttachTextService: true,
         selectionExtraInfoDisableMobileToolbarKey: true,
+        selectionExtraInfoSelectionRadius: 6.0,
       },
     );
   }
