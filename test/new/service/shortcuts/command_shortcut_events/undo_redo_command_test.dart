@@ -184,11 +184,63 @@ void main() async {
       expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
       expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
 
-      // second redo
+      // second redo - should restore the tab indent
       await _pressRedoCommand(editor);
       expect(editor.nodeAtPath([0])!.delta!.toPlainText(), text0);
-      expect(editor.nodeAtPath([1])!.delta!.toPlainText(), isEmpty);
-      expect(editor.nodeAtPath([1, 0])!.delta!.toPlainText(), text01);
+      expect(editor.nodeAtPath([0, 0])!.delta!.toPlainText(), isEmpty);
+      expect(editor.nodeAtPath([0, 0, 0])!.delta!.toPlainText(), text01);
+
+      await editor.dispose();
+    });
+
+    // Type A, B, C, D with delays between each,
+    // undo 4 times to empty, then redo 4 times.
+    // Each redo should restore one character.
+    testWidgets('Multi-step typing then multi-step undo and redo',
+        (tester) async {
+      final editor = tester.editor..addParagraph(initialText: '');
+      await editor.startTesting();
+
+      // Place cursor at [0] offset 0
+      await editor.updateSelection(
+        Selection.collapsed(Position(path: [0])),
+      );
+
+      // Type 4 characters with pumpAndSettle between each
+      // to ensure debounce sealing
+      await editor.ime.typeText('A');
+      await tester.pumpAndSettle();
+      await editor.ime.typeText('B');
+      await tester.pumpAndSettle();
+      await editor.ime.typeText('C');
+      await tester.pumpAndSettle();
+      await editor.ime.typeText('D');
+      await tester.pumpAndSettle();
+
+      expect(
+        editor.nodeAtPath([0])!.delta!.toPlainText(),
+        'ABCD',
+      );
+
+      // Undo 4 times
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'ABC');
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'AB');
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'A');
+      await _pressUndoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), '');
+
+      // Redo 4 times - each should restore one character
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'A');
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'AB');
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'ABC');
+      await _pressRedoCommand(editor);
+      expect(editor.nodeAtPath([0])!.delta!.toPlainText(), 'ABCD');
 
       await editor.dispose();
     });

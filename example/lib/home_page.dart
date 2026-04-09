@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' if (dart.library.html) 'package:example/file_io_stub.dart';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
