@@ -72,6 +72,7 @@ flutter:
     - "assets/images/image_toolbar/"
     - "assets/images/"
     - "assets/mobile/toolbar_icons/"
+    - "assets/dictionary/words.txt"
 
 flutter_intl:
   enabled: true
