@@ -223,9 +223,7 @@ class SearchServiceV3 {
 
   /// Replaces all the found occurrences of pattern with replaceText
   void replaceAllMatches(String replaceText) {
-    if (replaceText.isEmpty ||
-        queriedPattern.isEmpty ||
-        matchWrappers.value.isEmpty) {
+    if (queriedPattern.isEmpty || matchWrappers.value.isEmpty) {
       return;
     }
 
