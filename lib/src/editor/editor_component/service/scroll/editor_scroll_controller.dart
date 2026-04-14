@@ -222,6 +222,15 @@ class EditorScrollController {
     }
   }
 
+  void refreshVisibleRangeNotifier() {
+    if (shrinkWrap) {
+      visibleRangeNotifier.value =
+          (0, editorState.document.root.children.length - 1);
+    } else {
+      _listenItemPositions();
+    }
+  }
+
   // listen to the visible item positions
   void _listenItemPositions() {
     // the value from itemPositions is the list of item positions, we need to filter
