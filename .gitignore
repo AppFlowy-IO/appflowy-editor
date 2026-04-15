@@ -132,3 +132,5 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 
 .fvm/
+.claude/settings.local.json
+CLAUDE.md
