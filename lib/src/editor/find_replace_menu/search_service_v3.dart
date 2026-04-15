@@ -78,7 +78,7 @@ class SearchServiceV3 {
     try {
       pattern = _getPattern(target);
     } on FormatException {
-      matchWrappers.value.clear();
+      matchWrappers.value = [];
       return 'Regex';
     }
 
@@ -86,7 +86,7 @@ class SearchServiceV3 {
       // this means we have a new pattern, but before we highlight the new matches,
       // lets unhighlight the old pattern
       _findAndHighlight(queriedPattern, unHighlight: true);
-      matchWrappers.value.clear();
+      matchWrappers.value = [];
       queriedPattern = pattern;
       targetString = target;
     }
@@ -163,6 +163,8 @@ class SearchServiceV3 {
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
         selectionExtraInfoDoNotAttachTextService: true,
+        selectionExtraInfoDisableMobileToolbarKey: true,
+        selectionExtraInfoSelectionRadius: 6.0,
       },
     );
   }
@@ -215,15 +217,13 @@ class SearchServiceV3 {
       );
     await editorState.apply(transaction);
 
-    matchWrappers.value.clear();
+    matchWrappers.value = [];
     _findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurrences of pattern with replaceText
   void replaceAllMatches(String replaceText) {
-    if (replaceText.isEmpty ||
-        queriedPattern.isEmpty ||
-        matchWrappers.value.isEmpty) {
+    if (queriedPattern.isEmpty || matchWrappers.value.isEmpty) {
       return;
     }
 
@@ -247,7 +247,7 @@ class SearchServiceV3 {
 
       editorState.apply(transaction);
     }
-    matchWrappers.value.clear();
+    matchWrappers.value = [];
   }
 }
 
