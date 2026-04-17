@@ -8,9 +8,11 @@ const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
 class SearchServiceV3 {
   SearchServiceV3({
     required this.editorState,
+    this.jumpInterceptor,
   });
 
   final EditorState editorState;
+  final JumpInterceptor? jumpInterceptor;
 
   // matchWrappers.value will contain a list of matchWrappers of the matched patterns
   // the position here consists of the match and the node path of
@@ -155,7 +157,9 @@ class SearchServiceV3 {
   ) {
     final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
 
-    editorState.scrollService?.jumpTo(path.first);
+    if (jumpInterceptor?.call(path) == false) {
+      editorState.scrollService?.jumpTo(path.first);
+    }
 
     editorState.updateSelectionWithReason(
       selection,
@@ -274,3 +278,5 @@ extension on Pattern {
     }
   }
 }
+
+typedef JumpInterceptor = bool Function(Path path);
