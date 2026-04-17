@@ -16,6 +16,7 @@ import 'package:example/pages/editor.dart';
 import 'package:example/pages/editor_list.dart';
 import 'package:example/pages/fixed_toolbar_editor.dart';
 import 'package:example/pages/focus_example_for_editor.dart';
+import 'package:example/pages/inline_comment_editor.dart';
 import 'package:example/pages/markdown_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -277,6 +278,15 @@ class _HomePageState extends State<HomePage> {
                 builder: (context) => AutoExpandEditor(
                   editorState: EditorState.blank(),
                 ),
+              ),
+            );
+          }),
+
+          _buildListTile(context, 'Inline Comment', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const InlineCommentEditor(),
               ),
             );
           }),
