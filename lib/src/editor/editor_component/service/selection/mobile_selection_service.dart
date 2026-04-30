@@ -305,7 +305,11 @@ class _MobileSelectionServiceWidgetState
                 shiftWithBaseOffset: true,
               );
 
-        if (node == null || rects == null || rects.isEmpty) {
+        if (node == null ||
+            rects == null ||
+            rects.isEmpty ||
+            editorState.selectionUpdateReason ==
+                SelectionUpdateReason.searchHighlight) {
           return const SizedBox.shrink();
         }
 
