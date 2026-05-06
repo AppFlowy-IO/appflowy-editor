@@ -34,26 +34,22 @@ class MobileSelectionHandle extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(handleType != HandleType.collapsed);
 
-    var adjustedRect = rect;
+    var visualRect = rect;
     if (handleType != HandleType.none) {
       if (PlatformExtension.isIOS) {
         // on iOS, the cursor will still be visible if the selection is not collapsed.
         // So, adding a threshold padding to avoid row overflow.
         const threshold = 0.25;
-        adjustedRect = Rect.fromLTWH(
+        visualRect = Rect.fromLTWH(
           rect.left - 2 * (handleWidth + threshold),
           rect.top - handleBallWidth,
           rect.width + 4 * (handleWidth + threshold),
           rect.height + 2 * handleBallWidth,
         );
-        adjustedRect = _expandToMinTouchTarget(
-          adjustedRect,
-          minSize: _kMinIOSTouchTarget,
-        );
       } else if (PlatformExtension.isAndroid) {
         // on Android, normally the cursor will be hidden if the selection is not collapsed.
         // Extend the click area to make it easier to click.
-        adjustedRect = Rect.fromLTWH(
+        visualRect = Rect.fromLTWH(
           rect.left - 2 * handleBallWidth,
           rect.top,
           rect.width + 4 * handleBallWidth,
@@ -61,23 +57,30 @@ class MobileSelectionHandle extends StatelessWidget {
           // https://github.com/flutter/flutter/issues/75747
           rect.height + 2 * handleBallWidth,
         );
-        adjustedRect = _expandToMinTouchTarget(
-          adjustedRect,
-          minSize: _kMinAndroidTouchTarget,
-        );
       }
     }
 
+    // Touch zone is grown to meet HIG/Material minimum touch targets, but the
+    // visible handle column keeps its original height so the ball stays glued
+    // to the text baseline.
+    Rect touchRect = visualRect;
+    if (handleType != HandleType.none) {
+      final minSize = PlatformExtension.isIOS
+          ? _kMinIOSTouchTarget
+          : _kMinAndroidTouchTarget;
+      touchRect = _expandToMinTouchTarget(visualRect, minSize: minSize);
+    }
+
     return Positioned.fromRect(
-      rect: adjustedRect,
+      rect: touchRect,
       child: CompositedTransformFollower(
         link: layerLink,
-        offset: adjustedRect.topLeft,
+        offset: touchRect.topLeft,
         showWhenUnlinked: false,
         child: DragHandle(
           handleType: handleType,
           handleColor: handleColor,
-          handleHeight: adjustedRect.height,
+          handleHeight: visualRect.height,
           handleWidth: handleWidth,
           handleBallWidth: handleBallWidth,
         ),
