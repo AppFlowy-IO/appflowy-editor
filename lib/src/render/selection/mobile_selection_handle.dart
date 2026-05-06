@@ -1,6 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/render/selection/mobile_basic_handle.dart';
 import 'package:flutter/material.dart';
+
+// Apple HIG / Material minimum recommended touch target. Used to grow the
+// handle's hit area without changing the visible ball position, so users can
+// grab the drag handle without accidentally tapping the editor below.
+const double _kMinIOSTouchTarget = 44.0;
+const double _kMinAndroidTouchTarget = 48.0;
 
 class MobileSelectionHandle extends StatelessWidget {
   const MobileSelectionHandle({
@@ -38,6 +46,10 @@ class MobileSelectionHandle extends StatelessWidget {
           rect.width + 4 * (handleWidth + threshold),
           rect.height + 2 * handleBallWidth,
         );
+        adjustedRect = _expandToMinTouchTarget(
+          adjustedRect,
+          minSize: _kMinIOSTouchTarget,
+        );
       } else if (PlatformExtension.isAndroid) {
         // on Android, normally the cursor will be hidden if the selection is not collapsed.
         // Extend the click area to make it easier to click.
@@ -48,6 +60,10 @@ class MobileSelectionHandle extends StatelessWidget {
           // Enable clicking in the handle area outside the stack.
           // https://github.com/flutter/flutter/issues/75747
           rect.height + 2 * handleBallWidth,
+        );
+        adjustedRect = _expandToMinTouchTarget(
+          adjustedRect,
+          minSize: _kMinAndroidTouchTarget,
         );
       }
     }
@@ -67,5 +83,31 @@ class MobileSelectionHandle extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Pads [r] outward so that both axes are at least [minSize], anchoring the
+  /// expansion away from the visible handle ball so the ball stays put on
+  /// screen. For the left handle the ball sits at the left of [r], so we grow
+  /// to the right; for the right handle we grow to the left. We always grow
+  /// downward, since the ball lives below the text baseline.
+  Rect _expandToMinTouchTarget(Rect r, {required double minSize}) {
+    final extraW = math.max(0.0, minSize - r.width);
+    final extraH = math.max(0.0, minSize - r.height);
+    if (extraW == 0 && extraH == 0) return r;
+
+    double left = r.left;
+    double width = r.width;
+    if (extraW > 0) {
+      if (handleType == HandleType.left) {
+        // Ball is at r.left, grow rightward.
+        width += extraW;
+      } else {
+        // Ball is at r.right, grow leftward.
+        left -= extraW;
+        width += extraW;
+      }
+    }
+
+    return Rect.fromLTWH(left, r.top, width, r.height + extraH);
   }
 }
