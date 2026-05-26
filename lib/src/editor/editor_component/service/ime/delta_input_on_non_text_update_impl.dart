@@ -54,31 +54,59 @@ Future<void> onNonTextUpdate(
       );
     }
   } else if (PlatformExtension.isAndroid) {
-    // on some Android keyboards (e.g. Gboard), they use non-text update to update the selection when moving cursor
-    // by space bar.
-    // for the another keyboards (e.g. system keyboard), they will trigger the
-    // `onFloatingCursor` event instead.
-    AppFlowyEditorLog.input.debug('[Android] onNonTextUpdate: $nonTextUpdate');
-    if (selection != null) {
-      final nonTextUpdateStart = nonTextUpdate.selection.start;
-      final selectionStart = selection.start.offset;
-      if (nonTextUpdateStart != selectionStart) {
-        await editorState.updateSelectionWithReason(
-          Selection.collapsed(
-            Position(
-              path: selection.start.path,
-              offset: nonTextUpdateStart,
-            ),
-          ),
-          reason: SelectionUpdateReason.uiEvent,
-        );
-      }
-    }
+    await handleAndroidNonTextUpdate(nonTextUpdate, editorState);
   } else if (PlatformExtension.isIOS) {
     // on iOS, the cursor movement will trigger the `onFloatingCursor` event.
     // so we don't need to handle the non-text update here.
     AppFlowyEditorLog.input.debug('[iOS] onNonTextUpdate: $nonTextUpdate');
   }
+}
+
+@visibleForTesting
+Future<bool> handleAndroidNonTextUpdate(
+  TextEditingDeltaNonTextUpdate nonTextUpdate,
+  EditorState editorState,
+) async {
+  // on some Android keyboards (e.g. Gboard), they use non-text update to update the selection when moving cursor
+  // by space bar.
+  // for the another keyboards (e.g. system keyboard), they will trigger the
+  // `onFloatingCursor` event instead.
+  AppFlowyEditorLog.input.debug('[Android] onNonTextUpdate: $nonTextUpdate');
+
+  final selection = editorState.selection;
+  if (selection == null) {
+    return false;
+  }
+
+  if (_isSelectAllNonTextUpdate(nonTextUpdate)) {
+    return selectAllCommand.execute(editorState) == KeyEventResult.handled;
+  }
+
+  final nonTextUpdateStart = nonTextUpdate.selection.start;
+  final selectionStart = selection.start.offset;
+  if (nonTextUpdateStart != selectionStart) {
+    await editorState.updateSelectionWithReason(
+      Selection.collapsed(
+        Position(
+          path: selection.start.path,
+          offset: nonTextUpdateStart,
+        ),
+      ),
+      reason: SelectionUpdateReason.uiEvent,
+    );
+    return true;
+  }
+
+  return false;
+}
+
+bool _isSelectAllNonTextUpdate(TextEditingDeltaNonTextUpdate nonTextUpdate) {
+  final selection = nonTextUpdate.selection;
+  return nonTextUpdate.oldText.isNotEmpty &&
+      selection.start == 0 &&
+      selection.end == nonTextUpdate.oldText.length &&
+      !selection.isCollapsed &&
+      nonTextUpdate.composing.isCollapsed;
 }
 
 Future<bool> _checkIfBacktickPressed(
