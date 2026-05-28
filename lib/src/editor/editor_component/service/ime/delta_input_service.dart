@@ -166,6 +166,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   @override
   void insertContent(KeyboardInsertedContent content) {}
 
+  @override
+  bool onFocusReceived() => false;
+
   void _updateComposing(TextEditingDelta delta) {
     if (delta is! TextEditingDeltaNonTextUpdate) {
       if (composingTextRange != null &&
