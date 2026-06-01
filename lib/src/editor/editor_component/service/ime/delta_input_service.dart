@@ -19,6 +19,12 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   @override
   bool get attached => _textInputConnection?.attached ?? false;
 
+  // Added in Flutter 3.44 (TextInputClient.onFocusReceived).
+  // Returning `attached` signals that focus was handled whenever an IME
+  // connection is active. Default implementation returns false.
+  @override
+  bool onFocusReceived() => attached;
+
   @override
   AutofillScope? get currentAutofillScope => throw UnimplementedError();
 
