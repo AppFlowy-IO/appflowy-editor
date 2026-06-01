@@ -27,6 +27,46 @@ void main() {
       expect(markdown, markdownDocumentEncoded);
     });
 
+    test('documentToMarkdown() preserves sequential numbered list markers', () {
+      final document = Document(
+        root: pageNode(
+          children: [
+            numberedListNode(text: 'get up'),
+            numberedListNode(text: 'brush teeth'),
+            numberedListNode(text: 'go to school'),
+          ],
+        ),
+      );
+
+      final markdown = documentToMarkdown(document);
+
+      expect(markdown, '''
+1. get up
+2. brush teeth
+3. go to school
+''');
+    });
+
+    test('documentToMarkdown() preserves numbered list start marker', () {
+      final document = Document(
+        root: pageNode(
+          children: [
+            numberedListNode(text: 'get up', number: 3),
+            numberedListNode(text: 'brush teeth'),
+            numberedListNode(text: 'go to school'),
+          ],
+        ),
+      );
+
+      final markdown = documentToMarkdown(document);
+
+      expect(markdown, '''
+3. get up
+4. brush teeth
+5. go to school
+''');
+    });
+
     test('paragraph + image with single \n', () {
       const markdown = '''This is the first line
 ![image](https://example.com/image.png)''';

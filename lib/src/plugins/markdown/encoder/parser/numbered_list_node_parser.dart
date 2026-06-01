@@ -10,7 +10,9 @@ class NumberedListNodeParser extends NodeParser {
   String transform(Node node, DocumentMarkdownEncoder? encoder) {
     final delta = node.delta ?? Delta()
       ..insert('');
-    final number = node.attributes[NumberedListBlockKeys.number] ?? '1';
+    final number = encoder?.numberedListNumberFor(node) ??
+        node.attributes[NumberedListBlockKeys.number] ??
+        1;
     final children = encoder?.convertNodes(node.children, withIndent: true);
     String markdown = '$number. ${DeltaMarkdownEncoder().convert(delta)}\n';
     if (children != null && children.isNotEmpty) {
