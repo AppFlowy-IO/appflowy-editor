@@ -204,6 +204,58 @@ void main() async {
       );
     });
 
+    test(
+        'nested todo_list to numbered_list preserves ids through undo and redo',
+        () async {
+      // Unlike heading, numbered lists can keep the same child shape. This
+      // covers the safe in-place path for nested blocks and verifies undo/redo
+      // does not regenerate parent or child ids.
+      const syntax = '1.';
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      final child1 = todoListNode(text: '1 $text', checked: false)
+        ..id = 'child-1';
+      final child2 = todoListNode(text: '2 $text', checked: false)
+        ..id = 'child-2';
+      final node = todoListNode(
+        text: '$syntax$text',
+        checked: false,
+        children: [child1, child2],
+      )..id = 'parent';
+      final document = Document.blank()..insert([0], [node]);
+      final editorState = EditorState(document: document);
+      editorState.selection = Selection.collapsed(
+        Position(path: [0], offset: syntax.length),
+      );
+
+      final result = await formatNumberToNumberedList.execute(editorState);
+
+      expect(result, true);
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, NumberedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
+
+      editorState.undoManager.undo();
+
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, TodoListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
+
+      editorState.undoManager.redo();
+
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, NumberedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
+    });
+
     test('nothing will happen when converting heading to numbered list',
         () async {
       const syntax = '1.';

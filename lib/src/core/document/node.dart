@@ -263,19 +263,24 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   /// Be careful of the children, they will be deep copied if not provided.
   Node copyWith({
     String? type,
+    String? id,
+    bool preserveChildIds = false,
     Iterable<Node>? children,
     Attributes? attributes,
   }) {
     final node = Node(
       type: type ?? this.type,
-      id: nanoid(6),
+      id: id ?? nanoid(6),
       attributes: attributes ?? {...this.attributes},
       children: children ?? [],
     );
     if (children == null && _children.isNotEmpty) {
       for (final child in _children) {
         node._children.add(
-          child.copyWith()..parent = node,
+          child.copyWith(
+            id: preserveChildIds ? child.id : null,
+            preserveChildIds: preserveChildIds,
+          )..parent = node,
         );
       }
     }
@@ -372,16 +377,23 @@ final class TextNode extends Node {
     Attributes? attributes,
     Delta? delta,
     String? id,
+    bool preserveChildIds = false,
   }) {
     final textNode = TextNode(
       children: children ?? [],
       attributes: attributes ?? this.attributes,
       delta: delta ?? this.delta,
     );
+    if (id != null) {
+      textNode.id = id;
+    }
     if (children == null && this.children.isNotEmpty) {
       for (final child in this.children) {
         textNode._children.add(
-          child.copyWith()..parent = textNode,
+          child.copyWith(
+            id: preserveChildIds ? child.id : null,
+            preserveChildIds: preserveChildIds,
+          )..parent = textNode,
         );
       }
     }

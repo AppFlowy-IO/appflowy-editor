@@ -157,6 +157,35 @@ class Document {
     return true;
   }
 
+  /// Updates the [Node] type at the given [Path] while preserving its id,
+  /// children, external values, and temporary metadata.
+  bool updateNodeType(Path path, String type, Attributes attributes) {
+    if (path.isEmpty) {
+      return false;
+    }
+
+    final target = nodeAtPath(path);
+    final parent = target?.parent;
+    if (target == null || parent == null) {
+      return false;
+    }
+
+    final index = path.last;
+    final replacement = Node(
+      type: type,
+      id: target.id,
+      attributes: {...attributes},
+      children: target.children.toList(growable: false),
+    )
+      ..externalValues = target.externalValues
+      ..extraInfos = target.extraInfos;
+
+    target.unlink();
+    parent.insert(replacement, index: index);
+
+    return true;
+  }
+
   /// Updates the [Node] with [Delta] at the given [Path]
   bool updateText(Path path, Delta delta) {
     if (path.isEmpty) {

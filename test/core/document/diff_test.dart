@@ -46,6 +46,39 @@ void main() async {
       );
     });
 
+    test('same id type changes', () async {
+      final id = nanoid(6);
+      final documentA = Document.blank()
+        ..insert([0], [buildNodeWithId(id, 'Hello World')]);
+      final documentB = Document.blank()
+        ..insert([
+          0,
+        ], [
+          Node(
+            type: HeadingBlockKeys.type,
+            id: id,
+            attributes: {
+              HeadingBlockKeys.level: 1,
+              HeadingBlockKeys.delta: (Delta()..insert('Hello World')).toJson(),
+            },
+          ),
+        ]);
+
+      final ops = diffDocuments(documentA, documentB);
+      expect(ops.length, 1);
+      final op = ops.first;
+      expect(op, isA<UpdateNodeTypeOperation>());
+      expect((op as UpdateNodeTypeOperation).nodeId, id);
+      expect(op.path, [0]);
+      expect(op.type, HeadingBlockKeys.type);
+
+      final expectation = jsonEncode(documentB.toJson());
+      expect(
+        jsonEncode((await apply(documentA, ops)).toJson()),
+        expectation,
+      );
+    });
+
     test('insert', () async {
       final id1 = nanoid(6);
       final id2 = nanoid(6);
