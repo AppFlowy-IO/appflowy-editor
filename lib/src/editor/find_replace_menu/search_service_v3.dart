@@ -113,19 +113,10 @@ class SearchServiceV3 {
     );
 
     if (matchWrappers.value.isEmpty || unHighlight) {
-      editorState.updateSelectionWithReason(
-        null,
-        reason: SelectionUpdateReason.searchHighlight,
-        extraInfo: {
-          selectionExtraInfoDoNotAttachTextService: true,
-        },
-      );
-    } else {
-      selectedIndex = selectedIndex;
-      _highlightCurrentMatch(
-        pattern,
-      );
+      return;
     }
+    selectedIndex = selectedIndex;
+    _highlightCurrentMatch(pattern);
   }
 
   List<MatchWrapper> _getMatchWrappers({
@@ -160,17 +151,6 @@ class SearchServiceV3 {
     if (jumpInterceptor?.call(path) == false) {
       editorState.scrollService?.jumpTo(path.first);
     }
-
-    editorState.updateSelectionWithReason(
-      selection,
-      reason: SelectionUpdateReason.searchHighlight,
-      extraInfo: {
-        selectionExtraInfoDisableToolbar: true,
-        selectionExtraInfoDoNotAttachTextService: true,
-        selectionExtraInfoDisableMobileToolbarKey: true,
-        selectionExtraInfoSelectionRadius: 6.0,
-      },
-    );
   }
 
   /// This method takes in a boolean parameter moveUp, if set to true,
