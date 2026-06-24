@@ -145,6 +145,9 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
           ),
         ];
 
+      case HTMLTags.div:
+        return _parseDivElement(element);
+
       case HTMLTags.paragraph:
         return _parseParagraphElement(element);
 
@@ -421,6 +424,62 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final (delta, specialNodes) = _parseDeltaElement(element);
 
     return [paragraphNode(delta: delta), ...specialNodes];
+  }
+
+  /// Parse a `<div>` that may be a to-do / checkbox item:
+  ///   `<div><input type="checkbox" [checked]/> text…</div>`
+  /// (the shape emitted by HTMLTodoListNodeParser). When a checkbox `<input>`
+  /// is present, build a `todo_list` node carrying the checked state and the
+  /// remaining inline content; otherwise fall back to treating the div as a
+  /// paragraph (prior behaviour — so non-todo `<div>`s from other sources are
+  /// unaffected).
+  Iterable<Node> _parseDivElement(dom.Element element) {
+    dom.Element? input;
+    for (final child in element.children) {
+      if (child.localName == HTMLTags.checkbox) {
+        input = child;
+        break;
+      }
+    }
+    if (input == null) {
+      return _parseParagraphElement(element);
+    }
+
+    final checked = input.attributes.containsKey('checked');
+    final delta = Delta();
+    final children = <Node>[];
+    for (final child in element.nodes) {
+      if (child is dom.Element) {
+        if (child.localName == HTMLTags.checkbox) {
+          continue; // the checkbox marker itself
+        }
+        if (HTMLTags.formattingElements.contains(child.localName)) {
+          final attributes = _parserFormattingElementAttributes(child);
+          delta.insert(child.text, attributes: attributes);
+        } else if (HTMLTags.specialElements.contains(child.localName)) {
+          children.addAll(
+            _parseSpecialElements(child, type: TodoListBlockKeys.type),
+          );
+        } else {
+          delta.insert(child.text);
+        }
+      } else if (child is dom.Text) {
+        if (child.text.trim().isNotEmpty) {
+          delta.insert(child.text);
+        }
+      }
+    }
+
+    return [
+      Node(
+        type: TodoListBlockKeys.type,
+        attributes: {
+          TodoListBlockKeys.checked: checked,
+          ParagraphBlockKeys.delta: delta.toJson(),
+        },
+        children: children,
+      ),
+    ];
   }
 
   Node _parseImageElement(dom.Element element) {
