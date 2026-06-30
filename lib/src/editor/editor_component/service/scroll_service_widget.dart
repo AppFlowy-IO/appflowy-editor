@@ -192,6 +192,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           edgeOffset: editorState.autoScrollEdgeOffset,
           direction: direction,
           duration: Duration.zero,
+          repeat: false,
         );
       }
     });
