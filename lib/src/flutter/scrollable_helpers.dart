@@ -365,6 +365,7 @@ class EdgeDraggingAutoScroller {
           return;
         }
       }
+      final double pixelsBeforeMove = scrollable.position.pixels;
       await scrollable.position.moveTo(
         newOffset,
         duration: _currentDuration ?? _animationDuration,
@@ -372,6 +373,22 @@ class EdgeDraggingAutoScroller {
         // clamp: true,
       );
       onScrollViewScrolled?.call();
+      // Termination guard against an unbounded auto-scroll loop.
+      //
+      // `_scroll` re-invokes itself via `await _scroll()` as long as
+      // `_scrolling` is true. `moveTo` can complete synchronously when the
+      // position cannot actually advance (already at min/maxScrollExtent, a
+      // zero scroll range, or a pinned position), in which case the
+      // self-recursion degenerates into a tight microtask loop that pins the
+      // platform/UI thread with no frames produced — observed as an ANR on
+      // mobile when leaving a table cell. Requiring real forward progress
+      // bounds the loop: each tick must move the scroll offset by at least
+      // the precision tolerance, and the scroll extent is finite.
+      if ((scrollable.position.pixels - pixelsBeforeMove).abs() <=
+          precisionErrorTolerance) {
+        _scrolling = false;
+        return;
+      }
       if (_scrolling) {
         await _scroll();
       }
