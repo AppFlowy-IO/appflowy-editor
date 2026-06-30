@@ -5,6 +5,12 @@ import 'package:appflowy_editor/src/editor/block_component/table_block_component
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  // Some tests below call `updateRowHeight`, which reads `Node.rect` ->
+  // `renderBox` -> `GlobalKey.currentContext`; that needs an initialized
+  // binding. With no widget tree mounted, `currentContext` is null and
+  // `rect` falls back to `Rect.zero`.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('table_node.dart', () {
     test('fromJson', () {
       final tableNode = TableNode.fromJson({
@@ -337,6 +343,60 @@ void main() {
         tableNode.colsHeight,
         tableNode.config.rowDefaultHeight * 2 +
             tableNode.config.borderWidth * 3,
+      );
+    });
+
+    test('updateRowHeight ignores sub-pixel jitter (no relayout loop)', () {
+      // Regression test for the mobile table freeze. Layout reports
+      // `rect.height` with sub-pixel jitter between frames, so the old
+      // exact `!=` comparison made updateRowHeight emit a height
+      // transaction every frame -> apply -> rebuild -> re-measure
+      // forever, hanging the UI isolate. Detached nodes report
+      // `rect == Rect.zero`, so the measured row height here is the
+      // paragraph padding only (0 + 8 = 8.0).
+      final tableNode = TableNode.fromList([
+        ['1', '2'],
+        ['3', '4'],
+      ]);
+
+      // A stored height within 1px of the measured 8.0 must be left
+      // untouched so the height converges instead of oscillating.
+      tableNode.getCell(0, 0).updateAttributes(
+        {TableCellBlockKeys.height: 8.4},
+      );
+      tableNode.getCell(1, 0).updateAttributes(
+        {TableCellBlockKeys.height: 8.4},
+      );
+
+      tableNode.updateRowHeight(0);
+
+      expect(
+        tableNode.getCell(0, 0).attributes[TableCellBlockKeys.height],
+        8.4,
+      );
+      expect(
+        tableNode.getCell(1, 0).attributes[TableCellBlockKeys.height],
+        8.4,
+      );
+
+      // A change larger than the tolerance is still applied, so genuine
+      // content resizes keep working.
+      tableNode.getCell(0, 1).updateAttributes(
+        {TableCellBlockKeys.height: 50.0},
+      );
+      tableNode.getCell(1, 1).updateAttributes(
+        {TableCellBlockKeys.height: 50.0},
+      );
+
+      tableNode.updateRowHeight(1);
+
+      expect(
+        tableNode.getCell(0, 1).attributes[TableCellBlockKeys.height],
+        8.0,
+      );
+      expect(
+        tableNode.getCell(1, 1).attributes[TableCellBlockKeys.height],
+        8.0,
       );
     });
   });
