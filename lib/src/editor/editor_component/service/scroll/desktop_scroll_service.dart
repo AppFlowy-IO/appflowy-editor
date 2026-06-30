@@ -104,6 +104,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
     double edgeOffset = 200,
     AxisDirection? direction,
     Duration? duration,
+    bool repeat = true,
   }) {
     if (editorState.disableAutoScroll) {
       return;
@@ -114,6 +115,7 @@ class _DesktopScrollServiceState extends State<DesktopScrollService>
       edgeOffset: edgeOffset,
       direction: direction,
       duration: duration ?? _kDesktopAutoScrollTickDuration,
+      repeat: repeat,
     );
   }
 

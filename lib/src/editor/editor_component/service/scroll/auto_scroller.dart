@@ -7,6 +7,7 @@ abstract class AutoScrollerService {
     double edgeOffset = 200,
     AxisDirection? direction,
     Duration? duration,
+    bool repeat = true,
   });
 
   void stopAutoScroll();
@@ -38,6 +39,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
     double edgeOffset = 200,
     AxisDirection? direction,
     Duration? duration,
+    bool repeat = true,
   }) {
     lastOffset = offset;
     lastDuration = duration;
@@ -47,6 +49,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
       return startAutoScrollIfNecessary(
         Rect.fromLTWH(offset.dx, offset.dy - edgeOffset, 1, edgeOffset),
         duration: duration,
+        repeat: repeat,
       );
     }
 
@@ -54,6 +57,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
       return startAutoScrollIfNecessary(
         Rect.fromLTWH(offset.dx, offset.dy, 1, edgeOffset),
         duration: duration,
+        repeat: repeat,
       );
     }
 
@@ -66,6 +70,7 @@ class AutoScroller extends EdgeDraggingAutoScroller
     startAutoScrollIfNecessary(
       dragTarget,
       duration: duration,
+      repeat: repeat,
     );
   }
 

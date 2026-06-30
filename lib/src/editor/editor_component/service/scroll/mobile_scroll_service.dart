@@ -98,12 +98,14 @@ class _MobileScrollServiceState extends State<MobileScrollService>
     double edgeOffset = 200,
     AxisDirection? direction,
     Duration? duration,
+    bool repeat = true,
   }) {
     autoScroller?.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
       direction: direction,
       duration: duration,
+      repeat: repeat,
     );
   }
 

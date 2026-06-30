@@ -180,6 +180,7 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
             edgeOffset: editorState.autoScrollEdgeOffset,
             direction: direction,
             duration: scrollDuration,
+            repeat: isDragOperation,
           );
         });
       } else {
@@ -243,12 +244,14 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
     double edgeOffset = 100,
     AxisDirection? direction,
     Duration? duration,
+    bool repeat = true,
   }) {
     forward.startAutoScroll(
       offset,
       edgeOffset: edgeOffset,
       direction: direction,
       duration: duration,
+      repeat: repeat,
     );
   }
 
