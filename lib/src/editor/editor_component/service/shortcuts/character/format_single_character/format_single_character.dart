@@ -116,6 +116,18 @@ class CheckSingleFormatFormatResult {
     return (false, null);
   }
 
+  // 6. For underscore italic, only auto-format when the opening underscore
+  // starts a word, i.e. it is at the very start or preceded by whitespace.
+  // This prevents intra-word underscores like `a_b_c` from being italicized,
+  // matching the common markdown behavior (asterisks are unaffected).
+  if (character == '_') {
+    final openingIndex = startIndex + lastCharIndex;
+    if (openingIndex > 0 &&
+        rawPlainText[openingIndex - 1].trim().isNotEmpty) {
+      return (false, null);
+    }
+  }
+
   return (
     true,
     CheckSingleFormatFormatResult(
