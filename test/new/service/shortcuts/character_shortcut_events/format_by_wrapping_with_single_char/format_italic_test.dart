@@ -35,9 +35,9 @@ void main() async {
 
       // Before
       // App_Flowy|
-      // After
-      // App[italic]Flowy
-      test('App_Flowy_ to App[italic]Flowy', () async {
+      // After (unchanged): the opening underscore is not preceded by
+      // whitespace, so an intra-word underscore like `a_b_` is not italicized.
+      test('App_Flowy_ does not italicize (intra-word underscore)', () async {
         const text1 = 'App';
         const text2 = 'Flowy';
         final document = Document.blank().addParagraphs(
@@ -54,11 +54,43 @@ void main() async {
 
         final result = await formatUnderscoreToItalic.execute(editorState);
 
+        expect(result, false);
+        final after = editorState.getNodeAtPath([0])!;
+        expect(after.delta!.toPlainText(), '${text1}_$text2');
+        final isItalic = after.delta!
+            .everyAttributes((element) => element['italic'] == true);
+        expect(isItalic, false);
+      });
+
+      // Before
+      // hi _AppFlowy|
+      // After
+      // hi [italic]AppFlowy
+      // The opening underscore is preceded by whitespace, so it still formats.
+      test('hi _AppFlowy_ italicizes AppFlowy (underscore after space)',
+          () async {
+        const prefix = 'hi ';
+        const text = 'AppFlowy';
+        final document = Document.blank().addParagraphs(
+          1,
+          builder: (index) => Delta()..insert('${prefix}_$text'),
+        );
+
+        final editorState = EditorState(document: document);
+
+        final selection = Selection.collapsed(
+          Position(path: [0], offset: prefix.length + text.length + 1),
+        );
+        editorState.selection = selection;
+
+        final result = await formatUnderscoreToItalic.execute(editorState);
+
         expect(result, true);
         final after = editorState.getNodeAtPath([0])!;
-        expect(after.delta!.toPlainText(), '$text1$text2');
-        expect(after.delta!.toList()[0].attributes, null);
-        expect(after.delta!.toList()[1].attributes, {'italic': true});
+        expect(after.delta!.toPlainText(), '$prefix$text');
+        final deltaList = after.delta!.toList();
+        expect(deltaList[0].attributes, null);
+        expect(deltaList[1].attributes, {'italic': true});
       });
 
       // Before

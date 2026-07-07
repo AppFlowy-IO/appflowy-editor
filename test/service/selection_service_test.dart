@@ -59,6 +59,98 @@ void main() async {
       await editor.dispose();
     });
 
+    testWidgets('Test double tap then drag forward selects whole words',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(3, initialText: text);
+      await editor.startTesting();
+
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
+      final rect = tester.getRect(finder);
+
+      // Press inside the first word "Welcome" (not at its start).
+      final startPos = rect.centerLeft + const Offset(10.0, 0.0);
+
+      // First tap of the double-tap.
+      await tester.tapAt(startPos);
+      // Second tap: press down, hold briefly (so the double-tap is recognized),
+      // then drag to the end of the line.
+      final gesture = await tester.startGesture(
+        startPos,
+        kind: PointerDeviceKind.mouse,
+      );
+      await tester.pump(const Duration(milliseconds: 150));
+      // A small move starts the drag, then extend to the end of the line.
+      await gesture.moveTo(startPos + const Offset(30.0, 0.0));
+      await tester.pump();
+      await gesture.moveTo(rect.centerRight);
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+
+      // The whole first word stays selected (start at offset 0, not mid-word)
+      // and the selection extends by whole words to the end of the line.
+      expect(
+        editor.selection?.normalized,
+        Selection.single(path: [1], startOffset: 0, endOffset: text.length),
+      );
+
+      await editor.dispose();
+    });
+
+    testWidgets('Test double tap then drag backward keeps the anchor word',
+        (tester) async {
+      const text = 'Welcome to Appflowy 😁';
+      final editor = tester.editor..addParagraphs(3, initialText: text);
+      await editor.startTesting();
+
+      final secondNode = editor.nodeAtPath([1]);
+      final finder = find.byKey(secondNode!.key);
+      final rect = tester.getRect(finder);
+
+      // Probe which word lives further along the line so the assertion does not
+      // depend on exact glyph widths.
+      final probePos = rect.centerLeft + const Offset(120.0, 0.0);
+      await tester.tapAt(probePos);
+      await tester.tapAt(probePos);
+      await tester.pump();
+      final probeWord = editor.selection!.normalized;
+      expect(probeWord.start.offset, greaterThan(0));
+
+      // Reset with a plain tap (also clears any pending word-drag anchor).
+      await tester.tapAt(rect.centerLeft);
+      await tester.pump();
+
+      // Double-tap that later word, then hold and drag back to the start.
+      await tester.tapAt(probePos);
+      final gesture = await tester.startGesture(
+        probePos,
+        kind: PointerDeviceKind.mouse,
+      );
+      await tester.pump(const Duration(milliseconds: 150));
+      // A small move starts the drag, then extend back to the start of the line.
+      await gesture.moveTo(probePos - const Offset(30.0, 0.0));
+      await tester.pump();
+      await gesture.moveTo(rect.centerLeft);
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+
+      // The double-tapped word's end stays selected and the selection extends
+      // by whole words back to the start of the line.
+      expect(
+        editor.selection?.normalized,
+        Selection.single(
+          path: [1],
+          startOffset: 0,
+          endOffset: probeWord.end.offset,
+        ),
+      );
+
+      await editor.dispose();
+    });
+
     testWidgets('Test triple tap', (tester) async {
       const text = 'Welcome to Appflowy 😁';
       final editor = tester.editor..addParagraphs(3, initialText: text);
