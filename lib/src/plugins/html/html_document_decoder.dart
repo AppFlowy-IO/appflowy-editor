@@ -439,9 +439,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
             );
           }
         }
-      } else {
-        delta.insert(child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '');
+      } else if (child is dom.Text) {
+        delta.insert(child.text.replaceAll(RegExp(r'\n+$'), ''));
       }
+      // other node types (e.g. dom.Comment) carry no visible content and
+      // are intentionally skipped, mirroring _parseElement's handling.
     }
     return (delta, nodes);
   }
