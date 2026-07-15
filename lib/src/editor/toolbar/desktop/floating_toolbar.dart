@@ -100,7 +100,8 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   @override
   void dispose() {
-    Debounce.cancel(_debounceKey);
+    Debounce.cancel(_selectionDebounceKey);
+    Debounce.cancel(_scrollDebounceKey);
 
     _toolbarContainer?.remove();
     _toolbarContainer?.dispose();
@@ -128,7 +129,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void didChangeMetrics() {
     super.didChangeMetrics();
     hasMetricsChanged = true;
-    _showAfterDelay(isMetricsChanged: true);
+    _showAfterDelay(_selectionDebounceKey, isMetricsChanged: true);
   }
 
   @override
@@ -158,6 +159,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     } else if (!disableToolbar) {
       // uses debounce to avoid the computing the rects too frequently.
       _showAfterDelay(
+        _selectionDebounceKey,
         duration: const Duration(milliseconds: 200),
         isMetricsChanged: hasMetricsChanged,
       );
@@ -168,27 +170,40 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onScrollPositionChanged() {
     _clear();
 
-    // TODO: optimize the toolbar showing logic, making it more smooth.
-    // A quick idea: based on the scroll controller's offset to display the toolbar.
-    _showAfterDelay();
+    // Auto-scroll drives this from its own ticker, ahead of the layout pass
+    // that repositions the scrolled content. Defer so the toolbar measures
+    // settled geometry instead of the previous frame's.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // TODO: optimize the toolbar showing logic, making it more smooth.
+      // A quick idea: based on the scroll controller's offset to display the toolbar.
+      _showAfterDelay(_scrollDebounceKey);
+    });
   }
 
-  final String _debounceKey = 'show the toolbar';
+  // Selection- and scroll-triggered shows debounce separately. On a shared key
+  // the last caller won, so a scroll tick could cancel a pending 200ms
+  // selection-driven show — and the two interleave during any drag that
+  // auto-scrolls.
+  final String _selectionDebounceKey = 'show the toolbar - selection';
+  final String _scrollDebounceKey = 'show the toolbar - scroll';
 
   void _clear() {
-    Debounce.cancel(_debounceKey);
+    Debounce.cancel(_selectionDebounceKey);
+    Debounce.cancel(_scrollDebounceKey);
 
     _toolbarContainer?.remove();
     _toolbarContainer = null;
   }
 
-  void _showAfterDelay({
+  void _showAfterDelay(
+    String debounceKey, {
     Duration duration = Duration.zero,
     bool isMetricsChanged = false,
   }) {
     // uses debounce to avoid the computing the rects too frequently.
     Debounce.debounce(
-      _debounceKey,
+      debounceKey,
       duration,
       () {
         _clear(); // clear the previous toolbar.
