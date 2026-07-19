@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:universal_html/html.dart' show window;
 import 'package:universal_platform/universal_platform.dart';
+
+import 'navigator_platform_stub.dart'
+    if (dart.library.js_interop) 'navigator_platform_web.dart';
 
 // TODO(Xazin): Refactor to honor `Theme.platform`
 extension PlatformExtension on Platform {
-  static String get _webPlatform =>
-      window.navigator.platform?.toLowerCase() ?? '';
+  static String get _webPlatform => navigatorPlatform;
 
   /// Returns true if the operating system is macOS and not running on Web platform.
   static bool get isMacOS => UniversalPlatform.isMacOS;
