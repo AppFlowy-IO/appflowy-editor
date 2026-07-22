@@ -54,6 +54,63 @@ abstract class HTMLNodeParser {
     return result;
   }
 
+  /// Like [processChildrenNodes] but preserves list NESTING.
+  ///
+  /// A list item's child list nodes (`transformNodeToDomNodes` returns a bare
+  /// `<li>`) must be wrapped in their own `<ol>`/`<ul>` — otherwise the emitted
+  /// HTML is `<li>parent<li>child</li></li>`, which every HTML parser "fixes"
+  /// by flattening the inner `<li>` into a sibling, collapsing the nesting.
+  /// Consecutive same-type list children share one wrapper; non-list children
+  /// pass through unchanged.
+  List<dom.Node> processChildrenNodesPreservingListNesting(
+    Iterable<Node> nodes, {
+    required List<HTMLNodeParser> encodeParsers,
+  }) {
+    final result = <dom.Node>[];
+    dom.Element? openList;
+    String? openListTag;
+
+    void flush() {
+      if (openList != null) {
+        result.add(openList!);
+        openList = null;
+        openListTag = null;
+      }
+    }
+
+    for (final node in nodes) {
+      final parser = encodeParsers.firstWhereOrNull(
+        (element) => element.id == node.type,
+      );
+      if (parser == null) {
+        continue;
+      }
+      final childDom =
+          parser.transformNodeToDomNodes(node, encodeParsers: encodeParsers);
+      final String? listTag = node.type == NumberedListBlockKeys.type
+          ? HTMLTags.orderedList
+          : node.type == BulletedListBlockKeys.type
+              ? HTMLTags.unorderedList
+              : null;
+      if (listTag == null) {
+        flush();
+        result.addAll(childDom);
+        continue;
+      }
+      if (openListTag != listTag) {
+        flush();
+        openList = dom.Element.tag(listTag);
+        openListTag = listTag;
+      }
+      for (final n in childDom) {
+        openList!.append(n);
+      }
+    }
+    flush();
+
+    return result;
+  }
+
   String toHTMLString(List<dom.Node> nodes) =>
       nodes.map((e) => stringify(e)).join().replaceAll('\n', '');
 }
