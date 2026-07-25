@@ -1902,6 +1902,7 @@ class AppLocalizationDelegate
       Locale.fromSubtags(languageCode: 'id', countryCode: 'ID'),
       Locale.fromSubtags(languageCode: 'it', countryCode: 'IT'),
       Locale.fromSubtags(languageCode: 'ja', countryCode: 'JP'),
+      Locale.fromSubtags(languageCode: 'ko', countryCode: 'KR'),
       Locale.fromSubtags(languageCode: 'ml', countryCode: 'IN'),
       Locale.fromSubtags(languageCode: 'nl', countryCode: 'NL'),
       Locale.fromSubtags(languageCode: 'pl', countryCode: 'PL'),
