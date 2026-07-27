@@ -33,7 +33,7 @@ class _TableViewState extends State<TableView> {
               children: [
                 ..._buildColumns(context),
                 TableActionButton(
-                  padding: const EdgeInsets.only(left: 0),
+                  padding: const EdgeInsets.only(),
                   icon: widget.tableStyle.addIcon,
                   width: 28,
                   height: widget.tableNode.colsHeight,

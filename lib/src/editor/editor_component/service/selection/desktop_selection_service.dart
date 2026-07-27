@@ -2,6 +2,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
 import 'package:appflowy_editor/src/service/selection/selection_gesture.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,17 @@ class _DesktopSelectionServiceWidgetState
   double? _panStartScrollDy;
 
   Position? _panStartPosition;
+
+  /// The word selected by a double-tap. When non-null, the pan that immediately
+  /// follows the double-tap extends the selection by whole words instead of by
+  /// characters, keeping this word fully selected. Cleared on a plain tap,
+  /// triple-tap, or when the pan ends.
+  Selection? _wordSelectionAnchor;
+
+  /// The global offset of the double-tap that produced [_wordSelectionAnchor].
+  /// A following pan only enters word mode when it starts at (essentially) the
+  /// same point, so a stale anchor cannot hijack an unrelated later drag.
+  Offset? _wordSelectionAnchorOffset;
 
   bool _isDraggingSelection = false;
   Offset? _lastPanOffset;
@@ -164,6 +176,8 @@ class _DesktopSelectionServiceWidgetState
     _panStartScrollDy = null;
     _panStartPosition = null;
     _lastPanOffset = null;
+    _wordSelectionAnchor = null;
+    _wordSelectionAnchorOffset = null;
   }
 
   void _clearContextMenu() {
@@ -255,6 +269,10 @@ class _DesktopSelectionServiceWidgetState
   void _onTapDown(TapDownDetails details) {
     _clearContextMenu();
 
+    // A plain tap starts a fresh gesture; drop any pending word-drag anchor.
+    _wordSelectionAnchor = null;
+    _wordSelectionAnchorOffset = null;
+
     final canTap = _interceptors.every(
       (element) => element.canTap?.call(details) ?? true,
     );
@@ -302,10 +320,16 @@ class _DesktopSelectionServiceWidgetState
     final node = getNodeInOffset(offset);
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
+      _wordSelectionAnchor = null;
+      _wordSelectionAnchorOffset = null;
       clearSelection();
 
       return;
     }
+    // Arm word-drag mode: the pan that continues from this double-tap will
+    // extend the selection by whole words, keeping this word fully selected.
+    _wordSelectionAnchor = selection.normalized;
+    _wordSelectionAnchorOffset = offset;
     updateSelection(selection);
   }
 
@@ -317,6 +341,9 @@ class _DesktopSelectionServiceWidgetState
     if (!canTripleTap) {
       return updateSelection(null);
     }
+    // Triple-tap is not word-drag mode.
+    _wordSelectionAnchor = null;
+    _wordSelectionAnchorOffset = null;
     final offset = details.globalPosition;
     final node = getNodeInOffset(offset);
     final selectable = node?.selectable;
@@ -325,7 +352,7 @@ class _DesktopSelectionServiceWidgetState
 
       return;
     }
-    Selection selection = Selection(
+    final Selection selection = Selection(
       start: selectable.start(),
       end: selectable.end(),
     );
@@ -380,7 +407,19 @@ class _DesktopSelectionServiceWidgetState
   }
 
   void _onPanStart(DragStartDetails details) {
-    clearSelection();
+    // In word-drag mode (a pan that continues from a double-tap) keep the
+    // double-tapped word selected; the drag extends it by whole words. The pan
+    // shares the double-tap's pointer-down, so it must start at essentially the
+    // same point — otherwise a stale anchor is dropped and this is a plain drag.
+    final anchorOffset = _wordSelectionAnchorOffset;
+    final isWordSelectionDrag = _wordSelectionAnchor != null &&
+        anchorOffset != null &&
+        (details.globalPosition - anchorOffset).distance <= kDoubleTapSlop;
+    if (!isWordSelectionDrag) {
+      _wordSelectionAnchor = null;
+      _wordSelectionAnchorOffset = null;
+      clearSelection();
+    }
 
     final canPanStart = _interceptors.every(
       (interceptor) => interceptor.canPanStart?.call(details) ?? true,
@@ -426,7 +465,6 @@ class _DesktopSelectionServiceWidgetState
 
     editorState.service.scrollService?.startAutoScroll(
       _lastPanOffset!,
-      edgeOffset: 200,
       duration: const Duration(milliseconds: 2),
     );
   }
@@ -450,6 +488,26 @@ class _DesktopSelectionServiceWidgetState
       return;
     }
 
+    final selectable = getNodeInOffset(panEndOffset)?.selectable;
+    if (selectable == null) {
+      return;
+    }
+
+    final Selection? selection = _wordSelectionAnchor != null
+        ? _wordSelectionDuringDrag(selectable, panEndOffset)
+        : _characterSelectionDuringDrag(selectable, panEndOffset);
+
+    if (selection != null && selection != currentSelection.value) {
+      updateSelection(selection);
+    }
+  }
+
+  /// Character-level drag selection: the anchor is the exact character position
+  /// where the pan started and the extent tracks the cursor character.
+  Selection? _characterSelectionDuringDrag(
+    SelectableMixin selectable,
+    Offset panEndOffset,
+  ) {
     final double? currentDy = editorState.service.scrollService?.dy;
     final Offset panStartOffset = currentDy == null || _panStartScrollDy == null
         ? _panStartOffset!
@@ -458,12 +516,7 @@ class _DesktopSelectionServiceWidgetState
             _panStartScrollDy! - currentDy,
           );
 
-    final selectable = getNodeInOffset(panEndOffset)?.selectable;
-    if (selectable == null) {
-      return;
-    }
-
-    final Selection selection = Selection(
+    return Selection(
       start: _panStartPosition!,
       end: selectable
           .getSelectionInRange(
@@ -472,10 +525,42 @@ class _DesktopSelectionServiceWidgetState
           )
           .end,
     );
+  }
 
-    if (selection != currentSelection.value) {
-      updateSelection(selection);
+  /// Word-level drag selection (double-tap then drag): the double-tapped word
+  /// stays fully selected while the selection extends to the whole word under
+  /// the cursor, in either direction.
+  Selection? _wordSelectionDuringDrag(
+    SelectableMixin selectable,
+    Offset panEndOffset,
+  ) {
+    final anchor = _wordSelectionAnchor;
+    if (anchor == null) {
+      return null;
     }
+
+    final focus = selectable.getWordBoundaryInOffset(panEndOffset)?.normalized;
+    if (focus == null) {
+      return null;
+    }
+
+    // If the focus word starts before the anchor word, the drag goes backward:
+    // keep the anchor word's end as the base and extend to the focus word's
+    // start. Otherwise the drag goes forward (or stays on the same word).
+    if (_comparePosition(focus.start, anchor.start) < 0) {
+      return Selection(start: anchor.end, end: focus.start);
+    }
+    return Selection(start: anchor.start, end: focus.end);
+  }
+
+  /// Compares two positions in document order.
+  /// Returns a negative value if [a] is before [b], zero if equal, and a
+  /// positive value if [a] is after [b].
+  int _comparePosition(Position a, Position b) {
+    if (a.path.equals(b.path)) {
+      return a.offset.compareTo(b.offset);
+    }
+    return a.path < b.path ? -1 : 1;
   }
 
   void _handleAutoScrollWhileDragging() {

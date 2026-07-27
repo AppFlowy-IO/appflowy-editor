@@ -46,12 +46,11 @@ class _RegistryWidgetState extends State<RegistryWidget> {
 }
 
 class _InheritedRegistryWidget extends InheritedWidget {
-  final _RegistryWidgetState state;
-
   const _InheritedRegistryWidget({
     required this.state,
     required super.child,
   });
+  final _RegistryWidgetState state;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;

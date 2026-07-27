@@ -53,7 +53,6 @@ class MarkdownTodoListParserV2 extends CustomMarkdownParser {
             : parseElementChildren(
                 [last],
                 parsers,
-                listType: MarkdownListType.unknown,
               ),
       ),
     ];

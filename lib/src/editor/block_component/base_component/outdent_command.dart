@@ -87,7 +87,7 @@ CommandShortcutEventHandler _outdentCommandHandler = (editorState) {
 
   final transaction = editorState.transaction
     ..deleteNodes(nodes)
-    ..insertNodes(startPath, nodes, deepCopy: true)
+    ..insertNodes(startPath, nodes)
     ..afterSelection = afterSelection;
   editorState.apply(transaction);
 

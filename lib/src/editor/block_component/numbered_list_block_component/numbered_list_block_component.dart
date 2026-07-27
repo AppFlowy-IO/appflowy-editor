@@ -138,7 +138,6 @@ class _NumberedListBlockComponentWidgetState
       alignment: alignment,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
@@ -315,7 +314,7 @@ extension on int {
     String result = '';
     int number = this;
     while (number > 0) {
-      int remainder = (number - 1) % 26;
+      final int remainder = (number - 1) % 26;
       result = String.fromCharCode(remainder + 65) + result;
       number = (number - 1) ~/ 26;
     }

@@ -44,7 +44,6 @@ class CustomShrinkWrappingViewport extends CustomViewport {
     super.crossAxisDirection,
     double anchor = 0.0,
     required super.offset,
-    List<RenderSliver>? children,
     super.center,
     super.cacheExtent,
     super.slivers,

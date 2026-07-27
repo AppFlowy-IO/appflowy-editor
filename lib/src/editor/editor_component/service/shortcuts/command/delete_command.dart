@@ -47,7 +47,7 @@ CommandShortcutEventHandler _deleteInCollapsedSelection = (editorState) {
   final transaction = editorState.transaction;
 
   if (position.offset == delta.length) {
-    Node? tableParent =
+    final Node? tableParent =
         node.findParent((element) => element.type == TableBlockKeys.type);
     Node? nextTableParent;
     final next = node.findDownward((element) {

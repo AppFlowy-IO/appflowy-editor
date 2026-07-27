@@ -46,7 +46,7 @@ int rgbaToHex(int red, int green, int blue, {double opacity = 1}) {
   red = (red > 255) ? 255 : red;
   green = (green > 255) ? 255 : green;
   blue = (blue > 255) ? 255 : blue;
-  int alpha = opacity.toInt();
+  final int alpha = opacity.toInt();
 
   return int.parse(
     '0x${alpha.toRadixString(16)}${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}',

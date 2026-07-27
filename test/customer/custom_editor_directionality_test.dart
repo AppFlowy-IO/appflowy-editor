@@ -17,8 +17,8 @@ void main() async {
           .widget(find.byType(AppFlowyEditor))
           .unwrapOrNull<AppFlowyEditor>()!
           .editorState;
-      Node headerNode = editorState.getNodeAtPath([0])!;
-      Node textNode = editorState.getNodeAtPath([1])!;
+      final Node headerNode = editorState.getNodeAtPath([0])!;
+      final Node textNode = editorState.getNodeAtPath([1])!;
 
       expect(headerNode.selectable?.textDirection(), TextDirection.rtl);
       expect(textNode.selectable?.textDirection(), TextDirection.rtl);

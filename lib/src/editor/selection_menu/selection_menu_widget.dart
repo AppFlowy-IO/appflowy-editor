@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-typedef SelectionMenuItemHandler = void Function(
+typedef SelectionMenuItemHandler = Future<void> Function(
   EditorState editorState,
   SelectionMenuService menuService,
   BuildContext context,
@@ -19,6 +20,132 @@ typedef SelectionMenuItemNameBuilder = Widget Function(
 
 /// Selection Menu Item
 class SelectionMenuItem {
+  /// Creates a selection menu entry for inserting a [Node].
+  /// [getName] and [iconData] define the appearance within the selection menu.
+  ///
+  /// The insert position is determined by the result of [replace] and
+  /// [insertBefore]
+  /// If no values are provided for [replace] and [insertBefore] the node is
+  /// inserted after the current selection.
+  /// [replace] takes precedence over [insertBefore]
+  ///
+  /// [updateSelection] can be used to update the selection after the node
+  /// has been inserted.
+  factory SelectionMenuItem.node({
+    required String Function() getName,
+    required List<String> keywords,
+    required FutureOr<Node> Function(
+      EditorState editorState,
+      BuildContext context,
+    ) nodeBuilder,
+    IconData? iconData,
+    Widget Function(
+      EditorState editorState,
+      bool onSelected,
+      SelectionMenuStyle style,
+    )? iconBuilder,
+    SelectionMenuItemNameBuilder? nameBuilder,
+    bool Function(EditorState editorState, Node node)? insertBefore,
+    bool Function(EditorState editorState, Node node)? insertAfter,
+    bool Function(EditorState editorState, Node node)? replace,
+    Selection? Function(
+      EditorState editorState,
+      Path insertPath,
+      bool replaced,
+      bool insertedBefore,
+    )? updateSelection,
+  }) {
+    // the iconData and iconBuilder are mutually exclusive
+    assert(iconData == null || iconBuilder == null);
+    assert(iconData != null || iconBuilder != null);
+
+    return SelectionMenuItem(
+      getName: getName,
+      nameBuilder: nameBuilder,
+      icon: (editorState, onSelected, style) {
+        if (iconData != null) {
+          return Icon(
+            iconData,
+            color: onSelected
+                ? style.selectionMenuItemSelectedIconColor
+                : style.selectionMenuItemIconColor,
+            size: 18.0,
+          );
+        } else if (iconBuilder != null) {
+          return iconBuilder.call(editorState, onSelected, style);
+        }
+
+        return const SizedBox.shrink();
+      },
+      keywords: keywords,
+      handler: (editorState, _, context) async {
+        final selection = editorState.selection;
+        if (selection == null || !selection.isCollapsed) {
+          return;
+        }
+        final node = editorState.getNodeAtPath(selection.end.path);
+        final delta = node?.delta;
+        if (node == null || delta == null) {
+          return;
+        }
+        final newNode = await nodeBuilder(editorState, context);
+        final transaction = editorState.transaction;
+        final bReplace = replace?.call(editorState, node) ?? false;
+        final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
+
+        //default insert after
+        var path = node.path.next;
+        if (bReplace) {
+          path = node.path;
+        } else if (bInsertBefore) {
+          path = node.path;
+        }
+
+        transaction
+          ..insertNode(path, newNode)
+          ..afterSelection = updateSelection?.call(
+                editorState,
+                path,
+                bReplace,
+                bInsertBefore,
+              ) ??
+              selection;
+
+        if (bReplace) {
+          transaction.deleteNode(node);
+        }
+
+        await editorState.apply(transaction);
+
+        insertAfter?.call(editorState, newNode);
+      },
+    );
+  }
+  SelectionMenuItem({
+    required String Function() getName,
+    required this.icon,
+    required this.keywords,
+    required SelectionMenuItemHandler handler,
+    this.nameBuilder,
+    this.deleteKeywords = false,
+    this.deleteSlash = true,
+  }) : _getName = getName {
+    this.handler = (editorState, menuService, context) async {
+      try {
+        if (deleteSlash || deleteKeywords) {
+          _deleteSlash(editorState);
+        }
+      } catch (e) {
+        AppFlowyEditorLog.ui.debug('Error deleting slash or keywords: $e');
+      }
+
+      if (context.mounted) {
+        await handler(editorState, menuService, context);
+      }
+      onSelected?.call();
+    };
+  }
+
   SelectionMenuItem({
     required String Function() getName,
     required this.icon,
@@ -91,101 +218,56 @@ class SelectionMenuItem {
     editorState.apply(transaction);
   }
 
-  /// Creates a selection menu entry for inserting a [Node].
-  /// [getName] and [iconData] define the appearance within the selection menu.
+  final String Function() _getName;
+  final Widget Function(
+    EditorState editorState,
+    bool onSelected,
+    SelectionMenuStyle style,
+  ) icon;
+  final SelectionMenuItemNameBuilder? nameBuilder;
+
+  String get name => _getName();
+
+  /// Customizes keywords for item.
   ///
-  /// The insert position is determined by the result of [replace] and
-  /// [insertBefore]
-  /// If no values are provided for [replace] and [insertBefore] the node is
-  /// inserted after the current selection.
-  /// [replace] takes precedence over [insertBefore]
-  ///
-  /// [updateSelection] can be used to update the selection after the node
-  /// has been inserted.
-  factory SelectionMenuItem.node({
-    required String Function() getName,
-    required List<String> keywords,
-    required Node Function(EditorState editorState, BuildContext context)
-        nodeBuilder,
-    IconData? iconData,
-    Widget Function(
-      EditorState editorState,
-      bool onSelected,
-      SelectionMenuStyle style,
-    )? iconBuilder,
-    SelectionMenuItemNameBuilder? nameBuilder,
-    bool Function(EditorState editorState, Node node)? insertBefore,
-    bool Function(EditorState editorState, Node node)? replace,
-    Selection? Function(
-      EditorState editorState,
-      Path insertPath,
-      bool replaced,
-      bool insertedBefore,
-    )? updateSelection,
-  }) {
-    // the iconData and iconBuilder are mutually exclusive
-    assert(iconData == null || iconBuilder == null);
-    assert(iconData != null || iconBuilder != null);
+  /// The keywords are used to quickly retrieve items.
+  final List<String> keywords;
+  List<String> get allKeywords => keywords + [name.toLowerCase()];
+  late final SelectionMenuItemHandler handler;
 
-    return SelectionMenuItem(
-      getName: getName,
-      nameBuilder: nameBuilder,
-      icon: (editorState, onSelected, style) {
-        if (iconData != null) {
-          return Icon(
-            iconData,
-            color: onSelected
-                ? style.selectionMenuItemSelectedIconColor
-                : style.selectionMenuItemIconColor,
-            size: 18.0,
-          );
-        } else if (iconBuilder != null) {
-          return iconBuilder.call(editorState, onSelected, style);
-        }
+  VoidCallback? onSelected;
 
-        return const SizedBox.shrink();
-      },
-      keywords: keywords,
-      handler: (editorState, _, context) {
-        final selection = editorState.selection;
-        if (selection == null || !selection.isCollapsed) {
-          return;
-        }
-        final node = editorState.getNodeAtPath(selection.end.path);
-        final delta = node?.delta;
-        if (node == null || delta == null) {
-          return;
-        }
-        final newNode = nodeBuilder(editorState, context);
-        final transaction = editorState.transaction;
-        final bReplace = replace?.call(editorState, node) ?? false;
-        final bInsertBefore = insertBefore?.call(editorState, node) ?? false;
+  bool deleteSlash;
+  bool deleteKeywords;
 
-        //default insert after
-        var path = node.path.next;
-        if (bReplace) {
-          path = node.path;
-        } else if (bInsertBefore) {
-          path = node.path;
-        }
+  Future<void> _deleteSlash(EditorState editorState) async {
+    final selection = editorState.selection;
+    if (selection == null || !selection.isCollapsed) {
+      return;
+    }
+    final node = editorState.getNodeAtPath(selection.end.path);
+    final delta = node?.delta;
+    if (node == null || delta == null) {
+      return;
+    }
+    final end = selection.start.offset;
+    int deletedIndex = 0;
 
-        transaction
-          ..insertNode(path, newNode)
-          ..afterSelection = updateSelection?.call(
-                editorState,
-                path,
-                bReplace,
-                bInsertBefore,
-              ) ??
-              selection;
+    if (deleteKeywords) {
+      deletedIndex = 0;
+    } else if (deleteSlash) {
+      deletedIndex = delta.toPlainText().substring(0, end).lastIndexOf('/');
+    }
 
-        if (bReplace) {
-          transaction.deleteNode(node);
-        }
+    // delete all the texts after '/' along with '/'
+    final transaction = editorState.transaction
+      ..deleteText(
+        node,
+        deletedIndex,
+        end - deletedIndex,
+      );
 
-        editorState.apply(transaction);
-      },
-    );
+    await editorState.apply(transaction);
   }
 }
 
@@ -418,7 +500,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     int selectedIndex,
   ) {
     if (widget.singleColumn) {
-      List<Widget> itemWidgets = [];
+      final List<Widget> itemWidgets = [];
       for (var i = 0; i < items.length; i++) {
         itemWidgets.add(
           AutoScrollTag(
@@ -449,7 +531,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         ),
       );
     } else {
-      List<Widget> columns = [];
+      final List<Widget> columns = [];
       List<Widget> itemWidgets = [];
       // apply item count filter
       if (itemCountFilter > 0) {
@@ -619,7 +701,7 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
     return KeyEventResult.ignored;
   }
 
-  void _deleteLastCharacters({int length = 1}) {
+  Future<void> _deleteLastCharacters({int length = 1}) async {
     final selection = widget.editorState.selection;
     if (selection == null || !selection.isCollapsed) {
       return;
@@ -637,10 +719,10 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
         selection.start.offset - length,
         length,
       );
-    widget.editorState.apply(transaction);
+    await widget.editorState.apply(transaction);
   }
 
-  void _insertText(String text) {
+  Future<void> _insertText(String text) async {
     final selection = widget.editorState.selection;
     if (selection == null || !selection.isSingle) {
       return;
@@ -656,6 +738,6 @@ class _SelectionMenuWidgetState extends State<SelectionMenuWidget> {
       selection.end.offset,
       text,
     );
-    widget.editorState.apply(transaction);
+    await widget.editorState.apply(transaction);
   }
 }

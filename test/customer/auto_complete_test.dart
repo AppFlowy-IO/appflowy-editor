@@ -31,7 +31,7 @@ void main() async {
     );
 
     editorState.selection = Selection(
-      start: Position(path: [0], offset: 0),
+      start: Position(path: [0]),
       end: Position(path: [0], offset: input.length),
     );
     await tester.pumpAndSettle();

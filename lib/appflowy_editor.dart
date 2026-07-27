@@ -9,6 +9,16 @@ export 'src/editor/block_component/rich_text/default_selectable_mixin.dart';
 export 'src/editor/block_component/table_block_component/table.dart';
 // editor part, including editor component, block component, etc.
 export 'src/editor/editor.dart';
+// Inline Comment
+export 'src/editor/inline_comment/inline_comment.dart';
+export 'src/editor/inline_comment/inline_comment_controller.dart';
+export 'src/editor/inline_comment/inline_comment_service.dart' show CommentAnchor;
+export 'src/editor/inline_comment/comment_sidebar_widget.dart';
+export 'src/editor/inline_comment/inline_comment_widget.dart';
+export 'src/editor/inline_comment/comment_toolbar_item.dart';
+export 'src/editor/inline_comment/comment_mobile_toolbar_item.dart';
+export 'src/editor/inline_comment/comment_text_span_decorator.dart'
+    show buildCommentTextSpanDecorator;
 export 'src/editor/find_replace_menu/find_and_replace.dart';
 export 'src/editor/l10n/appflowy_editor_l10n.dart';
 export 'src/editor/selection_menu/selection_menu.dart';

@@ -10,6 +10,17 @@ typedef ToolbarItemValidator = bool Function(EditorState editorState);
 typedef ToolbarItemHighlightCallback = bool Function(EditorState editorState);
 
 class ToolbarItem {
+  factory ToolbarItem.divider() {
+    return ToolbarItem(
+      id: 'divider',
+      type: -1,
+      group: -1,
+      iconBuilder: (_) => const EditorSvg(name: 'toolbar/divider'),
+      validator: (editorState) => true,
+      handler: (editorState, context) {},
+      highlightCallback: (editorState) => false,
+    );
+  }
   ToolbarItem({
     required this.id,
     required this.group,
@@ -47,18 +58,6 @@ class ToolbarItem {
 
   final Widget Function(BuildContext context, EditorState editorState)?
       itemBuilder;
-
-  factory ToolbarItem.divider() {
-    return ToolbarItem(
-      id: 'divider',
-      type: -1,
-      group: -1,
-      iconBuilder: (_) => const EditorSvg(name: 'toolbar/divider'),
-      validator: (editorState) => true,
-      handler: (editorState, context) {},
-      highlightCallback: (editorState) => false,
-    );
-  }
 
   @override
   bool operator ==(Object other) {

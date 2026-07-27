@@ -21,7 +21,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -31,8 +31,8 @@ void main() async {
       );
       await editor.pressKey(key: LogicalKeyboardKey.enter);
 
-      var selection = editor.selection!;
-      var cell01 = getCellNode(tableNode.node, 0, 1)!;
+      final selection = editor.selection!;
+      final cell01 = getCellNode(tableNode.node, 0, 1)!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell01.childAtIndexOrNull(0)!.path);
@@ -50,7 +50,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+      final cell11 = getCellNode(tableNode.node, 1, 1)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -60,7 +60,7 @@ void main() async {
       );
       await editor.pressKey(key: LogicalKeyboardKey.enter);
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, editor.nodeAtPath([1])!.path);
@@ -79,7 +79,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -90,7 +90,7 @@ void main() async {
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
       await tester.pumpAndSettle();
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
@@ -167,7 +167,7 @@ void main() async {
       );
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell11.childAtIndexOrNull(0)!.path);
@@ -206,7 +206,7 @@ void main() async {
       );
       await editor.pressKey(key: LogicalKeyboardKey.backspace);
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, editor.document.first!.path);
@@ -228,8 +228,8 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell01 = getCellNode(tableNode.node, 0, 1)!;
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell01 = getCellNode(tableNode.node, 0, 1)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -272,8 +272,8 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell01 = getCellNode(tableNode.node, 0, 1)!;
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell01 = getCellNode(tableNode.node, 0, 1)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -315,8 +315,8 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -361,7 +361,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -372,7 +372,7 @@ void main() async {
 
       await editor.pressKey(key: LogicalKeyboardKey.arrowLeft);
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell10.childAtIndexOrNull(0)!.path);
@@ -391,7 +391,7 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -402,7 +402,7 @@ void main() async {
 
       await editor.pressKey(key: LogicalKeyboardKey.arrowRight);
 
-      var selection = editor.selection!;
+      final selection = editor.selection!;
 
       expect(selection.isCollapsed, true);
       expect(selection.start.path, cell00.childAtIndexOrNull(0)!.path);
@@ -421,9 +421,9 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
-      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell11 = getCellNode(tableNode.node, 1, 1)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -469,9 +469,9 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
-      var cell11 = getCellNode(tableNode.node, 1, 1)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell11 = getCellNode(tableNode.node, 1, 1)!;
 
       await editor.updateSelection(
         Selection.single(
@@ -532,9 +532,9 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var cell00 = getCellNode(tableNode.node, 0, 0)!;
-      var cell01 = getCellNode(tableNode.node, 0, 1)!;
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell00 = getCellNode(tableNode.node, 0, 0)!;
+      final cell01 = getCellNode(tableNode.node, 0, 1)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
 
       await editor.updateSelection(
         Selection.single(

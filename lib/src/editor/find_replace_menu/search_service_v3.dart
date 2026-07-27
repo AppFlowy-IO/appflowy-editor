@@ -8,9 +8,11 @@ const selectionExtraInfoDisableToolbar = 'selectionExtraInfoDisableToolbar';
 class SearchServiceV3 {
   SearchServiceV3({
     required this.editorState,
+    this.jumpInterceptor,
   });
 
   final EditorState editorState;
+  final JumpInterceptor? jumpInterceptor;
 
   // matchWrappers.value will contain a list of matchWrappers of the matched patterns
   // the position here consists of the match and the node path of
@@ -60,7 +62,7 @@ class SearchServiceV3 {
   }
 
   String _getRegexReplaced(String replaceText, Match match) {
-    List<String?> groups = match
+    final List<String?> groups = match
         .groups(List<int>.generate(match.groupCount + 1, (index) => index));
 
     String replacedText = replaceText;
@@ -84,8 +86,7 @@ class SearchServiceV3 {
     try {
       pattern = _getPattern(target);
     } on FormatException {
-      matchWrappers.value.clear();
-
+      matchWrappers.value = [];
       return 'Regex';
     }
 
@@ -93,7 +94,7 @@ class SearchServiceV3 {
       // this means we have a new pattern, but before we highlight the new matches,
       // lets unhighlight the old pattern
       _findAndHighlight(queriedPattern, unHighlight: true);
-      matchWrappers.value.clear();
+      matchWrappers.value = [];
       queriedPattern = pattern;
       targetString = target;
     }
@@ -144,7 +145,7 @@ class SearchServiceV3 {
         final matches = searchAlgorithm.searchMethod(pattern, text);
         // we will store this list of offsets along with their path,
         // in a list of positions.
-        for (Match match in matches) {
+        for (final Match match in matches) {
           result.add(
             MatchWrapper(match, node.path),
           );
@@ -163,7 +164,9 @@ class SearchServiceV3 {
   ) {
     final MatchWrapper(:selection, :path) = matchWrappers.value[selectedIndex];
 
-    editorState.scrollService?.jumpTo(path.first);
+    if (jumpInterceptor?.call(path) == false) {
+      editorState.scrollService?.jumpTo(path.first);
+    }
 
     editorState.updateSelectionWithReason(
       selection,
@@ -171,6 +174,8 @@ class SearchServiceV3 {
       extraInfo: {
         selectionExtraInfoDisableToolbar: true,
         selectionExtraInfoDoNotAttachTextService: true,
+        selectionExtraInfoDisableMobileToolbarKey: true,
+        selectionExtraInfoSelectionRadius: 6.0,
       },
     );
   }
@@ -223,15 +228,13 @@ class SearchServiceV3 {
       );
     await editorState.apply(transaction);
 
-    matchWrappers.value.clear();
+    matchWrappers.value = [];
     _findAndHighlight(queriedPattern);
   }
 
   /// Replaces all the found occurrences of pattern with replaceText
   void replaceAllMatches(String replaceText) {
-    if (replaceText.isEmpty ||
-        queriedPattern.isEmpty ||
-        matchWrappers.value.isEmpty) {
+    if (queriedPattern.isEmpty || matchWrappers.value.isEmpty) {
       return;
     }
 
@@ -255,7 +258,7 @@ class SearchServiceV3 {
 
       editorState.apply(transaction);
     }
-    matchWrappers.value.clear();
+    matchWrappers.value = [];
   }
 }
 
@@ -282,3 +285,5 @@ extension on Pattern {
     }
   }
 }
+
+typedef JumpInterceptor = bool Function(Path path);
