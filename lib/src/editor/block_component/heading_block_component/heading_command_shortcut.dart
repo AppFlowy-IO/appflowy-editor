@@ -74,8 +74,11 @@ KeyEventResult _toggleAttribute(
       node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == level;
 
-  final delta = (node.delta ?? Delta()).toJson();
-
+  // The delta is read per node inside the callback. Reading it once from
+  // `selection.start` and reusing it here wrote the first block's text over
+  // every block in a multi-block selection, destroying the rest -- and this
+  // shortcut path has no single-selection gate at all, so it was reachable
+  // with any selection. See heading_toolbar_items.dart (2026-07-27).
   editorState.formatNode(
     selection,
     (node) => node.copyWith(
@@ -86,7 +89,7 @@ KeyEventResult _toggleAttribute(
             node.attributes[blockComponentBackgroundColor],
         blockComponentTextDirection:
             node.attributes[blockComponentTextDirection],
-        blockComponentDelta: delta,
+        blockComponentDelta: (node.delta ?? Delta()).toJson(),
       },
     ),
   );

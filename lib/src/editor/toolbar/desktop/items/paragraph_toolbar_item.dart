@@ -10,25 +10,33 @@ final ToolbarItem paragraphItem = ToolbarItem(
     final selection = editorState.selection!;
     final node = editorState.getNodeAtPath(selection.start.path)!;
     final isHighlight = node.type == 'paragraph';
-    final delta = (node.delta ?? Delta()).toJson();
     final child = SVGIconItemWidget(
       iconName: 'toolbar/text',
       isHighlight: isHighlight,
       highlightColor: highlightColor,
       iconColor: iconColor,
-      onPressed: () => editorState.formatNode(
-        selection,
-        (node) => node.copyWith(
-          type: ParagraphBlockKeys.type,
-          attributes: {
-            blockComponentDelta: delta,
-            blockComponentBackgroundColor:
-                node.attributes[blockComponentBackgroundColor],
-            blockComponentTextDirection:
-                node.attributes[blockComponentTextDirection],
-          },
-        ),
-      ),
+      // Read the selection and each node's delta at press time. See the note in
+      // heading_toolbar_items.dart -- hoisting the delta out of this callback
+      // wrote one block's text over every block in the selection.
+      onPressed: () {
+        final selection = editorState.selection;
+        if (selection == null) {
+          return;
+        }
+        editorState.formatNode(
+          selection,
+          (node) => node.copyWith(
+            type: ParagraphBlockKeys.type,
+            attributes: {
+              blockComponentDelta: (node.delta ?? Delta()).toJson(),
+              blockComponentBackgroundColor:
+                  node.attributes[blockComponentBackgroundColor],
+              blockComponentTextDirection:
+                  node.attributes[blockComponentTextDirection],
+            },
+          ),
+        );
+      },
     );
 
     if (tooltipBuilder != null) {

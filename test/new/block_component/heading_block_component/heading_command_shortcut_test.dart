@@ -149,5 +149,45 @@ void main() async {
       node = editorState.getNodeAtPath([0])!;
       expect(node.type, ParagraphBlockKeys.type);
     });
+
+    // Regression test for real data loss on a real page, 2026-07-27.
+    //
+    // The delta was read ONCE from the block at `selection.start` and then
+    // written into every block the format callback ran for. Toggling a heading
+    // over a multi-block selection therefore stamped the first block's text
+    // over all the others and destroyed their writing. This shortcut path has
+    // no single-selection gate, so any selection could trigger it.
+    test('toggling a heading over several blocks keeps each blocks own text',
+        () {
+      final document = Document.blank()
+        ..addParagraph(initialText: 'first')
+        ..addParagraph(initialText: 'second')
+        ..addParagraph(initialText: 'third');
+      final editorState = EditorState(document: document);
+
+      editorState.selection = Selection(
+        start: Position(path: [0]),
+        end: Position(path: [2], offset: 'third'.length),
+      );
+      toggleH1.execute(editorState);
+
+      final texts = editorState.document.root.children
+          .map((n) => n.delta?.toPlainText())
+          .toList();
+      expect(texts, ['first', 'second', 'third']);
+      expect(
+        editorState.document.root.children.map((n) => n.type),
+        everyElement(HeadingBlockKeys.type),
+      );
+
+      // ...and back again, which is the same callback with the other type.
+      toggleH1.execute(editorState);
+      expect(
+        editorState.document.root.children
+            .map((n) => n.delta?.toPlainText())
+            .toList(),
+        ['first', 'second', 'third'],
+      );
+    });
   });
 }
