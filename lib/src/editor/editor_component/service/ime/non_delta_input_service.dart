@@ -70,6 +70,21 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
     TextInputConfiguration configuration,
   ) {
     final formattedValue = textEditingValue.format();
+
+    // On Windows, the IME (e.g. Korean / other CJK) owns the editing state
+    // while a composing region is active. Pushing `setEditingState` back to the
+    // engine mid-composition cancels/forks the composition and corrupts the
+    // text (jamo get scrambled / duplicated). The text input connection is
+    // already attached at this point, so we simply skip re-attaching while a
+    // composition is in progress and let the IME drive the state.
+    final composing = composingTextRange;
+    if (PlatformExtension.isWindows &&
+        composing != null &&
+        composing.isValid &&
+        !composing.isCollapsed) {
+      return;
+    }
+
     if (!formattedValue.isValid() ||
         currentTextEditingValue == formattedValue) {
       return;
@@ -98,6 +113,15 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
 
   @override
   void updateEditingValue(TextEditingValue value) {
+    // Compensate for a Flutter Windows behavior change: during IME composition
+    // (e.g. Korean / other CJK), the engine reports the caret collapsed at the
+    // START (left edge) of the composing region. The downstream insert/replace
+    // logic assumes the caret sits at the END of the composing text, so without
+    // this normalization each new jamo is inserted to the LEFT of the syllable
+    // and the text ends up reversed/scrambled (e.g. "ㅕㄴㅇ와" instead of the
+    // platform's "와ㅕㄴㅇ").
+    value = _normalizeComposingSelection(value);
+
     if (currentTextEditingValue == value) {
       return;
     }
@@ -250,6 +274,26 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
           false,
     );
     contentInsertionConfiguration?.onContentInserted.call(content);
+  }
+
+  // On Windows the IME reports the caret at the start of the composing region
+  // during composition; move it to the end so the rest of the pipeline (which
+  // assumes caret-at-end) inserts the composing text in the correct position.
+  TextEditingValue _normalizeComposingSelection(TextEditingValue value) {
+    if (!PlatformExtension.isWindows) {
+      return value;
+    }
+    final composing = value.composing;
+    final selection = value.selection;
+    if (composing.isValid &&
+        !composing.isCollapsed &&
+        selection.isCollapsed &&
+        selection.baseOffset == composing.start) {
+      return value.copyWith(
+        selection: TextSelection.collapsed(offset: composing.end),
+      );
+    }
+    return value;
   }
 
   void _updateComposing(TextEditingDelta delta) {
