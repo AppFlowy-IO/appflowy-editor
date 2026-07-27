@@ -29,8 +29,8 @@ TextSpan mobileTextSpanDecoratorForAttribute(
       ..onTapUp = (_) async {
         if (timer != null && timer!.isActive) {
           // Implement single tap logic
-          await safeLaunchUrl(hrefAddress);
           timer!.cancel();
+          await safeLaunchUrl(hrefAddress);
 
           return;
         }
