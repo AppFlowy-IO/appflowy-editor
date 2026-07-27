@@ -44,6 +44,7 @@ void main() {
         order.add('a');
         notifier.removeListener(bListener);
       }
+
       bListener = () => order.add('b');
       notifier.addListener(aListener);
       notifier.addListener(bListener);
@@ -104,8 +105,7 @@ void main() {
       expect(
         stopwatch.elapsedMilliseconds,
         lessThan(1000),
-        reason:
-            'Removing $n listeners should be O(n), not O(n^2). Took '
+        reason: 'Removing $n listeners should be O(n), not O(n^2). Took '
             '${stopwatch.elapsedMilliseconds} ms.',
       );
     });

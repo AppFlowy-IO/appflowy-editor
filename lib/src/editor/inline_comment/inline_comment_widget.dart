@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+
 import 'inline_comment_service.dart';
 
 /// A wrapper widget that adds inline comment support to [AppFlowyEditor].
@@ -105,6 +106,7 @@ class _InlineCommentWidgetState extends State<InlineCommentWidget> {
         ],
       );
     }
+
     return widget.child;
   }
 }

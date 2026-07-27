@@ -37,6 +37,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     /// this method needs to be removed in the future as it is not stable
     final parseForSingleChild = body.children.length == 1 &&
         HTMLTags.formattingElements.contains(body.children.first.localName);
+
     return Document.blank()
       ..insert(
         [0],

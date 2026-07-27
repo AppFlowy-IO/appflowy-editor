@@ -126,8 +126,7 @@ class CheckSingleFormatFormatResult {
   // matching the common markdown behavior (asterisks are unaffected).
   if (character == '_') {
     final openingIndex = startIndex + lastCharIndex;
-    if (openingIndex > 0 &&
-        rawPlainText[openingIndex - 1].trim().isNotEmpty) {
+    if (openingIndex > 0 && rawPlainText[openingIndex - 1].trim().isNotEmpty) {
       return (false, null);
     }
   }

@@ -1,7 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'inline_comment.dart';
-import 'inline_comment_controller.dart';
 import 'inline_comment_service.dart';
 import 'comment_card_widget.dart';
 
@@ -72,6 +70,7 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
       ..sort((a, b) {
         final pathCmp = _comparePaths(a.value.nodePath, b.value.nodePath);
         if (pathCmp != 0) return pathCmp;
+
         return a.value.startOffset.compareTo(b.value.startOffset);
       });
     _orderedCommentIds = sortedIds.map((e) => e.key).toList();
@@ -81,12 +80,14 @@ class _CommentSidebarWidgetState extends State<CommentSidebarWidget> {
     for (int i = 0; i < a.length && i < b.length; i++) {
       if (a[i] != b[i]) return a[i].compareTo(b[i]);
     }
+
     return a.length.compareTo(b.length);
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: widget.sidebarWidth,
       decoration: BoxDecoration(

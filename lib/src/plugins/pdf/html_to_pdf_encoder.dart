@@ -399,7 +399,6 @@ class PdfHTMLEncoder {
     dom.Element element, {
     required String type,
   }) {
-    //TODO: Handle Numbered Lists & Handle nested lists
     if (type == TodoListBlockKeys.type) {
       final bracketRightIndex = element.text.indexOf(']') + 1;
       final strippedString =
@@ -445,6 +444,7 @@ class PdfHTMLEncoder {
           return pw.Image(pw.MemoryImage(networkImage));
         } else {
           final File localImage = File(src);
+
           return pw.Image(pw.MemoryImage(await localImage.readAsBytes()));
         }
       } else {

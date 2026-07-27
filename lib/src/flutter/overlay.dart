@@ -1,4 +1,3 @@
-// TODO: Remove this file until we update the flutter version to 3.5.x
 //
 //  This file is copied from flutter(3.5.x) repo.
 //
@@ -573,8 +572,6 @@ class OverlayState extends State<Overlay> with TickerProviderStateMixin {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    // TODO(jacobr): use IterableProperty instead as that would
-    // provide a slightly more consistent string summary of the List.
     properties
         .add(DiagnosticsProperty<List<OverlayEntry>>('entries', _entries));
   }

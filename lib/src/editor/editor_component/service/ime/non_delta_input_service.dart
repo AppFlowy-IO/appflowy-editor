@@ -298,6 +298,7 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
         selection: TextSelection.collapsed(offset: composing.end),
       );
     }
+
     return value;
   }
 

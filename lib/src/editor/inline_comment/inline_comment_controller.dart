@@ -1,5 +1,4 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/inline_comment/inline_comment.dart';
 import 'package:flutter/material.dart';
 
 /// Called when the user requests to add a comment on the selected text.
@@ -116,8 +115,11 @@ class InlineCommentController extends ChangeNotifier {
   /// Look up a comment by id; returns null if not found.
   InlineComment? findById(String id) {
     for (final c in _comments) {
-      if (c.id == id) return c;
+      if (c.id == id) {
+        return c;
+      }
     }
+
     return null;
   }
 

@@ -34,6 +34,7 @@ class Keybinding {
 
   factory Keybinding.fromJson(String source) =>
       Keybinding.fromMap(json.decode(source));
+
   Keybinding({
     required this.isAltPressed,
     required this.isControlPressed,

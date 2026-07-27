@@ -550,6 +550,7 @@ class _DesktopSelectionServiceWidgetState
     if (_comparePosition(focus.start, anchor.start) < 0) {
       return Selection(start: anchor.end, end: focus.start);
     }
+
     return Selection(start: anchor.start, end: focus.end);
   }
 
@@ -560,6 +561,7 @@ class _DesktopSelectionServiceWidgetState
     if (a.path.equals(b.path)) {
       return a.offset.compareTo(b.offset);
     }
+
     return a.path < b.path ? -1 : 1;
   }
 

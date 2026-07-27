@@ -137,7 +137,6 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     TextInputControl? newControl,
   ) {}
 
-  @override
   bool onFocusReceived() => false;
 
   @override

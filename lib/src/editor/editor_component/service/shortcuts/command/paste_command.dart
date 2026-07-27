@@ -110,7 +110,6 @@ extension on EditorState {
 
   Future<void> pastePlainText(String plainText) async {
     final selectionAttributes = getDeltaAttributesInSelectionStart();
-    // TODO remove this deletion after refactoring pasteHtmlIfAvailable below
     final selection = await deleteSelectionIfNeeded();
 
     if (selection == null) {

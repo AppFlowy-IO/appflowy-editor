@@ -1,8 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'inline_comment.dart';
-import 'inline_comment_controller.dart';
 
 /// Builds a [TextSpanDecoratorForAttribute] that highlights text with
 /// inline comments.
@@ -24,10 +22,14 @@ TextSpanDecoratorForAttribute buildCommentTextSpanDecorator({
   TextSpanDecoratorForAttribute? base,
 }) {
   base ??= defaultTextSpanDecoratorForAttribute;
+
   return (context, node, index, textInsert, before, after) {
     final intermediate =
         base!.call(context, node, index, textInsert, before, after);
-    if (intermediate is! TextSpan) return intermediate;
+    if (intermediate is! TextSpan) {
+      return intermediate;
+    }
+
     return applyCommentDecoration(
       context: context,
       node: node,

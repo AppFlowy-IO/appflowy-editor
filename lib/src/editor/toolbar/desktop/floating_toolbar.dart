@@ -168,8 +168,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onScrollPositionChanged() {
     _clear();
 
-    // TODO: optimize the toolbar showing logic, making it more smooth.
-    // A quick idea: based on the scroll controller's offset to display the toolbar.
     _showAfterDelay();
   }
 

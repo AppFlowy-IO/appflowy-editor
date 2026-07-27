@@ -166,6 +166,7 @@ class CommentCard extends StatelessWidget {
     if (diff.inDays > 0) return '${diff.inDays}d';
     if (diff.inHours > 0) return '${diff.inHours}h';
     if (diff.inMinutes > 0) return '${diff.inMinutes}m';
+
     return 'now';
   }
 }

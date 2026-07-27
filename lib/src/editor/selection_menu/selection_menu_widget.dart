@@ -121,6 +121,7 @@ class SelectionMenuItem {
       },
     );
   }
+
   SelectionMenuItem({
     required String Function() getName,
     required this.icon,
@@ -133,7 +134,7 @@ class SelectionMenuItem {
     this.handler = (editorState, menuService, context) async {
       try {
         if (deleteSlash || deleteKeywords) {
-          _deleteSlash(editorState);
+          await _deleteSlash(editorState);
         }
       } catch (e) {
         AppFlowyEditorLog.ui.debug('Error deleting slash or keywords: $e');
@@ -146,25 +147,6 @@ class SelectionMenuItem {
     };
   }
 
-  SelectionMenuItem({
-    required String Function() getName,
-    required this.icon,
-    required this.keywords,
-    required SelectionMenuItemHandler handler,
-    this.nameBuilder,
-    this.deleteKeywords = false,
-    this.deleteSlash = true,
-  }) : _getName = getName {
-    this.handler = (editorState, menuService, context) {
-      if (deleteSlash || deleteKeywords) {
-        _deleteSlash(editorState);
-      }
-
-      handler(editorState, menuService, context);
-      onSelected?.call();
-    };
-  }
-
   final String Function() _getName;
   final Widget Function(
     EditorState editorState,
@@ -180,58 +162,6 @@ class SelectionMenuItem {
   /// The keywords are used to quickly retrieve items.
   final List<String> keywords;
 
-  List<String> get allKeywords => keywords + [name.toLowerCase()];
-  late final SelectionMenuItemHandler handler;
-
-  VoidCallback? onSelected;
-
-  bool deleteSlash;
-  bool deleteKeywords;
-
-  void _deleteSlash(EditorState editorState) {
-    final selection = editorState.selection;
-    if (selection == null || !selection.isCollapsed) {
-      return;
-    }
-    final node = editorState.getNodeAtPath(selection.end.path);
-    final delta = node?.delta;
-    if (node == null || delta == null) {
-      return;
-    }
-    final end = selection.start.offset;
-    int deletedIndex = 0;
-
-    if (deleteKeywords) {
-      deletedIndex = 0;
-    } else if (deleteSlash) {
-      deletedIndex = delta.toPlainText().substring(0, end).lastIndexOf('/');
-    }
-
-    // delete all the texts after '/' along with '/'
-    final transaction = editorState.transaction
-      ..deleteText(
-        node,
-        deletedIndex,
-        end - deletedIndex,
-      );
-
-    editorState.apply(transaction);
-  }
-
-  final String Function() _getName;
-  final Widget Function(
-    EditorState editorState,
-    bool onSelected,
-    SelectionMenuStyle style,
-  ) icon;
-  final SelectionMenuItemNameBuilder? nameBuilder;
-
-  String get name => _getName();
-
-  /// Customizes keywords for item.
-  ///
-  /// The keywords are used to quickly retrieve items.
-  final List<String> keywords;
   List<String> get allKeywords => keywords + [name.toLowerCase()];
   late final SelectionMenuItemHandler handler;
 

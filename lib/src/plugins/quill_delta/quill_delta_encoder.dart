@@ -222,6 +222,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
       return '0xFF${color.substring(1)}';
     } else if (color.startsWith("rgba")) {
       final List rgbaList = color.substring(5, color.length - 1).split(',');
+
       return Color.fromRGBO(
         int.parse(rgbaList[0]),
         int.parse(rgbaList[1]),

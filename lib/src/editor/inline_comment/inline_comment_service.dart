@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/editor/inline_comment/inline_comment_controller.dart';
 
 /// Anchors a comment to a position in the document.
 ///
@@ -83,6 +82,7 @@ class InlineCommentService {
         }
       }
     });
+
     return result;
   }
 
@@ -112,12 +112,15 @@ class InlineCommentService {
     } else if (raw is String) {
       return [raw];
     }
+
     return [];
   }
 
   void _onTransaction(EditorTransactionValue value) {
     final (time, _, _) = value;
-    if (time != TransactionTime.after) return;
+    if (time != TransactionTime.after) {
+      return;
+    }
 
     // After every transaction, collect the comment ids still present in the
     // document and compare against the controller's known comment list.

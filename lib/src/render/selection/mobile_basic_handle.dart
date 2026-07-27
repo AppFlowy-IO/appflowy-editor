@@ -102,8 +102,7 @@ class DragHandle extends _IDragHandle {
 
   @override
   Widget build(BuildContext context) {
-    if (handleType == HandleType.none ||
-        handleType == HandleType.collapsed) {
+    if (handleType == HandleType.none || handleType == HandleType.collapsed) {
       // Collapsed handle still uses the inner per-platform widgets, which
       // build their own gesture detectors sized to the (already enlarged)
       // outer rect.
@@ -137,6 +136,7 @@ class DragHandle extends _IDragHandle {
           child: child,
         );
       }
+
       return child;
     }
 
@@ -251,8 +251,7 @@ class _SelectionDragHandleState extends State<_SelectionDragHandle> {
                   details.translate(0, dyOffset),
                   widget.handleType.dragMode,
                 );
-                if (PlatformExtension.isAndroid &&
-                    _selection != newSelection) {
+                if (PlatformExtension.isAndroid && _selection != newSelection) {
                   HapticFeedback.selectionClick();
                 }
                 _selection = newSelection;
@@ -583,6 +582,7 @@ class _AndroidDragHandleVisual extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ballWidth = handleBallWidth * 2.0;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: handleType.crossAxisAlignment,

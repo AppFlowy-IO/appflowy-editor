@@ -21,6 +21,7 @@ class ToolbarItem {
       highlightCallback: (editorState) => false,
     );
   }
+
   ToolbarItem({
     required this.id,
     required this.group,

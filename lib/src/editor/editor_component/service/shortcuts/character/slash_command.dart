@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const Set<String> _defaultSupportSlashMenuNodeTypes = {
@@ -110,11 +107,7 @@ Future<bool> _showSlashMenu(
       singleColumn: singleColumn,
       style: style,
     );
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
-      await _selectionMenuService?.show();
-    } else {
-      await _selectionMenuService?.show();
-    }
+    await _selectionMenuService?.show();
   }
 
   if (shouldInsertSlash) {

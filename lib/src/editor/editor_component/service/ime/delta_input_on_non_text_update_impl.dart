@@ -94,6 +94,7 @@ Future<bool> handleAndroidNonTextUpdate(
       ),
       reason: SelectionUpdateReason.uiEvent,
     );
+
     return true;
   }
 
@@ -102,6 +103,7 @@ Future<bool> handleAndroidNonTextUpdate(
 
 bool _isSelectAllNonTextUpdate(TextEditingDeltaNonTextUpdate nonTextUpdate) {
   final selection = nonTextUpdate.selection;
+
   return nonTextUpdate.oldText.isNotEmpty &&
       selection.start == 0 &&
       selection.end == nonTextUpdate.oldText.length &&

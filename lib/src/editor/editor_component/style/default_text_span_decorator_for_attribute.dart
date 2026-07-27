@@ -39,6 +39,7 @@ TextSpan defaultTextSpanDecoratorForAttribute(
             HardwareKeyboard.instance.isMetaPressed) {
           tapCount = 0;
           await editorLaunchUrl(href);
+
           return;
         }
         timer = Timer(const Duration(milliseconds: 200), () {

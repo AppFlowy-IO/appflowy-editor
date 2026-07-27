@@ -73,6 +73,7 @@ class EditorStyle {
             ),
         textSpanDecorator =
             textSpanDecorator ?? mobileTextSpanDecoratorForAttribute;
+
   const EditorStyle({
     required this.padding,
     required this.cursorColor,

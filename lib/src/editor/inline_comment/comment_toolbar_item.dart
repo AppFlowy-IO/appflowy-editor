@@ -45,9 +45,16 @@ ToolbarItem buildCommentToolbarItem(InlineCommentController controller) {
 
 bool _isActive(EditorState editorState) {
   final selection = editorState.selection;
-  if (selection == null || selection.isCollapsed) return false;
-  if (!selection.isSingle) return false;
+  if (selection == null || selection.isCollapsed) {
+    return false;
+  }
+
+  if (!selection.isSingle) {
+    return false;
+  }
+
   final node = editorState.getNodeAtPath(selection.start.path);
+
   return node?.delta != null;
 }
 

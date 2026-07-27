@@ -433,7 +433,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   List<Widget> _buildRichTextBackground(BuildContext context) {
-    if (textKey.currentContext == null) return [];
+    if (textKey.currentContext == null) {
+      return [];
+    }
+
     return textSpanBackgroundBuilder?.call(
           context,
           widget.node,

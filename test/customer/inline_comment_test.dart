@@ -136,7 +136,6 @@ void main() async {
             editorState: editorState,
             controller: controller,
             showSidebar: true,
-            sidebarWidth: 240,
             child: AppFlowyEditor(
               editorState: editorState,
               editorStyle: EditorStyle.desktop(

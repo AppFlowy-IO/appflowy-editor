@@ -128,8 +128,10 @@ class PropertyValueNotifier<T> implements ValueListenable<T> {
           'be used.',
         );
       }
+
       return true;
     }());
+
     return true;
   }
 }

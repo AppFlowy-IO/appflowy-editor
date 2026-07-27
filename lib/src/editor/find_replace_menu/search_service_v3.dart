@@ -87,6 +87,7 @@ class SearchServiceV3 {
       pattern = _getPattern(target);
     } on FormatException {
       matchWrappers.value = [];
+
       return 'Regex';
     }
 

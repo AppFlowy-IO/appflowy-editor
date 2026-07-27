@@ -72,5 +72,6 @@ Future<bool> insertNodeAfterSelection(
   }
 
   await editorState.apply(transaction);
+
   return true;
 }

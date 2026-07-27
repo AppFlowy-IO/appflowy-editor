@@ -104,6 +104,7 @@ extension EditorStateSelection on EditorState {
 
           if (widget is Offstage && widget.offstage) {
             isVisible = false;
+
             return false;
           }
 
@@ -130,6 +131,7 @@ extension EditorStateSelection on EditorState {
               (a, b) {
                 final aRect = _getCachedRect(a, rectCache!);
                 final bRect = _getCachedRect(b, rectCache);
+
                 return aRect.bottom != bRect.bottom
                     ? aRect.bottom.compareTo(bRect.bottom)
                     : aRect.left.compareTo(bRect.left);
