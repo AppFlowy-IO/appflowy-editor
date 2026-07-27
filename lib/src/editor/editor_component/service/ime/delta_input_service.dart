@@ -137,6 +137,8 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
     TextInputControl? newControl,
   ) {}
 
+  bool onFocusReceived() => false;
+
   @override
   void performSelector(String selectorName) {
     final currentTextEditingValue = this.currentTextEditingValue;

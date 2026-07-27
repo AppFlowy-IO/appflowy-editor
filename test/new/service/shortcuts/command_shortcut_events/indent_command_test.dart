@@ -102,9 +102,6 @@ void main() async {
       await editor.dispose();
     });
 
-    // TODO(.): The purpose of this test is to catch addPostFrameCallback from
-    //  calculateTextDirection but it doesn't catch it. Commenting the callback
-    //  out doesn't make this test fail.
     testWidgets(
         "indent AUTO line under AUTO line changing the second line calculated direction",
         (tester) async {

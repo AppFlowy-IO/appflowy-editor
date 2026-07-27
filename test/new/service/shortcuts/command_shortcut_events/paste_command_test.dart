@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -38,7 +39,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
         await editor.updateSelection(
-          Selection.collapsed(Position(path: [0], offset: 0)),
+          Selection.collapsed(Position(path: [0])),
         );
 
         const link = 'https://appflowy.io/';
@@ -69,7 +70,7 @@ void main() async {
         final editor = tester.editor..addParagraph(initialText: '');
         await editor.startTesting();
         await editor.updateSelection(
-          Selection.collapsed(Position(path: [0], offset: 0)),
+          Selection.collapsed(Position(path: [0])),
         );
 
         const textWithLink = 'click https://appflowy.io/ jump to appflowy';
@@ -262,7 +263,7 @@ void main() async {
       await editor.dispose();
     });
 
-    for (var position in ['start', 'end']) {
+    for (final position in ['start', 'end']) {
       testWidgets('paste without format if at $position of formatted text',
           (tester) async {
         const pasteText = 'text';
@@ -398,7 +399,7 @@ Future<void> _testHandleCopyMultiplePaste(
     isMetaPressed: Platform.isMacOS,
   );
   handleCopy(editor.editorState);
-  deleteSelectedContent(editor.editorState);
+  unawaited(deleteSelectedContent(editor.editorState));
 
   pasteHTML(
     editor.editorState,
@@ -441,7 +442,7 @@ Future<void> _testHandleCopyPaste(
     isMetaPressed: Platform.isMacOS,
   );
   handleCopy(editor.editorState);
-  deleteSelectedContent(editor.editorState);
+  unawaited(deleteSelectedContent(editor.editorState));
   await editor.updateSelection(Selection.collapsed(Position(path: [0])));
   await editor.pressKey(
     key: LogicalKeyboardKey.keyP,

@@ -155,7 +155,6 @@ class _TodoListBlockComponentWidgetState
       alignment: alignment,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [

@@ -52,7 +52,7 @@ Future<void> _testCutHandle(
   await editor.startTesting();
   await editor.updateSelection(
     Selection(
-      start: Position(path: [2], offset: 0),
+      start: Position(path: [2]),
       end: Position(path: [2], offset: 69),
     ),
   );

@@ -135,7 +135,6 @@ class _HeadingBlockComponentWidgetState
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         textDirection: textDirection,
         children: [
           Flexible(
@@ -185,14 +184,19 @@ class _HeadingBlockComponentWidgetState
       supportTypes: const [
         BlockSelectionType.block,
       ],
-      child: child,
+      child: Padding(
+        padding: padding,
+        child: child,
+      ),
     );
 
-    child = Container(
-      padding: padding,
-      decoration: decoration,
-      child: child,
-    );
+    final decoration = this.decoration;
+    if (decoration != null) {
+      child = DecoratedBox(
+        decoration: decoration,
+        child: child,
+      );
+    }
 
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(
@@ -202,6 +206,11 @@ class _HeadingBlockComponentWidgetState
         child: child,
       );
     }
+
+    child = Padding(
+      padding: margin,
+      child: child,
+    );
 
     return child;
   }

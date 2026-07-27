@@ -45,7 +45,6 @@ void main() {
       editorState.selection = Selection.collapsed(
         Position(
           path: [0],
-          offset: 0,
         ),
       );
       final attributes = editorState.getDeltaAttributesInSelectionStart();

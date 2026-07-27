@@ -16,7 +16,7 @@ final todoListMobileToolbarItem = MobileToolbarItem.action(
     }
     final isTodoList = node.type == TodoListBlockKeys.type;
 
-    editorState.formatNode(
+    await editorState.formatNode(
       selection,
       (node) => node.copyWith(
         type: isTodoList ? ParagraphBlockKeys.type : TodoListBlockKeys.type,

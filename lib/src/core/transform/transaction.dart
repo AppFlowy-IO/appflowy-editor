@@ -92,13 +92,35 @@ class Transaction {
     );
   }
 
+  /// Updates a node's type while keeping the same node id and children.
+  ///
+  /// Unlike [updateNode], this replaces the node attributes. Block types have
+  /// different data contracts, so carrying old type-specific attributes into
+  /// the new block type would leak stale state.
+  void updateNodeType(
+    Node node,
+    String type,
+    Attributes attributes,
+  ) {
+    add(
+      UpdateNodeTypeOperation(
+        node.path,
+        node.id,
+        type,
+        node.type,
+        {...attributes},
+        {...node.attributes},
+      ),
+    );
+  }
+
   /// Deletes the [Node] in the document.
   void deleteNode(Node node) {
     deleteNodesAtPath(node.path);
     if (beforeSelection != null) {
       final nodePath = node.path;
       final selectionPath = beforeSelection!.start.path;
-      if (!(nodePath.equals(selectionPath))) {
+      if (!nodePath.equals(selectionPath)) {
         afterSelection = beforeSelection;
       }
     }

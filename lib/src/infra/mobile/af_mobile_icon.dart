@@ -22,8 +22,8 @@ enum AFMobileIcons {
   divider('toolbar_icons/divider'),
   close('toolbar_icons/close');
 
-  final String iconPath;
   const AFMobileIcons(this.iconPath);
+  final String iconPath;
 }
 
 /// {@tool snippet}

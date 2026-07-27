@@ -9,7 +9,7 @@ class SelectionMenuIconWidget extends StatelessWidget {
     required this.isSelected,
     required this.style,
   }) {
-    assert((name == null && icon != null) || ((name != null && icon == null)));
+    assert((name == null && icon != null) || (name != null && icon == null));
   }
 
   final String? name;
