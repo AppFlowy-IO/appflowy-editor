@@ -20,11 +20,11 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var row0beforeHeight = tableNode.getRowHeight(0);
-      var row1beforeHeight = tableNode.getRowHeight(1);
+      final row0beforeHeight = tableNode.getRowHeight(0);
+      final row1beforeHeight = tableNode.getRowHeight(1);
       expect(row0beforeHeight == row1beforeHeight, true);
 
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
       await editor.updateSelection(
         Selection.single(
           path: cell10.childAtIndexOrNull(0)!.path,
@@ -54,11 +54,11 @@ void main() async {
       await editor.startTesting();
       await tester.pumpAndSettle();
 
-      var row0beforeHeight = tableNode.getRowHeight(0);
-      var row1beforeHeight = tableNode.getRowHeight(1);
+      final row0beforeHeight = tableNode.getRowHeight(0);
+      final row1beforeHeight = tableNode.getRowHeight(1);
       expect(row0beforeHeight == row1beforeHeight, true);
 
-      var cell10 = getCellNode(tableNode.node, 1, 0)!;
+      final cell10 = getCellNode(tableNode.node, 1, 0)!;
       await editor.updateSelection(
         Selection.single(
           path: cell10.childAtIndexOrNull(0)!.path,

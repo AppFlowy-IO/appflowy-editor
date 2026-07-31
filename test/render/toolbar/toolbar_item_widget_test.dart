@@ -15,7 +15,6 @@ void main() async {
       var hit = false;
       final item = ToolbarItem(
         id: 'appflowy.toolbar.test',
-        type: 1,
         group: 0,
         iconBuilder: (isHighlight) {
           return Icon(
@@ -34,9 +33,9 @@ void main() async {
         key: key,
         item: item,
         isHighlight: true,
-        onPressed: (() {
+        onPressed: () {
           hit = true;
-        }),
+        },
       );
 
       await tester.pumpWidget(

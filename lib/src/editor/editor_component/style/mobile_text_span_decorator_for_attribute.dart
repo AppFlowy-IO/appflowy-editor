@@ -29,8 +29,8 @@ TextSpan mobileTextSpanDecoratorForAttribute(
       ..onTapUp = (_) async {
         if (timer != null && timer!.isActive) {
           // Implement single tap logic
-          safeLaunchUrl(hrefAddress);
           timer!.cancel();
+          await safeLaunchUrl(hrefAddress);
 
           return;
         }
@@ -107,9 +107,9 @@ class _LinkEditFormState extends State<LinkEditForm> {
 
   @override
   Widget build(BuildContext context) {
-    var hrefAddressTextEditingController =
+    final hrefAddressTextEditingController =
         TextEditingController(text: widget.hrefAddress);
-    var hrefTextTextEditingController =
+    final hrefTextTextEditingController =
         TextEditingController(text: widget.hrefText);
 
     return Form(

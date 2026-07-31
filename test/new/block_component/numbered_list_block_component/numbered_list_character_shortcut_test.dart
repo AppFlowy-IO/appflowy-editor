@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,16 +13,17 @@ void main() async {
     // After
     // 1|Welcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` after the number but not dot', () async {
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1',
-        1,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          '1',
+          1,
+          (result, before, after, editorState) {
+            // nothing happens
+            expect(result, false);
+            expect(before.toJson(), after.toJson());
+          },
+        ),
       );
     });
 
@@ -32,16 +34,17 @@ void main() async {
     test(
         'mock inputting a ` ` after the number which is located at the front of the text',
         () async {
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1.',
-        2,
-        (result, before, after, editorState) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, NumberedListBlockKeys.type);
-        },
-        text: text,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          '1.',
+          2,
+          (result, before, after, editorState) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, NumberedListBlockKeys.type);
+          },
+        ),
       );
     });
 
@@ -50,16 +53,17 @@ void main() async {
     // After
     // 1.W|elcome to AppFlowy Editor 🔥!
     test('mock inputting a ` ` in the middle of the node', () async {
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        '1.',
-        3,
-        (result, before, after, editorState) {
-          // nothing happens
-          expect(result, false);
-          expect(before.toJson(), after.toJson());
-        },
-        text: text,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          '1.',
+          3,
+          (result, before, after, editorState) {
+            // nothing happens
+            expect(result, false);
+            expect(before.toJson(), after.toJson());
+          },
+        ),
       );
     });
 
@@ -176,46 +180,100 @@ void main() async {
     test('convert todo_list to bulleted_list', () async {
       const syntax = '1.';
       const text = 'Welcome to AppFlowy Editor 🔥!';
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        syntax,
-        syntax.length,
-        (result, before, after, editorState) {
-          expect(result, true);
-          expect(after.delta!.toPlainText(), text);
-          expect(after.type, NumberedListBlockKeys.type);
-          expect(after.children[0].delta!.toPlainText(), '1 $text');
-          expect(after.children[1].delta!.toPlainText(), '2 $text');
-        },
-        text: text,
-        node: todoListNode(
-          text: '$syntax$text',
-          checked: false,
-          children: [
-            todoListNode(text: '1 $text', checked: false),
-            todoListNode(text: '2 $text', checked: false),
-          ],
+      unawaited(
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          syntax,
+          syntax.length,
+          (result, before, after, editorState) {
+            expect(result, true);
+            expect(after.delta!.toPlainText(), text);
+            expect(after.type, NumberedListBlockKeys.type);
+            expect(after.children[0].delta!.toPlainText(), '1 $text');
+            expect(after.children[1].delta!.toPlainText(), '2 $text');
+          },
+          node: todoListNode(
+            text: '$syntax$text',
+            checked: false,
+            children: [
+              todoListNode(text: '1 $text', checked: false),
+              todoListNode(text: '2 $text', checked: false),
+            ],
+          ),
         ),
       );
+    });
+
+    test(
+        'nested todo_list to numbered_list preserves ids through undo and redo',
+        () async {
+      // Unlike heading, numbered lists can keep the same child shape. This
+      // covers the safe in-place path for nested blocks and verifies undo/redo
+      // does not regenerate parent or child ids.
+      const syntax = '1.';
+      const text = 'Welcome to AppFlowy Editor 🔥!';
+      final child1 = todoListNode(text: '1 $text', checked: false)
+        ..id = 'child-1';
+      final child2 = todoListNode(text: '2 $text', checked: false)
+        ..id = 'child-2';
+      final node = todoListNode(
+        text: '$syntax$text',
+        checked: false,
+        children: [child1, child2],
+      )..id = 'parent';
+      final document = Document.blank()..insert([0], [node]);
+      final editorState = EditorState(document: document);
+      editorState.selection = Selection.collapsed(
+        Position(path: [0], offset: syntax.length),
+      );
+
+      final result = await formatNumberToNumberedList.execute(editorState);
+
+      expect(result, true);
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, NumberedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
+
+      editorState.undoManager.undo();
+
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, TodoListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
+
+      editorState.undoManager.redo();
+
+      expect(editorState.document.root.children.length, 1);
+      expect(editorState.getNodeAtPath([0])!.id, 'parent');
+      expect(editorState.getNodeAtPath([0])!.type, NumberedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.length, 2);
+      expect(editorState.getNodeAtPath([0, 0])!.id, 'child-1');
+      expect(editorState.getNodeAtPath([0, 1])!.id, 'child-2');
     });
 
     test('nothing will happen when converting heading to numbered list',
         () async {
       const syntax = '1.';
       const text = 'Welcome to AppFlowy Editor 🔥!';
-      testFormatCharacterShortcut(
-        formatNumberToNumberedList,
-        syntax,
-        syntax.length,
-        (result, before, after, editorState) {
-          expect(result, false);
-          expect(after.delta!.toPlainText(), '$syntax$text');
-          expect(after.type, HeadingBlockKeys.type);
-        },
-        text: text,
-        node: headingNode(
-          text: '$syntax$text',
-          level: 1,
+      unawaited(
+        testFormatCharacterShortcut(
+          formatNumberToNumberedList,
+          syntax,
+          syntax.length,
+          (result, before, after, editorState) {
+            expect(result, false);
+            expect(after.delta!.toPlainText(), '$syntax$text');
+            expect(after.type, HeadingBlockKeys.type);
+          },
+          node: headingNode(
+            text: '$syntax$text',
+            level: 1,
+          ),
         ),
       );
     });

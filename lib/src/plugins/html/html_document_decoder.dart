@@ -27,7 +27,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final document = parse(input);
     final body = document.body;
     if (body == null) {
-      return Document.blank(withInitialText: false);
+      return Document.blank();
     }
 
     ///This is used for temporarily handling documents copied from Google Docs,
@@ -38,7 +38,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     final parseForSingleChild = body.children.length == 1 &&
         HTMLTags.formattingElements.contains(body.children.first.localName);
 
-    return Document.blank(withInitialText: false)
+    return Document.blank()
       ..insert(
         [0],
         parseForSingleChild
@@ -213,7 +213,7 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
     int columnPosition = 0;
 
     for (final data in element.children) {
-      Attributes attributes = {
+      final Attributes attributes = {
         TableCellBlockKeys.colPosition: columnPosition,
         TableCellBlockKeys.rowPosition: rowPosition,
       };
@@ -470,9 +470,11 @@ class DocumentHTMLDecoder extends Converter<String, Document> {
             );
           }
         }
-      } else {
-        delta.insert(child.text?.replaceAll(RegExp(r'\n+$'), '') ?? '');
+      } else if (child is dom.Text) {
+        delta.insert(child.text.replaceAll(RegExp(r'\n+$'), ''));
       }
+      // other node types (e.g. dom.Comment) carry no visible content and
+      // are intentionally skipped, mirroring _parseElement's handling.
     }
 
     return (delta, nodes);

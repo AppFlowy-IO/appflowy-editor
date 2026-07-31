@@ -125,7 +125,15 @@ void main() async {
       });
 
       testWidgets('repeatedly till line is empty', (tester) async {
-        List<String> words = ["Welcome", " ", "to", " ", "Appflowy", " ", "😁"];
+        final List<String> words = [
+          "Welcome",
+          " ",
+          "to",
+          " ",
+          "Appflowy",
+          " ",
+          "😁",
+        ];
         final text = words.join();
         final editor = tester.editor..addParagraph(initialText: text);
 

@@ -42,7 +42,6 @@ class AppFlowyClipboard {
 
     return AppFlowyClipboardData(
       text: data?.text,
-      html: null,
     );
   }
 

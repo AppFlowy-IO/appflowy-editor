@@ -219,7 +219,7 @@ class _MobileSelectionServiceWidgetState
 
         final node = editorState.getNodeAtPath(selection.start.path);
         final selectable = node?.selectable;
-        var rect = selectable?.getCursorRectInPosition(
+        final rect = selectable?.getCursorRectInPosition(
           selection.start,
           shiftWithBaseOffset: true,
         );
@@ -348,7 +348,6 @@ class _MobileSelectionServiceWidgetState
         if (isCollapsedHandleVisible) {
           editorState.updateSelectionWithReason(
             editorState.selection,
-            reason: SelectionUpdateReason.transaction,
           );
         }
       },
@@ -661,7 +660,6 @@ class _MobileSelectionServiceWidgetState
       selection,
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: null,
     );
   }
 
@@ -688,7 +686,7 @@ class _MobileSelectionServiceWidgetState
 
       return;
     }
-    Selection selection = Selection(
+    final Selection selection = Selection(
       start: selectable.start(),
       end: selectable.end(),
     );
@@ -758,7 +756,6 @@ class _MobileSelectionServiceWidgetState
       Selection.collapsed(position),
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: null,
     );
   }
 

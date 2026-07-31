@@ -90,7 +90,6 @@ class _ColorPickerState extends State<ColorPicker> {
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: options
           .map((e) => _buildColorItem(e, e.colorHex == selectedColor))
           .toList(),
@@ -323,7 +322,7 @@ class _CustomColorItemState extends State<CustomColorItem> {
   String _fixOpacity(String opacity) {
     // if opacity is 0 - 99, return it
     // otherwise return 100
-    RegExp regex = RegExp('^(0|[1-9][0-9]?)');
+    final RegExp regex = RegExp('^(0|[1-9][0-9]?)');
     if (regex.hasMatch(opacity)) {
       return opacity;
     } else {

@@ -15,7 +15,7 @@ final quoteMobileToolbarItem = MobileToolbarItem.action(
       return;
     }
     final isQuote = node.type == QuoteBlockKeys.type;
-    editorState.formatNode(
+    await editorState.formatNode(
       selection,
       (node) => node.copyWith(
         type: isQuote ? ParagraphBlockKeys.type : QuoteBlockKeys.type,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -126,7 +127,7 @@ void main() async {
         Position(path: [0], offset: welcome.length),
       );
       editorState.selection = selection;
-      editorState.insertNewLine();
+      unawaited(editorState.insertNewLine());
 
       expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), welcome);
       expect(
@@ -159,7 +160,7 @@ void main() async {
         Position(path: [0], offset: welcome.length),
       );
       editorState.selection = selection;
-      editorState.insertNewLine();
+      unawaited(editorState.insertNewLine());
 
       expect(editorState.getNodeAtPath([0])?.delta?.toPlainText(), welcome);
       expect(editorState.getNodeAtPath([0, 0]), null);
@@ -239,7 +240,7 @@ void main() async {
             },
           );
       final selection = Selection.collapsed(
-        Position(path: [0], offset: 0),
+        Position(path: [0]),
       );
       final editorState = EditorState(document: document);
       editorState.selection = selection;

@@ -135,7 +135,7 @@ Future<void> _testUpdateTextStyleByCommandX(
     true,
   );
   selection = Selection(
-    start: Position(path: [0], offset: 0),
+    start: Position(path: [0]),
     end: Position(path: [2], offset: text.length),
   );
   await editor.updateSelection(selection);

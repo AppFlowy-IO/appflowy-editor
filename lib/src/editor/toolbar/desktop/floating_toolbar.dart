@@ -168,8 +168,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   void _onScrollPositionChanged() {
     _clear();
 
-    // TODO: optimize the toolbar showing logic, making it more smooth.
-    // A quick idea: based on the scroll controller's offset to display the toolbar.
     _showAfterDelay();
   }
 
@@ -254,7 +252,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   Widget _buildToolbar(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    bool needRefreshToolbar = brightness != this.brightness;
+    final bool needRefreshToolbar = brightness != this.brightness;
     if (needRefreshToolbar) {
       this.brightness = brightness;
     }
