@@ -86,9 +86,12 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void _onSelectionChanged() {
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
+    final reason = editorState.selectionUpdateReason;
+    // Remote transactions rebase the local selection so it stays valid, but
+    // they must not make this client follow that selection in the viewport.
     if (selection == null ||
-        [SelectionUpdateReason.selectAll]
-            .contains(editorState.selectionUpdateReason)) {
+        reason == SelectionUpdateReason.remote ||
+        reason == SelectionUpdateReason.selectAll) {
       return;
     }
 
