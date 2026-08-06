@@ -169,6 +169,17 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       return KeyEventResult.ignored;
     }
 
+    // The IME reports the end of a composition (e.g. Android composition
+    // timeout) with a TextEditingDeltaNonTextUpdate, which doesn't change
+    // the selection, so enableIMEShortcuts can be left stale-false and
+    // hardware key events (e.g. backspace) would be swallowed below.
+    // Re-sync the flag with the actual composing state before gating.
+    if (!enableIMEShortcuts &&
+        (textInputService.composingTextRange ?? TextRange.empty) ==
+            TextRange.empty) {
+      enableIMEShortcuts = true;
+    }
+
     if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
         !enableIMEShortcuts) {
       if (textInputService.composingTextRange != TextRange.empty) {
