@@ -305,6 +305,14 @@ class NonDeltaTextInputService extends TextInputService with TextInputClient {
   void _updateComposing(TextEditingDelta delta) {
     if (delta is TextEditingDeltaNonTextUpdate) {
       composingTextRange = delta.composing;
+    } else if (PlatformExtension.isMobile) {
+      // Mobile IMEs (including composing languages such as Korean) report the
+      // authoritative composing range on every delta. Merging it with the
+      // previous range corrupts the range at syllable boundaries (e.g. 반+ㄱ
+      // becomes (0,2) instead of (1,2)), which makes attach() push a
+      // mismatched editing state and restart the IME mid-composition.
+      // Trust the platform value verbatim.
+      composingTextRange = delta.composing;
     } else {
       composingTextRange = composingTextRange != null &&
               composingTextRange!.start != -1 &&
