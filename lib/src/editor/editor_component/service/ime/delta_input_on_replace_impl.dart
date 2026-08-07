@@ -46,6 +46,40 @@ Future<void> onReplace(
     final transaction = editorState.transaction;
     final start = replacement.replacedRange.start;
     final length = replacement.replacedRange.end - start;
+    // Try to autocorrect on desktop using the bundled dictionary.
+    // Only autocorrect if the word is actually misspelled.
+    TextEditingDeltaReplacement replacementToApply = replacement;
+    try {
+      if (PlatformExtension.isMacOS ||
+          PlatformExtension.isLinux ||
+          PlatformExtension.isWindows) {
+        final replText = replacement.replacementText.trim();
+        if (replText.isNotEmpty && !replText.contains(RegExp(r"\s"))) {
+          // First check if the word is misspelled
+          final isValid = await SpellChecker.instance.contains(replText);
+          if (!isValid) {
+            // Only suggest corrections for confirmed misspellings
+            final suggestions = await SpellChecker.instance
+                .suggest(replText, maxSuggestions: 1);
+            if (suggestions.isNotEmpty) {
+              final top = suggestions.first;
+              if (top.toLowerCase() != replText.toLowerCase()) {
+                replacementToApply = TextEditingDeltaReplacement(
+                  oldText: replacement.oldText,
+                  replacementText: top,
+                  replacedRange: replacement.replacedRange,
+                  selection: replacement.selection,
+                  composing: replacement.composing,
+                );
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // Fall back silently on any spell-check error.
+    }
+
     final afterSelection = Selection(
       start: Position(
         path: node.path,
@@ -57,7 +91,7 @@ Future<void> onReplace(
       ),
     );
     transaction
-      ..replaceText(node, start, length, replacement.replacementText)
+      ..replaceText(node, start, length, replacementToApply.replacementText)
       ..afterSelection = afterSelection;
     await editorState.apply(transaction);
   } else {
