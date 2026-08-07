@@ -10,7 +10,11 @@ class _CapturingAutoScroller extends AutoScroller {
   Rect? capturedRect;
 
   @override
-  void startAutoScrollIfNecessary(Rect dragTarget, {Duration? duration}) {
+  void startAutoScrollIfNecessary(
+    Rect dragTarget, {
+    Duration? duration,
+    bool repeat = true,
+  }) {
     capturedRect = dragTarget;
     // intentionally do not call super — we only want the rect
   }

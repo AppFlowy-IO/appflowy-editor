@@ -10,6 +10,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 export 'package:flutter/physics.dart' show Tolerance;
 
@@ -188,12 +189,14 @@ class EdgeDraggingAutoScroller {
   final Duration _animationDuration;
   Duration? _currentDuration;
   double? _previousScrollDelta;
+  bool _repeatScroll = true;
 
   late Rect _dragTargetRelatedToScrollOrigin;
 
   /// Whether the auto scroll is in progress.
   bool get scrolling => _scrolling;
   bool _scrolling = false;
+  bool _scrollScheduled = false;
 
   double _offsetExtent(Offset offset, Axis scrollDirection) {
     return switch (scrollDirection) {
@@ -220,28 +223,54 @@ class EdgeDraggingAutoScroller {
   ///
   /// If the scrollable is already scrolling, calling this method updates the
   /// previous dragTarget to the new value and continues scrolling if necessary.
-  void startAutoScrollIfNecessary(Rect dragTarget, {Duration? duration}) {
+  void startAutoScrollIfNecessary(
+    Rect dragTarget, {
+    Duration? duration,
+    bool repeat = true,
+  }) {
     final Offset deltaToOrigin = scrollable.deltaToScrollOrigin;
     _dragTargetRelatedToScrollOrigin =
         dragTarget.translate(deltaToOrigin.dx, deltaToOrigin.dy);
     _currentDuration = duration;
+    _repeatScroll = repeat;
     if (_scrolling) {
       // The change will be picked up in the next scroll.
       return;
     }
     assert(!_scrolling);
-    _scroll();
+    _scrolling = true;
+    _scheduleScroll();
   }
 
   /// Stop any ongoing auto scrolling.
   void stopAutoScroll() {
     _scrolling = false;
+    _scrollScheduled = false;
     _previousScrollDelta = null;
     _currentDuration = null;
+    _repeatScroll = true;
+  }
+
+  void _scheduleScroll() {
+    if (!_scrolling || _scrollScheduled) {
+      return;
+    }
+    _scrollScheduled = true;
+    SchedulerBinding.instance.scheduleFrameCallback((_) {
+      _scrollScheduled = false;
+      if (!_scrolling) {
+        return;
+      }
+      unawaited(_scroll());
+    });
+    SchedulerBinding.instance.ensureVisualUpdate();
   }
 
   Future<void> _scroll() async {
     try {
+      if (!_scrolling) {
+        return;
+      }
       final RenderBox scrollRenderBox =
           scrollable.context.findRenderObject()! as RenderBox;
       final Matrix4 transform = scrollRenderBox.getTransformTo(null);
@@ -266,7 +295,6 @@ class EdgeDraggingAutoScroller {
         // do nothing.
       }
 
-      _scrolling = true;
       double? newOffset;
       const double overDragMax = 20.0;
 
@@ -340,14 +368,14 @@ class EdgeDraggingAutoScroller {
       final double currentPixels = scrollable.position.pixels;
       if (newOffset == null) {
         // Drag should not trigger scroll.
-        _scrolling = false;
+        stopAutoScroll();
 
         return;
       }
       double delta = newOffset - currentPixels;
       if (delta.abs() < _minimumAutoScrollDelta) {
         if (delta.abs() <= precisionErrorTolerance) {
-          _scrolling = false;
+          stopAutoScroll();
 
           return;
         }
@@ -360,11 +388,12 @@ class EdgeDraggingAutoScroller {
         newOffset = target.toDouble();
         delta = newOffset - currentPixels;
         if (delta.abs() <= precisionErrorTolerance) {
-          _scrolling = false;
+          stopAutoScroll();
 
           return;
         }
       }
+      final double pixelsBeforeMove = scrollable.position.pixels;
       await scrollable.position.moveTo(
         newOffset,
         duration: _currentDuration ?? _animationDuration,
@@ -372,13 +401,30 @@ class EdgeDraggingAutoScroller {
         // clamp: true,
       );
       onScrollViewScrolled?.call();
-      if (_scrolling) {
-        await _scroll();
+      // Termination guard against an unbounded auto-scroll loop.
+      //
+      // `_scroll` re-invokes itself via `await _scroll()` as long as
+      // `_scrolling` is true. `moveTo` can complete synchronously when the
+      // position cannot actually advance (already at min/maxScrollExtent, a
+      // zero scroll range, or a pinned position), in which case the
+      // self-recursion degenerates into a tight microtask loop that pins the
+      // platform/UI thread with no frames produced — observed as an ANR on
+      // mobile when leaving a table cell. Requiring real forward progress
+      // bounds the loop: each tick must move the scroll offset by at least
+      // the precision tolerance, and the scroll extent is finite.
+      if ((scrollable.position.pixels - pixelsBeforeMove).abs() <=
+          precisionErrorTolerance) {
+        stopAutoScroll();
+        return;
+      }
+      if (_repeatScroll) {
+        _scheduleScroll();
+      } else {
+        stopAutoScroll();
       }
     } catch (e) {
       debugPrint(e.toString());
-    } finally {
-      _scrolling = false;
+      stopAutoScroll();
     }
   }
 
