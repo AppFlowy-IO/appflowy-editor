@@ -1,3 +1,8 @@
+## 6.1.1
+* chore: upgrade file_picker to ^11.0.2 and migrate to new static API
+* chore: upgrade device_info_plus to ^12.4.0
+* chore: upgrade html to ^0.15.6
+
 ## 6.1.0
 * fix: unable to input text on windows desktop by @imaachman in https://github.com/AppFlowy-IO/appflowy-editor/pull/1126
 * feat: open html decoder for custom parser by @richardshiue in https://github.com/AppFlowy-IO/appflowy-editor/pull/1145
