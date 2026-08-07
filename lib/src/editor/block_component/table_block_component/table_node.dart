@@ -3,6 +3,33 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/table_block_component/table_config.dart';
 
+/// Minimum height delta (in logical pixels) that counts as a real change
+/// when reconciling a table row's stored height against its measured
+/// height.
+///
+/// Layout reports `rect.height` with sub-pixel jitter between frames
+/// (device-pixel rounding, or a focus/selection-dependent measurement on
+/// mobile). Comparing with exact `!=` treated that jitter as a genuine
+/// change, so [TableNode.updateRowHeight] emitted a height transaction
+/// every frame -> apply -> rebuild -> re-measure: an unbounded relayout
+/// loop that pinned the UI isolate (a hang, not a crash) when a table was
+/// edited and then defocused. One logical pixel is imperceptible but
+/// safely above the jitter, so the height converges and the loop ends.
+const double _tableRowHeightTolerance = 1.0;
+
+/// Whether [measured] differs from the [stored] height attribute by at
+/// least [_tableRowHeightTolerance]. Also absorbs the old `!isNaN` guard:
+/// a NaN measurement is never treated as a change. Returns `true` when
+/// nothing is stored yet (or it can't be parsed) so the first real
+/// measurement is always written.
+bool _tableRowHeightChanged(Object? stored, double measured) {
+  if (measured.isNaN) return false;
+  final current =
+      stored is num ? stored.toDouble() : double.tryParse('${stored ?? ''}');
+  if (current == null) return true;
+  return (current - measured).abs() >= _tableRowHeightTolerance;
+}
+
 class TableNode {
   TableNode({
     required this.node,
@@ -196,11 +223,13 @@ class TableNode {
         .map<double>((c) => c[row].children.first.rect.height + 8)
         .reduce(max);
 
-    if (_cells[0][row].attributes[TableCellBlockKeys.height] != maxHeight &&
-        !maxHeight.isNaN) {
+    if (_tableRowHeightChanged(
+      _cells[0][row].attributes[TableCellBlockKeys.height],
+      maxHeight,
+    )) {
       for (int i = 0; i < colsLen; i++) {
         final currHeight = _cells[i][row].attributes[TableCellBlockKeys.height];
-        if (currHeight == maxHeight) {
+        if (!_tableRowHeightChanged(currHeight, maxHeight)) {
           continue;
         }
 
@@ -217,8 +246,10 @@ class TableNode {
       }
     }
 
-    if (node.attributes[TableBlockKeys.colsHeight] != colsHeight &&
-        !colsHeight.isNaN) {
+    if (_tableRowHeightChanged(
+      node.attributes[TableBlockKeys.colsHeight],
+      colsHeight,
+    )) {
       if (transaction != null) {
         transaction.updateNode(node, {TableBlockKeys.colsHeight: colsHeight});
         if (editorState != null && editorState.editable != true) {
