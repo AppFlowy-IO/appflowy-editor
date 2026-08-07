@@ -25,6 +25,12 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   @override
   TextEditingValue? currentTextEditingValue;
 
+  // Flutter >= 3.44 added TextInputClient.onFocusReceived with a concrete
+  // default; DeltaTextInputClient only *implements* TextInputClient, so the
+  // default body does not carry over and the member must be provided here.
+  @override
+  bool onFocusReceived() => false;
+
   TextInputConnection? _textInputConnection;
 
   @override
