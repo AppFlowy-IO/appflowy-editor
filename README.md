@@ -107,7 +107,7 @@ Please refer to our documentation on customizing AppFlowy for a detailed discuss
 
 ### Customizing Block Components
 
-Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing components](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md#customize-a-component).
+Please refer to our documentation on customizing AppFlowy for a detailed discussion about [customizing editor features](https://github.com/AppFlowy-IO/appflowy-editor/blob/main/documentation/customizing.md).
 
 Below are some examples of component customizations:
 
