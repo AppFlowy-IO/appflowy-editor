@@ -74,8 +74,6 @@ KeyEventResult _toggleAttribute(
       node.type == HeadingBlockKeys.type &&
           node.attributes[HeadingBlockKeys.level] == level;
 
-  final delta = (node.delta ?? Delta()).toJson();
-
   editorState.formatNode(
     selection,
     (node) => node.copyWith(
@@ -86,7 +84,7 @@ KeyEventResult _toggleAttribute(
             node.attributes[blockComponentBackgroundColor],
         blockComponentTextDirection:
             node.attributes[blockComponentTextDirection],
-        blockComponentDelta: delta,
+        blockComponentDelta: (node.delta ?? Delta()).toJson(),
       },
     ),
   );
