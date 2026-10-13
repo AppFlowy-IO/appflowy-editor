@@ -33,6 +33,7 @@ enum ExportFileType {
   markdown,
   pdf,
   delta,
+  html,
 }
 
 extension on ExportFileType {
@@ -45,6 +46,8 @@ extension on ExportFileType {
         return 'md';
       case ExportFileType.pdf:
         return 'pdf';
+      case ExportFileType.html:
+        return 'html';
     }
   }
 }
@@ -309,6 +312,9 @@ class _HomePageState extends State<HomePage> {
           _buildListTile(context, 'Export to Markdown', () {
             _exportFile(_editorState, ExportFileType.markdown);
           }),
+          _buildListTile(context, 'Export to HTML', () {
+            _exportFile(_editorState, ExportFileType.html);
+          }),
 
           _buildListTile(context, 'Export to PDF', () {
             _exportFile(_editorState, ExportFileType.pdf);
@@ -406,7 +412,9 @@ class _HomePageState extends State<HomePage> {
       case ExportFileType.pdf:
         result = documentToMarkdown(editorState.document);
         break;
-
+      case ExportFileType.html:
+        result = documentToHTML(editorState.document);
+        break;
       case ExportFileType.delta:
         throw UnimplementedError();
     }
@@ -495,6 +503,10 @@ class _HomePageState extends State<HomePage> {
       case ExportFileType.delta:
         final delta = Delta.fromJson(jsonDecode(plainText));
         final document = quillDeltaEncoder.convert(delta);
+        jsonString = jsonEncode(document.toJson());
+        break;
+      case ExportFileType.html:
+        final document = htmlToDocument(plainText);
         jsonString = jsonEncode(document.toJson());
         break;
       case ExportFileType.pdf:

@@ -36,14 +36,21 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
             node = _applyHeadingStyleIfNeeded(node, attributes);
             node = _applyBlockquoteIfNeeded(node, attributes);
             _applyIndentIfNeeded(node, attributes);
+            _applyAlignIfNeeded(node, attributes);
+          }
+          if (!_isListItem(attributes)) {
+            nestedLists.clear();
           }
           if (_isIndentBulletedList(attributes)) {
             final level = _indentLevel(attributes);
-            final path = [
-              ...nestedLists[level - 1]!.last.path,
-              nestedLists[level]!.length - 1,
-            ];
-            document.insert(path, [node]);
+            final inserted = _tryInsertNestedListNode(
+              document: document,
+              node: node,
+              level: level,
+            );
+            if (!inserted) {
+              document.insert([index++], [node]);
+            }
           } else {
             document.insert([index++], [node]);
           }
@@ -51,11 +58,34 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         } else {
           final texts = op.text.split('\n');
           if (texts.length > 1) {
-            node.delta?.insert(texts[0]);
+            // First segment appends to current node, then commit it
+            if (texts[0].isNotEmpty) {
+              _applyStyle(node, texts[0], attributes);
+            }
             document.insert([index++], [node]);
-            node = paragraphNode(delta: Delta()..insert(texts[1]));
+
+            // Middle segments: each becomes a full committed paragraph
+            for (int i = 1; i < texts.length - 1; i++) {
+              node = paragraphNode();
+              if (texts[i].isNotEmpty) {
+                _applyStyle(node, texts[i], attributes);
+              }
+              document.insert([index++], [node]);
+            }
+
+            // Last segment starts a new open node (accumulates more ops)
+            node = paragraphNode();
+            if (texts.last.isNotEmpty) {
+              _applyStyle(node, texts.last, attributes);
+              if (attributes != null) {
+                _applyAlignIfNeeded(node, attributes);
+              }
+            }
           } else {
             _applyStyle(node, op.text, attributes);
+            if (attributes != null) {
+              _applyAlignIfNeeded(node, attributes);
+            }
           }
         }
       } else {
@@ -103,6 +133,13 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     });
   }
 
+  void _applyAlignIfNeeded(Node node, Map<String, dynamic> attributes) {
+    final align = attributes['align'] as String?;
+    if (align != null) {
+      node.updateAttributes({'align': align});
+    }
+  }
+
   void _applyIndentIfNeeded(Node node, Map<String, dynamic> attributes) {
     final indent = attributes[_indent] as int?;
     final list = attributes[_list] as String?;
@@ -122,9 +159,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
   Node _applyBlockquoteIfNeeded(Node node, Map<String, dynamic> attributes) {
     final blockquote = attributes[_blockquote] as bool?;
     if (blockquote == true) {
-      return quoteNode(
-        delta: node.delta,
-      );
+      return quoteNode(delta: node.delta);
     }
 
     return node;
@@ -136,10 +171,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
       return node;
     }
 
-    return headingNode(
-      delta: node.delta,
-      level: header,
-    );
+    return headingNode(delta: node.delta, level: header);
   }
 
   // If the attributes contains the list style, then apply the list style to the node.
@@ -147,9 +179,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     final list = attributes[_list] as String?;
     switch (list) {
       case _bulletedList:
-        final bulletedList = bulletedListNode(
-          delta: node.delta,
-        );
+        final bulletedList = bulletedListNode(delta: node.delta);
         final indent = attributes[_indent] as int?;
         if (indent != null) {
           nestedLists[indent] ??= [];
@@ -162,9 +192,7 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         return bulletedList;
 
       case _orderedList:
-        final numberedList = numberedListNode(
-          delta: node.delta,
-        );
+        final numberedList = numberedListNode(delta: node.delta);
         final indent = attributes[_indent] as int?;
         if (indent != null) {
           nestedLists[indent] ??= [];
@@ -177,17 +205,11 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
         return numberedList;
 
       case _checkedList:
-        final checkedList = todoListNode(
-          delta: node.delta,
-          checked: true,
-        );
+        final checkedList = todoListNode(delta: node.delta, checked: true);
         return checkedList;
 
       case _uncheckedList:
-        final uncheckedList = todoListNode(
-          delta: node.delta,
-          checked: false,
-        );
+        final uncheckedList = todoListNode(delta: node.delta, checked: false);
         return uncheckedList;
 
       default:
@@ -206,6 +228,48 @@ class QuillDeltaEncoder extends Converter<Delta, Document> {
     final indent = attributes?[_indent] as int?;
 
     return [_bulletedList, _orderedList].contains(list) && indent != null;
+  }
+
+  bool _isListItem(Map<String, dynamic>? attributes) {
+    final list = attributes?[_list] as String?;
+
+    return [
+      _bulletedList,
+      _orderedList,
+      _checkedList,
+      _uncheckedList,
+    ].contains(list);
+  }
+
+  bool _tryInsertNestedListNode({
+    required Document document,
+    required Node node,
+    required int level,
+  }) {
+    if (level <= 0) {
+      return false;
+    }
+
+    final parent = _findNearestParentNode(level);
+    if (parent == null) {
+      return false;
+    }
+
+    final path = [...parent.path, parent.children.length];
+    document.insert(path, [node]);
+
+    return true;
+  }
+
+  Node? _findNearestParentNode(int level) {
+    for (int parentLevel = level - 1; parentLevel >= 0; parentLevel--) {
+      final candidates = nestedLists[parentLevel];
+      if (candidates != null && candidates.isNotEmpty) {
+        return candidates.last;
+      }
+    }
+
+    return null;
   }
 
   bool _containsStyle(Map<String, dynamic>? attributes, String key) {

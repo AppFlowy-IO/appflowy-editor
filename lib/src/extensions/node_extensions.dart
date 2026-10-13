@@ -49,16 +49,20 @@ extension NodeExtensions on Node {
       }
     }
 
-    var next = this.next;
-    while (next != null) {
-      final nextDescendentMatch = next._thisOrDescendantMatching(test);
-      if (nextDescendentMatch != null) {
-        return nextDescendentMatch;
+    Node? current = this;
+    while (current != null) {
+      var next = current.next;
+      while (next != null) {
+        final nextDescendentMatch = next._thisOrDescendantMatching(test);
+        if (nextDescendentMatch != null) {
+          return nextDescendentMatch;
+        }
+        next = next.next;
       }
-      next = next.next;
+      current = current.parent;
     }
 
-    return parent?.next?._thisOrDescendantMatching(test);
+    return null;
   }
 
   Node? _thisOrDescendantMatching(bool Function(Node element) test) {

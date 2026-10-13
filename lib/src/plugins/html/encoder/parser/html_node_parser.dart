@@ -40,14 +40,69 @@ abstract class HTMLNodeParser {
     required List<HTMLNodeParser> encodeParsers,
   }) {
     final result = <dom.Node>[];
-    for (final node in nodes) {
-      final parser = encodeParsers.firstWhereOrNull(
-        (element) => element.id == node.type,
-      );
-      if (parser != null) {
-        result.addAll(
-          parser.transformNodeToDomNodes(node, encodeParsers: encodeParsers),
+    final nodeList = nodes.toList();
+    var i = 0;
+
+    while (i < nodeList.length) {
+      final current = nodeList[i];
+      // Process children nodes wrapping sequences of lists (bulleted or numbered)
+      // in the respective container tags <ul> or <ol>, ensuring proper indentation and HTML structure.
+      if (current.type == BulletedListBlockKeys.type) {
+        final ul = dom.Element.tag('ul');
+        while (i < nodeList.length &&
+            nodeList[i].type == BulletedListBlockKeys.type) {
+          final node = nodeList[i];
+          final parser =
+              encodeParsers.firstWhereOrNull((p) => p.id == node.type);
+          if (parser != null) {
+            final doms = parser.transformNodeToDomNodes(
+              node,
+              encodeParsers: encodeParsers,
+            );
+            for (final d in doms) {
+              ul.append(d);
+            }
+          }
+          i++;
+        }
+        result.add(ul);
+      } else if (current.type == NumberedListBlockKeys.type) {
+        final ol = dom.Element.tag('ol');
+        final number = current.attributes[NumberedListBlockKeys.number];
+        if (number != null && number != 1) {
+          ol.attributes['start'] = '$number';
+        }
+        while (i < nodeList.length &&
+            nodeList[i].type == NumberedListBlockKeys.type) {
+          final node = nodeList[i];
+          final parser =
+              encodeParsers.firstWhereOrNull((p) => p.id == node.type);
+          if (parser != null) {
+            final doms = parser.transformNodeToDomNodes(
+              node,
+              encodeParsers: encodeParsers,
+            );
+            for (final d in doms) {
+              ol.append(d);
+            }
+          }
+          i++;
+        }
+        result.add(ol);
+      } else {
+        // process other node types
+        final parser = encodeParsers.firstWhereOrNull(
+          (p) => p.id == current.type,
         );
+        if (parser != null) {
+          result.addAll(
+            parser.transformNodeToDomNodes(
+              current,
+              encodeParsers: encodeParsers,
+            ),
+          );
+        }
+        i++;
       }
     }
 
