@@ -39,7 +39,19 @@ extension EditorStateSelection on EditorState {
     // Create rect cache for this operation if not provided
     rectCache ??= {};
 
-    if (start < 0 && end >= sortedNodes.length) {
+    // Guard against empty node lists and out-of-range indices.
+    //
+    // The mobile selection service calls this method with
+    // `sortedNodes.length - 1` as `end`, which becomes -1 when the
+    // document is empty. The previous guard used `&&` which only
+    // returned null when BOTH bounds were invalid, allowing an empty
+    // list to slip through and crash in [_findCloseNode].
+    if (sortedNodes.isEmpty ||
+        start < 0 ||
+        end < 0 ||
+        start > end ||
+        start >= sortedNodes.length ||
+        end >= sortedNodes.length) {
       return null;
     }
 

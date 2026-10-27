@@ -489,6 +489,10 @@ class _MobileSelectionServiceWidgetState
       context.read<EditorScrollController>(),
     );
 
+    if (sortedNodes.isEmpty) {
+      return null;
+    }
+
     return editorState.getNodeInOffset(
       sortedNodes,
       offset,
