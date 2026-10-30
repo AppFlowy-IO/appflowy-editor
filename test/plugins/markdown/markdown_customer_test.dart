@@ -74,6 +74,7 @@ Here is the complete Dart file with the above steps:
         {
           'type': 'numbered_list',
           'data': {
+            'number': 1,
             'delta': [
               {
                 'insert': 'Ensure Dependencies',

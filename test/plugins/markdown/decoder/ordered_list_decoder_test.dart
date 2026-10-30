@@ -20,6 +20,7 @@ void main() async {
         expect(result.root.children[i].toJson(), {
           'type': 'numbered_list',
           'data': {
+            'number': i + 1,
             'delta': [
               {'insert': 'Item ${i + 1}'},
             ],
@@ -38,6 +39,7 @@ void main() async {
       expect(result.root.children[0].toJson(), {
         'type': 'numbered_list',
         'data': {
+          'number': 1,
           'delta': [
             {'insert': 'Item 1'},
           ],
@@ -46,6 +48,7 @@ void main() async {
           {
             'type': 'numbered_list',
             'data': {
+              'number': 1,
               'delta': [
                 {'insert': 'Item 1.1'},
               ],
@@ -54,6 +57,7 @@ void main() async {
           {
             'type': 'numbered_list',
             'data': {
+              'number': 2,
               'delta': [
                 {'insert': 'Item 1.2'},
               ],
@@ -64,6 +68,7 @@ void main() async {
       expect(result.root.children[1].toJson(), {
         'type': 'numbered_list',
         'data': {
+          'number': 2,
           'delta': [
             {'insert': 'Item 2'},
           ],
