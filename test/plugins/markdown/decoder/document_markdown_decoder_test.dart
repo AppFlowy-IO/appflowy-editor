@@ -159,6 +159,7 @@ void main() async {
       {
         "type": "numbered_list",
         "data": {
+          "number": 1,
           "delta": [
             {
               "insert": "list item 1"
@@ -169,6 +170,7 @@ void main() async {
       {
         "type": "numbered_list",
         "data": {
+          "number": 2,
           "delta": [
             {
               "insert": "list item 2"
@@ -303,15 +305,15 @@ void main() async {
       {
         "type": "numbered_list",
         "children": [
-          {"type": "numbered_list", "data": {"delta": [{"insert": "Which"}]}},
-          {"type": "numbered_list", "data": {"delta": [{"insert": "Is"}]}},
-          {"type": "numbered_list", "data": {"delta": [{"insert": "Nested"}]}}
+          {"type": "numbered_list", "data": {"number": 1, "delta": [{"insert": "Which"}]}},
+          {"type": "numbered_list", "data": {"number": 2, "delta": [{"insert": "Is"}]}},
+          {"type": "numbered_list", "data": {"number": 3, "delta": [{"insert": "Nested"}]}}
         ],
-        "data": {"delta": [{"insert": "Numbered List"}]}
+        "data": {"number": 1, "delta": [{"insert": "Numbered List"}]}
       },
       {
         "type": "numbered_list",
-        "data": {"delta": [{"insert": "Back to top level"}]}
+        "data": {"number": 2, "delta": [{"insert": "Back to top level"}]}
       }
     ]
   }

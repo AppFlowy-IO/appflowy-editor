@@ -58,6 +58,30 @@ void main() {
       expect(nodes[1].attributes['url'], 'https://example.com/image.png');
     });
 
+    test('round trip paragraph with nested bold and italic', () {
+      const markdown = 'Hello ***bold and italic*** world\n';
+      final document = markdownToDocument(markdown);
+      expect(documentToMarkdown(document), markdown);
+    });
+
+    test('round trip todo list checked and unchecked', () {
+      const markdown = '- [x] Done\n- [ ] Todo\n';
+      final document = markdownToDocument(markdown);
+      expect(documentToMarkdown(document), markdown);
+    });
+
+    test('round trip numbered list', () {
+      const markdown = '1. First\n2. Second\n';
+      final document = markdownToDocument(markdown);
+      expect(documentToMarkdown(document), markdown);
+    });
+
+    test('round trip paragraph with formula', () {
+      const markdown = r'This is a formula: $E = MC ^ 2$.' + '\n';
+      final document = markdownToDocument(markdown);
+      expect(documentToMarkdown(document), markdown);
+    });
+
     // Regression test for https://github.com/AppFlowy-IO/AppFlowy/issues/8486
     // documentToMarkdown() must not mutate the source document when processing
     // nested (indented) list items.
