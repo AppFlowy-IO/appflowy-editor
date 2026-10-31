@@ -78,6 +78,18 @@ Future<void> onInsert(
     ),
   );
 
+  // Code and links are never carried over from the previous character, so a
+  // style toggled on with a collapsed selection would only cover the first
+  // character typed. Remember them here and restore them after the insert.
+  final stickyToggledKeys = editorState.toggledStyle.entries
+      .where(
+        (entry) =>
+            entry.value == true &&
+            AppFlowyRichTextKeys.partialSliced.contains(entry.key),
+      )
+      .map((entry) => entry.key)
+      .toList();
+
   final transaction = editorState.transaction
     ..insertText(
       node,
@@ -88,4 +100,8 @@ Future<void> onInsert(
     )
     ..afterSelection = afterSelection;
   await editorState.apply(transaction);
+
+  for (final key in stickyToggledKeys) {
+    editorState.updateToggledStyle(key, true);
+  }
 }
