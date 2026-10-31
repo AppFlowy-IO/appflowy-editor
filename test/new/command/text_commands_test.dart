@@ -425,5 +425,85 @@ void main() async {
       expect(editor.editorState.toggledStyle, isEmpty);
       await editor.dispose();
     });
+
+    testWidgets('toggled code style is kept while typing', (tester) async {
+      const text = 'Hello ';
+      final editor = tester.editor..addParagraph(initialText: text);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: text.length),
+      );
+
+      await editor.pressKey(
+        key: LogicalKeyboardKey.keyE,
+        isControlPressed: !Platform.isMacOS,
+        isMetaPressed: Platform.isMacOS,
+      );
+
+      // type one character at a time, like a real keyboard does
+      for (final character in 'code'.split('')) {
+        await editor.ime.insertText(character);
+      }
+
+      expect(editor.nodeAtPath([0])!.delta!.toJson(), [
+        {"insert": "Hello "},
+        {
+          "insert": "code",
+          "attributes": {"code": true},
+        },
+      ]);
+
+      // toggle it off again and keep typing
+      await editor.pressKey(
+        key: LogicalKeyboardKey.keyE,
+        isControlPressed: !Platform.isMacOS,
+        isMetaPressed: Platform.isMacOS,
+      );
+      await editor.ime.insertText(' world');
+
+      expect(editor.nodeAtPath([0])!.delta!.toJson(), [
+        {"insert": "Hello "},
+        {
+          "insert": "code",
+          "attributes": {"code": true},
+        },
+        {
+          "insert": " world",
+          "attributes": {"code": false},
+        },
+      ]);
+      expect(editor.editorState.toggledStyle, isEmpty);
+
+      await editor.dispose();
+    });
+
+    testWidgets(
+        'typing after existing inline code without toggling does not extend it',
+        (tester) async {
+      final delta = Delta()
+        ..insert('Hello ')
+        ..insert('code', attributes: {AppFlowyRichTextKeys.code: true});
+      final editor = tester.editor..addParagraph(builder: (_) => delta);
+
+      await editor.startTesting();
+      await editor.updateSelection(
+        Selection.single(path: [0], startOffset: delta.length),
+      );
+
+      await editor.ime.insertText('!');
+      await editor.ime.insertText('!');
+
+      expect(editor.nodeAtPath([0])!.delta!.toJson(), [
+        {"insert": "Hello "},
+        {
+          "insert": "code",
+          "attributes": {"code": true},
+        },
+        {"insert": "!!"},
+      ]);
+
+      await editor.dispose();
+    });
   });
 }
