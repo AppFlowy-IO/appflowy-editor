@@ -12,7 +12,7 @@ const _doubleQuotes = ['"', '“'];
 CharacterShortcutEvent formatDoubleQuoteToQuote = CharacterShortcutEvent(
   key: 'format greater to quote',
   character: ' ',
-  handler: (editorState) async => await formatMarkdownSymbol(
+  handler: (editorState) async => formatMarkdownSymbol(
     editorState,
     (node) => node.type != QuoteBlockKeys.type,
     (_, text, __) => _doubleQuotes.any((element) => element == text),

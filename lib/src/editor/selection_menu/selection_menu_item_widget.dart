@@ -67,8 +67,8 @@ class _SelectionMenuItemWidgetState extends State<SelectionMenuItemWidget> {
                   fontSize: 12.0,
                 ),
               ),
-          onPressed: () {
-            widget.item.handler(
+          onPressed: () async {
+            await widget.item.handler(
               widget.editorState,
               widget.menuService,
               context,

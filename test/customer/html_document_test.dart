@@ -41,5 +41,21 @@ void main() {
         isTrue,
       );
     });
+
+    test('paste text with an inline HTML comment does not leak comment text',
+        () {
+      // Some sites (e.g. Google Search AI Overview) inject an HTML comment
+      // into copied content as an internal marker. It must not surface as
+      // visible text, regardless of what the comment contains.
+      const html = '''
+<p>First answer<!--TgQPHd||[]--></p>
+<p>Second answer<!-- some other internal marker --></p>
+''';
+      final document = htmlToDocument(html);
+      final children = document.root.children;
+
+      expect(children[0].delta!.toPlainText(), 'First answer');
+      expect(children[1].delta!.toPlainText(), 'Second answer');
+    });
   });
 }

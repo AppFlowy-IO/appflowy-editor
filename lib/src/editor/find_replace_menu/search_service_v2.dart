@@ -82,7 +82,7 @@ class SearchServiceV2 {
     for (final node in nodes) {
       if (node.delta != null) {
         final text = node.delta!.toPlainText();
-        List<int> matches = searchAlgorithm
+        final List<int> matches = searchAlgorithm
             .searchMethod(
               caseSensitive ? pattern : pattern.toLowerCase(),
               caseSensitive ? text : text.toLowerCase(),
@@ -91,7 +91,7 @@ class SearchServiceV2 {
             .toList();
         // we will store this list of offsets along with their path,
         // in a list of positions.
-        for (int matchedOffset in matches) {
+        for (final int matchedOffset in matches) {
           result.add(
             Position(path: node.path, offset: matchedOffset),
           );

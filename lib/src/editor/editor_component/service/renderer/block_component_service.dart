@@ -53,7 +53,7 @@ mixin BlockComponentSelectable<T extends BlockComponentBuilder> {
   /// the start position of the block component.
   ///
   /// For the text block component, the start position is always 0.
-  Position start(Node node) => Position(path: node.path, offset: 0);
+  Position start(Node node) => Position(path: node.path);
 
   /// the end position of the block component.
   ///

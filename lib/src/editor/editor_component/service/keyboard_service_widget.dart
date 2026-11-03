@@ -244,7 +244,6 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
         textEditingValue,
         TextInputConfiguration(
           viewId: View.of(context).viewId,
-          enableDeltaModel: false,
           inputType: TextInputType.multiline,
           textCapitalization: TextCapitalization.sentences,
           inputAction: TextInputAction.newline,

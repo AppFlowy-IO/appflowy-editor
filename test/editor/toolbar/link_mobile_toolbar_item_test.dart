@@ -94,8 +94,6 @@ Widget _wrapWithStyle({required Widget child}) => MobileToolbarTheme(
       toolbarHeight: 55,
       borderRadius: 8,
       buttonHeight: 32,
-      buttonSpacing: 8,
-      buttonBorderWidth: 1,
       buttonSelectedBorderWidth: 1,
       child: child,
     );

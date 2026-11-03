@@ -28,6 +28,12 @@ typedef AppFlowyTextSpanOverlayBuilder = List<Widget> Function(
   SelectableMixin delegate,
 );
 
+typedef AppFlowyTextSpanBackgroundBuilder = List<Widget> Function(
+  BuildContext context,
+  Node node,
+  SelectableMixin delegate,
+);
+
 class AppFlowyRichText extends StatefulWidget {
   const AppFlowyRichText({
     super.key,
@@ -40,6 +46,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textDirection = TextDirection.ltr,
     this.textSpanDecoratorForCustomAttributes,
     this.textSpanOverlayBuilder,
+    this.textSpanBackgroundBuilder,
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
@@ -95,6 +102,11 @@ class AppFlowyRichText extends StatefulWidget {
   /// You can use this to customize the text span overlay, for example, a hover menu in linked text.
   final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
 
+  /// customize the text span background builder
+  ///
+  /// You can use this to customize the text span background, for example, a highlight behind the text.
+  final AppFlowyTextSpanBackgroundBuilder? textSpanBackgroundBuilder;
+
   final TextDirection textDirection;
 
   final Color cursorColor;
@@ -134,6 +146,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       widget.textSpanOverlayBuilder ??
       widget.editorState.editorStyle.textSpanOverlayBuilder;
 
+  AppFlowyTextSpanBackgroundBuilder? get textSpanBackgroundBuilder =>
+      widget.textSpanBackgroundBuilder ??
+      widget.editorState.editorStyle.textSpanBackgroundBuilder;
+
   @override
   void initState() {
     super.initState();
@@ -149,6 +165,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       children: [
         Padding(padding: gutterInset, child: _buildPlaceholderText(context)),
         Padding(padding: gutterInset, child: _buildRichText(context)),
+        _buildPlaceholderText(context),
+        ..._buildRichTextBackground(context),
+        _buildRichText(context),
         ..._buildRichTextOverlay(context),
       ],
     );
@@ -179,7 +198,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   }
 
   @override
-  Position start() => Position(path: widget.node.path, offset: 0);
+  Position start() => Position(path: widget.node.path);
 
   @override
   Position end() => Position(
@@ -210,7 +229,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    double? placeholderCursorHeight =
+    final double? placeholderCursorHeight =
         _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
     Offset? placeholderCursorOffset =
         _placeholderRenderParagraph?.getOffsetForCaret(
@@ -421,6 +440,19 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     );
   }
 
+  List<Widget> _buildRichTextBackground(BuildContext context) {
+    if (textKey.currentContext == null) {
+      return [];
+    }
+
+    return textSpanBackgroundBuilder?.call(
+          context,
+          widget.node,
+          this,
+        ) ??
+        [];
+  }
+
   Widget _buildRichText(BuildContext context) {
     final textInserts = widget.node.delta!.whereType<TextInsert>();
     TextSpan textSpan = getTextSpan(textInserts: textInserts);
@@ -571,7 +603,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     required Iterable<TextInsert> textInserts,
   }) {
     int offset = 0;
-    List<InlineSpan> textSpans = [];
+    final List<InlineSpan> textSpans = [];
     for (final textInsert in textInserts) {
       TextStyle textStyle = textStyleConfiguration.text.copyWith(
         height: textStyleConfiguration.lineHeight,
@@ -718,8 +750,8 @@ extension AppFlowyRichTextAttributes on Attributes {
   bool get code => this[AppFlowyRichTextKeys.code] == true;
 
   bool get strikethrough {
-    return (containsKey(AppFlowyRichTextKeys.strikethrough) &&
-        this[AppFlowyRichTextKeys.strikethrough] == true);
+    return containsKey(AppFlowyRichTextKeys.strikethrough) &&
+        this[AppFlowyRichTextKeys.strikethrough] == true;
   }
 
   Color? get color {

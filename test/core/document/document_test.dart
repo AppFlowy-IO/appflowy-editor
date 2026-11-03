@@ -26,8 +26,8 @@ void main() async {
     test('delete', () {
       final document = Document(root: Node(type: 'root'));
 
-      expect(document.delete([-1], 1), false);
-      expect(document.delete([100], 1), false);
+      expect(document.delete([-1]), false);
+      expect(document.delete([100]), false);
 
       for (var i = 0; i < 10; i++) {
         final node = Node(type: '$i');

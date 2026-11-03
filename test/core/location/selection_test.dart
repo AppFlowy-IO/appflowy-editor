@@ -73,7 +73,7 @@ void main() async {
       expect(collapsedAtStart.start, start);
       expect(collapsedAtStart.end, start);
 
-      final collapsedAtEnd = selection.collapse(atStart: false);
+      final collapsedAtEnd = selection.collapse();
       expect(collapsedAtEnd.isCollapsed, true);
       expect(collapsedAtEnd.start, end);
       expect(collapsedAtEnd.end, end);

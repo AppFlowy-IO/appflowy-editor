@@ -57,6 +57,38 @@ void main() {
       expect(nodes[0].delta?.toPlainText(), 'This is the first line');
       expect(nodes[1].attributes['url'], 'https://example.com/image.png');
     });
+
+    // Regression test for https://github.com/AppFlowy-IO/AppFlowy/issues/8486
+    // documentToMarkdown() must not mutate the source document when processing
+    // nested (indented) list items.
+    test('documentToMarkdown does not orphan children of nested list items',
+        () {
+      final childNode = bulletedListNode(text: 'Child item');
+      final parentNode = bulletedListNode(
+        text: 'Parent item',
+        children: [childNode],
+      );
+      final document = Document(root: pageNode(children: [parentNode]));
+
+      // Verify initial structure: parent has 1 child.
+      expect(document.root.children.length, 1);
+      expect(document.root.children.first.children.length, 1);
+
+      final markdown = documentToMarkdown(document);
+
+      // The markdown output should be correct.
+      expect(markdown, '* Parent item\n\t* Child item\n');
+
+      // After conversion, the source document must be unchanged.
+      // Before the fix, convertNodes() called pageNode(children: nodes) which
+      // invoked unlink() on each child, removing them from their original parent.
+      expect(
+        document.root.children.first.children.length,
+        1,
+        reason:
+            'documentToMarkdown() must not remove children from the source document',
+      );
+    });
   });
 }
 

@@ -120,6 +120,27 @@ void main() async {
       expect(identical(node.children.first, base.children.first), false);
     });
 
+    test('copyWith can preserve ids', () {
+      final child = Node(
+        type: 'child',
+        id: 'child-id',
+      );
+      final base = Node(
+        type: 'base',
+        id: 'base-id',
+        children: [child],
+      );
+
+      final node = base.copyWith(
+        id: base.id,
+        preserveChildIds: true,
+      );
+
+      expect(node.id, 'base-id');
+      expect(node.children.first.id, 'child-id');
+      expect(identical(node.children.first, child), false);
+    });
+
     test('test insert', () {
       final base = Node(
         type: 'base',

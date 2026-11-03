@@ -106,6 +106,11 @@ class ColumnsBlockComponentState extends State<ColumnsBlockComponent>
       child: child,
     );
 
+    child = Padding(
+      padding: margin,
+      child: child,
+    );
+
     return child;
   }
 

@@ -24,22 +24,13 @@ class EditorScrollController {
     // if shrinkWrap is true, we will render the document with Column layout.
     // otherwise, we will render the document with ScrollablePositionedList.
     if (shrinkWrap) {
-      void updateVisibleRange() {
-        visibleRangeNotifier.value = (
-          0,
-          editorState.document.root.children.length - 1,
-        );
-      }
-
-      updateVisibleRange();
-      editorState.document.root.addListener(updateVisibleRange);
+      _updateVisibleRange();
+      editorState.document.root.addListener(_updateVisibleRange);
 
       shouldDisposeScrollController = scrollController == null;
       this.scrollController = scrollController ?? ScrollController();
       // listen to the scroll offset
-      this.scrollController.addListener(
-            () => offsetNotifier.value = this.scrollController.offset,
-          );
+      this.scrollController.addListener(_updateScrollOffset);
     } else {
       // listen to the scroll offset
       _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
@@ -141,18 +132,32 @@ class EditorScrollController {
 
   late final StreamSubscription<double> _scrollOffsetSubscription;
 
+  void _updateVisibleRange() {
+    visibleRangeNotifier.value = (
+      0,
+      editorState.document.root.children.length - 1,
+    );
+  }
+
+  void _updateScrollOffset() {
+    offsetNotifier.value = scrollController.offset;
+  }
+
   // dispose the subscription
   void dispose() {
-    if (shouldDisposeScrollController) {
-      scrollController.dispose();
-    }
-
-    if (!shrinkWrap) {
+    if (shrinkWrap) {
+      editorState.document.root.removeListener(_updateVisibleRange);
+      scrollController.removeListener(_updateScrollOffset);
+    } else {
       _scrollOffsetSubscription.cancel();
       _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
       (_itemPositionsListener as ItemPositionsNotifier?)
           ?.itemPositions
           .dispose();
+    }
+
+    if (shouldDisposeScrollController) {
+      scrollController.dispose();
     }
 
     offsetNotifier.dispose();
@@ -204,7 +209,6 @@ class EditorScrollController {
     if (index < start || index > end) {
       itemScrollController.jumpTo(
         index: max(0, index),
-        alignment: 0,
       );
     }
   }
@@ -242,7 +246,7 @@ class EditorScrollController {
     // Determine the first visible item by finding the item with the
     // smallest trailing edge that is greater than 0.  i.e. the first
     // item whose trailing edge in visible in the viewport.
-    int min = positions
+    final int min = positions
         .where((ItemPosition position) => position.itemTrailingEdge > 0)
         .reduce(
           (ItemPosition min, ItemPosition position) =>

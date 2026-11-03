@@ -160,7 +160,6 @@ class _ParagraphBlockComponentWidgetState
       alignment: alignment,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
@@ -190,14 +189,8 @@ class _ParagraphBlockComponentWidgetState
       ),
     );
 
-    child = Container(
-      key: blockComponentKey,
-      decoration: withBackgroundColor ? decoration : null,
-      padding: padding,
-      child: child,
-    );
-
     child = BlockSelectionContainer(
+      key: blockComponentKey,
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
@@ -207,8 +200,19 @@ class _ParagraphBlockComponentWidgetState
       supportTypes: const [
         BlockSelectionType.block,
       ],
-      child: child,
+      child: Padding(
+        padding: padding,
+        child: child,
+      ),
     );
+
+    final decoration = this.decoration;
+    if (withBackgroundColor && decoration != null) {
+      child = DecoratedBox(
+        decoration: decoration,
+        child: child,
+      );
+    }
 
     if (widget.showActions && widget.actionBuilder != null) {
       child = BlockComponentActionWrapper(

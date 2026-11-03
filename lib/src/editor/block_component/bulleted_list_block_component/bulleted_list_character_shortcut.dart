@@ -10,8 +10,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 CharacterShortcutEvent formatAsteriskToBulletedList = CharacterShortcutEvent(
   key: 'format asterisk to bulleted list',
   character: ' ',
-  handler: (editorState) async =>
-      await _formatSymbolToBulletedList(editorState, '*'),
+  handler: (editorState) async => _formatSymbolToBulletedList(editorState, '*'),
 );
 
 /// Convert '- ' to bulleted list
@@ -24,8 +23,7 @@ CharacterShortcutEvent formatAsteriskToBulletedList = CharacterShortcutEvent(
 CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
   key: 'format minus to bulleted list',
   character: ' ',
-  handler: (editorState) async =>
-      await _formatSymbolToBulletedList(editorState, '-'),
+  handler: (editorState) async => _formatSymbolToBulletedList(editorState, '-'),
 );
 
 /// Insert a new block after the bulleted list block.
@@ -38,7 +36,7 @@ CharacterShortcutEvent formatMinusToBulletedList = CharacterShortcutEvent(
 CharacterShortcutEvent insertNewLineAfterBulletedList = CharacterShortcutEvent(
   key: 'insert new block after bulleted list',
   character: '\n',
-  handler: (editorState) async => await insertNewLineInType(
+  handler: (editorState) async => insertNewLineInType(
     editorState,
     'bulleted_list',
   ),

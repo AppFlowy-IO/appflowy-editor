@@ -32,21 +32,49 @@ const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
 const _selectionDragModeKey = 'selection_drag_mode';
 
+/// The border radius for selection area rendering.
+/// The type of this value is double.
+const selectionExtraInfoSelectionRadius = 'selectionExtraInfoSelectionRadius';
+
 class ApplyOptions {
   const ApplyOptions({
     this.recordUndo = true,
     this.recordRedo = false,
+    this.source,
     this.inMemoryUpdate = false,
   });
 
-  /// This flag indicates that
-  /// whether the transaction should be recorded into
-  /// the undo stack
+  /// Whether the transaction should be recorded into the undo stack.
+  @Deprecated('Use [source] instead')
   final bool recordUndo;
+
+  @Deprecated('Use [source] instead')
   final bool recordRedo;
+
+  /// The source of the transaction. When set, takes precedence over
+  /// the legacy `recordUndo` and `recordRedo` flags for determining
+  /// how the transaction is recorded in the undo/redo history.
+  final TransactionSource? source;
 
   /// This flag used to determine whether the transaction is in-memory update.
   final bool inMemoryUpdate;
+
+  /// Returns the resolved [TransactionSource].
+  /// Prefers explicit [source], falls back to legacy boolean flags.
+  ///
+  /// Legacy mapping (for backward compatibility):
+  /// - `recordRedo: true` → [TransactionSource.undo] (records *to* redo stack)
+  /// - `recordUndo: true` → [TransactionSource.userEdit]
+  /// - both false → [TransactionSource.none]
+  TransactionSource get resolvedSource {
+    if (source != null) return source!;
+    // ignore: deprecated_member_use_from_same_package
+    if (recordRedo) return TransactionSource.undo;
+    // ignore: deprecated_member_use_from_same_package
+    if (recordUndo) return TransactionSource.userEdit;
+
+    return TransactionSource.none;
+  }
 }
 
 @Deprecated('use SelectionUpdateReason instead')
@@ -403,11 +431,16 @@ class EditorState {
   Future<void> apply(
     Transaction transaction, {
     bool isRemote = false,
-    ApplyOptions options = const ApplyOptions(recordUndo: true),
+    ApplyOptions options = const ApplyOptions(),
     bool withUpdateSelection = true,
     bool skipHistoryDebounce = false,
+    bool skipEditableCheck = false,
   }) async {
-    if (!editable || isDisposed) {
+    if (isDisposed) {
+      return;
+    }
+
+    if (!editable && !skipEditableCheck) {
       return;
     }
 
@@ -671,14 +704,11 @@ class EditorState {
     Transaction transaction,
     bool skipDebounce,
   ) {
-    if (options.recordUndo) {
-      final undoItem = undoManager.getUndoHistoryItem();
-      undoItem.addAll(transaction.operations);
-      if (undoItem.beforeSelection == null &&
-          transaction.beforeSelection != null) {
-        undoItem.beforeSelection = transaction.beforeSelection;
-      }
-      undoItem.afterSelection = transaction.afterSelection;
+    final source = options.resolvedSource;
+    undoManager.record(transaction, source);
+
+    // Only debounce-seal for user edits (grouping consecutive keystrokes).
+    if (source == TransactionSource.userEdit) {
       if (skipDebounce && undoManager.undoStack.isNonEmpty) {
         AppFlowyEditorLog.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
@@ -686,12 +716,6 @@ class EditorState {
       } else {
         _debouncedSealHistoryItem();
       }
-    } else if (options.recordRedo) {
-      final redoItem = HistoryItem();
-      redoItem.addAll(transaction.operations);
-      redoItem.beforeSelection = transaction.beforeSelection;
-      redoItem.afterSelection = transaction.afterSelection;
-      undoManager.redoStack.push(redoItem);
     }
   }
 
@@ -720,6 +744,8 @@ class EditorState {
         if (!mapEquals(op.attributes, op.oldAttributes)) {
           document.update(op.path, op.attributes);
         }
+      } else if (op is UpdateNodeTypeOperation) {
+        _applyUpdateNodeTypeOperation(op);
       } else if (op is DeleteOperation) {
         document.delete(op.path, op.nodes.length);
       } else if (op is UpdateTextOperation) {
@@ -748,6 +774,8 @@ class EditorState {
             );
           }
         }
+      } else if (op is UpdateNodeTypeOperation) {
+        _applyUpdateNodeTypeOperation(op);
       } else if (op is UpdateOperation) {
         document.update(op.path, op.attributes);
       } else if (op is DeleteOperation) {
@@ -770,5 +798,33 @@ class EditorState {
     }
 
     return selection;
+  }
+
+  bool _applyUpdateNodeTypeOperation(UpdateNodeTypeOperation op) {
+    final node = _resolveUpdateNodeTypeTarget(op);
+    if (node == null) {
+      return false;
+    }
+
+    return document.updateNodeType(node.path, op.type, op.attributes);
+  }
+
+  Node? _resolveUpdateNodeTypeTarget(UpdateNodeTypeOperation op) {
+    final pathNode = document.nodeAtPath(op.path);
+    if (op.nodeId.isEmpty || pathNode?.id == op.nodeId) {
+      return pathNode;
+    }
+
+    final iterator = NodeIterator(
+      document: document,
+      startNode: document.root,
+    );
+    while (iterator.moveNext()) {
+      if (iterator.current.id == op.nodeId) {
+        return iterator.current;
+      }
+    }
+
+    return null;
   }
 }

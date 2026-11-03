@@ -1,4 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:collection/collection.dart';
+
+const _nodeEquality = DeepCollectionEquality();
 
 /// Formats the current node to specified markdown style.
 ///
@@ -55,23 +58,58 @@ Future<bool> formatMarkdownSymbol(
   final afterSelection = Selection.collapsed(
     Position(
       path: node.path,
-      offset: 0,
     ),
   );
 
   final formattedNodes = nodesBuilder(text, node, delta);
 
-  // Create a transaction that replaces the current node with the
-  // formatted node.
-  final transaction = editorState.transaction
-    ..insertNodes(
-      node.path,
-      formattedNodes,
-    )
-    ..deleteNode(node)
-    ..afterSelection = afterSelection;
+  final transaction = editorState.transaction;
+  if (_canUpdateNodeTypeInPlace(node, formattedNodes)) {
+    final formattedNode = formattedNodes.single;
+    transaction.updateNodeType(
+      node,
+      formattedNode.type,
+      formattedNode.attributes,
+    );
+  } else {
+    // Create a transaction that replaces the current node with the
+    // formatted node.
+    transaction
+      ..insertNodes(
+        node.path,
+        formattedNodes,
+      )
+      ..deleteNode(node);
+  }
+  transaction.afterSelection = afterSelection;
 
   await editorState.apply(transaction);
+
+  return true;
+}
+
+bool _canUpdateNodeTypeInPlace(Node node, List<Node> formattedNodes) {
+  if (formattedNodes.length != 1) {
+    return false;
+  }
+
+  return _hasSameDescendantContent(node, formattedNodes.single);
+}
+
+bool _hasSameDescendantContent(Node before, Node after) {
+  if (before.children.length != after.children.length) {
+    return false;
+  }
+
+  for (var i = 0; i < before.children.length; i++) {
+    final beforeChild = before.children.elementAt(i);
+    final afterChild = after.children.elementAt(i);
+    if (beforeChild.type != afterChild.type ||
+        !_nodeEquality.equals(beforeChild.attributes, afterChild.attributes) ||
+        !_hasSameDescendantContent(beforeChild, afterChild)) {
+      return false;
+    }
+  }
 
   return true;
 }

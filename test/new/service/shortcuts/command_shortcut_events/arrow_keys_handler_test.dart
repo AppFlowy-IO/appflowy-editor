@@ -101,7 +101,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [0], offset: 0),
+        end: Position(path: [0]),
       ),
     );
 
@@ -401,7 +401,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [0], offset: 0),
+        end: Position(path: [0]),
       ),
     );
     for (int i = 0; i < 7; i++) {
@@ -425,7 +425,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [3], offset: 0),
+        end: Position(path: [3]),
       ),
     );
 
@@ -510,7 +510,7 @@ void main() async {
       expect(
         editor.selection,
         selection.copyWith(
-          end: Position(path: [0], offset: 0),
+          end: Position(path: [0]),
         ),
       );
     } else {
@@ -569,7 +569,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [1], offset: 0),
+        end: Position(path: [1]),
       ),
     );
     await editor.pressKey(
@@ -654,7 +654,7 @@ void main() async {
     expect(
       editor.selection,
       selection.copyWith(
-        end: Position(path: [1], offset: 0),
+        end: Position(path: [1]),
       ),
     );
     await editor.dispose();

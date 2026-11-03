@@ -87,7 +87,7 @@ class CheckSingleFormatFormatResult {
       );
   final lastCharIndex = plainText.lastIndexOf(character);
   final textAfterLastChar = plainText.substring(lastCharIndex + 1);
-  bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
+  final bool textAfterLastCharIsEmpty = textAfterLastChar.trim().isEmpty;
 
   // The following conditions won't trigger the single character formatting:
   // 1. There is no 'Character' in the plainText: lastIndexOf returns -1.
@@ -118,6 +118,17 @@ class CheckSingleFormatFormatResult {
       .substring(startIndex + lastCharIndex + 1, selection.end.offset)
       .isEmpty) {
     return (false, null);
+  }
+
+  // 6. For underscore italic, only auto-format when the opening underscore
+  // starts a word, i.e. it is at the very start or preceded by whitespace.
+  // This prevents intra-word underscores like `a_b_c` from being italicized,
+  // matching the common markdown behavior (asterisks are unaffected).
+  if (character == '_') {
+    final openingIndex = startIndex + lastCharIndex;
+    if (openingIndex > 0 && rawPlainText[openingIndex - 1].trim().isNotEmpty) {
+      return (false, null);
+    }
   }
 
   return (

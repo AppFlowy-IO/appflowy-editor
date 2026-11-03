@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../new/infra/testable_editor.dart';
 
 void main() async {
@@ -14,7 +15,7 @@ void main() async {
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+          await insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
 
       expect(inserted, true);
@@ -30,7 +31,7 @@ void main() async {
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+          await insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
 
       expect(inserted, true);
@@ -53,7 +54,7 @@ void main() async {
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+          await insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([1])!;
@@ -76,7 +77,7 @@ void main() async {
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
       final inserted =
-          insertNodeAfterSelection(editor.editorState, paragraphNode());
+          await insertNodeAfterSelection(editor.editorState, paragraphNode());
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([0])!;
@@ -100,7 +101,7 @@ void main() async {
       await editor.startTesting();
 
       await editor.updateSelection(Selection.collapsed(Position(path: [0])));
-      insertHeadingAfterSelection(editor.editorState, 1);
+      await insertHeadingAfterSelection(editor.editorState, 1);
       await tester.pumpAndSettle();
 
       final node = editor.nodeAtPath([1])!;

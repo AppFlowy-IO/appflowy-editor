@@ -86,7 +86,7 @@ CharacterShortcutEvent formatHyphenFilledBracketsToCheckedBox =
 CharacterShortcutEvent insertNewLineAfterTodoList = CharacterShortcutEvent(
   key: 'insert new block after todo list',
   character: '\n',
-  handler: (editorState) async => await insertNewLineInType(
+  handler: (editorState) async => insertNewLineInType(
     editorState,
     'todo_list',
     attributes: {

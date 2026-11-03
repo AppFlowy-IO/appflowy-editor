@@ -9,7 +9,7 @@ Future<bool> handleDoubleCharacterReplacement({
 }) async {
   assert(character.length == 1);
 
-  Selection? selection = editorState.selection;
+  final Selection? selection = editorState.selection;
   if (selection == null) {
     return false;
   }

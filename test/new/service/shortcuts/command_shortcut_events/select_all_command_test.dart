@@ -27,7 +27,7 @@ void main() async {
       expect(
         editor.selection,
         Selection(
-          start: Position(path: [0], offset: 0),
+          start: Position(path: [0]),
           end: Position(path: [count - 1], offset: text.length),
         ),
       );
@@ -69,7 +69,7 @@ void main() async {
       expect(
         editor.selection,
         Selection(
-          start: Position(path: [0], offset: 0),
+          start: Position(path: [0]),
           end: Position(path: [0, 0, 0], offset: text.length),
         ),
       );

@@ -132,15 +132,14 @@ class _BlocksMenuState extends State<_BlocksMenu> {
 }
 
 class _ListUnit {
-  final AFMobileIcons icon;
-  final String label;
-  final String name;
-  final int? level;
-
   _ListUnit({
     required this.icon,
     required this.label,
     required this.name,
     this.level,
   });
+  final AFMobileIcons icon;
+  final String label;
+  final String name;
+  final int? level;
 }

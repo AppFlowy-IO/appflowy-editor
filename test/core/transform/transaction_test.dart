@@ -64,6 +64,104 @@ void main() async {
       expect(editorState.document.last!.type, 'paragraph-2');
     });
 
+    test('remote updateNodeType resolves stale path by node id', () async {
+      // Remote type updates may be queued with an old path. In that case the
+      // node id is the stable identity and must win over the stale path, or the
+      // update can convert a newly inserted sibling by mistake.
+      final inserted = paragraphNode(text: 'inserted')..id = 'inserted-id';
+      final target = paragraphNode(text: 'target')..id = 'target-id';
+      final document = Document.blank()..insert([0], [inserted, target]);
+      final editorState = EditorState(document: document);
+      final transaction = editorState.transaction
+        ..add(
+          UpdateNodeTypeOperation(
+            [0],
+            target.id,
+            HeadingBlockKeys.type,
+            ParagraphBlockKeys.type,
+            {
+              HeadingBlockKeys.level: 1,
+              HeadingBlockKeys.delta: target.delta!.toJson(),
+            },
+            target.attributes,
+          ),
+        );
+
+      await editorState.apply(transaction, isRemote: true);
+
+      expect(editorState.getNodeAtPath([0])!.id, inserted.id);
+      expect(editorState.getNodeAtPath([0])!.type, ParagraphBlockKeys.type);
+      expect(editorState.getNodeAtPath([1])!.id, target.id);
+      expect(editorState.getNodeAtPath([1])!.type, HeadingBlockKeys.type);
+    });
+
+    test('remote updateNodeType skips stale path when node id is missing',
+        () async {
+      // If the stable node id cannot be found, the operation should be ignored.
+      // Applying it to the stale path would mutate the wrong block.
+      final inserted = paragraphNode(text: 'inserted')..id = 'inserted-id';
+      final document = Document.blank()..insert([0], [inserted]);
+      final editorState = EditorState(document: document);
+      final transaction = editorState.transaction
+        ..add(
+          UpdateNodeTypeOperation(
+            [0],
+            'missing-id',
+            HeadingBlockKeys.type,
+            ParagraphBlockKeys.type,
+            {
+              HeadingBlockKeys.level: 1,
+              HeadingBlockKeys.delta: inserted.delta!.toJson(),
+            },
+            inserted.attributes,
+          ),
+        );
+
+      await editorState.apply(transaction, isRemote: true);
+
+      expect(editorState.getNodeAtPath([0])!.id, inserted.id);
+      expect(editorState.getNodeAtPath([0])!.type, ParagraphBlockKeys.type);
+    });
+
+    test('updateNodeType undo and redo preserve identity and children',
+        () async {
+      // Same-shape type updates keep the block in place. Undo/redo must only
+      // switch type/data and must not regenerate the parent or child ids.
+      final child = paragraphNode(text: 'child')..id = 'child-id';
+      final node = paragraphNode(
+        text: 'parent',
+        children: [child],
+      )..id = 'parent-id';
+      final document = Document.blank()..insert([0], [node]);
+      final editorState = EditorState(document: document);
+      final transaction = editorState.transaction
+        ..updateNodeType(
+          node,
+          BulletedListBlockKeys.type,
+          {
+            BulletedListBlockKeys.delta: node.delta!.toJson(),
+          },
+        );
+
+      await editorState.apply(transaction, skipHistoryDebounce: true);
+
+      expect(editorState.getNodeAtPath([0])!.id, 'parent-id');
+      expect(editorState.getNodeAtPath([0])!.type, BulletedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.first.id, 'child-id');
+
+      editorState.undoManager.undo();
+
+      expect(editorState.getNodeAtPath([0])!.id, 'parent-id');
+      expect(editorState.getNodeAtPath([0])!.type, ParagraphBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.first.id, 'child-id');
+
+      editorState.undoManager.redo();
+
+      expect(editorState.getNodeAtPath([0])!.id, 'parent-id');
+      expect(editorState.getNodeAtPath([0])!.type, BulletedListBlockKeys.type);
+      expect(editorState.getNodeAtPath([0])!.children.first.id, 'child-id');
+    });
+
     test('toJson', () {
       final beforeSelection = Selection.collapsed(Position(path: [0]));
       final afterSelection =
@@ -229,7 +327,7 @@ void main() async {
         end: Position(path: [0], offset: 10),
       );
       final transaction = editorState.transaction;
-      var nodes = editorState.getNodesInSelection(selection);
+      final nodes = editorState.getNodesInSelection(selection);
       final texts = ['ABC1', 'ABC2', 'ABC3', 'ABC4', 'ABC5'];
       transaction.replaceTexts(nodes, selection, texts);
       await editorState.apply(transaction);
@@ -338,7 +436,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [2], offset: text3.length),
       );
       editorState.selection = selection;
@@ -363,7 +461,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [0], offset: text1.length),
       );
       editorState.selection = selection;
@@ -402,7 +500,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [2], offset: text3.length),
       );
       editorState.selection = selection;
@@ -442,7 +540,7 @@ void main() async {
       );
       final editorState = EditorState(document: document);
       final selection = Selection(
-        start: Position(path: [0], offset: 0),
+        start: Position(path: [0]),
         end: Position(path: [0], offset: 5),
       );
       editorState.selection = selection;
@@ -494,7 +592,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
     );
     editorState.selection = selection;
@@ -561,7 +659,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 3], offset: 'paragraph 1-4'.length),
     );
     editorState.selection = selection;
@@ -615,7 +713,7 @@ void main() async {
     );
     final editorState = EditorState(document: document);
     final selection = Selection(
-      start: Position(path: [0, 0], offset: 0),
+      start: Position(path: [0, 0]),
       end: Position(path: [0, 2], offset: 'paragraph 1-3'.length),
     );
     editorState.selection = selection;

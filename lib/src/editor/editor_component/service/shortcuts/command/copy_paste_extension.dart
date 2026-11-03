@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 
 final _listTypes = [
@@ -85,7 +87,6 @@ extension EditorCopyPaste on EditorState {
       if (lastNode.delta != null) {
         nodes.last.insertDelta(
           delta.slice(selection.endIndex),
-          insertAfter: true,
         );
       }
     }
@@ -129,7 +130,7 @@ extension EditorCopyPaste on EditorState {
 
     // delete the selection first.
     if (!selection.isCollapsed) {
-      deleteSelection(selection);
+      await deleteSelection(selection);
     }
 
     // fetch selection again.selection = editorState.selection;
