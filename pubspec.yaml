@@ -13,9 +13,9 @@ description: A highly customizable rich-text editor for Flutter. The AppFlowy
 
 dependencies:
   collection: "^1.18.0"
-  device_info_plus: ^12.3.0
+  device_info_plus: ^13.0.0
   diff_match_patch: "^0.4.1"
-  file_picker: ^10.3.10
+  file_picker: ^13.0.0
   flutter:
     sdk: flutter
   flutter_svg: "^2.0.6"
