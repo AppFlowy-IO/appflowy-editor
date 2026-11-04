@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
 
 class FilePickerResult {
@@ -14,6 +16,8 @@ abstract class FilePickerService {
   }) async =>
       throw UnimplementedError('getDirectoryPath() has not been implemented.');
 
+  /// The picked files' content is read on demand with
+  /// [PlatformFile.readAsBytes] or [PlatformFile.readAsByteStream].
   Future<FilePickerResult?> pickFiles({
     String? dialogTitle,
     String? initialDirectory,
@@ -21,19 +25,16 @@ abstract class FilePickerService {
     List<String>? allowedExtensions,
     Function(FilePickerStatus)? onFileLoading,
     bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
   }) async =>
       throw UnimplementedError('pickFiles() has not been implemented.');
 
-  Future<String?> saveFile({
+  /// Saves [bytes] to a location chosen by the user and returns its [Uri], or
+  /// `null` if the user cancels.
+  Future<Uri?> saveFile({
+    required String fileName,
+    required Uint8List bytes,
     String? dialogTitle,
-    String? fileName,
     String? initialDirectory,
-    FileType type = FileType.any,
-    List<String>? allowedExtensions,
-    bool lockParentWindow = false,
   }) async =>
       throw UnimplementedError('saveFile() has not been implemented.');
 }

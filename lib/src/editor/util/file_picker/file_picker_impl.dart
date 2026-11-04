@@ -1,10 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:appflowy_editor/src/editor/util/file_picker/file_picker_service.dart';
 import 'package:file_picker/file_picker.dart' as fp;
 
 class FilePicker implements FilePickerService {
   @override
   Future<String?> getDirectoryPath({String? title}) {
-    return fp.FilePicker.platform.getDirectoryPath();
+    return fp.FilePicker.getDirectoryPath();
   }
 
   @override
@@ -15,41 +17,42 @@ class FilePicker implements FilePickerService {
     List<String>? allowedExtensions,
     Function(fp.FilePickerStatus p1)? onFileLoading,
     bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
   }) async {
-    final result = await fp.FilePicker.platform.pickFiles(
+    if (allowMultiple) {
+      final files = await fp.FilePicker.pickFiles(
+        dialogTitle: dialogTitle,
+        initialDirectory: initialDirectory,
+        type: type,
+        allowedExtensions: allowedExtensions,
+        onFileLoading: onFileLoading,
+      );
+
+      return FilePickerResult(files);
+    }
+
+    final file = await fp.FilePicker.pickFile(
       dialogTitle: dialogTitle,
       initialDirectory: initialDirectory,
       type: type,
       allowedExtensions: allowedExtensions,
       onFileLoading: onFileLoading,
-      allowMultiple: allowMultiple,
-      withData: withData,
-      withReadStream: withReadStream,
-      lockParentWindow: lockParentWindow,
     );
 
-    return FilePickerResult(result?.files ?? []);
+    return FilePickerResult([if (file != null) file]);
   }
 
   @override
-  Future<String?> saveFile({
+  Future<Uri?> saveFile({
+    required String fileName,
+    required Uint8List bytes,
     String? dialogTitle,
-    String? fileName,
     String? initialDirectory,
-    fp.FileType type = fp.FileType.any,
-    List<String>? allowedExtensions,
-    bool lockParentWindow = false,
   }) {
-    return fp.FilePicker.platform.saveFile(
-      dialogTitle: dialogTitle,
+    return fp.FilePicker.saveFile(
       fileName: fileName,
+      bytes: bytes,
+      dialogTitle: dialogTitle,
       initialDirectory: initialDirectory,
-      type: type,
-      allowedExtensions: allowedExtensions,
-      lockParentWindow: lockParentWindow,
     );
   }
 }
