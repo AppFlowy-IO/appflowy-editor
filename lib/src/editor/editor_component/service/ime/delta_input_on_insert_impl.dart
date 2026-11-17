@@ -78,10 +78,18 @@ Future<void> onInsert(
     ),
   );
 
+  // While an IME composition is active, some IMEs (e.g. fcitx5 on Linux)
+  // report the selection at the start of the preedit. Inserting at the
+  // selection would prepend the new preedit text to the existing one, so use
+  // the offset reported by the delta instead.
+  final insertOffset = insertion.composing.isCollapsed
+      ? selection.startIndex
+      : insertion.insertionOffset;
+
   final transaction = editorState.transaction
     ..insertText(
       node,
-      selection.startIndex,
+      insertOffset,
       textInserted,
       toggledAttributes: editorState.toggledStyle,
       sliceAttributes: editorState.sliceUpcomingAttributes,
