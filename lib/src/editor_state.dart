@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:appflowy_editor/src/editor/util/platform_extension.dart';
 import 'package:appflowy_editor/src/history/undo_manager.dart';
@@ -30,7 +31,6 @@ class EditorStateDebugInfo {
 /// set true to this key to prevent attaching the text service when selection is changed.
 const selectionExtraInfoDoNotAttachTextService =
     'selectionExtraInfoDoNotAttachTextService';
-const _selectionDragModeKey = 'selection_drag_mode';
 
 /// The border radius for selection area rendering.
 /// The type of this value is double.
@@ -164,6 +164,21 @@ class EditorState {
 
   /// The edge offset of the auto scroll.
   double autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset;
+
+  double _autoScrollTopInset = 0.0;
+
+  /// The height of the area at the top of the screen that is covered by the
+  /// host application and that overlaps the editor.
+  ///
+  /// See [AppFlowyEditor.autoScrollTopInset].
+  double get autoScrollTopInset => _autoScrollTopInset;
+
+  set autoScrollTopInset(double value) {
+    _autoScrollTopInset = value;
+    // the auto scroller resolves the visible area on every scroll tick, so it
+    // has to be kept in sync.
+    autoScroller?.topInset = value;
+  }
 
   /// The style of the editor.
   late EditorStyle editorStyle;
@@ -677,13 +692,11 @@ class EditorState {
         minimumAutoScrollDelta: 0.07,
         maxAutoScrollDelta: 3.5,
         animationDuration: Duration.zero,
+        topInset: autoScrollTopInset,
         onScrollViewScrolled: () {
           _notifyScrollViewScrolledListeners();
           if (!isDesktopOrWeb) {
-            final dynamic dragMode = selectionExtraInfo?[_selectionDragModeKey];
-            final bool isDraggingSelection = dragMode != null &&
-                dragMode.toString() != 'MobileSelectionDragMode.none';
-            if (!isDraggingSelection) {
+            if (!isMobileSelectionDragging(selectionExtraInfo)) {
               return;
             }
             WidgetsBinding.instance.addPostFrameCallback((_) {

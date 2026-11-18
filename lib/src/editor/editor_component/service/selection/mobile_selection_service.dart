@@ -36,6 +36,19 @@ const String selectionDragModeKey = 'selection_drag_mode';
 bool disableIOSSelectWordEdgeOnTap = false;
 bool disableMagnifier = false;
 
+/// Whether a selection handle is currently being dragged on mobile.
+///
+/// The drag mode is read from [EditorState.selectionExtraInfo], which is
+/// replaced on every selection update. The drag mode is kept in the extra
+/// info when the drag ends, so that the code which reacts to the selection
+/// update is able to tell that it is the tail of a drag.
+bool isMobileSelectionDragging(Map? selectionExtraInfo) {
+  final dynamic dragMode = selectionExtraInfo?[selectionDragModeKey];
+
+  return dragMode != null &&
+      dragMode.toString() != 'MobileSelectionDragMode.none';
+}
+
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
     super.key,
@@ -411,9 +424,7 @@ class _MobileSelectionServiceWidgetState
     if (!mounted || dragMode == MobileSelectionDragMode.none) {
       return;
     }
-    if (_panStartOffset == null ||
-        _panStartSelection == null ||
-        _lastPanOffset.value == null) {
+    if (_panStartOffset == null || _panStartSelection == null) {
       return;
     }
 
@@ -424,12 +435,42 @@ class _MobileSelectionServiceWidgetState
           _panStartSelection == null) {
         return;
       }
+
+      // Re-arm the auto scroll. The proxy rect is relative to the scroll
+      // position, so the target has to be refreshed on every frame. Otherwise
+      // the document would stop scrolling as soon as the pointer is held still
+      // at the edge of the viewport.
+      editorState.autoScroller?.continueToAutoScroll();
+
       final offset = _lastPanOffset.value;
       if (offset == null) {
         return;
       }
       _updateSelectionDuringDrag(offset);
     });
+  }
+
+  /// Starts the auto scroll while a selection handle is being dragged.
+  ///
+  /// The pointer is used as the anchor instead of the selection rect, so the
+  /// document starts to scroll as soon as the pointer reaches the edge of the
+  /// viewport - even when there is no text at that position.
+  ///
+  /// The proxy rect is a square centered on the pointer, which means the
+  /// direction of the scroll is derived from the position of the pointer
+  /// relative to the viewport. Both the left and the right handle are
+  /// therefore able to scroll the document up and down.
+  void _startAutoScrollWhileDragging(Offset pointerOffset) {
+    editorState.service.scrollService?.startAutoScroll(
+      pointerOffset,
+      edgeOffset: appFlowyEditorAutoScrollDragEdgeOffset,
+      duration: const Duration(milliseconds: 2),
+    );
+  }
+
+  /// Stops the auto scroll that was started by [_startAutoScrollWhileDragging].
+  void _stopAutoScrollWhileDragging() {
+    editorState.service.scrollService?.stopAutoScroll();
   }
 
   void _updateSelectionDuringDrag(Offset panEndOffset) {
@@ -579,6 +620,11 @@ class _MobileSelectionServiceWidgetState
 
     final panEndOffset = details.globalPosition;
 
+    // The auto scroll is anchored on the pointer instead of the selection, so
+    // that the document keeps scrolling while the pointer is held at the edge
+    // of the viewport, even if the pointer is not over any text.
+    _startAutoScrollWhileDragging(panEndOffset);
+
     final dy = editorState.service.scrollService?.dy;
     final panStartOffset = dy == null
         ? _panStartOffset!
@@ -617,15 +663,24 @@ class _MobileSelectionServiceWidgetState
   @override
   void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode) {
     _clearPanVariables();
-    dragMode = MobileSelectionDragMode.none;
 
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
+        // The drag mode is kept in the extra info so that the scroll service
+        // knows that this update is the tail of a drag. Otherwise it would
+        // scroll the selection into a comfortable position right after the
+        // user released the handle.
+        selectionDragModeKey: dragMode,
       },
     );
+    dragMode = MobileSelectionDragMode.none;
+
+    // The document must not keep scrolling after the user released the
+    // handle.
+    _stopAutoScrollWhileDragging();
   }
 
   void _onTapUpIOS(TapUpDetails details) {
@@ -717,6 +772,12 @@ class _MobileSelectionServiceWidgetState
 
     // make a collapsed selection at offset with magnifier
     final offset = details.globalPosition;
+
+    // The auto scroll is anchored on the pointer instead of the selection, so
+    // that the document keeps scrolling while the pointer is held at the edge
+    // of the viewport, even if the pointer is not over any text.
+    _startAutoScrollWhileDragging(offset);
+
     final position = getPositionInOffset(offset);
     if (position == null) {
       return;
@@ -729,7 +790,6 @@ class _MobileSelectionServiceWidgetState
 
   void _onLongPressEndIOS(LongPressEndDetails details) {
     _clearPanVariables();
-    dragMode = MobileSelectionDragMode.none;
 
     editorState.updateSelectionWithReason(
       editorState.selection,
@@ -737,8 +797,18 @@ class _MobileSelectionServiceWidgetState
       customSelectionType: SelectionType.inline,
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
+        // The drag mode is kept in the extra info so that the scroll service
+        // knows that this update is the tail of a drag. Otherwise it would
+        // scroll the selection into a comfortable position right after the
+        // user released the handle.
+        selectionDragModeKey: dragMode,
       },
     );
+    dragMode = MobileSelectionDragMode.none;
+
+    // The document must not keep scrolling after the user released the
+    // handle.
+    _stopAutoScrollWhileDragging();
   }
 
   void _onTapUpAndroid(TapUpDetails details) {
@@ -802,6 +872,11 @@ class _MobileSelectionServiceWidgetState
     final offset = details.globalPosition;
     _lastPanOffset.value = offset;
 
+    // The auto scroll is anchored on the pointer instead of the selection, so
+    // that the document keeps scrolling while the pointer is held at the edge
+    // of the viewport, even if the pointer is not over any text.
+    _startAutoScrollWhileDragging(offset);
+
     final wordBoundary =
         getNodeInOffset(offset)?.selectable?.getWordBoundaryInOffset(offset);
 
@@ -842,15 +917,24 @@ class _MobileSelectionServiceWidgetState
 
   void _onLongPressEndAndroid(LongPressEndDetails details) {
     _clearPanVariables();
-    dragMode = MobileSelectionDragMode.none;
 
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
+        // The drag mode is kept in the extra info so that the scroll service
+        // knows that this update is the tail of a drag. Otherwise it would
+        // scroll the selection into a comfortable position right after the
+        // user released the handle.
+        selectionDragModeKey: dragMode,
       },
     );
+    dragMode = MobileSelectionDragMode.none;
+
+    // The document must not keep scrolling after the user released the
+    // handle.
+    _stopAutoScrollWhileDragging();
   }
 
   void _onPanUpdateAndroid(DragUpdateDetails details) {
@@ -877,6 +961,12 @@ class _MobileSelectionServiceWidgetState
     final position = getPositionInOffset(offset);
 
     _lastPanOffset.value = offset;
+
+    // The auto scroll is anchored on the pointer instead of the selection, so
+    // that the document keeps scrolling while the pointer is held at the edge
+    // of the viewport, even if the pointer is not over any text.
+    _startAutoScrollWhileDragging(offset);
+
     if (position == null) {
       return;
     }
@@ -891,7 +981,6 @@ class _MobileSelectionServiceWidgetState
 
   void _onPanEndAndroid(DragEndDetails details) {
     _clearPanVariables();
-    dragMode = MobileSelectionDragMode.none;
     _isPanStartHorizontal = null;
 
     editorState.updateSelectionWithReason(
@@ -900,8 +989,18 @@ class _MobileSelectionServiceWidgetState
       extraInfo: {
         selectionExtraInfoDoNotAttachTextService: false,
         selectionExtraInfoDisableFloatingToolbar: true,
+        // The drag mode is kept in the extra info so that the scroll service
+        // knows that this update is the tail of a drag. Otherwise it would
+        // scroll the selection into a comfortable position right after the
+        // user released the handle.
+        selectionDragModeKey: dragMode,
       },
     );
+    dragMode = MobileSelectionDragMode.none;
+
+    // The document must not keep scrolling after the user released the
+    // handle.
+    _stopAutoScrollWhileDragging();
   }
 
   // delete this function in the future.
