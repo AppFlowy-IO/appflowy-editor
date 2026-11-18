@@ -240,6 +240,20 @@ class EdgeDraggingAutoScroller {
     _currentDuration = null;
   }
 
+  /// The rectangle that is used to detect whether the drag target is close to
+  /// the edge of the [scrollable].
+  ///
+  /// [globalRect] is the global rectangle of the [scrollable]. The default
+  /// implementation returns it unchanged, which means that the auto scroll is
+  /// triggered when the drag target reaches the edge of the [scrollable].
+  ///
+  /// Subclasses can override this method to shrink the rectangle to the region
+  /// that is actually visible to the user, e.g. to exclude the area that is
+  /// covered by the system status bar or by the on screen keyboard. The drag
+  /// target then has to travel further before the auto scroll is triggered.
+  @protected
+  Rect resolveViewportRect(Rect globalRect) => globalRect;
+
   Future<void> _scroll() async {
     try {
       final RenderBox scrollRenderBox =
@@ -271,12 +285,13 @@ class EdgeDraggingAutoScroller {
       const double overDragMax = 20.0;
 
       final Offset deltaToOrigin = scrollable.deltaToScrollOrigin;
+      final Rect viewportRect = resolveViewportRect(globalRect);
       final Offset viewportOrigin =
-          globalRect.topLeft.translate(deltaToOrigin.dx, deltaToOrigin.dy);
+          viewportRect.topLeft.translate(deltaToOrigin.dx, deltaToOrigin.dy);
       final double viewportStart =
           _offsetExtent(viewportOrigin, _scrollDirection);
       final double viewportEnd =
-          viewportStart + _sizeExtent(globalRect.size, _scrollDirection);
+          viewportStart + _sizeExtent(viewportRect.size, _scrollDirection);
 
       final double proxyStart = _offsetExtent(
         _dragTargetRelatedToScrollOrigin.topLeft,

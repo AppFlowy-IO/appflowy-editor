@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/desktop_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/mobile_scroll_service.dart';
 import 'package:appflowy_editor/src/editor/toolbar/mobile/utils/keyboard_height_observer.dart';
@@ -101,10 +102,8 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         return;
       }
 
-      Rect targetRect;
-      AxisDirection? direction;
-      final dynamic dragMode =
-          editorState.selectionExtraInfo?['selection_drag_mode'];
+      final bool isDraggingSelection =
+          isMobileSelectionDragging(editorState.selectionExtraInfo);
 
       // For desktop: if auto-scroller is already scrolling (from drag-to-select),
       // don't override it here. The desktop_selection_service handles drag scrolling.
@@ -113,59 +112,36 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         return;
       }
 
-      switch (dragMode?.toString()) {
-        case 'MobileSelectionDragMode.leftSelectionHandle':
-          targetRect = selectionRects.first;
-          direction = AxisDirection.up;
-          break;
+      final previousSelection = lastSelection;
+      lastSelection = selection;
 
-        case 'MobileSelectionDragMode.rightSelectionHandle':
-          targetRect = selectionRects.last;
-          direction = AxisDirection.down;
-          break;
-
-        case 'MobileSelectionDragMode.cursor':
-          targetRect = selectionRects.last;
-          if (lastSelection != null) {
-            final isMovingUp = selection.end.path < lastSelection!.end.path ||
-                (selection.end.path.equals(lastSelection!.end.path) &&
-                    selection.end.offset < lastSelection!.end.offset);
-            direction = isMovingUp ? AxisDirection.up : AxisDirection.down;
-          }
-          break;
-
-        default:
-          targetRect = selectionRects.last;
-
-          // sometimes moving up in a long single node may be not working
-          // so we need to special handle this case.
-          final isLastSelectionSingle = lastSelection?.isSingle ?? false;
-          final isLastSelectionPathEqual =
-              lastSelection?.start.path.equals(selection.start.path) ?? false;
-          final isInSingleNode =
-              isLastSelectionSingle && isLastSelectionPathEqual;
-          if (selection.isForward && isInSingleNode) {
-            targetRect = selectionRects.first;
-          }
+      // On mobile the selection service drives the auto scroll while a
+      // selection handle is being dragged, because only the service knows
+      // where the pointer is.
+      //
+      // Overriding it here with the selection rect would break the edge
+      // detection: the selection rect is glued to the content, so it never
+      // reaches the edge of the viewport and the document would stop scrolling
+      // as soon as the content moved.
+      if (PlatformExtension.isMobile && isDraggingSelection) {
+        return;
       }
 
-      lastSelection = selection;
+      var targetRect = selectionRects.last;
+
+      /// sometimes moving up in a long single node may be not working
+      /// so we need to special handle this case.
+      final isLastSelectionSingle = previousSelection?.isSingle ?? false;
+      final isLastSelectionPathEqual =
+          previousSelection?.start.path.equals(selection.start.path) ?? false;
+      final isInSingleNode = isLastSelectionSingle && isLastSelectionPathEqual;
+      if (selection.isForward && isInSingleNode) {
+        targetRect = selectionRects.first;
+      }
 
       final endTouchPoint = targetRect.centerRight;
 
       if (PlatformExtension.isMobile) {
-        // Determine if this is a drag operation
-        final bool isDragOperation = dragMode != null &&
-            (dragMode.toString() ==
-                    'MobileSelectionDragMode.leftSelectionHandle' ||
-                dragMode.toString() ==
-                    'MobileSelectionDragMode.rightSelectionHandle' ||
-                dragMode.toString() == 'MobileSelectionDragMode.cursor');
-
-        // Use animation for drag operations, instant for others
-        final scrollDuration =
-            isDragOperation ? const Duration(milliseconds: 2) : Duration.zero;
-
         // soft keyboard
         // workaround: wait for the soft keyboard to show up
         final keyboardDelay = KeyboardHeightObserver.currentKeyboardHeight == 0
@@ -176,13 +152,20 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
           if (_forwardKey.currentContext == null) {
             return;
           }
-          // Mobile needs to continuously update scroll position/direction during drag
-          // Don't skip even if already scrolling, because direction may have changed
+          // A drag may have started while we were waiting for the soft
+          // keyboard. The selection service drives the auto scroll while a
+          // handle is dragged, so we must not override it here.
+          if (isMobileSelectionDragging(editorState.selectionExtraInfo)) {
+            return;
+          }
+          // The selection is scrolled into a comfortable reading position.
+          // The proxy rect is a square centered on the selection, so the
+          // document scrolls away from the edge of the viewport that the
+          // selection is close to.
           startAutoScroll(
             endTouchPoint,
             edgeOffset: editorState.autoScrollEdgeOffset,
-            direction: direction,
-            duration: scrollDuration,
+            duration: Duration.zero,
           );
         });
       } else {
@@ -192,7 +175,6 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
         startAutoScroll(
           endTouchPoint,
           edgeOffset: editorState.autoScrollEdgeOffset,
-          direction: direction,
           duration: Duration.zero,
         );
       }

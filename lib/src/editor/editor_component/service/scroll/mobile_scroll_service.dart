@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,8 +20,15 @@ class MobileScrollService extends StatefulWidget {
 class _MobileScrollServiceState extends State<MobileScrollService>
     implements AppFlowyScrollService {
   late final editorState = context.read<EditorState>();
-  late final autoScroller = editorState.autoScroller;
   late final editorScrollController = context.read<EditorScrollController>();
+
+  /// The auto scroller of the editor.
+  ///
+  /// It must not be cached, because the editor replaces it whenever the
+  /// scrollable changes - see [EditorState.updateAutoScroller]. A cached
+  /// scroller would be attached to a scrollable that is not part of the tree
+  /// anymore, and its viewport would be stale.
+  AutoScroller? get autoScroller => editorState.autoScroller;
 
   @override
   double get dy => context.read<EditorScrollController>().offsetNotifier.value;

@@ -18,6 +18,23 @@ KeepEditorFocusNotifier keepEditorFocusNotifier = KeepEditorFocusNotifier();
 /// The editor will scroll when the cursor is close to the edge of the screen
 const double appFlowyEditorAutoScrollEdgeOffset = 220.0;
 
+/// The size of the auto scroll proxy rect that is used while a selection
+/// handle is being dragged on mobile.
+///
+/// The proxy rect is a square centered on the pointer, so the pointer only has
+/// to be within half of this value - 40 pixels - of the top or the bottom edge
+/// of the visible area before the document starts to scroll.
+///
+/// The edge of the visible area is not necessarily the edge of the viewport:
+/// the viewport of the editor may extend behind the system status bar or
+/// behind the app bar of the host application. See
+/// [AppFlowyEditor.autoScrollTopInset].
+///
+/// This is deliberately much smaller than [appFlowyEditorAutoScrollEdgeOffset],
+/// which is used to scroll the selection into a comfortable reading position
+/// and therefore describes a margin instead of a trigger threshold.
+const double appFlowyEditorAutoScrollDragEdgeOffset = 80.0;
+
 class AppFlowyEditor extends StatefulWidget {
   AppFlowyEditor({
     super.key,
@@ -45,6 +62,7 @@ class AppFlowyEditor extends StatefulWidget {
     this.disableScrollService = false,
     this.disableAutoScroll = false,
     this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
+    this.autoScrollTopInset = 0.0,
     this.documentRules = const [],
     this.blockWrapper,
   })  : blockComponentBuilders =
@@ -222,6 +240,17 @@ class AppFlowyEditor extends StatefulWidget {
   ///
   final double autoScrollEdgeOffset;
 
+  /// The height of the area at the top of the screen that is covered by the
+  /// host application and that overlaps the editor.
+  ///
+  /// A host application may render the editor behind an app bar, in which
+  /// case the top of the editor is not visible to the user. Without this
+  /// value the auto scroll would only start when the selection handle has
+  /// already disappeared behind the app bar.
+  ///
+  /// The system status bar is not included here, it is handled by the editor.
+  final double autoScrollTopInset;
+
   /// The rules to apply to the document.
   ///
   final List<DocumentRule> documentRules;
@@ -379,6 +408,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     editorState.autoCompleteTextProvider = widget.autoCompleteTextProvider;
     editorState.disableAutoScroll = widget.disableAutoScroll;
     editorState.autoScrollEdgeOffset = widget.autoScrollEdgeOffset;
+    editorState.autoScrollTopInset = widget.autoScrollTopInset;
     editorState.documentRules = widget.documentRules;
   }
 
